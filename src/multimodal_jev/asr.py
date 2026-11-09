@@ -22,13 +22,26 @@ def load_runtime(model_path, device, dtype):
     return processor, model.to(device).eval()
 
 
-def prepare(processor, audio_path, device):
+def prepare(processor, audio_path, device, schema_text=None):
     import soundfile as sf
     audio, rate = sf.read(audio_path, dtype='float32')
     if audio.ndim != 1 or rate != 16000:
         raise ValueError('v1 requires mono 16 kHz audio; resampling must be explicit')
-    return processor.apply_transcription_request(audio, language='English',
-                return_tensors='pt', sampling_rate=rate).to(device)
+    if schema_text is None:
+        batch = processor.apply_transcription_request(audio, language='English',
+                    return_tensors='pt', sampling_rate=rate)
+    else:
+        # The stock ASR helper only emits a language system turn.  Put the
+        # decision schema in that same turn so the model receives it without
+        # modifying the Qwen audio placeholder or special-token contract.
+        messages = [{"role": "system", "content": [{"type": "text", "text":
+                    "English\n" + schema_text}]},
+                    {"role": "user", "content": [{"type": "audio", "audio": audio}]}]
+        prompt = processor.apply_chat_template(messages, tokenize=False,
+                    add_generation_prompt=True)
+        batch = processor(text=[prompt], audio=[audio], sampling_rate=rate,
+                          return_tensors='pt')
+    return batch.to(device)
 
 
 def main():
@@ -36,13 +49,14 @@ def main():
     parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--audio', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--schema-text', default=None)
     args = parser.parse_args()
     import torch
     config = json.loads(args.config.read_text())
     torch.set_num_threads(config.get('cpu_threads', 4))
     start = time.monotonic()
     processor, model = load_runtime(config['model_path'], config['device'], config['dtype'])
-    inputs = prepare(processor, str(args.audio), config['device'])
+    inputs = prepare(processor, str(args.audio), config['device'], args.schema_text)
     # Cast floating features only, preserve token indices and masks.
     inputs = {k: v.to(dtype=model.dtype) if v.is_floating_point() else v for k, v in inputs.items()}
     with torch.inference_mode():

@@ -53,3 +53,7 @@ python3 -m venv .venv
 
 三阶段目标、前瞻实验设计及当前限制见 [RL 研究协议](proposal/01-rl-research-protocol.md)；
 镜像兼容性见 [运行时说明](docs/engineering/runtime.md)，数据与奖励入口见 [数据契约](docs/engineering/data-contract.md)。
+
+实现进度：已加入 [冻结声学头开发实验](experiments/fsc-frozen-audio-pilot.md)、
+[音频策略与 verl 接入审计](docs/engineering/audio-rl-integration.md)，以及成对正确性奖励。
+这些是基线/RL 研究组件；正式学界复现、跨任务泛化和 RL 提升仍需实验验证。

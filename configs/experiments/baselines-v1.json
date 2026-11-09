@@ -1,17 +1,45 @@
 {
   "protocol": "proposal/01-rl-research-protocol.md",
-  "seeds": [17, 29, 43],
+  "seeds": [
+    17,
+    29,
+    43
+  ],
   "dataset_release": "62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c",
   "selection_split": "valid",
   "test_for_selection": false,
   "routes": [
-    {"id": "asr-text", "status": "cpu-asr-smoke-passed-text-stage-pending", "text_model": null},
-    {"id": "reference-text", "status": "text-model-not-selected"},
-    {"id": "frozen-audio-head", "status": "cpu-feature-smoke-passed-head-training-pending"},
-    {"id": "frozen-decoder-head", "status": "cpu-feature-smoke-passed-head-training-pending"},
-    {"id": "audiojev", "status": "weights-available-official-reproduction-pending"},
-    {"id": "sfc", "status": "data-available-official-reproduction-pending"}
+    {
+      "id": "asr-text",
+      "status": "cpu-asr-smoke-passed-text-stage-pending",
+      "text_model": null
+    },
+    {
+      "id": "reference-text",
+      "status": "text-model-not-selected"
+    },
+    {
+      "id": "frozen-audio-head",
+      "status": "three-seed-small-development-pilot-complete-full-reproduction-pending"
+    },
+    {
+      "id": "frozen-decoder-head",
+      "status": "cpu-feature-smoke-passed-head-training-pending"
+    },
+    {
+      "id": "audiojev",
+      "status": "weights-available-official-reproduction-pending"
+    },
+    {
+      "id": "sfc",
+      "status": "data-available-official-reproduction-pending"
+    }
   ],
-  "rl_comparisons": ["sft", "grpo", "pair-grpo", "scheduling-rl"],
+  "rl_comparisons": [
+    "sft",
+    "grpo",
+    "pair-grpo",
+    "scheduling-rl"
+  ],
   "rl_launch_status": "blocked-by-audio-adapter-validation-and-free-NPU"
 }
