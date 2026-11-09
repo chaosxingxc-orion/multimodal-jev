@@ -5,6 +5,35 @@ from pathlib import Path
 from .baseline import atomic_json,file_hash,select_examples
 
 
+def initialization_identity(config):
+    """Require the same original-base/adapter/export lineage as the RL arm."""
+    from .policy_identity import checkpoint_identity,validate_adapter_export
+    adapter=config.get('initial_adapter');checkpoint=config.get('initial_checkpoint')
+    if bool(adapter)!=bool(checkpoint):
+        raise ValueError('SFT continuation requires initial_adapter and initial_checkpoint together')
+    if not adapter:return None
+    base_policy,base_files=checkpoint_identity(config['model_path'])
+    policy,files=checkpoint_identity(checkpoint)
+    adapter_files=validate_adapter_export(config['model_path'],checkpoint,adapter,
+                                         base_files=base_files,checkpoint_files=files)
+    saved=json.loads((Path(adapter)/'adapter_config.json').read_text())
+    if saved.get('r')!=config['lora_rank'] or saved.get('lora_alpha')!=config['lora_alpha']:
+        raise ValueError('SFT continuation LoRA rank/alpha differs from saved adapter')
+    return {'base_policy_id':base_policy,'base_files':base_files,'policy_id':policy,
+            'checkpoint_files':files,'adapter_files':adapter_files,
+            'optimizer_start':'fresh AdamW; initializer optimizer is not restored'}
+
+
+def initialize_adapter(base,config):
+    from peft import LoraConfig,get_peft_model,PeftModel
+    if config.get('initial_adapter'):
+        return PeftModel.from_pretrained(base,config['initial_adapter'],is_trainable=True)
+    modules=[name for name,_ in base.named_modules() if name.startswith('model.language_model.')
+             and name.rsplit('.',1)[-1] in {'q_proj','v_proj'}]
+    return get_peft_model(base,LoraConfig(r=config['lora_rank'],lora_alpha=config['lora_alpha'],
+                         lora_dropout=0.0,target_modules=modules,task_type='CAUSAL_LM',bias='none'))
+
+
 def select_training(config):
     from .task_schema import JevExample
     native=select_examples(config['train_manifest'],'train',config['groups_per_class'])
@@ -26,25 +55,26 @@ def select_training(config):
 
 def train(config,output):
     import torch
-    from peft import LoraConfig,get_peft_model,get_peft_model_state_dict,set_peft_model_state_dict
+    from peft import get_peft_model_state_dict,set_peft_model_state_dict
     from .asr import load_runtime
     from .audio_policy import teacher_forcing,load_audio
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
     if (output/'result.json').exists():raise FileExistsError('SFT completed')
+    initialization=initialization_identity(config)
     torch.set_num_threads(config['cpu_threads']);torch.manual_seed(config['seed'])
     rows=select_training(config)
     identity={'config':config,'manifest_sha256':file_hash(config['train_manifest']),
               'weights_sha256':file_hash(Path(config['model_path'])/'model.safetensors'),
               'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','asr.py','baseline.py')},
               'example_ids':[ex.example_id for ex in rows]}
+    if initialization is not None:
+        identity['initialization']=initialization
+        identity['base_files']=initialization['base_files']
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('SFT resume identity mismatch')
     atomic_json(output/'identity.json',identity)
     processor,model=load_runtime(config['model_path'],config['device'],config['dtype'])
-    modules=[name for name,_ in model.named_modules() if name.startswith('model.language_model.') and name.rsplit('.',1)[-1] in {'q_proj','v_proj'}]
-    lora=LoraConfig(r=config['lora_rank'],lora_alpha=config['lora_alpha'],lora_dropout=0.0,
-                    target_modules=modules,task_type='CAUSAL_LM',bias='none')
-    model=get_peft_model(model,lora)
+    model=initialize_adapter(model,config)
     # Eval disables all dropout while preserving autograd; same behavior as RL actor.
     model.eval()
     optimizer=torch.optim.AdamW([p for p in model.parameters() if p.requires_grad],lr=config['lr'],
@@ -76,7 +106,10 @@ def train(config,output):
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     result={'status':'passed','examples':len(rows),'source_groups':len({ex.metadata['source_group'] for ex in rows}),
             'updates':total,'history':history,'config':config,
-            'scope':'SFT initialization development run; adapter not yet evaluated or exported to vLLM',
+            'initialization':initialization,
+            'adapter_files':{p.name:file_hash(p) for p in sorted((output/'adapter').iterdir()) if p.is_file()},
+            'scope':('SFT continuation from shared initializer; not yet evaluated; matched-budget comparison requires a separately fixed schedule'
+                     if initialization else 'SFT initialization development run; adapter not yet evaluated or exported to vLLM'),
             'elapsed_this_session_seconds':time.monotonic()-start}
     atomic_json(output/'result.json',result)
     return result
