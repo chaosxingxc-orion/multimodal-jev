@@ -58,3 +58,42 @@ using the system CA succeeded; TLS verification stayed enabled. The first
 transfer failure and inventory script-name collision are retained in separate
 v1 directories. Redundant transfer blobs/tars (8.86 GB) were removed only after
 image identity verification; the loaded image and evidence remain available.
+
+## First real sampling completed; processor discrepancy
+
+The waveform run exited 0 and produced all 12 responses for six TRAIN views,
+80 response tokens including EOS. Hash and complete-group checks passed; see
+[sampling receipt](../docs/engineering/vllm-cpu-rollout-v1-result.json).
+Several Choice groups have unequal task rewards, so a nonzero GRPO signal is
+possible, but no learning result is established before actor verification.
+The original NGA-aligned actor is running on npu under the independent root
+vllm-cpu-actor-sft-v1, full batch of 12, four CPU threads, 48 GiB memory limit.
+Its detached supervisor checks the exact successful upstream Docker identity
+and rollout artifacts before launching; failed parity never triggers a retry.
+
+The complete vLLM processor check failed for waveform input: 186 feature frames
+versus HF's 185 on the first recording. Source inspection shows the inherited
+Qwen3Omni processor right-pads waveforms to the next hop boundary for caching.
+The earlier direct bundled-processor check did not exercise that transformation.
+The .02 actor probability threshold is unchanged, and this original trajectory
+is retained without altering its input or preprocessing after sampling.
+
+A separately identified actor_features option now passes the actor's exact
+valid log-mel frames through vLLM's precomputed feature contract. The initial
+feature-path check failed with StopIteration: upstream invokes a dummy audio
+placeholder through its waveform processor without a waveform before merging
+passthrough features. The narrow vllm_audio_features compatibility helper bypasses
+only that call when processor_data is empty and explicit audio features exist;
+waveform behavior remains upstream. This is a local compatibility change, not an
+unmodified official implementation. vllm-cpu-processor-parity-v3 checks it before
+any new feature-mode rollout. Existing schedules default to waveform.
+
+The v3 processor check exited 0: both tested audio lengths have exactly equal
+prompt token IDs and zero feature error (185/92 valid frames). See the
+[receipt](../docs/engineering/vllm-cpu-feature-parity-v3-receipt.json).
+The feature-mode engine run is now separately launched as
+multimodal-jev-vllm-cpu-rollout-sft-v2, ID
+778ca3dfe9512f8ba311aea9d4f3c50ac23623ea46144ecda88b0754123cd320.
+It retains the same weights, TRAIN views, sampling settings and resource bounds;
+only the explicitly recorded audio_input_mode and associated compatibility
+helper differ. Processor parity is not proof of model log-probability parity.

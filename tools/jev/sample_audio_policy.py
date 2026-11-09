@@ -18,6 +18,8 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--config',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True);args=p.parse_args()
     config=json.loads(args.config.read_text());validate_sampling(config['sampling'])
+    if config.get('audio_input_mode','waveform') not in {'waveform','actor_features'}:
+        raise ValueError('unsupported audio_input_mode')
     args.output.mkdir(parents=True,exist_ok=True)
     with (args.output/'run.lock').open('w') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -45,7 +47,7 @@ def main():
             atomic_json(args.output/'progress.json',{'phase':'engine_load','heartbeat_unix':time.time()})
             rollout=VllmAudioRollout(str(checkpoint),processor,policy_id,config['engine'])
             atomic_json(args.output/'progress.json',{'phase':'sampling','heartbeat_unix':time.time()})
-            records=rollout.sample(examples,audios,config['sampling'])
+            records=rollout.sample(examples,audios,config['sampling'],config.get('audio_input_mode','waveform'))
             with (args.output/'rollouts.jsonl').open('w') as handle:
                 for record in records:handle.write(json.dumps(asdict(record))+'\n')
             atomic_json(args.output/'result.json',{'status':'passed','policy_id':policy_id,

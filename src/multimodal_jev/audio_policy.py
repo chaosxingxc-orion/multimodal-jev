@@ -47,10 +47,25 @@ def hf_prompt(processor, example, audio):
     return processor(text=[text],audio=[audio],sampling_rate=16000,return_tensors='pt')
 
 
-def vllm_request(processor, example, audio):
+def vllm_request(processor, example, audio, input_mode='waveform'):
     # vLLM owns audio token expansion. Raw prompt text is intentional.
-    return {'prompt':encode_prompt(processor,example,audio),
-            'multi_modal_data':{'audio':(audio,16000)}}
+    prompt=encode_prompt(processor,example,audio)
+    if input_mode=='waveform':data=(audio,16000)
+    elif input_mode=='actor_features':
+        # vLLM's waveform path can pad to a hop boundary before extracting
+        # features. Use its supported feature-input contract to preserve the
+        # actor's exact acoustic evidence, without passing expanded token IDs.
+        import torch
+        batch=hf_prompt(processor,example,audio)
+        mask=batch['input_features_mask']
+        frames=int(mask.sum())
+        if mask.shape[0]!=1 or frames<1 or not torch.equal(
+                mask.bool(),torch.arange(mask.shape[-1])[None,:]<frames):
+            raise ValueError('single contiguous audio feature mask required')
+        data={'input_audio_features':batch['input_features'][0,:,:frames].contiguous(),
+              'audio_feature_lengths':torch.tensor([frames],dtype=torch.long)}
+    else:raise ValueError('unknown vLLM audio input mode')
+    return {'prompt':prompt,'multi_modal_data':{'audio':data}}
 
 
 def answer_ids(tokenizer, value):

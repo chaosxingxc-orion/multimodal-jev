@@ -70,12 +70,15 @@ class VllmAudioRollout:
         self.engine=LLM(model=checkpoint,tokenizer=checkpoint,trust_remote_code=False,
                         generation_config='vllm',limit_mm_per_prompt={'audio':1},**engine_options)
 
-    def sample(self,examples,audios,config):
+    def sample(self,examples,audios,config,audio_input_mode='waveform'):
         from vllm import SamplingParams
+        if audio_input_mode=='actor_features':
+            from .vllm_audio_features import enable_feature_passthrough
+            enable_feature_passthrough()
         validate_sampling(config)
         if not examples or len(examples)!=len(audios):raise ValueError('aligned examples/audio required')
         if len({ex.example_id for ex in examples})!=len(examples):raise ValueError('duplicate request identity')
-        requests=[vllm_request(self.processor,ex,audio) for ex,audio in zip(examples,audios)]
+        requests=[vllm_request(self.processor,ex,audio,audio_input_mode) for ex,audio in zip(examples,audios)]
         params=SamplingParams(**config,logprobs=0)
         outputs=self.engine.generate(requests,params,use_tqdm=False)
         return decode_outputs(outputs,examples,self.processor,self.policy_id,config['n'])

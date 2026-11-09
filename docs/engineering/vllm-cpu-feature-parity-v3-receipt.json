@@ -1,0 +1,74 @@
+{
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-processor-parity-v3",
+  "container_id": "086740aea6cde9bb1bafc5373d7a14f553ecff5825d11aa782ddcfeeb9652e0f",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T21:58:30.10505955Z",
+    "FinishedAt": "2026-11-09T21:59:42.44533531Z"
+  },
+  "result_sha256": "b733edd994424f9fa1c89843397557d2fedd05c6dddacf61783932c669e0ebb4",
+  "result": {
+    "status": "passed",
+    "results": [
+      {
+        "samples": 29722,
+        "prompt_tokens": 141,
+        "feature_shape": [
+          128,
+          185
+        ],
+        "max_feature_error": 0.0
+      },
+      {
+        "samples": 14861,
+        "prompt_tokens": 129,
+        "feature_shape": [
+          128,
+          92
+        ],
+        "max_feature_error": 0.0
+      }
+    ],
+    "audio_input_mode": "actor_features",
+    "scope": "actual vLLM multimodal processor and HF actor token/features parity; no engine or device execution"
+  },
+  "source_sha256": {
+    "src/multimodal_jev/sft.py": "99add73c671fe35d0a403ef77a3b20367ac0d507bebede6b79f449e219845917",
+    "src/multimodal_jev/task_schema.py": "039cec3560e6e7655d2638caff556db95d5ad998d02fc5d8099dee03cccf5b26",
+    "src/multimodal_jev/sfc.py": "dd36935226870fbd3236a95c62999eb8521fd6f7b0d854fe9a7e9474a0211236",
+    "src/multimodal_jev/sfc_audio.py": "00c258d470092462b31acea146c55ab672f8b6cd0bcbaeb7ec63b4c585f62b79",
+    "src/multimodal_jev/reference_policy.py": "7cde5ed0e532b0325f0d752a789825821f1662e3fb7f904ca016d37bc1346570",
+    "src/multimodal_jev/actor_state.py": "69d31733f188106969f86e8280c1f2518d3f439582f6a5c7fe067bb22a19dd02",
+    "src/multimodal_jev/__init__.py": "4683e26acaa4f4d35a43ac2dda24ec87a306b819a44cc2f52ff91dec867446d3",
+    "src/multimodal_jev/rl_update.py": "b5811a7e03746a7e8657009f1e881cd1784d263796f4cf2a1fe922ce65dab82a",
+    "src/multimodal_jev/audio_policy.py": "613b69626b323a56e4992264700e1b99708679ece3a562bf3f1b4d4a22f28bab",
+    "src/multimodal_jev/text_baseline.py": "7cc587cad16843c5ff6f5843d3a695d01fd79c962ebc52cc832722dc59b40cfb",
+    "src/multimodal_jev/compare_policies.py": "51cd59d921badac8600fde576518023235ce4d3d61fea554dc77a634b46e267d",
+    "src/multimodal_jev/asr.py": "8e7e7d72e5c1a4eea0bb6abe60a486d994099e9c5a2676e89b43792aa86f1a67",
+    "src/multimodal_jev/slurp.py": "acf9e3342488659d6103873e0d53c757bc840aae92e1f18cb7b8d4c8633470ca",
+    "src/multimodal_jev/baseline.py": "cf9e1ca0e901d0d0c694e920f7db6623e46151d767d11ea657cce9fc2f729927",
+    "src/multimodal_jev/evaluate.py": "e091780f57d126ac822663f2b5f8d43ef50866ceeea3a0dbb383281ff24e7d5c",
+    "src/multimodal_jev/rollout.py": "dc932c8d70cec7ac8d6324a4a80e8b037caa4f383eb7f8e7d0cd63757164157f",
+    "src/multimodal_jev/pair_reward.py": "87ea9981b43231321bad132c859a8fee6a8cb330c1f8c8e28e3702a6fa5ca63b",
+    "src/multimodal_jev/rl_preflight.py": "6dcd5633284b7022fed4e0de6bbb5242765da9c13455cbc8292b1c53775e0141",
+    "src/multimodal_jev/verl_audio.py": "12b9134b63a35aacaeff870608b6087491cc6ce0b3602981d65a63c9914ada85",
+    "src/multimodal_jev/rl_run.py": "7bca2867858e767112780df9c9d01e090ad8b8bf39f2c12735a02e8c5c240137",
+    "src/multimodal_jev/policy_evaluation.py": "b108a11a50f697053413e956069c00d83845ad8f8dd7ceeebf61e45c1b19cd44",
+    "src/multimodal_jev/vllm_audio_features.py": "26006fbc6838295a29265da56bec6464162270b5082c6bdf067be19b18cbb609",
+    "src/multimodal_jev/policy_identity.py": "2ea1c6ec41b0438fca65d9d76f8c06ec65459539c34733a5f38c2d8056042b36",
+    "src/multimodal_jev/reward.py": "2b033c8ebc1e46f6f5c4f32c368197b2aa286d9e0dfeaff31c896d5797889059",
+    "src/multimodal_jev/paired_rollout.py": "5a32edea984f3057c2ec037fd2905636ffb821dbfbef5751acb45154cb0a5d25",
+    "src/multimodal_jev/answers.py": "25473a9b3d1e267c70e656a625fca827db4a77dc8e1ed33967dc9fdfdf60d54a",
+    "src/multimodal_jev/mmar.py": "c1aaf4983ba7fb1c015c5a034c0ef30e242e96d97f2a0126967d17b5ef80e40a",
+    "tools/jev/vllm_processor_parity.py": "2e88e3ed27fe0648e89c8b34db0937acdffca2b5da815fbb2e605ce8f430bcb5"
+  },
+  "limits": "same CPU runtime processor parity only; cross-version actor probabilities and acoustic encoder equivalence require separate gates"
+}

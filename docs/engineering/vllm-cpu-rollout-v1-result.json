@@ -1,0 +1,115 @@
+{
+  "scope": "first actual vLLM CPU audio sampling; no optimizer update or efficacy established",
+  "observed_unix": 1794261379.5168085,
+  "container_id": "170f55682ff1202e28de69c94a6c8f20c34a866b9e6ec65b0e1442a08c08e148",
+  "image": "sha256:fdd4a28bb7515717e9ff1988669b4ae7c24588091cf0b73f05abff1f6ff6f87b",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T21:48:47.85006975Z",
+    "FinishedAt": "2026-11-09T21:53:08.03109797Z"
+  },
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-rollout-sft-v1",
+  "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+  "prompts": 6,
+  "responses": 12,
+  "response_tokens": 80,
+  "artifacts_sha256": {
+    "identity.json": "1cbecd6fe41b8e9aca54e1be42dd02d6e682b0fd21380c3301f870a9f41a790c",
+    "result.json": "89ef0a96741e7d6d6c5816b76ab1796681ffd5175cbd40c8a153c2acaf31014d",
+    "terminal.json": "d84a1b5443172d76d8ea001710053494ea66636b8a8586167a483f9f61120250",
+    "rollouts.jsonl": "c9929e974d9b115a06955590f686f7e6be514ea8e3ac6487a6a5726ec57429e1"
+  },
+  "rewards": [
+    0.0,
+    -0.1,
+    0.0,
+    -0.1,
+    0.0,
+    -0.1,
+    0.0,
+    1.1,
+    1.0,
+    1.0,
+    0.0,
+    0.0
+  ],
+  "reward_details": {
+    "mode": "pair-grpo",
+    "base_rewards": [
+      0.0,
+      -0.1,
+      0.0,
+      -0.1,
+      0.0,
+      -0.1,
+      0.0,
+      1.1,
+      1.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    "pair_bonuses": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "relations_by_replicate": {
+      "0": {
+        "invariance": {
+          "pairs": 1,
+          "both_correct": 0
+        },
+        "definition_discrimination": {
+          "pairs": 1,
+          "both_correct": 0
+        },
+        "candidate_coverage": {
+          "pairs": 1,
+          "both_correct": 0
+        },
+        "binary_discrimination": {
+          "pairs": 1,
+          "both_correct": 0
+        }
+      },
+      "1": {
+        "invariance": {
+          "pairs": 1,
+          "both_correct": 0
+        },
+        "definition_discrimination": {
+          "pairs": 1,
+          "both_correct": 0
+        },
+        "candidate_coverage": {
+          "pairs": 1,
+          "both_correct": 0
+        },
+        "binary_discrimination": {
+          "pairs": 1,
+          "both_correct": 0
+        }
+      }
+    }
+  },
+  "processor_warning": "full vLLM waveform registry yields 186 effective frames vs HF 185 on source recording; actor log-prob gate remains mandatory",
+  "actor_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v1"
+}

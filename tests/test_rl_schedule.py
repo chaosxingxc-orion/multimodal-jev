@@ -53,6 +53,7 @@ def test_schedule_requires_explicit_existing_actor_base(tmp_path):
 def test_two_iterations_preserve_actor_base_and_use_fresh_rollout(tmp_path,monkeypatch,adapted):
     from test_rl_preflight import fixture
     m=module();config=fixture(tmp_path,adapted=adapted)
+    config['audio_input_mode']='actor_features'
     original=json.loads(json.dumps(config));root=tmp_path/'schedule';root.mkdir()
     events=[];actors=[];rollouts=[];exports=[]
     def execute(tool,child,output):
@@ -70,6 +71,7 @@ def test_two_iterations_preserve_actor_base_and_use_fresh_rollout(tmp_path,monke
     m.run(config,root)
     assert events==['sample_audio_policy.py','update_audio_actor.py','export']*2
     assert rollouts[0]['checkpoint']==config['initial_checkpoint']
+    assert all(child['audio_input_mode']=='actor_features' for child in rollouts)
     assert rollouts[1]['checkpoint']==str(Path(exports[0][1])/'merged')
     assert all(child['model_path']==config['actor']['model_path'] for child in actors)
     assert actors[0]['initial_adapter']==config['initial_adapter']

@@ -28,3 +28,8 @@ def test_dropped_schema_is_rejected():
     class BadProcessor:
         def apply_chat_template(self,*args,**kwargs):return '<|audio_pad|>'
     with pytest.raises(ValueError,match='dropped'):encode_prompt(BadProcessor(),example(),object())
+
+
+def test_unknown_audio_input_mode_rejected():
+    with pytest.raises(ValueError,match='input mode'):
+        vllm_request(Processor(),example(),object(),'unsupported')

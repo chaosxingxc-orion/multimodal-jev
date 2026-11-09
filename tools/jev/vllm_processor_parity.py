@@ -15,8 +15,12 @@ from multimodal_jev.task_schema import JevExample,DecisionSchema
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--model',required=True);p.add_argument('--audio',required=True)
-    p.add_argument('--output',type=Path,required=True);args=p.parse_args()
+    p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--audio-input-mode',choices=['waveform','actor_features'],default='waveform');args=p.parse_args()
     torch.set_num_threads(4)
+    if args.audio_input_mode=='actor_features':
+        from multimodal_jev.vllm_audio_features import enable_feature_passthrough
+        enable_feature_passthrough()
     hf=Qwen3ASRProcessor.from_pretrained(args.model,local_files_only=True)
     cfg=ModelConfig(model=args.model,tokenizer=args.model,dtype='float32',max_model_len=2048,enforce_eager=True)
     processor=MULTIMODAL_REGISTRY.create_processor(cfg,tokenizer=hf.tokenizer)
@@ -24,7 +28,7 @@ def main():
     ex=JevExample('probe','train',args.audio,DecisionSchema('s','noul','Language change requested?'),True)
     results=[]
     for waveform in (audio,audio[:len(audio)//2]):
-        request=vllm_request(hf,ex,waveform)
+        request=vllm_request(hf,ex,waveform,args.audio_input_mode)
         raw_ids=hf.tokenizer.encode(request['prompt'],add_special_tokens=False)
         items=processor.info.get_data_parser().parse_mm_data(request['multi_modal_data'])
         processed=processor.apply(ProcessorInputs(prompt=raw_ids,mm_data_items=items),TimingContext(enabled=False))
@@ -39,7 +43,7 @@ def main():
         torch.testing.assert_close(features,reference,atol=1e-5,rtol=1e-5)
         results.append({'samples':len(waveform),'prompt_tokens':len(processed['prompt_token_ids']),
                         'feature_shape':list(features.shape),'max_feature_error':diff})
-    receipt={'status':'passed','results':results,'scope':'actual vLLM multimodal processor and HF actor token/features parity; no engine or device execution'}
+    receipt={'status':'passed','results':results,'audio_input_mode':args.audio_input_mode,'scope':'actual vLLM multimodal processor and HF actor token/features parity; no engine or device execution'}
     with args.output.open('x') as handle:json.dump(receipt,handle,indent=2)
     print(json.dumps(receipt,indent=2))
 

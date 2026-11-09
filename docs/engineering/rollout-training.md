@@ -5,6 +5,13 @@ waveform, requests chosen-token log-probs and keeps every sampled token includin
 EOS. It has no alternative backend fallback. Replicate IDs, termination reason,
 checkpoint identity and log-probs are persisted. Invalid or incomplete groups fail.
 
+The explicit actor_features mode preserves HF actor log-mel inputs through
+vLLM's feature interface. It uses a narrowly scoped local processor workaround,
+with real registry parity verified on two audio lengths. Default waveform mode
+is unchanged; each rollout records its mode in config. Full processor inspection
+found hop-boundary padding absent from the earlier direct-processor check; see
+the CPU integration protocol for both failures and the successful feature check.
+
 `tools/jev/sample_audio_policy.py` is the runnable sampling entrypoint. Example
 configuration: `configs/experiments/vllm-audio-rollout-smoke.json` (TRAIN only).
 Run only on allocated NPU resources using the pinned runtime plus this source
@@ -37,12 +44,13 @@ the full real-vLLM schedule is not yet verified.
 
 Real HF batched actor, audio collation and verl loss components passed earlier
 CPU checks. New rollout parsing and stale-policy handling have CPU unit tests.
-No claim of actual `LLM.generate` execution or `update_actor` end-to-end success
-is made yet: the available Ascend devices are occupied.
+Actual ARM CPU `LLM.generate` now completed six TRAIN prompts / 12 responses;
+the actor probability gate and update are running separately. Ascend devices
+remain occupied; no NPU execution or complete two-iteration result is claimed.
 
 An isolated official vLLM 0.30 ARM CPU image is now verified and a real engine
-initialization has started under the [CPU integration protocol](../../experiments/vllm-cpu-integration.md).
-No successful sampling or update is established by that startup. Its backend
+sampling completed under the [CPU integration protocol](../../experiments/vllm-cpu-integration.md).
+The [sampling receipt](vllm-cpu-rollout-v1-result.json) records complete artifacts. Its backend
 dependency differences are recorded and retain the same numerical parity gate.
 
 Full vLLM ModelConfig/registry inspection in the NPU-built image tries to query

@@ -84,6 +84,7 @@ def run(config,root):
         atomic_json(root/'progress.json',{'iteration':i,'phase':'rollout','heartbeat_unix':time.time()})
         rollout_config={'checkpoint':checkpoint,'manifest':config['manifest'],'example_ids':example_ids,
                         'sampling':{**config['sampling'],'seed':config['seed']+i},'engine':config['engine']}
+        if 'audio_input_mode' in config:rollout_config['audio_input_mode']=config['audio_input_mode']
         execute('sample_audio_policy.py',rollout_config,stage/'rollout')
         # The actor's immutable base is explicit in the actor section.  The
         # rollout checkpoint may be a merged export from the previous

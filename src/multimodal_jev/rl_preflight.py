@@ -22,6 +22,8 @@ def validate_schedule(config):
         if not path.is_dir() or not (path/'config.json').is_file():
             raise ValueError(f'{name} checkpoint is unavailable: {path}')
     validate_sampling(config['sampling'])
+    if config.get('audio_input_mode','waveform') not in {'waveform','actor_features'}:
+        raise ValueError('unsupported audio_input_mode')
     if type(config.get('seed')) is not int or config['seed']<0:
         raise ValueError('nonnegative integer schedule seed required')
     if config.get('reward_mode') not in {'grpo','pair-grpo'}:
