@@ -66,6 +66,9 @@ The reproducible ASR-only development baselines are defined by
 transcriptions, token IDs, per-record hashes and corpus WER against the frozen
 reference transcript metadata. These runs measure ASR error propagation only;
 they do not feed references into decisions or claim an ASR-to-text Jev score.
+Completed receipts and measurements are in
+[asr-baseline-v1-receipt.json](asr-baseline-v1-receipt.json): FSC WER 14.56%
+and SLURP WER 17.90% on the fixed development manifests.
 
 Long-run handles:
 
