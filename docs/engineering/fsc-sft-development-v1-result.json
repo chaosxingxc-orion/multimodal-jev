@@ -1,0 +1,451 @@
+{
+  "observed_unix": 1794263803.6847591,
+  "scope": "fixed FSC development selection after SFT initialization; not RL, matched continuation, full-valid or cross-task efficacy",
+  "comparison_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sft-development-comparison-v1/run/fsc/comparison.json",
+  "comparison_sha256": "1eae8b0b6033f9ff113a5c190d220cc023e3800aa4155b7b87b59d959fb2016a",
+  "containers": {
+    "base": {
+      "id": "714ea68c22684c9eb9d17c356707aefdc0863268db8af6e17f11b93a64082410",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T16:59:57.92291409Z",
+        "FinishedAt": "2026-11-09T18:51:26.27038109Z"
+      }
+    },
+    "candidate": {
+      "id": "e09d71d9c6bfdfe913d957bf44c900d4379e2633bec423db4f48907651aed5c5",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T20:50:56.31182174Z",
+        "FinishedAt": "2026-11-09T22:33:43.52198477Z"
+      }
+    }
+  },
+  "candidate_artifacts": {
+    "identity.json": "2340b316fdc1d2f45e155de716a03b19698460a18a41ea82951e21d239a27c0e",
+    "terminal.json": "ad6aa7140f480548b35d818108a49cdf511a33177ca8827414c72dc03cfae915",
+    "predictions.jsonl": "755a7cd75202c3b736d095bcab3011d8e6c6f6f2290b3531481538e0888538fc",
+    "metrics.json": "a71dea1519b3425a83e0b331f0fc7336da1252270fe2ac622c8feb4f8d528e57"
+  },
+  "by_variant": {
+    "all": {
+      "count": 186,
+      "correct": 80,
+      "valid": 182,
+      "answered": 99,
+      "answered_correct": 50,
+      "unknown_targets": 31,
+      "refusals": 87,
+      "correct_refusals": 30,
+      "missing": 0,
+      "format_valid": 186,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.43010752688172044,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.978494623655914,
+      "coverage": 0.532258064516129,
+      "risk": 0.494949494949495,
+      "unknown_precision": 0.3448275862068966,
+      "unknown_recall": 0.967741935483871,
+      "brier": null
+    },
+    "native": {
+      "count": 31,
+      "correct": 5,
+      "valid": 29,
+      "answered": 10,
+      "answered_correct": 5,
+      "unknown_targets": 0,
+      "refusals": 21,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 31,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.16129032258064516,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.9354838709677419,
+      "coverage": 0.3225806451612903,
+      "risk": 0.5,
+      "unknown_precision": 0.0,
+      "unknown_recall": null,
+      "brier": null
+    },
+    "permutation": {
+      "count": 31,
+      "correct": 4,
+      "valid": 30,
+      "answered": 12,
+      "answered_correct": 4,
+      "unknown_targets": 0,
+      "refusals": 19,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 31,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.12903225806451613,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.967741935483871,
+      "coverage": 0.3870967741935484,
+      "risk": 0.6666666666666666,
+      "unknown_precision": 0.0,
+      "unknown_recall": null,
+      "brier": null
+    },
+    "rebind": {
+      "count": 31,
+      "correct": 7,
+      "valid": 30,
+      "answered": 14,
+      "answered_correct": 7,
+      "unknown_targets": 0,
+      "refusals": 17,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 31,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.22580645161290322,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.967741935483871,
+      "coverage": 0.45161290322580644,
+      "risk": 0.5,
+      "unknown_precision": 0.0,
+      "unknown_recall": null,
+      "brier": null
+    },
+    "missing_candidate": {
+      "count": 31,
+      "correct": 30,
+      "valid": 31,
+      "answered": 1,
+      "answered_correct": 0,
+      "unknown_targets": 31,
+      "refusals": 30,
+      "correct_refusals": 30,
+      "missing": 0,
+      "format_valid": 31,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.967741935483871,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 1.0,
+      "coverage": 0.03225806451612903,
+      "risk": 1.0,
+      "unknown_precision": 1.0,
+      "unknown_recall": 0.967741935483871,
+      "brier": null
+    },
+    "noul.True": {
+      "count": 31,
+      "correct": 8,
+      "valid": 31,
+      "answered": 31,
+      "answered_correct": 8,
+      "unknown_targets": 0,
+      "refusals": 0,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 31,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.25806451612903225,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 1.0,
+      "coverage": 1.0,
+      "risk": 0.7419354838709677,
+      "unknown_precision": null,
+      "unknown_recall": null,
+      "brier": null
+    },
+    "noul.False": {
+      "count": 31,
+      "correct": 26,
+      "valid": 31,
+      "answered": 31,
+      "answered_correct": 26,
+      "unknown_targets": 0,
+      "refusals": 0,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 31,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.8387096774193549,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 1.0,
+      "coverage": 1.0,
+      "risk": 0.16129032258064516,
+      "unknown_precision": null,
+      "unknown_recall": null,
+      "brier": null
+    }
+  },
+  "pairs": {
+    "permutation": {
+      "groups": 31,
+      "both_correct": 2,
+      "both_correct_rate": 0.06451612903225806,
+      "semantic_equal": 2
+    },
+    "rebind": {
+      "groups": 31,
+      "both_correct": 4,
+      "both_correct_rate": 0.12903225806451613,
+      "semantic_equal": 7
+    },
+    "missing_candidate": {
+      "groups": 31,
+      "both_correct": 4,
+      "both_correct_rate": 0.12903225806451613,
+      "semantic_equal": null
+    },
+    "noul": {
+      "groups": 31,
+      "both_correct": 3,
+      "both_correct_rate": 0.0967741935483871
+    }
+  },
+  "comparison": {
+    "valid/format": {
+      "count": 186,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 1.0,
+      "delta": 1.0,
+      "delta_ci95": [
+        1.0,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/missing_candidate": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.967741935483871,
+      "delta": 0.967741935483871,
+      "delta_ci95": [
+        0.8888888888888888,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/missing_candidate/null": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.967741935483871,
+      "delta": 0.967741935483871,
+      "delta_ci95": [
+        0.8888888888888888,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.16129032258064516,
+      "delta": 0.16129032258064516,
+      "delta_ci95": [
+        0.0625,
+        0.23529411764705882
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native/present": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.16129032258064516,
+      "delta": 0.16129032258064516,
+      "delta_ci95": [
+        0.0625,
+        0.23529411764705882
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/noul.False": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8387096774193549,
+      "delta": 0.8387096774193549,
+      "delta_ci95": [
+        0.7142857142857143,
+        0.9167229729729727
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/noul.False/present": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8387096774193549,
+      "delta": 0.8387096774193549,
+      "delta_ci95": [
+        0.7142857142857143,
+        0.9167229729729727
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/noul.True": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.25806451612903225,
+      "delta": 0.25806451612903225,
+      "delta_ci95": [
+        0.19351736972704714,
+        0.36363636363636365
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/noul.True/present": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.25806451612903225,
+      "delta": 0.25806451612903225,
+      "delta_ci95": [
+        0.19351736972704714,
+        0.36363636363636365
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.missing_candidate": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.12903225806451613,
+      "delta": 0.12903225806451613,
+      "delta_ci95": [
+        0.034482758620689655,
+        0.21052631578947367
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.noul": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0967741935483871,
+      "delta": 0.0967741935483871,
+      "delta_ci95": [
+        0.0,
+        0.18524305555555523
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.permutation": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.06451612903225806,
+      "delta": 0.06451612903225806,
+      "delta_ci95": [
+        0.0,
+        0.16
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.rebind": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.12903225806451613,
+      "delta": 0.12903225806451613,
+      "delta_ci95": [
+        0.02857142857142857,
+        0.22730519480519462
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.12903225806451613,
+      "delta": 0.12903225806451613,
+      "delta_ci95": [
+        0.03225806451612903,
+        0.23529411764705882
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation/present": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.12903225806451613,
+      "delta": 0.12903225806451613,
+      "delta_ci95": [
+        0.03225806451612903,
+        0.23529411764705882
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.22580645161290322,
+      "delta": 0.22580645161290322,
+      "delta_ci95": [
+        0.0625,
+        0.35555555555555557
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind/present": {
+      "count": 31,
+      "clusters": 8,
+      "base_rate": 0.0,
+      "candidate_rate": 0.22580645161290322,
+      "delta": 0.22580645161290322,
+      "delta_ci95": [
+        0.0625,
+        0.35555555555555557
+      ],
+      "bootstrap_draws": 2000
+    }
+  },
+  "noul_balanced_accuracy": 0.5483870967741935,
+  "noul_constant_boolean_accuracy": 0.5,
+  "native_refusal_rate": 0.6774193548387096,
+  "interpretation": "Formatting learned, native choice accuracy remains low, missing-candidate success coexists with substantial false refusals; Noul leans false and only 3/31 paired binary decisions are both correct. No RL or generalization result."
+}

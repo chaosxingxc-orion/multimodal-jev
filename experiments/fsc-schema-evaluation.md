@@ -49,3 +49,19 @@ aligned predictions and matching decoding protocol are required. Report each
 variant and paired both-correct separately; views of one recording are never
 resampled independently. Small dev-cluster intervals are descriptive and do not
 establish three-seed RL gains or final generalization.
+# Completed initializer development evaluation
+
+The SFT initializer evaluation exited 0 with all 186 responses from the fixed
+31-recording, eight-speaker development selection. Independent common-scorer
+recalculation and 2,000-draw speaker bootstrap match the saved comparison.
+See [result receipt](../docs/engineering/fsc-sft-development-v1-result.json).
+
+JSON format is valid for 186/186 versus base 0/186. Native Choice is 5/31,
+permutation 4/31, rebind 7/31 and missing-candidate rejection 30/31. Native
+false refusals are 21/31 (67.7%), so strong rejection coverage alone is not
+semantic success. Paired both-correct rates are 2/31 for permutation and 4/31
+for rebind. Noul positive/negative correctness is 8/31 and 26/31; balanced
+accuracy is 54.84%, versus 50% for a constant Boolean, with only 3/31 source
+groups correct on both questions. Native accuracy's descriptive speaker
+bootstrap interval is 6.25–23.53%; this small selected dev set is not full-valid
+performance, a test result, or evidence of RL improvement.
