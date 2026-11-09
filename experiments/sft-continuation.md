@@ -33,3 +33,10 @@ multimodal-jev experiments directory. See
 The static identity check matches the RL initializer policy
 e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c;
 actual forward/backward results are pending.
+
+The probe has now exited 0. Initial merged-versus-adapter maximum log-probability
+error is 0.00008928775787353516, within the registered gate. A real supervised
+step changed LoRA tensors with finite nonzero gradients; the original initializer
+hashes remained unchanged. See [result receipt](../docs/engineering/sft-continuation-v1-result.json).
+This establishes loading and one-step execution, not a complete continuation
+training run or SFT-versus-RL efficacy comparison.

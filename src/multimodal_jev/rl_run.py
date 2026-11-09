@@ -102,7 +102,7 @@ def train(config,output):
               'manifest_sha256':rollout['manifest_sha256'],'example_ids':[ex.example_id for ex in examples],
               'adapter_files':({p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()} if adapter else None),
               'source_sha256':{name:file_hash(Path(__file__).with_name(name)) for name in
-                              ('rl_run.py','rl_update.py','reference_policy.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py')}}
+                              ('rl_run.py','rl_update.py','reference_policy.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py','training_budget.py')}}
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('actor retry identity mismatch')
     atomic_json(output/'identity.json',identity)

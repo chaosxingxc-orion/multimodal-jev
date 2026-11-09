@@ -182,3 +182,10 @@ not general equivalence across audio lengths, devices or batches. The original
 base plus SFT adapter actor v4 has independently started on npu (CPU only),
 container 22122760bb619e6b5fccce99a61cd108649ccf6adafd1c911e870dc03beee934.
 Its full-batch parity gate, update/export and fresh second iteration are pending.
+
+The full-batch adapter actor v4 has now passed its independent pre-update gate:
+maximum error 0.000056624412536621094 across all 12 responses, with no threshold
+change. See [actor parity receipt](../docs/engineering/vllm-feature-actor-v4-parity.json).
+It has entered the gradient forward; optimizer completion, export and second
+iteration remain pending. This is stronger evidence than the merged single-row
+audit, but still not a completed RL update or efficacy result.

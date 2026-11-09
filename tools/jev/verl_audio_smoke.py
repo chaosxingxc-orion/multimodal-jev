@@ -11,7 +11,8 @@ from pathlib import Path
 import torch
 from transformers import Qwen3ASRProcessor
 from verl.utils.model import extract_multi_modal_inputs
-from multimodal_jev.audio_policy import load_audio,answer_ids
+from multimodal_jev.audio_policy import load_audio,answer_ids,hf_prompt
+from multimodal_jev.training_budget import batch_budget
 from multimodal_jev.task_schema import JevExample,DecisionSchema
 from multimodal_jev.verl_audio import make_batch,compute_advantages,policy_loss
 
@@ -40,6 +41,16 @@ def main():
     mm=extract_multi_modal_inputs(batch.non_tensor_batch['multi_modal_inputs'])
     assert mm['input_features'].shape[0]==4 and mm['input_features_mask'].shape[0]==4
     assert mm['input_features_mask'][2].sum()<mm['input_features_mask'][0].sum()
+    response_lengths=mask.sum(-1).tolist()
+    prompt_lengths=(batch.batch['attention_mask'].sum(-1)-mask.sum(-1)).tolist()
+    audio_lengths=[int(x['input_features_mask'].sum()) for x in batch.non_tensor_batch['multi_modal_inputs']]
+    budget=batch_budget(prompt_lengths,response_lengths,audio_lengths,gradient_passes=1,
+                        no_grad_passes=1,optimizer_steps=1)
+    independent=[hf_prompt(processor,e,w) for e,w in zip(examples,[audio,audio,audio[:len(audio)//2],audio[:len(audio)//2]])]
+    assert budget['prompt_tokens']==sum(p['input_ids'].shape[-1] for p in independent)
+    assert budget['response_tokens']==sum(map(len,ids))
+    assert budget['audio_frames']==sum(int(p['input_features_mask'].sum()) for p in independent)
+    assert budget['audio_frames']<mm['input_features_mask'].numel()
     new=batch.batch['old_log_probs'].detach().clone().requires_grad_(True)
     loss,metrics=policy_loss(batch,new);loss.backward()
     assert torch.isfinite(loss) and torch.isfinite(new.grad).all()
@@ -63,6 +74,7 @@ def main():
             raise AssertionError('invalid prompt group accepted')
     assert checks==2
     report={'status':'passed' ,'batch_size':len(examples),'prompt_groups':2,'replicates_per_prompt':2,
+            'budget_fixture':budget,'budget_excludes_padding':True,
             'actor_input_shape':list(batch.batch['input_ids'].shape),
             'audio_features_shape':list(mm['input_features'].shape),
             'reward_centering_per_prompt':True,'padding_gradient_zero':True,

@@ -75,6 +75,13 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     # GRPO grouping/normalization happens on the complete batch. Only model
     # forwards are split; prompt replicates need not fit in one microbatch.
     total_tokens=int(batch.batch['response_mask'].sum())
+    from .training_budget import batch_budget
+    response_lengths=batch.batch['response_mask'].sum(-1).tolist()
+    prompt_lengths=(batch.batch['attention_mask'].sum(-1)-batch.batch['response_mask'].sum(-1)).tolist()
+    audio_lengths=[int(mm['input_features_mask'].sum()) for mm in batch.non_tensor_batch['multi_modal_inputs']]
+    def budget(gradient_passes,optimizer_steps):
+        return batch_budget(prompt_lengths,response_lengths,audio_lengths,gradient_passes=gradient_passes,
+                            no_grad_passes=1+int(reference_model is not None),optimizer_steps=optimizer_steps)
     def chunks():
         for begin in range(0,len(records),micro_batch_size):
             part=batch[begin:begin+micro_batch_size]
@@ -116,7 +123,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     # regularizer may still act on an actor that has drifted from its reference.
     if not batch.batch['advantages'].any() and reference_model is None:
         return {'status':'zero_advantage','updated':False,'rewards':rewards,'max_logprob_error':error,
-                'reward_details':reward_details,'micro_batch_size':micro_batch_size}
+                'reward_details':reward_details,'micro_batch_size':micro_batch_size,'training_budget':budget(0,0)}
     optimizer.zero_grad(set_to_none=True)
     total_loss=0.;metrics={}
     for index,(part,kwargs) in enumerate(chunks()):
@@ -143,11 +150,13 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     norm=torch.nn.utils.clip_grad_norm_(params,max_grad_norm,error_if_nonfinite=True)
     if norm==0:
         return {'status':'zero_gradient','updated':False,'loss':total_loss,'grad_norm':0.,
+                'training_budget':budget(1,0),
                 'rewards':rewards,'metrics':metrics,'max_logprob_error':error,'reward_details':reward_details,
                 'micro_batch_size':micro_batch_size,'kl_coefficient':kl_coefficient,'kl_estimator':kl_estimator}
     optimizer.step()
     report('optimizer_step',grad_norm=float(norm),loss=total_loss)
     return {'status':'updated','updated':True,'loss':total_loss,'grad_norm':float(norm),
+            'training_budget':budget(1,1),
             'rewards':rewards,'max_logprob_error':error,'metrics':metrics,'reward_details':reward_details,
             'policy_id':policy_id,'micro_batch_size':micro_batch_size,'response_tokens':total_tokens,
             'kl_coefficient':kl_coefficient,'kl_estimator':kl_estimator if reference_model is not None else None,

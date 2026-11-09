@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib,json,random,time
 from pathlib import Path
 from .baseline import atomic_json,file_hash,select_examples
+from .training_budget import batch_budget,sum_budgets
 
 
 def initialization_identity(config):
@@ -65,7 +66,7 @@ def train(config,output):
     rows=select_training(config)
     identity={'config':config,'manifest_sha256':file_hash(config['train_manifest']),
               'weights_sha256':file_hash(Path(config['model_path'])/'model.safetensors'),
-              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','asr.py','baseline.py')},
+              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','asr.py','baseline.py','training_budget.py','policy_identity.py')},
               'example_ids':[ex.example_id for ex in rows]}
     if initialization is not None:
         identity['initialization']=initialization
@@ -87,10 +88,13 @@ def train(config,output):
     start=time.monotonic();total=(len(rows)+config['accumulate']-1)//config['accumulate']
     for index in range(step,total):
         subset=rows[index*config['accumulate']:(index+1)*config['accumulate']]
-        optimizer.zero_grad(set_to_none=True);losses=[]
+        optimizer.zero_grad(set_to_none=True);losses=[];budgets=[]
         for ex in subset:
             if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('source audio changed')
-            inputs,_=teacher_forcing(processor,ex,load_audio(ex.audio))
+            inputs,boundary=teacher_forcing(processor,ex,load_audio(ex.audio))
+            budgets.append(batch_budget([boundary],[int((inputs['labels']!=-100).sum())],
+                           [int(inputs['input_features_mask'].sum())],gradient_passes=1,
+                           no_grad_passes=0,optimizer_steps=0))
             inputs={k:v.to(device=model.device,dtype=model.dtype if v.is_floating_point() else v.dtype) for k,v in inputs.items()}
             loss=model(**inputs,use_cache=False).loss
             if not torch.isfinite(loss):raise ValueError('nonfinite SFT loss')
@@ -98,7 +102,9 @@ def train(config,output):
             atomic_json(output/'progress.json',{'step':index,'total_steps':total,'phase':'backward','examples_in_step':len(losses),'heartbeat_unix':time.time()})
         norm=torch.nn.utils.clip_grad_norm_([p for p in model.parameters() if p.requires_grad],1.,error_if_nonfinite=True)
         optimizer.step()
-        history.append({'step':index+1,'loss':sum(losses)/len(losses),'gradient_norm':float(norm)})
+        budget=sum_budgets(budgets);budget['optimizer_steps']=1
+        history.append({'step':index+1,'loss':sum(losses)/len(losses),'gradient_norm':float(norm),
+                        'budget':budget})
         state={'step':index+1,'adapter':get_peft_model_state_dict(model),'optimizer':optimizer.state_dict(),
                'history':history,'rng':torch.get_rng_state()}
         temp=output/'resume.tmp';torch.save(state,temp);temp.replace(checkpoint)
@@ -106,6 +112,7 @@ def train(config,output):
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     result={'status':'passed','examples':len(rows),'source_groups':len({ex.metadata['source_group'] for ex in rows}),
             'updates':total,'history':history,'config':config,
+            'training_budget':sum_budgets(row['budget'] for row in history),
             'initialization':initialization,
             'adapter_files':{p.name:file_hash(p) for p in sorted((output/'adapter').iterdir()) if p.is_file()},
             'scope':('SFT continuation from shared initializer; not yet evaluated; matched-budget comparison requires a separately fixed schedule'
