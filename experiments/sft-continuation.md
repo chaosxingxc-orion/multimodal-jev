@@ -40,3 +40,20 @@ step changed LoRA tensors with finite nonzero gradients; the original initialize
 hashes remained unchanged. See [result receipt](../docs/engineering/sft-continuation-v1-result.json).
 This establishes loading and one-step execution, not a complete continuation
 training run or SFT-versus-RL efficacy comparison.
+
+## Explicit schedule and full-runner probe
+
+SFT now accepts explicit batches with the same example-ID/update-boundary format
+as the RL scheduler. It retains the supplied order, permits repeated exposures
+across updates, rejects duplicates within a batch and admits only TRAIN rows.
+Do not simultaneously set legacy accumulate/groups_per_class options.
+Legacy initialization keeps its original shuffled class-balanced selection.
+
+Register a two-update full-runner probe before execution: the same shortest
+TRAIN recording's native view, then its noul.False view, one example per update,
+seed17, unchanged initializer and LR 1e-5. The configuration is
+configs/experiments/sft-continuation-runner-smoke.json. Require successful terminal,
+two history entries, two optimizer steps, effective-token ledger persisted both
+in result and resume checkpoint, saved optimizer state, and changed adapter hash.
+This is full-runner/persistence validation, not a matched SFT/RL experiment or an
+interrupted-process resume test. Existing live jobs keep their original snapshots.

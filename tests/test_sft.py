@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 import pytest
-from multimodal_jev.sft import select_training,initialization_identity,initialize_adapter
+from multimodal_jev.sft import select_training,initialization_identity,initialize_adapter,training_batches
 from multimodal_jev.task_schema import Candidate,DecisionSchema,JevExample
 
 
@@ -21,6 +21,23 @@ def test_training_selection_contains_complete_views_from_train(tmp_path):
     selected=select_training(config)
     assert len(selected)==12 and len({x.metadata['source_group'] for x in selected})==2
     assert select_training(config)==selected
+    assert [len(batch) for batch in training_batches({**config,'accumulate':5})]==[5,5,2]
+
+
+def test_explicit_sft_schedule_preserves_order_and_repeated_exposures(tmp_path):
+    from test_rl_preflight import fixture
+    cfg=fixture(tmp_path)
+    path=Path(cfg['manifest']);first=json.loads(path.read_text())
+    second={**first,'example_id':'other'}
+    path.write_text(json.dumps(first)+'\n'+json.dumps(second)+'\n')
+    config={'train_manifest':str(path),'batches':[['other','ex'],['ex']]}
+    batches=training_batches(config)
+    assert [[e.example_id for e in batch] for batch in batches]==config['batches']
+    with pytest.raises(ValueError,match='also set'):training_batches({**config,'accumulate':2})
+    with pytest.raises(ValueError,match='duplicate'):training_batches({**config,'batches':[['ex','ex']]})
+    with pytest.raises(ValueError,match='missing'):training_batches({**config,'batches':[['absent']]})
+    second['split']='valid';path.write_text(json.dumps(first)+'\n'+json.dumps(second)+'\n')
+    with pytest.raises(ValueError,match='train only'):training_batches(config)
 
 
 def continuation_fixture(tmp_path):

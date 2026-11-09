@@ -54,6 +54,36 @@ def select_training(config):
     return rows
 
 
+def training_batches(config):
+    """Explicit update boundaries for comparisons, or legacy initialization."""
+    from .task_schema import JevExample
+    if 'batches' not in config:
+        size=config.get('accumulate')
+        if type(size) is not int or size<1:raise ValueError('positive integer accumulate required')
+        rows=select_training(config)
+        return [rows[i:i+size] for i in range(0,len(rows),size)]
+    if 'accumulate' in config or 'groups_per_class' in config:
+        raise ValueError('explicit batches cannot also set accumulate or groups_per_class')
+    schedule=config['batches']
+    if not isinstance(schedule,list) or not schedule:raise ValueError('nonempty batch schedule required')
+    for ids in schedule:
+        if not isinstance(ids,list) or not ids or any(not isinstance(uid,str) or not uid for uid in ids):
+            raise ValueError('nonempty example IDs required in each batch')
+        if len(ids)!=len(set(ids)):raise ValueError('duplicate ID within SFT batch')
+    wanted={uid for ids in schedule for uid in ids};selected={}
+    with Path(config['train_manifest']).open() as handle:
+        for line in handle:
+            row=json.loads(line);uid=row['example_id']
+            if uid not in wanted:continue
+            if uid in selected:raise ValueError('duplicate manifest ID')
+            ex=JevExample.from_record(row)
+            if ex.split!='train':raise ValueError('SFT admits train only')
+            selected[uid]=ex
+    if set(selected)!=wanted:raise ValueError('SFT selection missing from manifest')
+    # Reuse across different updates is intentional and retained in the ledger.
+    return [[selected[uid] for uid in ids] for ids in schedule]
+
+
 def train(config,output):
     import torch
     from peft import get_peft_model_state_dict,set_peft_model_state_dict
@@ -63,11 +93,12 @@ def train(config,output):
     if (output/'result.json').exists():raise FileExistsError('SFT completed')
     initialization=initialization_identity(config)
     torch.set_num_threads(config['cpu_threads']);torch.manual_seed(config['seed'])
-    rows=select_training(config)
+    batches=training_batches(config);rows=[ex for batch in batches for ex in batch]
     identity={'config':config,'manifest_sha256':file_hash(config['train_manifest']),
               'weights_sha256':file_hash(Path(config['model_path'])/'model.safetensors'),
               'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','asr.py','baseline.py','training_budget.py','policy_identity.py')},
-              'example_ids':[ex.example_id for ex in rows]}
+              'example_ids':[ex.example_id for ex in rows],
+              'batch_example_ids':[[ex.example_id for ex in batch] for batch in batches]}
     if initialization is not None:
         identity['initialization']=initialization
         identity['base_files']=initialization['base_files']
@@ -85,9 +116,9 @@ def train(config,output):
         saved=torch.load(checkpoint,map_location='cpu',weights_only=True)
         set_peft_model_state_dict(model,saved['adapter']);optimizer.load_state_dict(saved['optimizer'])
         step=saved['step'];history=saved['history'];torch.set_rng_state(saved['rng'])
-    start=time.monotonic();total=(len(rows)+config['accumulate']-1)//config['accumulate']
+    start=time.monotonic();total=len(batches)
     for index in range(step,total):
-        subset=rows[index*config['accumulate']:(index+1)*config['accumulate']]
+        subset=batches[index]
         optimizer.zero_grad(set_to_none=True);losses=[];budgets=[]
         for ex in subset:
             if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('source audio changed')
