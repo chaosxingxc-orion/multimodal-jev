@@ -57,3 +57,15 @@ therefore survive as magnitude differences under centering. This establishes
 an objective-scale effect on this batch; no actor was updated by this audit and
 no semantic improvement or preferred normalization follows from it. The n4
 audit and matched training comparisons remain separate experiments.
+
+## Completed n4 diagnosis
+
+The [n4 receipt](../docs/engineering/pair-advantage-n4-v1-result.json) verifies
+successful sampler and audit container exits, all 48 real responses, and their
+content hash. Three responses receive nonzero pair bonuses. Standardized
+advantages still differ by at most 3.5762786865234375e-7 with zero sign changes;
+the center-only maximum difference is 0.1499999761581421. Increasing n alone did
+not provide a material standardized algorithm contrast on these recordings.
+Retain this negative finding. It does not establish equivalence across other
+recordings or policies, and the center-only scale difference does not establish
+learning or cross-task transfer. No training arm is selected from this audit.
