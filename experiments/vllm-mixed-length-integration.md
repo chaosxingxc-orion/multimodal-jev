@@ -38,3 +38,11 @@ vllm-mixed-probability-audit-v1 validates that exact upstream identity and all
 24 outputs before launching the read-only HF audit on npu CPU. The full-batch
 mixed actor is not launched yet. See
 [launch receipt](../docs/engineering/vllm-mixed-length-v1-launch.json).
+
+The mixed-length engine exited 0 with all 12 prompts, 24 responses and 153
+response tokens. Model/manifest/audio/response identities and complete groups
+passed validation. See [sampling receipt](../docs/engineering/vllm-mixed-rollout-v1-result.json).
+The read-only HF audit has independently launched on npu CPU as container
+f681f64839b333fcd82d1840c552509b6b6ef18f9f1f8b3dfb120a4bd2b5e31b.
+No mixed-length actor update has run yet, and sampling completion does not
+establish probability parity across these recordings.
