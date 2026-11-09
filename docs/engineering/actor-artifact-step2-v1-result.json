@@ -1,0 +1,45 @@
+{
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/actor-artifact-audit-step2-v1",
+  "container_id": "b97cb0f01a43395b6d07cedcc7d04180f826112b290e02900dc6bd6ae122f3d9",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T23:53:04.26390371Z",
+    "FinishedAt": "2026-11-09T23:53:34.86675471Z"
+  },
+  "source_sha256": "f55e58d41dacce938c27de80e0c9bd4d76b5a18e768ff629a018f922d0328a36",
+  "result": {
+    "status": "passed",
+    "reports": {
+      "vllm-cpu-chain-sft-v3/second-actor": {
+        "status": "passed",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v3/second-actor/run",
+        "adapter_tensors": 112,
+        "optimizer_states": 112,
+        "optimizer_step": 2,
+        "all_weights_and_moments_finite": true,
+        "iteration": 2,
+        "changed_adapter_tensors": 112,
+        "updated": true,
+        "max_logprob_error": 5.2809715270996094e-05,
+        "parent_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v5/run",
+        "result_sha256": "0eb69a628ef188721645a9f08265b98247a6d79e8e4f7ec3a109c1c38511a428",
+        "optimizer_sha256": "6e629788b5b1f7e9a2f7b0d70a578ad7b596d61efb288c99374c05a6e886f9a1",
+        "adapter_files": {
+          "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+          "adapter_config.json": "8d45a36afe9e09050ad0aa09e8e530aef8460e404174723fde8b4c3d6db64611",
+          "adapter_model.safetensors": "92e861646a82da4b16c47b99225cd1a651c6ee7d5983d90c2ef85bbd209fe59e"
+        },
+        "scope": "saved artifact hashes, finite tensors, AdamW counters and local parent consistency; not Docker exit, rollout/export integrity, gradient equivalence or efficacy proof"
+      }
+    }
+  },
+  "scope": "saved second-step actor artifact validation, not efficacy"
+}

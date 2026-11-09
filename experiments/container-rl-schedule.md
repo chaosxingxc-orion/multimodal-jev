@@ -91,3 +91,14 @@ complete accounting for both iterations; preserve any no-op as an observed
 outcome, not a successful optimizer-update validation. The integration does not
 establish algorithm improvement, equal compute, cross-task transfer or a full
 distributed verl training worker. The multi-seed comparison remains separate.
+
+The legacy two-update dependency has now completed: exact second-actor Docker
+exit0, successful chain/application terminals and matching artifact hashes.
+The fresh second rollout used policy119cf54b..., and second-actor probability
+error was5.28097e-5. Independent read-only tensor inspection found112 finite
+AdamW states at step2 and112 changed adapter tensors relative to step1.
+See [chain result](../docs/engineering/vllm-two-step-chain-v3-result.json) and
+[saved state audit](../docs/engineering/actor-artifact-step2-v1-result.json).
+Both iterations had zero pair bonuses: this demonstrates on-policy continuation,
+not an algorithmic advantage. The separate mixed-length actor is still pending;
+the prepared instrumented scheduler has not launched.

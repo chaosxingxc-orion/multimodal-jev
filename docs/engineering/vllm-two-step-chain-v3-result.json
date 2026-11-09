@@ -1,0 +1,173 @@
+{
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v3",
+  "chain_result": {
+    "status": "passed",
+    "first_policy": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+    "updated_policy": "119cf54b53680240d83bebe0c652dee353670a973e073ae873b901c49b91b5d3",
+    "first_actor_id": "11d97d82a94c0255a97fc60989b1d744a7e3388d4e9780b95f5bc0dd6bc4d415",
+    "second_actor_id": "913a21cc7814eb49c93efe9326355a360ff370ef3ce78530a4c55506b20cea4e",
+    "first_updates": 1,
+    "total_updates": 2,
+    "second_rollout_responses": 12,
+    "scope": "two real vLLM iterations and persisted-optimizer CPU actor chain; not efficacy or NPU validation"
+  },
+  "second_actor_container_id": "913a21cc7814eb49c93efe9326355a360ff370ef3ce78530a4c55506b20cea4e",
+  "second_actor_docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T23:19:19.37165695Z",
+    "FinishedAt": "2026-11-09T23:51:48.42611098Z"
+  },
+  "second_actor_result": {
+    "status": "passed",
+    "config": {
+      "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+      "device": "cpu",
+      "dtype": "float32",
+      "cpu_threads": 4,
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lr": 1e-05,
+      "max_logprob_error": 0.02,
+      "rollout_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v3/second-rollout/run",
+      "parent_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v5/run",
+      "initial_adapter": null,
+      "seed": 18,
+      "reward_mode": "pair-grpo",
+      "pair_bonus_weight": 0.2,
+      "train_manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl"
+    },
+    "base_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458",
+    "optimizer_config": {
+      "lr": 1e-05,
+      "weight_decay": 0.0,
+      "foreach": false,
+      "fused": false
+    },
+    "optimizer_sha256": "6e629788b5b1f7e9a2f7b0d70a578ad7b596d61efb288c99374c05a6e886f9a1",
+    "adapter_files": {
+      "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+      "adapter_config.json": "8d45a36afe9e09050ad0aa09e8e530aef8460e404174723fde8b4c3d6db64611",
+      "adapter_model.safetensors": "92e861646a82da4b16c47b99225cd1a651c6ee7d5983d90c2ef85bbd209fe59e"
+    },
+    "updates": 2,
+    "iteration": 2,
+    "reward_mode": "pair-grpo",
+    "pair_bonus_weight": 0.2,
+    "reference_policy": null,
+    "metrics": {
+      "status": "updated",
+      "updated": true,
+      "loss": -0.01724686473608017,
+      "grad_norm": 1.6369661092758179,
+      "rewards": [
+        -0.1,
+        0.0,
+        -0.1,
+        1.0,
+        0.0,
+        0.0,
+        1.1,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "max_logprob_error": 5.2809715270996094e-05,
+      "metrics": {
+        "actor/pg_clipfrac": 0.0,
+        "actor/ppo_kl": 1.0178703178098658e-06,
+        "actor/pg_clipfrac_lower": 0.0,
+        "actor/policy_loss": -0.01724686473608017
+      },
+      "reward_details": {
+        "mode": "pair-grpo",
+        "base_rewards": [
+          -0.1,
+          0.0,
+          -0.1,
+          1.0,
+          0.0,
+          0.0,
+          1.1,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "pair_bonuses": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "relations_by_replicate": {
+          "0": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          },
+          "1": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          }
+        }
+      },
+      "policy_id": "119cf54b53680240d83bebe0c652dee353670a973e073ae873b901c49b91b5d3",
+      "micro_batch_size": 12,
+      "response_tokens": 82,
+      "kl_coefficient": 0.0,
+      "kl_estimator": null,
+      "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+    },
+    "scope": "one persisted actor iteration; export and next fresh rollout required; no efficacy claim"
+  },
+  "second_actor_result_sha256": "0eb69a628ef188721645a9f08265b98247a6d79e8e4f7ec3a109c1c38511a428",
+  "artifact_hashes_verified": true,
+  "optimizer_tensor_audit": "passed: actor-artifact-step2-v1-result.json; 112 finite states at step2, 112 changed tensors",
+  "interpretation": "two real vLLM rollouts and two completed actor updates; pair bonuses zero in both iterations, so this is integration evidence only, not pair-GRPO advantage or efficacy; legacy snapshot lacks training budget"
+}
