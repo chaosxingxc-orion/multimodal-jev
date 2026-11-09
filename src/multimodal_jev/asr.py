@@ -48,7 +48,8 @@ def main():
     with torch.inference_mode():
         generated = model.generate(**inputs, max_new_tokens=config.get('max_new_tokens', 64), do_sample=False)
         response = processor.decode(generated[0, inputs['input_ids'].shape[-1]:], skip_special_tokens=False)
-        transcription = processor.extract_transcription(response)
+        clean_response = processor.decode(generated[0, inputs['input_ids'].shape[-1]:], skip_special_tokens=True)
+        transcription = processor.extract_transcription(clean_response)
         forward = model(**inputs, output_hidden_states=True, use_cache=False)
         positions = torch.arange(inputs['attention_mask'].shape[-1], device=model.device)
         last = (positions * inputs['attention_mask']).max(dim=-1).values

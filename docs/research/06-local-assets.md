@@ -89,3 +89,14 @@ manifest、下载事件、逐文件校验凭证、分片状态和短时签名 UR
 共享目录：`/mnt/cephfs/xingchao/datasets/fsc/`，可用数据位于 `extracted/fluent_speech_commands_dataset/`。保留原始归档、镜像说明、原发布方许可与 `VERIFICATION.json`。官方划分 train 23,132 / valid 3,118 / test 3,793，共 30,043 条；97 名说话人、31 个组合意图，三个划分无音频路径或说话人重叠。全部 WAV 头可读且采样率为 16 kHz。
 
 归档 SHA256：`4376699f7daf134a9fa57a1d880ffcaaf94a3e2551ba0b40ad894d7abb71aacb`。未下载相同哈希的 `.tar.1.gz` 副本及 `.aria2` 状态文件。镜像 CC BY-NC 4.0 标签不能替代原发布方专用许可。
+
+## NGA 运行时兼容权重与 Jev 派生数据
+
+另下载并逐文件核验官方 `Qwen/Qwen3-ASR-0.6B-hf` 和 `1.7B-hf`，合计
+18 文件 / 5,664,027,655 字节；原始权重保持独立。版本及源哈希见
+[HF 模型清单](../engineering/hf-models-manifest.json)。
+
+FSC 首版派生发布位于 `datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/`：
+train 138,792 / valid 18,708 / test 22,758 个决策，共 180,258 个，复用原有 30,043 条录音。
+六个视图不构成六倍独立样本；音频不复制。协议与校验见
+[数据契约](../engineering/data-contract.md)。

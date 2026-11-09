@@ -20,7 +20,7 @@ The build checks every required package version and installs only the local pack
 
 The runtime mounts read-only datasets and models, and a separate writable experiment root. A run must record the image digest, model revision, dataset manifest, config digest, NPU allocation, and exact command. Do not mount a live unrelated worktree as executable code.
 
-This is a prepared image definition and an inventory-qualified base. A built child image still needs a host-side build receipt and a CPU/NPU smoke test before it is promoted for training.
+The child image has been built on `npu` and passed package/import checks and a real FSC recording on CPU. See `runtime-receipt.json`. NPU forward/backward and verl audio rollout validation remain required before training.
 
 ## Compatibility findings
 
@@ -58,3 +58,16 @@ prove audio RL support. Required work: a custom audio dataset, rollout request
 adapter, actor/rollout input equivalence tests, log-prob alignment, and a real NPU
 forward/backward/rollout smoke before training. Existing NGA/Omni jobs occupy both
 NPU hosts; no job was stopped or device reassigned.
+
+## Built release receipt
+
+Built image ID: `sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c`
+(local Docker image ID; not a published registry manifest digest).
+[Receipt](runtime-receipt.json) records source file hashes and the CPU probe.
+The real FSC clip was transcribed as `Change language.`; decoder features were
+`[1, 1024]`, audio features `[24, 1024]`, all finite. This is one smoke input,
+not WER, SLU accuracy, a trained head, or evidence of RL improvement.
+
+Final build includes `multimodal_jev.evaluate`, the FSC builder and reward contract.
+Runtime `README.md` and config snapshots are identified by their hashes in the receipt;
+subsequent documentation changes in Git do not change the built image.

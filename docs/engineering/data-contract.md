@@ -26,3 +26,16 @@ verl 自定义奖励接口。ground_truth 为完整 example 的 JSON，必须放
 
 当前奖励只针对单决策。成对一致性、任务执行、延迟成本需要真实分组或环境观测，
 尚未实现，不接受模型自报结果作为奖励。
+
+离线预测评估：
+
+```bash
+.venv/bin/python -m multimodal_jev.evaluate \
+  --manifest /absolute/path/valid.jsonl \
+  --predictions /absolute/path/predictions.jsonl \
+  --output /absolute/path/metrics.json
+```
+
+每条预测至少包含 `example_id` 与 `value`。缺失预测计入失败分母，不能被
+当成正确拒识；重复或多余预测报错。逐变体报告 accuracy、coverage/risk、
+unknown precision/recall、Brier 及成对正确率。总体派生样本准确率只作描述统计。
