@@ -25,6 +25,7 @@ def evaluate(manifest: Path, predictions: Path):
                                 'brier_sum': 0.0, 'confidence_count': 0})
     groups = defaultdict(dict)
     strata = defaultdict(lambda: {'count': 0, 'correct': 0})
+    domains = defaultdict(lambda: {'count':0,'correct':0,'format_valid':0,'null_targets':0})
     seen = set()
     with manifest.open() as handle:
         for line in handle:
@@ -69,6 +70,12 @@ def evaluate(manifest: Path, predictions: Path):
             stratum = strata[variant + ('.target_null' if ex.target is None else '.target_present')]
             stratum['count'] += 1
             stratum['correct'] += correct
+            if 'scenario' in ex.metadata:
+                key=(ex.metadata.get('partition',ex.split),ex.metadata['scenario'],variant,
+                     'null' if ex.target is None else 'present')
+                domain=domains[key]
+                domain['count']+=1;domain['correct']+=correct
+                domain['format_valid']+=not missing;domain['null_targets']+=ex.target is None
             group = ex.metadata.get('source_group', ex.example_id)
             if variant in groups[group]:
                 raise ValueError(f'duplicate group/variant: {group}/{variant}')
@@ -101,9 +108,13 @@ def evaluate(manifest: Path, predictions: Path):
                     'both_correct_rate': both / len(eligible) if eligible else None}
     for cell in strata.values():
         cell['accuracy'] = cell['correct'] / cell['count']
+    domain_rows=[]
+    for (partition,scenario,variant,presence),cell in sorted(domains.items()):
+        domain_rows.append({'partition':partition,'scenario':scenario,'variant':variant,'target_presence':presence,
+                            **cell,'accuracy':cell['correct']/cell['count']})
     return {'manifest_sha256':hashlib.sha256(manifest.read_bytes()).hexdigest(),
             'predictions_sha256':hashlib.sha256(predictions.read_bytes()).hexdigest(),
-            'by_variant':dict(stats),'pairs':pairs,'by_target_presence':dict(strata),
+            'by_variant':dict(stats),'pairs':pairs,'by_target_presence':dict(strata),'by_domain':domain_rows,
             'note':'Derived views are correlated; all.accuracy is descriptive, not independent evidence.'}
 
 
