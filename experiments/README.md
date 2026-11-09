@@ -12,6 +12,8 @@
 - [音频 SFT 初始化](fsc-audio-sft-init.md)与 [FSC 开发评测](fsc-schema-evaluation.md)
 - [SLURP 迁移评测](slurp-transfer-evaluation.md)
 - [ASR／参考转写文本对照](text-evidence-baselines.md)
+- [文本提示 TRAIN 对照](text-prompt-probe-v2.md)
+- [首次真实 RL 更新的开发集诊断](first-rl-development.md)
 - [AudioJev 官方 MMAR 复现](audiojev-mmar.md)
 - [音频 RL 迭代](audio-rl-iteration.md)
 - [冻结参考策略 KL 数值验证](reference-kl.md)

@@ -181,3 +181,13 @@ completed first actor, with the prior source snapshot plus the permission fix,
 and requires export parity, fresh second vLLM sampling and optimizer restoration.
 No first optimizer step is repeated. The complete two-iteration chain remains
 pending until all downstream artifacts pass.
+
+The updated-policy export container exited0. Merge and reload both have maximum
+response log-prob error4.4465065002441406e-5, within the unchanged3e-4/1e-5 gate.
+Adapter/base/export hashes and lineage independently revalidate. The policy ID
+changed from e28da9d0... to119cf54b...; see
+[export receipt](../docs/engineering/vllm-updated-policy-export-v1-result.json).
+The supervisor launched a fresh local second vLLM container
+b3f78cfa53b12febc85fee228ce517fc4da2bb2a17305dff26fdbd33f87a596a
+using that checkpoint and sampling seed18. Sampling and the restored-optimizer
+second actor remain pending; successful export alone does not complete the chain.
