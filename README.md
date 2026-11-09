@@ -1,0 +1,52 @@
+# multimodal-jev
+
+[GitHub](https://github.com/chaosxingxc-orion/multimodal-jev)
+
+围绕**语音多模态 Jev 的设计与实现**开展研究与工程工作。主要参考模型为 **Qwen 系列最新开源 ASR 模型**，
+参考数据集和任务为现存的 **SLU（Spoken Language Understanding）** 与 **Agentic Speech** 任务。
+参考 [nga](https://github.com/chaosxingxc-orion/nga)
+的类型化决策读出、语义一致性评估方法，以及 [omni](https://github.com/chaosxingxc-orion/omni)
+的多模态证据处理与可复现实验组织方式。
+
+当前阶段：工程初始化。仓库包含 Python 包骨架、开发配置、研究文档入口与实验记录模板；
+尚未实现模型、训练、推理或评测能力。研究方向已确定，具体模型版本、数据集、硬件和技术路线待核验与设计。
+研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
+
+## 目录
+
+| 路径 | 用途 |
+| --- | --- |
+| `src/multimodal_jev/` | 可安装的 Python 包，后续存放可复用实现 |
+| `configs/` | 可版本化配置；不包含凭据和机器私有设置 |
+| `docs/` | 设计说明、参考来源与工程决策 |
+| `proposal/` | 研究问题、假设和阶段计划 |
+| `experiments/` | 实验协议、数据清单和实验入口 |
+| `tests/` | 后续实现对应的自动化测试 |
+| `tools/` | 数据准备、运行和结果检查工具 |
+| `wiki/` | 随代码版本管理的实验记录与索引 |
+
+## 本地开发
+
+需要 Python 3.11 或更新版本。
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -e '.[dev]'
+.venv/bin/python -c "import multimodal_jev; print(multimodal_jev.__version__)"
+```
+
+当前包没有运行时第三方依赖；`dev` 提供 pytest。初始化阶段没有业务测试，
+后续新增实现时在 `tests/` 添加相应测试，使用 `.venv/bin/python -m pytest` 运行。
+加速器、深度学习框架和多模态模型依赖在确定基线后单独固定版本。
+
+## 研究与实验约定
+
+- 在运行前记录假设、数据划分、指标、阈值和失败判据；测试集不参与调优。
+- 一致性目标须配套相关事实变化的区分测试，避免常量预测等退化解。
+- 区分类型化读出、生成式标签评分和外围规则处理，不将设计目标写成已验证能力。
+- 模态缺失、冲突证据及未知状态的处理应在实验协议中明确。
+- 模型、数据、特征、checkpoint 和完整日志存放在 Git 之外；仓库保留清单、版本和结果摘要。
+- 长任务应可脱离会话运行、可恢复，保存启动命令、进度、成本和带退出码的完成标记。
+
+来源与初始化边界见 [参考说明](docs/references.md)，协作规则见 [AGENTS.md](AGENTS.md)。
+本地 `wiki/` 是仓库内文档，尚未配置独立 GitHub Wiki 同步。
