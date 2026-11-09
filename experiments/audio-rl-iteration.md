@@ -191,3 +191,9 @@ The supervisor launched a fresh local second vLLM container
 b3f78cfa53b12febc85fee228ce517fc4da2bb2a17305dff26fdbd33f87a596a
 using that checkpoint and sampling seed18. Sampling and the restored-optimizer
 second actor remain pending; successful export alone does not complete the chain.
+
+The fresh second engine exited0 with6 prompts,12 responses and82 response tokens
+from the verified updated policy, seed18. Full rollout/manifest/audio identities
+pass again. The [second sampling receipt](../docs/engineering/vllm-second-rollout-v1-result.json)
+records the launched second actor and its explicit original parent optimizer
+path. Numerical parity and the second actual optimizer step remain pending.
