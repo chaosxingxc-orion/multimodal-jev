@@ -1,0 +1,36 @@
+{
+  "checkpoint": "/mnt/cephfs/xingchao/models/multimodal-jev/fsc-sft-init/6a25ad1b89cd956ecc5f1d8234f98987e16f2f14eb1a2a39babe3bd854aaaae8",
+  "manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+  "example_ids": [
+    "fsc:1d0a6bf5fac385fb6e02c7e1:native",
+    "fsc:1d0a6bf5fac385fb6e02c7e1:permutation",
+    "fsc:1d0a6bf5fac385fb6e02c7e1:rebind",
+    "fsc:1d0a6bf5fac385fb6e02c7e1:missing_candidate",
+    "fsc:1d0a6bf5fac385fb6e02c7e1:noul.True",
+    "fsc:1d0a6bf5fac385fb6e02c7e1:noul.False",
+    "fsc:fb2ce41b19a5619d7ef0dda7:native",
+    "fsc:fb2ce41b19a5619d7ef0dda7:permutation",
+    "fsc:fb2ce41b19a5619d7ef0dda7:rebind",
+    "fsc:fb2ce41b19a5619d7ef0dda7:missing_candidate",
+    "fsc:fb2ce41b19a5619d7ef0dda7:noul.True",
+    "fsc:fb2ce41b19a5619d7ef0dda7:noul.False"
+  ],
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "top_k": -1,
+    "n": 2,
+    "max_tokens": 32,
+    "seed": 17
+  },
+  "engine": {
+    "dtype": "float32",
+    "max_model_len": 2048,
+    "gpu_memory_utilization": 0.5,
+    "tensor_parallel_size": 1,
+    "enforce_eager": true,
+    "max_num_seqs": 1,
+    "seed": 17
+  },
+  "audio_input_mode": "actor_features"
+}
