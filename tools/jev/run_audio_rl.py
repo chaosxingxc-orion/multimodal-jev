@@ -85,12 +85,11 @@ def run(config,root):
         rollout_config={'checkpoint':checkpoint,'manifest':config['manifest'],'example_ids':example_ids,
                         'sampling':{**config['sampling'],'seed':config['seed']+i},'engine':config['engine']}
         execute('sample_audio_policy.py',rollout_config,stage/'rollout')
-        # The actor is initialized from the same immutable base checkpoint that
-        # produced the rollout.  Keep this explicit in the persisted child
-        # config; relying on a shell/default path would make a schedule
-        # unreplayable and can silently train a different policy.
-        actor_config={**config['actor'],'model_path':config['initial_checkpoint'],
-                      'rollout_run':str(stage/'rollout'),
+        # The actor's immutable base is explicit in the actor section.  The
+        # rollout checkpoint may be a merged export from the previous
+        # iteration, while model_path must remain the original base so LoRA
+        # coordinates and optimizer state stay compatible.
+        actor_config={**config['actor'],'rollout_run':str(stage/'rollout'),
                       'parent_run':str(parent) if parent else None,
                       'initial_adapter':config.get('initial_adapter') if parent is None else None,
                       'seed':config['seed']+i,'reward_mode':config['reward_mode'],
