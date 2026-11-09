@@ -65,3 +65,38 @@ independent counts from the saved records. Engine prompt lengths are923 and953
 (1,876 request tokens;3,752 replicated exposures). Engine generation took33.57s
 and construction144.95s. See [real result](vllm-generation-budget-v1-result.json).
 These measurements verify accounting output, not matched compute or learning.
+
+## Trajectory audit
+
+`tools/jev/audit_trajectory_budget.py --stages stages.json --output audit.json`
+reads an ordered JSON list of objects with `rollout`, `actor`, and `export`
+absolute run paths. It writes a new audit file without modifying stage receipts.
+Each cost category records its observed subtotal and coverage; a trajectory
+total is null if any iteration lacks that category. Application failures and
+unconfirmed stages contribute no measured costs, so their actual consumed work
+remains unknown. An absent terminal says nothing about process liveness.
+
+The audit checks actor rollout/parent references, successive exported policy IDs,
+cumulative optimizer updates against per-iteration outcomes, generation counts,
+and training ledger consistency. It rejects duplicate stages. It retains receipt
+hashes but does not replace model/optimizer artifact validation or authoritative
+Docker exit checks. Token counts, engine load/generate durations and export
+durations remain separate; actor wall time, hardware utilization and FLOPs are
+not measured by this audit. `accounting_complete` covers only its four declared
+categories, not total compute equivalence.
+
+New source snapshots measure the export subprocess plus publication verification
+with a monotonic clock. Existing snapshots retain missing export timings.
+The [legacy chain audit](trajectory-budget-chain-v3-result.json) confirms that
+its successful first rollout/actor/export lack these budget ledgers, and the
+second actor was still running when observed. The legacy supervisor ends after
+the second actor and does not schedule a second export. This integration chain
+therefore cannot establish complete trajectory costs or budget-matched efficacy.
+
+Unit coverage includes an update followed by a zero-advantage no-op, legacy
+missing fields, failed stages with residual results, absent terminals, stale
+policy IDs, incorrect parent/rollout references and contradictory counters.
+The new response-only real actor also persisted a training ledger (12 sequences,
+8,130 gradient tokens and 8,130 no-gradient tokens), but its numerical equivalence
+gate failed; budget instrumentation does not qualify that optimization for the
+registered algorithm comparison.

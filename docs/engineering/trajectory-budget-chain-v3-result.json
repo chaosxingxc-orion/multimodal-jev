@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "iterations": [
+    {
+      "iteration": 0,
+      "evidence": {
+        "rollout": {
+          "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-rollout-sft-v4/run",
+          "state": "completed",
+          "sha256": {
+            "terminal.json": "4bf8c6b4d8a3895d8d4c6335b4a42f99e4d81fd647a60b5d989a32be175dfb96",
+            "result.json": "851e88a3db66323d883c7ff593efc511bf973b27b3a63fd53c3a77e8c74174b8"
+          }
+        },
+        "actor": {
+          "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v5/run",
+          "state": "completed",
+          "sha256": {
+            "terminal.json": "f5557ad65acfcd9b4b02b6743cbcb9d1a60b49b00d86f026dd1970c20622a7bb",
+            "result.json": "54cbf4b25f50241f3cbae57f8848a5b84a2e8e8707113bc81e1c9bf05efb43c8"
+          }
+        },
+        "export": {
+          "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v3/export/run",
+          "state": "completed",
+          "sha256": {
+            "terminal.json": "668efd1d6ec251e723754c97084346545416f882f9ef58cf9185779657139ada",
+            "result.json": "5cdd41bda9735e28475e6a753eafbfba25a9229afd8f6648dd669951ce17813b"
+          }
+        }
+      },
+      "missing_accounting": [
+        "training",
+        "generation",
+        "engine_load_seconds",
+        "export_seconds"
+      ]
+    },
+    {
+      "iteration": 1,
+      "evidence": {
+        "rollout": {
+          "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v3/second-rollout/run",
+          "state": "completed",
+          "sha256": {
+            "terminal.json": "b38cb4032c8ef0df62381343cbf77a39ada6b468c8d17eb21e61fa44ea123226",
+            "result.json": "6408887c1337b28e5c95cbab8415f7dc68ec788155c2876aa6bcd55ad4f6dcfc"
+          }
+        },
+        "actor": {
+          "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v3/second-actor/run",
+          "state": "unconfirmed",
+          "sha256": {}
+        },
+        "export": {
+          "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v3/second-export/run",
+          "state": "unconfirmed",
+          "sha256": {}
+        }
+      },
+      "missing_accounting": [
+        "training",
+        "generation",
+        "engine_load_seconds",
+        "export_seconds"
+      ]
+    }
+  ],
+  "costs": {
+    "training": {
+      "observed_iterations": 0,
+      "expected_iterations": 2,
+      "observed_subtotal": null,
+      "total": null
+    },
+    "generation": {
+      "observed_iterations": 0,
+      "expected_iterations": 2,
+      "observed_subtotal": null,
+      "total": null
+    },
+    "engine_load_seconds": {
+      "observed_iterations": 0,
+      "expected_iterations": 2,
+      "observed_subtotal": null,
+      "total": null
+    },
+    "export_seconds": {
+      "observed_iterations": 0,
+      "expected_iterations": 2,
+      "observed_subtotal": null,
+      "total": null
+    }
+  },
+  "all_stages_completed": false,
+  "accounting_complete": false,
+  "scope": "application receipt cost audit; excludes failed/unfinished stage costs; not artifact-integrity, Docker-exit, FLOPs, hardware-utilization or matched-budget proof",
+  "note": "Snapshot audit: second export is not scheduled by this legacy two-update integration supervisor. Missing costs cannot be recovered from newer code.",
+  "observed_at_utc": "2026-11-09T23:41:56.504165+00:00"
+}

@@ -49,6 +49,7 @@ def export_actor(actor,export_root,stage):
         return result['checkpoint']
     if stage.exists():raise RuntimeError('incomplete export requires inspection')
     stage.mkdir()
+    started=time.monotonic()
     try:
         with (stage/'export.log').open('w') as log:
             subprocess.run([sys.executable,str(Path(__file__).with_name('export_audio_policy.py')),
@@ -62,7 +63,8 @@ def export_actor(actor,export_root,stage):
                 matches.append(receipt.parent)
         if len(matches)!=1:raise ValueError('expected one successful export of this actor')
         checkpoint=str(matches[0]);policy,_=checkpoint_identity(checkpoint)
-        atomic_json(stage/'result.json',{'checkpoint':checkpoint,'policy_id':policy})
+        atomic_json(stage/'result.json',{'checkpoint':checkpoint,'policy_id':policy,
+                    'export_seconds':time.monotonic()-started})
         atomic_json(stage/'terminal.json',{'exit_code':0,'finished_unix':time.time()})
         return checkpoint
     except BaseException as exc:
