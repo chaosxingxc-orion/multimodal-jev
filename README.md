@@ -8,8 +8,8 @@
 的类型化决策读出、语义一致性评估方法，以及 [omni](https://github.com/chaosxingxc-orion/omni)
 的多模态证据处理与可复现实验组织方式。
 
-当前阶段：公开资料调研与共享资源准备。已核验 Qwen3-ASR 版本并比较直接音频 Jev、SLU 和 Agentic Speech 方案；
-尚未实现模型训练、推理或评测能力。详细结论见 [研究报告](docs/research/README.md)，下载与整理状态见 [本地资源](docs/research/06-local-assets.md)。
+当前阶段：已完成资源调研与共享下载，正在构建 NGA/verl/vLLM 兼容镜像、Qwen3-ASR 推理探针、FSC Jev 数据契约和奖励接口；
+尚未完成学界基线复现、NPU 训练或 RL 效果验证。详细结论见 [研究报告](docs/research/README.md)，下载与整理状态见 [本地资源](docs/research/06-local-assets.md)。
 研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
 
 ## 目录
@@ -50,3 +50,6 @@ python3 -m venv .venv
 
 来源与初始化边界见 [参考说明](docs/references.md)，协作规则见 [AGENTS.md](AGENTS.md)。
 本地 `wiki/` 是仓库内文档，尚未配置独立 GitHub Wiki 同步。
+
+三阶段目标、前瞻实验设计及当前限制见 [RL 研究协议](proposal/01-rl-research-protocol.md)；
+镜像兼容性见 [运行时说明](docs/engineering/runtime.md)，数据与奖励入口见 [数据契约](docs/engineering/data-contract.md)。

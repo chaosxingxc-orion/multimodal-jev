@@ -1,0 +1,25 @@
+{
+  "schema": "multimodal-jev-image-manifest-v1",
+  "base_image": "sha256:8190b3ec51929baca2388452039ccf05d681c01b7c91cc55dd1e7ac5570a76b7",
+  "base_tag_at_build": "nga-verl-qwen35-v030:20261029",
+  "platform": "linux/arm64",
+  "required_packages": {
+    "torch": "2.10.0+cpu",
+    "torch-npu": "2.10.0.post7",
+    "vllm": "0.30.0+empty",
+    "vllm-ascend": "0.30.0rc2",
+    "transformers": "5.14.1",
+    "verl": "0.8.0.dev0",
+    "ray": "2.48.0",
+    "datasets": "4.5.0",
+    "soundfile": "0.14.0",
+    "accelerate": "1.15.0",
+    "peft": "0.21.2"
+  },
+  "verl_commit": "e9405d70b77d56a23e72bb2e40a17b906856e913",
+  "source_mounts": {
+    "datasets": "/mnt/cephfs/xingchao/datasets",
+    "models": "/mnt/cephfs/xingchao/models",
+    "outputs": "/mnt/cephfs/xingchao/experiments/multimodal-jev"
+  }
+}

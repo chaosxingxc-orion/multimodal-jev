@@ -1,5 +1,11 @@
-"""Multimodal Jev research package; model implementations are not yet included."""
+"""Research interfaces for speech multimodal Jev."""
 
-from importlib.metadata import version
+__version__ = "0.2.0"
 
-__version__ = version("multimodal-jev")
+from .reward import RewardWeights, score_rollout
+from .task_schema import Candidate, DecisionSchema, JevExample, render_schema
+
+__all__ = [
+    "Candidate", "DecisionSchema", "JevExample", "RewardWeights",
+    "render_schema", "score_rollout",
+]

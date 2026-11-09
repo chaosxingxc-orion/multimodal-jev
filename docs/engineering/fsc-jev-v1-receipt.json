@@ -1,0 +1,47 @@
+{
+  "path": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c",
+  "release_id": "62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c",
+  "source_csv_sha256": {
+    "train": "df1b87b7122c7a9fa1555fda61ba45436c4bbb33428e1ea54adcc1c3c1317ea4",
+    "valid": "5ac95de1cfad131cf85457fa404977b305377c8f25efb31879774b8c4fbd5197",
+    "test": "663a12e4f7e7b86c1ab72a96b78bb1d797dbc878424f94ec249f3dd5c21ca488"
+  },
+  "builder_sha256": "b3229db1879cc14a1f06ae1bf0b8503f599d532023a46a8b755c185a8b03bd8c",
+  "config": {
+    "protocol": "fsc-jev-v1",
+    "variants": [
+      "permutation",
+      "rebind",
+      "missing_candidate",
+      "noul"
+    ],
+    "split_policy": "official-speaker-disjoint",
+    "holdout_policy": "external-datasets-excluded-from-training",
+    "score_task": "disabled-no-native-ordinal-labels",
+    "open_slot_task": "disabled-FSC-slots-are-finite"
+  },
+  "splits": {
+    "train": {
+      "recordings": 23132,
+      "decisions": 138792,
+      "manifest_sha256": "633882c3820dc45e112c7790305899be639836cf0fced04d1d204ca1b058361a",
+      "speakers": 77
+    },
+    "valid": {
+      "recordings": 3118,
+      "decisions": 18708,
+      "manifest_sha256": "27f5017ee2fdf529850bc4b9280c70ce6ab3215d23ad4cf7b09c6c24c69db4d7",
+      "speakers": 10
+    },
+    "test": {
+      "recordings": 3793,
+      "decisions": 22758,
+      "manifest_sha256": "c2aba112c4ee51b439f2a00889148677fb536fb516ac9a98b223960df4bc9032",
+      "speakers": 10
+    }
+  },
+  "intent_count": 31,
+  "cross_split_audio_overlap": 0,
+  "cross_split_speaker_overlap": 0,
+  "notes": "Schema-derived unknowns are not acoustic ambiguity or real OOD. Official splits preserved."
+}
