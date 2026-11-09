@@ -1,0 +1,172 @@
+{
+  "observed_unix": 1794265761.6054904,
+  "container_id": "11d97d82a94c0255a97fc60989b1d744a7e3388d4e9780b95f5bc0dd6bc4d415",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T22:36:10.10048177Z",
+    "FinishedAt": "2026-11-09T23:05:35.70665239Z"
+  },
+  "result": {
+    "status": "passed",
+    "config": {
+      "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+      "device": "cpu",
+      "dtype": "float32",
+      "cpu_threads": 4,
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lr": 1e-05,
+      "max_logprob_error": 0.02,
+      "rollout_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-rollout-sft-v4/run",
+      "parent_run": null,
+      "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-audio-sft-init-v1/run/adapter",
+      "seed": 17,
+      "reward_mode": "pair-grpo",
+      "pair_bonus_weight": 0.2,
+      "train_manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl"
+    },
+    "base_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458",
+    "optimizer_config": {
+      "lr": 1e-05,
+      "weight_decay": 0.0,
+      "foreach": false,
+      "fused": false
+    },
+    "optimizer_sha256": "0e63b14c960f4df30c1df72db659d0f6eb761083a2ad1843429583ef5f3b0d85",
+    "adapter_files": {
+      "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+      "adapter_config.json": "0ed2c5ba3fd622772fa19d319805582163d5537fbd80893186b293f9d0e51eb7",
+      "adapter_model.safetensors": "6470d16f84a1b248a835f384c9c4312e7fdaab933fffd0a72fbc24404deea930"
+    },
+    "updates": 1,
+    "iteration": 1,
+    "reward_mode": "pair-grpo",
+    "pair_bonus_weight": 0.2,
+    "reference_policy": null,
+    "metrics": {
+      "status": "updated",
+      "updated": true,
+      "loss": -0.03535493090748787,
+      "grad_norm": 3.0577285289764404,
+      "rewards": [
+        0.0,
+        -0.1,
+        0.0,
+        -0.1,
+        0.0,
+        -0.1,
+        0.0,
+        1.1,
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "max_logprob_error": 5.6624412536621094e-05,
+      "metrics": {
+        "actor/pg_clipfrac": 0.0,
+        "actor/ppo_kl": -2.630538574521779e-06,
+        "actor/pg_clipfrac_lower": 0.0,
+        "actor/policy_loss": -0.03535493090748787
+      },
+      "reward_details": {
+        "mode": "pair-grpo",
+        "base_rewards": [
+          0.0,
+          -0.1,
+          0.0,
+          -0.1,
+          0.0,
+          -0.1,
+          0.0,
+          1.1,
+          1.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "pair_bonuses": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "relations_by_replicate": {
+          "0": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          },
+          "1": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          }
+        }
+      },
+      "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+      "micro_batch_size": 12,
+      "response_tokens": 80,
+      "kl_coefficient": 0.0,
+      "kl_estimator": null,
+      "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+    },
+    "scope": "one persisted actor iteration; export and next fresh rollout required; no efficacy claim"
+  },
+  "artifact_verification": {
+    "status": "passed",
+    "optimizer_states": 112,
+    "optimizer_steps": [
+      1.0
+    ],
+    "changed_adapter_tensors": 112,
+    "adapter_tensors": 112,
+    "max_adapter_difference": 1.0000541806221008e-05,
+    "hashes_verified_before_and_after_chmod": true
+  },
+  "result_sha256": "54cbf4b25f50241f3cbae57f8848a5b84a2e8e8707113bc81e1c9bf05efb43c8",
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v5",
+  "scope": "first actual vLLM sampled full-batch CPU verl update verified; 112 changed LoRA tensors and 112 AdamW states at step1; pair bonuses all zero, no algorithm advantage or efficacy claim"
+}

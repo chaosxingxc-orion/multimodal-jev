@@ -63,3 +63,9 @@ interpret zero difference as evidence-equivalence, repair outputs for the
 registered score, or call reference transcripts an achieved semantic upper bound.
 Any revised prompt/format protocol must be separately registered and validated
 on TRAIN-only material before a new development comparison; retain v1 results.
+
+All168 outputs in each condition begin with a Markdown fence; none reached the
+64-token limit. The ASR-text decision stage generated6,803 tokens in6,043.68s;
+reference-text generated7,252 tokens in5,849.14s (sum of recorded per-example
+generation time, excluding model loading and upstream ASR). These observations
+identify a formatting bottleneck without changing the strict scorer.

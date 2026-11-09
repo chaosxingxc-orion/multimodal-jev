@@ -159,3 +159,25 @@ for these accumulation differences is approved and separately validated.
 This reduces device activation memory. CPU-side preprocessing still prepares the
 complete batch, and the base model remains resident. It does not implement
 distributed workers, packed sequences or an unlimited-size dataset loader.
+
+## First actual sampled update completed
+
+The 128GiB full-projection v5 actor exited0 after consuming all12 responses from
+the verified real vLLM feature rollout. Its probability error is5.66244e-5,
+gradient norm3.05773 and optimizer update count1. Independent saved-artifact
+inspection confirms all112 LoRA tensors changed and all112 AdamW states have
+step1 with finite moments. Hashes match the successful result. See
+[receipt](../docs/engineering/vllm-feature-actor-v5-result.json).
+All pair bonuses on this batch are zero, so this validates the actual sampled
+training path without distinguishing GRPO from pair-GRPO or showing efficacy.
+This older immutable snapshot does not contain the later token-budget ledger.
+
+The continuation supervisor stopped before export because safetensors created
+root-owned mode0600 weights. A separate container verified hashes before and
+after adding read permissions, then checked saved optimizer/adapter contents.
+New runner code makes saved adapters readable. The failed chain is retained;
+the [v3 supervisor](../docs/engineering/vllm-cpu-chain-v3-launch.json) reuses the
+completed first actor, with the prior source snapshot plus the permission fix,
+and requires export parity, fresh second vLLM sampling and optimizer restoration.
+No first optimizer step is repeated. The complete two-iteration chain remains
+pending until all downstream artifacts pass.

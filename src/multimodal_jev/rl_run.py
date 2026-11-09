@@ -154,6 +154,10 @@ def train(config,output):
                          kl_estimator=reference['estimator'] if reference else 'k3',progress=progress,
                          response_logits_only=config.get('response_logits_only',False),norm_adv_by_std=norm_adv_by_std)
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
+    # Safetensors may create root-owned mode0600 files inside the container.
+    # The host supervisor must verify hashes before publishing the next policy.
+    for path in (output/'adapter').iterdir():
+        if path.is_file():path.chmod(path.stat().st_mode | 0o444)
     save_optimizer(model,optimizer,output/'optimizer.pt')
     # Keep the exporter's base/train fields while retaining the complete run config.
     export_config={**config,'train_manifest':rollout['config']['manifest']}

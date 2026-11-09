@@ -59,3 +59,9 @@ ledger. Require two positive engine prompt lengths and finite positive engine
 load/generate times. Preserve the outputs as accounting evidence, with no actor
 launch or efficacy claim. Root: vllm-generation-budget-v1 in the shared experiment
 directory. This checks actual API fields rather than replaying test doubles.
+
+The probe exited0 with four complete responses and26 generated tokens, matching
+independent counts from the saved records. Engine prompt lengths are923 and953
+(1,876 request tokens;3,752 replicated exposures). Engine generation took33.57s
+and construction144.95s. See [real result](vllm-generation-budget-v1-result.json).
+These measurements verify accounting output, not matched compute or learning.

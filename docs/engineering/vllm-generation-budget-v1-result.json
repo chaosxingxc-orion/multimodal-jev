@@ -1,0 +1,49 @@
+{
+  "result": {
+    "status": "passed",
+    "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+    "prompts": 2,
+    "rollouts": 4,
+    "rollouts_sha256": "8d40a75e9f8c10077a9ff2b61ec72a68e72764226bcd3ab8c1d568ffbb5b54ee",
+    "generation_budget": {
+      "requests": 2,
+      "responses": 4,
+      "prompt_tokens_per_request": [
+        923,
+        953
+      ],
+      "request_prompt_tokens": 1876,
+      "replicated_prompt_tokens": 3752,
+      "generated_tokens": 26,
+      "response_tokens_per_record": [
+        6,
+        8,
+        6,
+        6
+      ],
+      "length_terminated_responses": 0,
+      "engine_generate_seconds": 33.5739201400429,
+      "scope": "observed engine token counts; replicated prompts are exposures, not measured prefill work or FLOPs"
+    },
+    "engine_load_seconds": 144.94650702970102,
+    "scope": "vLLM sampling only; actor parity gate and optimizer update not yet run"
+  },
+  "container_id": "6e3841a915869ab3a9ad466ae96f62843990ab736734eedab4e6f4257fb4ce42",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T23:03:04.11627573Z",
+    "FinishedAt": "2026-11-09T23:06:34.9068787Z"
+  },
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-generation-budget-v1",
+  "result_sha256": "f927049c2e0f7f2cf2ce2834997df9b77a42fc884fb6105b160bab8fae2fe6d3",
+  "independent_saved_record_count_verified": true,
+  "scope": "real engine accounting verified, not prefill work, FLOPs or efficacy"
+}

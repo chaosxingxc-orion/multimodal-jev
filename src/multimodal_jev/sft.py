@@ -141,6 +141,8 @@ def train(config,output):
         temp=output/'resume.tmp';torch.save(state,temp);temp.replace(checkpoint)
         atomic_json(output/'progress.json',{'step':index+1,'total_steps':total,'loss':history[-1]['loss'],'heartbeat_unix':time.time(),'elapsed_this_session_seconds':time.monotonic()-start})
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
+    for path in (output/'adapter').iterdir():
+        if path.is_file():path.chmod(path.stat().st_mode | 0o444)
     result={'status':'passed','examples':len(rows),'source_groups':len({ex.metadata['source_group'] for ex in rows}),
             'updates':total,'history':history,'config':config,
             'training_budget':sum_budgets(row['budget'] for row in history),

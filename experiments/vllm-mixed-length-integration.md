@@ -81,3 +81,11 @@ separately registered multi-seed comparisons.
 
 The response-only supervisor is registered in the
 [queue receipt](../docs/engineering/vllm-mixed-response-only-v1-queued.json).
+
+The v1 response-only queue stopped before launching its actor because its exact
+single-recording dependency was OOMKilled at32GiB. Register a new v2 queue against
+the 128GiB single-recording retry, retaining the same success/artifact gates and
+byte-identical mixed actor source/config. Raise the planned mixed container
+limit to256GiB given the observed activation-memory failure. This is a resource
+revision before launch, not evidence of memory savings. See
+[v2 queue receipt](../docs/engineering/vllm-mixed-response-only-v2-queued.json).
