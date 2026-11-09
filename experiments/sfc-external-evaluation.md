@@ -77,5 +77,7 @@ The official SFC stack uses Qwen2.5-Omni-7B, ms-swift/LLaMA-Factory and older
 vLLM. The paper's final GRPO uses FP16 and 32 generations; checked-in scripts
 default to BF16 and 8. Our verl/vLLM port must explicitly document such differences.
 No published SFC checkpoint has been loaded or inferred here. The current
-Qwen3-ASR rollout path handles one audio per example; multi-turn SFC inference,
-schema-to-call composition, official-model runs and actual transfer scores remain.
+Qwen3-ASR GRPO path handles one audio per example. A separate chronological
+[multi-audio inference adapter](sfc-audio-adapter.md) is implemented; real vLLM
+engine validation, schema-to-call composition, official-model runs and actual
+transfer scores remain.

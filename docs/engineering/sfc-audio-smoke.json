@@ -1,0 +1,58 @@
+{
+  "status": "passed",
+  "example_id": "sfc:audio/final_data_audio/level_3_1/train_id/id_100_2.wav",
+  "audio_count": 2,
+  "input_shapes": {
+    "input_ids": [
+      1,
+      1046
+    ],
+    "attention_mask": [
+      1,
+      1046
+    ],
+    "input_features": [
+      2,
+      128,
+      1700
+    ],
+    "input_features_mask": [
+      2,
+      1700
+    ]
+  },
+  "audio_conversion": [
+    {
+      "source_rate": 22050,
+      "source_channels": 1,
+      "source_samples": 354304,
+      "target_rate": 16000,
+      "target_samples": 257092,
+      "conversion": "channel mean then scipy.signal.resample_poly when needed"
+    },
+    {
+      "source_rate": 22050,
+      "source_channels": 1,
+      "source_samples": 30720,
+      "target_rate": 16000,
+      "target_samples": 22292,
+      "conversion": "channel mean then scipy.signal.resample_poly when needed"
+    }
+  ],
+  "audio_order_verified": true,
+  "audio_order_max_error": 1.1920928955078125e-07,
+  "direct_vllm_processor_token_ids_equal": true,
+  "valid_feature_errors": [
+    0.0,
+    0.0
+  ],
+  "finite_hf_forward": true,
+  "elapsed_seconds": 64.20601456001168,
+  "manifest_sha256": "48662014bb5e9ea4b6b02db8b9d32646e1552d1542b0d97eebf0a27c3e5f1425",
+  "adapter_sha256": "00c258d470092462b31acea146c55ab672f8b6cd0bcbaeb7ec63b4c585f62b79",
+  "scope": "TRAIN-only HF forward and direct bundled processor; no engine execution, generation or SFC accuracy",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "container": "multimodal-jev-sfc-audio-smoke-v5",
+  "exit_code": 0,
+  "artifact": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-audio-smoke-v5"
+}
