@@ -39,3 +39,16 @@ verl 自定义奖励接口。ground_truth 为完整 example 的 JSON，必须放
 每条预测至少包含 `example_id` 与 `value`。缺失预测计入失败分母，不能被
 当成正确拒识；重复或多余预测报错。逐变体报告 accuracy、coverage/risk、
 unknown precision/recall、Brier 及成对正确率。总体派生样本准确率只作描述统计。
+
+## SLURP transfer v1
+
+构造器 `tools/jev/build_slurp_manifest.py` 使用
+`configs/tasks/slurp-transfer-v1.json`。calendar/email/transport 域的 train
+录音全部排除，官方 valid/test 再分别拆为 seen-domain 和 heldout-domain。
+保留 native intent/action/entities，构造 scenario Choice 及 date/time/person/place_name
+开放槽位。所有视图共享原录音划分；同一句话的多录音保留 utterance_group。
+
+[协议](../../experiments/slurp-transfer-v1.md) 与
+[发布记录](slurp-transfer-v1-receipt.json) 包含原始哈希、排除量和说话人重叠。
+独立验证器 `tools/jev/verify_slurp_release.py` 对写出的所有记录重新检查类型、
+划分、域留出、ID 唯一性和派生视图数。它不声称已完成模型评估或官方 SLU scorer。

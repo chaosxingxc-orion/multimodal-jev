@@ -1,0 +1,13 @@
+{
+  "protocol": "slurp-jev-transfer-v1",
+  "heldout_scenarios": ["calendar", "email", "transport"],
+  "slot_types": ["date", "time", "person", "place_name"],
+  "variants": ["native", "permutation", "rebind"],
+  "duplicate_text_policy": "exclude-train-texts-present-in-valid-or-test",
+  "heldout_train_policy": "exclude",
+  "slot_rule": "first-annotated-occurrence-in-token-order",
+  "unknown_rule": "null-means-no-annotated-mention-of-requested-type",
+  "speaker_policy": "retain-official-splits-report-overlap",
+  "schema_source": "scenario-taxonomy-from-official-train-only",
+  "evaluation_scope": "cross-domain-and-FSC-to-SLURP-transfer; not speaker-disjoint"
+}

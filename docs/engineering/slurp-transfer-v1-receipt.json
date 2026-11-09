@@ -1,0 +1,139 @@
+{
+  "path": "/mnt/cephfs/xingchao/datasets/jev/slurp/ba31cd72120ab28309fe40089274b6b70e9a9605c2fcd56e5de4a0323805f3f8",
+  "release_id": "ba31cd72120ab28309fe40089274b6b70e9a9605c2fcd56e5de4a0323805f3f8",
+  "identity": {
+    "config": {
+      "protocol": "slurp-jev-transfer-v1",
+      "heldout_scenarios": [
+        "calendar",
+        "email",
+        "transport"
+      ],
+      "slot_types": [
+        "date",
+        "time",
+        "person",
+        "place_name"
+      ],
+      "variants": [
+        "native",
+        "permutation",
+        "rebind"
+      ],
+      "duplicate_text_policy": "exclude-train-texts-present-in-valid-or-test",
+      "heldout_train_policy": "exclude",
+      "slot_rule": "first-annotated-occurrence-in-token-order",
+      "unknown_rule": "null-means-no-annotated-mention-of-requested-type",
+      "speaker_policy": "retain-official-splits-report-overlap",
+      "schema_source": "scenario-taxonomy-from-official-train-only",
+      "evaluation_scope": "cross-domain-and-FSC-to-SLURP-transfer; not speaker-disjoint"
+    },
+    "source_sha256": {
+      "train": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e",
+      "valid": "00d346b183ecc2d160853cd3dc20e8ccd207d9e1809cf6e2c05182076bd0ecc9",
+      "test": "fe3449af69b42fda7163345482556066c35a80f7e552a6d67e212a0e2f0783cc",
+      "metadata": "be7943d576c0b79b34ae32796e5c9474bd3d4d123bb35e38f73497f4a429fb83"
+    },
+    "builder_sha256": "acf9e3342488659d6103873e0d53c757bc840aae92e1f18cb7b8d4c8633470ca",
+    "schema_code_sha256": "039cec3560e6e7655d2638caff556db95d5ad998d02fc5d8099dee03cccf5b26",
+    "source_root": "/mnt/cephfs/xingchao/datasets/slurp"
+  },
+  "counts": {
+    "train_decisions": 260722,
+    "train_recordings": 37246,
+    "valid_decisions": 45612,
+    "valid_recordings": 6516,
+    "heldout-valid_decisions": 15218,
+    "heldout-valid_recordings": 2174,
+    "heldout-test_decisions": 21875,
+    "heldout-test_recordings": 3125,
+    "test_decisions": 69671,
+    "test_recordings": 9953
+  },
+  "exclusions": {
+    "heldout_domain_train_utterances": 3212,
+    "heldout_domain_train_recordings": 13306,
+    "train_text_shared_with_evaluation_utterances": 7,
+    "train_text_shared_with_evaluation_recordings": 76
+  },
+  "slot_support": {
+    "train:date:missing": 33741,
+    "train:time:missing": 35544,
+    "train:person:missing": 36197,
+    "train:place_name:missing": 34853,
+    "train:time:present": 1702,
+    "train:date:present": 3505,
+    "train:place_name:present": 2393,
+    "train:person:present": 1049,
+    "valid:date:missing": 5769,
+    "valid:time:missing": 6237,
+    "valid:person:missing": 6347,
+    "valid:place_name:missing": 6046,
+    "heldout-valid:date:missing": 1450,
+    "heldout-valid:time:missing": 1900,
+    "heldout-valid:person:missing": 1848,
+    "heldout-valid:place_name:missing": 1904,
+    "heldout-valid:date:present": 724,
+    "heldout-valid:person:present": 326,
+    "valid:time:present": 279,
+    "valid:date:present": 747,
+    "heldout-valid:place_name:present": 270,
+    "valid:place_name:present": 470,
+    "heldout-valid:time:present": 274,
+    "valid:person:present": 169,
+    "heldout-test:date:present": 783,
+    "heldout-test:time:missing": 2656,
+    "heldout-test:person:missing": 2615,
+    "heldout-test:place_name:missing": 2760,
+    "heldout-test:time:present": 469,
+    "heldout-test:person:present": 510,
+    "test:date:missing": 8940,
+    "test:time:missing": 9496,
+    "test:person:missing": 9747,
+    "test:place_name:missing": 9225,
+    "heldout-test:date:missing": 2342,
+    "test:time:present": 457,
+    "test:place_name:present": 728,
+    "test:person:present": 206,
+    "test:date:present": 1013,
+    "heldout-test:place_name:present": 365
+  },
+  "speaker_overlap": {
+    "train/valid": 135,
+    "heldout-valid/train": 129,
+    "heldout-valid/valid": 129,
+    "heldout-valid/test": 128,
+    "heldout-test/train": 130,
+    "heldout-test/valid": 126,
+    "heldout-test/heldout-valid": 125,
+    "heldout-test/test": 128,
+    "test/train": 133,
+    "test/valid": 130
+  },
+  "train_evaluation_normalized_transcript_overlap": 0,
+  "cross_split_audio_hash_overlap": 0,
+  "native_intents_absent_from_train": {
+    "train": [],
+    "valid": [
+      "likeness"
+    ],
+    "test": [
+      "locations"
+    ]
+  },
+  "manifests": {
+    "heldout-test.jsonl": "028fcf03c76719549ec4a2744d68f294b63abf86b8498c3cfae4198e15ad8bb5",
+    "heldout-valid.jsonl": "c6137d5614c597d8a1c1778628fbf3aae8fd8bb6b3524daaacc5d87706086975",
+    "test.jsonl": "a87979d24ddf947cb2549b3eab0b6502164df760d7431fd041282e57017ecb41",
+    "train.jsonl": "9f4d28376bd2b64617acd9fc8c38c4b57730aea2064a38f3a69ee1f4bacae173",
+    "valid.jsonl": "a2668f6305ab9d76cc2b1320357e2b8051a1d793f349780d8bd3d7ae8ada5a7f"
+  },
+  "elapsed_seconds": 149.28797805961221,
+  "limits": [
+    "Scenario names are taxonomy descriptions, not human-authored business definitions.",
+    "Null denotes absent annotated entity, not acoustic unintelligibility.",
+    "Native intent/action/entity annotations retained; this projection is not official full SLU scoring.",
+    "Official speaker overlap is reported; no speaker-disjoint generalization claim.",
+    "All recordings of heldout-domain train utterances excluded; no synthetic SLURP audio."
+  ]
+}

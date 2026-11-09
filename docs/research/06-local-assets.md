@@ -100,3 +100,10 @@ FSC 首版派生发布位于 `datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac
 train 138,792 / valid 18,708 / test 22,758 个决策，共 180,258 个，复用原有 30,043 条录音。
 六个视图不构成六倍独立样本；音频不复制。协议与校验见
 [数据契约](../engineering/data-contract.md)。
+
+SLURP Jev 发布已生成于
+`datasets/jev/slurp/ba31cd72120ab28309fe40089274b6b70e9a9605c2fcd56e5de4a0323805f3f8/`。
+数据复用真实录音；只写派生 JSONL，不复制音频。59,014 录音 / 413,098 决策，
+保留官方划分并增加三个业务域留出。原始 SLURP 数据未变。
+[发布记录](../engineering/slurp-transfer-v1-receipt.json) 与
+[全量复核](../engineering/slurp-transfer-v1-verification.json) 均已保存。

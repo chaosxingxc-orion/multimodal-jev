@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "batch_size": 4,
+  "max_token_logprob_abs_error": 5.7220458984375e-05,
+  "per_example_error": [
+    0.0,
+    0.0,
+    5.7220458984375e-05,
+    5.7220458984375e-05
+  ],
+  "atol": 0.0003,
+  "rtol": 1e-05,
+  "elapsed_seconds": 66.51586907997262,
+  "scope": "real HF actor through verl audio collation; padded vs unpadded parity. Not vLLM engine parity.",
+  "image_id": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/verl-actor-parity-v1",
+  "model_id": "Qwen/Qwen3-ASR-0.6B-hf",
+  "model_revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+  "source_sha256": {
+    "src/multimodal_jev/verl_audio.py": "12b9134b63a35aacaeff870608b6087491cc6ce0b3602981d65a63c9914ada85",
+    "tools/jev/verl_actor_parity.py": "4caa0ab1892c6c8453570a9dd38887d2e72c61f5427c8884ab3aa886ff1b9ec4",
+    "src/multimodal_jev/audio_policy.py": "a3a17334a67ef0a34f398b3d56c3a207fd1b434785b3373505d693930a7ba6d8"
+  }
+}

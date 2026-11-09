@@ -57,3 +57,7 @@ python3 -m venv .venv
 实现进度：已加入 [冻结声学头开发实验](experiments/fsc-frozen-audio-pilot.md)、
 [音频策略与 verl 接入审计](docs/engineering/audio-rl-integration.md)，以及成对正确性奖励。
 这些是基线/RL 研究组件；正式学界复现、跨任务泛化和 RL 提升仍需实验验证。
+
+跨任务数据已扩展到 [SLURP 域留出协议](experiments/slurp-transfer-v1.md)：
+59,014 条真实录音、413,098 条派生决策，覆盖 scenario Choice 和四类开放槽位；
+已完成全量数据校验，尚未进行该发布上的模型评估。

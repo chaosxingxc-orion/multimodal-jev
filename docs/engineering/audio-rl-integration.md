@@ -50,3 +50,32 @@ torch-npu 2.10.0.post7 修改 AdamW 自动 foreach 检测，在纯 CPU 参数更
 
 这证明音频条件训练在 CPU 上具备一次真实前后向闭环；不证明模型已学会任务，
 不证明 NPU 支持，不证明 GRPO 或成对奖励有效。
+
+## verl DataProto 与 GRPO batch 适配
+
+`verl_audio.py` 使用固定镜像内真实 `verl.DataProto`、
+`compute_grpo_outcome_advantage` 和 `compute_policy_loss_vanilla`。
+
+- `uid` 是同一个 example/schema 的身份；不同候选视图仅共享 `source_group`。
+  禁止用录音 group 代替 GRPO prompt group，否则会把不同问题的难度差当优势。
+- 同一 uid 必须带完全一致的模型输入和 waveform，且有完整的重复采样组。
+- HF prompt 左 padding、response 右 padding；reward 放在最后有效 response token。
+  位置编码从 attention mask 累计生成，padding 不参与目标。
+- 音频帧 pad 到当前 batch 最长，保留 `input_features_mask`，使 verl 的
+  `extract_multi_modal_inputs` 可以沿 batch 维拼接。
+- 仅支持不移除 padding、无 sequence parallel 的初版 actor 路径；默认视觉
+  agent loop/server 的音频扩展、vLLM 实测和权重同步仍待完成。
+
+CPU 集成 smoke 的响应是受控 fixture，用于检查奖励方向、梯度、变长音频和
+padding。它不能替代 on-policy rollout，更不能作为 RL 有效性实验。
+
+[实际 actor 对照](verl-actor-parity.json) 使用官方 Qwen3-ASR 0.6B HF 权重，
+两种长度的真实音频、不同长度的 schema 和答案，4 条 batched teacher-forcing
+与逐条 unpadded 前向比较。有效 response token 的最大 log-prob 误差
+5.722e-5，通过预设 atol 3e-4 / rtol 1e-5。这确认当前音频 padding 与 mask
+在该真实模型上的数值一致性；还没有比较 vLLM 产生的 token log-prob。
+
+[verl 数值检查](verl-audio-smoke.json) 已通过，覆盖两个 prompt、每个两次受控
+response；真实 DataProto、音频拼接、GRPO advantage、PPO loss/backward，
+以及不完整 group/同 uid 不同 schema 的拒绝。正优势对应增加 log-prob 的梯度方向，
+padding 梯度为零。响应仍为受控 fixture，不冒充采样或算法效果。
