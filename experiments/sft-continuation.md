@@ -57,3 +57,10 @@ two history entries, two optimizer steps, effective-token ledger persisted both
 in result and resume checkpoint, saved optimizer state, and changed adapter hash.
 This is full-runner/persistence validation, not a matched SFT/RL experiment or an
 interrupted-process resume test. Existing live jobs keep their original snapshots.
+
+The two-step full runner exited 0. Result/history/resume checkpoint agree on two
+steps; all 112 persisted AdamW states report step2 and adapter weights changed.
+The persisted ledger records two exposures, 1,079 effective prompt tokens,
+14 response tokens and 260 valid audio frames. See
+[verified result](../docs/engineering/sft-continuation-runner-v1-result.json).
+This validates full-runner persistence but not recovery after an interrupted job.

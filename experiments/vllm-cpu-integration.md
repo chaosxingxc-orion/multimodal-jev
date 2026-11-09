@@ -189,3 +189,16 @@ change. See [actor parity receipt](../docs/engineering/vllm-feature-actor-v4-par
 It has entered the gradient forward; optimizer completion, export and second
 iteration remain pending. This is stronger evidence than the merged single-row
 audit, but still not a completed RL update or efficacy result.
+
+Actor v4 subsequently exited 137 with Docker OOMKilled=true during gradient
+forward, at the 48 GiB container limit. It never reported backward or optimizer
+step and has no optimizer/result artifact. The original terminal state and
+passed parity evidence are retained in the
+[OOM receipt](../docs/engineering/vllm-feature-actor-v4-oom.json).
+The host had ample free RAM; a distinct actor v5 increases only the memory
+limit to 128 GiB. Its complete source and configuration hashes equal v4, with
+the same full batch and 0.02 gate. Container:
+11d97d82a94c0255a97fc60989b1d744a7e3388d4e9780b95f5bc0dd6bc4d415.
+The failed v1 chain remains terminal. A separate v2 chain watches this retry
+and retains the existing downstream gates; see
+[launch receipt](../docs/engineering/vllm-cpu-chain-v2-launch.json).

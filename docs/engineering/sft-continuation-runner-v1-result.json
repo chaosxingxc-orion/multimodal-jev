@@ -1,0 +1,81 @@
+{
+  "status": "passed",
+  "container_id": "a62b2534f241c7a6ca7bbe0bb3828c39037187df6ffc2e7c5c81431dae6aab6d",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T22:32:48.73105932Z",
+    "FinishedAt": "2026-11-09T22:35:42.34431856Z"
+  },
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sft-continuation-runner-v1",
+  "updates": 2,
+  "training_budget": {
+    "sequences": 2,
+    "prompt_tokens": 1079,
+    "response_tokens": 14,
+    "audio_frames": 260,
+    "gradient_sequences": 2,
+    "gradient_tokens": 1093,
+    "no_grad_sequences": 0,
+    "no_grad_tokens": 0,
+    "optimizer_steps": 2
+  },
+  "history": [
+    {
+      "step": 1,
+      "loss": 0.10850818455219269,
+      "gradient_norm": 12.079519271850586,
+      "budget": {
+        "sequences": 1,
+        "prompt_tokens": 923,
+        "response_tokens": 8,
+        "audio_frames": 130,
+        "gradient_sequences": 1,
+        "gradient_tokens": 931,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 1
+      }
+    },
+    {
+      "step": 2,
+      "loss": 0.2029256969690323,
+      "gradient_norm": 6.994478702545166,
+      "budget": {
+        "sequences": 1,
+        "prompt_tokens": 156,
+        "response_tokens": 6,
+        "audio_frames": 130,
+        "gradient_sequences": 1,
+        "gradient_tokens": 162,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 1
+      }
+    }
+  ],
+  "initial_policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+  "checkpoint_verification": {
+    "resume_step": 2,
+    "history_matches": true,
+    "optimizer_states": 112,
+    "optimizer_steps": [
+      2
+    ]
+  },
+  "adapter_changed": true,
+  "artifacts": {
+    "result.json": "31ecc083f44cb4a0957229913777ec07e0c104e81d7f78c1e737a00aef68d02a",
+    "identity.json": "e5da45cc91e32c55a1b7e005e2bd4b28a3bd3de6bbebab44db9b6d0022a9e8d6",
+    "terminal.json": "1d180a652dd408a4a51da4904a309c4a62d2cc4da9c5c9986b6110173bcb41d0",
+    "resume.pt": "af014c4e6bf436316be05ca351d809501607ffeb171fbdca75d5800a475a7fce"
+  },
+  "scope": "full SFT runner two updates, explicit schedule and persisted optimizer/budget validated; no interrupted resume or matched-budget efficacy"
+}
