@@ -15,5 +15,6 @@
 - [AudioJev 官方 MMAR 复现](audiojev-mmar.md)
 - [音频 RL 迭代](audio-rl-iteration.md)
 - [冻结参考策略 KL 数值验证](reference-kl.md)
+- [真实 vLLM ARM CPU 链路验证](vllm-cpu-integration.md)
 
 协议存在不代表实验完成；实际结果和限制见 wiki 中带日期的记录。

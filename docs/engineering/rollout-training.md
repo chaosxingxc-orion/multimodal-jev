@@ -27,7 +27,9 @@ actor logits and are rejected until implemented. Response padding has no loss.
 The helper supports ordinary GRPO and `reward_mode='pair-grpo'`. Pair bonuses
 are composed per rollout replicate across complete six-view source groups,
 then GRPO centers by example ID (same schema), never by recording ID.
-Reference KL remains unimplemented. The new persisted iteration entrypoints and
+Optional fixed-reference KL has a passed controlled Qwen/verl numerical check;
+see [its protocol](../../experiments/reference-kl.md). Existing schedules omit it.
+The new persisted iteration entrypoints and
 sequential schedule are described in [the iteration protocol](../../experiments/audio-rl-iteration.md);
 the full real-vLLM schedule is not yet verified.
 
@@ -37,6 +39,11 @@ Real HF batched actor, audio collation and verl loss components passed earlier
 CPU checks. New rollout parsing and stale-policy handling have CPU unit tests.
 No claim of actual `LLM.generate` execution or `update_actor` end-to-end success
 is made yet: the available Ascend devices are occupied.
+
+An isolated official vLLM 0.30 ARM CPU image is now verified and a real engine
+initialization has started under the [CPU integration protocol](../../experiments/vllm-cpu-integration.md).
+No successful sampling or update is established by that startup. Its backend
+dependency differences are recorded and retain the same numerical parity gate.
 
 Full vLLM ModelConfig/registry inspection in the NPU-built image tries to query
 Triton Ascend device architecture even for CPU-only preprocessing. This fails
@@ -101,7 +108,8 @@ quality; neither is evidence of RL improvement.
 
 SFT initialization and export have now completed; see
 [fsc-sft-init-v1-receipt.json](fsc-sft-init-v1-receipt.json). FSC/SLURP inference
-is still running. `finalize_policy_comparisons.py` observes exact existing
+has completed on SLURP (format learning, no correct non-null targets) and remains
+running on FSC. `finalize_policy_comparisons.py` observes exact existing
 container IDs over SSH and applies the common scorer and preregistered paired
 comparison after exit-zero and complete prediction/hash checks. Original
 inference metrics are retained. Observation failures are retried; they never

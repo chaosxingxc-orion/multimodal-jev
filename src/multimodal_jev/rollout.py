@@ -68,7 +68,7 @@ class VllmAudioRollout:
         if set(engine_options)-{'dtype','max_model_len','gpu_memory_utilization','tensor_parallel_size','enforce_eager','max_num_seqs','seed'}:
             raise ValueError('unexpected engine configuration')
         self.engine=LLM(model=checkpoint,tokenizer=checkpoint,trust_remote_code=False,
-                        limit_mm_per_prompt={'audio':1},**engine_options)
+                        generation_config='vllm',limit_mm_per_prompt={'audio':1},**engine_options)
 
     def sample(self,examples,audios,config):
         from vllm import SamplingParams

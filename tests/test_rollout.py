@@ -12,6 +12,17 @@ def test_sampling_parity_constraints():
         with pytest.raises(ValueError):validate_sampling({**config(),key:value})
 
 
+def test_engine_disables_checkpoint_generation_defaults(monkeypatch):
+    import sys
+    from multimodal_jev.rollout import VllmAudioRollout
+    received={}
+    def fake_llm(**kwargs):received.update(kwargs);return NS()
+    monkeypatch.setitem(sys.modules,'vllm',NS(LLM=fake_llm))
+    VllmAudioRollout('checkpoint',NS(),'policy',{'dtype':'float32'})
+    assert received['generation_config']=='vllm'
+    assert received['limit_mm_per_prompt']=={'audio':1}
+
+
 def outputs():
     return [NS(finished=True,outputs=[NS(index=i,token_ids=[4,5],logprobs=[{4:NS(logprob=-.2)},{5:NS(logprob=-.3)}],finish_reason='stop') for i in [1,0]])]
 
