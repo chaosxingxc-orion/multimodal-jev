@@ -1,0 +1,38 @@
+{
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/container-transport-probe-v2",
+  "terminal": {
+    "exit_code": 125,
+    "error": "Remote Docker /var allocation failed; named actor container inspected absent; observation supervisor stopped; no inference launched",
+    "finished_unix": 1794267199.4996066
+  },
+  "local_probe": {
+    "status": "passed",
+    "versions": {
+      "torch": "2.13.0+cpu",
+      "transformers": "5.17.0"
+    },
+    "source_readonly": true,
+    "device": "cpu"
+  },
+  "local_container_id": "3426911ed505951a443540deb6cf727b4a4221cd08da803947ce4e719bbbd7bf",
+  "local_docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T23:31:28.09469466Z",
+    "FinishedAt": "2026-11-09T23:31:33.64210574Z"
+  },
+  "remote_launch_observation": {
+    "returncode": 125,
+    "stdout": "",
+    "stderr": "docker: Error response from daemon: mkdir /var/lib/docker/overlay2/8d4d470f11bafef9569cf7a89d3fc00b07e71d481120ffb44f748ce5eeb589e5-init: no space left on device\n\nRun 'docker run --help' for more information\n"
+  },
+  "remote_container_absent": true,
+  "scope": "local transport passed; remote probe not created because /var full; no model/optimizer verification"
+}

@@ -1,0 +1,22 @@
+{
+  "shared_root": "/mnt/cephfs/xingchao",
+  "rollout": {
+    "host": "local",
+    "image": "sha256:fdd4a28bb7515717e9ff1988669b4ae7c24588091cf0b73f05abff1f6ff6f87b",
+    "cpus": 4,
+    "memory_gib": 16,
+    "cpuset": "0-3"
+  },
+  "actor": {
+    "host": "npu",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "cpus": 4,
+    "memory_gib": 256
+  },
+  "export": {
+    "host": "npu",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "cpus": 4,
+    "memory_gib": 16
+  }
+}
