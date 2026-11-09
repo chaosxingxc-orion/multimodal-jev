@@ -1,0 +1,229 @@
+{
+  "source": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+  "version": "1228",
+  "scorer_sha256": "fadf9ffd6a446dbe4e95b5f86b9a8998f5bba88cd515cca50db253962a51bd96",
+  "scope": "data and scorer audit only; no model prediction or benchmark reproduction",
+  "splits": {
+    "train_id": {
+      "source_sha256": "9faa374d3028f501039d8723622c1edb4e2049678e05c7664b9d7e25a2d2d994",
+      "records": 5534,
+      "conversations": 4499,
+      "levels": {
+        "level_3_2": 1176,
+        "level_1": 2647,
+        "level_3_1": 894,
+        "level_2": 817
+      },
+      "audio_files": 5534,
+      "supplied_assistant_history_records": 1035,
+      "target_functions": 217,
+      "array_argument_count": 829,
+      "NAN_argument_count": 1145,
+      "strict_argument_count": 15544,
+      "argument_count_difference_vs_official_parser": 1196
+    },
+    "test_id": {
+      "source_sha256": "9f5a2f5a9accaa8a11e5a2806c1e8b7e3857d7612a0a3d76be80a6c9ad7d7610",
+      "records": 2590,
+      "conversations": 1986,
+      "levels": {
+        "level_3_1": 634,
+        "level_1": 902,
+        "level_3_2": 574,
+        "level_2": 480
+      },
+      "audio_files": 2590,
+      "supplied_assistant_history_records": 604,
+      "target_functions": 216,
+      "array_argument_count": 291,
+      "NAN_argument_count": 627,
+      "strict_argument_count": 7190,
+      "argument_count_difference_vs_official_parser": 446
+    },
+    "test_ood": {
+      "source_sha256": "e7b09de90c652684c7f89cce73ba361fad9dd0431a56180a8ad1cb86a11a48b1",
+      "records": 771,
+      "conversations": 593,
+      "levels": {
+        "level_1": 321,
+        "level_3_2": 104,
+        "level_3_1": 252,
+        "level_2": 94
+      },
+      "audio_files": 771,
+      "supplied_assistant_history_records": 178,
+      "target_functions": 61,
+      "array_argument_count": 8,
+      "NAN_argument_count": 200,
+      "strict_argument_count": 1921,
+      "argument_count_difference_vs_official_parser": 8
+    }
+  },
+  "audio_hash_overlap": {
+    "train_id__test_id": 0,
+    "train_id__test_ood": 0,
+    "test_id__test_ood": 0
+  },
+  "target_function_overlap": {
+    "train_id__test_id": 214,
+    "train_id__test_ood": 0
+  },
+  "train_controls": {
+    "oracle": {
+      "official": {
+        "intent_accuracy": 1.0,
+        "slot_precision": 1.0,
+        "slot_recall": 1.0,
+        "slot_f1": 1.0,
+        "overall_accuracy": 1.0,
+        "total_samples": 5534
+      },
+      "strict": {
+        "count": 5534,
+        "format_valid": 5534,
+        "exact_correct": 5534,
+        "function_multiset_correct": 5534,
+        "bound_slot_tp": 15544,
+        "bound_slot_fp": 0,
+        "bound_slot_fn": 0,
+        "exact_accuracy": 1.0,
+        "format_valid_rate": 1.0,
+        "bound_slot_f1": 1.0
+      }
+    },
+    "empty": {
+      "official": {
+        "intent_accuracy": 0.0,
+        "slot_precision": 0,
+        "slot_recall": 0.0,
+        "slot_f1": 0,
+        "overall_accuracy": 0.0,
+        "total_samples": 5534
+      },
+      "strict": {
+        "count": 5534,
+        "format_valid": 5534,
+        "exact_correct": 0,
+        "function_multiset_correct": 0,
+        "bound_slot_tp": 0,
+        "bound_slot_fp": 0,
+        "bound_slot_fn": 15544,
+        "exact_accuracy": 0.0,
+        "format_valid_rate": 1.0,
+        "bound_slot_f1": 0.0
+      }
+    },
+    "malformed": {
+      "official": {
+        "intent_accuracy": 0.0,
+        "slot_precision": 0,
+        "slot_recall": 0.0,
+        "slot_f1": 0,
+        "overall_accuracy": 0.0,
+        "total_samples": 5534
+      },
+      "strict": {
+        "count": 5534,
+        "format_valid": 0,
+        "exact_correct": 0,
+        "function_multiset_correct": 0,
+        "bound_slot_tp": 0,
+        "bound_slot_fp": 0,
+        "bound_slot_fn": 15544,
+        "exact_accuracy": 0.0,
+        "format_valid_rate": 0.0,
+        "bound_slot_f1": 0.0
+      }
+    }
+  },
+  "scorer_diagnostics": {
+    "array_value_changed": {
+      "official": {
+        "intent_accuracy": 1.0,
+        "slot_precision": 0,
+        "slot_recall": 0,
+        "slot_f1": 0,
+        "overall_accuracy": 1.0,
+        "total_samples": 1
+      },
+      "strict": {
+        "count": 1,
+        "format_valid": 1,
+        "exact_correct": 0,
+        "function_multiset_correct": 1,
+        "bound_slot_tp": 0,
+        "bound_slot_fp": 1,
+        "bound_slot_fn": 1,
+        "exact_accuracy": 0.0,
+        "format_valid_rate": 1.0,
+        "bound_slot_f1": 0.0
+      }
+    },
+    "slot_binding_swapped": {
+      "official": {
+        "intent_accuracy": 1.0,
+        "slot_precision": 1.0,
+        "slot_recall": 1.0,
+        "slot_f1": 1.0,
+        "overall_accuracy": 0.0,
+        "total_samples": 1
+      },
+      "strict": {
+        "count": 1,
+        "format_valid": 1,
+        "exact_correct": 0,
+        "function_multiset_correct": 1,
+        "bound_slot_tp": 0,
+        "bound_slot_fp": 2,
+        "bound_slot_fn": 2,
+        "exact_accuracy": 0.0,
+        "format_valid_rate": 1.0,
+        "bound_slot_f1": 0.0
+      }
+    },
+    "duplicate_call": {
+      "official": {
+        "intent_accuracy": 1.0,
+        "slot_precision": 1.0,
+        "slot_recall": 1.0,
+        "slot_f1": 1.0,
+        "overall_accuracy": 1.0,
+        "total_samples": 1
+      },
+      "strict": {
+        "count": 1,
+        "format_valid": 1,
+        "exact_correct": 0,
+        "function_multiset_correct": 0,
+        "bound_slot_tp": 1,
+        "bound_slot_fp": 1,
+        "bound_slot_fn": 0,
+        "exact_accuracy": 0.0,
+        "format_valid_rate": 1.0,
+        "bound_slot_f1": 0.6666666666666666
+      }
+    },
+    "malformed_vs_empty": {
+      "official": {
+        "intent_accuracy": 1.0,
+        "slot_precision": 0,
+        "slot_recall": 0,
+        "slot_f1": 0,
+        "overall_accuracy": 1.0,
+        "total_samples": 1
+      },
+      "strict": {
+        "count": 1,
+        "format_valid": 0,
+        "exact_correct": 0,
+        "function_multiset_correct": 0,
+        "bound_slot_tp": 0,
+        "bound_slot_fp": 0,
+        "bound_slot_fn": 0,
+        "exact_accuracy": 0.0,
+        "format_valid_rate": 0.0,
+        "bound_slot_f1": null
+      }
+    }
+  }
+}

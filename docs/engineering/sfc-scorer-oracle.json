@@ -1,0 +1,92 @@
+{
+  "manifest_sha256": "48662014bb5e9ea4b6b02db8b9d32646e1552d1542b0d97eebf0a27c3e5f1425",
+  "predictions_sha256": "d00ea3b51670c9395e8b5f9d22af9b4f58aa77bc97c4e0a4dd5221fce2193a31",
+  "official_scorer_sha256": "fadf9ffd6a446dbe4e95b5f86b9a8998f5bba88cd515cca50db253962a51bd96",
+  "official_command": [
+    "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+    "/mnt/cephfs/xingchao/datasets/sfc-bench/project/eval/metrics_multilevel.py",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-scorer-oracle-v1/scores/official-input.jsonl",
+    "--format",
+    "sfc",
+    "--output_file",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-scorer-oracle-v1/scores/official-details.jsonl"
+  ],
+  "official_split": "train_id",
+  "missing_predictions": 0,
+  "strict_metrics": {
+    "all": {
+      "count": 5534,
+      "format_valid": 5534,
+      "exact_correct": 5534,
+      "function_multiset_correct": 5534,
+      "bound_slot_tp": 15544,
+      "bound_slot_fp": 0,
+      "bound_slot_fn": 0,
+      "exact_accuracy": 1.0,
+      "format_valid_rate": 1.0,
+      "bound_slot_f1": 1.0
+    },
+    "level_3_2": {
+      "count": 1176,
+      "format_valid": 1176,
+      "exact_correct": 1176,
+      "function_multiset_correct": 1176,
+      "bound_slot_tp": 5052,
+      "bound_slot_fp": 0,
+      "bound_slot_fn": 0,
+      "exact_accuracy": 1.0,
+      "format_valid_rate": 1.0,
+      "bound_slot_f1": 1.0
+    },
+    "level_1": {
+      "count": 2647,
+      "format_valid": 2647,
+      "exact_correct": 2647,
+      "function_multiset_correct": 2647,
+      "bound_slot_tp": 5508,
+      "bound_slot_fp": 0,
+      "bound_slot_fn": 0,
+      "exact_accuracy": 1.0,
+      "format_valid_rate": 1.0,
+      "bound_slot_f1": 1.0
+    },
+    "level_3_1": {
+      "count": 894,
+      "format_valid": 894,
+      "exact_correct": 894,
+      "function_multiset_correct": 894,
+      "bound_slot_tp": 2168,
+      "bound_slot_fp": 0,
+      "bound_slot_fn": 0,
+      "exact_accuracy": 1.0,
+      "format_valid_rate": 1.0,
+      "bound_slot_f1": 1.0
+    },
+    "level_2": {
+      "count": 817,
+      "format_valid": 817,
+      "exact_correct": 817,
+      "function_multiset_correct": 817,
+      "bound_slot_tp": 2816,
+      "bound_slot_fp": 0,
+      "bound_slot_fn": 0,
+      "exact_accuracy": 1.0,
+      "format_valid_rate": 1.0,
+      "bound_slot_f1": 1.0
+    }
+  },
+  "strict_conversation_metrics": {
+    "level_3_1": {
+      "count": 447,
+      "both_turns_exact": 447,
+      "accuracy": 1.0
+    },
+    "level_3_2": {
+      "count": 588,
+      "both_turns_exact": 588,
+      "accuracy": 1.0
+    }
+  },
+  "scope": "Full TRAIN oracle control only; no model inference or reproduction score",
+  "official_metrics": "official-metrics.txt"
+}
