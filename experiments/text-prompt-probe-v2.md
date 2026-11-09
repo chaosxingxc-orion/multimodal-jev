@@ -32,3 +32,10 @@ The runtime defaults to v1 and valid-only evaluation. TRAIN input requires
 explicit reference-text prompt_probe scope. Text evidence comparisons reject
 mismatched prompt versions, so an ASR-versus-reference comparison cannot silently
 mix the two protocols. Existing running jobs retain their snapshots.
+
+Both exact containers exited0 and independent rescoring passed. v1 strict
+format validity and correctness are0/13; v2 format validity13/13, schema
+validity11/13 and correctness4/13. All five unknown targets are answered
+incorrectly rather than refused. The registered advance gate passes, with
+substantial remaining semantic/schema limitations. See
+[result receipt](../docs/engineering/text-prompt-probe-v2-result.json).
