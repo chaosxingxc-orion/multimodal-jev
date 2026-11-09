@@ -27,7 +27,9 @@ actor logits and are rejected until implemented. Response padding has no loss.
 The helper supports ordinary GRPO and `reward_mode='pair-grpo'`. Pair bonuses
 are composed per rollout replicate across complete six-view source groups,
 then GRPO centers by example ID (same schema), never by recording ID.
-Reference KL and multi-iteration experiment scheduling remain unimplemented.
+Reference KL remains unimplemented. The new persisted iteration entrypoints and
+sequential schedule are described in [the iteration protocol](../../experiments/audio-rl-iteration.md);
+the full real-vLLM schedule is not yet verified.
 
 ## Verification state
 

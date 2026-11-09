@@ -1,0 +1,73 @@
+# Persisted audio GRPO iteration protocol v1
+
+The runnable chain is `sample_audio_policy.py` → `update_audio_actor.py` →
+`export_audio_policy.py`. `run_audio_rl.py` schedules these as sequential
+subprocesses. This is the local audio actor path using real verl DataProto,
+GRPO advantages and PPO loss; it is not the distributed verl Ray worker stack.
+
+## Identity, objective and state
+
+Both sampler and actor use the same checkpoint identity function, covering weights,
+tokenizer, processor and configuration files. The update requires successful
+rollout terminal/result receipts, matching response/manifest/audio hashes,
+complete per-prompt replicate groups, and TRAIN-only inputs. Reward text must
+equal decoded response tokens. Nonfinite log-probs and nonfinite parity errors
+fail before any optimizer step. Actor/rollout parity tolerance remains .02 for
+the intended engine integration; the controlled HF check used 3e-4.
+
+The original base stays frozen across iterations. LoRA parameters retain their
+names and optimizer coordinates; save/reload AdamW moments and CPU RNG state.
+Actor dropout is disabled. A merged exported model is used only by the next
+vLLM subprocess. Parent adapter hashes, optimizer hash/configuration and export
+lineage must agree before continuing. Reward mode and pair bonus cannot change
+within a trajectory. Initial SFT adapter must match the sampling export receipt.
+The current schedule uses a CPU actor; device RNG persistence for stochastic
+NPU actor operations has not been implemented or verified.
+
+Every iteration closes its sampler process before updating and exporting. No
+in-process weight replacement is assumed. The next engine loads the new verified
+export. Equal reward groups produce no optimizer step; iteration count and actual
+update count are reported separately. No-op exports may be weight-identical, so
+iteration-specific export roots preserve lineage without overwriting receipts.
+
+Successful stages are reused. Failed or incomplete stages stop for process/state
+inspection; a missing heartbeat/terminal is not evidence a child is dead. Active
+checkpoints and optimizer state remain outside Git and are not cleanup targets.
+
+## Executable integration schedule
+
+`configs/experiments/rl-schedule-smoke.json` selects one complete FSC TRAIN source
+group, six views, two sampled responses per prompt and two iterations. It starts
+from the unadapted base to test the chain, not to measure RL quality. Uniform
+malformed responses may legitimately yield zero updates. Final matched SFT/GRPO/
+pair-GRPO experiments must instead start from the same completed SFT policy and
+freeze their larger sample/token/update budgets before inference.
+
+```bash
+python3 tools/jev/run_audio_rl.py \
+  --config configs/experiments/rl-schedule-smoke.json \
+  --output /mnt/cephfs/xingchao/experiments/multimodal-jev/rl-schedule-smoke-v1
+```
+
+Run in the pinned runtime with the current immutable source snapshot, shared
+assets mounted, and explicitly allocated NPU. The scheduler does not allocate
+devices, preempt other jobs, or use an HF fallback for rollout. This schedule has
+not yet been run: current devices are occupied.
+
+## Verification and limits
+
+[Real actor update check](../docs/engineering/rl-actor-update-smoke.json) passed
+in the pinned image: two controlled responses to one real FSC TRAIN prompt,
+exact pre-update HF log-prob equality, actual verl objective and LoRA optimizer
+step, gradient norm 2.34265 and 112 changed parameter tensors. A deliberately
+mismatched reward text/token record is rejected. Fixture responses and their
+HF log-probs were constructed for verification, not sampled by vLLM; no vLLM
+rollout receipt is emitted. Zero scalar PPO loss at ratio=1 reflects centered
+advantages, not zero gradient. The standalone check uses AdamW's default weight
+decay; the experiment runner explicitly uses zero weight decay.
+
+Receipt/identity rejection and scheduler stage handling have unit tests.
+Parent optimizer continuation, adapter export/reload, full two-iteration engine
+execution and actual on-policy gains remain unverified. Reference KL, distributed
+workers, multi-audio optimization, matched three-seed comparisons and heldout
+task evaluation remain required research work.

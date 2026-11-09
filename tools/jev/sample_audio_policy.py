@@ -3,7 +3,6 @@
 import argparse
 from dataclasses import asdict
 import fcntl
-import hashlib
 import json
 from pathlib import Path
 import time
@@ -12,6 +11,7 @@ from multimodal_jev.task_schema import JevExample
 from multimodal_jev.audio_policy import load_audio
 from multimodal_jev.rollout import VllmAudioRollout,validate_sampling
 from multimodal_jev.baseline import file_hash,atomic_json
+from multimodal_jev.policy_identity import checkpoint_identity
 
 
 def main():
@@ -25,10 +25,7 @@ def main():
         try:
             checkpoint=Path(config['checkpoint'])
             # Hash the checkpoint, tokenizer and processor files as one policy identity.
-            files={str(p.relative_to(checkpoint)):file_hash(p) for p in sorted(checkpoint.rglob('*'))
-                   if p.is_file() and p.suffix in {'.json','.jinja','.safetensors','.model','.txt'}}
-            if not any(name.endswith('.safetensors') for name in files):raise ValueError('model weights missing')
-            policy_id=hashlib.sha256(json.dumps(files,sort_keys=True).encode()).hexdigest()
+            policy_id,files=checkpoint_identity(checkpoint)
             identity={'policy_id':policy_id,'checkpoint_files':files,'config':config,
                       'manifest_sha256':file_hash(config['manifest'])}
             if (args.output/'identity.json').exists() and json.loads((args.output/'identity.json').read_text())!=identity:
