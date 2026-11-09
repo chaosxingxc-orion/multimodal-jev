@@ -8,8 +8,8 @@
 的类型化决策读出、语义一致性评估方法，以及 [omni](https://github.com/chaosxingxc-orion/omni)
 的多模态证据处理与可复现实验组织方式。
 
-当前阶段：工程初始化。仓库包含 Python 包骨架、开发配置、研究文档入口与实验记录模板；
-尚未实现模型、训练、推理或评测能力。研究方向已确定，具体模型版本、数据集、硬件和技术路线待核验与设计。
+当前阶段：公开资料调研与共享资源准备。已核验 Qwen3-ASR 版本并比较直接音频 Jev、SLU 和 Agentic Speech 方案；
+尚未实现模型训练、推理或评测能力。详细结论见 [研究报告](docs/research/README.md)，下载与整理状态见 [本地资源](docs/research/06-local-assets.md)。
 研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
 
 ## 目录
@@ -35,8 +35,8 @@ python3 -m venv .venv
 .venv/bin/python -c "import multimodal_jev; print(multimodal_jev.__version__)"
 ```
 
-当前包没有运行时第三方依赖；`dev` 提供 pytest。初始化阶段没有业务测试，
-后续新增实现时在 `tests/` 添加相应测试，使用 `.venv/bin/python -m pytest` 运行。
+当前包没有运行时第三方依赖；`dev` 提供 pytest，`assets` 提供下载工具所需 requests。
+使用 `.venv/bin/python -m pip install -e '.[dev,assets]'` 安装工具依赖，`.venv/bin/python -m pytest` 验证共享资源工具的校验与不覆盖行为。
 加速器、深度学习框架和多模态模型依赖在确定基线后单独固定版本。
 
 ## 研究与实验约定
