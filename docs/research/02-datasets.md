@@ -9,7 +9,7 @@
 | **SLURP** | 英语语音，意图+实体/槽位；18 场景、训练清单 91 个意图 | 第一主基准。官方 real train/devel/test 分别 **50,628 / 8,690 / 13,078 录音**；文本记录数分别 11,514 / 2,033 / 2,974，同一文本可有多个录音 | 文本 CC-BY-4.0；音频 CC-BY-NC-4.0。synthetic 训练录音单列，不混入 real 计数 |
 | **MAC-SLU** | 中文车载多意图，8 域、81 意图、192 槽位，最多 5 个意图；真实命令文本+TTS 音频 | 检验多意图、槽位归属、中文迁移；按原始 train/dev/test | HF 卡标 Apache-2.0，但 language 元数据写 en，与论文中文描述不一致，以实际记录核验语言 |
 | **MINDS-14** | 多语言银行场景意图，14 类，含音频/文本 | 较小的跨语言诊断；HF 主要是 train split，需预注册自有 train/dev/test，不能把随机划分称官方测试 | CC-BY-4.0；聚合 `all/` 与各语言分片避免重复下载 |
-| **Fluent Speech Commands** | 30,043 条、97 说话人、31 个 action/object/location 组合意图 | 适合管线 smoke 和低成本基线；说话人划分，不等于词句组合泛化 | 官方 Fluent Speech Commands Public License 限定学术研究；不能仅以社区 CC 标签代替该专用条款 |
+| **Fluent Speech Commands** | 30,043 条、97 说话人、31 个 action/object/location 组合意图 | 已从 OpenDataLab 下载并校验；官方 train/valid/test=23,132/3,118/3,793；说话人划分，不等于词句组合泛化 | 官方 Fluent Speech Commands Public License 限定学术研究；不能仅以社区 CC 标签代替该专用条款 |
 | **SLUE Phase 1** | 自然语音 NER（VoxPopuli）、情感（VoxCeleb） | 比朗读命令更自然；NER micro-F1、label-F1；情感 macro recall/F1 | VoxPopuli 与 VoxCeleb 子集分别带许可；toolkit MIT 不代表数据 MIT |
 | **SLUE Phase 2** | 语音 QA、摘要、实体时间定位、对话行为 | 优先实体定位/对话行为，QA 作证据选择扩展；不同任务不能聚成一个准确率 | 按子集许可；原始 zip 与 Parquet 是不同发布视图，全部拉取会重复占空间 |
 | **SpokenWOZ** | 5,700 真实人对话、约 203k turns、249 h、8 域 | 跨轮槽位与对话状态；joint goal accuracy；官网已提供 train/dev 及 fixed test，旧 README 的 hidden test 说明已过时 | CC-BY-NC-4.0；静态对话回放不是新的交互任务成功实验 |

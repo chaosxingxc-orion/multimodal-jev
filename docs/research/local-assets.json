@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-09T14:50:11Z",
+  "updated_utc": "2026-11-09T15:38:11Z",
   "assets": {
     "datasets/mmau": {
       "path": "/mnt/cephfs/xingchao/datasets/mmau",
@@ -233,6 +233,52 @@
         "https://huggingface.co/datasets/gamma-lab-umd/MMAU-test-mini"
       ],
       "status": "complete_verified"
+    },
+    "datasets/fsc": {
+      "path": "/mnt/cephfs/xingchao/datasets/fsc",
+      "expected_files": 3,
+      "expected_bytes": 1544095303,
+      "verified_files": 3,
+      "verified_bytes": 1544095303,
+      "missing": [],
+      "source_urls": [
+        "https://opendatalab.com/OpenDataLab/Fluent_Speech_Commands/tree/main"
+      ],
+      "status": "complete_verified",
+      "extraction": "complete",
+      "verification": {
+        "source_page": "https://opendatalab.com/OpenDataLab/Fluent_Speech_Commands/tree/main",
+        "dataset_id": 1505,
+        "archive_sha256": "4376699f7daf134a9fa57a1d880ffcaaf94a3e2551ba0b40ad894d7abb71aacb",
+        "archive_bytes": 1544093324,
+        "extracted_files": 30049,
+        "splits": {
+          "train": {
+            "rows": 23132,
+            "unique_audio": 23132,
+            "speakers": 77,
+            "csv": "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/data/train_data.csv"
+          },
+          "valid": {
+            "rows": 3118,
+            "unique_audio": 3118,
+            "speakers": 10,
+            "csv": "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/data/valid_data.csv"
+          },
+          "test": {
+            "rows": 3793,
+            "unique_audio": 3793,
+            "speakers": 10,
+            "csv": "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/data/test_data.csv"
+          }
+        },
+        "total_rows": 30043,
+        "speakers": 97,
+        "intent_combinations": 31,
+        "invalid_audio": [],
+        "verified_at_utc": "2026-11-09T15:37:42Z",
+        "exit_code": 0
+      }
     }
   },
   "note": "Checksum-verified selected release files; archives are not all extracted. Existing SLURP and FDB-v3 have separate receipts. SLUE Phase 1 is gated; one public README is not a usable dataset."

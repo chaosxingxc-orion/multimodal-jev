@@ -15,7 +15,7 @@ Omni 的旧容器有的只挂载 `omni/`，直接迁移后回链到父目录会�
 - SFC 的 Git 中音频是 LFS 指针；已解析指针、下载真实音频并校验 SHA256。8,895 个 WAV 均通过头部读取验证。
 - FDB-v3 已取得发布 ZIP 并解压 100 个 `input.wav`；保存本地 SHA256，发布方没有提供独立校验和，不能称发布者签名验证。
 - Audio2Tool 普通文件通过 pinned Git blob 校验；音频使用 LFS SHA256。批量 LFS 避免 3,000 次/5 分钟 resolver 限流；失败项可按原 manifest 重试。
-- Fluent Speech Commands 作为次级 smoke 基准列入调研；历史下载地址返回 403，未用来源不明的社区音频替代。首轮语义训练由 SLURP/MAC-SLU/SFC 覆盖；未下载不影响它们的官方划分。
+- Fluent Speech Commands 已从用户指定的 OpenDataLab 镜像下载并解压，归档 SHA256 与发布清单匹配；30,043 条 WAV 逐条可读，官方 train/valid/test 和说话人划分均已核验。
 - SLUE Phase 1 返回 **401 gated dataset**，公开 README 不代表音频允许匿名下载；当前环境无 HF 登录凭据。需账号接受官方条款并在机器登录后补齐，不用第三方镜像绕过门槛。
 - τ² voice 数据/场景已从固定代码版本共享到 `datasets/tau2-voice/data/`；运行时 TTS/对话生成/judge 仍依赖单独配置的 provider，不声称全部离线可跑。EVA 的 HF 资产仅覆盖公开 airline 入口。
 
@@ -59,7 +59,7 @@ manifest、下载事件、逐文件校验凭证、分片状态和短时签名 UR
 
 ## 最终文件校验汇总
 
-以下选定发布文件合计 **85,541 个 / 187.81 GB**，包含复用的 ASR-1.7B，未计既有 SLURP、其他历史模型、FDB 解压副本和源码；不能将其全部算成新增网络下载量。另有 FDB-v3 0.736 GB 原始归档与 100 条已解压输入、τ² 约 0.920 GB 场景/资产。
+以下选定发布文件合计 **85,544 个 / 189.36 GB**，包含复用的 ASR-1.7B，未计既有 SLURP、其他历史模型、FDB 解压副本和源码；不能将其全部算成新增网络下载量。另有 FDB-v3 0.736 GB 原始归档与 100 条已解压输入、τ² 约 0.920 GB 场景/资产。
 
 | 资源 | 校验文件 | 字节规模（GB） | 状态 |
 | --- | ---: | ---: | --- |
@@ -79,6 +79,13 @@ manifest、下载事件、逐文件校验凭证、分片状态和短时签名 UR
 | `datasets/sfc-bench` | 8895/8895 | 2.703 | 已校验 |
 | `datasets/spokenwoz` | 20/20 | 12.823 | 已校验 |
 | `models/qwen3-asr-1.7b` | 12/12 | 4.703 | 已校验 |
+| `datasets/fsc` | 3/3 | 1.544 | 已校验并解压 |
 | `datasets/mmau-mini` | 3/3 | 1.213 | 已校验 |
 
 完整路径、来源和缺失列表见 [local-assets.json](local-assets.json)。批量任务 exit_code=1 的 14 个条目均为 SLUE Phase 1 受限 LFS 文件；主清单该资源另有 11 个受限小文件，共缺 25/26 个，已如实保留失败记录。
+
+## FSC 补充下载
+
+共享目录：`/mnt/cephfs/xingchao/datasets/fsc/`，可用数据位于 `extracted/fluent_speech_commands_dataset/`。保留原始归档、镜像说明、原发布方许可与 `VERIFICATION.json`。官方划分 train 23,132 / valid 3,118 / test 3,793，共 30,043 条；97 名说话人、31 个组合意图，三个划分无音频路径或说话人重叠。全部 WAV 头可读且采样率为 16 kHz。
+
+归档 SHA256：`4376699f7daf134a9fa57a1d880ffcaaf94a3e2551ba0b40ad894d7abb71aacb`。未下载相同哈希的 `.tar.1.gz` 副本及 `.aria2` 状态文件。镜像 CC BY-NC 4.0 标签不能替代原发布方专用许可。

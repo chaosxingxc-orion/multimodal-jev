@@ -233,3 +233,9 @@
 | voicechat-full | [原始来源](https://arxiv.org/html/2609.21967v2) | full_text / retrieved |
 | wav2vec2 | [原始来源](https://arxiv.org/abs/2006.11477) | abstract / retrieved |
 | wavlm | [原始来源](https://arxiv.org/abs/2110.13900) | abstract / retrieved |
+
+## FSC 下载补充核验
+
+用户指定的 [OpenDataLab FSC 镜像](https://opendatalab.com/OpenDataLab/Fluent_Speech_Commands/tree/main) 通过官方 OpenXLab API 取得文件清单（dataset ID 1505）。网页入口在当前网络返回风险提醒页；公开 API/文件解析接口可匿名访问，无需 HF 或 OpenDataLab 登录。归档以发布 SHA256 固定；API 未提供不可变 commit ID。
+
+README/metafile 的目录 size 分别为 1,017/434，但实际为 1,281/698 字节；实际内容 SHA256 均与目录给值一致，保留该差异，不修改原文件。重复归档和 `.aria2` 下载状态未入库。原始发布者专用许可与镜像 CC BY-NC 4.0 标签均保留。
