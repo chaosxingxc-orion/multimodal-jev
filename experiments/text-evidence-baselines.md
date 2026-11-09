@@ -50,3 +50,16 @@ Runs use the immutable NGA-aligned image and a copied source snapshot, no NPU
 devices, read-only assets and separate experiment outputs. Check the real
 Docker state and terminal receipts before resuming; an old heartbeat is not
 proof of termination.
+
+## Completed SLURP v1
+
+Both SLURP containers exited0 with 168 complete outputs each. Independent common
+scoring and 2,000 speaker-bootstrap draws reproduce the saved comparison.
+Both ASR-text and reference-text have strict format validity0/168 and semantic
+accuracy0/168. These are present malformed predictions, not missing inference.
+See [result receipt](../docs/engineering/slurp-text-development-v1-result.json).
+This floor prevents meaningful inference about ASR error propagation. Do not
+interpret zero difference as evidence-equivalence, repair outputs for the
+registered score, or call reference transcripts an achieved semantic upper bound.
+Any revised prompt/format protocol must be separately registered and validated
+on TRAIN-only material before a new development comparison; retain v1 results.

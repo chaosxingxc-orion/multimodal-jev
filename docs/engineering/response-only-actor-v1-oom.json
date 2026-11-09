@@ -1,0 +1,46 @@
+{
+  "container_id": "5b5c40e5f2b0f5583f944ed4fd1142e3ffbded3b762ea52e0f7cd42bb5064ee2",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": true,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 137,
+    "Error": "",
+    "StartedAt": "2026-11-09T22:46:21.28183244Z",
+    "FinishedAt": "2026-11-09T23:02:16.30783846Z"
+  },
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-response-only-v1",
+  "parity": [
+    {
+      "phase": "parity_checked",
+      "chunk": 0,
+      "max_logprob_error": 4.8220157623291016e-05,
+      "per_response_error": [
+        3.266334533691406e-05,
+        4.8220157623291016e-05,
+        3.975629806518555e-05,
+        4.494190216064453e-05,
+        2.8014183044433594e-05,
+        2.384185791015625e-05,
+        3.534555435180664e-05,
+        3.4689903259277344e-05,
+        1.2278556823730469e-05,
+        1.2278556823730469e-05,
+        2.658367156982422e-05,
+        2.658367156982422e-05
+      ]
+    }
+  ],
+  "last_progress": {
+    "phase": "gradient_forward",
+    "chunk": 0,
+    "heartbeat_unix": 1794265016.1085978
+  },
+  "optimizer_exists": false,
+  "result_exists": false,
+  "interpretation": "Response-only projection passed probability parity but 32GiB was insufficient for gradient forward. No completed update; downstream chain and mixed queue stopped."
+}

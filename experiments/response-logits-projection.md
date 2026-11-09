@@ -46,3 +46,18 @@ then requires a real update, verified export, fresh vLLM process and persisted
 optimizer restoration in the second actor. It uses its own experiment/export
 roots; the existing full-projection chain remains separate. See
 [launch receipt](../docs/engineering/response-only-chain-v1-launch.json).
+
+The real response-only v1 actor exited137 with Docker OOMKilled=true during
+gradient forward at its 32GiB limit. Its complete parity check passed at
+4.8220157623291016e-5; no saved optimizer or result exists. Both downstream
+supervisors stopped on that exact failed container. See
+[failure receipt](../docs/engineering/response-only-actor-v1-oom.json).
+Response-only vocabulary projection alone therefore does not establish a
+32GiB training path. A separately named v2 retry raises only the container
+limit to 128GiB, preserving byte-identical source/config and fixed gates;
+see [retry launch](../docs/engineering/response-only-actor-v2-launch.json).
+
+The [v2 chain](../docs/engineering/response-only-chain-v2-launch.json) observes
+the exact retry container, requires a successful update, and retains the same
+export parity and fresh second-engine/optimizer restoration gates. The failed
+v1 chain and mixed-response queue are retained without restart.
