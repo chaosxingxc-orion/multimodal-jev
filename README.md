@@ -61,3 +61,7 @@ python3 -m venv .venv
 跨任务数据已扩展到 [SLURP 域留出协议](experiments/slurp-transfer-v1.md)：
 59,014 条真实录音、413,098 条派生决策，覆盖 scenario Choice 和四类开放槽位；
 已完成全量数据校验，尚未进行该发布上的模型评估。
+
+[vLLM rollout 与 verl 更新入口](docs/engineering/rollout-training.md) 已实现；
+实际 NPU engine rollout 和完整 RL 更新尚待验证。原始 ASR 模型的实际采样暴露了
+结构化输出失败，已据此启动 SFT 初始化和完整 FSC 冻结基线。

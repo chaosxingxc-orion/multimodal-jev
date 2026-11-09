@@ -35,3 +35,8 @@ def test_selection_rejects_speaker_leakage(tmp_path):
     for record in records: record['metadata']['speaker_id']='train'
     valid.write_text(''.join(json.dumps(r)+'\n' for r in records))
     with pytest.raises(ValueError,match='speaker'):prepare_selection(cfg)
+
+
+def test_full_selection_includes_all_native_examples(tmp_path):
+    path=tmp_path/'train';records=manifest(path,'train')
+    assert len(select_examples(path,'train',None))==len(records)

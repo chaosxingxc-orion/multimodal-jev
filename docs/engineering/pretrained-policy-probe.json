@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "backend": "HF CPU diagnostic",
+  "prompts": 2,
+  "samples": 4,
+  "rewards": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+  ],
+  "valid_json_object_outputs": 0,
+  "elapsed_seconds": 47.27498096000636,
+  "config": {
+    "checkpoint": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+    "manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+    "example_ids": [
+      "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+      "fsc:e7c7a20a71ca4337a9ba751a:noul.False"
+    ]
+  },
+  "manifest_sha256": "633882c3820dc45e112c7790305899be639836cf0fced04d1d204ca1b058361a",
+  "scope": "pretrained policy instruction-following diagnosis; no optimization or vLLM result",
+  "terminal": {
+    "exit_code": 0
+  },
+  "samples_sha256": "fcd11ea128ecb29cee6a66d55125599a1c4374f254eef2ae00a818ead3a18d5d",
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/hf-policy-probe-v1/run",
+  "interpretation": "All four outputs are transcriptions rather than JSON. These GRPO groups have zero advantage; perform SFT initialization before RL.",
+  "image_id": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "model_revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c"
+}

@@ -1,0 +1,25 @@
+{
+  "checkpoint": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+  "manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+  "example_ids": [
+    "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+    "fsc:e7c7a20a71ca4337a9ba751a:noul.False"
+  ],
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "top_k": -1,
+    "n": 4,
+    "max_tokens": 64,
+    "seed": 17
+  },
+  "engine": {
+    "dtype": "bfloat16",
+    "max_model_len": 2048,
+    "gpu_memory_utilization": 0.5,
+    "tensor_parallel_size": 1,
+    "enforce_eager": true,
+    "max_num_seqs": 4,
+    "seed": 17
+  }
+}

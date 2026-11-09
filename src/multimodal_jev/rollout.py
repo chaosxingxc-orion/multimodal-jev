@@ -1,0 +1,81 @@
+"""vLLM offline audio sampling with explicit policy and response identities.
+
+The engine is created from a checkpoint for one policy version. Recreate it after
+an update; silently keeping an old engine is not supported. No HF fallback.
+"""
+from __future__ import annotations
+from dataclasses import dataclass
+import math
+from .audio_policy import vllm_request
+
+
+@dataclass(frozen=True)
+class Rollout:
+    example_id: str
+    replicate: int
+    policy_id: str
+    token_ids: tuple[int,...]
+    log_probs: tuple[float,...]
+    text: str
+    finish_reason: str
+
+
+def validate_sampling(config):
+    # Raw-policy actor logprobs are comparable only to this distribution in v1.
+    # Temperature/top-k changes require applying the identical transform to actor logits.
+    if config.get('temperature')!=1.0 or config.get('top_p')!=1.0 or config.get('top_k')!=-1:
+        raise ValueError('v1 requires temperature=1, top_p=1, top_k=-1 for actor probability parity')
+    if config.get('repetition_penalty',1.0)!=1.0 or config.get('presence_penalty',0.0)!=0.0 or config.get('frequency_penalty',0.0)!=0.0:
+        raise ValueError('v1 disallows probability-changing penalties')
+    if type(config.get('n')) is not int or config['n']<2:
+        raise ValueError('GRPO requires n>=2')
+    if type(config.get('max_tokens')) is not int or config['max_tokens']<1:
+        raise ValueError('positive generation limit required')
+    allowed={'temperature','top_p','top_k','n','max_tokens','seed','repetition_penalty','presence_penalty','frequency_penalty'}
+    if set(config)-allowed:raise ValueError('unsupported sampling parameters')
+
+
+def decode_outputs(outputs,examples,processor,policy_id,n):
+    if not policy_id:raise ValueError('policy identity required')
+    if len(outputs)!=len(examples):raise ValueError('request output count mismatch')
+    records=[]
+    for request,example in zip(outputs,examples):
+        if not request.finished:raise ValueError('request has not finished')
+        if len(request.outputs)!=n:raise ValueError('incomplete rollout group')
+        indices={response.index for response in request.outputs}
+        if indices!=set(range(n)):raise ValueError('duplicate or missing replicate index')
+        for response in sorted(request.outputs,key=lambda r:r.index):
+            ids=list(response.token_ids)
+            if not ids or response.logprobs is None or len(response.logprobs)!=len(ids):
+                raise ValueError('nonempty aligned token logprobs required')
+            logps=[]
+            for token,distribution in zip(ids,response.logprobs):
+                if distribution is None or token not in distribution:raise ValueError('sampled token logprob missing')
+                logp=float(distribution[token].logprob)
+                if not math.isfinite(logp) or logp>1e-5:raise ValueError('invalid token logprob')
+                logps.append(logp)
+            if response.finish_reason not in {'stop','length'}:raise ValueError('unsupported rollout termination')
+            records.append(Rollout(example.example_id,response.index,policy_id,tuple(ids),tuple(logps),
+                processor.tokenizer.decode(ids,skip_special_tokens=True),response.finish_reason))
+    return records
+
+
+class VllmAudioRollout:
+    def __init__(self,checkpoint,processor,policy_id,engine_options):
+        from vllm import LLM
+        if not policy_id:raise ValueError('policy identity required')
+        self.policy_id=policy_id;self.processor=processor
+        if set(engine_options)-{'dtype','max_model_len','gpu_memory_utilization','tensor_parallel_size','enforce_eager','max_num_seqs','seed'}:
+            raise ValueError('unexpected engine configuration')
+        self.engine=LLM(model=checkpoint,tokenizer=checkpoint,trust_remote_code=False,
+                        limit_mm_per_prompt={'audio':1},**engine_options)
+
+    def sample(self,examples,audios,config):
+        from vllm import SamplingParams
+        validate_sampling(config)
+        if not examples or len(examples)!=len(audios):raise ValueError('aligned examples/audio required')
+        if len({ex.example_id for ex in examples})!=len(examples):raise ValueError('duplicate request identity')
+        requests=[vllm_request(self.processor,ex,audio) for ex,audio in zip(examples,audios)]
+        params=SamplingParams(**config,logprobs=0)
+        outputs=self.engine.generate(requests,params,use_tqdm=False)
+        return decode_outputs(outputs,examples,self.processor,self.policy_id,config['n'])

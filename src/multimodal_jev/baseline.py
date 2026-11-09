@@ -20,8 +20,8 @@ def file_hash(path):
 
 def select_examples(manifest, split, per_class):
     from .task_schema import JevExample
-    if type(per_class) is not int or per_class < 1:
-        raise ValueError('per_class must be positive')
+    if per_class is not None and (type(per_class) is not int or per_class < 1):
+        raise ValueError('per_class must be positive or null for the full official split')
     groups = defaultdict(list)
     with Path(manifest).open() as handle:
         for line in handle:
@@ -37,7 +37,7 @@ def select_examples(manifest, split, per_class):
     selected = []
     for label in sorted(groups):
         examples = sorted(groups[label], key=lambda e: hashlib.sha256(e.example_id.encode()).digest())
-        if len(examples) < per_class:
+        if per_class is not None and len(examples) < per_class:
             raise ValueError(f'{split} class {label} has fewer than {per_class} records')
         selected.extend(examples[:per_class])
     return selected
@@ -147,7 +147,7 @@ def train_head(config, output):
     receipt={'status':'passed','route':'frozen-audio-mean-pool-linear-choice',
              'train_count':len(train),'valid_count':len(valid),'classes':len(labels),
              'feature_dim':train_x.shape[-1],'seeds':results,'elapsed_seconds':time.monotonic()-start,
-             'scope':'preregistered development pilot, not full paper reproduction or generalization evidence',
+             'scope':config.get('scope','preregistered development pilot, not full paper reproduction or generalization evidence'),
              'identity':identity}
     atomic_json(output/'result.json',receipt)
     return receipt
