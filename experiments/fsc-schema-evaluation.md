@@ -41,3 +41,11 @@ first-candidate/always-true 34/186, malformed 0/186. Noul both-correct is 31/31
 for oracle and 0/31 for each other control. This validates scoring behavior only.
 Receipt: `docs/engineering/fsc-schema-controls.json`; full generated control
 predictions are outside Git in `experiments/multimodal-jev/fsc-schema-controls-v1`.
+
+After both evaluations complete, `tools/jev/compare_audio_policies.py` re-scores
+their raw outputs with one parser/scorer and computes paired speaker-cluster
+bootstrap differences (2,000 draws, seed 17, percentile 95% interval). Complete
+aligned predictions and matching decoding protocol are required. Report each
+variant and paired both-correct separately; views of one recording are never
+resampled independently. Small dev-cluster intervals are descriptive and do not
+establish three-seed RL gains or final generalization.

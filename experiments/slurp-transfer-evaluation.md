@@ -49,3 +49,25 @@ Both run roots are under shared `experiments/multimodal-jev/` with the respectiv
 suffix names, copied immutable source/config snapshots and separate outputs.
 Observe actual process/container state before resuming; never restart on a stale
 progress file alone. No model metrics have completed at registration time.
+
+## Paired comparison (frozen before completed inference)
+
+Use `tools/jev/compare_audio_policies.py` after both runs have exit-zero evaluation
+receipts and complete prediction sets. It re-scores raw outputs with one scorer
+revision, retaining original run metrics. Verify the manifest/prediction hashes
+and equal decoding length, device, dtype and seed. The command takes `--manifest`,
+`--base`, `--candidate` (evaluation run directories) and a new `--output` path.
+
+Report candidate-minus-base differences with a paired speaker-cluster bootstrap:
+2,000 draws, seed 17, 2.5/97.5 percentile endpoints. Each draw samples speakers
+with replacement, including all their eligible recording views for both policies.
+The statistic remains the decision-weighted accuracy difference within each
+partition/variant/presence stratum. Pair both-correct uses recording pairs as
+observations clustered by speaker. A stratum with fewer than two speakers gets
+no confidence interval. No aggregate cross-variant success metric is introduced.
+
+These are exploratory development intervals with small cluster counts; they are
+not multiple-testing-adjusted significance tests or population guarantees. Shared
+utterance text across speakers can introduce dependence not captured by speaker
+clustering. Final claims require the full frozen test protocol, multiple training
+seeds and appropriate source-family sensitivity analysis.

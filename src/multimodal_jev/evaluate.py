@@ -10,6 +10,16 @@ from .reward import score_rollout
 from .answers import parse_answer, AnswerError
 
 
+def parsed_prediction(answer):
+    if answer is None or answer.get('format_valid', True) is not True:
+        return None
+    try:
+        text=answer.get('raw_text',json.dumps({k:answer[k] for k in ('value','confidence') if k in answer}))
+        return parse_answer(text)
+    except AnswerError:
+        return None
+
+
 def evaluate(manifest: Path, predictions: Path):
     answers = {}
     for line in predictions.read_text().splitlines():
@@ -34,16 +44,7 @@ def evaluate(manifest: Path, predictions: Path):
                 raise ValueError(f'duplicate manifest example: {ex.example_id}')
             seen.add(ex.example_id)
             answer = answers.pop(ex.example_id, None)
-            parsed = None
-            if answer is not None and answer.get('format_valid', True) is True:
-                try:
-                    # Raw generation is authoritative when present. Legacy structured
-                    # predictions are still supported, with the same answer validation.
-                    text = answer.get('raw_text', json.dumps({k: answer[k] for k in
-                                          ('value', 'confidence') if k in answer}))
-                    parsed = parse_answer(text)
-                except AnswerError:
-                    pass
+            parsed = parsed_prediction(answer)
             missing = parsed is None
             value = parsed['value'] if parsed is not None else None
             confidence = parsed.get('confidence') if parsed is not None else None
