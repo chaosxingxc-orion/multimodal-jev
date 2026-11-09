@@ -48,14 +48,18 @@ def run(config, output):
     atomic_json(output/'identity.json', identity)
     processor, model = load_runtime(config['model_path'], config['device'], config['dtype'])
     model.eval(); cache = output/'records'; cache.mkdir(exist_ok=True); start = time.monotonic()
-    for index, row in enumerate(rows):
-        audio = Path(row['audio']); key = row['example_id']
-        if file_hash(audio) != row['metadata']['audio_sha256']:
+    representatives = {}
+    for row in rows:
+        representatives.setdefault(row['metadata']['audio_sha256'], row)
+    audio_results = {}
+    for index, row in enumerate(representatives.values()):
+        audio = Path(row['audio']); audio_key = row['metadata']['audio_sha256']; key = row['example_id']
+        if file_hash(audio) != audio_key:
             raise ValueError('audio changed')
-        path = cache/(hashlib.sha256(key.encode()).hexdigest()+'.json')
+        path = cache/(hashlib.sha256(('audio:'+audio_key).encode()).hexdigest()+'.json')
         if path.exists():
             record = json.loads(path.read_text())
-            if record['example_id'] != key: raise ValueError('cache ID mismatch')
+            if record['audio_sha256'] != audio_key: raise ValueError('cache audio ID mismatch')
         else:
             wave = load_audio(audio)
             batch = processor.apply_transcription_request(wave, language='English',
@@ -66,16 +70,17 @@ def run(config, output):
                 generated = model.generate(**batch, max_new_tokens=config['max_new_tokens'], do_sample=False)
             raw = processor.decode(generated[0, batch['input_ids'].shape[-1]:], skip_special_tokens=True)
             transcript = processor.extract_transcription(raw)
-            record = {'example_id': key, 'raw_text': raw, 'transcription': transcript,
+            record = {'example_id': key, 'audio_sha256': audio_key, 'raw_text': raw, 'transcription': transcript,
                       'token_ids': generated[0, batch['input_ids'].shape[-1]:].tolist(),
                       'input_tokens': int(batch['input_ids'].shape[-1]),
-                      'reference': row['metadata'].get('transcript_reference'),
                       'audio_seconds': len(wave)/16000}
             atomic_json(path, record)
-        atomic_json(output/'progress.json', {'done': index+1, 'total': len(rows),
+        audio_results[audio_key] = record
+        atomic_json(output/'progress.json', {'done': index+1, 'total': len(representatives),
                     'heartbeat_unix': time.time(), 'elapsed_seconds': time.monotonic()-start})
-    records = [json.loads((cache/(hashlib.sha256(r['example_id'].encode()).hexdigest()+'.json')).read_text())
-               for r in rows]
+    records = [{**audio_results[r['metadata']['audio_sha256']],
+                'example_id': r['example_id'],
+                'reference': r['metadata'].get('transcript_reference')} for r in rows]
     distances = []; ref_tokens = []; hyp_tokens = []
     for record in records:
         ref = normalize(record.get('reference') or ''); hyp = normalize(record['transcription'])
