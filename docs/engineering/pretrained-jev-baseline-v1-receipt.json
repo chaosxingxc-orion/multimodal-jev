@@ -1,0 +1,28 @@
+{
+  "protocol": "pretrained-qwen3-asr-jev-dev-v1",
+  "model": "Qwen/Qwen3-ASR-0.6B-hf",
+  "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+  "scorer": "src/multimodal_jev/evaluate.py",
+  "scope": "fixed valid development manifests; no test evaluation; malformed output is never null",
+  "fsc_schema": {
+    "manifest_sha256": "87d0e85343d8bfc6fbbc213263fcaed3de2170995480b10d3186ef6ebd879a68",
+    "records": 186,
+    "format_valid": 0,
+    "malformed": 186,
+    "accuracy": 0.0,
+    "coverage": 0.0,
+    "pairs": {"permutation_both_correct": 0, "rebind_both_correct": 0, "missing_candidate_both_correct": 0, "noul_both_correct": 0},
+    "predictions_sha256": "c73288233eb0632807c510fb01d6a454bd55aa36673def406742114a9f902509"
+  },
+  "slurp_transfer": {
+    "manifest_sha256": "8da2269b1e21e65b20d96100e11ddc092ab6414e433aef437bda7689f0aa5327",
+    "records": 168,
+    "format_valid": 0,
+    "malformed": 168,
+    "accuracy": 0.0,
+    "coverage": 0.0,
+    "pairs": {"permutation_both_correct": 0, "rebind_both_correct": 0},
+    "predictions_sha256": "a42f0ead541cf7ee9d1bf4b48d325cddaacd268c407578253f062d65743da9ea"
+  },
+  "interpretation": "The unadapted ASR checkpoint emits transcription-style responses under this Jev prompt contract; these are format failures, not evidence of semantic null predictions or trained-policy quality."
+}
