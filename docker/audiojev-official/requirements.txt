@@ -1,0 +1,14 @@
+# Official direct dependency ranges resolved to explicit versions.
+# CUDA wheels are publisher-hosted and SHA256 pinned. Transitive dependencies
+# remain resolver-selected; retain pip freeze/inspect and the built image ID.
+torch @ https://download.pytorch.org/whl/cu128/torch-2.8.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64.whl#sha256=4354fc05bb79b208d6995a04ca1ceef6a9547b1c4334435574353d381c55087c
+torchvision @ https://download.pytorch.org/whl/cu128/torchvision-0.23.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64.whl#sha256=9cb3c13997afcb44057ca10d943c6c4cba3068afde0f370965abce9c89fcffa9
+transformers==4.57.6
+peft==0.17.1
+numpy==2.2.6
+scipy==1.15.3
+soundfile==0.13.1
+accelerate==1.10.1
+safetensors==0.6.2
+huggingface-hub==0.34.4
+librosa==0.11.0

@@ -21,6 +21,17 @@ a faithful environment reproduction needs a separate image and suitable device.
 The official scorer uses next-token candidate-label logits, not generated JSON.
 Its request-scoped audio feature cache is another behavior to preserve and check.
 
+An isolated x86_64 CUDA12.8 image recipe is now prepared in
+[docker/audiojev-official](../../docker/audiojev-official/README.md).
+The amd64 Python base manifest and official CUDA wheel hashes are pinned;
+all direct versions were checked against the upstream dependency ranges and
+publisher availability. See [static preflight](audiojev-image-static-preflight.json).
+This image has not been built: currently inspected hosts are ARM64 Ascend with
+no identified NVIDIA allocation, and the required CPython3.12 CUDA12.8 wheel
+indexes did not provide matching ARM64 wheels. An available x86_64 CUDA host
+has been requested. Build/import/CUDA/model gates remain open; no CPU fallback
+or package substitution has been used to claim faithful reproduction.
+
 The public API's `_prepare` sorts unique Choice/Noul descriptions by UTF-8 text
 and strips whitespace; it also rejects blank descriptions. The model card and
 paper use original-order evaluation. MMAR includes four blank-candidate
