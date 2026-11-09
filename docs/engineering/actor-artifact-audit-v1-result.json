@@ -1,0 +1,66 @@
+{
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/actor-artifact-audit-v1",
+  "container_id": "c4a35ba54710b0d9048d0db32057c9fe5e3ae1711e3616dab295e4d6213e7eb8",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T23:47:34.83993988Z",
+    "FinishedAt": "2026-11-09T23:48:04.36868265Z"
+  },
+  "source_sha256": "0180cf385cce60fd010804e70f0107540389104c5ee05193b4db58199524ce5e",
+  "result": {
+    "status": "passed",
+    "reports": {
+      "vllm-cpu-actor-sft-v5": {
+        "status": "passed",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v5/run",
+        "adapter_tensors": 112,
+        "optimizer_states": 112,
+        "optimizer_step": 1,
+        "all_weights_and_moments_finite": true,
+        "iteration": 1,
+        "changed_adapter_tensors": 112,
+        "updated": true,
+        "max_logprob_error": 5.6624412536621094e-05,
+        "parent_run": null,
+        "result_sha256": "54cbf4b25f50241f3cbae57f8848a5b84a2e8e8707113bc81e1c9bf05efb43c8",
+        "optimizer_sha256": "0e63b14c960f4df30c1df72db659d0f6eb761083a2ad1843429583ef5f3b0d85",
+        "adapter_files": {
+          "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+          "adapter_config.json": "0ed2c5ba3fd622772fa19d319805582163d5537fbd80893186b293f9d0e51eb7",
+          "adapter_model.safetensors": "6470d16f84a1b248a835f384c9c4312e7fdaab933fffd0a72fbc24404deea930"
+        },
+        "scope": "saved artifact hashes, finite tensors, AdamW counters and local parent consistency; not Docker exit, rollout/export integrity, gradient equivalence or efficacy proof"
+      },
+      "vllm-cpu-actor-response-only-v2": {
+        "status": "passed",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-response-only-v2/run",
+        "adapter_tensors": 112,
+        "optimizer_states": 112,
+        "optimizer_step": 1,
+        "all_weights_and_moments_finite": true,
+        "iteration": 1,
+        "changed_adapter_tensors": 112,
+        "updated": true,
+        "max_logprob_error": 4.8220157623291016e-05,
+        "parent_run": null,
+        "result_sha256": "502988504acc17049a35c1c81dad62f694bb0a62796a583372c652e47f84a4f9",
+        "optimizer_sha256": "c43fec1202a15822685c9bfeca63dbc9710276db46e94d07ef68b25046e24bf3",
+        "adapter_files": {
+          "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+          "adapter_config.json": "5c6d8f6f253a4c0ea5f7e972e252eccf1e4e305a88a271585bc78a9445f43157",
+          "adapter_model.safetensors": "7f95a6c760cf90b95b6d95e09d7c2af3408f9b741c7c1fba5d12ad12e7cc0b37"
+        },
+        "scope": "saved artifact hashes, finite tensors, AdamW counters and local parent consistency; not Docker exit, rollout/export integrity, gradient equivalence or efficacy proof"
+      }
+    }
+  },
+  "scope": "real step1 artifact validation; no claim of completed step2 or response-only equivalence"
+}
