@@ -1,0 +1,101 @@
+{
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/container-transport-probe-v3",
+  "observed_at_utc": "2026-11-09T23:45:53.041661+00:00",
+  "stages": {
+    "rollout": {
+      "container_id": "05c122173392130c2db03e77a94e115a7806c165021d07bf343b4c69826bd857",
+      "host": "local",
+      "image": "sha256:fdd4a28bb7515717e9ff1988669b4ae7c24588091cf0b73f05abff1f6ff6f87b",
+      "docker_state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:43:25.4639144Z",
+        "FinishedAt": "2026-11-09T23:43:41.32559003Z"
+      },
+      "result": {
+        "status": "passed",
+        "versions": {
+          "torch": "2.13.0+cpu",
+          "transformers": "5.17.0",
+          "vllm": "0.30.0+cpu"
+        },
+        "source_readonly": true,
+        "device": "cpu"
+      },
+      "terminal": {
+        "exit_code": 0
+      }
+    },
+    "actor": {
+      "container_id": "4cda82df8802dd355a7180f793b9af1f1953aac6bd200d211ec14d205969c094",
+      "host": "npu",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "docker_state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:42:34.96587566Z",
+        "FinishedAt": "2026-11-09T23:43:11.34100652Z"
+      },
+      "result": {
+        "status": "passed",
+        "versions": {
+          "torch": "2.10.0+cpu",
+          "transformers": "5.14.1",
+          "verl": "0.8.0.dev0"
+        },
+        "source_readonly": true,
+        "device": "cpu"
+      },
+      "terminal": {
+        "exit_code": 0
+      }
+    },
+    "export": {
+      "container_id": "f4194136b93df9084a8f03d42197113cc405d6a63a69c3018052e38f7236fc82",
+      "host": "npu",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "docker_state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:43:36.55095483Z",
+        "FinishedAt": "2026-11-09T23:44:11.71464768Z"
+      },
+      "result": {
+        "status": "passed",
+        "versions": {
+          "torch": "2.10.0+cpu",
+          "transformers": "5.14.1",
+          "verl": "0.8.0.dev0"
+        },
+        "source_readonly": true,
+        "device": "cpu"
+      },
+      "terminal": {
+        "exit_code": 0
+      }
+    }
+  },
+  "scope": "three real CPU container transport/import/read-only mount checks; no model inference, optimization or scheduler training validation",
+  "status": "passed"
+}

@@ -52,3 +52,42 @@ No remote probe or full scheduler execution is claimed. This project's container
 writable layers are too small to resolve the host-wide shortage; unrelated
 projects' containers/images/files were not deleted. Retry requires disk capacity
 and a separately named run after inspecting the prior launch state.
+
+## Recovery and instrumented schedule validation
+
+Remote `/var` subsequently recovered to approximately570GiB available without
+this project deleting unrelated assets. A separately named v3 transport probe
+uses the current executor and additionally imports vLLM locally and verl DataProto
+remotely. Its [launch receipt](../docs/engineering/container-transport-v3-launch.json)
+preserves the v2 failure. Successful imports remain transport evidence only.
+All three exact v3 containers subsequently exited0 with successful application
+receipts. Local imports report torch2.13.0+cpu, Transformers5.17.0 and
+vLLM0.30.0+cpu; remote imports report torch2.10.0+cpu, Transformers5.14.1 and
+verl0.8.0.dev0. Source mounts were read-only in each role. See the
+[verified result](../docs/engineering/container-transport-v3-result.json).
+
+The next actual-engine validation is prepared under the shared experiment root
+`container-audio-rl-two-step-v1`, with a read-only snapshot of source commit
+0e86525 and the pinned two-host runtime. See the
+[preparation receipt](../docs/engineering/container-two-step-v1-preparation.json)
+for all executable source hashes, config hashes and actual asset preflight.
+It has not launched. Require successful v3 transport, completed existing
+vllm-cpu-chain-sft-v3 two-update continuation with optimizer step2, and completed
+vllm-cpu-mixed-actor-v1 numerical/update checks before launch.
+
+Use the existing six-view FSC TRAIN recording in the registered SFT smoke
+schedule for both iterations: seed17 then18, n2, max_tokens32, actor_features,
+full projection, float32, standard-normalized pair-GRPO, pair weight.2, LR1e-5,
+rank4/alpha8, fresh optimizer on the same SFT initializer. This changes no
+algorithm selection and introduces no development-based sample selection.
+The second iteration must use the first exported policy and persisted optimizer;
+both iterations must complete export verification in fresh processes.
+
+Unlike the legacy two-update supervisor, this run records generation, actor and
+export budgets through the current snapshot. After exact six-container exit0
+checks and application success, independently verify optimizer states, changed
+adapter weights and lineage, then run the trajectory budget audit. Require
+complete accounting for both iterations; preserve any no-op as an observed
+outcome, not a successful optimizer-update validation. The integration does not
+establish algorithm improvement, equal compute, cross-task transfer or a full
+distributed verl training worker. The multi-seed comparison remains separate.
