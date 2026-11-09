@@ -61,3 +61,22 @@ The [v2 chain](../docs/engineering/response-only-chain-v2-launch.json) observes
 the exact retry container, requires a successful update, and retains the same
 export parity and fresh second-engine/optimizer restoration gates. The failed
 v1 chain and mixed-response queue are retained without restart.
+
+The128GiB v2 actor exited0 with one actual update, gradient norm3.0577147,
+probability error4.82202e-5,112 changed adapter tensors and112 finite AdamW
+states at step1. The token ledger records8,050 prompt tokens,80 response tokens
+and2,220 valid audio frames. See
+[result](../docs/engineering/response-only-actor-v2-result.json).
+
+Independent saved-parameter comparison to the full-projection v5 actor found
+maximum error2.1555279090534896e-6 and failed the unchanged atol2e-6/rtol2e-4
+gate. This real-batch finding supersedes any inference of general equivalence
+from the smaller controlled fixture. No full gradient comparison was retained
+for these live runs. Keep full projection for registered formal configs;
+do not relax tolerances or label the optimization validated for those studies.
+
+Both v2 downstream supervisors stopped before launching export/mixed actor
+because their old snapshots saved root-only adapter weights. Hashes were checked
+before/after making weights readable, and saved optimizer contents verified.
+The failures are retained; no downstream retry was launched while remote /var
+was full. The separate full-projection second actor and mixed actor keep running.

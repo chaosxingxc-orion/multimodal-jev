@@ -1,0 +1,183 @@
+{
+  "container_id": "d3492595a7a4305eaa25242b4c040c30e4aa56ad363332d180647dc2e0b5711c",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T23:03:47.73348006Z",
+    "FinishedAt": "2026-11-09T23:32:17.56041513Z"
+  },
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-response-only-v2",
+  "result": {
+    "status": "passed",
+    "config": {
+      "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+      "device": "cpu",
+      "dtype": "float32",
+      "cpu_threads": 4,
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lr": 1e-05,
+      "max_logprob_error": 0.02,
+      "rollout_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-rollout-sft-v4/run",
+      "parent_run": null,
+      "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-audio-sft-init-v1/run/adapter",
+      "seed": 17,
+      "reward_mode": "pair-grpo",
+      "pair_bonus_weight": 0.2,
+      "response_logits_only": true,
+      "train_manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl"
+    },
+    "base_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458",
+    "optimizer_config": {
+      "lr": 1e-05,
+      "weight_decay": 0.0,
+      "foreach": false,
+      "fused": false
+    },
+    "optimizer_sha256": "c43fec1202a15822685c9bfeca63dbc9710276db46e94d07ef68b25046e24bf3",
+    "adapter_files": {
+      "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+      "adapter_config.json": "5c6d8f6f253a4c0ea5f7e972e252eccf1e4e305a88a271585bc78a9445f43157",
+      "adapter_model.safetensors": "7f95a6c760cf90b95b6d95e09d7c2af3408f9b741c7c1fba5d12ad12e7cc0b37"
+    },
+    "updates": 1,
+    "iteration": 1,
+    "reward_mode": "pair-grpo",
+    "pair_bonus_weight": 0.2,
+    "reference_policy": null,
+    "metrics": {
+      "status": "updated",
+      "updated": true,
+      "loss": -0.03535500913858414,
+      "grad_norm": 3.0577147006988525,
+      "training_budget": {
+        "sequences": 12,
+        "prompt_tokens": 8050,
+        "response_tokens": 80,
+        "audio_frames": 2220,
+        "gradient_sequences": 12,
+        "gradient_tokens": 8130,
+        "no_grad_sequences": 12,
+        "no_grad_tokens": 8130,
+        "optimizer_steps": 1
+      },
+      "rewards": [
+        0.0,
+        -0.1,
+        0.0,
+        -0.1,
+        0.0,
+        -0.1,
+        0.0,
+        1.1,
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "max_logprob_error": 4.8220157623291016e-05,
+      "metrics": {
+        "actor/pg_clipfrac": 0.0,
+        "actor/ppo_kl": -2.3569036784465425e-06,
+        "actor/pg_clipfrac_lower": 0.0,
+        "actor/policy_loss": -0.03535500913858414
+      },
+      "reward_details": {
+        "mode": "pair-grpo",
+        "base_rewards": [
+          0.0,
+          -0.1,
+          0.0,
+          -0.1,
+          0.0,
+          -0.1,
+          0.0,
+          1.1,
+          1.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "pair_bonuses": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "relations_by_replicate": {
+          "0": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          },
+          "1": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          }
+        }
+      },
+      "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+      "micro_batch_size": 12,
+      "response_tokens": 80,
+      "kl_coefficient": 0.0,
+      "kl_estimator": null,
+      "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+    },
+    "scope": "one persisted actor iteration; export and next fresh rollout required; no efficacy claim"
+  },
+  "artifact_verification": {
+    "status": "passed",
+    "optimizer_states": 112,
+    "optimizer_step": 1,
+    "changed_adapter_tensors": 112,
+    "full_projection_parameter_max_error": 2.1555279090534896e-06,
+    "full_projection_parameter_gate_passed": false,
+    "atol": 2e-06,
+    "rtol": 0.0002,
+    "scope": "saved artifact verification and parameter-only comparison; not full gradient equivalence"
+  },
+  "result_sha256": "502988504acc17049a35c1c81dad62f694bb0a62796a583372c652e47f84a4f9",
+  "interpretation": "Actual update succeeds at128GiB but saved parameter comparison with full projection fails the predeclared tolerance; do not promote optimized path to formal comparisons. No efficacy claim."
+}
