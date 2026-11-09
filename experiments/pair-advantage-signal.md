@@ -45,3 +45,15 @@ The queued n4 audit waits for exact successful rollout container
 0cae1e866ea83c5c5aa3cbfc57ee3b03d12d7a3fa2db1cecba1779c29fb16633,
 validates all 48 responses, and launches independently in the pinned verl image.
 See [queue receipt](../docs/engineering/pair-advantage-n4-audit-v1-queued.json).
+
+## Completed n2 center-only diagnosis
+
+The [v2 receipt](../docs/engineering/pair-advantage-v2-result.json) records a
+successful pinned-image audit of the identical 24 responses. All standardized
+results match v1 exactly. Centering without standard deviation gives a maximum
+base-versus-pair advantage difference of 0.10000002384185791, compared with
+1.1920928955078125e-7 under standard normalization. The three nonzero bonuses
+therefore survive as magnitude differences under centering. This establishes
+an objective-scale effect on this batch; no actor was updated by this audit and
+no semantic improvement or preferred normalization follows from it. The n4
+audit and matched training comparisons remain separate experiments.
