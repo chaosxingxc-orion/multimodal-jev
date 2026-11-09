@@ -62,6 +62,16 @@ def train(config,output):
     adapter=Path(config['initial_adapter']) if config.get('initial_adapter') else None
     if parent and adapter:raise ValueError('choose parent run or initial adapter')
     base_policy,base_files=checkpoint_identity(config['model_path'])
+    from .reference_policy import reference_identity,validate_reference_continuation
+    reference=reference_identity(config.get('reference'))
+    if reference is not None:
+        # Token IDs must denote the same vocabulary, including tokens absent
+        # from selected prompts; equal prompt tensors alone are insufficient.
+        tokenizer_files={'tokenizer.json','vocab.json','merges.txt','added_tokens.json'}
+        actor_tokens={k:v for k,v in base_files.items() if k in tokenizer_files}
+        reference_tokens={k:v for k,v in reference['checkpoint_files'].items() if k in tokenizer_files}
+        if not actor_tokens or actor_tokens!=reference_tokens:
+            raise ValueError('reference/actor tokenizer identity differs')
     optimizer_config={'lr':config['lr'],'weight_decay':0.,'foreach':False,'fused':False}
     prior=None
     if parent:
@@ -72,6 +82,7 @@ def train(config,output):
             raise ValueError('base or optimizer configuration changed')
         if prior['reward_mode']!=config['reward_mode'] or prior['pair_bonus_weight']!=config['pair_bonus_weight']:
             raise ValueError('reward objective changed within trajectory')
+        validate_reference_continuation(prior.get('reference_policy'),reference)
         if file_hash(parent/'optimizer.pt')!=prior['optimizer_sha256']:
             raise ValueError('parent optimizer changed')
         adapter=parent/'adapter'
@@ -85,16 +96,34 @@ def train(config,output):
                                 base_files=base_files,checkpoint_files=rollout['checkpoint_files'])
     elif base_policy!=rollout['policy_id']:
         raise ValueError('unadapted actor must match rollout checkpoint')
-    identity={'config':config,'rollout_identity':rollout,'base_policy_id':base_policy,
+    identity={'config':config,'rollout_identity':rollout,'base_policy_id':base_policy,'reference_policy':reference,
               'base_files':base_files,'weights_sha256':file_hash(Path(config['model_path'])/'model.safetensors'),
               'manifest_sha256':rollout['manifest_sha256'],'example_ids':[ex.example_id for ex in examples],
               'adapter_files':({p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()} if adapter else None),
               'source_sha256':{name:file_hash(Path(__file__).with_name(name)) for name in
-                              ('rl_run.py','rl_update.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py')}}
+                              ('rl_run.py','rl_update.py','reference_policy.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py')}}
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('actor retry identity mismatch')
     atomic_json(output/'identity.json',identity)
     processor,base=load_runtime(config['model_path'],config['device'],config['dtype'])
+    reference_model=None
+    if reference is not None:
+        # A separate, immutable merged checkpoint, never the moving actor or
+        # its disabled adapter (which would refer to the pre-SFT base).
+        reference_processor,reference_model=load_runtime(config['reference']['checkpoint'],config['device'],config['dtype'])
+        reference_model.requires_grad_(False).eval()
+        left_tokenizer,right_tokenizer=processor.tokenizer,reference_processor.tokenizer
+        if (left_tokenizer.get_vocab()!=right_tokenizer.get_vocab() or
+                left_tokenizer.all_special_ids!=right_tokenizer.all_special_ids or
+                left_tokenizer.pad_token_id!=right_tokenizer.pad_token_id or
+                left_tokenizer.eos_token_id!=right_tokenizer.eos_token_id):
+            raise ValueError('reference/actor tokenizer semantics differ')
+        from .audio_policy import hf_prompt
+        for ex in examples:
+            wave=load_audio(ex.audio)
+            left=hf_prompt(processor,ex,wave);right=hf_prompt(reference_processor,ex,wave)
+            if set(left)!=set(right) or any(not torch.equal(left[k],right[k]) for k in left):
+                raise ValueError('reference/actor processor inputs differ')
     if adapter:
         model=PeftModel.from_pretrained(base,adapter,is_trainable=True)
     else:
@@ -111,7 +140,9 @@ def train(config,output):
                          rollout['policy_id'],rollout['config']['sampling']['n'],
                          max_logprob_error=config['max_logprob_error'],reward_mode=config['reward_mode'],
                          pair_bonus_weight=config['pair_bonus_weight'],
-                         micro_batch_size=config.get('micro_batch_size'))
+                         micro_batch_size=config.get('micro_batch_size'),reference_model=reference_model,
+                         kl_coefficient=reference['coefficient'] if reference else 0.,
+                         kl_estimator=reference['estimator'] if reference else 'k3')
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     save_optimizer(model,optimizer,output/'optimizer.pt')
     # Keep the exporter's base/train fields while retaining the complete run config.
@@ -122,6 +153,7 @@ def train(config,output):
             'updates':(prior['updates'] if prior else 0)+int(metrics['updated']),
             'iteration':(prior['iteration'] if prior else 0)+1,
             'reward_mode':config['reward_mode'],'pair_bonus_weight':config['pair_bonus_weight'],
+            'reference_policy':reference,
             'metrics':metrics,'scope':'one persisted actor iteration; export and next fresh rollout required; no efficacy claim'}
     atomic_json(output/'result.json',result)
     return result

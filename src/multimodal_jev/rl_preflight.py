@@ -38,6 +38,8 @@ def validate_schedule(config):
             raise ValueError('each batch must contain nonempty example IDs')
         if len(batch)!=len(set(batch)):raise ValueError('duplicate selection within batch')
     base_policy,base_files=checkpoint_identity(base)
+    from .reference_policy import reference_identity
+    reference=reference_identity(actor.get('reference'))
     initial_policy,initial_files=((base_policy,base_files) if base.resolve()==checkpoint.resolve()
                                   else checkpoint_identity(checkpoint))
     adapter_files=None
@@ -69,6 +71,7 @@ def validate_schedule(config):
             # gold values here never become rollout inputs or training responses.
             paired_rewards(examples,[ex.target for ex in examples],bonus)
     return {'initial_policy_id':initial_policy,'actor_base_policy_id':base_policy,
+            'reference_policy':reference,
             'initial_adapter_files':adapter_files,'manifest_sha256':manifest_hash,
             'audio_sha256':audio_hashes,'iterations':len(batches),
             'unique_examples':len(selected),'unique_audio':len(audio_hashes),

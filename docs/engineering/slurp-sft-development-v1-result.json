@@ -1,0 +1,814 @@
+{
+  "observed_unix": 1794260148.879899,
+  "scope": "FSC-only SFT on fixed SLURP development selection; format improvement with no correct non-null targets; not RL efficacy or final transfer claim",
+  "manifest_sha256": "8da2269b1e21e65b20d96100e11ddc092ab6414e433aef437bda7689f0aa5327",
+  "comparison_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sft-development-comparison-v1/run/slurp/comparison.json",
+  "comparison_sha256": "0f3562a0caf57370041df143a8b2cdb14dc2253f8be13de0ba8f1f6c020c51a4",
+  "containers": {
+    "base": {
+      "id": "fcfd76f8cb83b2039091a45d9533455c02bf60e0dd840c167f8a97acec36bf6e",
+      "state": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-11-09T18:33:12.05584665Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-11-09T17:41:33.38858958Z",
+        "Status": "exited"
+      }
+    },
+    "candidate": {
+      "id": "d0787114de9f56f6be9d1664030e4b86e609aadfd9f44c7d6e96646a8a7465d2",
+      "state": {
+        "Dead": false,
+        "Error": "",
+        "ExitCode": 0,
+        "FinishedAt": "2026-11-09T21:31:25.79818744Z",
+        "OOMKilled": false,
+        "Paused": false,
+        "Pid": 0,
+        "Restarting": false,
+        "Running": false,
+        "StartedAt": "2026-11-09T20:48:55.62496519Z",
+        "Status": "exited"
+      }
+    }
+  },
+  "candidate_artifacts": {
+    "identity.json": "cfe4c8567df9b128361ed6acb611c08cc95852f334999647562aed6d037edfe4",
+    "terminal.json": "73b75a572eba83b9b64df7f9fd44ac091efcc734788f969298491b41c0747a66",
+    "predictions.jsonl": "3e89a4b1c777abe993358a9b5d30802838682abc876f187ba34b7d55ab49df63",
+    "metrics.json": "d2cebe48369543f75092b23375d6dd1d065b86202f4340fb13b2668f043bda69"
+  },
+  "by_variant": {
+    "all": {
+      "count": 168,
+      "correct": 71,
+      "valid": 159,
+      "answered": 25,
+      "answered_correct": 0,
+      "unknown_targets": 87,
+      "refusals": 143,
+      "correct_refusals": 71,
+      "missing": 0,
+      "format_valid": 168,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.4226190476190476,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.9464285714285714,
+      "coverage": 0.1488095238095238,
+      "risk": 1.0,
+      "unknown_precision": 0.4965034965034965,
+      "unknown_recall": 0.8160919540229885,
+      "brier": null
+    },
+    "native": {
+      "count": 24,
+      "correct": 0,
+      "valid": 22,
+      "answered": 2,
+      "answered_correct": 0,
+      "unknown_targets": 0,
+      "refusals": 22,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 24,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.0,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.9166666666666666,
+      "coverage": 0.08333333333333333,
+      "risk": 1.0,
+      "unknown_precision": 0.0,
+      "unknown_recall": null,
+      "brier": null
+    },
+    "permutation": {
+      "count": 24,
+      "correct": 0,
+      "valid": 19,
+      "answered": 5,
+      "answered_correct": 0,
+      "unknown_targets": 0,
+      "refusals": 19,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 24,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.0,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.7916666666666666,
+      "coverage": 0.20833333333333334,
+      "risk": 1.0,
+      "unknown_precision": 0.0,
+      "unknown_recall": null,
+      "brier": null
+    },
+    "rebind": {
+      "count": 24,
+      "correct": 0,
+      "valid": 22,
+      "answered": 2,
+      "answered_correct": 0,
+      "unknown_targets": 0,
+      "refusals": 22,
+      "correct_refusals": 0,
+      "missing": 0,
+      "format_valid": 24,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.0,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 0.9166666666666666,
+      "coverage": 0.08333333333333333,
+      "risk": 1.0,
+      "unknown_precision": 0.0,
+      "unknown_recall": null,
+      "brier": null
+    },
+    "slot.date": {
+      "count": 24,
+      "correct": 14,
+      "valid": 24,
+      "answered": 8,
+      "answered_correct": 0,
+      "unknown_targets": 22,
+      "refusals": 16,
+      "correct_refusals": 14,
+      "missing": 0,
+      "format_valid": 24,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.5833333333333334,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 1.0,
+      "coverage": 0.3333333333333333,
+      "risk": 1.0,
+      "unknown_precision": 0.875,
+      "unknown_recall": 0.6363636363636364,
+      "brier": null
+    },
+    "slot.time": {
+      "count": 24,
+      "correct": 18,
+      "valid": 24,
+      "answered": 4,
+      "answered_correct": 0,
+      "unknown_targets": 22,
+      "refusals": 20,
+      "correct_refusals": 18,
+      "missing": 0,
+      "format_valid": 24,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.75,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 1.0,
+      "coverage": 0.16666666666666666,
+      "risk": 1.0,
+      "unknown_precision": 0.9,
+      "unknown_recall": 0.8181818181818182,
+      "brier": null
+    },
+    "slot.person": {
+      "count": 24,
+      "correct": 20,
+      "valid": 24,
+      "answered": 2,
+      "answered_correct": 0,
+      "unknown_targets": 22,
+      "refusals": 22,
+      "correct_refusals": 20,
+      "missing": 0,
+      "format_valid": 24,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.8333333333333334,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 1.0,
+      "coverage": 0.08333333333333333,
+      "risk": 1.0,
+      "unknown_precision": 0.9090909090909091,
+      "unknown_recall": 0.9090909090909091,
+      "brier": null
+    },
+    "slot.place_name": {
+      "count": 24,
+      "correct": 19,
+      "valid": 24,
+      "answered": 2,
+      "answered_correct": 0,
+      "unknown_targets": 21,
+      "refusals": 22,
+      "correct_refusals": 19,
+      "missing": 0,
+      "format_valid": 24,
+      "malformed": 0,
+      "absent": 0,
+      "brier_sum": 0.0,
+      "confidence_count": 0,
+      "accuracy": 0.7916666666666666,
+      "format_valid_rate": 1.0,
+      "schema_valid_rate": 1.0,
+      "coverage": 0.08333333333333333,
+      "risk": 1.0,
+      "unknown_precision": 0.8636363636363636,
+      "unknown_recall": 0.9047619047619048,
+      "brier": null
+    }
+  },
+  "by_target_presence": {
+    "native.target_present": {
+      "count": 24,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "permutation.target_present": {
+      "count": 24,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "rebind.target_present": {
+      "count": 24,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "slot.date.target_null": {
+      "count": 22,
+      "correct": 14,
+      "accuracy": 0.6363636363636364
+    },
+    "slot.time.target_null": {
+      "count": 22,
+      "correct": 18,
+      "accuracy": 0.8181818181818182
+    },
+    "slot.person.target_null": {
+      "count": 22,
+      "correct": 20,
+      "accuracy": 0.9090909090909091
+    },
+    "slot.place_name.target_null": {
+      "count": 21,
+      "correct": 19,
+      "accuracy": 0.9047619047619048
+    },
+    "slot.place_name.target_present": {
+      "count": 3,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "slot.time.target_present": {
+      "count": 2,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "slot.person.target_present": {
+      "count": 2,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "slot.date.target_present": {
+      "count": 2,
+      "correct": 0,
+      "accuracy": 0.0
+    }
+  },
+  "pairs": {
+    "permutation": {
+      "groups": 24,
+      "both_correct": 0,
+      "both_correct_rate": 0.0,
+      "semantic_equal": 0
+    },
+    "rebind": {
+      "groups": 24,
+      "both_correct": 0,
+      "both_correct_rate": 0.0,
+      "semantic_equal": 0
+    },
+    "missing_candidate": {
+      "groups": 0,
+      "both_correct": 0,
+      "both_correct_rate": null,
+      "semantic_equal": null
+    },
+    "noul": {
+      "groups": 0,
+      "both_correct": 0,
+      "both_correct_rate": null
+    }
+  },
+  "paired_comparison": {
+    "heldout-valid/format": {
+      "count": 42,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 1.0,
+      "delta": 1.0,
+      "delta_ci95": [
+        1.0,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/native": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/native/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/pair.permutation": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/pair.rebind": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/permutation": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/permutation/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/rebind": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/rebind/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.6666666666666666,
+      "delta_ci95": [
+        0.16666666666666666,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8,
+      "delta": 0.8,
+      "delta_ci95": [
+        0.4,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.person": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.6666666666666666,
+      "delta_ci95": [
+        0.3333333333333333,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.person/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8,
+      "delta": 0.8,
+      "delta_ci95": [
+        0.4,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.person/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.place_name": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.6666666666666666,
+      "delta_ci95": [
+        0.3333333333333333,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.place_name/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8,
+      "delta": 0.8,
+      "delta_ci95": [
+        0.4,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.place_name/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.time": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.6666666666666666,
+      "delta_ci95": [
+        0.3333333333333333,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.time/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8,
+      "delta": 0.8,
+      "delta_ci95": [
+        0.4,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.time/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/format": {
+      "count": 126,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 1.0,
+      "delta": 1.0,
+      "delta_ci95": [
+        1.0,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.permutation": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.rebind": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.5555555555555556,
+      "delta": 0.5555555555555556,
+      "delta_ci95": [
+        0.35294117647058826,
+        0.7647058823529411
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date/null": {
+      "count": 17,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.5882352941176471,
+      "delta": 0.5882352941176471,
+      "delta_ci95": [
+        0.375,
+        0.8125
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/slot.person": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8888888888888888,
+      "delta": 0.8888888888888888,
+      "delta_ci95": [
+        0.7368421052631579,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.person/null": {
+      "count": 17,
+      "clusters": 15,
+      "base_rate": 0.0,
+      "candidate_rate": 0.9411764705882353,
+      "delta": 0.9411764705882353,
+      "delta_ci95": [
+        0.8333333333333334,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.person/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/slot.place_name": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8333333333333334,
+      "delta": 0.8333333333333334,
+      "delta_ci95": [
+        0.6666666666666666,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.place_name/null": {
+      "count": 16,
+      "clusters": 14,
+      "base_rate": 0.0,
+      "candidate_rate": 0.9375,
+      "delta": 0.9375,
+      "delta_ci95": [
+        0.8235294117647058,
+        1.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.place_name/present": {
+      "count": 2,
+      "clusters": 2,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.7777777777777778,
+      "delta": 0.7777777777777778,
+      "delta_ci95": [
+        0.5882352941176471,
+        0.9445175438596487
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time/null": {
+      "count": 17,
+      "clusters": 15,
+      "base_rate": 0.0,
+      "candidate_rate": 0.8235294117647058,
+      "delta": 0.8235294117647058,
+      "delta_ci95": [
+        0.6470588235294118,
+        0.9474342105263154
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    }
+  },
+  "all_null_control": {
+    "correct": 87,
+    "count": 168,
+    "accuracy": 0.5178571428571429
+  },
+  "measured_generation_seconds": 2505.229870639567
+}

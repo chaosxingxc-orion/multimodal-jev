@@ -14,5 +14,6 @@
 - [ASR／参考转写文本对照](text-evidence-baselines.md)
 - [AudioJev 官方 MMAR 复现](audiojev-mmar.md)
 - [音频 RL 迭代](audio-rl-iteration.md)
+- [冻结参考策略 KL 数值验证](reference-kl.md)
 
 协议存在不代表实验完成；实际结果和限制见 wiki 中带日期的记录。

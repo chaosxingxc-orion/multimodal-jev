@@ -1,0 +1,84 @@
+{
+  "host": "npu",
+  "container": "multimodal-jev-reference-kl-smoke-v1",
+  "container_id": "05cb4ea5247f9f9ad8dd650b44cb9f2e9f58d70b23581d2558a0e445edcf819c",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/reference-kl-smoke-v1/run",
+  "observed_state": {
+    "Dead": false,
+    "Error": "",
+    "ExitCode": 0,
+    "FinishedAt": "2026-11-09T21:35:41.83753547Z",
+    "OOMKilled": false,
+    "Paused": false,
+    "Pid": 0,
+    "Restarting": false,
+    "Running": false,
+    "StartedAt": "2026-11-09T21:33:25.80908941Z",
+    "Status": "exited"
+  },
+  "protocol_sha256": "0f790ea3731ac996d33f448b231f7e005d974adf100d6cf67dd32d38235d0251",
+  "artifacts_sha256": {
+    "analytic.json": "750e99027a0b63d170a1b04d20a7d9fb904fde7b6da2e2c6d6c75124a34fe40f",
+    "result.json": "f1299dbc6655bfbd0b5d0a958a2b9108a0e74fbf782d0e34601effff1389db31",
+    "terminal.json": "d6e7b9f2e22d2b94dbff4d6bba0fb65cc27bf31ceec7aedfe08037b856eeba97"
+  },
+  "result": {
+    "status": "passed",
+    "analytic": {
+      "loss": 0.06295160204172134,
+      "gradient_max_error": 2.9802322387695312e-08,
+      "masked_gradient_zero": true
+    },
+    "metrics": {
+      "status": "updated",
+      "updated": true,
+      "loss": 0.042178139090538025,
+      "grad_norm": 4.453948974609375,
+      "rewards": [
+        1.0,
+        1.0
+      ],
+      "max_logprob_error": 0.0,
+      "metrics": {
+        "actor/pg_clipfrac": 0.0,
+        "actor/ppo_kl": 0.0,
+        "actor/pg_clipfrac_lower": 0.0,
+        "actor/policy_loss": 0.0,
+        "actor/reference_kl": 0.42178139090538025
+      },
+      "reward_details": {
+        "mode": "grpo",
+        "base_rewards": [
+          1.0,
+          1.0
+        ],
+        "pair_bonuses": [
+          0.0,
+          0.0
+        ]
+      },
+      "policy_id": "controlled-fixture",
+      "micro_batch_size": 2,
+      "response_tokens": 12,
+      "kl_coefficient": 0.1,
+      "kl_estimator": "k3",
+      "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+    },
+    "changed_parameter_tensors": 112,
+    "reference_unchanged": true,
+    "reference_gradient_absent": true,
+    "source_sha256": {
+      "reference_policy.py": "7cde5ed0e532b0325f0d752a789825821f1662e3fb7f904ca016d37bc1346570",
+      "rl_update.py": "c1ddd349e5d411bf17ad08e2e4c395f45843d314a82b5149c7a7b3f5ca917b56",
+      "verl_audio.py": "12b9134b63a35aacaeff870608b6087491cc6ce0b3602981d65a63c9914ada85"
+    },
+    "scope": "controlled equal-reward TRAIN fixtures, actual verl KL gradient and Qwen update; NOT vLLM rollout or efficacy"
+  },
+  "current_implementation_ast_matches_tested": {
+    "reference_policy.py": true,
+    "rl_update.py": true,
+    "verl_audio.py": true
+  },
+  "limits": "Validates update_actor/reference_loss with controlled TRAIN responses. Does not execute persisted RL runner with vLLM, prove k2 numerics, or validate efficacy."
+}

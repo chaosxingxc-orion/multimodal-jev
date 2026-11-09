@@ -71,3 +71,17 @@ not multiple-testing-adjusted significance tests or population guarantees. Share
 utterance text across speakers can introduce dependence not captured by speaker
 clustering. Final claims require the full frozen test protocol, multiple training
 seeds and appropriate source-family sensitivity analysis.
+
+## Completed v1 development result (2026-11-10)
+
+Both exact Docker IDs exited zero. Complete prediction sets and original hashes
+passed verification and common re-scoring. SFT JSON format validity is 168/168,
+versus 0/168 for the base. Each Choice view scores 0/24; present slots score
+0/9. All 81 non-null targets fail. The SFT model emits 143 nulls and 25 non-null
+values; all 71 correct decisions are absent slots. This is below the all-null
+control's 87/168, and both paired Choice correctness rates remain 0/24.
+Generation totals 2,505.23 CPU seconds (four threads, excluding model loading).
+The result supports format learning but no effective semantic transfer on this
+selection. See the [receipt](../docs/engineering/slurp-sft-development-v1-result.json)
+for full variant/presence counts and partitioned speaker-bootstrap intervals.
+This observed development failure does not establish behavior on the full task.

@@ -34,10 +34,22 @@ def validate_rollouts(examples,records,policy_id,group_size):
 
 def update_actor(model,processor,optimizer,examples,audios,records,policy_id,group_size,
                  max_logprob_error=0.02,max_grad_norm=1.0,reward_mode='grpo',pair_bonus_weight=0.2,
-                 micro_batch_size=None):
+                 micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3'):
     import torch
     from verl.utils.model import extract_multi_modal_inputs
     from .audio_policy import response_log_probs
+    from .reference_policy import reference_loss
+    if type(kl_coefficient) not in (int,float) or not math.isfinite(kl_coefficient) or kl_coefficient<0:
+        raise ValueError('finite nonnegative KL coefficient required')
+    if (reference_model is None)!=(kl_coefficient==0):
+        raise ValueError('positive KL coefficient and frozen reference must be supplied together')
+    if reference_model is not None:
+        if reference_model is model or any(p.requires_grad for p in reference_model.parameters()):
+            raise ValueError('separate frozen reference required')
+        if reference_model.device!=model.device or reference_model.dtype!=model.dtype:
+            raise ValueError('reference device/dtype must match actor')
+        if kl_estimator not in {'k2','k3'}:raise ValueError('unsupported reference estimator')
+        reference_model.eval()
     by_id=validate_rollouts(examples,records,policy_id,group_size)
     for record in records:
         decoded=processor.tokenizer.decode(record.token_ids,skip_special_tokens=True)
@@ -74,6 +86,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     # eval does not disable autograd.
     model.eval()
     error=0.
+    reference_parts=[]
     with torch.no_grad():
         for part,kwargs in chunks():
             b=part.batch
@@ -84,17 +97,30 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
             if not math.isfinite(part_error) or part_error>max_logprob_error:
                 raise ValueError(f'actor/rollout logprob mismatch: {part_error} > {max_logprob_error}; no optimizer update')
             error=max(error,part_error)
-    # Equal rewards must produce a no-op, not a fabricated learning signal.
-    if not batch.batch['advantages'].any():
+            if reference_model is not None:
+                output=reference_model(**kwargs)
+                ref_logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
+                if not torch.isfinite(ref_logp[b['response_mask'].bool()]).all():
+                    raise ValueError('nonfinite reference response log-prob; no optimizer update')
+                reference_parts.append(ref_logp.detach().cpu())
+                del output,ref_logp
+    # Equal task rewards provide no policy-gradient signal. A fixed-reference
+    # regularizer may still act on an actor that has drifted from its reference.
+    if not batch.batch['advantages'].any() and reference_model is None:
         return {'status':'zero_advantage','updated':False,'rewards':rewards,'max_logprob_error':error,
                 'reward_details':reward_details,'micro_batch_size':micro_batch_size}
     optimizer.zero_grad(set_to_none=True)
     total_loss=0.;metrics={}
-    for part,kwargs in chunks():
+    for index,(part,kwargs) in enumerate(chunks()):
         b=part.batch
         output=model(**kwargs)
         logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
         loss,part_metrics=policy_loss(part,logp)
+        part_metrics['actor/policy_loss']=float(loss.detach())
+        if reference_model is not None:
+            kl=reference_loss(logp,reference_parts[index].to(logp.device),b['response_mask'],kl_estimator)
+            part_metrics['actor/reference_kl']=float(kl.detach())
+            loss=loss+kl_coefficient*kl
         # verl's token-mean loss must be weighted by effective response tokens,
         # not the number of microbatches or examples (lengths can differ).
         weight=int(b['response_mask'].sum())/total_tokens
@@ -105,8 +131,13 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
         del output,logp,loss
     params=[param for param in model.parameters() if param.requires_grad]
     norm=torch.nn.utils.clip_grad_norm_(params,max_grad_norm,error_if_nonfinite=True)
+    if norm==0:
+        return {'status':'zero_gradient','updated':False,'loss':total_loss,'grad_norm':0.,
+                'rewards':rewards,'metrics':metrics,'max_logprob_error':error,'reward_details':reward_details,
+                'micro_batch_size':micro_batch_size,'kl_coefficient':kl_coefficient,'kl_estimator':kl_estimator}
     optimizer.step()
     return {'status':'updated','updated':True,'loss':total_loss,'grad_norm':float(norm),
             'rewards':rewards,'max_logprob_error':error,'metrics':metrics,'reward_details':reward_details,
             'policy_id':policy_id,'micro_batch_size':micro_batch_size,'response_tokens':total_tokens,
+            'kl_coefficient':kl_coefficient,'kl_estimator':kl_estimator if reference_model is not None else None,
             'scope':'single audio PPO update using verl GRPO advantages; not efficacy evaluation'}

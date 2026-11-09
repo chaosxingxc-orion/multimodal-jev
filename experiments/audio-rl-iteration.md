@@ -26,7 +26,7 @@ NPU actor operations has not been implemented or verified.
 
 Every iteration closes its sampler process before updating and exporting. No
 in-process weight replacement is assumed. The next engine loads the new verified
-export. Equal reward groups produce no optimizer step; iteration count and actual
+export. Equal reward groups without KL produce no optimizer step; iteration count and actual
 update count are reported separately. No-op exports may be weight-identical, so
 iteration-specific export roots preserve lineage without overwriting receipts.
 
@@ -113,8 +113,13 @@ failed because adapter files were unreadable from the host; its failed container
 is retained. Successful exports now set readable shared-directory permissions.
 
 Full two-iteration engine execution and actual on-policy gains remain unverified.
-Reference KL, distributed
-workers, multi-audio optimization, matched three-seed comparisons and heldout
+Optional fixed-reference KL is now implemented; see the
+[numerical protocol](reference-kl.md). Existing schedules omit it. A separate
+frozen checkpoint, coefficient and estimator are recorded in actor identity and
+must remain unchanged across continuation. Actor/reference tokenizer semantics
+and processor tensors must agree. Controlled numerical validation is separate
+from actual engine execution and does not establish an appropriate KL strength.
+Distributed workers, multi-audio optimization, matched three-seed comparisons and heldout
 task evaluation remain required research work.
 
 ## Actor microbatching
