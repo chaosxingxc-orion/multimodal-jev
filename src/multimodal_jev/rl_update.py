@@ -6,7 +6,7 @@ This helper does not manage distributed workers or an experiment schedule.
 """
 from __future__ import annotations
 from collections import Counter
-from .reward import compute_score
+from .paired_rollout import compose_rewards
 from .verl_audio import make_batch,compute_advantages,policy_loss
 
 
@@ -27,8 +27,7 @@ def validate_rollouts(examples,records,policy_id,group_size):
 
 
 def update_actor(model,processor,optimizer,examples,audios,records,policy_id,group_size,
-                 max_logprob_error=0.02,max_grad_norm=1.0):
-    import json
+                 max_logprob_error=0.02,max_grad_norm=1.0,reward_mode='grpo',pair_bonus_weight=0.2):
     import torch
     from verl.utils.model import extract_multi_modal_inputs
     from .audio_policy import response_log_probs
@@ -36,8 +35,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     if len(audios)!=len(examples):raise ValueError('audio/example alignment mismatch')
     waves=dict(zip((ex.example_id for ex in examples),audios))
     ordered_examples=[by_id[r.example_id] for r in records]
-    rewards=[compute_score(ex.metadata.get('source_dataset','jev'),r.text,json.dumps(ex.to_record()))
-             for ex,r in zip(ordered_examples,records)]
+    rewards,reward_details=compose_rewards(ordered_examples,records,reward_mode,pair_bonus_weight)
     batch=make_batch(processor,ordered_examples,[waves[r.example_id] for r in records],
                      [r.token_ids for r in records],[r.log_probs for r in records],rewards,group_size)
     batch=compute_advantages(batch)
@@ -58,7 +56,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
         raise ValueError(f'actor/rollout logprob mismatch: {error} > {max_logprob_error}; no optimizer update')
     # Equal rewards must produce a no-op, not a fabricated learning signal.
     if not b['advantages'].any():
-        return {'status':'zero_advantage','updated':False,'rewards':rewards,'max_logprob_error':error}
+        return {'status':'zero_advantage','updated':False,'rewards':rewards,'max_logprob_error':error,'reward_details':reward_details}
     optimizer.zero_grad(set_to_none=True)
     output=model(**kwargs)
     logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
@@ -70,5 +68,5 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     norm=torch.nn.utils.clip_grad_norm_(params,max_grad_norm,error_if_nonfinite=True)
     optimizer.step()
     return {'status':'updated','updated':True,'loss':float(loss.detach()),'grad_norm':float(norm),
-            'rewards':rewards,'max_logprob_error':error,'metrics':metrics,
+            'rewards':rewards,'max_logprob_error':error,'metrics':metrics,'reward_details':reward_details,
             'policy_id':policy_id,'scope':'single audio PPO update using verl GRPO advantages; not efficacy evaluation'}

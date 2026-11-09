@@ -44,3 +44,23 @@ def test_rebind_cannot_silently_replace_distractor_definition():
     rows[2]=replace(original,schema=replace(original.schema,candidates=tuple(changed)))
     with pytest.raises(ValueError,match='definition set'):
         paired_rewards(rows,[x.target for x in rows])
+
+
+def test_rollout_pair_bonus_preserves_bad_json_and_aligns_replicates():
+    import json
+    from types import SimpleNamespace as NS
+    from multimodal_jev.paired_rollout import compose_rewards
+    examples=[];records=[]
+    for replicate in (0,1):
+        for ex in group():
+            text=json.dumps({'value':ex.target})
+            if replicate==1 and ex.metadata['variant']=='missing_candidate':text='not JSON'
+            examples.append(ex);records.append(NS(example_id=ex.example_id,replicate=replicate,text=text))
+    scores,details=compose_rewards(examples,records,'pair-grpo')
+    assert scores[3]>1 and scores[9]==-1
+    assert details['pair_bonuses'][9]==0
+    order=list(range(len(records)))[::-1]
+    reordered,_=compose_rewards([examples[i] for i in order],[records[i] for i in order],'pair-grpo')
+    assert reordered==scores[::-1]
+    with pytest.raises(ValueError,match='incomplete'):
+        compose_rewards(examples[:-1],records[:-1],'pair-grpo')

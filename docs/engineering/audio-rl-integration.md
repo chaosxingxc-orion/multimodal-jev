@@ -17,7 +17,8 @@ response log-prob 使用前一个位置预测下一个 token，包括结束 toke
 候选移除和正反 Noul。仅两端均语义正确才给成对奖励，权重 .2；
 每个样本按参与边取平均，避免 native 因参与三条边而自动得到三倍奖励。
 缺视图、重复视图、跨 audio/split、无效定义映射立即报错。
-这是待接入 verl 的奖励函数，不是已训练或已验证有提升的 pair-GRPO 算法。
+`paired_rollout.py` 已将它接入 `rl_update.update_actor` 的 verl advantage 前处理；
+尚未完成真实 vLLM rollout 到更新的端到端验收，也没有 pair-GRPO 效果结论。
 
 ## verl 尚缺的连接
 
@@ -68,6 +69,12 @@ torch-npu 2.10.0.post7 修改 AdamW 自动 foreach 检测，在纯 CPU 参数更
 
 CPU 集成 smoke 的响应是受控 fixture，用于检查奖励方向、梯度、变长音频和
 padding。它不能替代 on-policy rollout，更不能作为 RL 有效性实验。
+
+[成对奖励数值检查](verl-pair-reward-smoke.json) 在同一固定镜像内通过：
+6 个真实 FSC train schema、每题 2 个受控响应；真实 verl DataProto、GRPO
+与 PPO 梯度。仅改变一侧 rebind 答案时，相同 native 单题分数通过配对 bonus
+产生相反优势方向；其他等分组优势仍为零；全 malformed 的 bonus、优势为零；
+padding 梯度为零。这里的答案与旧 log-prob 是测试 fixture，不是模型采样。
 
 [实际 actor 对照](verl-actor-parity.json) 使用官方 Qwen3-ASR 0.6B HF 权重，
 两种长度的真实音频、不同长度的 schema 和答案，4 条 batched teacher-forcing

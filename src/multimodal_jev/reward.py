@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import json
 import math
 from .task_schema import JevExample
+from .answers import parse_answer
 
 
 @dataclass(frozen=True)
@@ -41,9 +42,7 @@ def compute_score(data_source, solution_str, ground_truth, extra_info=None, **kw
     """
     example = JevExample.from_record(json.loads(ground_truth))
     try:
-        answer = json.loads(solution_str)
-        if not isinstance(answer, dict) or set(answer) - {'value', 'confidence'} or 'value' not in answer:
-            return -1.0
+        answer = parse_answer(solution_str)
         return score_rollout(example, answer['value'], confidence=answer.get('confidence'))['total']
     except (ValueError, TypeError):
         return -1.0

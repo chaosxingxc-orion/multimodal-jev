@@ -2,7 +2,8 @@
 
 The caller must sample complete groups before computing these rewards. Applying
 this function independently to shuffled minibatches changes the objective and
-is unsupported. This module is not yet wired into a verl reward manager.
+is unsupported. paired_rollout composes it before the verl advantage calculation;
+the distributed verl reward-manager path is not implemented.
 """
 from __future__ import annotations
 from collections import defaultdict

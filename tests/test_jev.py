@@ -83,3 +83,13 @@ def test_missing_predictions_are_failures_even_for_unknown(tmp_path):
     predictions.write_text(json.dumps({'example_id':'x','value':None})+'\n')
     result=evaluate(manifest,predictions)['by_variant']['all']
     assert result['accuracy']==1 and result['refusals']==1
+
+
+def test_strict_json_parser_cannot_reward_duplicate_keys_or_nan():
+    from multimodal_jev.answers import parse_answer,AnswerError
+    gt=json.dumps(example().to_record())
+    for text in ['{"value":"b","value":"a"}', '{"value":"a","confidence":null}',
+                 '{"value":NaN}', '{"value":1e999}', '```json\n{"value":"a"}\n```']:
+        with pytest.raises(AnswerError):parse_answer(text)
+        assert compute_score('fsc',text,gt)==-1
+    assert parse_answer('{"value":null}')['value'] is None

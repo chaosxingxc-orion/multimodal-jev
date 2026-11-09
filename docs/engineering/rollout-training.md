@@ -24,8 +24,10 @@ variance or fabricated successful updates.
 Version 1 requires temperature 1, top_p 1, top_k -1 and no probability-changing
 penalties. Other sampling distributions require the same transformations on
 actor logits and are rejected until implemented. Response padding has no loss.
-The helper currently supports ordinary GRPO single-decision rewards; paired
-reward composition, reference KL and multi-iteration experiment scheduling remain.
+The helper supports ordinary GRPO and `reward_mode='pair-grpo'`. Pair bonuses
+are composed per rollout replicate across complete six-view source groups,
+then GRPO centers by example ID (same schema), never by recording ID.
+Reference KL and multi-iteration experiment scheduling remain unimplemented.
 
 ## Verification state
 
@@ -67,3 +69,20 @@ Check Docker live/terminal state and per-run progress before resuming; do not
 restart merely because a heartbeat file is old. Source snapshots are copied into
 each run. They do not update the previously built image; model/data mounts are
 read-only, outputs separate. Checkpoint/optimizer state is retained for active runs.
+
+## SFT export and fixed development evaluation
+
+`export_audio_policy.py` gates on completed SFT receipts, verifies adapter versus
+merged/reloaded response log-probs on two TRAIN examples, and publishes only a
+successful content-addressed checkpoint under shared `models/multimodal-jev`.
+`after_sft.py` observes the actual dependency container and launches export then
+development evaluation. It does not restart the dependency or reset existing jobs.
+The live `post-sft-v1` supervisor uses an earlier copied snapshot; later lock and
+failed-terminal improvements in the repository do not modify that running process.
+
+`policy_evaluation.py` preserves raw generation and per-example resumable output.
+The fixed [development protocol](../../experiments/fsc-schema-evaluation.md) has
+31 official valid source recordings, six views each, no SFT training overlap.
+Malformed output is never null. Reward and evaluation use a strict shared parser.
+Scorer controls and numerical pair-reward checks are tracked separately from model
+quality; neither is evidence of RL improvement.

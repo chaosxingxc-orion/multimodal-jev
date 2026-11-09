@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from .task_schema import JevExample
 from .reward import score_rollout
+from .answers import parse_answer, AnswerError
 
 
 def evaluate(manifest: Path, predictions: Path):
@@ -20,15 +21,31 @@ def evaluate(manifest: Path, predictions: Path):
     stats = defaultdict(lambda: {'count': 0, 'correct': 0, 'valid': 0, 'answered': 0,
                                 'answered_correct': 0, 'unknown_targets': 0,
                                 'refusals': 0, 'correct_refusals': 0, 'missing': 0,
+                                'format_valid': 0, 'malformed': 0, 'absent': 0,
                                 'brier_sum': 0.0, 'confidence_count': 0})
     groups = defaultdict(dict)
+    strata = defaultdict(lambda: {'count': 0, 'correct': 0})
+    seen = set()
     with manifest.open() as handle:
         for line in handle:
             ex = JevExample.from_record(json.loads(line))
+            if ex.example_id in seen:
+                raise ValueError(f'duplicate manifest example: {ex.example_id}')
+            seen.add(ex.example_id)
             answer = answers.pop(ex.example_id, None)
-            missing = answer is None or 'value' not in answer
-            value = answer.get('value') if answer else None
-            confidence = answer.get('confidence') if answer else None
+            parsed = None
+            if answer is not None and answer.get('format_valid', True) is True:
+                try:
+                    # Raw generation is authoritative when present. Legacy structured
+                    # predictions are still supported, with the same answer validation.
+                    text = answer.get('raw_text', json.dumps({k: answer[k] for k in
+                                          ('value', 'confidence') if k in answer}))
+                    parsed = parse_answer(text)
+                except AnswerError:
+                    pass
+            missing = parsed is None
+            value = parsed['value'] if parsed is not None else None
+            confidence = parsed.get('confidence') if parsed is not None else None
             score = score_rollout(ex, value, confidence=confidence)
             correct = not missing and bool(score['semantic'])
             variant = ex.metadata.get('variant', ex.schema.decision_type)
@@ -38,6 +55,9 @@ def evaluate(manifest: Path, predictions: Path):
                 cell['correct'] += correct
                 cell['valid'] += not missing and ex.schema.accepts(value)
                 cell['missing'] += missing
+                cell['format_valid'] += not missing
+                cell['malformed'] += answer is not None and missing
+                cell['absent'] += answer is None
                 cell['answered'] += not missing and value is not None
                 cell['answered_correct'] += correct and value is not None
                 cell['unknown_targets'] += ex.target is None
@@ -46,7 +66,12 @@ def evaluate(manifest: Path, predictions: Path):
                 if confidence is not None:
                     cell['brier_sum'] += (confidence-float(correct)) ** 2
                     cell['confidence_count'] += 1
+            stratum = strata[variant + ('.target_null' if ex.target is None else '.target_present')]
+            stratum['count'] += 1
+            stratum['correct'] += correct
             group = ex.metadata.get('source_group', ex.example_id)
+            if variant in groups[group]:
+                raise ValueError(f'duplicate group/variant: {group}/{variant}')
             groups[group][variant] = {'correct': correct, 'value': value, 'missing': missing,
                 'semantic': next((c.description for c in ex.schema.candidates if c.id == value), None)}
     if answers:
@@ -54,6 +79,8 @@ def evaluate(manifest: Path, predictions: Path):
     for cell in stats.values():
         ratio = lambda n,d: n/d if d else None
         cell['accuracy'] = ratio(cell['correct'],cell['count'])
+        cell['format_valid_rate'] = ratio(cell['format_valid'],cell['count'])
+        cell['schema_valid_rate'] = ratio(cell['valid'],cell['count'])
         cell['coverage'] = ratio(cell['answered'],cell['count'])
         cell['risk'] = ratio(cell['answered']-cell['answered_correct'],cell['answered'])
         cell['unknown_precision'] = ratio(cell['correct_refusals'],cell['refusals'])
@@ -68,9 +95,15 @@ def evaluate(manifest: Path, predictions: Path):
         pairs[variant] = {'groups':len(eligible),'both_correct':both_correct,
             'both_correct_rate':both_correct/len(eligible) if eligible else None,
             'semantic_equal': semantic_equal if variant != 'missing_candidate' else None}
+    eligible = [g for g in groups.values() if 'noul.True' in g and 'noul.False' in g]
+    both = sum(g['noul.True']['correct'] and g['noul.False']['correct'] for g in eligible)
+    pairs['noul'] = {'groups': len(eligible), 'both_correct': both,
+                    'both_correct_rate': both / len(eligible) if eligible else None}
+    for cell in strata.values():
+        cell['accuracy'] = cell['correct'] / cell['count']
     return {'manifest_sha256':hashlib.sha256(manifest.read_bytes()).hexdigest(),
             'predictions_sha256':hashlib.sha256(predictions.read_bytes()).hexdigest(),
-            'by_variant':dict(stats),'pairs':pairs,
+            'by_variant':dict(stats),'pairs':pairs,'by_target_presence':dict(strata),
             'note':'Derived views are correlated; all.accuracy is descriptive, not independent evidence.'}
 
 
