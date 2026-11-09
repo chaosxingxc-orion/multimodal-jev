@@ -60,6 +60,13 @@ has been launched according to [its protocol](../../experiments/fsc-audio-sft-in
 The full FSC closed-label control is also running under
 [the full-split protocol](../../experiments/fsc-frozen-audio-full.md).
 
+The reproducible ASR-only development baselines are defined by
+`tools/jev/transcribe_manifest.py` with configs
+`asr-transcript-fsc-dev.json` and `asr-transcript-slurp-dev.json`. They save raw
+transcriptions, token IDs, per-record hashes and corpus WER against the frozen
+reference transcript metadata. These runs measure ASR error propagation only;
+they do not feed references into decisions or claim an ASR-to-text Jev score.
+
 Long-run handles:
 
 - `npu` container `multimodal-jev-fsc-frozen-audio-full-v1`, output

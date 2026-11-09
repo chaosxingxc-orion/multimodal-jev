@@ -1,0 +1,125 @@
+{
+  "status": "failed_parameter_equivalence_gate",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/actor-microbatch-smoke-v2/run",
+  "comparison": {
+    "metrics": [
+      {
+        "status": "updated",
+        "updated": true,
+        "loss": 0.14295536279678345,
+        "grad_norm": 3.9087064266204834,
+        "rewards": [
+          1.0,
+          0.0,
+          -0.1
+        ],
+        "max_logprob_error": 0.0,
+        "metrics": {
+          "actor/pg_clipfrac": 0.0,
+          "actor/ppo_kl": 0.0,
+          "actor/pg_clipfrac_lower": 0.0
+        },
+        "reward_details": {
+          "mode": "grpo",
+          "base_rewards": [
+            1.0,
+            0.0,
+            -0.1
+          ],
+          "pair_bonuses": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "policy_id": "controlled-fixture",
+        "micro_batch_size": 3,
+        "response_tokens": 23,
+        "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+      },
+      {
+        "status": "updated",
+        "updated": true,
+        "loss": 0.14295533169870794,
+        "grad_norm": 3.9087064266204834,
+        "rewards": [
+          1.0,
+          0.0,
+          -0.1
+        ],
+        "max_logprob_error": 0.0,
+        "metrics": {
+          "actor/pg_clipfrac": 0.0,
+          "actor/ppo_kl": 0.0,
+          "actor/pg_clipfrac_lower": 0.0
+        },
+        "reward_details": {
+          "mode": "grpo",
+          "base_rewards": [
+            1.0,
+            0.0,
+            -0.1
+          ],
+          "pair_bonuses": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "policy_id": "controlled-fixture",
+        "micro_batch_size": 2,
+        "response_tokens": 23,
+        "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+      }
+    ],
+    "diagnostics": {
+      "parameters": {
+        "max_absolute_error": 2.8206668503116816e-06,
+        "reference_max": 0.031249981373548508,
+        "error_l2": 3.966755582607213e-06,
+        "reference_l2": 8.657000306097572
+      },
+      "gradients": {
+        "max_absolute_error": 4.6566128730773926e-08,
+        "reference_max": 0.09911363571882248,
+        "error_l2": 6.275875151885685e-07,
+        "reference_l2": 0.9999998144048968
+      },
+      "exp_avg": {
+        "max_absolute_error": 4.6566128730773926e-09,
+        "reference_max": 0.009911363944411278,
+        "error_l2": 6.283953228596269e-08,
+        "reference_l2": 0.09999998319529887
+      }
+    },
+    "failures": [
+      {
+        "field": "parameters",
+        "error": "Tensor-likes are not close!\n\nMismatched elements: 1 / 4096 (0.0%)\nGreatest absolute difference: 2.436740032862872e-06 at index (207, 2) (up to 2e-06 allowed)\nGreatest relative difference: 0.0350203774869442 at index (207, 2) (up to 0.0002 allowed)"
+      },
+      {
+        "field": "parameters",
+        "error": "Tensor-likes are not close!\n\nMismatched elements: 1 / 4096 (0.0%)\nGreatest absolute difference: 2.8206668503116816e-06 at index (340, 2) (up to 2e-06 allowed)\nGreatest relative difference: 0.2434462457895279 at index (340, 2) (up to 0.0002 allowed)"
+      }
+    ],
+    "tolerances": {
+      "atol": 2e-06,
+      "rtol": 0.0002
+    },
+    "response_lengths": [
+      6,
+      6,
+      11
+    ]
+  },
+  "late_parity_check": {
+    "no_update": true,
+    "optimizer_states": 0
+  },
+  "terminal": {
+    "exit_code": 1,
+    "error": "AssertionError('microbatch equivalence gate failed; see comparison.json')",
+    "finished_unix": 1794247686.3039281
+  },
+  "scope": "controlled TRAIN fixtures; no RL efficacy; default full-batch unchanged"
+}

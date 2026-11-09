@@ -104,14 +104,17 @@ optimizer step. Gradient clipping and AdamW step happen once per complete batch.
 updated parameters. It also injects a log-probability error only in the final
 microbatch and requires no parameter or optimizer state change. Responses are
 controlled TRAIN fixtures with unequal lengths; this is numerical verification,
-not on-policy vLLM inference. Run handle:
-`npu:multimodal-jev-actor-microbatch-smoke-v1`, source/results under
-`/mnt/cephfs/xingchao/experiments/multimodal-jev/actor-microbatch-smoke-v1`.
+not on-policy vLLM inference. Run handles:
+`npu:multimodal-jev-actor-microbatch-smoke-v1` and `-v2`, source/results under
+`/mnt/cephfs/xingchao/experiments/multimodal-jev/actor-microbatch-smoke-v1` and
+`-v2`.
 Version 1 failed its parameter comparison gate: one reported element differed
 by 2.43674e-6, exceeding atol=2e-6 / rtol=2e-4. A second diagnostic run
-tolerances, records all gradient/parameter/moment errors before asserting, and
-executes the late-parity rejection check. Its terminal result is pending; do not
-infer equivalence from unit tests or relax tolerances to hide this failure.
+preserved the same update code and tolerances, recorded all
+gradient/parameter/moment errors before asserting, and executed the late-parity
+rejection check. Its terminal result is exit 1 because the exact parameter gate
+failed; do not infer equivalence from unit tests or relax tolerances to hide this
+failure.
 The completed v2 evidence found gradient max error `4.65661e-8`, AdamW
 first-moment max error `4.65661e-9`, and parameter max error `2.82067e-6`
 (two isolated elements). The late parity failure left zero optimizer states and
