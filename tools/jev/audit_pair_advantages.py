@@ -28,6 +28,13 @@ def run(rollout):
         assert torch.isfinite(adv).all()
         advantages[mode]=adv
     difference=(advantages['grpo']-advantages['pair-grpo']).abs()
+    centered={}
+    for mode in ('grpo','pair-grpo'):
+        token_rewards=torch.zeros_like(mask)
+        for i,r in enumerate(records):token_rewards[i,len(r.token_ids)-1]=rewards[mode][i]
+        centered[mode],_=compute_grpo_outcome_advantage(token_rewards,mask,uid,norm_adv_by_std_in_grpo=False)
+        assert torch.isfinite(centered[mode]).all()
+    centered_difference=(centered['grpo']-centered['pair-grpo']).abs()
     return {'status':'passed','policy_id':identity['policy_id'],
         'rollout_sha256':file_hash(rollout/'rollouts.jsonl'),'responses':len(records),
         'replicates':identity['config']['sampling']['n'],'rewards':rewards,
@@ -35,6 +42,9 @@ def run(rollout):
         'nonzero_bonus_responses':sum(v!=0 for v in details['pair-grpo']['pair_bonuses']),
         'max_advantage_difference':float(difference[mask.bool()].max()),
         'advantage_sign_changes':int(((advantages['grpo'].sign()!=advantages['pair-grpo'].sign())&mask.bool()).sum()),
+        'center_only_control':{'max_advantage_difference':float(centered_difference[mask.bool()].max()),
+            'grpo':[float(row[0]) for row in centered['grpo']],
+            'pair_grpo':[float(row[0]) for row in centered['pair-grpo']]},
         'per_response':[{'example_id':r.example_id,'replicate':r.replicate,
             'grpo':float(advantages['grpo'][i,0]),'pair_grpo':float(advantages['pair-grpo'][i,0])}
             for i,r in enumerate(records)],

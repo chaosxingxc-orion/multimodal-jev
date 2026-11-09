@@ -24,3 +24,24 @@ alone do not guarantee a different signal: repeated two-level reward patterns
 can still normalize alike. If needed, separately preregister alternatives such
 as centering without per-group scaling or separately centered pair advantages,
 with scale controls and matched ablations. Existing actor objectives stay fixed.
+
+## Center-only control implementation
+
+The actor now exposes norm_adv_by_std (default true), forwarded unchanged to
+the pinned verl advantage function. Explicit false centers rewards per prompt
+without dividing by their sample standard deviation. Reject non-boolean values
+and any change within a persisted actor trajectory. Existing source snapshots
+and configs keep standard normalization.
+
+A new read-only n2 audit measures the center-only control on the same saved
+responses; the n4 audit also reports both choices. This is an objective/scale
+diagnosis, not a selected winning algorithm. Any subsequent training study must
+cross reward composition (base/pair) with normalization (standardized/center-only),
+hold initializer/data/schedule fixed, report gradient norms and effective token
+budgets, and separately assess learning-rate/scale sensitivity. Neither changing
+normalization nor increasing n is itself evidence of semantic improvement.
+
+The queued n4 audit waits for exact successful rollout container
+0cae1e866ea83c5c5aa3cbfc57ee3b03d12d7a3fa2db1cecba1779c29fb16633,
+validates all 48 responses, and launches independently in the pinned verl image.
+See [queue receipt](../docs/engineering/pair-advantage-n4-audit-v1-queued.json).

@@ -40,3 +40,9 @@ learning rate and 0.02 gate. Its memory limit is32GiB and container is
 See [launch receipt](../docs/engineering/vllm-response-only-actor-v1-launch.json).
 The 128GiB full-projection v5 remains unchanged and live. Fixture equivalence
 does not prove every real trajectory or memory saving; inspect actual artifacts.
+
+The independent response-only chain supervisor now waits for that exact actor,
+then requires a real update, verified export, fresh vLLM process and persisted
+optimizer restoration in the second actor. It uses its own experiment/export
+roots; the existing full-projection chain remains separate. See
+[launch receipt](../docs/engineering/response-only-chain-v1-launch.json).

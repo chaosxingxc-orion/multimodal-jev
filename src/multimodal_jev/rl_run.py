@@ -54,6 +54,8 @@ def train(config,output):
     from .audio_policy import load_audio
     from .rl_update import update_actor
     from .actor_state import save_optimizer,restore_optimizer
+    from .advantage_config import normalization,validate_continuation
+    norm_adv_by_std=normalization(config)
     output=Path(output)
     if (output/'result.json').exists() or (output/'optimizer.pt').exists():
         raise FileExistsError('existing update artifacts; inspect before retry')
@@ -84,6 +86,7 @@ def train(config,output):
         if prior['reward_mode']!=config['reward_mode'] or prior['pair_bonus_weight']!=config['pair_bonus_weight']:
             raise ValueError('reward objective changed within trajectory')
         validate_reference_continuation(prior.get('reference_policy'),reference)
+        validate_continuation(prior['config'],config)
         if file_hash(parent/'optimizer.pt')!=prior['optimizer_sha256']:
             raise ValueError('parent optimizer changed')
         adapter=parent/'adapter'
@@ -102,7 +105,7 @@ def train(config,output):
               'manifest_sha256':rollout['manifest_sha256'],'example_ids':[ex.example_id for ex in examples],
               'adapter_files':({p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()} if adapter else None),
               'source_sha256':{name:file_hash(Path(__file__).with_name(name)) for name in
-                              ('rl_run.py','rl_update.py','reference_policy.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py','training_budget.py')}}
+                              ('rl_run.py','rl_update.py','reference_policy.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py','training_budget.py','advantage_config.py')}}
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('actor retry identity mismatch')
     atomic_json(output/'identity.json',identity)
@@ -149,7 +152,7 @@ def train(config,output):
                          micro_batch_size=config.get('micro_batch_size'),reference_model=reference_model,
                          kl_coefficient=reference['coefficient'] if reference else 0.,
                          kl_estimator=reference['estimator'] if reference else 'k3',progress=progress,
-                         response_logits_only=config.get('response_logits_only',False))
+                         response_logits_only=config.get('response_logits_only',False),norm_adv_by_std=norm_adv_by_std)
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     save_optimizer(model,optimizer,output/'optimizer.pt')
     # Keep the exporter's base/train fields while retaining the complete run config.
@@ -160,6 +163,7 @@ def train(config,output):
             'updates':(prior['updates'] if prior else 0)+int(metrics['updated']),
             'iteration':(prior['iteration'] if prior else 0)+1,
             'reward_mode':config['reward_mode'],'pair_bonus_weight':config['pair_bonus_weight'],
+            'norm_adv_by_std':norm_adv_by_std,
             'reference_policy':reference,
             'metrics':metrics,'scope':'one persisted actor iteration; export and next fresh rollout required; no efficacy claim'}
     atomic_json(output/'result.json',result)

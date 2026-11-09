@@ -79,11 +79,13 @@ def make_batch(processor,examples,audios,response_ids,old_log_probs,rewards,grou
     return result
 
 
-def compute_advantages(batch):
+def compute_advantages(batch,norm_adv_by_std=True):
     from verl.trainer.ppo.core_algos import compute_grpo_outcome_advantage
+    from .advantage_config import normalization
+    normalization({'norm_adv_by_std':norm_adv_by_std})
     advantages,returns=compute_grpo_outcome_advantage(
         batch.batch['token_level_rewards'],batch.batch['response_mask'],
-        batch.non_tensor_batch['uid'],norm_adv_by_std_in_grpo=True)
+        batch.non_tensor_batch['uid'],norm_adv_by_std_in_grpo=norm_adv_by_std)
     batch.batch['advantages']=advantages;batch.batch['returns']=returns
     return batch
 

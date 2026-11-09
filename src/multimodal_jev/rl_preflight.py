@@ -19,6 +19,8 @@ def validate_schedule(config):
         raise ValueError('actor.model_path must be explicit and point to the frozen LoRA base')
     if type(actor.get('response_logits_only',False)) is not bool:
         raise ValueError('response_logits_only must be boolean')
+    from .advantage_config import normalization
+    normalization(actor)
     base,checkpoint=Path(actor['model_path']),Path(config['initial_checkpoint'])
     for name,path in [('actor base',base),('initial rollout',checkpoint)]:
         if not path.is_dir() or not (path/'config.json').is_file():

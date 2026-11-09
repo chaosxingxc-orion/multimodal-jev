@@ -35,7 +35,7 @@ def validate_rollouts(examples,records,policy_id,group_size):
 def update_actor(model,processor,optimizer,examples,audios,records,policy_id,group_size,
                  max_logprob_error=0.02,max_grad_norm=1.0,reward_mode='grpo',pair_bonus_weight=0.2,
                  micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3',progress=None,
-                 response_logits_only=False):
+                 response_logits_only=False,norm_adv_by_std=True):
     import torch
     from verl.utils.model import extract_multi_modal_inputs
     from .audio_policy import response_log_probs
@@ -69,7 +69,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     rewards,reward_details=compose_rewards(ordered_examples,records,reward_mode,pair_bonus_weight)
     batch=make_batch(processor,ordered_examples,[waves[r.example_id] for r in records],
                      [r.token_ids for r in records],[r.log_probs for r in records],rewards,group_size)
-    batch=compute_advantages(batch)
+    batch=compute_advantages(batch,norm_adv_by_std=norm_adv_by_std)
     def report(phase,**values):
         if progress is not None:progress({'phase':phase,**values})
     report('batch_ready',responses=len(records),prompt_tokens=int(batch.batch['prompts'].shape[-1]),
