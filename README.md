@@ -8,7 +8,7 @@
 的类型化决策读出、语义一致性评估方法，以及 [omni](https://github.com/chaosxingxc-orion/omni)
 的多模态证据处理与可复现实验组织方式。
 
-当前阶段：已完成资源调研与共享下载，正在构建 NGA/verl/vLLM 兼容镜像、Qwen3-ASR 推理探针、FSC Jev 数据契约和奖励接口；
+当前阶段：已完成资源调研、共享下载、NGA/verl/vLLM 兼容镜像及 CPU SFT 初始化，正在进行开发集对照评测；
 尚未完成学界基线复现、NPU 训练或 RL 效果验证。详细结论见 [研究报告](docs/research/README.md)，下载与整理状态见 [本地资源](docs/research/06-local-assets.md)。
 研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
 
@@ -37,7 +37,7 @@ python3 -m venv .venv
 
 当前包没有运行时第三方依赖；`dev` 提供 pytest，`assets` 提供下载工具所需 requests。
 使用 `.venv/bin/python -m pip install -e '.[dev,assets]'` 安装工具依赖，`.venv/bin/python -m pytest` 验证共享资源工具的校验与不覆盖行为。
-加速器、深度学习框架和多模态模型依赖在确定基线后单独固定版本。
+加速器、深度学习框架和多模态模型依赖固定在独立实验镜像中，见运行时说明。
 
 ## 研究与实验约定
 
@@ -60,7 +60,7 @@ python3 -m venv .venv
 
 跨任务数据已扩展到 [SLURP 域留出协议](experiments/slurp-transfer-v1.md)：
 59,014 条真实录音、413,098 条派生决策，覆盖 scenario Choice 和四类开放槽位；
-已完成全量数据校验，尚未进行该发布上的模型评估。
+已完成全量数据校验和固定开发子集的原始模型评估，SFT 迁移评测仍在运行。
 
 [vLLM rollout 与 verl 更新入口](docs/engineering/rollout-training.md) 已实现；
 实际 NPU engine rollout 和完整 RL 更新尚待验证。原始 ASR 模型的实际采样暴露了
@@ -71,3 +71,8 @@ SFT 初始化现已完成 47 次更新并通过合并/重载数值校验，见
 完整 FSC 冻结基线仍在运行；尚无 SFT 泛化或 RL 提升结论。
 [SFT 起点的两轮 RL 配置](configs/experiments/rl-schedule-sft-smoke.json)
 已通过真实资产预检，仍待分配空闲 NPU 执行 vLLM 采样与 verl 更新。
+
+[转写文本对照](experiments/text-evidence-baselines.md)已在 FSC、SLURP 固定开发子集启动：
+使用同一个 Qwen3-0.6B，比较 ASR 转写与参考转写对决策的影响。
+四组均已产出预测，完成后自动生成成对说话人 bootstrap 比较；当前无完整文本对照结果。
+实验状态与证据索引见 [运行记录](wiki/2026-11-10-development-baselines.md)。

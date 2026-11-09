@@ -55,6 +55,21 @@ def compare(manifest,base,candidate,draws=2000,seed=17,cluster_field='speaker_id
     # Same generation protocol; model/adapter identity is allowed to differ.
     for field in ('max_new_tokens','device','dtype','seed'):
         if li['config'][field]!=ri['config'][field]:raise ValueError('decoding protocol differs: '+field)
+    if 'input_mode' in li['config'] or 'input_mode' in ri['config']:
+        # A transcript-evidence contrast holds the decision model and prompt
+        # implementation fixed. Audio base/SFT comparisons may change weights.
+        if (li['config'].get('input_mode'),ri['config'].get('input_mode'))!=('asr-text','reference-text'):
+            raise ValueError('text comparison requires ASR base and reference candidate')
+        for field in ('enable_thinking','cpu_threads','model_id','model_revision'):
+            if field not in li['config'] or field not in ri['config'] or li['config'][field]!=ri['config'][field]:
+                raise ValueError('text protocol differs: '+field)
+        for field in ('policy_id','checkpoint_files'):
+            if not li.get(field) or li[field]!=ri.get(field):
+                raise ValueError('text model identity differs: '+field)
+        for name in ('text_baseline.py','audio_policy.py','task_schema.py'):
+            digest=li.get('source_sha256',{}).get(name)
+            if not digest or digest!=ri.get('source_sha256',{}).get(name):
+                raise ValueError('text prompt implementation differs: '+name)
     examples=[JevExample.from_record(json.loads(line)) for line in manifest.open()]
     ids={ex.example_id for ex in examples}
     if len(ids)!=len(examples):raise ValueError('duplicate manifest ID')

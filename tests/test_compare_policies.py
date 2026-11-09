@@ -48,3 +48,38 @@ def test_failed_or_different_protocol_evaluation_rejected(tmp_path):
     with pytest.raises(ValueError,match='protocol differs'):compare(manifest,base,candidate,100)
     (candidate/'terminal.json').write_text('{"exit_code":1}')
     with pytest.raises(ValueError,match='successful evaluation'):compare(manifest,base,candidate,100)
+
+
+def text_fixture(tmp_path):
+    manifest,base,candidate=fixture(tmp_path)
+    for run,mode in ((base,'asr-text'),(candidate,'reference-text')):
+        path=run/'identity.json';identity=json.loads(path.read_text())
+        identity['config'].update(input_mode=mode,enable_thinking=False,cpu_threads=4,
+                                  model_id='fixed-text-model',model_revision='revision')
+        identity.update(policy_id='same-weights',checkpoint_files={'weights':'hash'},
+            source_sha256={name:'source-hash' for name in
+                           ('text_baseline.py','audio_policy.py','task_schema.py')})
+        path.write_text(json.dumps(identity))
+    return manifest,base,candidate
+
+
+def test_matched_text_evidence_comparison(tmp_path):
+    manifest,base,candidate=text_fixture(tmp_path)
+    assert compare(manifest,base,candidate,100)['comparison']['valid/noul.True']['delta']==1
+
+
+@pytest.mark.parametrize('field,value,match',[
+    ('input_mode','asr-text','ASR base'),
+    ('enable_thinking',True,'text protocol differs'),
+    ('cpu_threads',8,'text protocol differs'),
+    ('model_revision','changed','text protocol differs'),
+    ('policy_id','other-weights','text model identity differs'),
+    ('checkpoint_files',{'weights':'other-hash'},'text model identity differs'),
+    ('source_sha256',{'text_baseline.py':'changed'},'text prompt implementation differs')])
+def test_text_contrast_rejects_additional_changes(tmp_path,field,value,match):
+    manifest,base,candidate=text_fixture(tmp_path)
+    path=candidate/'identity.json';identity=json.loads(path.read_text())
+    if field in identity['config']:identity['config'][field]=value
+    else:identity[field]=value
+    path.write_text(json.dumps(identity))
+    with pytest.raises(ValueError,match=match):compare(manifest,base,candidate,100)
