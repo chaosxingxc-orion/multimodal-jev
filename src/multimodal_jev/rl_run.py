@@ -148,7 +148,8 @@ def train(config,output):
                          pair_bonus_weight=config['pair_bonus_weight'],
                          micro_batch_size=config.get('micro_batch_size'),reference_model=reference_model,
                          kl_coefficient=reference['coefficient'] if reference else 0.,
-                         kl_estimator=reference['estimator'] if reference else 'k3',progress=progress)
+                         kl_estimator=reference['estimator'] if reference else 'k3',progress=progress,
+                         response_logits_only=config.get('response_logits_only',False))
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     save_optimizer(model,optimizer,output/'optimizer.pt')
     # Keep the exporter's base/train fields while retaining the complete run config.

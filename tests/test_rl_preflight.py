@@ -49,6 +49,14 @@ def test_base_and_sft_export_preflight(tmp_path):
         Path(config['initial_adapter'])/'adapter_model.safetensors')
 
 
+def test_projection_flag_must_be_explicit_boolean(tmp_path):
+    config=fixture(tmp_path)
+    config['actor']['response_logits_only']='false'
+    with pytest.raises(ValueError,match='boolean'):validate_schedule(config)
+    config['actor']['response_logits_only']=True
+    assert validate_schedule(config)['unique_examples']==1
+
+
 @pytest.mark.parametrize('mutation,message',[
     ('adapter','adapter/base'),('base','adapter/base'),
     ('export','published export file changed'),('extra','export file set'),

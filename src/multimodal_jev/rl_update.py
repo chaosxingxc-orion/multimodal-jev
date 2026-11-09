@@ -34,11 +34,13 @@ def validate_rollouts(examples,records,policy_id,group_size):
 
 def update_actor(model,processor,optimizer,examples,audios,records,policy_id,group_size,
                  max_logprob_error=0.02,max_grad_norm=1.0,reward_mode='grpo',pair_bonus_weight=0.2,
-                 micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3',progress=None):
+                 micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3',progress=None,
+                 response_logits_only=False):
     import torch
     from verl.utils.model import extract_multi_modal_inputs
     from .audio_policy import response_log_probs
     from .reference_policy import reference_loss
+    if type(response_logits_only) is not bool:raise ValueError('response_logits_only must be boolean')
     if type(kl_coefficient) not in (int,float) or not math.isfinite(kl_coefficient) or kl_coefficient<0:
         raise ValueError('finite nonnegative KL coefficient required')
     if (reference_model is None)!=(kl_coefficient==0):
@@ -92,7 +94,12 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
             b=part.batch
             kwargs={'input_ids':b['input_ids'],'attention_mask':b['attention_mask'],
                     'position_ids':b['position_ids'],**mm,'use_cache':False}
+            if response_logits_only:kwargs['logits_to_keep']=b['responses'].shape[-1]+1
             yield part,kwargs
+    def log_probs(output,b):
+        boundary=b['prompts'].shape[-1]
+        return response_log_probs(output.logits,b['input_ids'],boundary,
+                                  logits_start=boundary-1 if response_logits_only else 0)
     # Disable dropout for probability parity both before and during update.
     # eval does not disable autograd.
     model.eval()
@@ -103,7 +110,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
             b=part.batch
             report('parity_forward',chunk=index)
             output=model(**kwargs)
-            actor_logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
+            actor_logp=log_probs(output,b)
             differences=(actor_logp-b['old_log_probs']).abs()
             part_error=differences[b['response_mask'].bool()].max().item()
             report('parity_checked',chunk=index,max_logprob_error=part_error,
@@ -114,7 +121,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
             error=max(error,part_error)
             if reference_model is not None:
                 output=reference_model(**kwargs)
-                ref_logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
+                ref_logp=log_probs(output,b)
                 if not torch.isfinite(ref_logp[b['response_mask'].bool()]).all():
                     raise ValueError('nonfinite reference response log-prob; no optimizer update')
                 reference_parts.append(ref_logp.detach().cpu())
@@ -130,7 +137,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
         b=part.batch
         report('gradient_forward',chunk=index)
         output=model(**kwargs)
-        logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
+        logp=log_probs(output,b)
         loss,part_metrics=policy_loss(part,logp)
         part_metrics['actor/policy_loss']=float(loss.detach())
         if reference_model is not None:

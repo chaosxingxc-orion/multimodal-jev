@@ -98,11 +98,14 @@ def teacher_forcing(processor, example, audio):
     return inputs,prompt_length
 
 
-def response_log_probs(logits, input_ids, prompt_length):
+def response_log_probs(logits, input_ids, prompt_length,logits_start=0):
     """Causal log-probs including the assistant end token, without prompt loss."""
     import torch
     if prompt_length<1 or prompt_length>=input_ids.shape[-1]:
         raise ValueError('invalid response boundary')
-    prediction=logits[:,prompt_length-1:-1].float()
+    if (type(logits_start) is not int or not 0<=logits_start<=prompt_length-1
+            or logits.shape[1]!=input_ids.shape[-1]-logits_start):
+        raise ValueError('logits positions do not match input sequence')
+    prediction=logits[:,prompt_length-1-logits_start:-1].float()
     target=input_ids[:,prompt_length:]
     return torch.log_softmax(prediction,dim=-1).gather(-1,target.unsqueeze(-1)).squeeze(-1)

@@ -46,3 +46,9 @@ The read-only HF audit has independently launched on npu CPU as container
 f681f64839b333fcd82d1840c552509b6b6ef18f9f1f8b3dfb120a4bd2b5e31b.
 No mixed-length actor update has run yet, and sampling completion does not
 establish probability parity across these recordings.
+
+The HF audit has now exited 0. All 24 responses pass the unchanged 0.02 gate;
+per-response errors, artifact hashes and the observed Docker terminal are in
+[audit receipt](../docs/engineering/vllm-mixed-probability-v1-result.json).
+This confirms single-response probability agreement for both selected speakers
+and audio lengths; the combined full-batch backward path is not yet verified.
