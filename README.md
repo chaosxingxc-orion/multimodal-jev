@@ -64,4 +64,10 @@ python3 -m venv .venv
 
 [vLLM rollout 与 verl 更新入口](docs/engineering/rollout-training.md) 已实现；
 实际 NPU engine rollout 和完整 RL 更新尚待验证。原始 ASR 模型的实际采样暴露了
-结构化输出失败，已据此启动 SFT 初始化和完整 FSC 冻结基线。
+结构化输出失败，因此先进行 SFT 初始化，并运行完整 FSC 冻结基线作为对照。
+
+SFT 初始化现已完成 47 次更新并通过合并/重载数值校验，见
+[完成收据](docs/engineering/fsc-sft-init-v1-receipt.json)。FSC/SLURP 开发集评测已启动，
+完整 FSC 冻结基线仍在运行；尚无 SFT 泛化或 RL 提升结论。
+[SFT 起点的两轮 RL 配置](configs/experiments/rl-schedule-sft-smoke.json)
+已通过真实资产预检，仍待分配空闲 NPU 执行 vLLM 采样与 verl 更新。

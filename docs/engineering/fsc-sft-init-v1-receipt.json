@@ -1,0 +1,102 @@
+{
+  "checked_at_utc": "2026-11-09T21:06:04.769311+00:00",
+  "status": "training-and-export-completed",
+  "training_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-audio-sft-init-v1/run",
+  "checkpoint": "/mnt/cephfs/xingchao/models/multimodal-jev/fsc-sft-init/6a25ad1b89cd956ecc5f1d8234f98987e16f2f14eb1a2a39babe3bd854aaaae8",
+  "image_id": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "training": {
+    "examples": 186,
+    "source_groups": 31,
+    "updates": 47,
+    "config": {
+      "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+      "model_revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+      "train_manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+      "device": "cpu",
+      "dtype": "float32",
+      "cpu_threads": 4,
+      "seed": 17,
+      "groups_per_class": 1,
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lr": 0.0001,
+      "accumulate": 4
+    },
+    "elapsed_this_session_seconds": 13934.741165749962
+  },
+  "training_terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794257311.0354073
+  },
+  "training_identity_sha256": "1b206b12ee1581e958d13b8e7daef9eafbeba47e4e26d677a4c8b07f1824b22d",
+  "training_result_sha256": "d0da9c1ecd2e664b09e13e6d2ff37e7e051e64fbcae63767dba5a2a69b2f5850",
+  "training_terminal_sha256": "a0efb60b1ab91431bc3d7652ddcadc0f13a1edae5ff6168bbc350bbf34e757b9",
+  "training_source_sha256": {
+    "sft.py": "99add73c671fe35d0a403ef77a3b20367ac0d507bebede6b79f449e219845917",
+    "audio_policy.py": "a3a17334a67ef0a34f398b3d56c3a207fd1b434785b3373505d693930a7ba6d8",
+    "asr.py": "8e7e7d72e5c1a4eea0bb6abe60a486d994099e9c5a2676e89b43792aa86f1a67",
+    "baseline.py": "cf9e1ca0e901d0d0c694e920f7db6623e46151d767d11ea657cce9fc2f729927"
+  },
+  "train_manifest_sha256": "633882c3820dc45e112c7790305899be639836cf0fced04d1d204ca1b058361a",
+  "adapter_files": {
+    "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+    "adapter_config.json": "69ee734fc8bae7ab69e99e1be21cf96e10b252d28ef58782e105aef31ce99ef0",
+    "adapter_model.safetensors": "46858fdd78da63c12f91e8413edc99f835dfefc742a96c4c431e5c5edd8687a9"
+  },
+  "export": {
+    "status": "passed",
+    "release_id": "6a25ad1b89cd956ecc5f1d8234f98987e16f2f14eb1a2a39babe3bd854aaaae8",
+    "training_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-audio-sft-init-v1/run",
+    "adapter_files": {
+      "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+      "adapter_config.json": "69ee734fc8bae7ab69e99e1be21cf96e10b252d28ef58782e105aef31ce99ef0",
+      "adapter_model.safetensors": "46858fdd78da63c12f91e8413edc99f835dfefc742a96c4c431e5c5edd8687a9"
+    },
+    "base_sha256": "d3f212dd20abecd315d830bc54ae3865e56ebfc3276484e57b771288ba27fd35",
+    "export_files": {
+      "chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+      "config.json": "4556989bd9eb21a166b3c5390d30f21592c165d11fa5ce375ad4f61eb2b315cc",
+      "generation_config.json": "90a8222b7772163f45b8c163b1df3d0773729de5ed33f68bf7085b6bee811417",
+      "model.safetensors": "fb5ecd7ae6b589da51fb44a41b88876f24aec94d28a26d0a1e9ceb67bc759858",
+      "processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+      "tokenizer.json": "fe1fad59be22a41ee293363fcf95fdedbc7c93f3b49270b1d2e18bd1399a7a05",
+      "tokenizer_config.json": "2446c176ba8a7563dc9091ba3f5f2a4ecb6df8576d8e5b723933e3b4b334d1bd"
+    },
+    "merge_max_logprob_error": 7.331371307373047e-06,
+    "reload_max_logprob_error": 7.331371307373047e-06,
+    "atol": 0.0003,
+    "rtol": 1e-05,
+    "example_ids": [
+      "fsc:08e27cc6fcccb44d5d7e0f2d:noul.True",
+      "fsc:8176ab720544b9a130034edf:noul.True"
+    ],
+    "elapsed_seconds": 70.9425258699921,
+    "scope": "HF merged/reloaded policy parity; vLLM engine verification still required"
+  },
+  "export_receipt_sha256": "c7b054e11a8faf39c8689795260067035985d204dcf3ae2a218630879a1cc2b6",
+  "containers": {
+    "multimodal-jev-fsc-audio-sft-init-v1": {
+      "Status": "exited",
+      "ExitCode": 0,
+      "StartedAt": "2026-11-09T16:55:16.44447359Z",
+      "FinishedAt": "2026-11-09T20:48:33.06901455Z",
+      "OOMKilled": false
+    },
+    "multimodal-jev-post-sft-export-v1": {
+      "Status": "exited",
+      "ExitCode": 0,
+      "StartedAt": "2026-11-09T20:48:55.28829281Z",
+      "FinishedAt": "2026-11-09T20:50:43.30581139Z",
+      "OOMKilled": false
+    }
+  },
+  "shared_permissions": {
+    "checkpoint_directory": "0o755",
+    "checkpoint_weights": "0o644",
+    "adapter_weights": "0o644",
+    "readable_by_workspace_user": true,
+    "repair": "Added shared read/traverse permissions after the old exporter snapshot produced mode 0700/0600. File contents and receipts unchanged."
+  },
+  "evaluation_status": "FSC and SLURP development evaluations running; no completed performance comparison at this checkpoint",
+  "scope": "Completed small SFT initialization and HF merge/reload validation. Not academic baseline reproduction, vLLM execution, RL efficacy or cross-task generalization evidence."
+}

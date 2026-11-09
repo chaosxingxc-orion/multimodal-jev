@@ -1,0 +1,54 @@
+{
+  "initial_checkpoint": "/mnt/cephfs/xingchao/models/multimodal-jev/fsc-sft-init/6a25ad1b89cd956ecc5f1d8234f98987e16f2f14eb1a2a39babe3bd854aaaae8",
+  "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-audio-sft-init-v1/run/adapter",
+  "manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+  "batches": [
+    [
+      "fsc:e7c7a20a71ca4337a9ba751a:native",
+      "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+      "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+      "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+      "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+      "fsc:e7c7a20a71ca4337a9ba751a:noul.False"
+    ],
+    [
+      "fsc:e7c7a20a71ca4337a9ba751a:native",
+      "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+      "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+      "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+      "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+      "fsc:e7c7a20a71ca4337a9ba751a:noul.False"
+    ]
+  ],
+  "seed": 17,
+  "reward_mode": "pair-grpo",
+  "pair_bonus_weight": 0.2,
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 1.0,
+    "top_k": -1,
+    "n": 2,
+    "max_tokens": 32,
+    "seed": 17
+  },
+  "engine": {
+    "dtype": "float32",
+    "max_model_len": 2048,
+    "gpu_memory_utilization": 0.5,
+    "tensor_parallel_size": 1,
+    "enforce_eager": true,
+    "max_num_seqs": 1,
+    "seed": 17
+  },
+  "actor": {
+    "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+    "device": "cpu",
+    "dtype": "float32",
+    "cpu_threads": 4,
+    "lora_rank": 4,
+    "lora_alpha": 8,
+    "lr": 1e-05,
+    "max_logprob_error": 0.02
+  },
+  "export_root": "/mnt/cephfs/xingchao/models/multimodal-jev/rl-schedule-sft-smoke-v2"
+}

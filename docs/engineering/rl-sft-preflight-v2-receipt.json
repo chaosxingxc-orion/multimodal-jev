@@ -1,0 +1,92 @@
+{
+  "config_path": "/home/xingchao/workspace/multimodal-jev/configs/experiments/rl-schedule-sft-smoke.json",
+  "config_sha256": "4bff3a2bb8cf1c34568bc24d2d5731ff0beb25df14adba3f519d3fa075c3b736",
+  "config": {
+    "initial_checkpoint": "/mnt/cephfs/xingchao/models/multimodal-jev/fsc-sft-init/6a25ad1b89cd956ecc5f1d8234f98987e16f2f14eb1a2a39babe3bd854aaaae8",
+    "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-audio-sft-init-v1/run/adapter",
+    "manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+    "batches": [
+      [
+        "fsc:e7c7a20a71ca4337a9ba751a:native",
+        "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+        "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+        "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+        "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+        "fsc:e7c7a20a71ca4337a9ba751a:noul.False"
+      ],
+      [
+        "fsc:e7c7a20a71ca4337a9ba751a:native",
+        "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+        "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+        "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+        "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+        "fsc:e7c7a20a71ca4337a9ba751a:noul.False"
+      ]
+    ],
+    "seed": 17,
+    "reward_mode": "pair-grpo",
+    "pair_bonus_weight": 0.2,
+    "sampling": {
+      "temperature": 1.0,
+      "top_p": 1.0,
+      "top_k": -1,
+      "n": 2,
+      "max_tokens": 32,
+      "seed": 17
+    },
+    "engine": {
+      "dtype": "float32",
+      "max_model_len": 2048,
+      "gpu_memory_utilization": 0.5,
+      "tensor_parallel_size": 1,
+      "enforce_eager": true,
+      "max_num_seqs": 1,
+      "seed": 17
+    },
+    "actor": {
+      "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+      "device": "cpu",
+      "dtype": "float32",
+      "cpu_threads": 4,
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lr": 1e-05,
+      "max_logprob_error": 0.02
+    },
+    "export_root": "/mnt/cephfs/xingchao/models/multimodal-jev/rl-schedule-sft-smoke-v2"
+  },
+  "checked_at_utc": "2026-11-09T21:03:11.875706+00:00",
+  "source_sha256": {
+    "tools/jev/preflight_audio_rl.py": "0eacf5f93d6395c17730e46c233b42f39d80a6352ab5cb264292327cbbb9ad09",
+    "src/multimodal_jev/rl_preflight.py": "f73af24bdf2b79b1323a66aecb42f1099c20fb8be3ac0fce3d9197af4249fec0",
+    "src/multimodal_jev/policy_identity.py": "2ea1c6ec41b0438fca65d9d76f8c06ec65459539c34733a5f38c2d8056042b36",
+    "src/multimodal_jev/pair_reward.py": "87ea9981b43231321bad132c859a8fee6a8cb330c1f8c8e28e3702a6fa5ca63b",
+    "src/multimodal_jev/rollout.py": "a03025fd683d687969779acfb658a394271c1d713efc0e91fb38fa9e39355918",
+    "src/multimodal_jev/task_schema.py": "039cec3560e6e7655d2638caff556db95d5ad998d02fc5d8099dee03cccf5b26"
+  },
+  "scope": "artifact and TRAIN selection checks only; no engine, optimizer update or efficacy evaluation",
+  "initial_policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+  "actor_base_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458",
+  "initial_adapter_files": {
+    "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+    "adapter_config.json": "69ee734fc8bae7ab69e99e1be21cf96e10b252d28ef58782e105aef31ce99ef0",
+    "adapter_model.safetensors": "46858fdd78da63c12f91e8413edc99f835dfefc742a96c4c431e5c5edd8687a9"
+  },
+  "manifest_sha256": "633882c3820dc45e112c7790305899be639836cf0fced04d1d204ca1b058361a",
+  "audio_sha256": {
+    "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/wavs/speakers/2BqVo8kVB2Skwgyb/0a3129c0-4474-11e9-a9a5-5dbec3b8816a.wav": "dd7bc70332103e75adfed56d0045770e88c5465317b13efe426c83bf429b8d69"
+  },
+  "iterations": 2,
+  "unique_examples": 6,
+  "unique_audio": 1,
+  "scheduled_prompts": 12,
+  "scheduled_responses": 24,
+  "status": "passed",
+  "elapsed_seconds": 7.741197090130299,
+  "evidence_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/rl-schedule-sft-smoke-v2-preflight.json",
+  "evidence_sha256": "c56253b7178bbc3bcbf1d94f5bf530ba5e82fe5a3093cd3dfc031543c5b1fbe5",
+  "previous_failed_preflight": {
+    "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/rl-schedule-sft-smoke-v1-preflight.json",
+    "reason": "Adapter weights unreadable by workspace user; permissions repaired; retained failure receipt"
+  }
+}

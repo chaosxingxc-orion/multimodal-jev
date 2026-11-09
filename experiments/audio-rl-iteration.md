@@ -54,6 +54,35 @@ assets mounted, and explicitly allocated NPU. The scheduler does not allocate
 devices, preempt other jobs, or use an HF fallback for rollout. This schedule has
 not yet been run: current devices are occupied.
 
+### SFT-initialized integration configuration
+
+`configs/experiments/rl-schedule-sft-smoke.json` pins the completed 47-update SFT
+export and its matching unmerged adapter. The actor retains the original Qwen
+base; the merged checkpoint is used for sampling. It preserves the base smoke
+protocol: two iterations, one TRAIN recording, six views and two responses per
+prompt (24 scheduled responses). This is an integration check, not the final
+three-seed algorithm comparison. The separate export root ends in
+`rl-schedule-sft-smoke-v2`.
+
+Run the following before allocating an engine (choose a new output filename):
+
+```bash
+PYTHONPATH=src .venv/bin/python tools/jev/preflight_audio_rl.py --config configs/experiments/rl-schedule-sft-smoke.json --output /path/to/new-preflight-receipt.json
+```
+
+[Actual asset preflight](../docs/engineering/rl-sft-preflight-v2-receipt.json)
+passed for the real export, adapter, manifest and audio. The first attempt
+failed on unreadable adapter weights; its failure receipt remains outside Git.
+Permissions were repaired without changing contents. Preflight does not start
+an engine or prove an optimizer update or improvement.
+
+The schedule stores both base and initial sampling identities. Actor continuation
+checks export file hashes, adapter identity and the exact parent training-run
+path. Two-iteration unit tests cover base/SFT starts, a fresh exported checkpoint
+for the second rollout, the fixed actor base, parent-state handoff, and separate
+no-op/update counts. Test doubles verify scheduling only; real optimizer
+continuation and engine execution require their own numerical checks.
+
 ## Verification and limits
 
 [Real actor update check](../docs/engineering/rl-actor-update-smoke.json) passed

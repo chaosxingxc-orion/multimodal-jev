@@ -20,3 +20,26 @@ state each update. Keep all malformed sampled outputs in later evaluation.
 After training, use separate official valid recordings for schema behavior and
 compare against the untrained checkpoint. Do not claim generalization from
 fitting these 31 recordings. Full-scale matched SFT and RL comparisons remain.
+
+## Completed initialization and export (2026-11-10, Asia/Shanghai)
+
+Training exited zero at 04:48:31 local time. Terminal/result receipts prove 47
+updates, 186 decisions and 31 training recordings. Source snapshot hashes match
+the recorded identity. See [the verified receipt](../docs/engineering/fsc-sft-init-v1-receipt.json).
+Reported training time was 13,934.74 seconds on CPU; this is not NPU training
+or a quality measurement.
+
+Export also exited zero. Adapter versus merged/reloaded log-probs on two fixed
+TRAIN examples differ by at most 7.33137e-6 (atol 3e-4, rtol 1e-5). Shared model:
+`/mnt/cephfs/xingchao/models/multimodal-jev/fsc-sft-init/6a25ad1b89cd956ecc5f1d8234f98987e16f2f14eb1a2a39babe3bd854aaaae8`.
+The old exporter snapshot left its directory at 0700 and weights at 0600.
+Shared read/traverse permissions were repaired without changing file contents
+or receipts. Both merged and adapter weights are readable by the workspace user.
+
+FSC/SLURP development inference started after the training container exited.
+Results remain pending; training loss is not evidence of generalization or RL
+improvement. The immutable comparison finalizer observes those exact container
+IDs and scores only complete, exit-zero prediction sets. Its output root is
+`/mnt/cephfs/xingchao/experiments/multimodal-jev/sft-development-comparison-v1/run`.
+It produces `fsc/comparison.json` and `slurp/comparison.json` with common
+base/candidate metrics and the preregistered speaker-cluster bootstrap.

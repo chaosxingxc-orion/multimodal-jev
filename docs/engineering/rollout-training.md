@@ -98,3 +98,16 @@ The fixed [development protocol](../../experiments/fsc-schema-evaluation.md) has
 Malformed output is never null. Reward and evaluation use a strict shared parser.
 Scorer controls and numerical pair-reward checks are tracked separately from model
 quality; neither is evidence of RL improvement.
+
+SFT initialization and export have now completed; see
+[fsc-sft-init-v1-receipt.json](fsc-sft-init-v1-receipt.json). FSC/SLURP inference
+is still running. `finalize_policy_comparisons.py` observes exact existing
+container IDs over SSH and applies the common scorer and preregistered paired
+comparison after exit-zero and complete prediction/hash checks. Original
+inference metrics are retained. Observation failures are retried; they never
+cause restarts or imply completion.
+
+Detached finalizer root:
+`/mnt/cephfs/xingchao/experiments/multimodal-jev/sft-development-comparison-v1`.
+Its `launch.json` records the local PID and source/config hashes. Check that
+process and the actual evaluation containers before any recovery.
