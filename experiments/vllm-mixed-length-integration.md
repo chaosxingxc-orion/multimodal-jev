@@ -52,3 +52,10 @@ per-response errors, artifact hashes and the observed Docker terminal are in
 [audit receipt](../docs/engineering/vllm-mixed-probability-v1-result.json).
 This confirms single-response probability agreement for both selected speakers
 and audio lengths; the combined full-batch backward path is not yet verified.
+
+A queued full-batch mixed actor now waits for the exact single-recording v5
+container to exit; it does not preempt it. It rechecks successful mixed audit and
+rollout identities, then uses the original SFT adapter, pair-GRPO, .02 gate,
+four CPU threads and 256GiB memory. Response-only projection remains disabled
+for this independently registered test. See
+[queue receipt](../docs/engineering/vllm-mixed-actor-v1-queued.json).

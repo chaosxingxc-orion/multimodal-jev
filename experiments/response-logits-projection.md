@@ -26,3 +26,17 @@ The independent probe is running as npu CPU container
 root actor-response-logits-smoke-v1. See
 [launch receipt](../docs/engineering/response-logits-v1-launch.json).
 No current training configuration enables response_logits_only.
+
+The controlled probe has now exited 0: full and shortened projection have
+exactly equal losses, gradients, AdamW first moments and updated parameters
+(maximum error 0 for each recorded tensor class). The corrupt-logprob test
+rejected before any optimizer state or parameter changed. See
+[result receipt](../docs/engineering/response-logits-v1-result.json).
+
+A separate real-vLLM actor now explicitly enables the option on the successful
+v4 rollouts, with the same original base/SFT adapter, full batch12, pair reward,
+learning rate and 0.02 gate. Its memory limit is32GiB and container is
+5b5c40e5f2b0f5583f944ed4fd1142e3ffbded3b762ea52e0f7cd42bb5064ee2.
+See [launch receipt](../docs/engineering/vllm-response-only-actor-v1-launch.json).
+The 128GiB full-projection v5 remains unchanged and live. Fixture equivalence
+does not prove every real trajectory or memory saving; inspect actual artifacts.

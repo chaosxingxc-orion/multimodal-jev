@@ -1,0 +1,143 @@
+{
+  "result": {
+    "status": "passed",
+    "metrics": [
+      {
+        "status": "updated",
+        "updated": true,
+        "loss": 0.14295536279678345,
+        "grad_norm": 3.9087064266204834,
+        "training_budget": {
+          "sequences": 3,
+          "prompt_tokens": 489,
+          "response_tokens": 23,
+          "audio_frames": 555,
+          "gradient_sequences": 3,
+          "gradient_tokens": 512,
+          "no_grad_sequences": 3,
+          "no_grad_tokens": 512,
+          "optimizer_steps": 1
+        },
+        "rewards": [
+          1.0,
+          0.0,
+          -0.1
+        ],
+        "max_logprob_error": 0.0,
+        "metrics": {
+          "actor/pg_clipfrac": 0.0,
+          "actor/ppo_kl": 0.0,
+          "actor/pg_clipfrac_lower": 0.0,
+          "actor/policy_loss": 0.14295536279678345
+        },
+        "reward_details": {
+          "mode": "grpo",
+          "base_rewards": [
+            1.0,
+            0.0,
+            -0.1
+          ],
+          "pair_bonuses": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "policy_id": "controlled-fixture",
+        "micro_batch_size": 3,
+        "response_tokens": 23,
+        "kl_coefficient": 0.0,
+        "kl_estimator": null,
+        "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+      },
+      {
+        "status": "updated",
+        "updated": true,
+        "loss": 0.14295536279678345,
+        "grad_norm": 3.9087064266204834,
+        "training_budget": {
+          "sequences": 3,
+          "prompt_tokens": 489,
+          "response_tokens": 23,
+          "audio_frames": 555,
+          "gradient_sequences": 3,
+          "gradient_tokens": 512,
+          "no_grad_sequences": 3,
+          "no_grad_tokens": 512,
+          "optimizer_steps": 1
+        },
+        "rewards": [
+          1.0,
+          0.0,
+          -0.1
+        ],
+        "max_logprob_error": 0.0,
+        "metrics": {
+          "actor/pg_clipfrac": 0.0,
+          "actor/ppo_kl": 0.0,
+          "actor/pg_clipfrac_lower": 0.0,
+          "actor/policy_loss": 0.14295536279678345
+        },
+        "reward_details": {
+          "mode": "grpo",
+          "base_rewards": [
+            1.0,
+            0.0,
+            -0.1
+          ],
+          "pair_bonuses": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "policy_id": "controlled-fixture",
+        "micro_batch_size": 3,
+        "response_tokens": 23,
+        "kl_coefficient": 0.0,
+        "kl_estimator": null,
+        "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+      }
+    ],
+    "max_absolute_errors": {
+      "parameters": 0.0,
+      "gradients": 0.0,
+      "exp_avg": 0.0
+    },
+    "response_lengths": [
+      6,
+      6,
+      11
+    ],
+    "late_parity_failure_no_update": true,
+    "source_sha256": {
+      "rl_update.py": "c92554c72957f174d2ce606359d59dda9fde07694aafd0fb20cbc51934c2f25d",
+      "verl_audio.py": "12b9134b63a35aacaeff870608b6087491cc6ce0b3602981d65a63c9914ada85",
+      "audio_policy.py": "cb38e7bc95cc87ba6d4523605c4c9c232c39347eab5071689dbf2cd3eb7f962d",
+      "training_budget.py": "e8a2c48e804b02b860b2ca967f1437ba8fd8827ec379d076dbf8515bd3385f0f"
+    },
+    "scope": "real Qwen/verl full versus response-only projection, identical full batch; no vLLM rollout or efficacy"
+  },
+  "container_id": "2be0767333a2aecd49b67d219e862da741e67d1c37dbaa890b649793aee9e833",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-09T22:41:45.94503676Z",
+    "FinishedAt": "2026-11-09T22:45:40.33870981Z"
+  },
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/actor-response-logits-smoke-v1",
+  "artifacts_sha256": {
+    "progress.json": "10d694d363a2a49fb926298dc3c22c44586142f4ef4d683c33eef3c18942494a",
+    "result.json": "f21d95025851e0e953049c36abd7f9f9763b335780e277ea95fe18a664c3140c",
+    "comparison.json": "c40b41d183d13f63918707f895c3b26fcab06d128118d02acf9c5e10441c4b3f",
+    "late-parity-check.json": "f2626dafc5f2a824baffc740e288a90ebc618e7616c53fb7f56ceb4f5d2c046c",
+    "terminal.json": "6c4d440d572d7d606affbabdee8f8f08d8be9c44a404f6f85e5749cb254d7f6c"
+  }
+}
