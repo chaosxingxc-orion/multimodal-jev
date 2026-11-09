@@ -153,3 +153,14 @@ Corrected engine run v4 is container
 c49a0edc27323f2140b2c5f7702fa8e4a7d24ea83b370288900a397696a1b3a8;
 its independent actor supervisor is under vllm-cpu-actor-sft-v4 and will launch
 only after complete successful rollout validation. Failed v3 artifacts remain.
+
+The detached continuation under vllm-cpu-chain-sft-v1 watches this exact v4
+rollout and its actor. It requires a real first update, exports with the existing
+merge/reload gate (atol 3e-4, rtol 1e-5), validates changed policy identity and
+adapter lineage, then starts a fresh CPU vLLM process with sampling seed 18.
+The second actor retains the original base and restores the first optimizer;
+it must pass the same 0.02 gate. Each phase records its command, exact container
+ID, observed terminal state and artifacts. Any stage failure stops downstream
+launches; no error-driven automatic retry or threshold change is permitted.
+See [launch receipt](../docs/engineering/vllm-cpu-chain-v1-launch.json).
+Starting this supervisor does not establish a successful two-iteration chain.

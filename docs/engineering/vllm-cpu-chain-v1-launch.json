@@ -1,0 +1,25 @@
+{
+  "status": "supervisor_started_waiting_for_first_rollout",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-chain-sft-v1",
+  "pid": 2382802,
+  "script_sha256": "2b343d758bfc7fd9fd0f35a015baedc4118d6023afe93ea155b71c1e297673d8",
+  "config": {
+    "first_actor": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v4",
+    "first_rollout_id": "c49a0edc27323f2140b2c5f7702fa8e4a7d24ea83b370288900a397696a1b3a8",
+    "second_seed": 18,
+    "scope": "two-iteration CPU integration only; no efficacy claim",
+    "registered_unix": 1794262498.954624
+  },
+  "gates": [
+    "exact upstream Docker ID and successful exit",
+    "complete rollout identities and audio hashes",
+    "first actor actual update and unchanged .02 parity gate",
+    "optimizer and adapter hashes",
+    "export merge/reload atol3e-4 rtol1e-5",
+    "changed policy identity and correct adapter lineage",
+    "fresh second vLLM process with sampling seed18",
+    "second actor parent optimizer restore and fixed base",
+    "successful second actor terminal and iteration increment"
+  ],
+  "scope": "pending CPU integration; no completed chain, NPU or efficacy claim"
+}
