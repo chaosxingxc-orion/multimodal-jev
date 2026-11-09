@@ -1,0 +1,102 @@
+{
+  "status": "passed",
+  "threshold": 0.02,
+  "max_logprob_error": 8.022785186767578e-05,
+  "responses": [
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:native",
+      "replicate": 0,
+      "max_error": 1.996755599975586e-05,
+      "waveform_max_error": 0.10925257205963135
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:native",
+      "replicate": 1,
+      "max_error": 1.9311904907226562e-05,
+      "waveform_max_error": 0.13601583242416382
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+      "replicate": 0,
+      "max_error": 1.1742115020751953e-05,
+      "waveform_max_error": 0.15208053588867188
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+      "replicate": 1,
+      "max_error": 1.3560056686401367e-05,
+      "waveform_max_error": 0.12446331977844238
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+      "replicate": 0,
+      "max_error": 8.022785186767578e-05,
+      "waveform_max_error": 0.08879929780960083
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+      "replicate": 1,
+      "max_error": 3.790855407714844e-05,
+      "waveform_max_error": 0.16854184865951538
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+      "replicate": 0,
+      "max_error": 3.635883331298828e-06,
+      "waveform_max_error": 0.1270032525062561
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+      "replicate": 1,
+      "max_error": 7.62939453125e-06,
+      "waveform_max_error": 0.11806577444076538
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+      "replicate": 0,
+      "max_error": 9.655952453613281e-06,
+      "waveform_max_error": 0.08859431743621826
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+      "replicate": 1,
+      "max_error": 9.655952453613281e-06,
+      "waveform_max_error": 0.08859431743621826
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.False",
+      "replicate": 0,
+      "max_error": 1.33514404296875e-05,
+      "waveform_max_error": 0.06402599811553955
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.False",
+      "replicate": 1,
+      "max_error": 1.33514404296875e-05,
+      "waveform_max_error": 0.06402599811553955
+    }
+  ],
+  "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+  "feature_rollout_sha256": "9b842b607f9cb569f977295e793f1546980a2654b6d9b66f4f54bd6ca1b209ed",
+  "reference_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-waveform-probability-audit-v1/run",
+  "reference_result_sha256": "a888de54b12fe66cc9a351f253edae85e1e8033c4d817174fb55cd84b9fb72a5",
+  "method": "Reuse completed HF single-response teacher-forced probabilities after verifying identical checkpoint identity, examples, response tokens and replicate identities in both vLLM runs. No new HF forward needed.",
+  "scope": "merged HF single-response probability parity; full-batch adapter actor gate remains independent",
+  "reference_artifact_hashes_verified": {
+    "response-003.json": "5fcfeb50283749fd1a1e28e3c2080ec750c083e1e9d8ab33b6feb2b4d68c0e4e",
+    "response-009.json": "a490a7601e86970edaec4836a93edd341688076a50921c2c9397529c71c1672c",
+    "response-008.json": "50426ef37f559cbbdd167fb364c6bc95418d2058c2195dceeeae6ff3409f5a16",
+    "progress.json": "03449a7fce8d45db4eeea3f90291a8b46409dc444b925b49b32d20e250b606f5",
+    "result.json": "a888de54b12fe66cc9a351f253edae85e1e8033c4d817174fb55cd84b9fb72a5",
+    "response-004.json": "d801e2f58ebf7643324c4b2eb5ca28329187b3c3474bc23535fefae4c4bb65f1",
+    "response-005.json": "a1cb61af12f920bd9488ff9894bc204a4c480a10257e37b695accf6746351246",
+    "response-002.json": "ad2263bde63a68439919af679c60d6b0be45324baffcab9cc1d3d0207b301f12",
+    "terminal.json": "2377487f59a0ebbaa0d1e22252ad35560c5da779eeb5658dcf283e4f74cee29d",
+    "response-000.json": "f630450d098d5562b526b15b71f9b4a0c0b7eedf35ab924c424d55a5df597782",
+    "response-001.json": "9f5a65bfb490f9d516f7361f41980b08a166eba98ecb745f79350910aec65d8d",
+    "response-011.json": "047d7538d7a040a7c1b59d0a01efa64035b0423ace9a825c8acce2d5d4401005",
+    "response-006.json": "0e2899585940ed97f09bf5ade06bf048ee59e097cf216ee3dfa65410dc0ca4b0",
+    "response-007.json": "3445625a422877dba0704f96b1d241eb51f48bfd3b6aea5c0213434a90bed459",
+    "response-010.json": "b73749a3ec253f752062337319e967fa3f18893a3ae6cde9d5300a72e0a9a0a4"
+  }
+}

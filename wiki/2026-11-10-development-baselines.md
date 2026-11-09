@@ -64,3 +64,10 @@ vllm-cpu-rollout-sft-v3 独立启动；通过处理器检查不能代替 actor �
 feature_attention_mask 被模型 schema 要求。现已保留 HF 有效帧 mask，
 加强后的 v4 处理器与模型 schema 检查通过，特征最大误差仍为 0。
 v4 引擎与独立 actor 监督进程已经启动；没有把输入检查记成优化成功。
+
+v4 采样已退出 0，6 个提示、12 个响应和 80 个 token 完整。
+响应 token 与波形版逐条一致，因此在校验身份及原审计文件哈希后复用
+已完成的 HF 单条概率：最大误差从 0.16854 降至 0.0000802，12/12 均通过
+原定 0.02 门槛。完整批次 LoRA actor 已启动，其数值校验与实际更新仍待完成。
+[比较证据](../docs/engineering/vllm-feature-hf-parity-v4-result.json)明确限定为
+该录音的单条推理；不据此声称多录音训练、NPU 或效果验证完成。

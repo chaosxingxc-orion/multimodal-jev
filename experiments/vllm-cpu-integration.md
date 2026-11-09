@@ -164,3 +164,21 @@ ID, observed terminal state and artifacts. Any stage failure stops downstream
 launches; no error-driven automatic retry or threshold change is permitted.
 See [launch receipt](../docs/engineering/vllm-cpu-chain-v1-launch.json).
 Starting this supervisor does not establish a successful two-iteration chain.
+
+## Feature sampling and merged HF probabilities verified
+
+Feature rollout v4 exited 0 with all six prompts, 12 responses and 80 response
+tokens. Complete-group, model, manifest, audio and response hash validation passed;
+see [sampling receipt](../docs/engineering/vllm-cpu-feature-rollout-v4-result.json).
+The response tokens match waveform v1 exactly, permitting reuse of the completed
+HF teacher-forced audit after checking model/example/token/replicate identities
+and every audit artifact against the previously committed hashes.
+
+All 12 feature-mode responses pass the unchanged 0.02 probability threshold:
+maximum absolute error is 0.00008022785186767578, versus 0.16854184865951538 for
+waveform input. See [probability receipt](../docs/engineering/vllm-feature-hf-parity-v4-result.json).
+This verifies the merged-weight single-response path for the selected recording,
+not general equivalence across audio lengths, devices or batches. The original
+base plus SFT adapter actor v4 has independently started on npu (CPU only),
+container 22122760bb619e6b5fccce99a61cd108649ccf6adafd1c911e870dc03beee934.
+Its full-batch parity gate, update/export and fresh second iteration are pending.
