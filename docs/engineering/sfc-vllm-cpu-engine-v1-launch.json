@@ -1,0 +1,34 @@
+{
+  "pid": 2443522,
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-vllm-cpu-engine-v1",
+  "launched_unix": 1794268618.5421567,
+  "config": {
+    "checkpoint": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+    "manifest": "/mnt/cephfs/xingchao/datasets/jev/sfc-official/caf874db181b1eaf46c351c465c1fbfa4cc961a8768153ea46fbe95a70cf95ac/train_id.jsonl",
+    "official_split": "train_id",
+    "example_ids": [
+      "sfc:audio/final_data_audio/level_3_1/train_id/id_100_2.wav"
+    ],
+    "max_tokens": 256,
+    "engine": {
+      "dtype": "float32",
+      "max_model_len": 8192,
+      "gpu_memory_utilization": 0.5,
+      "tensor_parallel_size": 1,
+      "enforce_eager": true,
+      "max_num_seqs": 1,
+      "seed": 17
+    }
+  },
+  "source_commit": "4925da6859ee2b878ee3409087204d6b5758c2d6",
+  "adapter_sha256": "00c258d470092462b31acea146c55ab672f8b6cd0bcbaeb7ec63b4c585f62b79",
+  "runner_sha256": "10be8e7a7007c056d69e92e404e858e12f8bc620ec6850fe1523b7d4f87cc917",
+  "runtime": {
+    "host": "local",
+    "image": "sha256:fdd4a28bb7515717e9ff1988669b4ae7c24588091cf0b73f05abff1f6ff6f87b",
+    "cpus": 4,
+    "memory_gib": 16,
+    "cpuset": "0-3"
+  },
+  "scope": "registered TRAIN two-audio chronological input in actual CPU vLLM engine; not SFC test accuracy or interactive task completion"
+}

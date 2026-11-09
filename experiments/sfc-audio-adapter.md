@@ -82,3 +82,16 @@ Remaining gates: real vLLM registry/engine execution on NPU; actor/rollout log-p
 parity for these multi-audio prompts; multi-audio verl collation and optimization;
 generation quality and complete ID/OOD evaluation. Existing single-audio GRPO
 collation does not yet support this multi-audio contract.
+
+## CPU engine validation
+
+An independent CPU vLLM run is now launched using the unchanged registered
+TRAIN-only two-audio config, base Qwen3-ASR-0.6B-hf, chronological prompt,
+greedy max_tokens256 and max_model_len8192. It uses the pinned official ARM CPU
+vLLM image fdd4a28..., four cores,16GiB and1GiB KV cache, with no NPU allocation.
+See [launch](../docs/engineering/sfc-vllm-cpu-engine-v1-launch.json).
+This can validate actual engine execution independently of the occupied NPUs;
+it does not satisfy the separate NPU gate. Preserve any engine failure without
+silently switching to HF, concatenating audio or reducing the prompt/history.
+No test-ID/OOD rows are selected and no external transfer claim follows from
+this TRAIN integration check. The official Omni reproduction is also separate.

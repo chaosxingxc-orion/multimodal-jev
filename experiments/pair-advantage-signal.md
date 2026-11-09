@@ -69,3 +69,23 @@ not provide a material standardized algorithm contrast on these recordings.
 Retain this negative finding. It does not establish equivalence across other
 recordings or policies, and the center-only scale difference does not establish
 learning or cross-task transfer. No training arm is selected from this audit.
+
+## Full initializer pool diagnosis
+
+Register one broader TRAIN-only diagnosis before its sampling: all31 recordings
+and186 views already selected by the SFT initializer, sorted by example_id,
+unchanged SFT exported policy, seed17, n4, max_tokens32, raw-policy decoding and
+actor_features. Keep the registered max_model_len2048; if a prompt exceeds it,
+retain the failure and explicitly revise before any retry. No selection by
+duration, sampled correctness, development scores or reward magnitude.
+
+Generate all744 responses in one fixed-policy sampling job. It may queue behind
+the exact live SFC CPU engine check to avoid competing for the same cores.
+After successful exact Docker/application terminal checks, run the existing
+pinned-verl advantage audit across the complete outputs. Preserve all responses,
+pair bonuses, standardized advantages and center-only controls. Report per-view
+and per-recording nonzero bonus/advantage coverage and maximum differences, with
+1e-5 as a descriptive material-difference threshold, not an efficacy criterion.
+This expands the scope of the two-recording mechanism diagnosis; it neither
+updates weights nor selects a winning normalization. No post-divergence training
+trajectory may reuse these initializer rollouts as on-policy data.
