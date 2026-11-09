@@ -14,18 +14,37 @@ from .policy_identity import checkpoint_identity
 from .task_schema import JevExample,render_schema
 
 
-def messages(example,transcription):
+def messages(example,transcription,prompt_version='v1'):
     if not isinstance(transcription,str):raise ValueError('transcription must be text')
+    if prompt_version not in {'v1','v2'}:raise ValueError('unsupported text prompt version')
+    instruction=INSTRUCTION.replace('audio evidence','transcript evidence')
+    if prompt_version=='v2':
+        instruction=('Answer the decision question using only the transcript and definition. '
+            'Output one JSON object with exactly one key: "value". '
+            'Do not output Markdown, code fences, explanations, or extra keys. ')
+        instruction+={
+            'choice':'The value must be the id of one listed candidate, never its description. ',
+            'noul':'The value must be JSON true or false, not a string. ',
+            'score':'The value must be one of the listed numeric levels. ',
+            'open_slot':'The value must be the requested text span as a JSON string. '
+        }[example.schema.decision_type]
+        instruction+=('Use JSON null when the requested evidence or a valid candidate is absent. '
+                      if example.schema.allow_unknown else 'Null is not allowed. ')
+        instruction+='Decision definition:\n'
     return [
-        {'role':'system','content':'English\n'+INSTRUCTION.replace('audio evidence','transcript evidence')+render_schema(example.schema)},
+        {'role':'system','content':'English\n'+instruction+render_schema(example.schema)},
         {'role':'user','content':json.dumps({'transcription':transcription},ensure_ascii=False)}]
 
 
 def load_evidence(config):
     manifest=Path(config['manifest']);manifest_sha=file_hash(manifest)
     examples=[JevExample.from_record(json.loads(line)) for line in manifest.open()]
-    if not examples or any(ex.split!='valid' for ex in examples):
-        raise ValueError('nonempty valid-only development manifest required')
+    split=config.get('evaluation_split','valid')
+    if split not in {'train','valid'}:raise ValueError('text evaluation admits train or valid only')
+    if split=='train' and (config.get('purpose')!='prompt_probe' or config['input_mode']!='reference-text'):
+        raise ValueError('TRAIN text inputs require explicit reference-text prompt_probe')
+    if not examples or any(ex.split!=split for ex in examples):
+        raise ValueError(f'nonempty {split}-only manifest required')
     by_id={ex.example_id:ex for ex in examples}
     if len(by_id)!=len(examples):raise ValueError('duplicate manifest example')
     if config['input_mode']=='reference-text':
@@ -69,6 +88,7 @@ def run(config,output):
     if config['device']!='cpu' or config['dtype']!='float32':
         raise ValueError('registered text baseline requires CPU float32')
     if config.get('enable_thinking') is not False:raise ValueError('non-thinking protocol required')
+    if config.get('prompt_version','v1') not in {'v1','v2'}:raise ValueError('unsupported text prompt version')
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
     if (output/'metrics.json').exists():raise FileExistsError('completed text evaluation')
     examples,evidence,evidence_identity=load_evidence(config)
@@ -90,7 +110,7 @@ def run(config,output):
     model=model.to('cpu').eval();cache=output/'records';cache.mkdir(exist_ok=True)
     start=time.monotonic();records=[]
     for index,example in enumerate(examples):
-        prompt=tokenizer.apply_chat_template(messages(example,evidence[example.example_id]),
+        prompt=tokenizer.apply_chat_template(messages(example,evidence[example.example_id],config.get('prompt_version','v1')),
                     tokenize=False,add_generation_prompt=True,enable_thinking=False)
         prompt_sha=hashlib.sha256(prompt.encode()).hexdigest()
         path=cache/(hashlib.sha256(example.example_id.encode()).hexdigest()+'.json')
@@ -121,7 +141,9 @@ def run(config,output):
     temp.write_text(''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in records));temp.replace(predictions)
     metrics=evaluate(Path(config['manifest']),predictions)
     metrics.update(config=config,valid_json_objects=sum(r['format_valid'] for r in records),
-                   scope='fixed development text-evidence control; no acoustic reasoning, training or RL efficacy claim')
+                   scope=('TRAIN-only reference text prompt probe; not development evaluation or training'
+                          if config.get('evaluation_split')=='train' else
+                          'fixed development text-evidence control; no acoustic reasoning, training or RL efficacy claim'))
     atomic_json(output/'metrics.json',metrics)
     atomic_json(output/'result.json',{'status':'passed','records':len(records),
         'predictions_sha256':file_hash(predictions),'metrics_sha256':file_hash(output/'metrics.json'),

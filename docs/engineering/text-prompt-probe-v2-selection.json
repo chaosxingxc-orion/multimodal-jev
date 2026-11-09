@@ -1,0 +1,34 @@
+{
+  "sources": {
+    "fsc": {
+      "manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+      "sha256": "633882c3820dc45e112c7790305899be639836cf0fced04d1d204ca1b058361a",
+      "source_group": "fsc:0000cf72b5003bf8dede75e9",
+      "examples": 6
+    },
+    "slurp": {
+      "manifest": "/mnt/cephfs/xingchao/datasets/jev/slurp/ba31cd72120ab28309fe40089274b6b70e9a9605c2fcd56e5de4a0323805f3f8/train.jsonl",
+      "sha256": "9f4d28376bd2b64617acd9fc8c38c4b57730aea2064a38f3a69ee1f4bacae173",
+      "source_group": "slurp:10000:audio-1501766725-headset.flac",
+      "examples": 7
+    }
+  },
+  "manifest": "/mnt/cephfs/xingchao/experiments/multimodal-jev/text-prompt-probe-v2-selection/train.jsonl",
+  "manifest_sha256": "59d6753b4eaa672864e9a88e892a0a77d28d4661e44c59f993e58750113aaa40",
+  "example_ids": [
+    "fsc:0000cf72b5003bf8dede75e9:missing_candidate",
+    "fsc:0000cf72b5003bf8dede75e9:native",
+    "fsc:0000cf72b5003bf8dede75e9:noul.False",
+    "fsc:0000cf72b5003bf8dede75e9:noul.True",
+    "fsc:0000cf72b5003bf8dede75e9:permutation",
+    "fsc:0000cf72b5003bf8dede75e9:rebind",
+    "slurp:10000:audio-1501766725-headset.flac:native",
+    "slurp:10000:audio-1501766725-headset.flac:permutation",
+    "slurp:10000:audio-1501766725-headset.flac:rebind",
+    "slurp:10000:audio-1501766725-headset.flac:slot.date",
+    "slurp:10000:audio-1501766725-headset.flac:slot.person",
+    "slurp:10000:audio-1501766725-headset.flac:slot.place_name",
+    "slurp:10000:audio-1501766725-headset.flac:slot.time"
+  ],
+  "selection": "lexically first TRAIN source_group per dataset; all views; no outcome selection"
+}

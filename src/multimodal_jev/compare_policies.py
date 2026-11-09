@@ -60,6 +60,9 @@ def compare(manifest,base,candidate,draws=2000,seed=17,cluster_field='speaker_id
         # implementation fixed. Audio base/SFT comparisons may change weights.
         if (li['config'].get('input_mode'),ri['config'].get('input_mode'))!=('asr-text','reference-text'):
             raise ValueError('text comparison requires ASR base and reference candidate')
+        for field,default in [('prompt_version','v1'),('evaluation_split','valid')]:
+            if li['config'].get(field,default)!=ri['config'].get(field,default):
+                raise ValueError('text protocol differs: '+field)
         for field in ('enable_thinking','cpu_threads','model_id','model_revision'):
             if field not in li['config'] or field not in ri['config'] or li['config'][field]!=ri['config'][field]:
                 raise ValueError('text protocol differs: '+field)

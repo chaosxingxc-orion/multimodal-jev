@@ -68,6 +68,13 @@ def test_matched_text_evidence_comparison(tmp_path):
     assert compare(manifest,base,candidate,100)['comparison']['valid/noul.True']['delta']==1
 
 
+def test_text_comparison_rejects_mismatched_prompt_version(tmp_path):
+    manifest,base,candidate=text_fixture(tmp_path)
+    path=candidate/'identity.json';identity=json.loads(path.read_text())
+    identity['config']['prompt_version']='v2';path.write_text(json.dumps(identity))
+    with pytest.raises(ValueError,match='prompt_version'):compare(manifest,base,candidate,100)
+
+
 @pytest.mark.parametrize('field,value,match',[
     ('input_mode','asr-text','ASR base'),
     ('enable_thinking',True,'text protocol differs'),

@@ -39,6 +39,33 @@ def test_reference_condition_must_be_explicit(tmp_path):
     assert set(texts.values())=={'GOLD_REFERENCE_SECRET'} and identity['mode']=='reference-text'
 
 
+def test_v2_prompt_is_task_specific_without_target_leakage(tmp_path):
+    _,examples=fixture(tmp_path);ex=examples[0]
+    prompt=messages(ex,'actual transcript','v2')
+    assert 'code fences' in prompt[0]['content']
+    assert 'JSON true or false' in prompt[0]['content']
+    assert 'listed candidate' not in prompt[0]['content']
+    assert 'SECRET' not in json.dumps(prompt)
+    assert messages(replace(ex,target=False,metadata={}), 'actual transcript','v2')==prompt
+    assert messages(ex,'actual transcript')==messages(ex,'actual transcript','v1')
+    with pytest.raises(ValueError,match='version'):messages(ex,'text','v3')
+
+
+def test_train_prompt_probe_requires_explicit_scope_and_never_test(tmp_path):
+    config,_=fixture(tmp_path);p=Path(config['manifest'])
+    rows=[json.loads(x) for x in p.read_text().splitlines()]
+    for row in rows:row['split']='train'
+    p.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+    config.update(input_mode='reference-text',asr_run=None)
+    with pytest.raises(ValueError,match='valid-only'):load_evidence(config)
+    config['evaluation_split']='train'
+    with pytest.raises(ValueError,match='prompt_probe'):load_evidence(config)
+    config['purpose']='prompt_probe'
+    assert len(load_evidence(config)[0])==2
+    with pytest.raises(ValueError,match='prompt_probe'):load_evidence({**config,'input_mode':'asr-text'})
+    with pytest.raises(ValueError,match='train or valid'):load_evidence({**config,'evaluation_split':'test'})
+
+
 @pytest.mark.parametrize('change,match',[('hash','predictions changed'),('incomplete','complete aligned'),
     ('duplicate','IDs'),('wrong_audio','audio identity'),('inconsistent','inconsistent'),('failed','completed ASR')])
 def test_bad_asr_evidence_is_rejected(tmp_path,change,match):
