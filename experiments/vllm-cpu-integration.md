@@ -122,3 +122,34 @@ A detached supervisor under vllm-cpu-actor-sft-v3 validates successful upstream
 termination and artifacts before launching the actor. Actor phase heartbeats now
 identify parity, gradient, backward and optimizer steps and retain per-response
 parity errors. This instrumentation does not alter rewards, objectives or gates.
+
+## Feature model-input schema correction
+
+Feature engine v3 exited 1 before completing sampling: the parser accepts features
+and lengths alone, but Qwen3ASR's model-side Qwen2_5OmniAudioFeatureInputs schema
+also requires feature_attention_mask. No actor v3 launched. The exception and
+Docker terminal state are retained in the
+[failure receipt](../docs/engineering/vllm-feature-engine-v3-failure.json).
+
+The corrected request carries HF's mask truncated to the same valid frames as
+the feature tensor; no extra frame or changed acoustic evidence is introduced.
+The processor diagnostic now invokes the real model input validator without
+loading weights and checks feature lengths/mask as well as prompt IDs/features.
+The new diagnostic is vllm-cpu-processor-parity-v4. A successful diagnostic is
+required before vllm-cpu-rollout-sft-v4 with otherwise identical settings.
+
+The waveform HF audit has completed all 12 responses and exited 1 as expected
+for failed parity: all 12 exceed 0.02, maximum 0.16854184865951538 (minimum
+per-response maximum 0.06402599811553955). The merged HF checkpoint thus retains
+the discrepancy without LoRA or batch padding. This is evidence against an
+adapter-only explanation, not proof that preprocessing is the only cause.
+Full token evidence stays outside Git; hashes and per-response errors are in the
+[audit receipt](../docs/engineering/vllm-waveform-hf-audit-v1-result.json).
+
+The v4 processor/model-schema diagnostic exited 0: both 185-frame and 92-frame
+inputs have equal prompt tokens, zero feature error, correct masks and accepted
+model schemas. See the [receipt](../docs/engineering/vllm-cpu-feature-parity-v4-receipt.json).
+Corrected engine run v4 is container
+c49a0edc27323f2140b2c5f7702fa8e4a7d24ea83b370288900a397696a1b3a8;
+its independent actor supervisor is under vllm-cpu-actor-sft-v4 and will launch
+only after complete successful rollout validation. Failed v3 artifacts remain.

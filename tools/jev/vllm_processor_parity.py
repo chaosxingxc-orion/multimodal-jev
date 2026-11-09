@@ -9,6 +9,7 @@ from vllm.config import ModelConfig
 from vllm.multimodal import MULTIMODAL_REGISTRY
 from vllm.multimodal.processing.inputs import ProcessorInputs
 from vllm.multimodal.processing.context import TimingContext
+from vllm.model_executor.models.qwen3_asr import Qwen3ASRForConditionalGeneration
 from multimodal_jev.audio_policy import load_audio,hf_prompt,vllm_request
 from multimodal_jev.task_schema import JevExample,DecisionSchema
 
@@ -35,15 +36,22 @@ def main():
         actor=hf_prompt(hf,ex,waveform)
         assert processed['prompt_token_ids']==actor['input_ids'][0].tolist()
         data=processed['mm_kwargs'].get_data()
+        # Exercise the actual model-side TensorSchema, not only the parser's
+        # weaker required-fields declaration. This method needs no weights.
+        model_input=Qwen3ASRForConditionalGeneration._parse_and_validate_audio_input(None,**data)
+        assert model_input is not None
         features=data['input_audio_features'];frames=int(actor['input_features_mask'].sum())
+        torch.testing.assert_close(data['audio_feature_lengths'],torch.tensor([frames]))
+        assert int(data['feature_attention_mask'].sum())==frames
         reference=actor['input_features'][0,:,:frames]
         if features.ndim==3:features=features[0]
         assert features.shape==reference.shape,(features.shape,reference.shape)
         diff=float((features-reference).abs().max())
         torch.testing.assert_close(features,reference,atol=1e-5,rtol=1e-5)
         results.append({'samples':len(waveform),'prompt_tokens':len(processed['prompt_token_ids']),
-                        'feature_shape':list(features.shape),'max_feature_error':diff})
-    receipt={'status':'passed','results':results,'audio_input_mode':args.audio_input_mode,'scope':'actual vLLM multimodal processor and HF actor token/features parity; no engine or device execution'}
+                        'feature_shape':list(features.shape),'max_feature_error':diff,
+                        'model_input_schema_valid':True,'feature_mask_sum':int(data['feature_attention_mask'].sum())})
+    receipt={'status':'passed','results':results,'audio_input_mode':args.audio_input_mode,'scope':'actual vLLM multimodal processor, model input schema and HF actor token/features parity; no engine execution'}
     with args.output.open('x') as handle:json.dump(receipt,handle,indent=2)
     print(json.dumps(receipt,indent=2))
 

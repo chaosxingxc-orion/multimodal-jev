@@ -1,0 +1,123 @@
+{
+  "status": "failed",
+  "max_logprob_error": 0.16854184865951538,
+  "threshold": 0.02,
+  "responses": 12,
+  "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+  "rollout_sha256": "c9929e974d9b115a06955590f686f7e6be514ea8e3ac6487a6a5726ec57429e1",
+  "scope": "same merged weights HF single-response probability diagnosis; no optimizer or full-batch parity proof",
+  "container_id": "2a4671261c67ced11de8cd292ae2e9ec37aeb4c72ce1a1c74dae75c02dcdaddb",
+  "host": "npu",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-09T22:02:11.32318904Z",
+    "FinishedAt": "2026-11-09T22:10:16.8231705Z"
+  },
+  "terminal": {
+    "exit_code": 1,
+    "error": "ValueError('HF/vLLM response parity failed; per-response evidence retained')",
+    "finished_unix": 1794262215.3285942
+  },
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-waveform-probability-audit-v1",
+  "failed_responses": 12,
+  "per_response": [
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:native",
+      "replicate": 0,
+      "max_error": 0.10925257205963135,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:native",
+      "replicate": 1,
+      "max_error": 0.13601583242416382,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+      "replicate": 0,
+      "max_error": 0.15208053588867188,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:permutation",
+      "replicate": 1,
+      "max_error": 0.12446331977844238,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+      "replicate": 0,
+      "max_error": 0.08879929780960083,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:rebind",
+      "replicate": 1,
+      "max_error": 0.16854184865951538,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+      "replicate": 0,
+      "max_error": 0.1270032525062561,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:missing_candidate",
+      "replicate": 1,
+      "max_error": 0.11806577444076538,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+      "replicate": 0,
+      "max_error": 0.08859431743621826,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.True",
+      "replicate": 1,
+      "max_error": 0.08859431743621826,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.False",
+      "replicate": 0,
+      "max_error": 0.06402599811553955,
+      "finite": true
+    },
+    {
+      "example_id": "fsc:e7c7a20a71ca4337a9ba751a:noul.False",
+      "replicate": 1,
+      "max_error": 0.06402599811553955,
+      "finite": true
+    }
+  ],
+  "artifact_sha256": {
+    "response-003.json": "5fcfeb50283749fd1a1e28e3c2080ec750c083e1e9d8ab33b6feb2b4d68c0e4e",
+    "response-009.json": "a490a7601e86970edaec4836a93edd341688076a50921c2c9397529c71c1672c",
+    "response-008.json": "50426ef37f559cbbdd167fb364c6bc95418d2058c2195dceeeae6ff3409f5a16",
+    "progress.json": "03449a7fce8d45db4eeea3f90291a8b46409dc444b925b49b32d20e250b606f5",
+    "result.json": "a888de54b12fe66cc9a351f253edae85e1e8033c4d817174fb55cd84b9fb72a5",
+    "response-004.json": "d801e2f58ebf7643324c4b2eb5ca28329187b3c3474bc23535fefae4c4bb65f1",
+    "response-005.json": "a1cb61af12f920bd9488ff9894bc204a4c480a10257e37b695accf6746351246",
+    "response-002.json": "ad2263bde63a68439919af679c60d6b0be45324baffcab9cc1d3d0207b301f12",
+    "terminal.json": "2377487f59a0ebbaa0d1e22252ad35560c5da779eeb5658dcf283e4f74cee29d",
+    "response-000.json": "f630450d098d5562b526b15b71f9b4a0c0b7eedf35ab924c424d55a5df597782",
+    "response-001.json": "9f5a65bfb490f9d516f7361f41980b08a166eba98ecb745f79350910aec65d8d",
+    "response-011.json": "047d7538d7a040a7c1b59d0a01efa64035b0423ace9a825c8acce2d5d4401005",
+    "response-006.json": "0e2899585940ed97f09bf5ade06bf048ee59e097cf216ee3dfa65410dc0ca4b0",
+    "response-007.json": "3445625a422877dba0704f96b1d241eb51f48bfd3b6aea5c0213434a90bed459",
+    "response-010.json": "b73749a3ec253f752062337319e967fa3f18893a3ae6cde9d5300a72e0a9a0a4"
+  },
+  "interpretation": "Waveform discrepancy persists with identical merged weights and no adapter. This does not isolate preprocessing from kernel/version effects. Feature-mode full-batch actor gate remains required."
+}

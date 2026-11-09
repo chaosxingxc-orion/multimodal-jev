@@ -63,7 +63,10 @@ def vllm_request(processor, example, audio, input_mode='waveform'):
                 mask.bool(),torch.arange(mask.shape[-1])[None,:]<frames):
             raise ValueError('single contiguous audio feature mask required')
         data={'input_audio_features':batch['input_features'][0,:,:frames].contiguous(),
-              'audio_feature_lengths':torch.tensor([frames],dtype=torch.long)}
+              'audio_feature_lengths':torch.tensor([frames],dtype=torch.long),
+              # Parser declares this optional, but the model's TensorSchema
+              # requires it. Features above contain only valid frames.
+              'feature_attention_mask':mask[:,:frames].contiguous()}
     else:raise ValueError('unknown vLLM audio input mode')
     return {'prompt':prompt,'multi_modal_data':{'audio':data}}
 

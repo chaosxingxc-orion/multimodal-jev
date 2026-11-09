@@ -1,0 +1,27 @@
+{
+  "status": "failed_before_sampling_completed",
+  "container_id": "7ca24f88f3916682cbca5e32a1338708670f18b7411f6cecff3f8424f8e2f4f2",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-09T22:07:21.87546647Z",
+    "FinishedAt": "2026-11-09T22:10:15.19247797Z"
+  },
+  "terminal": {
+    "exit_code": 1,
+    "error": "EngineDeadError('EngineCore encountered an issue. See stack trace (above) for the root cause.')",
+    "finished_unix": 1794262207.870847
+  },
+  "root_cause": "Required field 'feature_attention_mask' is missing",
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-rollout-sft-v3",
+  "log_sha256": "107ca6e075864ae220ff539e70d89ec5c18c25c785c0e60c7a6022db466e157e",
+  "actor_launched": false,
+  "correction": "Preserve the HF mask truncated to the same valid feature frames; validate the model TensorSchema before retry. No change to the 0.02 probability gate."
+}
