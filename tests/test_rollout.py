@@ -21,6 +21,21 @@ def test_engine_disables_checkpoint_generation_defaults(monkeypatch):
     VllmAudioRollout('checkpoint',NS(),'policy',{'dtype':'float32'})
     assert received['generation_config']=='vllm'
     assert received['limit_mm_per_prompt']=={'audio':1}
+    assert received['enable_mm_embeds'] is False
+
+
+def test_feature_engine_admission_and_mode_consistency(monkeypatch):
+    import sys
+    from multimodal_jev.rollout import VllmAudioRollout
+    received={}
+    def fake_llm(**kwargs):received.update(kwargs);return NS()
+    monkeypatch.setitem(sys.modules,'vllm',NS(LLM=fake_llm,SamplingParams=object))
+    rollout=VllmAudioRollout('checkpoint',NS(),'policy',{},'actor_features')
+    assert received['enable_mm_embeds'] is True
+    with pytest.raises(ValueError,match='initialization'):
+        rollout.sample([],[],config(),'waveform')
+    with pytest.raises(ValueError,match='unsupported'):
+        VllmAudioRollout('checkpoint',NS(),'policy',{},'unknown')
 
 
 def outputs():

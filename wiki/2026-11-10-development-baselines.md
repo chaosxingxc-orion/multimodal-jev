@@ -42,3 +42,18 @@ SFT 评测容器现已 exit 0，168/168 个输出完成，统一 scorer 重算�
 生成耗时合计 2,505.23 秒（四核 CPU；不含加载）；结果与分层区间见
 [完成收据](../docs/engineering/slurp-sft-development-v1-result.json)。
 FSC 和文本对照仍单独运行，不能把 SLURP 完成推定为全部实验完成。
+
+## 真实 vLLM 与 actor 数值校验
+
+官方 ARM CPU vLLM 0.30 已完成波形采样（6 个 TRAIN 视图、12 个响应）。
+NGA 镜像内的 actor 校验随后失败：最大 log-prob 误差 0.16856，大于
+固定门槛 0.02，因此没有执行更新。完整 vLLM 波形预处理与 HF 相差一个
+特征帧；显式传入 HF 特征的处理器检查已达到 token 完全一致、特征误差 0。
+第一次特征引擎运行又被 enable_mm_embeds 入口检查拒绝，现已修复并以
+vllm-cpu-rollout-sft-v3 独立启动；通过处理器检查不能代替 actor 数值校验。
+见 [协议与失败证据](../experiments/vllm-cpu-integration.md)。
+
+本次观察中 FSC SFT 开发评测到 135/186，四组文本评测仍在实际运行。
+波形概率独立审计已完成的首个响应在相同合并权重的 HF 单条推理下误差
+为 0.10925，说明误差也存在于不加载 LoRA 的诊断路径；完整审计尚未完成，
+还不能归因于某个单一因素。没有调整 0.02 门槛，也没有 RL 提升结论。

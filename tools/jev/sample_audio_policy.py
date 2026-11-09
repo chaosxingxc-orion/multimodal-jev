@@ -45,7 +45,8 @@ def main():
                 if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('audio hash changed')
             audios=[load_audio(ex.audio) for ex in examples]
             atomic_json(args.output/'progress.json',{'phase':'engine_load','heartbeat_unix':time.time()})
-            rollout=VllmAudioRollout(str(checkpoint),processor,policy_id,config['engine'])
+            rollout=VllmAudioRollout(str(checkpoint),processor,policy_id,config['engine'],
+                                     config.get('audio_input_mode','waveform'))
             atomic_json(args.output/'progress.json',{'phase':'sampling','heartbeat_unix':time.time()})
             records=rollout.sample(examples,audios,config['sampling'],config.get('audio_input_mode','waveform'))
             with (args.output/'rollouts.jsonl').open('w') as handle:

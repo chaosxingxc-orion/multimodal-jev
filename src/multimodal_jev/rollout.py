@@ -61,17 +61,24 @@ def decode_outputs(outputs,examples,processor,policy_id,n):
 
 
 class VllmAudioRollout:
-    def __init__(self,checkpoint,processor,policy_id,engine_options):
+    def __init__(self,checkpoint,processor,policy_id,engine_options,audio_input_mode='waveform'):
         from vllm import LLM
         if not policy_id:raise ValueError('policy identity required')
+        if audio_input_mode not in {'waveform','actor_features'}:
+            raise ValueError('unsupported audio_input_mode')
+        self.audio_input_mode=audio_input_mode
         self.policy_id=policy_id;self.processor=processor
         if set(engine_options)-{'dtype','max_model_len','gpu_memory_utilization','tensor_parallel_size','enforce_eager','max_num_seqs','seed'}:
             raise ValueError('unexpected engine configuration')
         self.engine=LLM(model=checkpoint,tokenizer=checkpoint,trust_remote_code=False,
-                        generation_config='vllm',limit_mm_per_prompt={'audio':1},**engine_options)
+                        generation_config='vllm',limit_mm_per_prompt={'audio':1},
+                        enable_mm_embeds=audio_input_mode=='actor_features',**engine_options)
 
-    def sample(self,examples,audios,config,audio_input_mode='waveform'):
+    def sample(self,examples,audios,config,audio_input_mode=None):
         from vllm import SamplingParams
+        if audio_input_mode is None:audio_input_mode=self.audio_input_mode
+        if audio_input_mode!=self.audio_input_mode:
+            raise ValueError('audio_input_mode differs from engine initialization')
         if audio_input_mode=='actor_features':
             from .vllm_audio_features import enable_feature_passthrough
             enable_feature_passthrough()

@@ -34,7 +34,7 @@ def validate_rollouts(examples,records,policy_id,group_size):
 
 def update_actor(model,processor,optimizer,examples,audios,records,policy_id,group_size,
                  max_logprob_error=0.02,max_grad_norm=1.0,reward_mode='grpo',pair_bonus_weight=0.2,
-                 micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3'):
+                 micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3',progress=None):
     import torch
     from verl.utils.model import extract_multi_modal_inputs
     from .audio_policy import response_log_probs
@@ -68,6 +68,10 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     batch=make_batch(processor,ordered_examples,[waves[r.example_id] for r in records],
                      [r.token_ids for r in records],[r.log_probs for r in records],rewards,group_size)
     batch=compute_advantages(batch)
+    def report(phase,**values):
+        if progress is not None:progress({'phase':phase,**values})
+    report('batch_ready',responses=len(records),prompt_tokens=int(batch.batch['prompts'].shape[-1]),
+           response_tokens=int(batch.batch['response_mask'].sum()))
     # GRPO grouping/normalization happens on the complete batch. Only model
     # forwards are split; prompt replicates need not fit in one microbatch.
     total_tokens=int(batch.batch['response_mask'].sum())
@@ -88,11 +92,15 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     error=0.
     reference_parts=[]
     with torch.no_grad():
-        for part,kwargs in chunks():
+        for index,(part,kwargs) in enumerate(chunks()):
             b=part.batch
+            report('parity_forward',chunk=index)
             output=model(**kwargs)
             actor_logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
-            part_error=(actor_logp-b['old_log_probs']).abs()[b['response_mask'].bool()].max().item()
+            differences=(actor_logp-b['old_log_probs']).abs()
+            part_error=differences[b['response_mask'].bool()].max().item()
+            report('parity_checked',chunk=index,max_logprob_error=part_error,
+                   per_response_error=[float(row[mask.bool()].max()) for row,mask in zip(differences,b['response_mask'])])
             del output,actor_logp
             if not math.isfinite(part_error) or part_error>max_logprob_error:
                 raise ValueError(f'actor/rollout logprob mismatch: {part_error} > {max_logprob_error}; no optimizer update')
@@ -113,6 +121,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     total_loss=0.;metrics={}
     for index,(part,kwargs) in enumerate(chunks()):
         b=part.batch
+        report('gradient_forward',chunk=index)
         output=model(**kwargs)
         logp=response_log_probs(output.logits,b['input_ids'],b['prompts'].shape[-1])
         loss,part_metrics=policy_loss(part,logp)
@@ -125,6 +134,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
         # not the number of microbatches or examples (lengths can differ).
         weight=int(b['response_mask'].sum())/total_tokens
         if not torch.isfinite(loss):raise ValueError('nonfinite policy loss')
+        report('backward',chunk=index,loss=float(loss.detach()))
         (loss*weight).backward()
         total_loss+=float(loss.detach())*weight
         for key,value in part_metrics.items():metrics[key]=metrics.get(key,0.)+float(value)*weight
@@ -136,6 +146,7 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
                 'rewards':rewards,'metrics':metrics,'max_logprob_error':error,'reward_details':reward_details,
                 'micro_batch_size':micro_batch_size,'kl_coefficient':kl_coefficient,'kl_estimator':kl_estimator}
     optimizer.step()
+    report('optimizer_step',grad_norm=float(norm),loss=total_loss)
     return {'status':'updated','updated':True,'loss':total_loss,'grad_norm':float(norm),
             'rewards':rewards,'max_logprob_error':error,'metrics':metrics,'reward_details':reward_details,
             'policy_id':policy_id,'micro_batch_size':micro_batch_size,'response_tokens':total_tokens,

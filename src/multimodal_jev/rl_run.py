@@ -5,6 +5,7 @@ uses merged exports, but optimizer moments belong to the unmerged adapter.
 """
 from __future__ import annotations
 import json
+import time
 from pathlib import Path
 from .baseline import atomic_json, file_hash
 from .policy_identity import checkpoint_identity,validate_adapter_export
@@ -136,13 +137,18 @@ def train(config,output):
     optimizer=torch.optim.AdamW([p for _,p in parameters],**optimizer_config)
     if parent:
         restore_optimizer(model,optimizer,parent/'optimizer.pt',config['device'])
+    def progress(values):
+        atomic_json(output/'progress.json',{**values,'heartbeat_unix':time.time()})
+        if values['phase']=='parity_checked':
+            with (output/'parity.jsonl').open('a') as handle:
+                handle.write(json.dumps(values)+'\n')
     metrics=update_actor(model,processor,optimizer,examples,[load_audio(ex.audio) for ex in examples],records,
                          rollout['policy_id'],rollout['config']['sampling']['n'],
                          max_logprob_error=config['max_logprob_error'],reward_mode=config['reward_mode'],
                          pair_bonus_weight=config['pair_bonus_weight'],
                          micro_batch_size=config.get('micro_batch_size'),reference_model=reference_model,
                          kl_coefficient=reference['coefficient'] if reference else 0.,
-                         kl_estimator=reference['estimator'] if reference else 'k3')
+                         kl_estimator=reference['estimator'] if reference else 'k3',progress=progress)
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     save_optimizer(model,optimizer,output/'optimizer.pt')
     # Keep the exporter's base/train fields while retaining the complete run config.

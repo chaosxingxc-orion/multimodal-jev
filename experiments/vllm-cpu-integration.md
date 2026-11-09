@@ -97,3 +97,28 @@ multimodal-jev-vllm-cpu-rollout-sft-v2, ID
 It retains the same weights, TRAIN views, sampling settings and resource bounds;
 only the explicitly recorded audio_input_mode and associated compatibility
 helper differ. Processor parity is not proof of model log-probability parity.
+
+## Actor gate failure and feature admission correction
+
+The waveform actor v1 has now exited 1: maximum token log-probability error
+0.16855794191360474 exceeds the unchanged 0.02 gate. No optimizer step ran.
+See [actor failure receipt](../docs/engineering/vllm-waveform-actor-v1-result.json).
+A separate read-only HF merged-checkpoint audit scores each saved response to
+distinguish preprocessing/backend error from full-batch and adapter effects.
+The audit preserves all token errors and completes all responses before reporting
+its fixed-threshold verdict; it cannot establish full-batch actor parity.
+
+Feature engine v2 persisted an application terminal failure: the renderer requires
+enable_mm_embeds for dictionary audio features. Its engine workers remained live
+after the exception; they were explicitly stopped after saving failure evidence.
+The failed run and supervisor are retained. No actor v2 was launched.
+
+Feature engine v3 initializes enable_mm_embeds=True only for actor_features and
+rejects switching input modes after construction. The checkpoint, six TRAIN views,
+sampling distribution, resource limits and 0.02 gate are unchanged. Container
+7ca24f88f3916682cbca5e32a1338708670f18b7411f6cecff3f8424f8e2f4f2 is a new run;
+its source/config/protocol hashes are retained under vllm-cpu-rollout-sft-v3.
+A detached supervisor under vllm-cpu-actor-sft-v3 validates successful upstream
+termination and artifacts before launching the actor. Actor phase heartbeats now
+identify parity, gradient, backward and optimizer steps and retain per-response
+parity errors. This instrumentation does not alter rewards, objectives or gates.

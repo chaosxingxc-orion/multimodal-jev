@@ -1,0 +1,33 @@
+{
+  "status": "failed_before_optimizer",
+  "host": "npu",
+  "container_id": "2cd7285eaac051a326a3248c8bdc8bb23880f1388738f437af70dba921d446c6",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-09T21:51:55.53339309Z",
+    "FinishedAt": "2026-11-09T22:02:51.29246093Z"
+  },
+  "terminal": {
+    "exit_code": 1,
+    "error": "ValueError('actor/rollout logprob mismatch: 0.16855794191360474 > 0.02; no optimizer update')",
+    "finished_unix": 1794261768.6262581
+  },
+  "max_logprob_error": 0.16855794191360474,
+  "threshold": 0.02,
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-actor-sft-v1",
+  "scope": "waveform vLLM rollout versus frozen base plus SFT adapter; no optimizer update or RL efficacy result",
+  "feature_retry": {
+    "run": "vllm-cpu-rollout-sft-v3",
+    "container_id": "7ca24f88f3916682cbca5e32a1338708670f18b7411f6cecff3f8424f8e2f4f2",
+    "change": "enable_mm_embeds at actor_features engine construction",
+    "status": "running_at_receipt"
+  }
+}
