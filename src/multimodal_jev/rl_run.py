@@ -112,7 +112,8 @@ def train(config,output):
     metrics=update_actor(model,processor,optimizer,examples,[load_audio(ex.audio) for ex in examples],records,
                          rollout['policy_id'],rollout['config']['sampling']['n'],
                          max_logprob_error=config['max_logprob_error'],reward_mode=config['reward_mode'],
-                         pair_bonus_weight=config['pair_bonus_weight'])
+                         pair_bonus_weight=config['pair_bonus_weight'],
+                         micro_batch_size=config.get('micro_batch_size'))
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     save_optimizer(model,optimizer,output/'optimizer.pt')
     # Keep the exporter's base/train fields while retaining the complete run config.

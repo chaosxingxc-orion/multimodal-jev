@@ -87,3 +87,38 @@ Full two-iteration engine execution and actual on-policy gains remain unverified
 Reference KL, distributed
 workers, multi-audio optimization, matched three-seed comparisons and heldout
 task evaluation remain required research work.
+
+## Actor microbatching
+
+The actor accepts optional `micro_batch_size`; the smoke schedule retains the
+default full batch until numerical validation passes. Rewards and
+GRPO normalization are computed on the complete response group before splitting
+model forwards. Each microbatch loss is weighted by its count of unmasked
+response tokens divided by the complete batch count, preserving verl's token-mean
+objective even with unequal response lengths or an incomplete final microbatch.
+All microbatches pass old-policy log-probability checks before any backward or
+optimizer step. Gradient clipping and AdamW step happen once per complete batch.
+
+`tools/jev/actor_microbatch_smoke.py` compares a full three-response batch to a
+2+1 split on actual Qwen3-ASR/verl, including gradients, AdamW first moments and
+updated parameters. It also injects a log-probability error only in the final
+microbatch and requires no parameter or optimizer state change. Responses are
+controlled TRAIN fixtures with unequal lengths; this is numerical verification,
+not on-policy vLLM inference. Run handle:
+`npu:multimodal-jev-actor-microbatch-smoke-v1`, source/results under
+`/mnt/cephfs/xingchao/experiments/multimodal-jev/actor-microbatch-smoke-v1`.
+Version 1 failed its parameter comparison gate: one reported element differed
+by 2.43674e-6, exceeding atol=2e-6 / rtol=2e-4. A second diagnostic run
+tolerances, records all gradient/parameter/moment errors before asserting, and
+executes the late-parity rejection check. Its terminal result is pending; do not
+infer equivalence from unit tests or relax tolerances to hide this failure.
+The completed v2 evidence found gradient max error `4.65661e-8`, AdamW
+first-moment max error `4.65661e-9`, and parameter max error `2.82067e-6`
+(two isolated elements). The late parity failure left zero optimizer states and
+unchanged parameters. This is a near-equivalence diagnostic, not a passed exact
+equivalence gate; formal runs retain full-batch updates until a numerical policy
+for these accumulation differences is approved and separately validated.
+
+This reduces device activation memory. CPU-side preprocessing still prepares the
+complete batch, and the base model remains resident. It does not implement
+distributed workers, packed sequences or an unlimited-size dataset loader.
