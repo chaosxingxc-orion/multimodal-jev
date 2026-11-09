@@ -25,8 +25,14 @@ def main():
     config=result['config'];identity=json.loads((args.run/'identity.json').read_text())
     if file_hash(Path(config['model_path'])/'model.safetensors')!=identity['weights_sha256']:
         raise ValueError('base checkpoint changed')
+    if identity.get('base_files') is not None:
+        from multimodal_jev.policy_identity import checkpoint_identity
+        if checkpoint_identity(config['model_path'])[1]!=identity['base_files']:
+            raise ValueError('base processor/configuration changed')
     adapter=args.run/'adapter'
     adapter_files={p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()}
+    if result.get('adapter_files') is not None and result['adapter_files']!=adapter_files:
+        raise ValueError('completed adapter files changed')
     release=hashlib.sha256(json.dumps({'adapter':adapter_files,'base':identity['weights_sha256']},sort_keys=True).encode()).hexdigest()
     destination=args.output_root/release
     if destination.exists():raise FileExistsError('export exists')
@@ -43,6 +49,8 @@ def main():
             row=json.loads(line)
             if row['example_id'] in wanted:examples.append(JevExample.from_record(row))
         if len(examples)!=len(wanted):raise ValueError('verification examples missing')
+        if not examples or any(ex.split!='train' for ex in examples):
+            raise ValueError('nonempty TRAIN verification examples required')
         inputs=[];reference=[]
         for ex in examples:
             if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('verification audio changed')
@@ -68,12 +76,19 @@ def main():
             reload_errors.append(float((logp-ref).abs().max()))
         files={p.name:file_hash(p) for p in sorted(stage.iterdir()) if p.is_file()}
         receipt={'status':'passed','release_id':release,'training_run':str(args.run),
+                 'training_scope':result.get('scope','unspecified'),
                  'adapter_files':adapter_files,'base_sha256':identity['weights_sha256'],
                  'export_files':files,'merge_max_logprob_error':max(merge_errors),
                  'reload_max_logprob_error':max(reload_errors),'atol':3e-4,'rtol':1e-5,
                  'example_ids':[ex.example_id for ex in examples],
                  'elapsed_seconds':time.monotonic()-start,'scope':'HF merged/reloaded policy parity; vLLM engine verification still required'}
         atomic_json(stage/'EXPORT.json',receipt)
+        # tempfile starts with 0700; published shared checkpoints must be readable
+        # by the workspace user and later inference containers.
+        for path in stage.rglob('*'):
+            if path.is_file():path.chmod(path.stat().st_mode | 0o444)
+            elif path.is_dir():path.chmod(path.stat().st_mode | 0o555)
+        stage.chmod(stage.stat().st_mode | 0o555)
         os.rename(stage,destination)
         print(json.dumps({'path':str(destination),**receipt},indent=2))
     except BaseException as exc:

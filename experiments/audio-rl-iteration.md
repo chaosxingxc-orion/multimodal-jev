@@ -67,7 +67,23 @@ advantages, not zero gradient. The standalone check uses AdamW's default weight
 decay; the experiment runner explicitly uses zero weight decay.
 
 Receipt/identity rejection and scheduler stage handling have unit tests.
-Parent optimizer continuation, adapter export/reload, full two-iteration engine
-execution and actual on-policy gains remain unverified. Reference KL, distributed
+The [optimizer continuation check](../docs/engineering/actor-resume-smoke.json)
+now verifies actual Qwen3-ASR LoRA restoration: 112 trainable tensors after a
+second teacher-forcing step exactly match the uninterrupted run, AdamW moments
+match, and all optimizer step counters advance from 1 to 2. Both losses are
+10.9858503342, maximum parameter error zero. It starts from the previous controlled
+fixture actor, not a vLLM rollout. The shared `actor_state.py` persistence helper
+is used by the experiment runner and validates names, shapes and parameter order.
+
+The [export check](../docs/engineering/actor-export-smoke.json) also passed on
+that controlled-fixture adapter: loaded-adapter versus merged and reloaded
+weights both have maximum response log-prob error 1.24931e-4, within the frozen
+atol=3e-4 / rtol=1e-5 gate. The artifact remains in the experiment directory,
+explicitly labeled as a fixture, not the SFT initializer. The first export attempt
+failed because adapter files were unreadable from the host; its failed container
+is retained. Successful exports now set readable shared-directory permissions.
+
+Full two-iteration engine execution and actual on-policy gains remain unverified.
+Reference KL, distributed
 workers, multi-audio optimization, matched three-seed comparisons and heldout
 task evaluation remain required research work.

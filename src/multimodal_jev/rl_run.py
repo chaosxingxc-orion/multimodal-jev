@@ -52,6 +52,7 @@ def train(config,output):
     from .asr import load_runtime
     from .audio_policy import load_audio
     from .rl_update import update_actor
+    from .actor_state import save_optimizer,restore_optimizer
     output=Path(output)
     if (output/'result.json').exists() or (output/'optimizer.pt').exists():
         raise FileExistsError('existing update artifacts; inspect before retry')
@@ -91,7 +92,7 @@ def train(config,output):
               'manifest_sha256':rollout['manifest_sha256'],'example_ids':[ex.example_id for ex in examples],
               'adapter_files':({p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()} if adapter else None),
               'source_sha256':{name:file_hash(Path(__file__).with_name(name)) for name in
-                              ('rl_run.py','rl_update.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py')}}
+                              ('rl_run.py','rl_update.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py')}}
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('actor retry identity mismatch')
     atomic_json(output/'identity.json',identity)
@@ -107,18 +108,13 @@ def train(config,output):
     if not parameters:raise ValueError('no trainable adapter parameters')
     optimizer=torch.optim.AdamW([p for _,p in parameters],**optimizer_config)
     if parent:
-        saved=torch.load(parent/'optimizer.pt',map_location=config['device'],weights_only=True)
-        if saved['parameter_names']!=[name for name,_ in parameters]:raise ValueError('optimizer parameter mapping changed')
-        optimizer.load_state_dict(saved['optimizer'])
-        torch.set_rng_state(saved['cpu_rng'].cpu())
+        restore_optimizer(model,optimizer,parent/'optimizer.pt',config['device'])
     metrics=update_actor(model,processor,optimizer,examples,[load_audio(ex.audio) for ex in examples],records,
                          rollout['policy_id'],rollout['config']['sampling']['n'],
                          max_logprob_error=config['max_logprob_error'],reward_mode=config['reward_mode'],
                          pair_bonus_weight=config['pair_bonus_weight'])
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
-    torch.save({'optimizer':optimizer.state_dict(),'parameter_names':[name for name,_ in parameters],
-                'cpu_rng':torch.get_rng_state()},output/'optimizer.tmp')
-    (output/'optimizer.tmp').replace(output/'optimizer.pt')
+    save_optimizer(model,optimizer,output/'optimizer.pt')
     # Keep the exporter's base/train fields while retaining the complete run config.
     export_config={**config,'train_manifest':rollout['config']['manifest']}
     result={'status':'passed','config':export_config,'base_policy_id':base_policy,
