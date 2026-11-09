@@ -13,6 +13,7 @@ import sys
 import time
 from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
+from multimodal_jev.rl_preflight import validate_schedule
 
 
 def completed(path):
@@ -70,23 +71,14 @@ def export_actor(actor,export_root,stage):
 
 def run(config,root):
     source=Path(__file__).parents[2]
-    actor_config=config.get('actor')
-    if not isinstance(actor_config,dict) or not actor_config.get('model_path'):
-        raise ValueError('actor.model_path must be explicit and point to the frozen LoRA base')
-    actor_base=Path(actor_config['model_path'])
-    if not actor_base.is_dir() or not (actor_base/'config.json').is_file():
-        raise ValueError(f'actor base checkpoint is unavailable: {actor_base}')
-    if actor_base.resolve()!=Path(config['initial_checkpoint']).resolve() and config.get('initial_adapter') is None:
-        raise ValueError('different actor base requires an explicit initial_adapter')
-    identity={'config':config,'initial_policy_id':checkpoint_identity(config['initial_checkpoint'])[0],
-              'manifest_sha256':file_hash(config['manifest']),
+    preflight=validate_schedule(config)
+    identity={'config':config,**preflight,
               'source_sha256':{str(p.relative_to(source)):file_hash(p) for directory in
                                (source/'src/multimodal_jev',source/'tools/jev') for p in sorted(directory.glob('*.py'))}}
     if (root/'identity.json').exists() and json.loads((root/'identity.json').read_text())!=identity:
         raise ValueError('schedule identity changed')
     atomic_json(root/'identity.json',identity)
     checkpoint=config['initial_checkpoint'];parent=None;total_updates=0
-    if not config['batches']:raise ValueError('explicit TRAIN batch schedule required')
     for i,example_ids in enumerate(config['batches']):
         stage=root/f'iteration-{i:04d}';stage.mkdir(exist_ok=True)
         atomic_json(root/'progress.json',{'iteration':i,'phase':'rollout','heartbeat_unix':time.time()})

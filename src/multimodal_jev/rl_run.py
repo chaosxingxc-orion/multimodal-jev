@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from .baseline import atomic_json, file_hash
-from .policy_identity import checkpoint_identity
+from .policy_identity import checkpoint_identity,validate_adapter_export
 from .rollout import Rollout, validate_sampling
 from .rl_update import validate_rollouts
 from .task_schema import JevExample
@@ -77,14 +77,12 @@ def train(config,output):
         adapter=parent/'adapter'
         files={p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()}
         if files!=prior['adapter_files']:raise ValueError('parent adapter changed')
-        export=json.loads((Path(rollout['config']['checkpoint'])/'EXPORT.json').read_text())
-        if export['status']!='passed' or export['adapter_files']!=files or Path(export['training_run']).resolve()!=parent.resolve():
-            raise ValueError('rollout is not an export of parent adapter')
+        validate_adapter_export(config['model_path'],rollout['config']['checkpoint'],adapter,
+                                expected_training_run=parent,base_files=base_files,
+                                checkpoint_files=rollout['checkpoint_files'])
     elif adapter:
-        files={p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()}
-        export=json.loads((Path(rollout['config']['checkpoint'])/'EXPORT.json').read_text())
-        if export['status']!='passed' or export['adapter_files']!=files or export['base_sha256']!=file_hash(Path(config['model_path'])/'model.safetensors'):
-            raise ValueError('initial adapter does not match rollout export')
+        validate_adapter_export(config['model_path'],rollout['config']['checkpoint'],adapter,
+                                base_files=base_files,checkpoint_files=rollout['checkpoint_files'])
     elif base_policy!=rollout['policy_id']:
         raise ValueError('unadapted actor must match rollout checkpoint')
     identity={'config':config,'rollout_identity':rollout,'base_policy_id':base_policy,

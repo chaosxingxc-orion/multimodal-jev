@@ -47,3 +47,48 @@ def test_schedule_requires_explicit_existing_actor_base(tmp_path):
             'manifest':str(tmp_path/'manifest'), 'actor':{}}
     with pytest.raises(ValueError,match='actor.model_path'):
         m.run(config,tmp_path/'out')
+
+
+@pytest.mark.parametrize('adapted',[False,True])
+def test_two_iterations_preserve_actor_base_and_use_fresh_rollout(tmp_path,monkeypatch,adapted):
+    from test_rl_preflight import fixture
+    m=module();config=fixture(tmp_path,adapted=adapted)
+    original=json.loads(json.dumps(config));root=tmp_path/'schedule';root.mkdir()
+    events=[];actors=[];rollouts=[];exports=[]
+    def execute(tool,child,output):
+        output.mkdir();events.append(tool)
+        if tool=='sample_audio_policy.py':
+            rollouts.append(child)
+        else:
+            actors.append(child)
+            # Test doubles exercise scheduling only; not actual RL training.
+            (output/'result.json').write_text(json.dumps({'updates':len(actors)-1}))
+    def export(actor,export_root,stage):
+        events.append('export');exports.append((str(actor),str(export_root)))
+        return str(export_root/'merged')
+    monkeypatch.setattr(m,'execute',execute);monkeypatch.setattr(m,'export_actor',export)
+    m.run(config,root)
+    assert events==['sample_audio_policy.py','update_audio_actor.py','export']*2
+    assert rollouts[0]['checkpoint']==config['initial_checkpoint']
+    assert rollouts[1]['checkpoint']==str(Path(exports[0][1])/'merged')
+    assert all(child['model_path']==config['actor']['model_path'] for child in actors)
+    assert actors[0]['initial_adapter']==config['initial_adapter']
+    assert actors[1]['initial_adapter'] is None
+    assert actors[0]['parent_run'] is None
+    assert actors[1]['parent_run']==exports[0][0]
+    assert [child['sampling']['seed'] for child in rollouts]==[17,18]
+    assert [child['seed'] for child in actors]==[17,18]
+    assert exports[0][1]!=exports[1][1]
+    result=json.loads((root/'result.json').read_text())
+    assert result['iterations']==2 and result['optimizer_updates']==1
+    assert config==original
+
+
+def test_preflight_failure_never_invokes_rollout(tmp_path,monkeypatch):
+    from test_rl_preflight import fixture
+    m=module();config=fixture(tmp_path,adapted=True);calls=[]
+    (Path(config['initial_checkpoint'])/'model.safetensors').write_bytes(b'changed')
+    monkeypatch.setattr(m,'execute',lambda *a:calls.append(a))
+    with pytest.raises(ValueError,match='published export file changed'):
+        m.run(config,tmp_path/'schedule')
+    assert not calls and not (tmp_path/'schedule').exists()
