@@ -70,6 +70,14 @@ def export_actor(actor,export_root,stage):
 
 def run(config,root):
     source=Path(__file__).parents[2]
+    actor_config=config.get('actor')
+    if not isinstance(actor_config,dict) or not actor_config.get('model_path'):
+        raise ValueError('actor.model_path must be explicit and point to the frozen LoRA base')
+    actor_base=Path(actor_config['model_path'])
+    if not actor_base.is_dir() or not (actor_base/'config.json').is_file():
+        raise ValueError(f'actor base checkpoint is unavailable: {actor_base}')
+    if actor_base.resolve()!=Path(config['initial_checkpoint']).resolve() and config.get('initial_adapter') is None:
+        raise ValueError('different actor base requires an explicit initial_adapter')
     identity={'config':config,'initial_policy_id':checkpoint_identity(config['initial_checkpoint'])[0],
               'manifest_sha256':file_hash(config['manifest']),
               'source_sha256':{str(p.relative_to(source)):file_hash(p) for directory in

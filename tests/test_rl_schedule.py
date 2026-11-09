@@ -39,3 +39,11 @@ def test_completed_stage_does_not_rerun_or_accept_new_config(tmp_path,monkeypatc
     m.execute('sample_audio_policy.py',{'seed':17},stage)
     assert not calls
     with pytest.raises(ValueError,match='config changed'):m.execute('sample_audio_policy.py',{'seed':29},stage)
+
+
+def test_schedule_requires_explicit_existing_actor_base(tmp_path):
+    m=module()
+    config={'initial_checkpoint':str(tmp_path/'missing-rollout'),
+            'manifest':str(tmp_path/'manifest'), 'actor':{}}
+    with pytest.raises(ValueError,match='actor.model_path'):
+        m.run(config,tmp_path/'out')
