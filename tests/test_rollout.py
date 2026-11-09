@@ -63,3 +63,41 @@ def test_policy_update_rejects_stale_or_incomplete_rollouts():
     with pytest.raises(ValueError,match='stale'):validate_rollouts(examples,records,'policy-2',2)
     with pytest.raises(ValueError,match='incomplete'):validate_rollouts(examples,records[:1],'policy-1',2)
     with pytest.raises(ValueError,match='duplicate'):validate_rollouts(examples,records+records,'policy-1',2)
+
+
+def test_generation_counts_engine_prompts_and_variable_response_lengths():
+    from multimodal_jev.rollout import generation_budget
+    requests=[NS(prompt_token_ids=[1]*7),NS(prompt_token_ids=[1]*11)]
+    records=[NS(token_ids=[1]*length,finish_reason=reason)
+             for length,reason in [(2,'stop'),(4,'length'),(3,'stop'),(5,'length')]]
+    budget=generation_budget(requests,records,2,1.25)
+    assert budget['request_prompt_tokens']==18
+    assert budget['replicated_prompt_tokens']==36
+    assert budget['generated_tokens']==14 and budget['length_terminated_responses']==2
+    assert budget['prompt_tokens_per_request']==[7,11]
+    assert budget['response_tokens_per_record']==[2,4,3,5]
+    assert budget['engine_generate_seconds']==1.25
+    with pytest.raises(ValueError,match='prompt token'):
+        generation_budget([NS(),requests[1]],records,2,1.25)
+    with pytest.raises(ValueError,match='complete'):
+        generation_budget(requests,records[:-1],2,1.25)
+    with pytest.raises(ValueError,match='duration'):
+        generation_budget(requests,records,2,float('nan'))
+
+
+def test_sampling_records_engine_accounting_and_clears_previous_result(monkeypatch):
+    import sys
+    import multimodal_jev.rollout as module
+    returned=outputs();returned[0].prompt_token_ids=[1,2,3]
+    engine=NS(generate=lambda *a,**k:returned)
+    monkeypatch.setitem(sys.modules,'vllm',NS(LLM=lambda **k:engine,SamplingParams=lambda **k:k))
+    monkeypatch.setattr(module,'vllm_request',lambda *a:{'prompt':'test'})
+    processor=NS(tokenizer=NS(decode=lambda ids,**k:'decoded'))
+    runner=module.VllmAudioRollout('checkpoint',processor,'policy',{})
+    records=runner.sample([NS(example_id='a')],[object()],config())
+    assert len(records)==2 and runner.last_generation_budget['generated_tokens']==4
+    assert runner.last_generation_budget['request_prompt_tokens']==3
+    returned[0].finished=False
+    with pytest.raises(ValueError,match='finished'):
+        runner.sample([NS(example_id='a')],[object()],config())
+    assert runner.last_generation_budget is None

@@ -59,3 +59,25 @@ rollout identities, then uses the original SFT adapter, pair-GRPO, .02 gate,
 four CPU threads and 256GiB memory. Response-only projection remains disabled
 for this independently registered test. See
 [queue receipt](../docs/engineering/vllm-mixed-actor-v1-queued.json).
+
+## Response-only mixed actor
+
+Register an independent response-only full-batch actor on the same 24 saved
+responses, original base and SFT adapter, seed17, pair reward, LR1e-5 and .02
+probability gate. It waits for exact successful exit of the single-recording
+response-only actor 5b5c40e5f2b0f5583f944ed4fd1142e3ffbded3b762ea52e0f7cd42bb5064ee2
+and verifies its real update and saved optimizer/adapter hashes before launch.
+Revalidate the mixed rollout and independent HF audit. The only actor-config
+change relative to the registered mixed actor is response_logits_only=true;
+use four CPU cores and a 64GiB container limit. Full projection remains an
+independent queued experiment. No microbatching, normalization change or
+additional rollout selection is introduced.
+
+Record the mixed full-batch probability gate, actual update count, finite
+gradient norm, response-token ledger and saved optimizer/adapter integrity.
+This extends executable training coverage to different recordings and lengths,
+but remains an integration experiment; learning and generalization require the
+separately registered multi-seed comparisons.
+
+The response-only supervisor is registered in the
+[queue receipt](../docs/engineering/vllm-mixed-response-only-v1-queued.json).

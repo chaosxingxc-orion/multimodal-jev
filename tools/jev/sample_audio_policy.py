@@ -45,14 +45,17 @@ def main():
                 if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('audio hash changed')
             audios=[load_audio(ex.audio) for ex in examples]
             atomic_json(args.output/'progress.json',{'phase':'engine_load','heartbeat_unix':time.time()})
+            load_started=time.monotonic()
             rollout=VllmAudioRollout(str(checkpoint),processor,policy_id,config['engine'],
                                      config.get('audio_input_mode','waveform'))
+            engine_load_seconds=time.monotonic()-load_started
             atomic_json(args.output/'progress.json',{'phase':'sampling','heartbeat_unix':time.time()})
             records=rollout.sample(examples,audios,config['sampling'],config.get('audio_input_mode','waveform'))
             with (args.output/'rollouts.jsonl').open('w') as handle:
                 for record in records:handle.write(json.dumps(asdict(record))+'\n')
             atomic_json(args.output/'result.json',{'status':'passed','policy_id':policy_id,
                 'prompts':len(examples),'rollouts':len(records),'rollouts_sha256':file_hash(args.output/'rollouts.jsonl'),
+                'generation_budget':rollout.last_generation_budget,'engine_load_seconds':engine_load_seconds,
                 'scope':'vLLM sampling only; actor parity gate and optimizer update not yet run'})
         except BaseException as exc:
             atomic_json(args.output/'terminal.json',{'exit_code':1,'error':repr(exc),'finished_unix':time.time()})

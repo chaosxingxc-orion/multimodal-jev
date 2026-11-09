@@ -6,6 +6,7 @@ an update; silently keeping an old engine is not supported. No HF fallback.
 from __future__ import annotations
 from dataclasses import dataclass
 import math
+import time
 from .audio_policy import vllm_request
 
 
@@ -60,6 +61,30 @@ def decode_outputs(outputs,examples,processor,policy_id,n):
     return records
 
 
+def generation_budget(outputs,records,n,elapsed_seconds):
+    """Count engine-observed tokens, without assuming prefill/cache compute."""
+    if not math.isfinite(elapsed_seconds) or elapsed_seconds<0:
+        raise ValueError('finite nonnegative generation duration required')
+    if type(n) is not int or n<2 or not outputs or len(records)!=len(outputs)*n:
+        raise ValueError('complete generation groups required for accounting')
+    lengths=[]
+    for request in outputs:
+        ids=getattr(request,'prompt_token_ids',None)
+        if ids is None or len(ids)==0:
+            raise ValueError('engine prompt token IDs required for accounting')
+        lengths.append(len(ids))
+    response_lengths=[len(record.token_ids) for record in records]
+    return {'requests':len(outputs),'responses':len(records),
+            'prompt_tokens_per_request':lengths,
+            'request_prompt_tokens':sum(lengths),
+            'replicated_prompt_tokens':sum(lengths)*n,
+            'generated_tokens':sum(response_lengths),
+            'response_tokens_per_record':response_lengths,
+            'length_terminated_responses':sum(r.finish_reason=='length' for r in records),
+            'engine_generate_seconds':elapsed_seconds,
+            'scope':'observed engine token counts; replicated prompts are exposures, not measured prefill work or FLOPs'}
+
+
 class VllmAudioRollout:
     def __init__(self,checkpoint,processor,policy_id,engine_options,audio_input_mode='waveform'):
         from vllm import LLM
@@ -67,6 +92,7 @@ class VllmAudioRollout:
         if audio_input_mode not in {'waveform','actor_features'}:
             raise ValueError('unsupported audio_input_mode')
         self.audio_input_mode=audio_input_mode
+        self.last_generation_budget=None
         self.policy_id=policy_id;self.processor=processor
         if set(engine_options)-{'dtype','max_model_len','gpu_memory_utilization','tensor_parallel_size','enforce_eager','max_num_seqs','seed'}:
             raise ValueError('unexpected engine configuration')
@@ -76,6 +102,7 @@ class VllmAudioRollout:
 
     def sample(self,examples,audios,config,audio_input_mode=None):
         from vllm import SamplingParams
+        self.last_generation_budget=None
         if audio_input_mode is None:audio_input_mode=self.audio_input_mode
         if audio_input_mode!=self.audio_input_mode:
             raise ValueError('audio_input_mode differs from engine initialization')
@@ -87,5 +114,9 @@ class VllmAudioRollout:
         if len({ex.example_id for ex in examples})!=len(examples):raise ValueError('duplicate request identity')
         requests=[vllm_request(self.processor,ex,audio,audio_input_mode) for ex,audio in zip(examples,audios)]
         params=SamplingParams(**config,logprobs=0)
+        started=time.monotonic()
         outputs=self.engine.generate(requests,params,use_tqdm=False)
-        return decode_outputs(outputs,examples,self.processor,self.policy_id,config['n'])
+        elapsed=time.monotonic()-started
+        records=decode_outputs(outputs,examples,self.processor,self.policy_id,config['n'])
+        self.last_generation_budget=generation_budget(outputs,records,config['n'],elapsed)
+        return records
