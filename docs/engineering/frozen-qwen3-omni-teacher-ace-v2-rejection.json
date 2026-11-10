@@ -1,0 +1,50 @@
+{
+  "schema": "jev-omni-teacher-rejection-v1",
+  "reviewed_unix": 1794302104.796552,
+  "parent_prompt_sha256": "ab9c559716d480775dc93bbfc3f62ac5c7e1a2aa7c95a8c6b10d72b61ad982a2",
+  "response_sha256": "a0f694710f3c5ebbf6a75c6cd4f421049cb51dbdd9118e6dfbe6f28e9b7c9a8f",
+  "evaluation_eligible": [],
+  "prompt_selected": false,
+  "selection_or_test_items_read_for_review": false,
+  "candidates": [
+    {
+      "id": "p1",
+      "decision": "rejected_before_selection",
+      "instruction_sha256": "f61669828b91dd23fb446c06af224b33ee4aa95c599f12b4ceb0f51158549254",
+      "instruction_characters": 1451,
+      "reasons": [
+        "Redefines generic noul propositions as command/request matching; this conflicts with schema-defined propositions such as entity presence.",
+        "Treats audio content universally as a speaker request, narrowing generic cross-task decision semantics.",
+        "The ban on explanatory text between braces is ambiguous for schema-valid string values; constrain surrounding prose instead."
+      ]
+    },
+    {
+      "id": "p2",
+      "decision": "rejected_before_selection",
+      "instruction_sha256": "ab185e967fa16e7e86304247e81e93471f023ea2f84ed952d90147fe35f3acbe",
+      "instruction_characters": 1395,
+      "reasons": [
+        "Redefines generic noul propositions as command/request matching; this conflicts with schema-defined propositions such as entity presence.",
+        "Treats audio content universally as a speaker request, narrowing generic cross-task decision semantics."
+      ]
+    }
+  ],
+  "diagnosis_corrections": [
+    "Unknown diagnosis evidence ID: fsc:0ec801afe932fb0b7d324b9207c:noul.False; do not repair or infer its intended identity. Copy only exact supplied IDs.",
+    "Noul is a generic proposition over audio, including entity-presence and absence questions, not necessarily a full-command equality test.",
+    "All decision types must remain generic across tasks: the schema defines the question; avoid universal command/request matching or span-extraction semantics."
+  ],
+  "usage": {
+    "completion_tokens": 24191,
+    "completion_tokens_details": {
+      "reasoning_tokens": 22393
+    },
+    "prompt_tokens": 41070,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 65261
+  },
+  "cumulative_omni_teacher_tokens": 117083,
+  "scope": "v2 complete response rejected before selection; no candidate evaluated or manually repaired"
+}

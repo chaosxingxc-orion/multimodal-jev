@@ -19,8 +19,19 @@ evidence/valid-answer conditions warrant it. Never ban null globally for noul,
 score or slots. A decidably false proposition is false, not null. Empty open_slots
 list means no occurrences, not unknown. Do not create synonyms or define none;
 the current schema is authoritative. Do not introduce task-specific fields.
+These are generic audio decisions, not universally spoken-command matching.
+For noul evaluate the exact proposition in the schema; do not replace it with
+whether a described command matches the speaker's request. It can concern entity
+presence, absence, or other audio evidence. Likewise choice, score and string
+outputs must follow the supplied question, not a hardcoded command comparison.
+The examples in this correction explain scope only: do not put task examples
+or fixed task fields in the candidate instructions. Constrain JSON syntax and
+surrounding prose without forbidding schema-valid text inside string values.
 Candidate evidence_ids MUST be from the supplied representative_evidence_ids;
-diagnosis IDs may be from all_group_summary. Copy IDs exactly.
+for this revision use those same exact representative IDs for diagnosis too.
+Copy IDs exactly, never reconstruct, abbreviate, or splice them. Check every ID
+against that supplied list before returning. A single invented ID rejects the
+entire response. Do not correct a mistaken previous ID by guessing its referent.
 Greedy decoding is fixed. Distinguish aggregate evidence from representative
 examples; do not generalize all zero outputs are fenced without full evidence.
 Keep diagnoses concise (at most 3), return 1 or 2 distinct generic instructions
