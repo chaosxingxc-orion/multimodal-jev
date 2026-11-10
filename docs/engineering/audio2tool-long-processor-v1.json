@@ -1,0 +1,163 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-long-processor-v1",
+  "launch": {
+    "container_id": "5fbe35410a3b6984c9122f2e7be08349dc28cd039a99d60abdd73d8d439a57f1",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "93c07e332e9297305f3ffa567685021a026e2ffc"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T16:25:30.60932059Z",
+    "FinishedAt": "2026-11-10T16:25:49.44900894Z"
+  },
+  "result": {
+    "status": "passed",
+    "results": [
+      {
+        "selection": "longest_clip",
+        "audio_files": 1,
+        "conversions": [
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 15711377,
+            "target_rate": 16000,
+            "target_samples": 10474252,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "valid_frames": [
+          65464
+        ],
+        "expected_frames": [
+          65464
+        ],
+        "audio_token_lengths": [
+          8510
+        ],
+        "input_tokens": 15289,
+        "feature_shape": [
+          1,
+          128,
+          65464
+        ],
+        "all_finite": true,
+        "exceeds_configured_n_samples": [
+          true
+        ],
+        "remaining_with_1024_output": {
+          "8192": -8121,
+          "16384": 71,
+          "32768": 16455,
+          "65536": 49223
+        },
+        "seconds": 1.8468357200035825
+      },
+      {
+        "selection": "longest_dialogue",
+        "audio_files": 5,
+        "conversions": [
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 60885,
+            "target_rate": 16000,
+            "target_samples": 40590,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 314325,
+            "target_rate": 16000,
+            "target_samples": 209550,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 64725,
+            "target_rate": 16000,
+            "target_samples": 43150,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 15711180,
+            "target_rate": 16000,
+            "target_samples": 10474120,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 3016830,
+            "target_rate": 16000,
+            "target_samples": 2011220,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "valid_frames": [
+          254,
+          1310,
+          270,
+          65463,
+          12571
+        ],
+        "expected_frames": [
+          254,
+          1310,
+          270,
+          65463,
+          12571
+        ],
+        "audio_token_lengths": [
+          33,
+          171,
+          35,
+          8510,
+          1634
+        ],
+        "input_tokens": 17206,
+        "feature_shape": [
+          5,
+          128,
+          65463
+        ],
+        "all_finite": true,
+        "exceeds_configured_n_samples": [
+          false,
+          false,
+          false,
+          true,
+          true
+        ],
+        "remaining_with_1024_output": {
+          "8192": -10038,
+          "16384": -1846,
+          "32768": 14538,
+          "65536": 47306
+        },
+        "seconds": 3.098083519958891
+      }
+    ],
+    "model_loaded": false,
+    "answers_read": false,
+    "runner_sha256": "f5ac8b5f3b5cbd9678df5ac6196cd2a0737689e07f043c0214d3e5893c76733a",
+    "scope": "Actual HF processor on header-selected longest clip and dialogue with full registry. Complete waveforms, explicit polyphase resampling and no truncation. Provisional role-labeled dialogue layout; not official Tier7 semantics acceptance, full dataset fit, vLLM parity or model inference."
+  },
+  "runtime_n_samples": 480000,
+  "source_and_frame_arithmetic_verified": true,
+  "identity_sha256": "69323fb033f9e93ea46ad154605f8dcd2523c8d5d6a80fdfadd6e2cc0661e199",
+  "result_sha256": "ebf332a06ccc011367b25afbd707f96f1ee05fc7d80cd381a09e56b82a04911d",
+  "scope": "Exact terminal and source identity, resampled lengths, full frame masks and budget arithmetic verified. Recorded token counts from real processor; no model/vLLM acceptance."
+}

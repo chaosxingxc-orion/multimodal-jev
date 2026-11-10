@@ -1,0 +1,18 @@
+{
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "files": {
+    ".local/research/omni-long-audio-source-v1/hf_features.py": "34a6d8aad9f7f274819622929e4ff74be2a136fcd61f80ec968f9e05c45c7f3a",
+    ".local/research/omni-long-audio-source-v1/qwen2_audio.py": "90715c75b2168e248be1efe5179bde14ad23aaecd1a15762df13365c13e8c264",
+    ".local/research/omni-long-audio-source-v1/qwen3_omni_moe_thinker.py": "0f44c586731ec7a589af4e58b1998f49ef17abf2907e70a66c0b338913e5fb81",
+    ".local/research/omni-long-audio-source-v1/hf_processor.py": "5ebde9431e03451e4d958afb1602704b1f184ebff8b6caf1d2875e3de6853172",
+    ".local/research/omni-long-audio-source-v1/qwen2_5_omni_thinker.py": "228d0917e60949864adfb6cdbd11f9216b7887920797221128ecbf4249254146"
+  },
+  "findings": [
+    "HF Omni default padding=True,truncation=False",
+    "Whisper constructor chunk_length=30 recomputes n_samples=480000 at 16kHz, overriding stale serialized n_samples",
+    "vLLM max_audio_clip_s occurs in speech-to-text configuration; not proof of direct multimodal chat limit",
+    "vLLM direct multimodal processor pre-pads waveform to hop length and handles truncation conditional; exact long-waveform processor parity still untested"
+  ],
+  "source_read_container_id": "2685a84d57a62d655f2d97401b9ebbede83ce9378f3f9a47648f4842ce6dffe4",
+  "processor_probe_container_id": "5fbe35410a3b6984c9122f2e7be08349dc28cd039a99d60abdd73d8d439a57f1"
+}
