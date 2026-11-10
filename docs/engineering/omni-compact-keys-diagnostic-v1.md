@@ -1,0 +1,35 @@
+# 全六条学习输入的不可达 K/V 移除候选
+
+原CPU BF16诊断中，五条新增左padding样本都超过0.1响应logp差门槛。row0的
+冻结attention分解和14项形状对照进一步证明，仅在有效K/V前增加被屏蔽的位置
+就能精确复现该行attention差异；填充值与Q轴变化没有解释这组差异。
+据此测试一个完整模型候选，而不把局部attention证据直接推广为全模型修复。
+
+`omni_compact_attention.compact_text_attention`在单进程诊断作用域内包装真实
+Transformers SDPA接口，仅处理Thinker text attention。对显式布尔mask，逐样本
+移除所有query都无法访问的key及对应value，同时裁剪mask的key轴；query、位置
+编码、输入token、响应布局、音频输入、权重及MoE计算保持原定义。重建原坐标mask
+验证有效边完全一致。无mask直接走原实现，其他audio attention也直接走原实现。
+异常退出恢复原注册函数；拒绝嵌套、cache形状、浮点/多头mask、dropout与位置bias。
+这是显式候选，不修改正式actor默认路径，也不用于并发服务或权重训练。
+
+9项本地CPU测试通过：非连续排除位置、不同样本的不同有效keys、全mask query、
+前向与梯度一致、排除K/V梯度为0、不支持模式拒绝、其他模块旁路以及异常/嵌套
+注册清理。测试采用FP64小张量验证数学语义，不证明预训练BF16数值修复。
+
+`diagnose_omni_compact_keys.py`绑定已成功验收的原精度容器、固定HF/SDPA源码SHA、
+模型资产和原六条学习输入。仍使用原始waveform边界、共同音频feature宽度、
+左padding prompt、false+EOS固定诊断响应与CPU BF16 autocast。每条只做一次候选
+完整前向，检查48层实际调用与保留key数，保存完整响应logits，分别比较原
+audio_padding和text_padding的已保存结果，FP32归一化。六条全部执行，即使某行
+不通过门槛也保存剩余观察；门槛保持0.1，不以平均值掩盖失败。
+
+先运行真实镜像输入/注册预检查，2 CPU/16 GiB/1800秒加10秒，无网络设备，
+不加载模型权重。完整候选预算同一固定镜像、16 CPU/160 GiB/10800秒加30秒，
+只读源代码、模型、数据和原实验，无网络/设备，不读取监督值、不生成任务答案、
+不使用优化器。预检查成功后独立验证容器与源码，再create持久记录精确ID后start。
+原逐层诊断可继续运行，不改其快照；新候选不覆盖旧失败，也不自动重试。
+
+结果解释须区分：候选成功执行、六条响应概率门槛通过、真实verl actor一致性、
+NPU/rollout一致性、优化器更新及任务收益是不同要求。后五者不能由启动或CPU
+预检查推断。即使候选通过，逐样本压缩的性能、梯度路径和分布式行为仍需实测。
