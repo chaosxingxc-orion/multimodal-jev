@@ -1,0 +1,57 @@
+{
+  "observed_unix": 1794269403.660601,
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-vllm-cpu-engine-v3",
+  "container_id": "8187173d7d2027aeaef86c068bd7c760b249386ac427056b1bd2ab7b70e395f4",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T00:05:37.32128314Z",
+    "FinishedAt": "2026-11-10T00:09:05.66068629Z"
+  },
+  "result": {
+    "status": "passed",
+    "records": 1,
+    "official_split": "train_id",
+    "predictions_sha256": "4c733f3b16fabd5a26899b8491502c0260eb691bf8d0af172dd6b6be8507840d",
+    "scope": "Qwen3-ASR chronological prompt port; offline supplied-history SFC; not official Omni model reproduction"
+  },
+  "artifact_sha256": {
+    "identity.json": "b2867ab787f780488f0dec2cbc922d3144ea6c6ed852553a39a650817684a099",
+    "terminal.json": "3de6b8f0c34ce4c7313b3ff98cacc5b332968eb6012ffbe0f8a198a98027776e",
+    "result.json": "5033ee2250b1ec216a5796880b21889411cf28c8eb4c7345bb82f75119258048",
+    "predictions.jsonl": "4c733f3b16fabd5a26899b8491502c0260eb691bf8d0af172dd6b6be8507840d"
+  },
+  "example_id": "sfc:audio/final_data_audio/level_3_1/train_id/id_100_2.wav",
+  "audio_count": 2,
+  "audio_conversion": [
+    {
+      "source_rate": 22050,
+      "source_channels": 1,
+      "source_samples": 354304,
+      "target_rate": 16000,
+      "target_samples": 257092,
+      "conversion": "channel mean then scipy.signal.resample_poly when needed"
+    },
+    {
+      "source_rate": 22050,
+      "source_channels": 1,
+      "source_samples": 30720,
+      "target_rate": 16000,
+      "target_samples": 22292,
+      "conversion": "channel mean then scipy.signal.resample_poly when needed"
+    }
+  ],
+  "generated_tokens": 70,
+  "finish_reason": "stop",
+  "generation_seconds": 39.617787489667535,
+  "strict_function_call_format_valid": false,
+  "actual_kv_cache_gib": 3,
+  "interpretation": "actual CPU vLLM completes the registered chronological two-audio TRAIN request, but raw base ASR emits transcription rather than tool calls. No evidence both clips influenced output; no logprob parity, SFC accuracy, NPU or interactive success claim."
+}

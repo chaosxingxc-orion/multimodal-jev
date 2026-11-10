@@ -116,3 +116,14 @@ The old full-pool queue stopped, and the observation-only two-step launcher was
 stopped before any schedule submission. New separately named
 [dependency queues](../docs/engineering/sfc-v3-dependent-queues.json) observe v3;
 no training container was stopped or automatically resubmitted.
+
+CPU v3 completed: exact container8187173d... exited0, application receipts and
+one prediction hash verified. The engine logged3GiB KV allocation and13,952
+cache tokens. Both source audio hashes and their ordered conversion records
+were verified. The base ASR generated69 tokens, stopped normally and took39.62s
+for generation; its output was transcription, failing strict tool-call format.
+See [result](../docs/engineering/sfc-vllm-cpu-engine-v3-result.json).
+This proves execution of this registered two-audio input through the CPU engine,
+not that both clips causally affected the answer, nor actor/rollout probability
+parity, tool-call quality, full SFC evaluation or interactive task success.
+The full-pool TRAIN reward diagnosis subsequently began its own fresh engine.
