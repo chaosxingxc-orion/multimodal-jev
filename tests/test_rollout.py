@@ -92,15 +92,28 @@ def test_sampling_records_engine_accounting_and_clears_previous_result(monkeypat
     engine=NS(generate=lambda *a,**k:returned)
     monkeypatch.setitem(sys.modules,'vllm',NS(LLM=lambda **k:engine,SamplingParams=lambda **k:k))
     monkeypatch.setattr(module,'vllm_request',lambda *a:{'prompt':'test'})
+    prompt=[1,2,3]
+    monkeypatch.setattr(module,'hf_prompt',lambda *a:{'input_ids':[NS(tolist=lambda:list(prompt))]})
     processor=NS(tokenizer=NS(decode=lambda ids,**k:'decoded'))
     runner=module.VllmAudioRollout('checkpoint',processor,'policy',{})
     records=runner.sample([NS(example_id='a')],[object()],config())
     assert len(records)==2 and runner.last_generation_budget['generated_tokens']==4
     assert runner.last_generation_budget['request_prompt_tokens']==3
+    assert runner.last_prompt_identity==[{'example_id':'a','prompt_token_ids':[1,2,3]}]
+    # Equal lengths cannot detect changed token identities.
+    prompt[1]=99
+    with pytest.raises(ValueError,match='prompt IDs'):
+        runner.sample([NS(example_id='a')],[object()],config())
+    assert runner.last_generation_budget is None and runner.last_prompt_identity is None
+    prompt[1]=2
     returned[0].finished=False
     with pytest.raises(ValueError,match='finished'):
         runner.sample([NS(example_id='a')],[object()],config())
     assert runner.last_generation_budget is None
+    runner.max_model_len=18
+    returned[0].finished=True
+    with pytest.raises(ValueError,match='exceed context'):
+        runner.sample([NS(example_id='a')],[object()],config())
 
 
 def test_explicit_shutdown_once_and_reject_reuse(monkeypatch):

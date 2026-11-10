@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import math
 import time
-from .audio_policy import vllm_request
+from .audio_policy import hf_prompt, vllm_request
 
 
 @dataclass(frozen=True)
@@ -94,6 +94,8 @@ class VllmAudioRollout:
         self.audio_input_mode=audio_input_mode
         self._closed=False
         self.last_generation_budget=None
+        self.last_prompt_identity=None
+        self.max_model_len=engine_options.get('max_model_len')
         self.policy_id=policy_id;self.processor=processor
         if set(engine_options)-{'dtype','max_model_len','gpu_memory_utilization','tensor_parallel_size','enforce_eager','max_num_seqs','seed'}:
             raise ValueError('unexpected engine configuration')
@@ -106,6 +108,7 @@ class VllmAudioRollout:
         if self._closed:
             raise RuntimeError('rollout engine is closed')
         self.last_generation_budget=None
+        self.last_prompt_identity=None
         if audio_input_mode is None:audio_input_mode=self.audio_input_mode
         if audio_input_mode!=self.audio_input_mode:
             raise ValueError('audio_input_mode differs from engine initialization')
@@ -116,12 +119,24 @@ class VllmAudioRollout:
         if not examples or len(examples)!=len(audios):raise ValueError('aligned examples/audio required')
         if len({ex.example_id for ex in examples})!=len(examples):raise ValueError('duplicate request identity')
         requests=[vllm_request(self.processor,ex,audio,audio_input_mode) for ex,audio in zip(examples,audios)]
+        expected_prompts=[hf_prompt(self.processor,ex,audio)['input_ids'][0].tolist()
+                          for ex,audio in zip(examples,audios)]
+        if self.max_model_len is not None and any(
+                len(ids)+config['max_tokens']>self.max_model_len for ids in expected_prompts):
+            raise ValueError('expanded prompt and requested output exceed context; no silent truncation')
         params=SamplingParams(**config,logprobs=0)
         started=time.monotonic()
         outputs=self.engine.generate(requests,params,use_tqdm=False)
         elapsed=time.monotonic()-started
+        if len(outputs)!=len(expected_prompts):
+            raise ValueError('request output count mismatch')
+        for output,expected in zip(outputs,expected_prompts):
+            if list(getattr(output,'prompt_token_ids',None) or [])!=expected:
+                raise ValueError('engine/actor expanded prompt IDs differ')
         records=decode_outputs(outputs,examples,self.processor,self.policy_id,config['n'])
         self.last_generation_budget=generation_budget(outputs,records,config['n'],elapsed)
+        self.last_prompt_identity=[{'example_id':ex.example_id,'prompt_token_ids':ids}
+                                   for ex,ids in zip(examples,expected_prompts)]
         return records
 
     def close(self):

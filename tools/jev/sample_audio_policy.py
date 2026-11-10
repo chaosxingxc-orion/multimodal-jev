@@ -61,6 +61,7 @@ def main():
             atomic_json(args.output/'progress.json',{'phase':'sampling','heartbeat_unix':time.time()})
             try:
                 records=rollout.sample(examples,audios,config['sampling'],config.get('audio_input_mode','waveform'))
+                atomic_json(args.output/'prompt-identity.json',rollout.last_prompt_identity)
                 with (args.output/'rollouts.jsonl').open('w') as handle:
                     for record in records:handle.write(json.dumps(asdict(record))+'\n')
             finally:
