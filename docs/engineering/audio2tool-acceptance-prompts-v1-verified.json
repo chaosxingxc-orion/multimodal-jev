@@ -1,0 +1,62 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-acceptance-prompts-v1",
+  "launch": {
+    "container_id": "7d5f9c1fa9701d0bd5fd9742f22d3f21504973b96508e78c68c05fef7f64fc54",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "1a0d6c972524264c478e10d038be3ab3f2ed464e",
+    "intent_sha256": "af1cff7cb8c7d7bf8fd99667e37a6d369529533aa7e5bbdcf874fe35c57031b9"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T18:03:31.1336173Z",
+    "FinishedAt": "2026-11-10T18:06:16.38167364Z"
+  },
+  "result": {
+    "status": "passed",
+    "records": 30733,
+    "unique_inputs": 30731,
+    "counts_by_tier": {
+      "1": 4292,
+      "2": 6320,
+      "3": 4292,
+      "4": 4278,
+      "5": 4292,
+      "6": 4292,
+      "7": 2146,
+      "8": 821
+    },
+    "prompt_layouts": 6,
+    "max_input_tokens": 17253,
+    "actual_processor_cases_exact": [
+      "audio2tool:tier1:release:3943",
+      "audio2tool:tier7:release:1118",
+      "audio2tool:tier7:release:2030",
+      "audio2tool:tier8:release:314"
+    ],
+    "contexts_sha256": "323955f80f489942a4bf649e12ed601381eefc5a8dd4a5a4f15bd4e352c11775",
+    "inputs_sha256": "f7e4ebe4e7cf2cf411f3f26a8714bbdd0a493c0c7aeb98dd4199112d197e1a35",
+    "budgets_sha256": "87e750243a3dcc56ca006e9f661dcaa2ac130cc27fd7312d6e986892aa1ef223",
+    "elapsed_seconds": 152.62096550996648,
+    "source_files": {
+      "tools/jev/check_audio2tool_acceptance_prompts.py": "05bfdd162f2fbf0be70101d9bea8140c2983b6ce586c9679ee65c738b905df42",
+      "src/multimodal_jev/audio2tool_acceptance.py": "f59b5fd60bbe5f1430b482db35a0e4e8722e63f6c935a9e9d3381aae268b8f69",
+      "src/multimodal_jev/audio2tool_input.py": "7ec4b1f8901104fbcdade9026975dbeb471b3c8cbf62f197c069b974e2e176a9",
+      "src/multimodal_jev/audio2tool_inference.py": "e917f0809d16f214c7eeb8c7b1e081de50f5abcd1de3548b8bf8300d7615504b"
+    },
+    "model_loaded": false,
+    "targets_read": false,
+    "scope": "All native scoring-side prompts/token IDs reconstructed with actual fixed tokenizer and complete budgets; four cases exactly match prior real HF/vLLM processing. No full-population waveform processing, generation, actor acceptance or model score."
+  },
+  "result_sha256": "7a9d56860730d0e6293bb56afce13d15ff1164f330e39e4c4b6d68885036b576",
+  "inspection_sha256": "78646e6ac812375e2f3739618d74480d8adb2ab4f9adabdbeb9671f11dc274a9",
+  "source_resources_terminal_and_full_context_roster_verified": true,
+  "duplicate_input_contexts_equal": true
+}

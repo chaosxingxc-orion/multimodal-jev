@@ -79,7 +79,8 @@ def accept(args):
     if file_hash(inspect.getfile(type(processor)))!=pidentity['hf_processor_source_sha256']:
         raise ValueError('accepted HF processor source required for independent rendering')
     expected=prompt_expander(processor,Path(cfg['registry']).read_bytes())
-    summary=audit_ledger(run/'ledger',rows,budgets,predictions,headers,expected)
+    summary=audit_ledger(run/'ledger',rows,budgets,predictions,headers,expected,
+        lambda tokens:processor.tokenizer.decode(tokens,skip_special_tokens=True))
     if summary['records']!=result['records'] or summary['length_limited']!=result['length_limited']:
         raise ValueError('ledger summary differs from actor terminal')
     # Reinspect exact actor after potentially lengthy ledger work; no replay.

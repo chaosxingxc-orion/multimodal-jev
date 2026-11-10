@@ -59,7 +59,7 @@ def check_container(item,plan,container_id):
         raise ValueError('exact complete registered full-inference container required')
 
 
-def audit_ledger(ledger,rows,budgets,predictions,headers,expected_prompt):
+def audit_ledger(ledger,rows,budgets,predictions,headers,expected_prompt,decode):
     """expected_prompt returns independently rendered prompt and expanded IDs.
 
     Header/receipt arithmetic is rechecked, but raw waveforms are not decoded
@@ -113,6 +113,8 @@ def audit_ledger(ledger,rows,budgets,predictions,headers,expected_prompt):
                 or not math.isfinite(record['seconds']) or record['seconds']<0
                 or prediction!={k:record[k] for k in ('id','raw_text','error')}):
             raise ValueError('terminal output or scorer projection differs')
+        if decode(tokens)!=record['raw_text']:
+            raise ValueError('raw text differs from independently decoded output tokens')
         limited+=record['length_limited'];seconds+=record['seconds']
         hashes[row['id']]=dict(attempt=hashlib.sha256(ap.read_bytes()).hexdigest(),
                               record=hashlib.sha256(rp.read_bytes()).hexdigest())

@@ -77,3 +77,31 @@ NPU6/7、16 CPU/128 GiB/8 GiB shm、完整源码清单、冻结参数/版本/模
 失败函数，确认失败时连target哈希都未读取；它不是一次真实完整容器验收。
 当前无Audio2Tool全量模型输出，故该独立验收/评分链尚未端到端执行，测试不计作
 学术复现或模型效果证据。
+
+## 输出文本与token绑定
+
+独立验收进一步使用固定tokenizer、skip_special_tokens=True，要求每条记录保存的
+output token IDs解码后严格等于raw_text。即使同时修改terminal record和预测投影，
+也不能用修复后的JSON冒充原始生成文本。该规则与既有sampling验收的解码约定一致；
+未做文本修复或放宽空白比较。若实际vLLM文本与独立解码不一致，将保留失败证据再
+定位，不能宣称已完成基线。新增协同修改文本的反例后相关47项测试通过。
+
+## 全量评分侧提示重建已在固定镜像验证
+
+`prompt_expander` 从独立验收入口抽为共用函数，用固定renderer、完整工具registry、
+真实HF模板/tokenizer与已验收音频token预算重建每条输入。缓存按模式/角色布局和
+音频token长度组织，最多保存64个展开结果，返回列表副本，避免跨样本污染。
+
+`check_audio2tool_acceptance_prompts.py` 在源码 `1a0d6c9` 的固定镜像容器
+`7d5f9c1fa9701d0bd5fd9742f22d3f21504973b96508e78c68c05fef7f64fc54`
+执行，2 CPU/20 GiB/1800秒上限，无网络/设备，退出0，主体152.62秒。
+全部30733条、30731唯一输入、6种布局均匹配固定完整预算，最大17253 input tokens。
+四个边界样本的prompt哈希和逐token序列哈希同时匹配此前真实HF/vLLM处理记录；
+两组重复输入的context身份相同，但仍保留各自release记录。
+
+已独立核对实际容器命令/资源/终态、完整源码清单、30733行身份/顺序/token计数和
+重复输入签名，见[重建验收](audio2tool-acceptance-prompts-v1-verified.json)。
+产物为输入context哈希清单，不含模型预测或目标，不是伪造的生成账本。
+这是全量真实tokenizer重建加四例既有实际processor对照，未重新计算全部音频特征，
+未运行生成或完整actor验收。后续新增输出token解码校验未在此次输入重建中执行，
+仍需真实输出验证；运行中原容器的不可变源码快照保持原样。

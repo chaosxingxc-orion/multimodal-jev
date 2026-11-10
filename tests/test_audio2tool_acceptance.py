@@ -24,7 +24,7 @@ def fixture(tmp_path):
     return ledger,row,budget,prediction,{audio['path']:header}
 
 
-@pytest.mark.parametrize('mutation',[None,'missing','extra','projection','prompt','ids','receipts','order','raw_text','cutoff','error','nonfinite','token'])
+@pytest.mark.parametrize('mutation',[None,'missing','extra','projection','prompt','ids','receipts','order','raw_text','cutoff','error','nonfinite','token','coordinated_text_edit'])
 def test_independent_audit_rejects_ledger_or_projection_changes(tmp_path,mutation):
     ledger,row,budget,prediction,headers=fixture(tmp_path)
     expected=lambda r,b:('fixed',[1,2])
@@ -43,8 +43,9 @@ def test_independent_audit_rejects_ledger_or_projection_changes(tmp_path,mutatio
     if mutation=='error':r['error']='engine died';prediction['error']='engine died'
     if mutation=='nonfinite':r['seconds']=float('nan')
     if mutation=='token':r['token_ids']=[True]
+    if mutation=='coordinated_text_edit':r['raw_text']='repaired';prediction['raw_text']='repaired'
     if mutation!='missing':rp.write_text(json.dumps(r))
-    args=(ledger.root,[row],[budget],[prediction],headers,expected)
+    args=(ledger.root,[row],[budget],[prediction],headers,expected,lambda tokens:'malformed JSON retained')
     if mutation is None:
         report=audit_ledger(*args)
         assert report['records']==1 and report['length_limited']==0 and report['generation_seconds']==.1
