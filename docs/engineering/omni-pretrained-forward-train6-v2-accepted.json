@@ -1,0 +1,151 @@
+{
+  "acceptance": {
+    "schema": "omni-pretrained-cpu-forward-acceptance-v1",
+    "container_id": "e8f68cb9ebd5a607722e676eab977d08cf750fd2d86342b5001a3f3d3cc44be3",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "42b018cd5f05fa5d3d3acf1bb1f9fe5cb1717eb5",
+    "result_sha256": "2b08275c98794fe49ba4189151dbb793b3d9cfdd315d24267c5c1c5b1c9152ec",
+    "launch_sha256": "0b4b469c8cf3fc42cdb516675a1d91455603852394d0409bc87e94bd9aff8aff",
+    "intent_sha256": "d06c45f10f168dfe6f9647cf952db2f64ca01854f519ecbbb1c1fc8baa288c83",
+    "parameters": 31719205488,
+    "forwards": 6,
+    "audio_counts": [
+      1,
+      1,
+      2,
+      1,
+      1,
+      2
+    ],
+    "peak_rss_kib": 119766804,
+    "elapsed_seconds": 1831.0970950699993,
+    "weight_updates": 0,
+    "verifier_sha256": "f310ba2f9f10636feb71de6af13275ea93b3e6779fd3bacc1ffd7461758d00e3",
+    "scope": "Frozen full pretrained CPU Thinker finite forward on registered TRAIN audio and fixed synthetic response tokens. No generation quality, vLLM parity, verl actor, NPU or training acceptance. Model file hashes are recorded by the pinned runner.",
+    "inspection_sha256": "f878a8ec0dcdf31e1c7c32e19074784a15804b2f294e920146b82828b75ba47a"
+  },
+  "observer_result": {
+    "original_container": "e8f68cb9ebd5a607722e676eab977d08cf750fd2d86342b5001a3f3d3cc44be3",
+    "verifier_container": "2f02ce68d53381c18eb28f92ca87c94d82cb9d280d29dbad44e153c603722d56",
+    "acceptance_sha256": "b9d34fcdb5069d723a5e9698b5445df815450db6fdd2debda971cc5111a91daa",
+    "forwards": 6,
+    "weight_updates": 0
+  },
+  "observer_terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794323719.0226152,
+    "automatic_retry": false
+  },
+  "result": {
+    "status": "passed",
+    "responses": [
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "decision_id": "f00.present",
+        "audio_count": 1,
+        "prompt_tokens": 1074,
+        "response_token_ids": [
+          3849,
+          151645
+        ],
+        "response_log_probs": [
+          -4.411566734313965,
+          -3.480850500636734e-05
+        ],
+        "seconds": 315.672585519962,
+        "peak_rss_kib": 119560796
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_1/train_id/id_1.wav",
+        "decision_id": "f00.present",
+        "audio_count": 1,
+        "prompt_tokens": 976,
+        "response_token_ids": [
+          3849,
+          151645
+        ],
+        "response_log_probs": [
+          -4.540982723236084,
+          -1.3351351299206726e-05
+        ],
+        "seconds": 273.1427724999958,
+        "peak_rss_kib": 119560796
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+        "decision_id": "f00.present",
+        "audio_count": 2,
+        "prompt_tokens": 1228,
+        "response_token_ids": [
+          3849,
+          151645
+        ],
+        "response_log_probs": [
+          -0.9526049494743347,
+          -4.887569048150908e-06
+        ],
+        "seconds": 351.35570478002774,
+        "peak_rss_kib": 119766804
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_2/train_id/id_1.wav",
+        "decision_id": "f00.present",
+        "audio_count": 1,
+        "prompt_tokens": 977,
+        "response_token_ids": [
+          3849,
+          151645
+        ],
+        "response_log_probs": [
+          -4.938191890716553,
+          -1.9788545614574105e-05
+        ],
+        "seconds": 274.55512651999015,
+        "peak_rss_kib": 119766804
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_1/train_id/id_1_1.wav",
+        "decision_id": "f00.present",
+        "audio_count": 1,
+        "prompt_tokens": 709,
+        "response_token_ids": [
+          3849,
+          151645
+        ],
+        "response_log_probs": [
+          -3.5611798763275146,
+          -1.168244216387393e-05
+        ],
+        "seconds": 196.3970492100343,
+        "peak_rss_kib": 119766804
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_1/train_id/id_1_2.wav",
+        "decision_id": "f00.present",
+        "audio_count": 2,
+        "prompt_tokens": 826,
+        "response_token_ids": [
+          3849,
+          151645
+        ],
+        "response_log_probs": [
+          -5.267108917236328,
+          -0.0001134808044298552
+        ],
+        "seconds": 227.98771741997916,
+        "peak_rss_kib": 119766804
+      }
+    ],
+    "model_loaded": true,
+    "weight_updates": 0,
+    "parameters": 31719205488,
+    "elapsed_seconds": 1831.0970950699993,
+    "peak_rss_kib": 119766804,
+    "targets_read": false,
+    "identity_sha256": "c194d7635382f6561b5191f7967f49eb87c4112343313b0b4687d987814dff44",
+    "loading_info_sha256": "11a780a8f8eba793caf59cb4f7ed770367cae8c5f04588b7a5a56e534c08802d",
+    "scope": "Full pretrained BF16 CPU Thinker, real registered TRAIN single/double audio, fixed synthetic response tokens. Finite forward only; no generation quality, vLLM parity, verl actor, NPU or training."
+  },
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-pretrained-forward-train6-v2",
+  "acceptance_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-pretrained-forward-train6-v2-acceptance"
+}

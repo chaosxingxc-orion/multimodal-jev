@@ -1,8 +1,23 @@
 # 预训练 Thinker 的真实 verl wrapper 比较协议
 
-工具 `probe_omni_pretrained_verl.py` 已实现，当前未派发完整模型执行。
+工具 `probe_omni_pretrained_verl.py` 已实现，完整模型比较现已派发，结果待验收。
 执行前要求原 TRAIN6 全部前向和独立验收通过，并固定 acceptance、inspection 哈希。
 调用方必须重新查询原精确容器并捕获 inspection；不能用未终止容器或部分结果。
+
+前置 TRAIN6 现已完成并独立验收，见
+[完整前向凭证](omni-pretrained-forward-train6-v2-accepted.json)。已用源码快照
+`090102656b9fc21e765693d23ff729d0497a20ea` 派发 `--preflight-only`：
+CPU 16 核、16 GiB、1800 秒，无网络或 NPU，不加载模型、不更新权重。
+精确容器与完整命令见 [预检查派发记录](omni-pretrained-verl-train6-preflight-v1-launched.json)。
+派发前重新检查原容器和独立验收容器均退出 0，并校验观察器的 acceptance 哈希。
+预检查容器已退出 0，见 [结果](omni-pretrained-verl-train6-preflight-v1-result.json)：
+真实 processor 构建完整 `[6,1230]` 批次，顺序为 `[2,0,5,1,3,4]`，未加载模型。
+复核源码清单、预检查结果和原前向容器终态后，以相同源码快照派发完整比较。
+精确容器 `2685a84d57a62d655f2d97401b9ebbede83ce9378f3f9a47648f4842ce6dffe4`，
+CPU 16 核、160 GiB、14400 秒加 30 秒退出宽限，无网络或 NPU，不自动重试。
+完整命令、前置哈希和资源依据见 [派发凭证](omni-pretrained-verl-train6-v1-launched.json)。
+4 小时预算涵盖两遍完整六条输入及公共 padding 的额外计算；原单条前向总计
+1831 秒作为成本参考，不把预计耗时当实际消耗。原完整模型已经退出，未重复占用其内存。
 
 ## 比较内容
 

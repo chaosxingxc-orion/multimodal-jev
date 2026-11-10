@@ -70,3 +70,18 @@ argv 创建一次 CPU verifier，写入 fsync intent 与精确 ID 后仅启动�
 观察超时或派发状态不明均保留现场供核对，不做自动重试。
 本轮 37 项 observer/forward-acceptance 测试通过，包含上述失败分支；
 真实模型和验收结果仍以后台运行终态为准。
+
+## v2 完成并独立验收
+
+完整 v2 容器 `e8f68cb9ebd5a607722e676eab977d08cf750fd2d86342b5001a3f3d3cc44be3`
+已退出 0。独立验收容器
+`2f02ce68d53381c18eb28f92ca87c94d82cb9d280d29dbad44e153c603722d56`
+同样退出 0，观察器复查原容器终态后正常结束。完整凭证见
+[验收记录](omni-pretrained-forward-train6-v2-accepted.json)。
+
+实际加载 31,719,205,488 个 Thinker 参数；六条输入全部完成，音频数依次为
+1/1/2/1/1/2。总耗时 1831.10 秒，峰值 RSS 119,766,804 KiB（约 114.22 GiB）。
+固定响应为 false + EOS，所有逐 token 概率有限且非正；没有读取目标或更新权重。
+模型加载前后文件哈希检查完成，Thinker 无缺失、形状不匹配或加载错误。
+这关闭了完整预训练音频 CPU 前向的验证缺口；任务质量、真实 verl wrapper、
+HF/vLLM 概率一致性及 NPU 训练仍需各自验证。
