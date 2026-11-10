@@ -1,0 +1,106 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-padding-mask-v1",
+  "launch": {
+    "container_id": "3ec639f9e388adc8358474a2e437986013c4c087a820a384a9305c29a17c48ea",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "c8446292d4a6579ba50a5b7adca618249474b08a",
+    "intent_sha256": "57d50c15ccd4f9799f1eb52e2f2cf30b085331181de7ca980d85242d10312158"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T17:04:13.90335189Z",
+    "FinishedAt": "2026-11-10T17:04:26.7684462Z"
+  },
+  "result": {
+    "status": "diagnostic_complete",
+    "records": [
+      {
+        "valid_length": 7,
+        "left_padding": 3,
+        "dtype": "torch.float32",
+        "unpadded_mask_is_none": true,
+        "padded_mask_shape": [
+          1,
+          1,
+          10,
+          10
+        ],
+        "valid_causal_edges_equal": true,
+        "valid_rotary_equal": true,
+        "padded_kv_counterfactual_equal": true,
+        "implicit_vs_explicit_max_error": 0.0,
+        "unpadded_vs_padded_max_error": 1.1920928955078125e-07
+      },
+      {
+        "valid_length": 7,
+        "left_padding": 3,
+        "dtype": "torch.bfloat16",
+        "unpadded_mask_is_none": true,
+        "padded_mask_shape": [
+          1,
+          1,
+          10,
+          10
+        ],
+        "valid_causal_edges_equal": true,
+        "valid_rotary_equal": true,
+        "padded_kv_counterfactual_equal": true,
+        "implicit_vs_explicit_max_error": 0.0,
+        "unpadded_vs_padded_max_error": 0.0
+      },
+      {
+        "valid_length": 1076,
+        "left_padding": 154,
+        "dtype": "torch.float32",
+        "unpadded_mask_is_none": true,
+        "padded_mask_shape": [
+          1,
+          1,
+          1230,
+          1230
+        ],
+        "valid_causal_edges_equal": true,
+        "valid_rotary_equal": true,
+        "padded_kv_counterfactual_equal": true,
+        "implicit_vs_explicit_max_error": 0.0,
+        "unpadded_vs_padded_max_error": 2.384185791015625e-07
+      },
+      {
+        "valid_length": 1076,
+        "left_padding": 154,
+        "dtype": "torch.bfloat16",
+        "unpadded_mask_is_none": true,
+        "padded_mask_shape": [
+          1,
+          1,
+          1230,
+          1230
+        ],
+        "valid_causal_edges_equal": true,
+        "valid_rotary_equal": true,
+        "padded_kv_counterfactual_equal": true,
+        "implicit_vs_explicit_max_error": 0.0,
+        "unpadded_vs_padded_max_error": 0.0009765625
+      }
+    ],
+    "source_sha256": {
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/masking_utils.py": "5f48e428ea02d1b6008acb45c147fcdb4eba89deea69627744662aa05da1b9f2",
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340"
+    },
+    "torch_version": "2.10.0+cpu",
+    "model_loaded": false,
+    "weight_updates": 0,
+    "scope": "Real HF mask/rotary and synthetic SDPA tensors at two shapes; no pretrained QKV, MoE, audio, full model, NPU or parity acceptance."
+  },
+  "result_sha256": "c73a27b025b058e13b30f570de842cc3f8be66aab76fb26f8d98863e1f7909c9",
+  "source_and_terminal_verified": true,
+  "limitations": "Synthetic Q/K/V and small rotary head dimension 8; full sequence lengths match row0 only. Not trained model root cause."
+}
