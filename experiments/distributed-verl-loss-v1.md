@@ -25,3 +25,18 @@ devices. No ASR model is loaded or trained: this verifies a collective-loss
 prerequisite, not distributed audio workers, optimizer equivalence, model
 quality or the full desired multi-rank training system. Existing snapshots
 and formal algorithm comparison configurations are unchanged.
+
+## Completed numerical result
+
+The [exact-container receipt](../docs/engineering/distributed-verl-loss-v1-result.json)
+records exit0 and both rank artifacts. Rank0 processed16 responses/103 tokens;
+rank1 processed32 responses/196 tokens. The complete batch contains299 tokens.
+Global-token-normalized DDP gradient differs from the single-process reference
+by at most5.58794e-9; accumulating6 versus11 microbatches gives7.45058e-9.
+The deliberately incorrect local-mean control differs by0.0260895, above the
+registered1e-5 discrimination threshold. Host-side checks independently
+recomputed saved gradient errors and the299-token count from saved rollouts.
+
+This establishes the loss-scaling prerequisite using real collectives and a
+controlled three-parameter perturbation fixture. No ASR model, optimizer,
+native actor update_policy, Ray/FSDP worker or accelerator was exercised.

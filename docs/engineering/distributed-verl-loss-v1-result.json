@@ -1,0 +1,87 @@
+{
+  "observed_unix": 1794271842.5875332,
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/distributed-verl-loss-v1",
+  "container_id": "eee58633be97156340c6e4f400fbd1089bb2adcaca8718ba0a7a71511c54645a",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T00:46:36.21691722Z",
+    "FinishedAt": "2026-11-10T00:47:48.02304789Z"
+  },
+  "source_commit": "8c8def5025845f4c21d8ca553f3d452414cc9cd5",
+  "result_sha256": "62883f5f0095abacc30122edd14557f6a26d9caa7c545d9ff8ef6ce083f34da8",
+  "independent_saved_gradient_tolerance_and_rollout_token_checks": true,
+  "result": {
+    "status": "passed",
+    "ranks": [
+      {
+        "rank": 0,
+        "world_size": 2,
+        "responses": 16,
+        "effective_tokens": 103,
+        "global_tokens": 299,
+        "reference_gradient": [
+          0.01882820390164852,
+          0.004993733484297991,
+          0.010744379833340645
+        ],
+        "ddp_gradient": [
+          0.01882820948958397,
+          0.0049937330186367035,
+          0.010744379833340645
+        ],
+        "accumulated_gradient": [
+          0.018828196451067924,
+          0.004993734881281853,
+          0.01074438076466322
+        ],
+        "ddp_max_error": 5.587935447692871e-09,
+        "microbatch_max_error": 7.450580596923828e-09,
+        "wrong_local_mean_max_error": 0.026089465245604515,
+        "microbatches": 6,
+        "rollout_sha256": "27eb932a54402471b6c82235f7d17aa60a4d00f5cee8f237a43efbabd987adb6",
+        "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c"
+      },
+      {
+        "rank": 1,
+        "world_size": 2,
+        "responses": 32,
+        "effective_tokens": 196,
+        "global_tokens": 299,
+        "reference_gradient": [
+          0.01882820390164852,
+          0.004993733484297991,
+          0.010744379833340645
+        ],
+        "ddp_gradient": [
+          0.01882820948958397,
+          0.0049937330186367035,
+          0.010744379833340645
+        ],
+        "accumulated_gradient": [
+          0.018828196451067924,
+          0.004993734881281853,
+          0.01074438076466322
+        ],
+        "ddp_max_error": 5.587935447692871e-09,
+        "microbatch_max_error": 7.450580596923828e-09,
+        "wrong_local_mean_max_error": 0.026089465245604515,
+        "microbatches": 11,
+        "rollout_sha256": "27eb932a54402471b6c82235f7d17aa60a4d00f5cee8f237a43efbabd987adb6",
+        "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c"
+      }
+    ],
+    "core_sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+    "atol": 2e-06,
+    "rtol": 2e-05,
+    "scope": "actual two-rank Gloo/DDP loss-gradient scaling using real saved rollout rewards/logprobs and controlled perturbation parameters; no ASR forward, ASR optimization, Ray/FSDP worker or efficacy validation"
+  }
+}

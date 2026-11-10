@@ -26,6 +26,17 @@
 原生配置均错误。当前自定义 actor 使用空 global_batch_info 并显式按 token 加权；
 迁移时不得同时启用两种归一化而重复缩放。
 
+补充实测：原生 actor 的 CPU 前向在 log-prob 阶段失败，固定版本的
+`utils/torch_functional.py` 根据已安装算子而非 logits 设备选择 NPU 交叉熵。
+见[失败与显式 CPU 适配协议](../../experiments/native-verl-actor-forward-v1.md)。
+v2 只在独立进程中显式替换 log-prob 分发，运行结果仍待验证；不得称为未修改
+worker 的成功执行。
+
+[两进程 Gloo 损失验证](../../experiments/distributed-verl-loss-v1.md)已通过：
+固定 core_algos.py 的 global_batch_info 在不等 token 分片和不等微批数下恢复
+全 batch 梯度，错误的局部平均负例能明显区分。此结果仅覆盖损失与 collective，
+不覆盖模型 forward/backward、原生 update_policy 或分布式状态保存恢复。
+
 以上是源码发现，不是原生 worker 的运行结果。目前 `rl_update.update_actor`
 已保留真实 rollout log-prob、更新前概率校验、全 batch GRPO 分组、按有效响应
 token 加权的微批梯度与零优势 no-op。接入原生 worker 时不能静默改变这些行为，
