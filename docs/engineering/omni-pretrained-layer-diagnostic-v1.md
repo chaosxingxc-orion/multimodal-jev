@@ -47,3 +47,13 @@ inspection必须由外部协调者实际inspect捕获并固定哈希；文件自
 权重更新和重新哈希intent的反例；这些依赖测试明确mock logits审计，实际logits
 审计另有独立测试。与trace清理、logits审计一共24项测试通过。当前原30条件诊断
 尚未完成，完整模型逐层执行仍未派发，不以输入preflight替代该依赖验收。
+
+## 原精度诊断的第三条天然对照
+
+原精确容器仍运行中，保存logits审计已覆盖15/30条件，见
+`omni-precision-train6-v1-logit-audit-partial-08.json`。第三条（row2）在既有输入
+预检查中的左padding数为0；其reference→autocast→FP32 features→audio padding→
+text padding四个相邻比较，完整BF16 logits逐元素相同，FP32响应logp最大差均为0。
+这一无新增左padding对照与前两条text padding条件出现差异的观察一致，但尚不能
+区分具体SDPA/MoE/算子形状数值机制，也不改变原0.1概率一致性门槛。
+本次仅审计已保存tensor，没有重跑模型；全六条诊断和后续逐层定位仍未完成。

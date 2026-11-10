@@ -49,3 +49,31 @@ input tokens。见[全量清单结果](audio2tool-full-population-preflight-v1.j
 它未解码全量音频或加载模型，真实HF+engine循环、权重前后核验及完整账本导出仍待
 真实容器验证。当前NPU容量未完成、全量推理未派发、无Audio2Tool模型成绩。
 正式评分还须增加全量生成容器的独立验收，不能仅凭predictions文件存在调用scorer。
+
+## 独立验收与评分入口已实现，待真实运行
+
+`score_audio2tool_native.py` 接受事先固定SHA的完整launch plan与精确actor容器ID，
+通过SSH实际inspect，不接受只把离线容器JSON当成当前状态。验证固定镜像、命令、
+NPU6/7、16 CPU/128 GiB/8 GiB shm、完整源码清单、冻结参数/版本/模型文件身份及
+成功应用终态；当前实现完整生成预算为86400秒加30秒终止宽限。尚未生成或派发
+这一全量launch plan，容量入口的一小时预算保持不变。
+
+验收还会重新inspect同一个容量前驱容器，并同时核对actor当时记录的容量inspection。
+全量ledger按原输入顺序逐条核验：attempt/record完整集合、输入身份、源WAV哈希/大小、
+独立header中的采样数与重采样/右补零算术、输出token数量/终止方式/时长及原始文本。
+用实际固定HF tokenizer/template重新构造每条完整prompt及音频展开token，核对其
+哈希与输入token数。不会重新解码全量波形；波形内容真实性依赖已核验runtime源码中
+对同一字节缓冲区的哈希/解码和成功执行，不能把收据本身说成独立波形重算。
+
+`ledger/predictions.jsonl`必须逐条等于terminal记录的id/raw_text/error投影。
+缺行、多行、改变原始输出或错误地修复JSON均拒绝验收。验收保存完整账本文件哈希
+映射的摘要、调用耗时总和、截断数和verifier源码身份，再次inspect actor后才打开
+固定SHA的scorer-only targets，调用现有`evaluate_projected`及固定官方metric函数。
+全量主调用/名称与参数可用子集仍分开报告，未知附加参数保持未知。
+
+46项相关测试通过，涵盖账本/推理/capacity门禁及新增独立验收反例，包括实际
+预测投影修改、同时篡改attempt与record的重采样参数、相同长度token错序、缺失/额外
+文件、错误length终止和容器状态/设备/挂载差异。标签访问顺序测试将accept替换为
+失败函数，确认失败时连target哈希都未读取；它不是一次真实完整容器验收。
+当前无Audio2Tool全量模型输出，故该独立验收/评分链尚未端到端执行，测试不计作
+学术复现或模型效果证据。
