@@ -42,6 +42,15 @@ audio hashes 和 replicate。GRPO 的组必须是同一个完整模型输入的 
 prompt 证据必须由调用方在采样前从真实 processor/engine 登记；此纯函数不能认证
 伪造的运行元数据，也没有构造 Omni actor 张量或完成分布式采样。
 
+已完成固定镜像 CPU 数值验证，见
+[真实 verl 优势计算记录](../docs/engineering/sfc-jev-verl-reward-numerical-v1-result.json)。
+24 个人工响应组成 12 个同输入组，每组两个副本。仅翻转一个 absent 回答时，
+independent 模式有 2 个非零响应优势，function-conjunction 有 6 个；同样正确的 calls
+端点在前者为零，在后者中心化优势约为 +0.1/−0.1。标准差归一化会将该小差异
+放大到约 ±0.7071，所以必须独立比较中心化和标准化，不能只根据 bonus 系数解释
+更新强度。等分组、padding 的优势为零。该检查使用真实 verl 核心函数，但输入、
+tokenizer 和采样都是夹具，不是 Omni 策略梯度、双音频 actor 或学习收益证据。
+
 ## 已实现的离线奖励定义
 
 对决策 d 的原始输出 y，直接复用 `sfc_jev_score.score_bundle`：

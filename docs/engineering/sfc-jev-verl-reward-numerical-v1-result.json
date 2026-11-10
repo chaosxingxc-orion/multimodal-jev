@@ -1,0 +1,56 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-verl-reward-numerical-v1",
+  "container_id": "c6d9e27b6166b3fe86f63b417b5bb2c3ed220473d4605c786c151fae5619c7d4",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "0a40a2f84416898547a66ecc60f99fa54bd37f00",
+  "result_sha256": "419b9453264864fe75bab36c66ed1fb0a660f5d516737b7ef66f0eb494816bf8",
+  "result": {
+    "schema": "sfc-jev-verl-reward-numerical-probe-v1",
+    "fixture_sha256": "669fc5b6eb57ce1895677699185c9021d8d72e1b7015de3d3fa58a1b2eea86b4",
+    "versions": {
+      "torch": "2.10.0+cpu",
+      "verl": "0.8.0.dev0",
+      "numpy": "1.26.4"
+    },
+    "source_files": {
+      "tools/jev/probe_sfc_reward_advantages.py": "cd2e681657d0a7d966eb9941ba8417641b3f8d1644c5bd378cabaaa86815e721",
+      "src/multimodal_jev/sfc_reward_batch.py": "5c3f05320cf8b1110f5b073182c5d12d38eae2e340315f40d93107ead58f53b2",
+      "src/multimodal_jev/sfc_jev_reward.py": "2db68ef679f89771a642a0f55fcc5d34b087c66048fb0cb4b9f218229823772d"
+    },
+    "reports": {
+      "independent/center": {
+        "nonzero_response_advantages": 2,
+        "max_abs_advantage": 0.5,
+        "padding_max_abs": 0.0
+      },
+      "independent/standard": {
+        "nonzero_response_advantages": 2,
+        "max_abs_advantage": 0.7071057558059692,
+        "padding_max_abs": 0.0
+      },
+      "function-conjunction/center": {
+        "nonzero_response_advantages": 6,
+        "max_abs_advantage": 0.6000000238418579,
+        "padding_max_abs": 0.0
+      },
+      "function-conjunction/standard": {
+        "nonzero_response_advantages": 6,
+        "max_abs_advantage": 0.7071059346199036,
+        "padding_max_abs": 0.0
+      }
+    },
+    "affected_call_center_advantages": [
+      0.10000002384185791,
+      -0.10000002384185791
+    ],
+    "equal_reward_advantages_zero": true,
+    "responses": 24,
+    "prompt_groups": 12,
+    "weight_updates": 0,
+    "model_loaded": false,
+    "scope": "Real pinned verl core advantage function; synthetic SFC inputs and sampled-token fixtures. No real tokenizer, audio processor, actor, policy gradient, distributed worker or RL efficacy claim."
+  },
+  "verified_unix": 1794316696.4409602,
+  "tests": "53 sampling alignment/reward/learning feedback tests passed",
+  "scope": "Exact successful CPU-only container and result hashes checked. Synthetic sampling fixture with real pinned verl advantage computation; no model training."
+}
