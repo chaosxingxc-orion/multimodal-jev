@@ -42,3 +42,10 @@ def test_failed_dependency_never_dispatches(tmp_path,monkeypatch):
     monkeypatch.setattr(module,'observe_dependency',failed)
     monkeypatch.setattr(module,'dispatch_once',lambda *a:pytest.fail('must not dispatch'))
     with pytest.raises(RuntimeError,match='predecessor'):module.execute(tmp_path)
+
+
+@pytest.mark.parametrize('seconds',[None,0,100000,True,7500.0])
+def test_unbounded_dispatch_observation_rejected(tmp_path,seconds):
+    from watch_sfc_omni_probe import dispatch_once
+    (tmp_path/'preparation.json').write_bytes(canonical(dict(observation_seconds=seconds)))
+    with pytest.raises(ValueError,match='bounded'):dispatch_once(tmp_path,{})

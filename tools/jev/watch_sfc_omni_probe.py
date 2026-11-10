@@ -89,6 +89,9 @@ def dispatch_once(root,plan):
     if any((root/p).exists() for p in ('dispatch-intent.json','dispatch.log','launch.json','run')):
         raise FileExistsError('prior SFC dispatch; no replay')
     prep=json.loads((root/'preparation.json').read_text())
+    observation_seconds=prep.get('observation_seconds',3900)
+    if type(observation_seconds) is not int or not 3900<=observation_seconds<=7500:
+        raise ValueError('bounded SFC observation deadline required')
     if prep['physical_devices']!=[6,7] or prep['image']!=plan['image']:
         raise ValueError('registered image and NPU6/7 required')
     argv=prep['argv'];devices={argv[i+1].split(':')[0] for i,a in enumerate(argv[:-1]) if a=='--device'}
@@ -105,7 +108,7 @@ def dispatch_once(root,plan):
     if result.returncode or len(cid)!=64 or any(c not in '0123456789abcdef' for c in cid):
         raise RuntimeError('SFC dispatch ambiguous; no automatic retry')
     atomic_json(root/'launch.json',dict(container_id=cid,image=plan['image'],source_commit=prep['source_commit'],physical_devices=[6,7]))
-    state=wait(root,cid,plan['image'],time.monotonic()+3900)
+    state=wait(root,cid,plan['image'],time.monotonic()+observation_seconds)
     atomic_json(root/'docker-terminal.json',dict(container_id=cid,state=state))
     logs=subprocess.run(['ssh','npu','docker logs '+cid],capture_output=True,text=True,timeout=30)
     (root/'container.log').write_text(logs.stdout+logs.stderr)

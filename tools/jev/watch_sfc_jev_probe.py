@@ -2,6 +2,7 @@
 """One-shot Jev TRAIN probe after the already queued native SFC probe."""
 import argparse
 import fcntl
+import importlib.metadata
 import json
 from pathlib import Path
 import subprocess
@@ -22,6 +23,8 @@ def check_pins(root, plan):
     prep=json.loads((root/'preparation.json').read_text())
     if file_hash(prep['official_scorer'])!=prep['official_scorer_sha256']:
         raise ValueError('official scorer changed')
+    if {k:importlib.metadata.version(k) for k in plan['scorer_versions']}!=plan['scorer_versions']:
+        raise ValueError('scorer dependencies changed')
 
 
 def execute(root):
