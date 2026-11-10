@@ -86,3 +86,30 @@ registry替换及请求音频对象绑定；测试中的processor为接口替身
 实际HF验收结果全部一致，包括五段最长对话。结果及numpy/scipy/soundfile版本见
 [音频加载验证](audio2tool-audio-loader-v1-verified.json)。本次没有加载模型或调用
 HF/vLLM engine；宿主验证不冒充固定镜像验证，也未遍历解码全部36419个音频。
+
+## 正式输入的实际 HF/vLLM processor 一致性
+
+在上述共用音频接口与正式renderer上新增 `probe_audio2tool_native_processor.py`，
+固定完整30733输入/预算哈希及既有processor资产身份；选择三种模式token最大输入，
+另加音频数量最多的七段输入（七段中按token数取最大）。不读取标注、转写或生成答案。
+选择器测试覆盖遗漏/重复/乱序、split、模式、帧数与上下文越界反例；其validator使用
+替身隔离选择逻辑，实际容器始终调用完整输入校验器。
+
+| 检查项 | release ID | 音频数 | 输入token |
+| --- | --- | ---: | ---: |
+| 单音频最大 | Tier1:3943 | 1 | 15322 |
+| 对话token最大 | Tier7:2030 | 5 | 17253 |
+| 混合语音最大 | Tier8:314 | 1 | 7035 |
+| 音频数最大 | Tier7:1118 | 7 | 8330 |
+
+四例均完整保留帧数；实际vLLM输出与HF有效特征转BF16后逐元素完全一致，最大误差0，
+input_ids逐位相同，并匹配已固定预算。没有将FP32量化差异用作放宽容差的理由。
+镜像固定为工程当前sha256:52ba94e…，源码 `983f5c9`，容器
+`17889805612e4b2ccca53fac6422f75f4e75c49732c1c1efec2c2b589b193fcb`
+退出0；2 CPU/20 GiB/900秒上限，无网络/设备/权重加载。已独立核对源码清单、
+实际Docker命令/资源/终态、单项记录、预算和补零算术，见
+[验收结果](audio2tool-native-processor-v1-verified.json)。
+
+这是固定四例实际processor验证，不是全量特征对比、NPU engine容量或模型推理。
+后续engine预检查应保留全部四例及32768上下文、7音频上限，并登记算力/时间预算；
+当前4–7卡的既有基线与队列继续优先，未插队派发新NPU任务。
