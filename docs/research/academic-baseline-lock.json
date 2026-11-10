@@ -883,8 +883,8 @@
         "omni7-weight"
       ],
       "model_method": "Qwen2.5-Omni-7B zero-shot",
-      "code_url": "https://audio2tool.github.io/",
-      "code_revision": null,
+      "code_url": "https://github.com/audio2tool/Audio2Tool",
+      "code_revision": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
       "weight": {
         "url": "https://huggingface.co/Qwen/Qwen2.5-Omni-7B",
         "revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
@@ -922,14 +922,14 @@
           "provenance": "author_report_not_local_reproduction"
         }
       ],
-      "local_status": "本地 prior manifest: 36419 WAV/71441 files；本次只核读小型发布元数据",
+      "local_status": "本地 prior manifest: 36419 WAV/71441 files；官方代码已定位，metrics 人工反例已执行；尚无本地模型成绩。",
       "blockers": [
-        "本次官方论文/站点/卡片未找到可核验完整 scorer/prompt 实现；code_url 是发布入口，不是已核验实现",
-        "独立 scorer 只能标自实现适配；精确 Whisper variant、Qwen revision、normalization 待核；test 禁止训练"
+        "当前官方 scorer 与论文锁定协议不一致：多工具集合匹配、逐样本平均参数 F1、错误样本排除；历史实现与完整多调用参数评分尚未对齐。",
+        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,
-      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "code_revision_note": "官方页面链接的当前 master commit 已固定；不代表论文 v1 历史运行 commit。",
       "training_settings": {
         "precision": null,
         "epochs": null,
@@ -945,7 +945,9 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "academic method or official publisher reference",
-      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+      "primary_table": "native dataset-specific or external reference; see comparison_scope",
+      "official_code_audit": "docs/research/audio2tool-official-code-audit-v1.md",
+      "current_code_metric_caveat": "Published paper metric field above is preserved; current code set tool match / sample-mean parameter F1 / valid-only denominator must be reported separately."
     },
     {
       "id": "audio2tool-whisper-qwen8",
@@ -956,8 +958,8 @@
         "audio2tool-full"
       ],
       "model_method": "Whisper v3 → Qwen3-8B zero-shot",
-      "code_url": "https://audio2tool.github.io/",
-      "code_revision": null,
+      "code_url": "https://github.com/audio2tool/Audio2Tool",
+      "code_revision": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
       "weight": null,
       "split": "all released test tiers; each tier separate",
       "metric": "ordered tool accuracy; normalized exact match; micro slot F1",
@@ -991,14 +993,14 @@
           "provenance": "author_report_not_local_reproduction"
         }
       ],
-      "local_status": "本地 prior manifest: 36419 WAV/71441 files；本次只核读小型发布元数据",
+      "local_status": "本地 prior manifest: 36419 WAV/71441 files；官方代码已定位，metrics 人工反例已执行；尚无本地模型成绩。",
       "blockers": [
-        "本次官方论文/站点/卡片未找到可核验完整 scorer/prompt 实现；code_url 是发布入口，不是已核验实现",
-        "独立 scorer 只能标自实现适配；精确 Whisper variant、Qwen revision、normalization 待核；test 禁止训练"
+        "当前官方 scorer 与论文锁定协议不一致：多工具集合匹配、逐样本平均参数 F1、错误样本排除；历史实现与完整多调用参数评分尚未对齐。",
+        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,
-      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "code_revision_note": "官方页面链接的当前 master commit 已固定；不代表论文 v1 历史运行 commit。",
       "training_settings": {
         "precision": null,
         "epochs": null,
@@ -1014,7 +1016,9 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "academic method or official publisher reference",
-      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+      "primary_table": "native dataset-specific or external reference; see comparison_scope",
+      "official_code_audit": "docs/research/audio2tool-official-code-audit-v1.md",
+      "current_code_metric_caveat": "Published paper metric field above is preserved; current code set tool match / sample-mean parameter F1 / valid-only denominator must be reported separately."
     },
     {
       "id": "audio2tool-oracle-qwen8",
@@ -1025,8 +1029,8 @@
         "audio2tool-full"
       ],
       "model_method": "Qwen3-8B oracle query zero-shot",
-      "code_url": "https://audio2tool.github.io/",
-      "code_revision": null,
+      "code_url": "https://github.com/audio2tool/Audio2Tool",
+      "code_revision": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
       "weight": null,
       "split": "all released test tiers; each tier separate",
       "metric": "ordered tool accuracy; normalized exact match; micro slot F1",
@@ -1060,14 +1064,14 @@
           "provenance": "author_report_not_local_reproduction"
         }
       ],
-      "local_status": "本地 prior manifest: 36419 WAV/71441 files；本次只核读小型发布元数据",
+      "local_status": "本地 prior manifest: 36419 WAV/71441 files；官方代码已定位，metrics 人工反例已执行；尚无本地模型成绩。",
       "blockers": [
-        "本次官方论文/站点/卡片未找到可核验完整 scorer/prompt 实现；code_url 是发布入口，不是已核验实现",
-        "独立 scorer 只能标自实现适配；精确 Whisper variant、Qwen revision、normalization 待核；test 禁止训练"
+        "当前官方 scorer 与论文锁定协议不一致：多工具集合匹配、逐样本平均参数 F1、错误样本排除；历史实现与完整多调用参数评分尚未对齐。",
+        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,
-      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "code_revision_note": "官方页面链接的当前 master commit 已固定；不代表论文 v1 历史运行 commit。",
       "training_settings": {
         "precision": null,
         "epochs": null,
@@ -1083,7 +1087,9 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "academic method or official publisher reference",
-      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+      "primary_table": "native dataset-specific or external reference; see comparison_scope",
+      "official_code_audit": "docs/research/audio2tool-official-code-audit-v1.md",
+      "current_code_metric_caveat": "Published paper metric field above is preserved; current code set tool match / sample-mean parameter F1 / valid-only denominator must be reported separately."
     },
     {
       "id": "mmar-audiojev-paper-mean",

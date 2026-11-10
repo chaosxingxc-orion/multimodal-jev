@@ -1,0 +1,35 @@
+{
+  "scope": "Static source/template audit only; no model inference or weight download",
+  "method": "System Python Jinja 3.1.6 render with generation tags removed; no assistant content supplied. Project venv lacks Jinja.",
+  "paper": {
+    "id": "qwen-asr-full",
+    "url": "https://arxiv.org/html/2601.21337v1",
+    "retrieved_at_utc": "2026-11-09T13:46:37.802667+00:00",
+    "status": 200,
+    "final_url": "https://arxiv.org/html/2601.21337v1",
+    "sha256": "1c5c2f41d79d0b164f5a37279974965442b08b0744ddf149b4528a1a698e8b1d",
+    "bytes": 277326
+  },
+  "paper_section": "2.2, ASR supervised finetuning (SFT)",
+  "quote": "Specifically, we train the model to be an ASR-only model that does not follow natural-language instructions in the prompt, in order to mitigate instruction injection and instruction-following failures.",
+  "templates": [
+    {
+      "path": "/mnt/cephfs/xingchao/models/qwen3-asr-1.7b/chat_template.json",
+      "sha256": "75a8cfca24f00de72d796fbfed6858fc9614ef3dabd8696684cc3bc03a9c58ff",
+      "rendered": "<|im_start|>system\nSYSTEM_TASK_SENTINEL<|im_end|>\n<|im_start|>user\n<|audio_start|><|audio_pad|><|audio_end|><|im_end|>\n<|im_start|>assistant\n",
+      "system_retained": true,
+      "user_text_retained": false,
+      "literal_backslash_n": false,
+      "real_newline": true
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-1.7B-hf/chat_template.jinja",
+      "sha256": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+      "rendered": "<|im_start|>system\nSYSTEM_TASK_SENTINEL<|im_end|>\n<|im_start|>user\n<|audio_start|><|audio_pad|><|audio_end|><|im_end|>\n<|im_start|>assistant\n",
+      "system_retained": true,
+      "user_text_retained": false,
+      "literal_backslash_n": false,
+      "real_newline": true
+    }
+  ]
+}

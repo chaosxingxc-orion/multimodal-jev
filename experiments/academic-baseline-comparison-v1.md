@@ -22,7 +22,7 @@ L1 原生官方任务、L2 派生 schema 决策、L3 真实交互执行分别建
 | 1 FSC 官方基线 | SpeechBrain direct 官方权重复测；Lugosch frozen pretraining 重训参考；原生 joint intent | 先官方权重完整加载和 TRAIN 样例验证，再全 test 固定单次推理；重训先补预训练 checkpoint 与 recipe。当前主进程可能另行准备资产，此文件不操作它 |
 | 2 SLURP 官方基线 | HuBERT direct 官方权重复测；原文 HerMiT 外部参考；real-only HuBERT 受控重训；ESPnet 2-pass 独立 intent 栏 | 必须分出 real+synth 与 real-only；检查 SpeechBrain 历史 recipe；完成 full 13078 预测 ID 集再调用原 scorer |
 | 3 同骨干矩阵 | 当前优先冻结直接音频基线与离线教师提示优化；后续生成式/typed SFT、同预算 RL 保持暂停；历史串联路线归档 | full FSC / real-only SLURP 配置、任务接口和预算尚未冻结；不能直接把 31 录音诊断扩称全量 |
-| 4 外部函数调用 | SFC test-ID/OOD 全级别、Audio2Tool 分 tier；共同保持 schema/多音频/历史 | SFC 原始协议为 FSC/SLURP-trained transfer。SpokenFC 内域 SFT/GRPO 重训单独 proposed，未授权以此文件改变原协议；Audio2Tool 补官方 scorer 或明确自实现适配 |
+| 4 外部函数调用 | SFC test-ID/OOD 全级别、Audio2Tool 分 tier；共同保持 schema/多音频/历史 | SFC 原始协议为 FSC/SLURP-trained transfer。SpokenFC 内域 SFT/GRPO 重训单独 proposed，未授权以此文件改变原协议；Audio2Tool 对齐已固定官方代码与论文评分差异，审计 loader 和候选供给 |
 | 5 AudioJev | MMAR official checkpoint 原始顺序、Frozen Omni3B、MMAR 原生 Qwen2-Audio；论文三 seeds 独立文献栏 | 独立 CUDA 环境、模型可加载、完整 1000 输入、保存 logits/predictions/退出码；NPU port 需要新轨道与数值对照 |
 | 6 扩展 | MAC-SLU；SLUE1/2 分任务；SpokenWOZ；MINDS/MMSU/MMAU/VoiceBench 分表 | gates、子集 IDs、隐藏评分和各任务依赖按登记补齐；不扩大下载清单 |
 | 7 真正 Agentic | τ² voice-v2 + matched text-v1；FDB-v3 人声；EVA 后续 | API/provider/voices/judge 预算落实、模型驱动工具状态链验证；仅环境 oracle 不达标 |
@@ -89,4 +89,4 @@ L1 原生官方任务、L2 派生 schema 决策、L3 真实交互执行分别建
 
 继续保留 [FSC schema](fsc-schema-evaluation.md)、[SLURP transfer](slurp-transfer-v1.md)、[SFC external](sfc-external-evaluation.md)、[AudioJev-MMAR](audiojev-mmar.md)、[τ 环境桥](tau2-environment-bridge.md)、[算法开发比较](algorithm-comparison-v1.md) 和 text v1/v2 的原始数据、配置与结论。本方案不回写其训练池、scorer 或运行记录。现有机会匹配矩阵不是计算量匹配；新 full-data 比较必须另立配置。
 
-待主进程决定：全量各臂训练/推理预算；独立 CUDA 资源或明确 port 轨道；是否进行 SFC 内域重训；Audio2Tool 官方实现缺失时是否采用自实现；L3 先跑哪个 voice-v2 cell/provider 及费用上限。上述决定影响运行，不影响本次学术登记完成。
+待主进程决定：全量各臂训练/推理预算；独立 CUDA 资源或明确 port 轨道；是否进行 SFC 内域重训；Audio2Tool 当前官方代码与论文协议差异的适配范围；L3 先跑哪个 voice-v2 cell/provider 及费用上限。上述决定影响运行，不影响本次学术登记完成。

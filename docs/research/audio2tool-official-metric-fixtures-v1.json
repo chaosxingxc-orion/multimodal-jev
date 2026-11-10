@@ -1,0 +1,48 @@
+{
+  "commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+  "metrics_sha256": "b092cc5ba1bac59d58dbfeb56c7f7cf63f1970df59892ea7b56ee24ac2c86802",
+  "fixtures": {
+    "reversed_order": {
+      "primary_tool_match": false,
+      "all_tools_match": true,
+      "tool_recall": 1.0,
+      "tool_precision": 1.0,
+      "tool_f1": 1.0,
+      "num_expected": 2,
+      "num_predicted": 2,
+      "missing_tools": [],
+      "extra_tools": []
+    },
+    "duplicate_call": {
+      "primary_tool_match": true,
+      "all_tools_match": true,
+      "tool_recall": 1.0,
+      "tool_precision": 1.0,
+      "tool_f1": 1.0,
+      "num_expected": 1,
+      "num_predicted": 1,
+      "missing_tools": [],
+      "extra_tools": []
+    },
+    "type_coercion": {
+      "exact_match": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "correct_params": [
+        "count",
+        "enabled"
+      ],
+      "missing_params": [],
+      "extra_params": [],
+      "wrong_value_params": []
+    },
+    "macro_vs_micro": {
+      "current_per_sample_mean": 0.5,
+      "pooled_slot_micro_f1": 0.4
+    }
+  },
+  "model_called": false,
+  "dataset_answers_read": false,
+  "scope": "Actual official metric functions on synthetic counterexamples; evaluator aggregation separately inspected, not executed"
+}

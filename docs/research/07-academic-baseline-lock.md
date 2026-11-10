@@ -11,11 +11,11 @@
 | FSC | Lugosch 2019 预训练后冻结声学模块、训练 intent RNN | SpeechBrain LibriSpeech ASR 初始化的 direct seq2seq | 前者重训复现；后者官方权重复测，权重 revision 已查 |
 | SLURP | 原论文 Multi-ASR→HerMiT，官方 scorer | SpeechBrain HuBERT direct；ESPnet deliberation 作转写辅助 intent 外部对照 | HerMiT 文献参考；SpeechBrain/ESPnet 有官方权重。real-only 改配方须单独重训 |
 | SFC-Bench/SpokenFC | 官方 Qwen2.5-Omni-7B prompting 与 SFT | SpokenFC-7B fine-grained GRPO，配 EM-reward 消融 | 基座可复测；任务权重未核验，SFT/GRPO 只能列文献/重训轨道 |
-| Audio2Tool | 原论文 Qwen2.5-Omni-7B zero-shot | Whisper v3→Qwen3-8B，配 gold query→同文本模型 | 原论文基线明确，但未核验完整官方 scorer/运行配方；自实现只能称适配 |
+| Audio2Tool | 原论文 Qwen2.5-Omni-7B zero-shot | Whisper v3→Qwen3-8B，配 gold query→同文本模型 | 官方代码已固定，但当前 scorer 与论文指标有差异；历史运行配方待核 |
 | MMAR | 原 MMAR 官方 Qwen2-Audio-Instruct + publisher scorer | AudioJev 官方单 checkpoint，并列 Frozen Omni 3B 同骨干参考 | AudioJev 权重、代码、输入协议已固定；CUDA 推理未完成 |
 | τ² voice（后续） | 固定 commit 的 voice-v2 官方环境/评测 | 同版 text-v1、原生 realtime provider，再接本项目决策节点 | 当前仅 oracle 环境验证；没有模型/语音端到端分数 |
 
-“原始/官方可复现参考”在此区分**可识别官方方法**与**执行已经就绪**：Audio2Tool 缺 scorer、SFC 缺任务 checkpoint 和完整 SFT 配方，不能声称这两项满足即刻复现。登记中用 blockers 明确保留缺口。
+“原始/官方可复现参考”在此区分**可识别官方方法**与**执行已经就绪**：Audio2Tool 当前官方 scorer 与论文协议尚未对齐、SFC 缺任务 checkpoint 和完整 SFT 配方，不能声称这两项满足即刻复现。登记中用 blockers 明确保留缺口。
 
 比较分三层，层间不求总排名：
 
@@ -91,7 +91,7 @@ ESPnet 的两个官方 HF 权重 revision 已登记；README 声称的历史 git
 
 这些数字不构成跨列排名；它们显示选对工具与参数全对有明显差距，不能用 tool accuracy 宣称完成任务。语音+大模型不是在所有 tier/指标上都占优，强对照的选择依据是研究相关性与可解释性，而非宣称处处最高分。
 
-论文规定多调用 **ordered tool sequence** 匹配，EM 经 deterministic normalization，slot 为 micro-F1；因此不可直接套 SFC 无序集合 scorer。本次只核到论文、数据卡和项目页面，没有定位到可核验的完整官方 scorer、精确 prompt 或每个历史 checkpoint revision。机器登记保留发布入口并说明非代码实现；开展复测前要么补齐官方实现，要么冻结明确标识的自实现及人工/对抗 fixtures，分数只能称“Audio2Tool 适配评测”。人工 transcript 不覆盖 Tier 8 的前景/背景证据，因此不是必然性能上界。
+论文规定多调用 **ordered tool sequence** 匹配，EM 经 deterministic normalization，slot 为 micro-F1；因此不可直接套 SFC 无序集合 scorer。后续已定位官方仓库并固定 commit `b9d5383ca30945fbafb965a04bea40117e1e8a82`，见 [官方代码审计](audio2tool-official-code-audit-v1.md)。实际指标反例表明当前代码使用工具集合匹配、逐样本平均参数 F1；聚合静态审阅还发现错误样本被排除。当前官方代码指标须独立列示，不能冒充论文 ordered/micro 协议；固定 release loader、历史 prompt/checkpoint 与精确配方仍待核验。人工 transcript 不覆盖 Tier 8 的前景/背景证据，因此不是必然性能上界。
 
 ### 2.5 MMAR / AudioJev：最优先的官方 typed-decision 对照
 
@@ -160,12 +160,12 @@ MASSIVE/ATIS/SNIPS 文本版、VoiceAgentBench、From Text to Voice、VGBench、
 
 已有 `.local/research/sources` 只作线索和对照，源登记明确 `prior_cache_original_retrieval`；缓存原检索时间不冒充此次访问。共享模型/语料的完成状态引用本地验收，本次没有重哈希大文件，没有启动 CPU/NPU/CUDA 模型。主要未核验项：
 
-1. Audio2Tool 完整官方 scorer/normalization/prompt 与历史 checkpoint；SFC task weights、SFT exact config；SpeechBrain SLURP HuBERT 历史 commit 与配方不一致、FSC 实际训练覆盖项仍缺失。
+1. Audio2Tool 当前官方 scorer 与论文协议对齐、release loader、历史 prompt 与 checkpoint；SFC task weights、SFT exact config；SpeechBrain SLURP HuBERT 历史 commit 与配方不一致、FSC 实际训练覆盖项仍缺失。
 2. 新增官方权重的本地加载兼容性、许可证随资产落盘和推理完整性；API 模型历史快照可用性。
 3. SLUE gated 数据、Phase2 各任务专用 adapter；MMAU 新旧 release 对齐与 hidden scoring；MMSU/MINDS 作者子集 IDs。
 4. CUDA 主机/环境尚未满足；NPU 四卡已完成基础算术与单卡音频 LoRA 更新验证；原生 verl 与 NPU vLLM 概率一致性尚未证明，见 [NPU 结果](../engineering/npu-audio-runtime-v1-result.json)。provider 预算、voices 和 judge 凭据仍待落实。
 5. 全量公平训练预算和类型化开放槽值接口尚未冻结。文档已锁比较对象及禁止混排规则；这些执行配置保留 proposed，不覆盖旧实验。
 
-需要主进程决策的是执行资源与预算、是否另立 SFC 内域重训轨道、Audio2Tool 是否接受明确标注的自实现适配、以及 L3 首个 voice-v2 cell/provider。无需这些决定即可审阅并采用当前学术锁表。
+需要主进程决策的是执行资源与预算、是否另立 SFC 内域重训轨道、Audio2Tool 论文协议与当前官方代码差异的适配范围、以及 L3 首个 voice-v2 cell/provider。无需这些决定即可审阅并采用当前学术锁表。
 
 本次交付校验：58 条登记覆盖全部 16 项指定资源；JSON 可解析，稳定 ID 唯一，报告来源引用与结果定位字段齐全，公开 SHA 格式及此次成功响应的原文哈希通过检查。四个新增文件逐个检查 diff/空白错误；共享工作区其他变化由主进程独立产生，本次未修改。
