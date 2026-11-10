@@ -13,6 +13,8 @@ from multimodal_jev.sfc_jev_shards import make_plan,load_shard
 from test_sfc_jev_shards import fixture as release_fixture
 from test_sfc_jev import load_tool
 
+sys.path.insert(0,str(Path(__file__).parents[1]/'tools/jev'))
+
 
 def fixture(tmp_path):
     release,_=release_fixture(tmp_path);plan=make_plan(release,'test_id',12)
