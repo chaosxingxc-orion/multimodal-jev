@@ -81,3 +81,7 @@ FP32 归一化的 EOS log-prob 为 -0.000034808505，原生 BF16 归一化为 0�
 fp32_features 条件：保存的全词表 logits 与 autocast/reference 完全一致。
 目前仅覆盖 3/30 条件，不能据此排除其他输入的特征精度影响；音频/文本补齐及
 实际微批形状仍需后续完整诊断和 actual-verl 复验。
+
+[第三份部分报告](omni-precision-train6-v1-logit-audit-partial-03.json)增加首条输入的
+audio_padding 条件，两个响应位置的全词表 logits 仍相同。仅完成 4/30 条件；
+公共长度对具体输入可能不增加 padding，因此此结果也不能外推为音频补齐普遍无影响。

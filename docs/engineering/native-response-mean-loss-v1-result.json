@@ -1,0 +1,105 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/native-response-mean-loss-v1",
+  "launch": {
+    "container_id": "81ad5244e5b5786667fbd9a3f14cffe68660d6ba7f50a02fa6dbe5f239e22269",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "6153ec9fca0349ade8c5f96ae516968c508c6f13",
+    "intent_sha256": "ce6392c577b6bedf37552e1297c21af1f83c3b468c8c15b10a5d2fea19cdf9d0"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T16:54:39.9302544Z",
+    "FinishedAt": "2026-11-10T16:54:54.43720511Z"
+  },
+  "result": {
+    "status": "passed",
+    "cases": {
+      "1": {
+        "loss": 0.24778318405151367,
+        "gradient": [
+          -0.07039504498243332,
+          -0.35422495007514954
+        ],
+        "max_gradient_error": 0.0
+      },
+      "2": {
+        "loss": 0.2477831393480301,
+        "gradient": [
+          -0.07039504498243332,
+          -0.35422495007514954
+        ],
+        "max_gradient_error": 0.0
+      },
+      "3": {
+        "loss": 0.2477831393480301,
+        "gradient": [
+          -0.07039504498243332,
+          -0.35422495007514954
+        ],
+        "max_gradient_error": 0.0
+      },
+      "4": {
+        "loss": 0.2477831393480301,
+        "gradient": [
+          -0.07039504498243332,
+          -0.35422495007514954
+        ],
+        "max_gradient_error": 0.0
+      },
+      "6": {
+        "loss": 0.2477831393480301,
+        "gradient": [
+          -0.07039504498243332,
+          -0.35422495007514954
+        ],
+        "max_gradient_error": 0.0
+      },
+      "12": {
+        "loss": 0.2477831393480301,
+        "gradient": [
+          -0.07039504498243332,
+          -0.35422495007514954
+        ],
+        "max_gradient_error": 0.0
+      }
+    },
+    "controls": {
+      "token_mean_gradient_difference": 0.16180455684661865,
+      "unweighted_gradient_difference": 0.08050784468650818
+    },
+    "reference_loss": 0.2477831393480301,
+    "reference_gradient": [
+      -0.07039504498243332,
+      -0.35422495007514954
+    ],
+    "core_sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+    "adapter_sha256": "045b3304fa391e58364262b149fc79506f05f9f6e5a20dbf1f84ddc21de4c7ac",
+    "synthetic_class_weights": [
+      2.0,
+      2.0,
+      2.0,
+      0.5,
+      0.5,
+      0.5,
+      1.0,
+      1.0,
+      1.0,
+      1.5,
+      1.5,
+      1.5
+    ],
+    "model_loaded": false,
+    "weight_updates": 0,
+    "scope": "Real registered verl loss and synthetic gradients across six static microbatch sizes; native accumulation divisor reproduced, no actual actor loop, optimizer, model training or distributed acceptance."
+  },
+  "source_and_result_verified": true,
+  "result_sha256": "0e46f172963dead54e6f52c205a5a71e63f399872c37d28e8932b7464111b697"
+}

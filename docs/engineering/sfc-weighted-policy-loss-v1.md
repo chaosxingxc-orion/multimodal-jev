@@ -41,8 +41,27 @@ active=1.8956450、inactive=0.6791286；不读取 selection/TEST，不修改当�
 
 ## 接入限制
 
-现有 `jev_static_token_mean_v1` 仅验证单 rank、单 epoch、token 平均，
-不能据此声称已支持响应平均、分布式 Omni 或新的带权训练。
+原有 `jev_static_token_mean_v1` 仅验证单 rank、单 epoch、token 平均，
+不能据此声称已支持分布式 Omni 或新的带权训练。
 类别标签只进入奖励/优势构造，不作为 actor 输入，也不替代 rollout importance weight。
 未来须在完整 K 组上先算优势，再按同一响应身份施加固定权重；如启用 KL/熵，
 分别声明其目标与分母。实际采样、模型梯度、完整任务收益和跨任务泛化仍待验证。
+
+## 显式响应平均适配
+
+源码 `6153ec9` 新增独立注册项 `jev_static_response_mean_v1`，保留原 token 平均项。
+每个响应先按有效 token 数平均，再使用完整批次响应数作为分母；适配器补偿原生
+静态 worker 的 gradient accumulation 除数一次。调用者须先在完整 K 组上计算优势，
+再施加正类别权重，分母不改为权重之和。仅接受单 rank、单 epoch、单个完整可整除
+静态 minibatch，明确拒绝 KL、熵、动态批处理与 rollout importance weights。
+
+33 项本地准入/注册测试通过。固定镜像真实 verl 损失检查使用 12 个合成响应，
+覆盖不等长度、正负优势、零优势组及 PPO/dual clipping，分别按 1/2/3/4/6/12
+微批大小累计。六种条件对独立公式的梯度误差均为 0；token 平均与响应平均的
+梯度差 0.16180456，去除合成类别权重的差为 0.08050784，反例具有区分性。
+该检查手动复现原生累计除数，未调用 actual actor update_policy、优化器或模型。
+这不是已完成的真实模型微批更新或分布式验证，也没有部署到现有运行队列。
+
+容器 `81ad5244e5b5786667fbd9a3f14cffe68660d6ba7f50a02fa6dbe5f239e22269`
+退出 0；2 CPU/8 GiB/300 秒上限，无网络/设备，无模型或数据挂载。
+源码、终态与数值结果已核对，见[适配结果](native-response-mean-loss-v1-result.json)。
