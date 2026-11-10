@@ -133,3 +133,10 @@ intent SHA为`fca53297b6e676c8f544cfcb23181b8cd3d5cd860985a6da8b084660548c0228`�
 已实际inspect为running；[派发身份](audio2tool-jev-acceptance-prompts-v1-launched.json)
 保存精确句柄。当前仍在检查profile，尚未完成全部5484次真实分词及12例对照，
 不能把启动或局部进度当作独立重建已验收。
+
+该精确容器随后退出0，真实检查耗时254.99秒。独立协调者核验Docker终态、资源、
+命令、挂载、环境及113份源码与Git快照，逐项对照2742个profile和12个既有真实
+processor边界；5484次真实分词对照全部通过。完整工作量复算为14044981次决策、
+98211900808输入token，最大单项18168。见
+[独立验收](audio2tool-jev-acceptance-prompts-v1-verified.json)。这是CPU提示重建
+验收，不是NPU容量、全量actor执行或任务得分；上述待办仍保留。

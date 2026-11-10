@@ -104,3 +104,26 @@ audio_padding→text_padding的响应logp最大差依次为
 `c41837a7fa477879b69e0c29aa8d891cccde2ef60ff73a3195eaf5f40c206d56`。
 见[逐层派发身份](omni-layers-train6-v1-launched.json)。它将完整覆盖原6条×2条件并
 保留与旧logits的复现偏差，不改变模型参数，不把已知响应差异自动归因于具体算子。
+
+## 首条逐层证据与 attention 分解预算
+
+首条 row0 的两条件完整 logits 均逐元素复现原精度诊断。协调者已核验336份参考
+张量的SHA、shape、dtype和有限性，并独立复算最终logits，见
+[row0审计](omni-layers-train6-v1-row00-audit.json)。layer0输入相同，首个差异为
+`layer-00.attention`：188166个元素不同，最大绝对差0.00390625；随后该层router
+有65个token的有序top-k变化、26个token的专家集合变化。这只定位到attention
+区间，尚不能归因于某个具体算子。原trace没有保存padding条件的逐层张量，
+所以中间差异统计目前依赖固定源码的运行报告，不能由审计者逐项重算。
+
+`diagnose_omni_first_attention.py`使用原row0已保存的实际输入，只加载原始第一层
+norm/attention权重和pad embedding切片，按相同BF16/autocast/SDPA重建1076有效
+token与154左padding两条件。固定原identity、row报告、HF实现、模型清单和协调者
+实际捕获的原容器inspect；无完整模型生成、音频重处理、标签、梯度或参数更新。
+保存两条件有效位置的RoPE cos/sin、input norm、Q/K/V投影、Q/K norm、RoPE后Q/K、
+attention core及o-proj张量，使独立审计者可重新计算全部中间差异。
+
+派发预算固定为同一镜像、16 CPU/16 GiB、1200秒加10秒终止宽限，无网络、无设备，
+模型及原实验只读。源代码先提交，再固定快照、create保存精确容器ID后start；不
+自动重试。必须先检查无padding输出与原trace逐元素一致，并检查两条件差异统计
+是否复现原报告，才解释内部差异；不满足时保留失败证据，不宣称复现机制。原始
+全6条逐层诊断继续执行；本项仅为row0定位，不替代全6条或NPU/verl概率一致性验收。
