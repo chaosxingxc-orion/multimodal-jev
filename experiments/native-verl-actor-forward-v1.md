@@ -39,3 +39,15 @@ Its float64 values and gradients match independent PyTorch cross entropy on
 noncontiguous logits within1e-12. Three CPU tests cover these checks, shape
 rejection and restoration after exceptions. The v2 result must identify this
 adapter; even a pass cannot be described as an unmodified native worker run.
+
+## Completed v2 forward
+
+The [v2 result](../docs/engineering/native-verl-actor-forward-v2-result.json)
+records exact Docker exit0 and four completed comparisons with response lengths
+6/6/8/6. Maximum effective-token log-prob error is3.0517578125e-5, below the
+registered3e-4 absolute tolerance. The native actor source hash is unchanged;
+the explicit CPU log-prob adapter is recorded as enabled. This validates this
+forward path only. The separately registered
+[gradient/AdamW replay](native-verl-actor-update-v1.md) must pass before an
+update-equivalence claim; native update_policy and distributed model execution
+remain outside both probes.

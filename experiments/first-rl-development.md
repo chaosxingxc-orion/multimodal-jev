@@ -55,4 +55,34 @@ This fixed one-update policy shows no non-null transfer gain and loses correct
 abstentions. It is neither a matched-budget algorithm comparison nor evidence
 that all RL methods fail. The initializer, continuation checks and full-pool
 TRAIN signal diagnosis stay fixed; no checkpoint/learning-rate/prompt selection
-is made from this diagnostic. FSC evaluation remains pending separately.
+is made from this diagnostic. FSC completion is reported below.
+
+## Completed FSC diagnostic
+
+Both exact FSC containers exited0 and contain all186 predictions. The current
+common scorer reproduces the saved comparison exactly after excluding its
+Docker observation metadata; all2,000-draw speaker bootstrap results agree.
+See [receipt](../docs/engineering/first-rl-fsc-development-v1-result.json).
+
+| Measure | SFT initializer | One FSC RL update |
+| --- | ---: | ---: |
+| Strict format |186/186|186/186|
+| Correct non-null targets |50/155|68/155|
+| False refusals on non-null targets |57/155|34/155|
+| Native intent |5/31|9/31|
+| Permutation / rebind correct |4/31,7/31|9/31,15/31|
+| Correct missing-candidate null |30/31|27/31|
+| Permutation / rebind both-correct |2/31,4/31|6/31,9/31|
+| Noul True / False correct |8/31,26/31|9/31,26/31|
+
+Noul balanced accuracy changes54.84% to56.45%; paired both-correct changes3/31
+to4/31. Answering more improves some FSC decisions while losing some correct
+abstentions. Native and paired bootstrap intervals include zero at their lower
+boundary; the dataset has only8 speaker clusters. All statistics remain
+descriptive development findings without multiple-comparison correction.
+
+This one-recording, one-update, one-seed result has zero pair bonuses during
+training. It cannot isolate pair reward or replace the matched budget controls.
+The SLURP non-null result remains0/81 for both policies, so the FSC changes do
+not demonstrate cross-task transfer. Preserve both positive and negative
+findings and the originally frozen training/evaluation configurations.
