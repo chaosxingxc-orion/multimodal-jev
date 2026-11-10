@@ -1,0 +1,102 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-native-train16-v1",
+  "container_id": "47acd3fee6a6dbb17dc443ffff84610157008e8a435d26a9b463d6a9f3d4febb",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T08:51:36.52153819Z",
+    "FinishedAt": "2026-11-10T09:04:08.43418058Z"
+  },
+  "result": {
+    "status": "passed",
+    "requests": 60,
+    "predictions": 60,
+    "audio_condition": "actual",
+    "format_valid": 32,
+    "schema_valid": 30,
+    "length_limited": 0,
+    "predictions_sha256": "03b9afab5d24404a6f5cdb3eb46069d583b15e1dfdc2474ab3aed2bac05f1d0f",
+    "weight_updates": 0,
+    "model_files_unchanged": true,
+    "elapsed_seconds": 746.0517504300224,
+    "scope": "direct frozen audio-to-task vLLM NPU registered TRAIN population; no TEST or HF parity claim"
+  },
+  "format_valid": 32,
+  "schema_valid": 30,
+  "coverage": 1.0,
+  "overall_metrics": {
+    "action": [
+      0.2833333333333333,
+      0.2833333333333333,
+      0.2833333333333333,
+      17.0,
+      43.0,
+      43.0
+    ],
+    "char": [
+      0.6651270207852193,
+      0.23169750603378922,
+      0.3436754176610978,
+      16.0,
+      8.055555555555555,
+      53.05555555555556
+    ],
+    "entity_exact": [
+      0.45,
+      0.13846153846153847,
+      0.21176470588235297,
+      9.0,
+      11.0,
+      56.0
+    ],
+    "joint_intent": [
+      0.2833333333333333,
+      0.2833333333333333,
+      0.2833333333333333,
+      17.0,
+      43.0,
+      43.0
+    ],
+    "scenario": [
+      0.4166666666666667,
+      0.4166666666666667,
+      0.4166666666666667,
+      25.0,
+      35.0,
+      35.0
+    ],
+    "slu_f1": [
+      0.6267682263329706,
+      0.22686096888538793,
+      0.3331405436668594,
+      32.0,
+      19.055555555555557,
+      109.05555555555557
+    ],
+    "word": [
+      0.5925925925925926,
+      0.2222222222222222,
+      0.3232323232323232,
+      16.0,
+      11.0,
+      56.0
+    ]
+  },
+  "metric_columns": [
+    "precision",
+    "recall",
+    "f1",
+    "tp",
+    "fp",
+    "fn"
+  ],
+  "score_sha256": "4af8820935ce64ced62885e1ce0cf0ef8678034d48dc8dc68596ce2eb4b4df1c",
+  "scope": "16TRAIN groups60 recordings; official scorer; not full TEST or transfer efficacy"
+}
