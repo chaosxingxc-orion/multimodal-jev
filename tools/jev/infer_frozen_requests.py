@@ -8,9 +8,10 @@ import json
 from pathlib import Path
 import time
 from multimodal_jev.baseline import atomic_json, file_hash
-from multimodal_jev.consumption import canonical, inference_messages, validate_request
+from multimodal_jev.consumption import canonical
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.frozen_evidence import load_evidence
+from multimodal_jev.frozen_contract import FrozenContract
 
 
 def run(config, output):
@@ -18,8 +19,6 @@ def run(config, output):
     from transformers import AutoTokenizer, Qwen3ForCausalLM
     from multimodal_jev.asr import load_runtime
     from multimodal_jev.audio_policy import load_audio
-    from multimodal_jev.task_schema import DecisionSchema
-    from multimodal_jev.policy_evaluation import prediction_record
     route=config['route']
     if route not in {'audio-direct','asr-text'}: raise ValueError('unsupported frozen route')
     if config.get('adapter') is not None or config.get('parameters_frozen') is not True:
@@ -28,7 +27,9 @@ def run(config, output):
     if sampling['temperature']<0 or sampling['n']<1: raise ValueError('invalid sampling')
     if sampling['temperature']>0 and (config['split']!='train' or config['purpose']!='tfrl-learning'):
         raise ValueError('stochastic sampling only for TFRL learning')
-    rows=[validate_request(json.loads(line)) for line in Path(config['requests']).read_text().splitlines()]
+    contract=FrozenContract(config)
+    with Path(config['requests']).open() as handle:
+        rows=[contract.validate(json.loads(line)) for line in handle]
     if not rows or len({r['id'] for r in rows})!=len(rows): raise ValueError('unique nonempty requests required')
     if any(r['split']!=config['split'] for r in rows): raise ValueError('split mismatch')
     if config.get('source_groups') is not None:
@@ -51,7 +52,8 @@ def run(config, output):
         'instruction_sha256':file_hash(config['instruction']),'models':identities,
         'runner_sha256':file_hash(__file__),
         'source_sha256':{name:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
-            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py')}}
+            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py','frozen_contract.py','slurp_native.py','teacher_candidates.py')}}
+    if contract.taxonomy_sha256 is not None:identity['taxonomy_sha256']=contract.taxonomy_sha256
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('resume identity changed')
     atomic_json(output/'identity.json',identity)
@@ -125,7 +127,7 @@ def run(config, output):
             batch=move(processor(text=[prompt],audio=[wave],sampling_rate=16000,return_tensors='pt'))
             decoder=processor.tokenizer
         else:
-            prompt=tokenizer.apply_chat_template(inference_messages(row,texts[row['id']],instruction),
+            prompt=tokenizer.apply_chat_template(contract.messages(row,texts[row['id']],instruction),
                 tokenize=False,add_generation_prompt=True,enable_thinking=False)
             batch=move(tokenizer(prompt,return_tensors='pt',add_special_tokens=False));decoder=tokenizer
         check_length(batch,config['max_new_tokens'])
@@ -146,13 +148,11 @@ def run(config, output):
                 with torch.inference_mode():tokens=model.generate(**batch,do_sample=sampling['temperature']>0,
                     max_new_tokens=config['max_new_tokens'],**kwargs)
                 ids=tokens[0,batch['input_ids'].shape[-1]:].tolist();raw=decoder.decode(ids,skip_special_tokens=True)
-                record=prediction_record(row['id'],raw)
-                schema=DecisionSchema.from_dict(row['input']['schema'])
+                record=contract.prediction(row,raw)
                 record.update(replicate=replicate,source_group=row['source_group'],split=row['split'],
                     prompt_sha256=prompt_sha,request_sha256=hashlib.sha256(canonical(row)).hexdigest(),
                     input_tokens=int(batch['input_ids'].shape[-1]),token_ids=ids,seconds=time.monotonic()-t,
-                    length_limited=len(ids)>=config['max_new_tokens'],
-                    schema_valid=record['format_valid'] and schema.accepts(record.get('value')))
+                    length_limited=len(ids)>=config['max_new_tokens'])
                 atomic_json(path,record)
             records.append(record)
         progress('decision',index+1,len(rows))
