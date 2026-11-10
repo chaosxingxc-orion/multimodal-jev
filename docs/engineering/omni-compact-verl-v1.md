@@ -236,3 +236,31 @@ hook的三个本地测试通过，覆盖停止位置、张量副本、异常与h
 首层输入、位置和mask，隔离比较首层attention、输出投影及MoE，不需再次执行
 音频前缀。此前局部Q/K/V投影控制只覆盖零padding输入，不代替该真实层诊断。
 完整actor一致性仍失败，0.1阈值、冻结权重和不自动重放原则保持不变。
+
+### 首层注意力局部诊断独立核验
+
+`omni-batched-attention-v1` 使用上述真实前缀保存的完整 padding 输入、位置和
+mask，调用原 HF 首层 RMSNorm/Attention 与同一 compact adapter，未执行音频
+编码或后续 MoE。固定源码 `97fb9fa`、原镜像、16 CPU/12 GiB、无网络设备；容器
+`0f9c6a3e2a0dff766a22b8089a3786d64183289a058ad5fbd1142e9d2f2f35b9`
+退出0，无OOM，耗时36.49秒。
+
+外部核对容器命令/资源/挂载、120份源码与Git，并加载12份保存张量独立复算：
+六条样本的12个阶段共72项microbatch=1/2比较全部逐元素一致，覆盖输入归一化、
+Q/K/V投影、Q/K归一化、旋转位置编码、SDPA及输出投影；12份首层attention
+输出也全部精确重现原未填充参考。见
+[张量独立核验](omni-batched-attention-v1-verified.json)。
+
+因此这批局部重建输入中首层attention没有复现批大小差异；尚不能据此推断所有
+层attention不受批大小影响。下一步在真实padding输入上执行完整首层，捕获
+post-attention归一化、MoE路由和专家输出，比较原始逐层参考及两种批大小。
+该诊断不运行完整48层actor，不改动预登记0.1阈值，不派发优化器或权重训练。
+
+`diagnose_omni_batched_moe.py` 预登记执行原六条输入的六次单样本和三次双样本
+完整首层前向，保存包含padding的各阶段张量。通过meta构造原文本模型保留
+PreTrainedModel默认的`grouped_mm`专家调度，而不是直接实例化专家模块并落入
+eager默认；只物化第0层权重，使用HF实际转换器并逐个核对384份原专家张量。
+记录attention、残差、post-attention norm、router logits/weights/indices、
+专家gate/up投影、激活、down投影、MoE聚合和最终残差。专家中间值按原token与
+top-k位置恢复排序，保持实际grouped计算；对各阶段比较batch1/2并核对原逐层
+参考的7个事件。诊断完成和数值一致是不同状态，发现差异时保留张量而非抹去失败。
