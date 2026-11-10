@@ -1,0 +1,306 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-processor-train-v1",
+  "launch": {
+    "container_id": "c12a65bc7b865988e4c5916962aeaa924c29416db18f9f4d97514b160dac79d2",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "cf7301b154785470e252aad2041268220f43153b",
+    "intent_sha256": "cb5e1821d67d0236c1dc5a78cf6c9d802aac4fc744ed27a6e81c710fa77238e7",
+    "devices": []
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T10:34:01.75793766Z",
+    "FinishedAt": "2026-11-10T10:34:39.02003608Z"
+  },
+  "result": {
+    "status": "passed",
+    "records": [
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "level": "level_3_2",
+        "audio_count": 1,
+        "conversions": [
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 373248,
+            "target_rate": 16000,
+            "target_samples": 270838,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "input_tokens": 876,
+        "audio_token_lengths": [
+          220
+        ],
+        "shapes": {
+          "input_ids": [
+            1,
+            876
+          ],
+          "attention_mask": [
+            1,
+            876
+          ],
+          "feature_attention_mask": [
+            1,
+            1692
+          ],
+          "input_features": [
+            1,
+            128,
+            1692
+          ]
+        },
+        "swap_control": null,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_1/train_id/id_1.wav",
+        "level": "level_1",
+        "audio_count": 1,
+        "conversions": [
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 142080,
+            "target_rate": 16000,
+            "target_samples": 103097,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "input_tokens": 839,
+        "audio_token_lengths": [
+          84
+        ],
+        "shapes": {
+          "input_ids": [
+            1,
+            839
+          ],
+          "attention_mask": [
+            1,
+            839
+          ],
+          "feature_attention_mask": [
+            1,
+            644
+          ],
+          "input_features": [
+            1,
+            128,
+            644
+          ]
+        },
+        "swap_control": null,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+        "level": "level_3_2",
+        "audio_count": 2,
+        "conversions": [
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 373248,
+            "target_rate": 16000,
+            "target_samples": 270838,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 38144,
+            "target_rate": 16000,
+            "target_samples": 27679,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "input_tokens": 1044,
+        "audio_token_lengths": [
+          220,
+          23
+        ],
+        "shapes": {
+          "input_ids": [
+            1,
+            1044
+          ],
+          "attention_mask": [
+            1,
+            1044
+          ],
+          "feature_attention_mask": [
+            2,
+            1692
+          ],
+          "input_features": [
+            2,
+            128,
+            1692
+          ]
+        },
+        "swap_control": {
+          "reversal_matches": true,
+          "unreversed_features_differ": true,
+          "maximum_error": 1.1920928955078125e-07
+        },
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_2/train_id/id_1.wav",
+        "level": "level_2",
+        "audio_count": 1,
+        "conversions": [
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 213504,
+            "target_rate": 16000,
+            "target_samples": 154924,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "input_tokens": 841,
+        "audio_token_lengths": [
+          126
+        ],
+        "shapes": {
+          "input_ids": [
+            1,
+            841
+          ],
+          "attention_mask": [
+            1,
+            841
+          ],
+          "feature_attention_mask": [
+            1,
+            968
+          ],
+          "input_features": [
+            1,
+            128,
+            968
+          ]
+        },
+        "swap_control": null,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_1/train_id/id_1_1.wav",
+        "level": "level_3_1",
+        "audio_count": 1,
+        "conversions": [
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 85248,
+            "target_rate": 16000,
+            "target_samples": 61858,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "input_tokens": 577,
+        "audio_token_lengths": [
+          50
+        ],
+        "shapes": {
+          "input_ids": [
+            1,
+            577
+          ],
+          "attention_mask": [
+            1,
+            577
+          ],
+          "feature_attention_mask": [
+            1,
+            386
+          ],
+          "input_features": [
+            1,
+            128,
+            386
+          ]
+        },
+        "swap_control": null,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_1/train_id/id_1_2.wav",
+        "level": "level_3_1",
+        "audio_count": 2,
+        "conversions": [
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 85248,
+            "target_rate": 16000,
+            "target_samples": 61858,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 22050,
+            "source_channels": 1,
+            "source_samples": 52224,
+            "target_rate": 16000,
+            "target_samples": 37895,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "input_tokens": 673,
+        "audio_token_lengths": [
+          50,
+          31
+        ],
+        "shapes": {
+          "input_ids": [
+            1,
+            673
+          ],
+          "attention_mask": [
+            1,
+            673
+          ],
+          "feature_attention_mask": [
+            2,
+            386
+          ],
+          "input_features": [
+            2,
+            128,
+            386
+          ]
+        },
+        "swap_control": {
+          "reversal_matches": true,
+          "unreversed_features_differ": true,
+          "maximum_error": 1.1920928955078125e-07
+        },
+        "fits_4096_with_1024_output": true
+      }
+    ],
+    "elapsed_seconds": 2.871095510025043,
+    "identity_sha256": "2fd87faca64cdb65413cf5d49ab5eee04abef76201b7e9abed6267b21d6fe86d",
+    "scope": "Six TRAIN turns in four complete conversations; actual CPU HF processor and waveform-order control. No model weights, vLLM engine, inference quality or full-population context-fit claim."
+  },
+  "versions": {
+    "transformers": "5.14.1",
+    "torch": "2.10.0+cpu",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.14.0"
+  },
+  "processor_assets_reverified": true,
+  "physical_devices": []
+}
