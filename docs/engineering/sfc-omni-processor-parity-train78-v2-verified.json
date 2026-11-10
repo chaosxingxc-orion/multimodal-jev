@@ -1,0 +1,38 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-omni-processor-parity-train78-v2",
+  "launch": {
+    "container_id": "b0e8409a72cc36414eb99a16087d5eb9ca80dc2e5402287a27438fdaaed98607",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "5a4935cd695c79ddf69d7eecf0271e7ced864f5a"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T16:39:10.68345896Z",
+    "FinishedAt": "2026-11-10T16:40:28.53467184Z"
+  },
+  "result": {
+    "status": "passed",
+    "rows": 6,
+    "decisions": 78,
+    "raw_actor_token_mismatches": 0,
+    "raw_actor_feature_mismatches": 78,
+    "aligned_actor_token_mismatches": 0,
+    "aligned_actor_feature_mismatches": 0,
+    "max_aligned_feature_error": 0,
+    "comparisons_sha256": "826edfe3f08c5f9ecfc4dd3f9329fb232805be945bbbda10969bcecdefb6c1b8",
+    "elapsed_seconds": 59.838099450047594,
+    "model_loaded": false,
+    "targets_read": false,
+    "scope": "Actual complete TRAIN6/78 CPU HF and vLLM processors at model dtype. Raw existing actor and explicit hop-aligned diagnostic separately reported; no weights, logits, sampling, policy updates or input mutation."
+  },
+  "source_coverage_and_frame_arithmetic_verified": true,
+  "scope": "Actual actor prepare(vllm_hop) and actual CPU vLLM processors, complete TRAIN6/78; no model probabilities or training acceptance."
+}

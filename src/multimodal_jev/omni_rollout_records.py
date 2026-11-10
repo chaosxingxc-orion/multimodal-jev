@@ -1,8 +1,10 @@
 """Strict vLLM sampling-to-SFC record bridge, without inference dispatch.
 
 The initial contract uses temperature 1 and no distribution truncation or
-penalties. With engine raw_logprobs this matches the model policy evaluated by
-the actor at temperature 1. Engine/image/weights must be pinned by the caller.
+penalties. Engine raw_logprobs removes sampling transforms; matching the actor
+policy additionally requires verified waveform/features, positions, weights and
+numeric behavior. Equal prompt tokens alone do not prove multimodal parity.
+Engine/image/weights must be pinned by the caller.
 """
 import math
 
