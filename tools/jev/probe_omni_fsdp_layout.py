@@ -86,7 +86,7 @@ def run(args):
                        inspect.getfile(get_fsdp_wrap_policy): file_hash(inspect.getfile(get_fsdp_wrap_policy)),
                        'runner': file_hash(__file__)},
         full_model_type=full_config.model_type, auto_mappings=mappings,
-        thinker_class=type(model).__name__, thinker_no_split_modules=model._no_split_modules,
+        thinker_class=type(model).__name__, thinker_no_split_modules=sorted(model._no_split_modules),
         thinker_parameters=sum(p.numel() for p in model.parameters()),
         experts_implementation=model.config.text_config._experts_implementation,
         actual_module_classes=sorted({type(m).__name__ for m in model.modules()}),
