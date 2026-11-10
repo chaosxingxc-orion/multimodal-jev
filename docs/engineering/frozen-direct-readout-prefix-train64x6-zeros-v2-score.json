@@ -1,0 +1,85 @@
+{
+  "replicates": [
+    {
+      "replicate": 0,
+      "by_variant": {
+        "native": {
+          "examples": 64,
+          "correct": 2,
+          "format_valid": 64,
+          "schema_valid": 64,
+          "accuracy": 0.03125
+        },
+        "permutation": {
+          "examples": 64,
+          "correct": 3,
+          "format_valid": 64,
+          "schema_valid": 64,
+          "accuracy": 0.046875
+        },
+        "rebind": {
+          "examples": 64,
+          "correct": 2,
+          "format_valid": 64,
+          "schema_valid": 64,
+          "accuracy": 0.03125
+        },
+        "missing_candidate": {
+          "examples": 64,
+          "correct": 0,
+          "format_valid": 64,
+          "schema_valid": 64,
+          "accuracy": 0.0
+        },
+        "noul.True": {
+          "examples": 64,
+          "correct": 1,
+          "format_valid": 64,
+          "schema_valid": 64,
+          "accuracy": 0.015625
+        },
+        "noul.False": {
+          "examples": 64,
+          "correct": 64,
+          "format_valid": 64,
+          "schema_valid": 64,
+          "accuracy": 1.0
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 64,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        },
+        "rebind": {
+          "groups": 64,
+          "both_correct": 2,
+          "both_correct_rate": 0.03125
+        },
+        "missing_candidate": {
+          "groups": 64,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        },
+        "noul": {
+          "groups": 64,
+          "both_correct": 1,
+          "both_correct_rate": 0.015625
+        }
+      },
+      "all_six_correct": 0,
+      "all_six_correct_rate": 0.0
+    }
+  ],
+  "source_groups": 64,
+  "requests": 384,
+  "predictions": 384,
+  "coverage": 1.0,
+  "scope": "correlated derived views; paired correctness is required; not six independent recordings",
+  "split": "train",
+  "purpose": "direct-label-TRAIN-six-view-probe",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-direct-readout-prefix-train64x6-zeros-v2/run",
+  "targets_sha256": "16e8d62670dfdf06add142ba927fc56d369a3ccb3fbf1972dd41d355ae98a9c5",
+  "result_sha256": "6fdf3975b05695c2c025fa46043ca40326b132ebb1776085206074a54ae392d5"
+}

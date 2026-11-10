@@ -1,0 +1,69 @@
+{
+  "release": "/mnt/cephfs/xingchao/datasets/slurp-native/240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add",
+  "counts": {
+    "train": 50627,
+    "valid": 8690,
+    "test": 13078
+  },
+  "manifest_sha256": "b93bf66b6f855513a2d6118d09c9bcd37d5a722c87083681bf05491d54c55c65",
+  "request_target_and_raw_conversion_parity": true,
+  "cross_split_audio_hash_overlap": 0,
+  "audio_rehash_scope": "builder checked all audio; this independent check validates saved hashes, not a second waveform read",
+  "duplicate_audit": [
+    {
+      "file": "audio-1502309360-headset.flac",
+      "occurrences": [
+        {
+          "split": "train",
+          "row_index": 4018,
+          "recording_index": 0,
+          "utterance_group": "slurp:16142",
+          "target": {
+            "scenario": "email",
+            "action": "sendemail",
+            "entities": [
+              {
+                "type": "person",
+                "filler": "aran"
+              }
+            ]
+          }
+        },
+        {
+          "split": "train",
+          "row_index": 4034,
+          "recording_index": 0,
+          "utterance_group": "slurp:15959",
+          "target": {
+            "scenario": "email",
+            "action": "sendemail",
+            "entities": [
+              {
+                "type": "person",
+                "filler": "parisa"
+              }
+            ]
+          }
+        }
+      ],
+      "kept": {
+        "split": "train",
+        "row_index": 4034,
+        "recording_index": 0,
+        "utterance_group": "slurp:15959",
+        "target": {
+          "scenario": "email",
+          "action": "sendemail",
+          "entities": [
+            {
+              "type": "person",
+              "filler": "parisa"
+            }
+          ]
+        }
+      },
+      "conflicting_targets": true,
+      "source_group": "slurp-linked:dc8c3a0ac5512b202267df0a"
+    }
+  ]
+}
