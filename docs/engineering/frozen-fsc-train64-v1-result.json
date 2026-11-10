@@ -1,0 +1,115 @@
+{
+  "scope": "TRAIN64 frozen inference only; not test accuracy or TFRL gain",
+  "runs": [
+    {
+      "route": "audio-direct",
+      "container_id": "c625f817da09a9f494ddc5ca852c451245c06ae2343888b81a5f8e9606fca195",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T02:44:27.41532599Z",
+        "FinishedAt": "2026-11-10T02:45:49.70252365Z"
+      },
+      "result": {
+        "status": "passed",
+        "requests": 64,
+        "predictions": 64,
+        "format_valid": 0,
+        "schema_valid": 0,
+        "length_limited": 0,
+        "route": "audio-direct",
+        "predictions_sha256": "ece42bc707f5961870b432797617a6b34f4b676d2b04b11e1f26b37b3f92c72a",
+        "weight_updates": 0,
+        "model_files_unchanged": true,
+        "elapsed_seconds": 58.52898131002439,
+        "scope": "frozen HF reference inference; separate scoring required; no vLLM parity or training claim"
+      },
+      "score": {
+        "replicates": [
+          {
+            "replicate": 0,
+            "examples": 64,
+            "correct": 0,
+            "accuracy": 0.0,
+            "format_valid": 0,
+            "fsc_native_component_accuracy": {
+              "action": 0.0,
+              "object": 0.0,
+              "location": 0.0
+            }
+          }
+        ],
+        "predictions": 64,
+        "coverage": 1.0,
+        "scope": "complete selected request population; TRAIN probe is not official test performance",
+        "split": "train",
+        "purpose": "engineering-probe",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-audio-direct-train64-v1/run",
+        "targets_sha256": "2afda517178b7742d9afda4b415d7ae9dc555532d715da3dc60171f30e8360cf",
+        "result_sha256": "7580cc76c9991361bbf0afc8c2d9ae732dc780031b44865ca39f0fccca81fc6d"
+      }
+    },
+    {
+      "route": "asr-text",
+      "container_id": "c941aa2b224498afc0ba515a5e7517bbafb580c88eb634dc1cbd53d21d953031",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T02:44:29.04655243Z",
+        "FinishedAt": "2026-11-10T02:46:50.23992186Z"
+      },
+      "result": {
+        "status": "passed",
+        "requests": 64,
+        "predictions": 64,
+        "format_valid": 30,
+        "schema_valid": 30,
+        "length_limited": 0,
+        "route": "asr-text",
+        "predictions_sha256": "c61a743af0895606375d8e815038e5a90ca3813791223d9d9c866b1b8c53ddcb",
+        "weight_updates": 0,
+        "model_files_unchanged": true,
+        "elapsed_seconds": 115.7252998999902,
+        "scope": "frozen HF reference inference; separate scoring required; no vLLM parity or training claim"
+      },
+      "score": {
+        "replicates": [
+          {
+            "replicate": 0,
+            "examples": 64,
+            "correct": 20,
+            "accuracy": 0.3125,
+            "format_valid": 30,
+            "fsc_native_component_accuracy": {
+              "action": 0.453125,
+              "object": 0.421875,
+              "location": 0.359375
+            }
+          }
+        ],
+        "predictions": 64,
+        "coverage": 1.0,
+        "scope": "complete selected request population; TRAIN probe is not official test performance",
+        "split": "train",
+        "purpose": "engineering-probe",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-asr-text-train64-v1/run",
+        "targets_sha256": "2afda517178b7742d9afda4b415d7ae9dc555532d715da3dc60171f30e8360cf",
+        "result_sha256": "ef2928dda27d83b5a3d681ea19c4476f35c60a99d84be9f9d029634b42f00257"
+      }
+    }
+  ]
+}

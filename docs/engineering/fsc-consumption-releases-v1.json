@@ -1,0 +1,92 @@
+{
+  "fsc-native": {
+    "output": "/mnt/cephfs/xingchao/datasets/fsc-native/49e2e27359d606a9a37e062d14fae87fb82eb8be94dab9836cbb095d59cea2dd",
+    "release_id": "49e2e27359d606a9a37e062d14fae87fb82eb8be94dab9836cbb095d59cea2dd",
+    "identity": {
+      "dataset": "fsc-native",
+      "native_only": true,
+      "source_manifests": {
+        "train": {
+          "path": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+          "sha256": "633882c3820dc45e112c7790305899be639836cf0fced04d1d204ca1b058361a"
+        },
+        "valid": {
+          "path": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/valid.jsonl",
+          "sha256": "27f5017ee2fdf529850bc4b9280c70ce6ab3215d23ad4cf7b09c6c24c69db4d7"
+        },
+        "test": {
+          "path": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/test.jsonl",
+          "sha256": "c2aba112c4ee51b439f2a00889148677fb536fb516ac9a98b223960df4bc9032"
+        }
+      },
+      "builder_sha256": "fda9094eec92384ed8a5c1d8e012ca034ecdddf86c6a4dfc11ba35111ac83675",
+      "schema_sha256": "039cec3560e6e7655d2638caff556db95d5ad998d02fc5d8099dee03cccf5b26"
+    },
+    "splits": {
+      "train": {
+        "requests": 23132,
+        "source_groups": 23132,
+        "requests_sha256": "4e0c44b73e8232b30ce64c69761a5dc4a75da149596d0fc571264acd6628d021",
+        "targets_sha256": "2afda517178b7742d9afda4b415d7ae9dc555532d715da3dc60171f30e8360cf"
+      },
+      "valid": {
+        "requests": 3118,
+        "source_groups": 3118,
+        "requests_sha256": "2506505cfbad119a2c98a3d61a8e3dadf6b19175246ffcd19786f32a65f92052",
+        "targets_sha256": "4090c5be248a57a8fde66fa5c1c2113be018a59778ac1c0685bb1ac3c2bbcd12"
+      },
+      "test": {
+        "requests": 3793,
+        "source_groups": 3793,
+        "requests_sha256": "f270a52213ad116c72636e4e76f8e1c2d53d57908cb470b54e7e792bcf0fb874",
+        "targets_sha256": "0f892313a293cec2bf142001c57108b64ab824885d37631da2203ba2762de66e"
+      }
+    },
+    "contract": "audio + typed decision definition; targets/provenance separate; generated JSON and native typed logits are different execution routes"
+  },
+  "fsc-jev-consumption": {
+    "output": "/mnt/cephfs/xingchao/datasets/fsc-jev/e046b9e58357e26343b628adce1bcbe178472fa2de0290b6480d489c52fc527c",
+    "release_id": "e046b9e58357e26343b628adce1bcbe178472fa2de0290b6480d489c52fc527c",
+    "identity": {
+      "dataset": "fsc-jev",
+      "native_only": false,
+      "source_manifests": {
+        "train": {
+          "path": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl",
+          "sha256": "633882c3820dc45e112c7790305899be639836cf0fced04d1d204ca1b058361a"
+        },
+        "valid": {
+          "path": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/valid.jsonl",
+          "sha256": "27f5017ee2fdf529850bc4b9280c70ce6ab3215d23ad4cf7b09c6c24c69db4d7"
+        },
+        "test": {
+          "path": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/test.jsonl",
+          "sha256": "c2aba112c4ee51b439f2a00889148677fb536fb516ac9a98b223960df4bc9032"
+        }
+      },
+      "builder_sha256": "fda9094eec92384ed8a5c1d8e012ca034ecdddf86c6a4dfc11ba35111ac83675",
+      "schema_sha256": "039cec3560e6e7655d2638caff556db95d5ad998d02fc5d8099dee03cccf5b26"
+    },
+    "splits": {
+      "train": {
+        "requests": 138792,
+        "source_groups": 23132,
+        "requests_sha256": "ea58ae371c7b8652da3f3fc9172e3ad8aa8e9aa18b1b30407ebc9fb1e4e361f1",
+        "targets_sha256": "16e8d62670dfdf06add142ba927fc56d369a3ccb3fbf1972dd41d355ae98a9c5"
+      },
+      "valid": {
+        "requests": 18708,
+        "source_groups": 3118,
+        "requests_sha256": "9a7d2a8b1fa9998265d97cacfe263a7d9060c6d53be63f53381fe61db7bb1cc1",
+        "targets_sha256": "bb5ab86a6ac992679c4a21836f53a05b665f73212f1ed7fa897c696eae7c5842"
+      },
+      "test": {
+        "requests": 22758,
+        "source_groups": 3793,
+        "requests_sha256": "796ee08f908eaecd7b5e92686171a85e1b0f9c36ad35941858860492715f04fd",
+        "targets_sha256": "66125831109ffe3471042ff43596b7e42fd5410874d74c47e489be25e0a3e875"
+      }
+    },
+    "contract": "audio + typed decision definition; targets/provenance separate; generated JSON and native typed logits are different execution routes"
+  }
+}

@@ -28,7 +28,8 @@ def score(requests, targets, predictions):
             ok=parsed and type(value) is type(target) and value==target
             correct+=ok;valid+=parsed
             labels=gold[uid]['metadata'].get('native_labels')
-            if not labels:has_native=False;continue
+            if not labels or gold[uid]['metadata'].get('variant')!='native':
+                has_native=False;continue
             candidates=request['input']['schema']['candidates']
             desc=next((c['description'] for c in candidates if c['id']==value),'') if parsed else ''
             decoded=dict(p.split('=',1) for p in desc.split('; ') if '=' in p)
