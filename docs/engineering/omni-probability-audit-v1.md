@@ -84,6 +84,36 @@ null，指数下溢输出 0 及标记，不裁剪成可接受值；无法有限�
 跨任务泛化有效。后续真实 actor 输出将通过本入口核验，权重训练仍遵循
 冻结基线 → 教师提示优化 → native/Jev 比较的当前优先级。
 
+## verl 张量输出衔接
+
+`omni_probability_capture.recompute` 将完整概率 DataProto 送入现有
+`omni_actor_forward.compute_log_probs`，在 `torch.no_grad()` 下仅调用一次
+actor，然后生成上述 `runs.json` 的一个运行对象。调用前核对原始记录哈希、
+策略/指令、完整唯一身份、右填充 mask、原始 token 和旧概率 FP32 副本；
+失败不调用 actor。调用后仅提取每条响应的有效 token，保留 EOS、length
+截止和 actor 输出精度，不把 float64 降成 float32。padding 的 NaN 不进入
+报告，有效位置的 NaN/正 logprob 拒绝导出。
+
+```python
+from multimodal_jev.omni_probability_capture import recompute
+
+# batch 必须由 make_probability_batch 构建；records 为认证的完整原始数组。
+run = recompute(actor, batch, records,
+                name="registered-run-name",
+                micro_batch_size=registered_micro_batch_size,
+                pad_token_id=processor.tokenizer.pad_token_id)
+```
+
+完整 DataProto 可以重排，导出以 `record_identity` 对齐，禁止依赖原数组行号
+猜测身份；遗漏响应的子批不能导出为完整运行。算概率时 worker 不接收
+old logprob 或奖励，原概率不会被新结果替换。接口无自动重试、采样或训练。
+也提供 `capture(data, log_probs, records, name=...)` 用于已获得的张量，
+但此低层接口不能证明传入概率来自所声称的 forward，调用者必须独立认证。
+
+集成测试使用真实 DataProto 与合成 actor 输出，覆盖两种音频数量、不同
+响应长度、完整重排、遗漏拒绝及同长度响应概率被错误互换时的数值失败。
+它验证数据衔接，不代表实际模型前向已经通过。
+
 ## 验证
 
 `tests/test_omni_probability_audit.py` 使用合成记录覆盖：全量身份对齐、
