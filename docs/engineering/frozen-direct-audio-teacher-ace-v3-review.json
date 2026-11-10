@@ -1,0 +1,31 @@
+{
+  "schema": "jev-direct-teacher-semantic-review-v1",
+  "reviewer": "codex-primary",
+  "reviewed_unix": 1794293587.8148537,
+  "parent_prompt_sha256": "b853a7948d0cf13238cdc16811adcb7e37b1ae21a4a3557e56bf44340cdb2de7",
+  "proposal_sha256": "df4185005b91a65cb9e21be0de55b1804ab82f2acd502f93624cfd147ac55ab1",
+  "source_response_sha256": "eb238333b924b08699804086ee64142ee13f31aba12cf0d0064539d50b7c0485",
+  "evaluation_eligible": [
+    "p1",
+    "p2"
+  ],
+  "prompt_selected": false,
+  "selection_or_test_items_read_for_review": false,
+  "candidates": [
+    {
+      "id": "p1",
+      "instruction_sha256": "b3bb2b921d6073aec6eb2e7c1714ecf3f7aa7435518f3f627c9b05a79bfcdd84",
+      "decision": "eligible_for_selection_evaluation",
+      "reason": "Outputs only supplied one-character label; preserves dynamic alternative conditions and fallback; no example answers, fixed candidate identities or none redefinition. Procedural matching/verification hypothesis requires actual evaluation.",
+      "local_edit": false
+    },
+    {
+      "id": "p2",
+      "instruction_sha256": "a9fbf94b7b7be1b8016ef6a071c9497842f8aa026ba6c77b7170919984ded184",
+      "decision": "eligible_for_selection_evaluation",
+      "reason": "Outputs only supplied one-character label; preserves dynamic alternative conditions and fallback; no example answers, fixed candidate identities or none redefinition. Procedural matching/verification hypothesis requires actual evaluation.",
+      "local_edit": false
+    }
+  ],
+  "scope": "FSC command semantics only; p2 discourages acoustic style cues, so no unrestricted prosody/emotion transfer claim"
+}
