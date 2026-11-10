@@ -24,3 +24,16 @@ def test_paired_discrimination_precedes_marginal_and_parent_wins_tie():
     assert min([parent, row('p2', 0, 0, 1000, 1)], key=module.rank)['id'] == 'parent'
     assert min([row('p1', 1, 4, 6), row('p2', 0, 200, 1000)], key=module.rank)['id'] == 'p1'
     assert min([row('p2', 0, 1, 100, 90), row('p1', 0, 1, 100)], key=module.rank)['id'] == 'p2'
+
+
+def test_pair_transitions_keep_boolean_types_and_do_not_pool_views():
+    requests=[{'id':str(i),'source_group':'g'+str(i//2)} for i in range(4)]
+    targets=[{'id':str(i),'target':True,'metadata':{'variant':'a' if i%2==0 else 'b'}} for i in range(4)]
+    parent={str(i):{'value':v} for i,v in enumerate([True,True,False,False])}
+    candidate={str(i):{'value':v} for i,v in enumerate([False,1,True,True])}
+    report=module.paired_outcomes(requests,targets,parent,candidate)
+    assert report['by_view']['a']['fixed']==1 and report['by_view']['a']['regressed']==1
+    assert report['by_view']['b']['fixed']==1 and report['by_view']['b']['regressed']==1
+    assert report['all_six_by_source_group']['fixed']==1
+    assert report['all_six_by_source_group']['regressed']==1
+    assert report['all_six_by_source_group']['mcnemar_exact_two_sided_p']==1.
