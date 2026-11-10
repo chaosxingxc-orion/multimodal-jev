@@ -20,3 +20,22 @@ synchronization. Those remain separate required integration steps. Run on four
 remote CPU threads with64GiB and no accelerator devices; preserve immutable
 source, exact container and terminal evidence. A failure is retained without
 automatic fallback or retry.
+
+## Retained v1 failure and explicit v2 revision
+
+The unmodified v1 container exited1 after the model forward. The pinned verl
+`logprobs_from_logits` dispatches by installed kernel availability, not tensor
+device, and attempted `npu::npu_cross_entropy_loss` on CPU logits. The
+[failure receipt](../docs/engineering/native-verl-actor-forward-v1-failure.json)
+retains the exact Docker state and application terminal hash. This is not a
+numerical parity failure and does not count as a passed native actor gate.
+
+Register v2 with the same recordings, model, dtype, thresholds and native actor
+source. Explicitly opt into `--cpu-logprob-adapter`, replacing only the actor's
+imported log-prob dispatcher during the comparison with CPU log_softmax/gather.
+The scoped adapter restores the original callable on exit and rejects non-CPU
+tensors; it does not edit the installed image or native forward implementation.
+Its float64 values and gradients match independent PyTorch cross entropy on
+noncontiguous logits within1e-12. Three CPU tests cover these checks, shape
+rejection and restoration after exceptions. The v2 result must identify this
+adapter; even a pass cannot be described as an unmodified native worker run.

@@ -9,6 +9,7 @@ import inspect
 import json
 from pathlib import Path
 import time
+from contextlib import nullcontext
 
 from multimodal_jev.baseline import atomic_json, file_hash
 
@@ -59,7 +60,9 @@ def run(args):
                          [[-2.]*len(ids) for ids in responses],[1.,0.,1.,0.],2)
         inputs={**batch.batch,**batch.non_tensor_batch}
         atomic_json(args.output/'progress.json',{'phase':'native_forward','heartbeat_unix':time.time()})
-        with torch.inference_mode():
+        from multimodal_jev.verl_cpu_logprobs import native_actor_cpu_logprobs
+        dispatch=(native_actor_cpu_logprobs() if args.cpu_logprob_adapter else nullcontext())
+        with torch.inference_mode(),dispatch:
             observed=actor._forward_micro_batch(inputs,temperature=1.,calculate_entropy=False)['log_probs']
             errors=[]
             for i,(example,wave,value) in enumerate(zip(rows,audios,values)):
@@ -80,9 +83,12 @@ def run(args):
             'example_ids':[ex.example_id for ex in examples],
             'audio_sha256':{ex.audio:ex.metadata['audio_sha256'] for ex in examples},
             'responses':4,'response_lengths':list(map(len,responses)),
+            'cpu_logprob_adapter':args.cpu_logprob_adapter,
             'max_logprob_error':max(errors),'per_response_error':errors,
             'atol':3e-4,'rtol':1e-5,'process_group':{'backend':'gloo','world_size':1},
-            'scope':'unmodified native verl actor microbatch forward versus unpadded HF on real audio; '
+            'scope':('native verl actor microbatch forward with explicit CPU log-prob adapter'
+                     if args.cpu_logprob_adapter else 'unmodified native verl actor microbatch forward')+
+                    ' versus unpadded HF on real audio; '
                     'controlled responses; no compute_log_prob wrapper, optimizer, Ray, FSDP or multi-rank validation'})
     finally:
         dist.destroy_process_group()
@@ -92,6 +98,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--config',type=Path,required=True)
     parser.add_argument('--actor-sha256',required=True)
+    parser.add_argument('--cpu-logprob-adapter',action='store_true')
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=False)
     try:
