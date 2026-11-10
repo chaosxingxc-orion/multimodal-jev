@@ -1,0 +1,154 @@
+{
+  "launch": {
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-long-audio-v2",
+    "container_id": "f7f4a6ec29f39907354d3fa78a5be473db02afa0bd56b31129f0ef64f8b80ad3",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "7b327f7a40030e041aa7eed3810ebdffb064cdd2",
+    "intent_sha256": "d926b6d5d8b7f146375f2e4c7ad34de5956aa29aaee6996ea4a3955e4fa394d3",
+    "devices": [],
+    "automatic_retry": false
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T10:46:33.49247891Z",
+    "FinishedAt": "2026-11-10T10:47:11.05749435Z"
+  },
+  "result": {
+    "status": "passed",
+    "prior_result_sha256": "8f11a9ac9afc56b17ae635cd859d90e7610f391539061018375c8fdddeb791c7",
+    "records": [
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_10_2.wav",
+        "audio_seconds": [
+          39.65075,
+          0.8359375
+        ],
+        "expected_frames": [
+          3965,
+          84
+        ],
+        "observed_frames": [
+          3965,
+          84
+        ],
+        "input_tokens": 1278,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_2/train_id/id_397.wav",
+        "audio_seconds": [
+          31.6630625
+        ],
+        "expected_frames": [
+          3166
+        ],
+        "observed_frames": [
+          3166
+        ],
+        "input_tokens": 1071,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_11_2.wav",
+        "audio_seconds": [
+          32.1623125,
+          2.1130625
+        ],
+        "expected_frames": [
+          3216,
+          212
+        ],
+        "observed_frames": [
+          3216,
+          212
+        ],
+        "input_tokens": 1253,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_3_1.wav",
+        "audio_seconds": [
+          31.1754375
+        ],
+        "expected_frames": [
+          3117
+        ],
+        "observed_frames": [
+          3117
+        ],
+        "input_tokens": 1159,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_3_2.wav",
+        "audio_seconds": [
+          31.1754375,
+          2.55425
+        ],
+        "expected_frames": [
+          3117,
+          256
+        ],
+        "observed_frames": [
+          3117,
+          256
+        ],
+        "input_tokens": 1416,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_11_1.wav",
+        "audio_seconds": [
+          32.1623125
+        ],
+        "expected_frames": [
+          3216
+        ],
+        "observed_frames": [
+          3216
+        ],
+        "input_tokens": 1057,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_1/train_id/id_507.wav",
+        "audio_seconds": [
+          30.92
+        ],
+        "expected_frames": [
+          3092
+        ],
+        "observed_frames": [
+          3092
+        ],
+        "input_tokens": 1188,
+        "fits_4096_with_1024_output": true
+      },
+      {
+        "example_id": "sfc:audio/final_data_audio/level_3_2/train_id/id_10_1.wav",
+        "audio_seconds": [
+          39.65075
+        ],
+        "expected_frames": [
+          3965
+        ],
+        "observed_frames": [
+          3965
+        ],
+        "input_tokens": 1071,
+        "fits_4096_with_1024_output": true
+      }
+    ],
+    "all_fit": true,
+    "interpretation": "feature_extractor.n_samples is not an Omni model audio limit; official processor disables truncation",
+    "scope": "All eight original audit exclusions, actual HF features and full frame masks; no vLLM or generation evidence. Original audit retained."
+  }
+}

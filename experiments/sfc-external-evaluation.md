@@ -148,3 +148,25 @@ Twenty-two input/runtime tests pass; actual engine generation is still pending.
 After successful execution, score precisely these six TRAIN turns using the
 existing SFC official-plus-strict scorer, separately from full ID/OOD results.
 Do not use the generic FSC/SLURP watcher, which selects a different scorer.
+
+## Completed HF context audit and long-audio correction
+
+The complete CPU audit has finished. Its conservative `n_samples` threshold
+initially excluded eight TRAIN requests, while all ID/OOD inputs were processed.
+Inspecting the exact image's processor source showed Omni sets `truncation=False`;
+the default Whisper 30-second length is not an Omni model duration limit.
+Those eight requests were independently processed in a preserved supplement,
+including the longest 39.65075-second recording. All frame masks match full
+untruncated waveforms and all requests fit the registered context budget.
+The first supplement failed because our frame-count check omitted Whisper's
+final STFT-frame removal; its failure is retained and a corrected verifier
+with boundary tests completed in a new container.
+
+Combined evidence: `docs/engineering/sfc-qwen3-omni-complete-context-v1.json`.
+All 8895 inputs now have actual HF context measurements: maximum input lengths
+1486/1378/1020 tokens for TRAIN/ID/OOD, plus1024 output fits4096 throughout.
+This does not prove the actual vLLM multimodal engine handles them equivalently.
+The prepared six-turn probe contains no >30-second audio; its conservative
+guard must not be reused as a full-data exclusion rule. A future full runner
+must preserve long audio and verify complete feature coverage, rather than
+dropping it based on `feature_extractor.n_samples`.

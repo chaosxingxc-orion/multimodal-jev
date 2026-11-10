@@ -1,0 +1,29 @@
+{
+  "original_audit_result_sha256": "8f11a9ac9afc56b17ae635cd859d90e7610f391539061018375c8fdddeb791c7",
+  "long_audio_result_sha256": "51ddce16bde24f242baaa579317d8e97d67a93b91efc3bf21622b3f5a99d2ad0",
+  "splits": {
+    "train_id": {
+      "records": 5534,
+      "min_input_tokens": 280,
+      "max_input_tokens": 1486,
+      "context_overflow": 0
+    },
+    "test_id": {
+      "records": 2590,
+      "min_input_tokens": 278,
+      "max_input_tokens": 1378,
+      "context_overflow": 0
+    },
+    "test_ood": {
+      "records": 771,
+      "min_input_tokens": 276,
+      "max_input_tokens": 1020,
+      "context_overflow": 0
+    }
+  },
+  "total_records": 8895,
+  "context_limit": 4096,
+  "output_budget": 1024,
+  "all_inputs_fit": true,
+  "scope": "Original actual HF processor audit plus all eight untruncated long-audio supplements. No vLLM engine or generation equivalence claim."
+}
