@@ -1,0 +1,156 @@
+{
+  "model": "/mnt/cephfs/xingchao/models/qwen3-omni-30b-a3b-instruct",
+  "observed_unix": 1794352858.2661936,
+  "method": "Read safetensors headers and offsets only; no tensor/model load, no forward and no full shard rehash. Config/index checked against original accepted model inventory.",
+  "config_sha256": "eab5093d47807aaf894119506b238b2b1cee70d08456e894fee9a012d88f2e0d",
+  "index_sha256": "03ffe9a54efe9007ceb788c2b036f5c589094918c4582add4e92bc17e1cba838",
+  "headers": [
+    {
+      "file": "model-00001-of-00015.safetensors",
+      "header_bytes": 187528,
+      "header_sha256": "571d9c82c666870c50e955c5f2066b1cc801122f10b9f5f7b0860c0bbe733e4f"
+    },
+    {
+      "file": "model-00002-of-00015.safetensors",
+      "header_bytes": 206176,
+      "header_sha256": "28b00c77943e851dd0bde05472b7ca565be145230c12d6103b1f64d692d95b01"
+    },
+    {
+      "file": "model-00003-of-00015.safetensors",
+      "header_bytes": 206176,
+      "header_sha256": "254184d0db29fce9f17fac0ac884ca5ecb79b74725cb20fbaba17e9abe475639"
+    },
+    {
+      "file": "model-00004-of-00015.safetensors",
+      "header_bytes": 207608,
+      "header_sha256": "7c6cdbf008cb336bf6e90fd1249546e3c8fc30d5aef513c46713da9d3fcafb4c"
+    },
+    {
+      "file": "model-00005-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "5a836aaf5379d6c08889b27764b3cace147b15d517bbcc8819d165c85c395db8"
+    },
+    {
+      "file": "model-00006-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "d7a75f3483f075514e696596a434714d59652c07a12c60caad19176377589fba"
+    },
+    {
+      "file": "model-00007-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "55afb6d5632f039b7c0eebaac958270be23eb3a41f1bdce4aaf7d8f0c037caf9"
+    },
+    {
+      "file": "model-00008-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "ae048fe3d6547e985ccbba9bcf7e9edaaef4714bc538945f3bed6f161a12e31c"
+    },
+    {
+      "file": "model-00009-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "051bbc0b12037df5e13858f0a57f9d3f46ec8260e5b57f1c00bb61c31221dd53"
+    },
+    {
+      "file": "model-00010-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "3a010172fc13c5ae882b00ee46983aa15e7d48b9bbc61e76490d8bcfd4fdbb6e"
+    },
+    {
+      "file": "model-00011-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "9cc0e524c6abccbb4249936784cf4e0b131a43e84cc2afffd845282f25dd958d"
+    },
+    {
+      "file": "model-00012-of-00015.safetensors",
+      "header_bytes": 207752,
+      "header_sha256": "6aef623be18f2ec5107637e22fde8ad3e9e580d6a3c5551cbb14cd8c1cca19b7"
+    },
+    {
+      "file": "model-00013-of-00015.safetensors",
+      "header_bytes": 366744,
+      "header_sha256": "d1cc72c0d3ef20fb46c4267431071c40d51b770d0495d4064baaf7b78bca3e05"
+    },
+    {
+      "file": "model-00014-of-00015.safetensors",
+      "header_bytes": 794928,
+      "header_sha256": "8b0b91965e9e750a8b7b428e986e20853418e77c911089a63c7995b556c0f667"
+    },
+    {
+      "file": "model-00015-of-00015.safetensors",
+      "header_bytes": 30816,
+      "header_sha256": "ff4d6d7dc48b9cf98d3ef04852b7d9dfa62c85d5cf967df2d4495766e4dae8ba"
+    }
+  ],
+  "groups": {
+    "audio": {
+      "tensors": 525,
+      "parameters": 647927168,
+      "bytes": 1295854336
+    },
+    "embedding": {
+      "tensors": 1,
+      "parameters": 311427072,
+      "bytes": 622854144
+    },
+    "decoder": {
+      "tensors": 18864,
+      "parameters": 29909790720,
+      "bytes": 59819581440
+    },
+    "other_thinker": {
+      "tensors": 351,
+      "parameters": 538631408,
+      "bytes": 1077262816
+    },
+    "output_head": {
+      "tensors": 1,
+      "parameters": 311427072,
+      "bytes": 622854144
+    },
+    "final_norm": {
+      "tensors": 1,
+      "parameters": 2048,
+      "bytes": 4096
+    }
+  },
+  "thinker_parameters": 31719205488,
+  "thinker_bytes": 63438410976,
+  "thinker_gib": 59.08162423968315,
+  "vocab_size": 152064,
+  "hardware": "Ascend 910B3: npu-smi reports 65536 MiB per physical device; authorized devices 4,5,6,7 currently occupied by existing baselines.",
+  "output_allocations": [
+    {
+      "batch": 1,
+      "sequence": 1230,
+      "bf16_full_logits_bytes": 374077440,
+      "bf16_full_logits_gib": 0.3483867645263672,
+      "fp32_response_logits_upper_bytes": 622854144,
+      "fp32_response_logits_upper_gib": 0.580078125
+    },
+    {
+      "batch": 1,
+      "sequence": 4096,
+      "bf16_full_logits_bytes": 1245708288,
+      "bf16_full_logits_gib": 1.16015625,
+      "fp32_response_logits_upper_bytes": 622854144,
+      "fp32_response_logits_upper_gib": 0.580078125
+    },
+    {
+      "batch": 2,
+      "sequence": 1230,
+      "bf16_full_logits_bytes": 748154880,
+      "bf16_full_logits_gib": 0.6967735290527344,
+      "fp32_response_logits_upper_bytes": 1245708288,
+      "fp32_response_logits_upper_gib": 1.16015625
+    },
+    {
+      "batch": 2,
+      "sequence": 4096,
+      "bf16_full_logits_bytes": 2491416576,
+      "bf16_full_logits_gib": 2.3203125,
+      "fp32_response_logits_upper_bytes": 1245708288,
+      "fp32_response_logits_upper_gib": 1.16015625
+    }
+  ],
+  "scope": "Static allocation estimate, not measured peak memory or proof that any NPU placement or training fits."
+}
