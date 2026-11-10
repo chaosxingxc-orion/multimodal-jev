@@ -1,0 +1,47 @@
+{
+  "schema": "jev-omni-transfer-readiness-launch-v1",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-transfer-readiness-v1",
+  "launch": {
+    "pid": 2710531,
+    "process_start": "288261984",
+    "started_unix": 1794305964.0186136,
+    "source_commit": "26cfcd3e39b95729765fe39fbf17ba8fcdcf5492",
+    "intent_sha256": "25015d53a506be3c18a248fc781a510e029c447ebb873c1a10f5097e84cc9964",
+    "argv": [
+      "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+      "-B",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-transfer-readiness-v1/source/tools/jev/watch_omni_transfer_readiness.py",
+      "--root",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-transfer-readiness-v1"
+    ],
+    "automatic_retry": false,
+    "dispatch": false
+  },
+  "verified_unix": 1794305986.2113702,
+  "observer_progress": {
+    "phase": "waiting_dependencies",
+    "ready": {
+      "selection": false,
+      "train_validation": false
+    },
+    "heartbeat_unix": 1794305984.1799593
+  },
+  "dependency_progress": {
+    "native_test": {
+      "phase": "decision",
+      "done": 401,
+      "total": 13078,
+      "heartbeat_unix": 1794305904.6103225
+    },
+    "selection_parent": {
+      "phase": "decision",
+      "done": 1283,
+      "total": 1536,
+      "heartbeat_unix": 1794305905.5845826
+    }
+  },
+  "validation_inference_sources_equal": true,
+  "full_queue_exists": false,
+  "tests": "9 passed: readiness, TRAIN validation and full transfer queue",
+  "scope": "Prepare-only observer. No new model inference or weight training dispatched. No efficacy claim or TEST semantic inspection."
+}

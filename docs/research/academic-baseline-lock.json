@@ -102,9 +102,9 @@
           "provenance": "author_report_not_local_reproduction"
         }
       ],
-      "local_status": "主进程已校验 SLU 与递归 ASR 依赖全部 16 文件；隔离镜像 import/依赖检查和官方 decode_batch 单条 TRAIN CPU 推理通过；全量 test 未运行",
+      "local_status": "完整官方 TEST 3793 条公开任务权重复测完成；joint 3774/3793（99.499077%）；原始预测独立复算一致。不是零训练基座或历史训练全过程复现。",
       "blockers": [
-        "当前 pinned 官方 inference 版本不等于 2021 训练环境；完整 test 推理及原生指标复测待完成"
+        "历史 2021 训练环境未重建；当前固定官方推理环境的权重复测已完成，不能据此声称历史训练逐参数复现。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,
@@ -118,18 +118,32 @@
       },
       "inference_settings": {
         "decoding": "Released checkpoint hyperparams verified: beam 80, temperature 1.25, eos threshold 1.5; no decoder override",
-        "precision": "float32 (local TRAIN probe)",
+        "precision": "float32 (CPU official decoder, complete TEST)",
         "max_output_tokens": null,
         "sampling_rate_hz": 16000,
-        "note": "CPU float32 verified on one TRAIN recording; full test run pending"
+        "note": "Released checkpoint decoder settings; complete 3793-recording official TEST, seed 17, CPU 4 threads; no transcript supplied to decoder."
       },
       "reference_role": "academic method or official publisher reference",
       "primary_table": "native dataset-specific or external reference; see comparison_scope",
       "local_evidence": [
         "docs/engineering/fsc-speechbrain-assets-v1.json",
         "docs/engineering/speechbrain-runtime-v1-build.json",
-        "docs/engineering/fsc-speechbrain-probe-v1-result.json"
-      ]
+        "docs/engineering/fsc-speechbrain-probe-v1-result.json",
+        "docs/engineering/fsc-speechbrain-official-v1-test-result.json"
+      ],
+      "local_result": {
+        "metric": "joint intent accuracy",
+        "value": 99.4990772475613,
+        "unit": "percent",
+        "correct": 3774,
+        "examples": 3793,
+        "split": "official test",
+        "provenance": "local_official_weight_retest",
+        "evidence": "docs/engineering/fsc-speechbrain-official-v1-test-result.json",
+        "evidence_sha256": "4081701d0091cce503790e43370444705d3bd6bc086c23ee0e51031137638483",
+        "predictions_sha256": "b409f9b2658ff263ab2578fc299c7390d0becd0620b1c39f7d213e2945199e7b",
+        "difference_from_published_percentage_points": -0.10092275243869153
+      }
     },
     {
       "id": "slurp-original-hermit",
