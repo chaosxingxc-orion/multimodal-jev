@@ -135,3 +135,10 @@ attempt记录、预算和模型前后身份；不自动派发1000条正式生成
 PID/argv/zombie、失败前驱、重新核对完成容器、同ID观察重试及禁止重放。
 完成分支使用合成fixture；测试不代替实际NPU容量运行。等待上限350000秒，
 容量观察上限3900秒，实际推理预算仍为3600秒加30秒。
+
+队列已实际启动：PID `3013315`、process_start `292732379`，源码`7025b12`，
+plan SHA `6656d69c89453f31bf5dcaf96d3aeb808b5ba7dc06005f4004ddf9c52837f5af`。
+协调者核对124份队列源码与Git、原预检查实际容器，以及`/proc`中的完整argv、
+进程start与非zombie状态；当前progress为`waiting_decode_execution`。
+见[队列启动记录](mmar-omni-capacity-v2-queued.json)。没有创建容量容器，也没有
+MMAR生成或评分结果；后续真正派发与容量终态仍需实际核验。
