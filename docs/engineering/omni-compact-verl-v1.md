@@ -399,3 +399,9 @@ decoder一致性，不能代替原0.1概率阈值或NPU/vLLM验证。
 张量审计、镜像测试证据与候选源码一致性，实际inspect核对命令/挂载/资源。
 见[启动身份](omni-fp32-decoder-divergence-v1-launched.json)。当前尚在运行，
 不将局部MoE通过描述为48层或完整actor一致性通过。
+
+运行中外部已单独加载第0层九份完整tensor，核对输入精确等于原实际prefix，
+六条×10阶段×有效/完整padding的120项比较全部相等，见
+[第0层部分审计](omni-fp32-decoder-layer00-partial-v1.json)。该记录不代替终态
+审计，也未复算本层相对原BF16参考的偏差。第1层运行报告同样无批间差异，
+后续层仍在执行，全部终态证据待完成后核验。
