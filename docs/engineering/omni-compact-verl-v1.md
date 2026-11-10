@@ -45,3 +45,17 @@ identity明确记录compact_keys_enabled=true、compact_candidate=null：此处�
 输入，没有把运行中的候选当作已验收，也没有加载模型或执行actor.compute_log_prob。
 宿主被跳过的测试模块仍属于宿主未执行；实际镜像预检查补充真实DataProto运行证据，
 不冒充同一套单元测试已在镜像重跑。新的完整actor比较仍等待六条候选全部通过。
+
+## 完整 actor 输出的独立验收约束
+
+`verify_omni_pretrained_verl.py`现明确区分默认actor与compact候选。默认路径拒绝
+混入未绑定的compact标志、候选或attention记录；compact路径要求三个完整且唯一
+的候选参数，重新执行六条候选logits门禁，并逐项核对identity中的候选身份及实际
+actor helper SHA。使用原始无padding前向的prompt长度和固定顺序重建每个microbatch
+的48层调用，核对逐样本key长度、query长度和mask模式，并核对实际容器挂载/环境。
+候选是否完成仍由外部协调者实际inspect确定，保存的inspection自身不是信任根。
+
+相关70项测试通过，其中新增20项覆盖缺参数、候选/adapter错配、层/样本/批次错位、
+原长度改变、依赖失败、默认路径混入compact及完整验收中的挂载/环境偏差。测试使用
+合成信封并mock候选验收；真实候选张量检查由既有独立测试和后续实际运行验收承担。
+本次未启动新的完整actor，也未改变已通过预检查的运行源码快照`dd1e447`。

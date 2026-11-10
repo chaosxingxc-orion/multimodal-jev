@@ -50,6 +50,42 @@ def check_probabilities(reference, microbatches, comparison, result):
     return dict(microbatch=between, unpadded=unpadded)
 
 
+def check_compact_contract(argv, identity, sources, original, microbatches):
+    """Bind the opt-in actor to the fully accepted candidate and actual calls."""
+    flags = ('--compact-keys-root', '--compact-keys-inspection', '--compact-keys-inspection-hash')
+    enabled = any(flag in argv for flag in flags)
+    if not enabled:
+        require(identity.get('compact_keys_enabled', False) is False
+                and identity.get('compact_candidate') is None
+                and all(m.get('compact_attention_records') is None for m in microbatches),
+                'compact execution cannot be accepted as the default actor')
+        return None
+    require(all(argv.count(flag) == 1 and argv.index(flag)+1 < len(argv) for flag in flags),
+            'complete unique compact candidate arguments required')
+    require(identity.get('compact_keys_enabled') is True, 'compact actor flag required')
+    from multimodal_jev.omni_compact_acceptance import require_candidate
+    candidate = require_candidate(*(argv[argv.index(flag)+1] for flag in flags))
+    require(identity.get('compact_candidate') == candidate, 'actual accepted compact candidate binding differs')
+    require(sources.get('src/multimodal_jev/omni_compact_attention.py') == candidate['adapter_sha256'],
+            'actual actor adapter differs from accepted candidate')
+    order = [2, 0, 5, 1, 3, 4]
+    lengths = [original['responses'][i]['prompt_tokens'] + 2 for i in order]
+    require(all(type(n) is int and 0 < n <= 1230 for n in lengths) and max(lengths) == 1230,
+            'original full prompt lengths required')
+    for size, micro in zip((1, 2), microbatches, strict=True):
+        expected = []
+        for offset in range(0, 6, size):
+            keys = lengths[offset:offset+size]
+            for layer in range(48):
+                event = dict(layer=layer, mode='unchanged_no_mask' if all(n == 1230 for n in keys)
+                             else 'compact_masked_keys', query_length=1230, key_lengths=keys)
+                if event['mode'] == 'compact_masked_keys': event['original_key_length'] = 1230
+                expected.append(event)
+        require(micro.get('compact_attention_records') == expected,
+                'actual compact attention layers or microbatch row coverage differs')
+    return candidate
+
+
 def accept(root, launch_hash, inspection, inspection_hash):
     require(sha(root/'launch.json') == launch_hash and sha(inspection) == inspection_hash, 'registered evidence changed')
     launch = read(root/'launch.json'); intent = read(root/'intent.json'); state = read(inspection)
@@ -120,6 +156,11 @@ def accept(root, launch_hash, inspection, inspection_hash):
     require(sorted(p.name for p in run.glob('microbatch-*.json')) == ['microbatch-1.json', 'microbatch-2.json'],
             'exact microbatch artifact roster required')
     microbatches = [read(run/f'microbatch-{i}.json') for i in (1, 2)]
+    candidate = check_compact_contract(argv, identity, sources, original, microbatches)
+    if candidate is not None:
+        require(set(host.get('Binds', [])) == {argv[i+1] for i,v in enumerate(argv) if v == '-v'}
+                and all(argv[i+1] in state['Config'].get('Env', []) for i,v in enumerate(argv) if v == '-e'),
+                'compact actor mounts or environment differ')
     require(sum(m['seconds'] for m in microbatches) <= result['elapsed_seconds'], 'inconsistent elapsed time')
     errors = check_probabilities([original['responses'][i]['response_log_probs'] for i in order],
                                 microbatches, read(run/'comparison.json'), result)
@@ -127,6 +168,7 @@ def accept(root, launch_hash, inspection, inspection_hash):
         source_commit=launch['source_commit'], launch_sha256=launch_hash, inspection_sha256=inspection_hash,
         artifact_sha256={p.name:sha(p) for p in run.glob('*.json')}, recomputed_errors=errors,
         atol=.1, forwards_per_condition=6, micro_batch_sizes=[1,2], weight_updates=0,
+        compact_keys_enabled=candidate is not None, compact_candidate=candidate,
         elapsed_seconds=result['elapsed_seconds'], peak_rss_kib=result['peak_rss_kib'], verifier_sha256=sha(__file__),
         scope='Offline artifact/source/container acceptance of CPU pretrained verl comparison. '
               'Controlled false+EOS responses, explicit CPU adapters; no NPU/vLLM parity or task quality.')

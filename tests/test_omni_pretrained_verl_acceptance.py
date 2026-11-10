@@ -6,7 +6,7 @@ import json
 import pytest
 
 sys.path.insert(0,str(Path(__file__).parents[1]/'tools/jev'))
-from verify_omni_pretrained_verl import check_probabilities, accept, sha
+from verify_omni_pretrained_verl import check_probabilities, check_compact_contract, accept, sha
 
 
 def fixture():
@@ -107,3 +107,109 @@ def test_complete_artifact_chain(tmp_path,change):
         assert result['forwards_per_condition']==6 and result['weight_updates']==0
     else:
         with pytest.raises(ValueError):accept(root,sha(root/'launch.json'),inspection,sha(inspection))
+
+
+def compact_fixture(monkeypatch):
+    """Synthetic call envelope; real candidate admission has separate tensor tests."""
+    import multimodal_jev.omni_compact_acceptance as admission
+    candidate = dict(adapter_sha256='adapter', rows=6, recomputed_reference_errors=[0.]*6)
+    def dependency(root, inspection, pin):
+        assert (root, inspection, pin) == ('candidate-root', 'actual-inspection', 'inspection-hash')
+        return deepcopy(candidate)
+    monkeypatch.setattr(admission, 'require_candidate', dependency)
+    argv = ['--compact-keys-root', 'candidate-root', '--compact-keys-inspection', 'actual-inspection',
+            '--compact-keys-inspection-hash', 'inspection-hash']
+    identity = dict(compact_keys_enabled=True, compact_candidate=deepcopy(candidate))
+    sources = {'src/multimodal_jev/omni_compact_attention.py': 'adapter'}
+    original = dict(responses=[dict(prompt_tokens=n) for n in [1074,976,1228,977,709,826]])
+    batches = ([[1230], [1076], [828], [978], [979], [711]],
+               [[1230,1076], [828,978], [979,711]])
+    micros = []
+    for groups in batches:
+        events = []
+        for group in groups:
+            for layer in range(48):
+                event = dict(layer=layer, query_length=1230, key_lengths=group,
+                             mode='unchanged_no_mask' if group == [1230] else 'compact_masked_keys')
+                if group != [1230]: event['original_key_length'] = 1230
+                events.append(event)
+        micros.append(dict(compact_attention_records=events))
+    return argv, identity, sources, original, micros
+
+
+@pytest.mark.parametrize('change', [None, 'missing_flag', 'duplicate_flag', 'disabled', 'candidate',
+                                  'adapter', 'missing_layer', 'wrong_sample', 'batch_order', 'no_records',
+                                  'width', 'unexpected_no_mask', 'prompt_length', 'dependency_failure'])
+def test_compact_candidate_and_actual_layer_coverage(monkeypatch, change):
+    args = compact_fixture(monkeypatch)
+    argv, identity, sources, original, micros = args
+    if change == 'missing_flag': del argv[2:4]
+    if change == 'duplicate_flag': argv += argv[:2]
+    if change == 'disabled': identity['compact_keys_enabled'] = False
+    if change == 'candidate': identity['compact_candidate']['rows'] = 5
+    if change == 'adapter': sources['src/multimodal_jev/omni_compact_attention.py'] = 'other'
+    if change == 'missing_layer': micros[0]['compact_attention_records'].pop()
+    if change == 'wrong_sample': micros[1]['compact_attention_records'][0]['key_lengths'] = [1230, 978]
+    if change == 'batch_order': micros.reverse()
+    if change == 'no_records': micros[0]['compact_attention_records'] = None
+    if change == 'width': micros[0]['compact_attention_records'][0]['query_length'] = 1228
+    if change == 'unexpected_no_mask': micros[1]['compact_attention_records'][0]['mode'] = 'unchanged_no_mask'
+    if change == 'prompt_length': original['responses'][0]['prompt_tokens'] += 1
+    if change == 'dependency_failure':
+        import multimodal_jev.omni_compact_acceptance as admission
+        def fail(*args): raise ValueError('candidate not yet accepted')
+        monkeypatch.setattr(admission, 'require_candidate', fail)
+    if change is None:
+        assert check_compact_contract(*args)['rows'] == 6
+    else:
+        with pytest.raises(ValueError): check_compact_contract(*args)
+
+
+@pytest.mark.parametrize('field', ['compact_keys_enabled', 'compact_candidate', 'compact_attention_records'])
+def test_default_acceptance_rejects_unbound_compact_run(tmp_path, field):
+    root, inspection = complete_fixture(tmp_path)
+    path = root / 'run' / ('microbatch-1.json' if field == 'compact_attention_records' else 'identity.json')
+    data = json.loads(path.read_text()); data[field] = True
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match='default actor'):
+        accept(root, sha(root/'launch.json'), inspection, sha(inspection))
+
+
+@pytest.mark.parametrize('change', [None, 'mount', 'environment'])
+def test_full_compact_acceptance_envelope(tmp_path, monkeypatch, change):
+    root, inspection = complete_fixture(tmp_path)
+    flags, compact_identity, _, original, micros = compact_fixture(monkeypatch)
+    def read(path): return json.loads(path.read_text())
+    def write(path, value): path.write_text(json.dumps(value))
+    adapter = root/'source/src/multimodal_jev/omni_compact_attention.py'
+    adapter.parent.mkdir(parents=True); adapter.write_text('# synthetic adapter fixture\n')
+    compact_identity['compact_candidate']['adapter_sha256'] = sha(adapter)
+    import multimodal_jev.omni_compact_acceptance as admission
+    monkeypatch.setattr(admission, 'require_candidate', lambda *args: deepcopy(compact_identity['compact_candidate']))
+    prior = tmp_path/'prior/run/result.json'; data = read(prior)
+    for row, lengths in zip(data['responses'], original['responses'], strict=True): row.update(lengths)
+    write(prior, data)
+    accepted = tmp_path/'accepted.json'; data = read(accepted); data['result_sha256'] = sha(prior); write(accepted, data)
+    intent = read(root/'intent.json'); argv = intent['argv']
+    argv[2:2] = ['-v', 'fixture:fixture:ro', '-e', 'FIXTURE=true']
+    argv += flags; argv[argv.index('--acceptance-hash')+1] = sha(accepted)
+    intent['acceptance_sha256'] = sha(accepted)
+    intent['source_files']['src/multimodal_jev/omni_compact_attention.py'] = sha(adapter)
+    write(root/'intent.json', intent)
+    launch = read(root/'launch.json'); launch['intent_sha256'] = sha(root/'intent.json'); write(root/'launch.json', launch)
+    identity = read(root/'run/identity.json'); identity.update(compact_identity)
+    identity['source_files'] = intent['source_files']; identity['prior_acceptance_sha256'] = sha(accepted)
+    write(root/'run/identity.json', identity)
+    for i, records in enumerate(micros, 1):
+        path = root/f'run/microbatch-{i}.json'; data = read(path); data.update(records); write(path, data)
+    state = read(inspection); state['Config'].update(Cmd=argv[argv.index('image')+1:], Env=['FIXTURE=true'])
+    state['HostConfig']['Binds'] = ['fixture:fixture:ro']
+    if change == 'mount': state['HostConfig']['Binds'] = []
+    if change == 'environment': state['Config']['Env'] = []
+    write(inspection, state)
+    if change is None:
+        result = accept(root, sha(root/'launch.json'), inspection, sha(inspection))
+        assert result['compact_keys_enabled'] and result['compact_candidate']['rows'] == 6
+    else:
+        with pytest.raises(ValueError, match='mounts or environment'):
+            accept(root, sha(root/'launch.json'), inspection, sha(inspection))
