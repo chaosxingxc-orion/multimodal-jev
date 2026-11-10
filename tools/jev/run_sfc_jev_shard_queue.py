@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare and execute a complete parent SFC-Jev population, without replay."""
+"""Prepare and execute a complete fixed-prompt SFC-Jev population, without replay."""
 import argparse
 import fcntl
 import hashlib
@@ -20,6 +20,7 @@ from verify_sfc_jev_shard import accept as accept_shard
 from verify_sfc_jev_context import verify as verify_context
 from watch_sfc_native_full import dispatch_once
 from merge_sfc_jev_shards import score as merge_score
+from multimodal_jev.sfc_candidate_execution import context_spec
 
 
 def code_files(source):
@@ -68,7 +69,9 @@ def check_template(cfg):
         raise ValueError('template must bind first shard of complete population')
     select_inputs(cfg);check_probe(cfg)
     accept_probe(Path(cfg['jev_probe']))
-    context=verify_context(Path(cfg['context_audit']))
+    spec=context_spec(cfg)
+    context=(verify_context(Path(cfg['context_audit'])) if spec is None else
+             verify_context(Path(cfg['context_audit']),candidate=spec))
     if (context['container_id']!=cfg['context_container_id']
             or context['result_sha256']!=cfg['context_result_sha256'] or context['all_inputs_fit'] is not True):
         raise ValueError('exact successful complete CPU audit required')
@@ -106,7 +109,7 @@ def prepare(root,template,template_hash,scorer,scorer_hash,source_commit):
         official_scorer=str(Path(scorer).resolve()),official_scorer_sha256=scorer_hash,
         scorer_versions=versions,
         automatic_retry=False,dispatched=False,
-        scope='Complete parent population. Preparation does not allocate NPU, call a teacher or train weights.')
+        scope='Complete fixed-prompt population. Preparation does not allocate NPU, call a teacher or train weights.')
     atomic_json(root/'queue-plan.json',intent)
     return intent
 
@@ -149,6 +152,11 @@ def prepare_shard(root,intent,template,shard_id):
         '/etc/hccn.conf','/etc/ascend_install.info','/mnt/cephfs/xingchao/models','/mnt/cephfs/xingchao/datasets',
         cfg['jev_probe'],cfg['context_audit'])}
     for key in ('shard_plan','asset_audit'):mounts.add(Path(cfg[key]).parent)
+    if cfg['prompt_id']!='parent':
+        teacher_root=Path(cfg['candidate']['staging']).parent
+        mounts.add(teacher_root)
+        mounts.add(Path(read(teacher_root/'teacher-call-intent.json')['executor']).parent)
+        mounts.add(Path(cfg['candidate']['review']).parent)
     plan=read(cfg['shard_plan'])
     if plan['partition'] is not None:mounts.add(Path(plan['partition']['path']).parent)
     for path in sorted(mounts):argv+=['-v',f'{path}:{path}:ro']

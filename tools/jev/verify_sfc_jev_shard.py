@@ -11,12 +11,15 @@ from infer_sfc_jev_omni_shard import SOURCE_FILES
 from verify_sfc_jev_probe import accept as accept_probe
 from verify_sfc_jev_context import verify as verify_context
 from watch_qwen3_omni_probe import inspect
+from multimodal_jev.sfc_candidate_execution import context_spec
 
 
 def accept(root):
     cfg=read(root/'config.json');rows,plan,checks=select_inputs(cfg);probe=check_probe(cfg)
     accept_probe(Path(cfg['jev_probe']))
-    context=verify_context(Path(cfg['context_audit']))
+    spec=context_spec(cfg)
+    context=(verify_context(Path(cfg['context_audit'])) if spec is None else
+             verify_context(Path(cfg['context_audit']),candidate=spec))
     if (context['container_id']!=cfg['context_container_id']
             or context['result_sha256']!=cfg['context_result_sha256'] or not context['all_inputs_fit']):
         raise ValueError('exact full CPU audit acceptance required')
@@ -51,7 +54,7 @@ def accept(root):
         raise ValueError('whole registered shard coverage required')
     return dict(schema='sfc-jev-shard-engine-acceptance-v1',root=str(root.resolve()),container_id=item['Id'],
         shard_plan_sha256=cfg['shard_plan_sha256'],shard_id=cfg['shard_id'],split=cfg['split'],
-        prompt_id='parent',instruction_sha256=cfg['instruction_sha256'],bundles=len(rows),decisions=len(keys),
+        prompt_id=cfg['prompt_id'],instruction_sha256=cfg['instruction_sha256'],bundles=len(rows),decisions=len(keys),
         source_groups=len({r['source_group'] for r in rows}),result_sha256=file_hash(run/'result.json'),
         predictions_sha256=file_hash(run/'predictions.jsonl'),verifier_sha256=file_hash(__file__),
         targets_read=False,weight_updates=0,

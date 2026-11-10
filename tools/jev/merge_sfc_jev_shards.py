@@ -43,7 +43,7 @@ def collect(plan_path,plan_hash,roster_path,roster_hash):
                 or receipt['shard_id']!=shard['id'] or receipt['shard_plan_sha256']!=plan_hash
                 or receipt['split']!=plan['split'] or receipt['bundles']!=shard['bundles']
                 or receipt['decisions']!=shard['decisions'] or receipt['source_groups']!=len(shard['source_groups'])
-                or receipt['prompt_id']!='parent' or receipt['instruction_sha256']!=cfg['instruction_sha256']
+                or receipt['prompt_id']!=cfg['prompt_id'] or receipt['instruction_sha256']!=cfg['instruction_sha256']
                 or receipt['container_id'] in containers):
             raise ValueError('shard is from a different population, prompt or container')
         containers.add(receipt['container_id'])

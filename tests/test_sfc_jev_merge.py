@@ -39,7 +39,7 @@ def fixture(tmp_path,monkeypatch,part=None):
         for r in rows:
             predictions.extend(dict(example_id=r['id'],decision_id=d['id'],request_sha256=digest(r),
                 raw_text=json.dumps(by_id[r['id']]['answers'][d['id']]),extra_evidence='retained') for d in r['input']['decisions'])
-        cfg=dict(shard_plan=str(path),shard_plan_sha256=file_hash(path),shard_id=shard['id'],split=split,
+        cfg=dict(prompt_id='parent',shard_plan=str(path),shard_plan_sha256=file_hash(path),shard_id=shard['id'],split=split,
             instruction_sha256='parenthash',image='same-image',seed=17,max_new_tokens=1024)
         (root/'config.json').write_bytes(canonical(cfg));(root/'launch.json').write_text('{}')
         (root/'run/identity.json').write_bytes(canonical(dict(source_files={'runner':'hash'},model_files=['weights'],versions={'vllm':'pin'})))
@@ -138,3 +138,23 @@ def test_scoring_failure_retains_merge_and_terminal_without_replay(tmp_path,monk
     assert json.loads((out/'terminal.json').read_text())['exit_code']==1
     assert (out/'predictions.jsonl').exists() and not (out/'result.json').exists()
     with pytest.raises(FileExistsError):m.score(plan,file_hash(plan),roster,file_hash(roster),scorer,file_hash(scorer),out)
+
+
+@pytest.mark.parametrize('mixed',[False,True])
+def test_merge_preserves_candidate_identity_and_rejects_mixed_prompts(tmp_path,monkeypatch,mixed):
+    # Acceptance itself is stubbed here; the candidate wire/context gates are
+    # tested separately. Exercise actual cross-shard merge identity checks.
+    m,plan,roster,_,receipts=fixture(tmp_path,monkeypatch)
+    data=json.loads(roster.read_text())
+    for index,entry in enumerate(data['runs']):
+        root=Path(entry['root']);cfg=json.loads((root/'config.json').read_text())
+        prompt='p2' if mixed and index else 'p1'
+        cfg.update(prompt_id=prompt,instruction_sha256=prompt+'hash',candidate={'pinned':prompt})
+        (root/'config.json').write_bytes(canonical(cfg));entry['config_sha256']=file_hash(root/'config.json')
+        receipts[str(root)].update(prompt_id=prompt,instruction_sha256=prompt+'hash')
+    roster.write_bytes(canonical(data))
+    if mixed:
+        with pytest.raises(ValueError,match='mixed actor'):m.collect(plan,file_hash(plan),roster,file_hash(roster))
+    else:
+        _,_,records,_,actor=m.collect(plan,file_hash(plan),roster,file_hash(roster))
+        assert len(records)==24 and actor['config']['prompt_id']=='p1'

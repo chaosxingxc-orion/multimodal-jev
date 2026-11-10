@@ -102,8 +102,13 @@ def test_predictions_require_all_decisions_and_exact_engine_evidence(tmp_path,ch
 
 
 @pytest.mark.parametrize('bad_engine_ids',[False,True])
-def test_runner_generates_calls_even_after_false_noul_and_keeps_long_audio(tmp_path,monkeypatch,bad_engine_ids):
-    cfg,rows,checks=fixture(tmp_path);module=load_tool('infer_sfc_jev_omni_shard');out=tmp_path/'out';out.mkdir()
+@pytest.mark.parametrize('candidate',[False,True])
+def test_runner_generates_calls_even_after_false_noul_and_keeps_long_audio(tmp_path,monkeypatch,bad_engine_ids,candidate):
+    if candidate:
+        from test_sfc_candidate_execution import candidate_shard
+        cfg,rows,checks=candidate_shard(tmp_path,monkeypatch)
+    else:cfg,rows,checks=fixture(tmp_path)
+    module=load_tool('infer_sfc_jev_omni_shard');out=tmp_path/'out';out.mkdir()
     cfg['versions']={k:'pinned' for k in ('torch','torch-npu','transformers','vllm','vllm-ascend')}
     monkeypatch.setattr(module,'check_probe',lambda _:dict(model_files=['model']))
     verified=[];monkeypatch.setattr(module,'verify_assets',lambda _:verified.append(True) or dict(files=['model']))
@@ -147,6 +152,10 @@ def test_runner_generates_calls_even_after_false_noul_and_keeps_long_audio(tmp_p
         assert sum(p['decision_id'].endswith('.calls') for p in ps)==4
         assert len(emitted[-1]['multi_modal_data']['audio'])==2
         assert rendered[-1][2]['content']=='supplied prior assistant'
+        if candidate:
+            from multimodal_jev.sfc_candidate_execution import execution_prompt
+            text,_=execution_prompt(cfg)
+            assert all(ms[0]['content'].startswith(text.rstrip()+'\n\n') for ms in rendered)
         assert len(verified)==2 and shutdown==[True]
 
 

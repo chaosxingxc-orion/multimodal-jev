@@ -18,7 +18,7 @@ def fixture(tmp_path,monkeypatch):
     m=load_tool('run_sfc_jev_shard_queue')
     release,_=input_fixture(tmp_path);plan=make_plan(release,'test_id',12)
     path=tmp_path/'population.json';atomic_json(path,plan)
-    cfg=dict(shard_plan=str(path),shard_plan_sha256=file_hash(path),shard_id=plan['shards'][0]['id'],
+    cfg=dict(prompt_id='parent',shard_plan=str(path),shard_plan_sha256=file_hash(path),shard_id=plan['shards'][0]['id'],
         split='test_id',image='pinned-image',jev_probe=str(tmp_path/'probe'),context_audit=str(tmp_path/'audit'),
         context_acceptance=str(tmp_path/'acceptance.json'),asset_audit=str(tmp_path/'assets.json'),
         context_container_id='cpu-cid',context_result_sha256='context-result')

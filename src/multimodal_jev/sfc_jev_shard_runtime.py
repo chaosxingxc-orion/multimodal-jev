@@ -1,4 +1,4 @@
-"""Frozen parent-only SFC-Jev shards bound to full CPU context evidence."""
+"""Frozen fixed-prompt SFC-Jev shards bound to exact full CPU context evidence."""
 import hashlib
 import json
 from pathlib import Path
@@ -8,6 +8,7 @@ from .consumption import canonical
 from .sfc_jev_runtime import INSTRUCTION
 from .sfc_jev_shards import load_shard
 from .sfc_native_full import RUNTIME
+from .sfc_candidate_execution import execution_prompt
 
 
 def read(path):
@@ -19,19 +20,24 @@ def digest(value):
 
 
 def select_inputs(cfg):
-    if (any(cfg.get(k)!=v for k,v in RUNTIME.items()) or cfg.get('adapter') is not None
-            or cfg.get('prompt_id')!='parent'
-            or cfg.get('instruction_sha256')!=hashlib.sha256(INSTRUCTION.encode()).hexdigest()):
-        raise ValueError('frozen parent-only Jev runtime required')
+    if any(cfg.get(k)!=v for k,v in RUNTIME.items()) or cfg.get('adapter') is not None:
+        raise ValueError('frozen Jev runtime required')
+    _,prompt_identity=execution_prompt(cfg)
     path=Path(cfg['shard_plan'])
     if file_hash(path)!=cfg['shard_plan_sha256']:raise ValueError('registered plan changed')
     plan=read(path)
+    if prompt_identity is not None and (plan['split']!='train_id' or plan['partition'] is None
+            or plan['partition']['part'] not in ('learning','selection')):
+        raise ValueError('candidate evaluation requires a complete TRAIN partition; TEST selection protocol missing')
     if cfg['split']!=plan['split']:raise ValueError('registered split differs')
     rows=load_shard(plan,cfg['shard_id'])
     root=Path(cfg['context_audit']);run=root/'run';result=read(run/'result.json');identity=read(run/'identity.json')
     acceptance=read(cfg['context_acceptance'])
-    if any('prompt' in value for value in (identity,result,acceptance)):
-        raise ValueError('candidate context cannot replace frozen parent evidence')
+    if prompt_identity is None:
+        if any('prompt' in value for value in (identity,result,acceptance)):
+            raise ValueError('candidate context cannot replace frozen parent evidence')
+    elif any(value.get('prompt')!=prompt_identity for value in (identity,result,acceptance)):
+        raise ValueError('candidate inference requires its own exact complete context evidence')
     if (file_hash(run/'result.json')!=cfg['context_result_sha256']
             or file_hash(cfg['context_acceptance'])!=cfg['context_acceptance_sha256']
             or acceptance['result_sha256']!=cfg['context_result_sha256']
@@ -49,6 +55,10 @@ def select_inputs(cfg):
     for name in ('src/multimodal_jev/sfc_jev_runtime.py','src/multimodal_jev/sfc_audio.py'):
         if file_hash(Path(__file__).parents[2]/name)!=identity['source_files'][name]:
             raise ValueError('parent adapter or audio processing differs from context audit')
+    if prompt_identity is not None:
+        for name in ('src/multimodal_jev/sfc_prompt_candidates.py','src/multimodal_jev/sfc_candidate_context.py'):
+            if file_hash(Path(__file__).parents[2]/name)!=identity['source_files'].get(name):
+                raise ValueError('candidate renderer differs from accepted context audit')
     for name,value in identity['processor_assets'].items():
         if file_hash(Path(cfg['audio_model'])/name)!=value:raise ValueError('processor asset changed')
     path=run/f"{plan['split']}.context.jsonl"

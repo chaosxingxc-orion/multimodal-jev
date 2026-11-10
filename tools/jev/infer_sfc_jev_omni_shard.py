@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate every decision in a registered frozen-parent SFC-Jev shard."""
+"""Generate every decision in a registered fixed-prompt SFC-Jev shard."""
 import argparse
 import hashlib
 import importlib.metadata
@@ -11,6 +11,8 @@ from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.consumption import canonical
 from multimodal_jev.sfc_audio import load_sfc_audio
 from multimodal_jev.sfc_jev_runtime import vllm_request
+from multimodal_jev.sfc_candidate_execution import execution_prompt
+from multimodal_jev.sfc_prompt_candidates import vllm_request as candidate_request
 from multimodal_jev.sfc_jev_shard_runtime import select_inputs,check_probe,check_predictions,digest
 from infer_sfc_jev_omni_probe import accepted_response
 from infer_qwen3_omni_probe import verify_assets
@@ -25,11 +27,15 @@ SOURCE_FILES=(
     'src/multimodal_jev/sfc.py','src/multimodal_jev/sfc_audio.py','src/multimodal_jev/sfc_omni.py',
     'src/multimodal_jev/sfc_partition.py','src/multimodal_jev/sfc_teacher_feedback.py',
     'src/multimodal_jev/sfc_native_full.py','src/multimodal_jev/consumption.py','src/multimodal_jev/baseline.py',
+    'src/multimodal_jev/sfc_candidate_execution.py','src/multimodal_jev/sfc_candidate_context.py',
+    'src/multimodal_jev/sfc_prompt_candidates.py','src/multimodal_jev/sfc_teacher_wire.py',
+    'src/multimodal_jev/teacher_candidates.py',
 )
 
 
 def run(cfg,out):
     rows,plan,checks=select_inputs(cfg);probe=check_probe(cfg);start=time.monotonic()
+    instruction,prompt_identity=execution_prompt(cfg)
     atomic_json(out/'progress.json',dict(phase='verifying_model',heartbeat_unix=time.time()))
     assets=verify_assets(cfg)
     versions={k:importlib.metadata.version(k) for k in ('torch','torch-npu','transformers','vllm','vllm-ascend')}
@@ -61,7 +67,8 @@ def run(cfg,out):
                 wave,conversion=load_sfc_audio(path);waves.append(wave);conversions.append(conversion)
             for d in row['input']['decisions']:
                 key=(row['id'],d['id']);check=checks[key]
-                request=vllm_request(processor,row,d['id'],waves)
+                request=(vllm_request(processor,row,d['id'],waves) if prompt_identity is None else
+                         candidate_request(processor,row,d['id'],waves,instruction))
                 batch=processor(text=[request['prompt']],audio=waves,sampling_rate=16000,return_tensors='pt',padding=True)
                 ids=batch['input_ids'][0].tolist();prompt_hash=hashlib.sha256(request['prompt'].encode()).hexdigest()
                 frames=expected_frames([len(w) for w in waves],processor.feature_extractor.hop_length)
@@ -85,12 +92,13 @@ def run(cfg,out):
         engine.llm_engine.engine_core.shutdown(timeout=30)
     atomic_json(out/'progress.json',dict(phase='final_model_verification',done=len(records),total=len(keys),heartbeat_unix=time.time()))
     verify_assets(cfg);check_predictions(rows,checks,records)
+    if execution_prompt(cfg)!=(instruction,prompt_identity):raise ValueError('candidate changed during inference')
     path=out/'predictions.jsonl';path.write_bytes(b''.join(map(canonical,records)))
     atomic_json(out/'result.json',dict(status='passed',bundles=len(rows),decisions=len(keys),predictions=len(records),
         predictions_sha256=file_hash(path),identity_sha256=file_hash(out/'identity.json'),weight_updates=0,
         model_files_unchanged=True,targets_read=False,length_limited=sum(p['length_limited'] for p in records),
         elapsed_seconds=time.monotonic()-start,
-        scope='One complete registered parent shard. No targets or current transcripts read. '
+        scope='One complete registered fixed-prompt shard. No targets or current transcripts read. '
               'All function decisions generated independently. Not a complete split score or interactive execution.'))
 
 
