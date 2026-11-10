@@ -1,0 +1,112 @@
+{
+  "image_id": "sha256:696e6adc27f7d1bfcc01633233fd75c7577778a6651be24173c9d66a5d4c0ef0",
+  "source_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/speechbrain-runtime-build-v1",
+  "build_exit_code": 0,
+  "import_container_id": "27afb7344e8c0bd5f2f211943d3ffbe00d778a61a820817a528012a947d5802f",
+  "import_argv": [
+    "docker",
+    "run",
+    "-d",
+    "--pull=never",
+    "--network=none",
+    "--name",
+    "multimodal-jev-speechbrain-import-v1",
+    "--cpus=2",
+    "--memory=4g",
+    "-e",
+    "HF_HUB_OFFLINE=1",
+    "-v",
+    "/usr/local/Ascend/driver:/usr/local/Ascend/driver:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/speechbrain-runtime-build-v1:/evidence:ro",
+    "sha256:696e6adc27f7d1bfcc01633233fd75c7577778a6651be24173c9d66a5d4c0ef0",
+    "python3",
+    "-B",
+    "/evidence/import-probe.py"
+  ],
+  "status": "import_passed",
+  "context_hashes_sha256": "f5dfabbd15dd7c5dcd6cded8538c2fd2b6526f8d8634e2cb7e30cf19950ce1f7",
+  "wheel_manifest": [
+    {
+      "package": "hyperpyyaml",
+      "version": "1.2.3",
+      "file": "hyperpyyaml-1.2.3-py3-none-any.whl",
+      "sha256": "0088c8ce97dc7c7d3460112b6ccc92dca46fade4d0320bc39f58b1fdda60f7f1",
+      "url": "https://files.pythonhosted.org/packages/7d/a5/98e20cc4365e293dfc1382e2f8dbf44b1cb14d75658ab5147cb0d6d8718e/hyperpyyaml-1.2.3-py3-none-any.whl",
+      "requires_dist": [
+        "pyyaml>=5.1",
+        "ruamel.yaml<0.19.0,>=0.17.28"
+      ]
+    },
+    {
+      "package": "joblib",
+      "version": "1.6.0",
+      "file": "joblib-1.6.0-py3-none-any.whl",
+      "sha256": "3dbbf9f6e4b592a2357b854608e980fe6390d131d7a82f011a377ef2ebef7aba",
+      "url": "https://files.pythonhosted.org/packages/18/53/84099323c2ec4be98d935f63c033ac4151ee83836ca1050ede3b3aadf155/joblib-1.6.0-py3-none-any.whl",
+      "requires_dist": [
+        "cloudpickle>=3.0",
+        "distributed; extra == \"test\"",
+        "lz4; extra == \"test\"",
+        "numpy; extra == \"test\"",
+        "memory_profiler; extra == \"test\"",
+        "pytest; extra == \"test\"",
+        "pytest-asyncio; extra == \"test\"",
+        "pytest-cov; extra == \"test\"",
+        "pytest-run-parallel; extra == \"test\"",
+        "pytest-timeout; extra == \"test\"",
+        "threadpoolctl; extra == \"test\"",
+        "distributed; extra == \"docs\"",
+        "lz4; extra == \"docs\"",
+        "numpy; extra == \"docs\"",
+        "numpydoc; extra == \"docs\"",
+        "matplotlib; extra == \"docs\"",
+        "pandas; extra == \"docs\"",
+        "psutil; extra == \"docs\"",
+        "sphinx; extra == \"docs\"",
+        "pydata-sphinx-theme; extra == \"docs\"",
+        "sphinx-gallery; extra == \"docs\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "sphinx-design; extra == \"docs\"",
+        "tqdm; extra == \"docs\""
+      ]
+    },
+    {
+      "package": "ruamel.yaml",
+      "version": "0.18.16",
+      "file": "ruamel.yaml-0.18.16-py3-none-any.whl",
+      "sha256": "048f26d64245bae57a4f9ef6feb5b552a386830ef7a826f235ffb804c59efbba",
+      "url": "https://files.pythonhosted.org/packages/0f/73/bb1bc2529f852e7bf64a2dec885e89ff9f5cc7bbf6c9340eed30ff2c69c5/ruamel.yaml-0.18.16-py3-none-any.whl",
+      "requires_dist": [
+        "ruamel.yaml.clib>=0.2.7; platform_python_implementation == \"CPython\" and python_version < \"3.14\"",
+        "ruamel.yaml.jinja2>=0.2; extra == \"jinja2\"",
+        "ryd; extra == \"docs\"",
+        "mercurial>5.7; extra == \"docs\""
+      ]
+    },
+    {
+      "package": "ruamel.yaml.clib",
+      "version": "0.2.15",
+      "file": "ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "sha256": "71845d377c7a47afc6592aacfea738cc8a7e876d586dfba814501d8c53c1ba60",
+      "url": "https://files.pythonhosted.org/packages/71/73/81230babf8c9e33770d43ed9056f603f6f5f9665aea4177a2c30ae48e3f3/ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "requires_dist": null
+    }
+  ],
+  "started_unix": 1794275884.2846189,
+  "import_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T01:56:43.47929493Z",
+    "FinishedAt": "2026-11-10T01:57:13.40289263Z"
+  },
+  "import_log_sha256": "f15771d12215b6cabdf0f3c8fcbe3a58a57f8aae110e51a903ec8794a6812e50"
+}
