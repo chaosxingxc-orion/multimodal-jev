@@ -86,6 +86,24 @@ def test_noul_cannot_filter_or_repair_native(fixture):
     assert result['native']['all']['full_population_strict_calls_exact'] == 1
 
 
+def test_native_format_failure_is_not_runtime_failure(fixture):
+    bank, official, build = fixture
+    request, gold, predictions = build()
+    change(predictions, 'tool.0.calls', 'invalid JSON')
+    result = evaluate([(request, gold, predictions)], bank, official)
+    assert result['native']['all']['format_valid'] == 0
+    assert result['native']['all']['runtime_errors'] == 0
+    change(predictions, 'tool.0.calls', '', error='timeout')
+    result = evaluate([(request, gold, predictions)], bank, official)
+    assert result['native']['all']['runtime_errors'] == 1
+    request, gold, predictions = build()
+    change(predictions, 'tool.0.present', '', error='timeout')
+    result = evaluate([(request, gold, predictions)], bank, official)
+    assert result['all']['counts']['runtime_errors'] == 1
+    assert result['native']['all']['runtime_errors'] == 0
+    assert result['native']['all']['full_population_strict_calls_exact'] == 1
+
+
 def test_absent_collapse_and_runtime_errors_not_true_negatives(fixture):
     bank, official, build = fixture
     request, gold, predictions = build()
@@ -165,3 +183,29 @@ def test_stream_requires_full_declared_roster(fixture, fault):
         assert evaluate(source, bank, official)['all']['counts']['records'] == 1
     else:
         with pytest.raises(ValueError): evaluate(source, bank, official)
+
+
+def test_independent_control_builder_keeps_known_primary_and_null(fixture):
+    path = Path(__file__).parents[1] / 'tools/jev/check_audio2tool_jev_score.py'
+    spec = importlib.util.spec_from_file_location('check_audio2tool_jev_score_cli', path)
+    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    bank, official, build = fixture
+    request, gold, _ = build(['t0', 't1(v=None)', 't0(v=2)'])
+    before = json.dumps(gold, sort_keys=True)
+    for mode in module.MODES:
+        predictions = module.controls(request, gold, bank, mode)
+        report = evaluate([(request, gold, predictions)], bank, official)
+        if mode == 'available_annotation_oracle':
+            p = next(p for p in predictions if p['decision_id'] == 'tool.0.calls')
+            assert json.loads(p['raw_text']) == [{'v': True}, {}, {'v': 2}]
+            assert report['all']['decision_accuracy']['typed_call_list'] == 1
+            assert report['native']['all']['full_record_metrics']['strict_primary_exact'] == 1
+            assert report['native']['all']['full_record_metrics']['strict_ordered_names_exact'] == 1
+            assert report['native']['all']['full_population_strict_calls_exact'] is None
+        elif mode == 'always_absent':
+            assert report['all']['decision_accuracy']['noul'] == 150 / 152
+            assert report['all']['semantic_presence']['present']['recall'] == 0
+        else:
+            assert report['all']['counts']['runtime_errors'] == 457
+            assert report['native']['all']['runtime_errors'] == 1
+    assert json.dumps(gold, sort_keys=True) == before

@@ -122,8 +122,10 @@ def score_bundle(request, gold, bank, predictions, official):
         counts['consistent_tool_triples'] += (complementary and c['valid'] and a['value'] is bool(c['value']))
     calls = assemble(bank, results)
     consistent = calls is not None and counts['consistent_tool_triples'] == len(bank['tools'])
+    assembly_runtime_error = any(found[d['id']]['error'] is not None for d in bank['decisions']
+                                 if d['decision_type'] != 'noul')
     native_prediction = dict(id=request['id'], raw_text=json.dumps(calls, ensure_ascii=False) if calls is not None else '',
-                             error=None if calls is not None else 'invalid_or_inconsistent_jev_call_assembly')
+                             error='jev_call_generation_runtime_error' if assembly_runtime_error else None)
     return dict(id=request['id'], tier=request['tier'], counts=dict(counts), decisions=results,
                 native_prediction=native_prediction, native_assembly_valid=calls is not None,
                 all_predictions_consistent=consistent)
