@@ -109,3 +109,41 @@ def test_no_automatic_test_replay(tmp_path,monkeypatch):
     (tmp_path/'parent').mkdir();(tmp_path/'parent/dispatch.log').write_text('ambiguous')
     monkeypatch.setattr(queue,'dispatch_and_score',lambda *_:pytest.fail('must not dispatch'))
     with pytest.raises(FileExistsError,match='replay'):queue.run(tmp_path)
+
+
+def test_prepare_full_test_exports_same_selection_snapshot(tmp_path,monkeypatch):
+    cfg,_=contract_fixture(tmp_path,monkeypatch)
+    selection=tmp_path/'selection';parent=selection/'parent';parent.mkdir(parents=True)
+    (selection/'evaluation-terminal.json').write_text('{"exit_code":0}')
+    import subprocess
+    commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+    (selection/'queue-intent.json').write_text(json.dumps(dict(source_commit=commit)))
+    report_path=selection/'selection-result.json'
+    prior_path=selection/'selection-protocol.json'
+    protocol_path=Path(cfg['test_protocol']);protocol=json.loads(protocol_path.read_text())
+    report_path.write_bytes(Path(protocol['selection_result']).read_bytes())
+    prior_path.write_bytes(Path(protocol['selection_protocol']).read_bytes())
+    (parent/'instruction.txt').write_bytes(Path(cfg['instruction']).read_bytes())
+    (parent/'config.json').write_text(json.dumps({'asset_audit':cfg['asset_audit']}))
+    model=tmp_path/'model';model.mkdir()
+    protocol['actor_config']['audio_model']=str(model)
+    protocol.update(selection_result=str(report_path),selection_result_sha256=file_hash(report_path),
+        selection_protocol=str(prior_path),selection_protocol_sha256=file_hash(prior_path),image='image')
+    protocol_path.write_bytes(canonical(protocol))
+    argv=['docker','run','--name','selection-parent','--device','/dev/davinci4:/dev/davinci4',
+          '--device','/dev/davinci5:/dev/davinci5','-v',str(parent)+':'+str(parent)+':rw',
+          '-v',str(tmp_path)+':'+str(tmp_path)+':ro',
+          'image','timeout','--signal=TERM','--kill-after=30s','7200s','python3',
+          str(parent/'source/tools/jev/infer_qwen3_omni_selection.py')]
+    (parent/'launch.json').write_text(json.dumps(dict(argv=argv,image='image',physical_devices=[4,5])))
+    monkeypatch.setattr(queue,'dispatch_and_score',lambda *_:pytest.fail('prepare cannot dispatch'))
+    root=tmp_path/'official-test'
+    receipt=queue.prepare(root,protocol_path)
+    assert receipt['source_commit']==commit and receipt['order']==['parent']
+    assert receipt['requests_per_prompt']==22758 and receipt['dispatched'] is False
+    child=root/'parent'
+    assert (child/'source/tools/jev/infer_qwen3_omni_test.py').exists()
+    assert file_hash(child/'source/tools/jev/infer_qwen3_omni_probe.py')==file_hash(Path('tools/jev/infer_qwen3_omni_probe.py'))
+    intent=json.loads((child/'intent.json').read_text())
+    assert intent['physical_devices']==[4,5] and intent['observation_seconds']==86700
+    assert not (child/'dispatch.log').exists()
