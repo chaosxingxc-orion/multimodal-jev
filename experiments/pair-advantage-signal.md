@@ -89,3 +89,21 @@ and per-recording nonzero bonus/advantage coverage and maximum differences, with
 This expands the scope of the two-recording mechanism diagnosis; it neither
 updates weights nor selects a winning normalization. No post-divergence training
 trajectory may reuse these initializer rollouts as on-policy data.
+
+## Coverage reporting implementation
+
+`tools/jev/summarize_advantage_signal.py` now checks successful application
+terminals, rollout/manifest hashes, policy identity and exact response order
+before summarizing per-view and per-recording coverage. It rejects duplicate
+replicates, incomplete arrays, nonfinite advantages and non-TRAIN examples.
+Material differences use strictly greater than the registered1e-5 threshold.
+Sign changes are response counts, explicitly distinct from the older audit's
+token-level sign-change count.
+
+The [existing n4 coverage check](../docs/engineering/pair-advantage-n4-coverage-v1.json)
+reproduces the earlier two-recording diagnosis:3 nonzero bonuses among48
+responses, no material standardized differences, and12 center-only response
+differences across3 prompts in1 recording. Centering spreads a bonus's change
+over the prompt's four responses, so this count is not the bonus count. This
+validates reporting on completed evidence; it is not the full31-record result
+and does not select a preferred normalization.
