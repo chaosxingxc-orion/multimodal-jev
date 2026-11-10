@@ -1,0 +1,77 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-verl-wrapper-probe-v1",
+  "container_id": "031744127c07a903a1bca8130ade6b2bc4fbaf46444c86796127db13a8854056",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T14:55:13.34546138Z",
+    "FinishedAt": "2026-11-10T14:55:26.82284188Z"
+  },
+  "source_commit": "ecac15522288b82789e07699de377b160e48599a",
+  "intent_sha256": "fa8b2f585389e5ac4273a5d086e3bce3e4d4713b087fcae559455ca8d15584c7",
+  "result_sha256": "9077f8ad0286805b3efe5c2abe316dc8bea109849bb47650efd307e4f3ecaf75",
+  "log_sha256": "e75351aa88ccdde754396c6b1ad11dcb7d69761a5ac4fe56003796b2204f12ec",
+  "result": {
+    "scope": "Actual verl compute_log_prob and DataProto, random tiny Omni text model; synthetic audio tensors captured but not consumed by audio encoder. Explicit CPU logprob/device adapters; no pretrained weights, vLLM, NPU, FSDP or training.",
+    "actor_source_sha256": "207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce",
+    "helper_sha256": "ffbec330d476db12f9b23e4ff8409893d567ccf2040ed9af80a9d6652e5ffd53",
+    "micro_batch_sizes": [
+      1,
+      2
+    ],
+    "audio_calls": [
+      [
+        {
+          "values": [
+            1.0,
+            2.0
+          ],
+          "lengths": [
+            5,
+            6
+          ]
+        },
+        {
+          "values": [
+            3.0
+          ],
+          "lengths": [
+            7
+          ]
+        }
+      ],
+      [
+        {
+          "values": [
+            1.0,
+            2.0,
+            3.0
+          ],
+          "lengths": [
+            5,
+            6,
+            7
+          ]
+        }
+      ]
+    ],
+    "max_logprob_difference": 0.0,
+    "atol": 0.04,
+    "old_probabilities_unchanged": true,
+    "metadata_unchanged": true,
+    "weight_updates": 0,
+    "process_group": {
+      "backend": "gloo",
+      "world_size": 1
+    }
+  },
+  "verified_unix": 1794322647.1184833
+}
