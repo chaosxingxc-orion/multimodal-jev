@@ -70,3 +70,48 @@ def test_build_all_splits_and_reconstruct_complete_entities(tmp_path):
         assert gold['bundle_sha256']==hashlib.sha256(canonical(bundle)).hexdigest()
         assert reconstruct(gold['values'],bank)==target
     with pytest.raises(FileExistsError):build(native,tmp_path/'out',tmp_path/'state')
+    # Materialization must work with the target file hidden: actor input never
+    # depends on gold or transcript provenance.
+    import importlib.util
+    from pathlib import Path
+    spec=importlib.util.spec_from_file_location('materialize',Path(__file__).parents[1]/'tools/jev/materialize_slurp_jev_requests.py')
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    (output/'train.targets.jsonl').rename(output/'hidden-targets.jsonl')
+    groups=tmp_path/'groups.json';groups.write_text('["train"]')
+    resolved=tmp_path/'resolved'
+    receipt=module.materialize(output,'train',resolved,groups)
+    assert receipt['requests']==9 and receipt['recordings']==1
+    assert 'private reference' not in (resolved/'train.requests.jsonl').read_text()
+
+
+def test_scoring_controls_catch_empty_lists_duplicate_loss_and_constant_yes():
+    from multimodal_jev.slurp_jev_score import score_bundle,summarize
+    bank,bundle,target=fixture();values=values_from_target(target,bank)
+    gold={'id':bundle['id'],'values':values,'bundle_sha256':hashlib.sha256(canonical(bundle)).hexdigest()}
+    predictions=[]
+    for request in expand_bundle(bundle,bank):
+        key=request['id'].split('::')[1]
+        predictions.append({'example_id':request['id'],'replicate':0,
+            'request_sha256':hashlib.sha256(canonical(request)).hexdigest(),
+            'raw_text':json.dumps({'value':values[key]})})
+    counts,native=score_bundle(bundle,gold,bank,predictions)
+    assert counts['all_decisions_correct']==1 and native==target
+    assert summarize(counts)['rates']['nonempty_slot_list_exact_rate']==1.
+    bad=copy.deepcopy(predictions)
+    for row in bad:
+        key=row['example_id'].split('::')[1]
+        if key.endswith('.values'):row['raw_text']='{"value":[]}'
+        if key.endswith('.present') or key.endswith('.absent'):row['raw_text']='{"value":true}'
+    counts,native=score_bundle(bundle,gold,bank,bad)
+    assert counts['presence_both_correct']==0 and counts['nonempty_slot_list_exact']==0
+    assert native['entities']==[]
+    bad=copy.deepcopy(predictions)
+    row=next(r for r in bad if r['example_id'].endswith('person.values'))
+    row['raw_text']='{"value":["amy"]}'
+    counts,native=score_bundle(bundle,gold,bank,bad)
+    assert counts['multiple_slot_list_exact']==0 and len(native['entities'])==1
+    row['raw_text']='{"value":null}'
+    counts,native=score_bundle(bundle,gold,bank,bad)
+    assert counts['native_reconstruction_valid']==0 and native is None
+    with pytest.raises(ValueError,match='complete'):score_bundle(bundle,gold,bank,predictions[:-1])
+    with pytest.raises(ValueError,match='duplicate'):score_bundle(bundle,gold,bank,predictions+[predictions[0]])
