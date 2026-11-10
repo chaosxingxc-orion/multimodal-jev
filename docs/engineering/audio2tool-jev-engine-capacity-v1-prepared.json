@@ -1,0 +1,26 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-jev-engine-capacity-v1",
+  "preparation_sha256": "acbdcce6d4862cc85c84e97d35458b4a1abd69db7ad31f26434f8c4b92fd7712",
+  "schema": "audio2tool-jev-engine-capacity-preparation-v1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "22e0157da6ae629cdef832b54391134ef89e5d19",
+  "source_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-jev-engine-preflight-v1/source",
+  "preflight_container_id": "27e52b3cdd4d24920e7ddb9e2007f5ab9d1335e587a20c67f06587242bc14ef1",
+  "preflight_intent_sha256": "f5a3c9d312dea0c6a893af70c9074727d2f7ebcfb01c9bb2ab7a1b6b36022727",
+  "preflight_result_sha256": "50444df7d93a7fe21ba5b1a0ae625de6170de9e1d637487d72f06673d7546c5d",
+  "physical_devices": [
+    6,
+    7
+  ],
+  "wall_seconds": 3600,
+  "weight_updates": 0,
+  "automatic_retry": false,
+  "dispatched": false,
+  "dependency_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-engine-capacity-v1",
+  "dispatch_requirements": [
+    "Verify accepted exact native Audio2Tool capacity container after existing sampling queue",
+    "Reinspect exact successful Jev CPU preflight and authenticate original source and all twelve cases",
+    "Acquire shared npu67-sampling-resource.lock and verify device availability",
+    "Write immutable intent.json including source_root and source_files; persist exact container ID and intent hash before start; no replay"
+  ]
+}
