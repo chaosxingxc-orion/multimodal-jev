@@ -59,9 +59,13 @@ def main():
                                      config.get('audio_input_mode','waveform'))
             engine_load_seconds=time.monotonic()-load_started
             atomic_json(args.output/'progress.json',{'phase':'sampling','heartbeat_unix':time.time()})
-            records=rollout.sample(examples,audios,config['sampling'],config.get('audio_input_mode','waveform'))
-            with (args.output/'rollouts.jsonl').open('w') as handle:
-                for record in records:handle.write(json.dumps(asdict(record))+'\n')
+            try:
+                records=rollout.sample(examples,audios,config['sampling'],config.get('audio_input_mode','waveform'))
+                with (args.output/'rollouts.jsonl').open('w') as handle:
+                    for record in records:handle.write(json.dumps(asdict(record))+'\n')
+            finally:
+                atomic_json(args.output/'progress.json',{'phase':'engine_shutdown','heartbeat_unix':time.time()})
+                rollout.close()
             atomic_json(args.output/'result.json',{'status':'passed','policy_id':policy_id,
                 'prompts':len(examples),'rollouts':len(records),'rollouts_sha256':file_hash(args.output/'rollouts.jsonl'),
                 'generation_budget':rollout.last_generation_budget,'engine_load_seconds':engine_load_seconds,

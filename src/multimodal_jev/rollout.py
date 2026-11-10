@@ -92,6 +92,7 @@ class VllmAudioRollout:
         if audio_input_mode not in {'waveform','actor_features'}:
             raise ValueError('unsupported audio_input_mode')
         self.audio_input_mode=audio_input_mode
+        self._closed=False
         self.last_generation_budget=None
         self.policy_id=policy_id;self.processor=processor
         if set(engine_options)-{'dtype','max_model_len','gpu_memory_utilization','tensor_parallel_size','enforce_eager','max_num_seqs','seed'}:
@@ -102,6 +103,8 @@ class VllmAudioRollout:
 
     def sample(self,examples,audios,config,audio_input_mode=None):
         from vllm import SamplingParams
+        if self._closed:
+            raise RuntimeError('rollout engine is closed')
         self.last_generation_budget=None
         if audio_input_mode is None:audio_input_mode=self.audio_input_mode
         if audio_input_mode!=self.audio_input_mode:
@@ -120,3 +123,13 @@ class VllmAudioRollout:
         records=decode_outputs(outputs,examples,self.processor,self.policy_id,config['n'])
         self.last_generation_budget=generation_budget(outputs,records,config['n'],elapsed)
         return records
+
+    def close(self):
+        """Release the pinned v1 engine before Python joins child processes.
+
+        Explicit lifecycle for isolated offline samplers; do not rely on weakref
+        finalizers racing multiprocessing's interpreter-exit handler.
+        """
+        if not self._closed:
+            self.engine.llm_engine.engine_core.shutdown(timeout=30.0)
+            self._closed=True

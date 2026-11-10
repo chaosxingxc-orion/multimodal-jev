@@ -101,3 +101,16 @@ def test_sampling_records_engine_accounting_and_clears_previous_result(monkeypat
     with pytest.raises(ValueError,match='finished'):
         runner.sample([NS(example_id='a')],[object()],config())
     assert runner.last_generation_budget is None
+
+
+def test_explicit_shutdown_once_and_reject_reuse(monkeypatch):
+    import sys
+    from multimodal_jev.rollout import VllmAudioRollout
+    calls=[]
+    engine=NS(llm_engine=NS(engine_core=NS(shutdown=lambda **kw:calls.append(kw))))
+    monkeypatch.setitem(sys.modules,'vllm',NS(LLM=lambda **kw:engine,SamplingParams=object))
+    runner=VllmAudioRollout('checkpoint',NS(),'policy',{})
+    runner.close();runner.close()
+    assert calls==[{'timeout':30.0}]
+    with pytest.raises(RuntimeError,match='closed'):
+        runner.sample([],[],config())

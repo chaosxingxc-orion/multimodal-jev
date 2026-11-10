@@ -1,0 +1,32 @@
+{
+  "container_id": "a144f983e2b4a8701e4f6a1d1b82b16eedcaaf2d148ebd77dd908c6e636c3eab",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/npu-vllm-audio-shutdown-audit-v1",
+  "stack_sha256": "747a7301af4fce14d5952c31a8eede74eac88f39df9dad91d96a9be1a18ca0bf",
+  "inspection": {
+    "argv": [
+      "docker",
+      "run",
+      "--rm",
+      "--network=none",
+      "--pid=container:a144f983e2b4a8701e4f6a1d1b82b16eedcaaf2d148ebd77dd908c6e636c3eab",
+      "--cap-add=SYS_PTRACE",
+      "--security-opt",
+      "seccomp=unconfined",
+      "--cpus=1",
+      "--memory=1g",
+      "-v",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/npu-vllm-audio-shutdown-audit-v1:/audit:ro",
+      "--entrypoint",
+      "/audit/py-spy",
+      "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "dump",
+      "--pid",
+      "1",
+      "--nonblocking"
+    ],
+    "returncode": 0
+  },
+  "finding": "Application wrote success; interpreter multiprocessing._exit_function waits in BaseProcess.join while EngineCore remains live.",
+  "fix": "Explicit engine_core.shutdown(timeout=30) before success receipt; no installed-source mutation.",
+  "status": "code_and_unit_validation_complete_real_engine_exit_pending"
+}
