@@ -1,0 +1,32 @@
+{
+  "failed_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-vllm-cpu-engine-v1",
+  "failed_container_id": "0a11d7ae6c2f6ea1fd81c5c20f06b2c65d8aae096d49e0159d12f6f88dfe41db",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-09T23:56:58.92568132Z",
+    "FinishedAt": "2026-11-09T23:59:36.80274324Z"
+  },
+  "reason": "8192 context requires 1.75GiB KV; configured1GiB yielded0.97GiB usable; engine failed before generation",
+  "retained_queue_terminal": {
+    "exit_code": 1,
+    "error": "RuntimeError('SFC dependency failed; inspect before independent launch')",
+    "finished_unix": 1794268783.8055396
+  },
+  "retry": {
+    "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-vllm-cpu-engine-v2",
+    "pid": 2444849,
+    "launched_unix": 1794268826.7417269,
+    "only_config_change": {
+      "engine.kv_cache_memory_bytes": 3221225472
+    },
+    "scope": "same source, prompt, audio, context8192 and decoding; independent new CPU run"
+  }
+}

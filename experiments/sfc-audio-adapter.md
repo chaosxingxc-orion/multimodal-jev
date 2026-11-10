@@ -95,3 +95,12 @@ it does not satisfy the separate NPU gate. Preserve any engine failure without
 silently switching to HF, concatenating audio or reducing the prompt/history.
 No test-ID/OOD rows are selected and no external transfer claim follows from
 this TRAIN integration check. The official Omni reproduction is also separate.
+
+CPU v1 exited1 during engine initialization: the8192 context requires1.75GiB
+KV cache, exceeding the configured1GiB (0.97GiB usable). No generation occurred.
+Retain this failure. CPU v2 changes only engine.kv_cache_memory_bytes to3GiB;
+source, inputs, context8192, container16GiB limit and decoding remain unchanged.
+See [failure and new launch](../docs/engineering/sfc-vllm-cpu-v1-failure-v2-launch.json).
+The full-pool reward diagnosis v1 queue stopped on this dependency failure;
+a [new v2 queue](../docs/engineering/pair-signal-full-pool-v2-queued.json) observes
+the exact v2 SFC container and retains identical diagnosis configuration.
