@@ -51,3 +51,26 @@ torch SDPA，合成Q/K/V，随机种子17。长度包括7+3左补齐与1076+154�
 下一步仍等待完整TRAIN6五条件结果，再固定针对实际预训练激活的诊断：比较相同有效
 位置上的输入、attention输出、router top-k和MoE输出，区分首个产生差异的层。
 暂不自动派发另一份大模型前向，不改原0.1门槛，不以本检查替代actual-verl复验。
+
+## 逐层记录工具验证
+
+新增 `omni_activation_trace.PaddingTrace`，用只读 forward hooks 捕获每层有效token的
+输入、attention输出、router logits/weights/top-k indices、MLP输出和层输出。
+参考张量逐事件单独保存，比较时按attention mask对齐有效token，一次只加载一个
+参考；核验SHA、dtype和形状。对路由分别报告顺序变化与专家集合变化，避免把
+top-k顺序交换误称为更换专家。默认参考tensor payload预算8 GiB（不含序列化开销）。
+只允许eval/inference单行调用，异常时也清除hooks；不改返回值、不保留计算图。
+它不独立认证模型/输入身份，后续大模型入口必须绑定源码、模型哈希、相同response
+和完整输入清单。当前类内参考manifest保存在内存，跨进程验收须另存并核对报告。
+
+5项本地测试覆盖有效token对齐、参考文件篡改、预算/前向/不完整调用失败、hooks
+清理及训练/autograd拒绝。固定镜像另运行真实两层随机Omni BF16 SDPA/MoE：
+14个记录点完整；开启hooks前后原始及补齐输出均逐位相同，模型状态未变，hooks
+全部清除。身份比较全部相等；更改有效token的反例在layer-00.input即被检测。
+此小型随机模型的补齐比较14点均相同，因此只证明工具有效，未复现真实预训练偏差。
+
+源码 `cfa412c`，容器
+`0659d7fdae4cd3b320c31db0f02f186faaa8b982aaca9b761d675f94196729b0`
+退出0，2 CPU/8 GiB/300秒上限，无网络/设备及预训练模型/数据挂载。
+参考张量payload总计2640字节，14个文件SHA与报告全部核对；见
+[固定镜像结果](omni-activation-trace-v1-verified.json)。尚未在预训练Omni上运行这些hooks。

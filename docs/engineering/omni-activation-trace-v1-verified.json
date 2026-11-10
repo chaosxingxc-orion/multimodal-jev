@@ -1,0 +1,308 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-activation-trace-v1",
+  "launch": {
+    "container_id": "0659d7fdae4cd3b320c31db0f02f186faaa8b982aaca9b761d675f94196729b0",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "cfa412cc2ff5b88d849a333ae081afe3fe5fc7ed",
+    "intent_sha256": "8c0bf2eb0140f0bc822063815740b2cd6cf0e2d660ee7acf8338321ef185af13"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T17:07:47.11644534Z",
+    "FinishedAt": "2026-11-10T17:07:59.73708092Z"
+  },
+  "result": {
+    "status": "passed",
+    "config": {
+      "transformers_version": "5.14.1",
+      "architectures": null,
+      "output_hidden_states": false,
+      "return_dict": true,
+      "dtype": null,
+      "chunk_size_feed_forward": 0,
+      "is_encoder_decoder": false,
+      "id2label": {
+        "0": "LABEL_0",
+        "1": "LABEL_1"
+      },
+      "label2id": {
+        "LABEL_0": 0,
+        "LABEL_1": 1
+      },
+      "problem_type": null,
+      "vocab_size": 64,
+      "hidden_size": 24,
+      "intermediate_size": 48,
+      "num_hidden_layers": 2,
+      "num_attention_heads": 3,
+      "num_key_value_heads": 1,
+      "hidden_act": "silu",
+      "max_position_embeddings": 128,
+      "initializer_range": 0.02,
+      "rms_norm_eps": 1e-06,
+      "use_cache": true,
+      "rope_parameters": {
+        "rope_type": "default",
+        "rope_theta": 1000000.0,
+        "mrope_section": [
+          2,
+          1,
+          1
+        ]
+      },
+      "attention_bias": false,
+      "sliding_window": null,
+      "attention_dropout": 0.0,
+      "decoder_sparse_step": 1,
+      "moe_intermediate_size": 16,
+      "num_experts_per_tok": 2,
+      "num_experts": 4,
+      "norm_topk_prob": true,
+      "output_router_logits": false,
+      "router_aux_loss_coef": 0.001,
+      "mlp_only_layers": [],
+      "pad_token_id": 0,
+      "bos_token_id": null,
+      "eos_token_id": null,
+      "_name_or_path": "",
+      "model_type": "qwen3_omni_moe_text",
+      "output_attentions": false
+    },
+    "events": 14,
+    "reports": [
+      {
+        "event": "layer-00.input",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-00.attention",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-00.router.logits",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-00.router.weights",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-00.router.indices",
+        "equal": true,
+        "differing_elements": 0,
+        "ordered_route_changed_tokens": 0,
+        "expert_set_changed_tokens": 0
+      },
+      {
+        "event": "layer-00.mlp",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-00.output",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-01.input",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-01.attention",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-01.router.logits",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-01.router.weights",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-01.router.indices",
+        "equal": true,
+        "differing_elements": 0,
+        "ordered_route_changed_tokens": 0,
+        "expert_set_changed_tokens": 0
+      },
+      {
+        "event": "layer-01.mlp",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "event": "layer-01.output",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      }
+    ],
+    "reference": {
+      "layer-00.input": {
+        "sha256": "a60a254d70aef70f72115fe72911fe65d4cd6dd3d60eb39cbc3fd2e462ae9479",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-00.attention": {
+        "sha256": "452619aece5df2d7d8b856c67f56e4a17f674bfcd4bce358a692df97b9558b87",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-00.router.logits": {
+        "sha256": "8ee2cefd9e1dab30dde3ed0eb5b34ec48ed1e5bad7fd085c49fa03ad1f70d393",
+        "shape": [
+          6,
+          4
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-00.router.weights": {
+        "sha256": "7bbc6976b3ee0461574b43cde25b5ebffc826833225ba2ada181ddad9ff6e53c",
+        "shape": [
+          6,
+          2
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-00.router.indices": {
+        "sha256": "31046afc9358c6822d63a37749f2515b416ecd0df29765e038919567640d5059",
+        "shape": [
+          6,
+          2
+        ],
+        "dtype": "torch.int64"
+      },
+      "layer-00.mlp": {
+        "sha256": "1fd951e862267a94c6d6f4efea96943d1cdde93b24c57ac8513a514e44e81a1f",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-00.output": {
+        "sha256": "d5f2f461926d2f57e7929102b48717290dd19d18ad0b6b1332de28c809276599",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-01.input": {
+        "sha256": "1b2bb496a14370e830d76a1c27433828b31cc5417555974c9253a8c0a74c0c0a",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-01.attention": {
+        "sha256": "3c0aaedd22478b6910c06b616a4329dae33c5a06bf2b684a899a56fb34006d6f",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-01.router.logits": {
+        "sha256": "216ce2ea7b9d355bf4018a9455a7074a9fb4a553b20917bc84807759260406d0",
+        "shape": [
+          6,
+          4
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-01.router.weights": {
+        "sha256": "7ab058f2513031ac9d862e8762625910aa79320c36917a420b4bf51e7164ebbd",
+        "shape": [
+          6,
+          2
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-01.router.indices": {
+        "sha256": "f877d6a8eff265840d569b8412f95f0af990322366853b97fdbfa544db69e1a7",
+        "shape": [
+          6,
+          2
+        ],
+        "dtype": "torch.int64"
+      },
+      "layer-01.mlp": {
+        "sha256": "b75a8390ba9023b9aa00d4fb960b892e1083b58dd25bb4b88ecdccfc0e7f3948",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      },
+      "layer-01.output": {
+        "sha256": "483d006f06a09e7eb9d8f51acd5ed5e45e1981c11df1e2d711b502878473667c",
+        "shape": [
+          6,
+          24
+        ],
+        "dtype": "torch.bfloat16"
+      }
+    },
+    "reference_tensor_bytes": 2640,
+    "hook_transparency_exact": true,
+    "identity_comparison_exact": true,
+    "changed_token_first_event": "layer-00.input",
+    "model_state_unchanged": true,
+    "hooks_removed": true,
+    "weight_updates": 0,
+    "pretrained_weights_loaded": false,
+    "hf_source_sha256": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+    "tracer_sha256": "970420dcf971a86ae435aeb7645a494e29f8280493e247786f2c6ad9fa422362",
+    "scope": "Real tiny random BF16 Omni SDPA/MoE module trace validation; no pretrained/audio/verl/NPU root-cause or parity claim."
+  },
+  "source_terminal_and_reference_hashes_verified": true,
+  "result_sha256": "69e7df270e92f6ad8ede14641e4916cb64675f5ee80b6477c61b23f4a7c5a0c4"
+}
