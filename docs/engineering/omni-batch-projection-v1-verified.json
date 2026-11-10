@@ -1,0 +1,66 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-batch-projection-v1",
+  "container_id": "95186eb6a9417cd3232d8358ac2aa724606b08aff26bad4c643abc6eb7272f29",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "3690bbf8d0bf78fc8a9b3781f368e79159d5d7d2",
+  "intent_sha256": "338cc955cbcab1376cf06b3cfdfb72a23b68a8b42b396b54685cc294a4c4beb1",
+  "source_files_verified": 119,
+  "result_sha256": "3c62d5dca9f8f7ab933a1bccf58be03c496b7328ff13090f9ef4d244344cdf48",
+  "inspection_sha256": "925dbca23f112af4e5a71924f5c857915b53abdbae7603a0f6156e577f4786d9",
+  "operations": 24,
+  "exact_equal": 24,
+  "elapsed_seconds": 20.989420199999586,
+  "input_pins": [
+    {
+      "row": 2,
+      "sha256": "694df9e037455ecddb757f97a129dab852c2d51f1765520d9b3aed3eb49ed873",
+      "shape": [
+        1230,
+        2048
+      ]
+    },
+    {
+      "row": 0,
+      "sha256": "5f8d0d708a6951102c6a7a6d2e578b5fca02739018c85ca7e55188c2b9b1be53",
+      "shape": [
+        1076,
+        2048
+      ]
+    },
+    {
+      "row": 5,
+      "sha256": "f65a26988bc7caef26e02ab6c082a3c50678eee307bce0cbca9d0c85c20da341",
+      "shape": [
+        828,
+        2048
+      ]
+    },
+    {
+      "row": 1,
+      "sha256": "612d39b0bfb62a23dfaa7fe72d2a51794dbf3c680db732d4e3855526d72a67ba",
+      "shape": [
+        978,
+        2048
+      ]
+    },
+    {
+      "row": 3,
+      "sha256": "e02d49cf00d2cbb2b7297ef58250abe34e1b6a81b8301287896dac67a1bff2c9",
+      "shape": [
+        979,
+        2048
+      ]
+    },
+    {
+      "row": 4,
+      "sha256": "1b603f97205bb82961c561a850a780e7a5401f48ff0319f68c95c00a688997cd",
+      "shape": [
+        711,
+        2048
+      ]
+    }
+  ],
+  "weight_shard_sha256": "f95d142b727fbd0698f0ed9478e222d4f29467df855e21862e46bd1401049065",
+  "scope": "Original saved layer-zero valid inputs and published projection weights; compare batch1 and batch2 with zero left padding. Isolated CPU operators, no audio encoder, full attention, full model, actual actor tracing, generation or training.",
+  "limitation": "No intermediate outputs persisted; zero differences are runtime operator comparisons, not independent tensor recomputation. Does not locate first divergence of actual actor."
+}

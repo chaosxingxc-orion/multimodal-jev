@@ -90,3 +90,13 @@ MMAR生成结果。后续容量运行按16CPU/128GiB/8GiB共享内存准备，�
 33项相关本地测试通过；容量容器、结果和异常分支使用合成fixture，未冒充实际NPU
 验证。另以真实完整输入及处理器文件执行了人口覆盖/哈希准入，确认1000条与上述
 唯一边界。下一步是固定镜像运行入口预检查、安排容量探针及完整推理，再独立验收评分。
+
+入口预检查已在固定镜像实际通过：容器
+`3c36124d99bccb50936514bc9001730a6d1dce2067103c844a791602d4a6faff`，
+源码 `38d21d7`，2 CPU/20 GiB、无网络设备，41.31秒，退出0。
+正式runner与预检查共享 `prepare_checked` 音频/processor校验；实际导入runner，
+构造vLLM ModelConfig和1/256-token两种SamplingParams，复核完整1000条准入，
+并重新处理56秒/815-token唯一边界。实际容器身份、120份源码与Git、processor
+资产和边界音频/ID哈希均已独立核对。见
+[入口预检查核验](mmar-omni-inference-preflight-v1-verified.json)。
+未创建LLM引擎、未加载权重，不能替代下一步NPU容量和完整任务生成。

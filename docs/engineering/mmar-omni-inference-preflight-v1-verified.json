@@ -1,0 +1,37 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/mmar-omni-inference-preflight-v1",
+  "container_id": "3c36124d99bccb50936514bc9001730a6d1dce2067103c844a791602d4a6faff",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "38d21d77489c8a6189bd97a246d9f98b63c35512",
+  "intent_sha256": "7407e2b97f5814550a74e0ae72f6842de8b42c06fd46889e1dbc92232e5c6141",
+  "source_files_verified": 120,
+  "result_sha256": "c2b174882edad7601c870c27c71e4b0452cc8747cffe5b667b05b6a7b42c304c",
+  "inspection_sha256": "8dd8b0c6bcad30176669e09ee1a340b2a2523f2a388b18239c1a13ae27a1cb68",
+  "population": 1000,
+  "boundaries": [
+    {
+      "id": "SQadcm_dwEM_00-01-05_00-02-01",
+      "audio": {
+        "conversion": {
+          "source_rate": 48000,
+          "source_channels": 2,
+          "source_samples": 2688000,
+          "target_rate": 16000,
+          "target_samples": 896000,
+          "conversion": "channel mean then scipy.signal.resample_poly when needed"
+        },
+        "source_sha256": "9204da6e65e5e5307d4cb583d135fbdd3b3a2dd81a2767c174cfb7ea96d36024",
+        "right_zero_padding_samples": 0,
+        "actor_samples": 896000,
+        "expected_frames": 5600,
+        "waveform_sha256": "89b7fe37a553b8130e4dfea70b83d07cf4bf7ae350ca5b7dc938ab462b589c57"
+      },
+      "input_tokens": 815,
+      "input_ids_sha256": "2eb800b5c4d03dc876ed3407868e38bf43321729afafe8236b36a31e24da40ba"
+    }
+  ],
+  "elapsed_seconds": 41.313988899986725,
+  "model_loaded": false,
+  "targets_read": false,
+  "scope": "Actual fixed-image imports, ModelConfig/SamplingParams, full population admission and shared boundary waveform/processor input. No LLM engine, NPU generation or weight update."
+}
