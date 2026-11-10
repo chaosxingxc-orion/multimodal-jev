@@ -13,6 +13,17 @@ from watch_qwen3_omni_probe import inspect
 def read(path):return json.loads(Path(path).read_text())
 
 
+def check_container(state,launch,intent):
+    host=state['HostConfig']
+    if (state['Id']!=launch['container_id'] or state['Image']!=launch['image'] or launch['image']!=intent['image']
+            or state['State']['Status']!='exited' or state['State']['ExitCode']!=0
+            or state['State'].get('OOMKilled',False) or host.get('Devices') or host.get('Privileged')
+            or host['NetworkMode']!='none' or host['Memory']!=160*1024**3 or host['NanoCpus']!=16000000000
+            or intent['wall_seconds']!=14400 or intent['automatic_retry'] is not False
+            or launch['source_commit']!=intent['source_commit']):
+        raise ValueError('successful exact bounded CPU container required')
+
+
 def check_records(records,rows,checks,response_ids):
     expected=[(r['id'],r['input']['decisions'][0]['id']) for r in rows]
     if (len(rows)!=6 or [(r['example_id'],r['decision_id']) for r in records]!=expected
@@ -40,14 +51,7 @@ def accept(root,launch_hash,intent_hash,tokenizer,inspection=None):
     if not isinstance(cid,str) or len(cid)!=64 or any(c not in '0123456789abcdef' for c in cid):
         raise ValueError('exact Docker ID required')
     state=inspect(cid) if inspection is None else inspection
-    host=state['HostConfig']
-    if (state['Id']!=cid or state['Image']!=launch['image'] or launch['image']!=intent['image']
-            or state['State']['Status']!='exited' or state['State']['ExitCode']!=0
-            or state['State'].get('OOMKilled',False) or host.get('Devices') or host.get('Privileged')
-            or host['NetworkMode']!='none' or host['Memory']!=160*1024**3 or host['NanoCpus']!=16000000000
-            or intent['wall_seconds']!=14400 or intent['automatic_retry'] is not False
-            or launch['source_commit']!=intent['source_commit']):
-        raise ValueError('successful exact bounded CPU container required')
+    check_container(state,launch,intent)
     if file_hash(root/'config.json')!=intent['config_sha256'] or launch['config_sha256']!=intent['config_sha256']:
         raise ValueError('configuration changed')
     source=root/'source'
@@ -69,6 +73,11 @@ def accept(root,launch_hash,intent_hash,tokenizer,inspection=None):
                 raise ValueError('verifier input dependency differs from run')
     run=root/'run';identity=read(run/'identity.json');result=read(run/'result.json')
     asset=read(base['asset_audit'])
+    if (asset['status']!='verified_inference_assets' or asset['model']!=base['audio_model']
+            or asset['repository']!='Qwen/Qwen3-Omni-30B-A3B-Instruct'
+            or asset['revision']!='26291f793822fb6be9555850f06dfe95f2d7e695'
+            or asset['all_publisher_files_present'] is not True or not asset['files']):
+        raise ValueError('original complete model asset audit required')
     expected_keys=[[r['id'],r['input']['decisions'][0]['id']] for r in rows]
     expected_sources={k:v for k,v in intent['source_files'].items()
                       if k.startswith(('src/multimodal_jev/','tools/jev/')) and k.count('/')==2}
@@ -94,6 +103,10 @@ def accept(root,launch_hash,intent_hash,tokenizer,inspection=None):
         if file_hash(Path(base['audio_model'])/name)!=pin:raise ValueError('processor assets changed')
     response=tokenizer.encode('false',add_special_tokens=False)+[tokenizer.eos_token_id]
     check_records(result['responses'],rows,checks,response)
+    if (type(result['elapsed_seconds']) not in (int,float) or not math.isfinite(result['elapsed_seconds'])
+            or not 0<result['elapsed_seconds']<=14400 or type(result['peak_rss_kib']) is not int
+            or result['peak_rss_kib']<max(r['peak_rss_kib'] for r in result['responses'])):
+        raise ValueError('complete bounded resource accounting required')
     if sorted(p.name for p in run.glob('forward-*.json'))!=[f'forward-{i:02d}.json' for i in range(6)]:
         raise ValueError('exact six forward artifacts required')
     for i,record in enumerate(result['responses']):
@@ -111,10 +124,18 @@ def accept(root,launch_hash,intent_hash,tokenizer,inspection=None):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True)
     for key in ('launch-hash','intent-hash'):p.add_argument('--'+key,required=True)
-    p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--inspection',type=Path);p.add_argument('--inspection-hash');a=p.parse_args()
     if a.output.exists():raise FileExistsError('preserve prior acceptance')
+    inspection=None
+    if a.inspection is not None or a.inspection_hash is not None:
+        if a.inspection is None or not a.inspection_hash or file_hash(a.inspection)!=a.inspection_hash:
+            raise ValueError('exact coordinator-captured Docker inspection required')
+        inspection=read(a.inspection)
     from transformers import AutoTokenizer
     cfg=read(a.root/'config.json');base=read(cfg['baseline_config'])
     tokenizer=AutoTokenizer.from_pretrained(base['audio_model'],local_files_only=True)
-    result=accept(a.root,a.launch_hash,a.intent_hash,tokenizer);atomic_json(a.output,result)
+    result=accept(a.root,a.launch_hash,a.intent_hash,tokenizer,inspection)
+    if a.inspection is not None:result['inspection_sha256']=a.inspection_hash
+    atomic_json(a.output,result)
     print(json.dumps(result,indent=2))

@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0,str(Path(__file__).parents[1]/'tools/jev'))
-from verify_omni_pretrained_forward import check_records
+from verify_omni_pretrained_forward import check_records,check_container
 from probe_omni_pretrained_forward import loading_report
 
 
@@ -16,6 +16,30 @@ def test_loading_report_preserves_sets_and_mismatch_shapes():
         mismatched_keys=[['name',[2,3],[3,2]]],error_msgs=[])
     assert isinstance(value['unexpected_keys'],set)
     with pytest.raises(TypeError):loading_report(object())
+
+
+@pytest.mark.parametrize('change',[None,'running','failed','oom','device','privileged','network','memory','cpu','image','cid','source','time','retry'])
+def test_only_exact_successful_cpu_container_is_accepted(change):
+    launch=dict(container_id='a'*64,image='pinned',source_commit='commit')
+    intent=dict(image='pinned',source_commit='commit',wall_seconds=14400,automatic_retry=False)
+    state=dict(Id='a'*64,Image='pinned',State=dict(Status='exited',ExitCode=0,OOMKilled=False),
+               HostConfig=dict(Devices=[],Privileged=False,NetworkMode='none',Memory=160*1024**3,NanoCpus=16000000000))
+    if change=='running':state['State']['Status']='running'
+    if change=='failed':state['State']['ExitCode']=1
+    if change=='oom':state['State']['OOMKilled']=True
+    if change=='device':state['HostConfig']['Devices']=[{'PathOnHost':'/dev/davinci6'}]
+    if change=='privileged':state['HostConfig']['Privileged']=True
+    if change=='network':state['HostConfig']['NetworkMode']='host'
+    if change=='memory':state['HostConfig']['Memory']=0
+    if change=='cpu':state['HostConfig']['NanoCpus']=0
+    if change=='image':state['Image']='other'
+    if change=='cid':state['Id']='b'*64
+    if change=='source':launch['source_commit']='other'
+    if change=='time':intent['wall_seconds']=86400
+    if change=='retry':intent['automatic_retry']=True
+    if change is None:check_container(state,launch,intent)
+    else:
+        with pytest.raises(ValueError):check_container(state,launch,intent)
 
 
 def fixture():
