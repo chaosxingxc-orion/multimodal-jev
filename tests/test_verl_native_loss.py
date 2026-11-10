@@ -5,6 +5,7 @@ import pytest
 
 torch = pytest.importorskip('torch')
 from multimodal_jev.verl_native_loss import native_token_mean_loss, register_native_token_mean_loss, LOSS_NAME
+from multimodal_jev.verl_native_loss import native_response_mean_loss, register_native_response_mean_loss, RESPONSE_LOSS_NAME
 
 
 def setup(monkeypatch):
@@ -29,17 +30,19 @@ def setup(monkeypatch):
     ('global_batch_info', {'batch_num_tokens': 24}), ('ppo_micro_batch_size_per_gpu', 3),
     ('jev_batch_num_responses', 16), ('jev_batch_num_tokens', 0),
 ])
-def test_unsupported_contract_rejected_before_loss(monkeypatch, field, value):
+@pytest.mark.parametrize('loss', [native_token_mean_loss, native_response_mean_loss])
+def test_unsupported_contract_rejected_before_loss(monkeypatch, field, value, loss):
     config, calls = setup(monkeypatch)
     setattr(config, field, value)
     mask = torch.ones(2, 3)
     with pytest.raises(ValueError):
-        native_token_mean_loss(mask, mask, mask, mask, config=config)
+        loss(mask, mask, mask, mask, config=config)
     assert not calls
 
 
 @pytest.mark.parametrize('kind', ['rank', 'fractional_mask', 'empty_row', 'wrong_rows', 'is_weights'])
-def test_invalid_execution_rejected(monkeypatch, kind):
+@pytest.mark.parametrize('loss', [native_token_mean_loss, native_response_mean_loss])
+def test_invalid_execution_rejected(monkeypatch, kind, loss):
     config, calls = setup(monkeypatch)
     mask = torch.ones(2, 3)
     kwargs = {}
@@ -49,16 +52,26 @@ def test_invalid_execution_rejected(monkeypatch, kind):
     elif kind == 'wrong_rows': mask = torch.ones(1, 3)
     else: kwargs['rollout_is_weights'] = torch.ones_like(mask)
     with pytest.raises(ValueError):
-        native_token_mean_loss(mask, mask, mask, mask, config=config, **kwargs)
+        loss(mask, mask, mask, mask, config=config, **kwargs)
     assert not calls
 
 
-def test_registration_is_idempotent_and_does_not_overwrite(monkeypatch):
+@pytest.mark.parametrize('register,name', [(register_native_token_mean_loss, LOSS_NAME),
+                                         (register_native_response_mean_loss, RESPONSE_LOSS_NAME)])
+def test_registration_is_idempotent_and_does_not_overwrite(monkeypatch, register, name):
     registry = {}
     monkeypatch.setitem(sys.modules, 'verl.trainer.ppo.core_algos', NS(
         POLICY_LOSS_REGISTRY=registry,
         register_policy_loss=lambda name: lambda function: registry.setdefault(name, function)))
-    assert register_native_token_mean_loss() == LOSS_NAME
-    assert register_native_token_mean_loss() == LOSS_NAME
-    registry[LOSS_NAME] = object()
-    with pytest.raises(ValueError, match='collision'): register_native_token_mean_loss()
+    assert register() == name
+    assert register() == name
+    registry[name] = object()
+    with pytest.raises(ValueError, match='collision'): register()
+
+
+def test_response_mean_rejects_token_mean_mode(monkeypatch):
+    config, calls = setup(monkeypatch)
+    mask = torch.ones(2, 3)
+    with pytest.raises(ValueError, match='unsupported'):
+        native_response_mean_loss(mask,mask,mask,mask,config=config,loss_agg_mode='token-mean')
+    assert not calls
