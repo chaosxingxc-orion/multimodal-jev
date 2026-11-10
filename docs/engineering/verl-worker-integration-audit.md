@@ -54,6 +54,11 @@ update_policy，显式保留 rollout 概率、验证零 dropout，并与同一�
 默认 server 只取 outputs[0]，后续接入还必须明确保持 replicate 分组，不能丢失
 其余回答后仍声称完成 GRPO 采样。
 
+Omni 单/双音频现有独立的 [异步采样边界](omni-async-boundary-v1.md)，
+固定镜像 34 项测试通过（真实 SamplingParams、模拟引擎）。它保留 K 副本并避免
+原生 server 将整数 logprobs=0 当作关闭开关；尚无真实 AsyncLLM Omni 运行或
+原生 Ray 集成证据。旧 ASR 异步接口不能代替此模型专用契约。
+
 [两进程 Gloo 损失验证](../../experiments/distributed-verl-loss-v1.md)已通过：
 固定 core_algos.py 的 global_batch_info 在不等 token 分片和不等微批数下恢复
 全 batch 梯度，错误的局部平均负例能明显区分。此结果仅覆盖损失与 collective，
