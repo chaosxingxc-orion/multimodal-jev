@@ -91,3 +91,10 @@ create/start歧义、已存在部分inspection或intent均保留并禁止自动�
 覆盖真实进程身份核查逻辑、两种依赖重新验收、固定预检查命令/源码、准备文件
 变化、观察超时及创建/启动歧义不重放。完成执行分支使用合成fixture，实际NPU
 完整解码仍待前置容量成功后执行。
+
+协调者已启动并用`/proc`核对真实命令、PID `2958112`和process start `291963111`，
+固定源码`7360653`，计划SHA
+`a075ca5f0d7fc915a9683479d5370a79399981eee789ac46e4533a7401bf87f9`。
+实际状态为`waiting_both_capacities`，未创建NPU容器；原Jev容量协调者也确认存活。
+见[解码队列身份](audio2tool-decode-profile-v1-queued.json)。队列启动不代表容量或
+解码完成，后续应观察此原进程及其记录的精确容器，不能重复派发同一测量。
