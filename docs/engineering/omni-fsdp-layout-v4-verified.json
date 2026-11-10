@@ -1,0 +1,814 @@
+{
+  "container_id": "c3ae5d96b9b46fd201b8ddfe68412f77c33ef0cbe2d41b4ededcbc5d200189e1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "92a626f3aae26997c86aaa00e31c641bd27af40e",
+  "intent_sha256": "3fbdac9bc0f189b3f799b06b7a8a84be0046aa2cced153cff08abc6ee56797e4",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-fsdp-layout-v4",
+  "source_files_verified": 122,
+  "inspection_sha256": "68b56a05ff812ac8bfab8bd5e11f3c110754385f80fee82314438f71ba1ed671",
+  "result_sha256": "8829043e68573275c3fbed92b9896d7f0f86c5ee5973948be4502ef56101965b",
+  "result": {
+    "status": "diagnostic_complete",
+    "config_sha256": "eab5093d47807aaf894119506b238b2b1cee70d08456e894fee9a012d88f2e0d",
+    "versions": {
+      "torch": "2.10.0+cpu",
+      "transformers": "5.14.1"
+    },
+    "source_sha256": {
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+      "/opt/verl/verl/utils/fsdp_utils.py": "5dff5af2125de68d3cb15deb519f30a47e603a36e8f75d6a250a12c9e9941840",
+      "runner": "424b0fbd46ab246aecbe0da8298f8b672dc67cfc73ecd14fefacefa91c26cc5f"
+    },
+    "full_model_type": "qwen3_omni_moe",
+    "auto_mappings": [
+      {
+        "auto_class": "AutoModelForImageTextToText",
+        "available": true,
+        "supports_full_config": false,
+        "resolved_class": null
+      },
+      {
+        "auto_class": "AutoModelForCausalLM",
+        "available": true,
+        "supports_full_config": false,
+        "resolved_class": null
+      },
+      {
+        "auto_class": "AutoModelForImageTextToText",
+        "available": true,
+        "supports_full_config": false,
+        "resolved_class": null
+      },
+      {
+        "auto_class": "AutoModel",
+        "available": true,
+        "supports_full_config": false,
+        "resolved_class": null
+      }
+    ],
+    "thinker_class": "Qwen3OmniMoeThinkerForConditionalGeneration",
+    "thinker_no_split_modules": [
+      "Qwen3OmniMoeAudioEncoder",
+      "Qwen3OmniMoeAudioEncoderLayer",
+      "Qwen3OmniMoeDecoderLayer",
+      "Qwen3OmniMoeVisionBlock",
+      "Qwen3OmniMoeVisionEncoder"
+    ],
+    "thinker_parameters": 31719205488,
+    "experts_implementation": "grouped_mm",
+    "actual_module_classes": [
+      "Conv2d",
+      "Conv3d",
+      "Embedding",
+      "GELU",
+      "GELUActivation",
+      "GELUTanh",
+      "LayerNorm",
+      "Linear",
+      "ModuleList",
+      "Qwen3OmniMoeAudioAttention",
+      "Qwen3OmniMoeAudioEncoder",
+      "Qwen3OmniMoeAudioEncoderLayer",
+      "Qwen3OmniMoeTextRMSNorm",
+      "Qwen3OmniMoeThinkerForConditionalGeneration",
+      "Qwen3OmniMoeThinkerTextAttention",
+      "Qwen3OmniMoeThinkerTextDecoderLayer",
+      "Qwen3OmniMoeThinkerTextExperts",
+      "Qwen3OmniMoeThinkerTextModel",
+      "Qwen3OmniMoeThinkerTextRMSNorm",
+      "Qwen3OmniMoeThinkerTextRotaryEmbedding",
+      "Qwen3OmniMoeThinkerTextSparseMoeBlock",
+      "Qwen3OmniMoeThinkerTextTopKRouter",
+      "Qwen3OmniMoeVisionAttention",
+      "Qwen3OmniMoeVisionBlock",
+      "Qwen3OmniMoeVisionEncoder",
+      "Qwen3OmniMoeVisionMLP",
+      "Qwen3OmniMoeVisionPatchEmbed",
+      "Qwen3OmniMoeVisionPatchMerger",
+      "Qwen3OmniMoeVisionRotaryEmbedding",
+      "SiLUActivation",
+      "SinusoidsPositionEmbedding"
+    ],
+    "default_policy_error": "Exception('Could not find the transformer layer class to wrap in the model.')",
+    "default_units": [],
+    "explicit_wrap_classes": [
+      "Qwen3OmniMoeThinkerTextDecoderLayer",
+      "Qwen3OmniMoeAudioEncoderLayer",
+      "Qwen3OmniMoeVisionBlock"
+    ],
+    "explicit_units": [
+      {
+        "name": "audio_tower.layers.0",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.1",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.2",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.3",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.4",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.5",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.6",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.7",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.8",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.9",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.10",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.11",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.12",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.13",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.14",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.15",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.16",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.17",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.18",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.19",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.20",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.21",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.22",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.23",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.24",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.25",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.26",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.27",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.28",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.29",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.30",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "audio_tower.layers.31",
+        "module_class": "Qwen3OmniMoeAudioEncoderLayer",
+        "parameters": 19677440,
+        "bf16_bytes": 39354880
+      },
+      {
+        "name": "visual.blocks.0",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.1",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.2",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.3",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.4",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.5",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.6",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.7",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.8",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.9",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.10",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.11",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.12",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.13",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.14",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.15",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.16",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.17",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.18",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.19",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.20",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.21",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.22",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.23",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.24",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.25",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "visual.blocks.26",
+        "module_class": "Qwen3OmniMoeVisionBlock",
+        "parameters": 15239504,
+        "bf16_bytes": 30479008
+      },
+      {
+        "name": "model.layers.0",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.1",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.2",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.3",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.4",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.5",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.6",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.7",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.8",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.9",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.10",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.11",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.12",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.13",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.14",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.15",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.16",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.17",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.18",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.19",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.20",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.21",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.22",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.23",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.24",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.25",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.26",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.27",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.28",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.29",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.30",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.31",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.32",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.33",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.34",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.35",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.36",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.37",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.38",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.39",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.40",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.41",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.42",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.43",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.44",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.45",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.46",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "model.layers.47",
+        "module_class": "Qwen3OmniMoeThinkerTextDecoderLayer",
+        "parameters": 623120640,
+        "bf16_bytes": 1246241280
+      },
+      {
+        "name": "<root>",
+        "module_class": "Qwen3OmniMoeThinkerForConditionalGeneration",
+        "parameters": 768270080,
+        "bf16_bytes": 1536540160
+      }
+    ],
+    "default_largest_unit_bytes": null,
+    "explicit_largest_unit_bytes": 1536540160,
+    "model_weights_loaded": false,
+    "npu_used": false,
+    "weight_updates": 0,
+    "elapsed_seconds": 4.02938537998125,
+    "scope": "Real meta Thinker and verl FSDP1 wrap policy traversal only. Not FSDP initialization, NPU/TP/HCCL support, peak memory or actor forward acceptance."
+  },
+  "checkpoint_header_parameter_counts_independently_matched": true,
+  "source_receipt": {
+    "container_id": "43eec590d816c65a350756e4f2647a32946b992b37541e3414fb79abc4d9632d",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "files": [
+      {
+        "path": "/opt/verl/verl/workers/fsdp_workers.py",
+        "file": ".local/research/omni-npu-sharding-v1/fsdp_workers.py",
+        "sha256": "1de59e6b6f48b26716c9c75649aaef842f9ace44f6da3a3ad64dd2a45f9535f7"
+      },
+      {
+        "path": "/opt/verl/verl/utils/fsdp_utils.py",
+        "file": ".local/research/omni-npu-sharding-v1/fsdp_utils.py",
+        "sha256": "5dff5af2125de68d3cb15deb519f30a47e603a36e8f75d6a250a12c9e9941840"
+      },
+      {
+        "path": "/opt/verl/verl/utils/device.py",
+        "file": ".local/research/omni-npu-sharding-v1/device.py",
+        "sha256": "c4b8b71a4efad64415451e11ac159698a57cb2d04adc5f4519f8af6b7d6da2db"
+      },
+      {
+        "path": "/opt/verl/verl/workers/actor/dp_actor.py",
+        "file": ".local/research/omni-npu-sharding-v1/dp_actor.py",
+        "sha256": "207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce"
+      },
+      {
+        "path": "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/configuration_qwen3_omni_moe.py",
+        "file": ".local/research/omni-npu-sharding-v1/configuration_qwen3_omni_moe.py",
+        "sha256": "aedbdc88f6341b1a45e81d8cc34b8ff804c673df061d8cdfa7a9e462b38afdd4"
+      },
+      {
+        "path": "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/integrations/moe.py",
+        "file": ".local/research/omni-npu-sharding-v1/moe.py",
+        "sha256": "e99275daeefeb07a826c144347c6ce3dd12dd066d36d9be059f1cf413d6ec216"
+      },
+      {
+        "path": "/opt/verl/verl/nga_vision2seq_shim.py",
+        "file": ".local/research/omni-npu-sharding-v1/nga_vision2seq_shim.py",
+        "sha256": "06c3430d992f387421951f5bfe1ab2863997754b928a380b940ad3173a128f83",
+        "container_id": "c3ae5d96b9b46fd201b8ddfe68412f77c33ef0cbe2d41b4ededcbc5d200189e1"
+      },
+      {
+        "path": "/opt/verl/verl/models/transformers/npu_patch.py",
+        "file": ".local/research/omni-npu-sharding-v1/npu_patch.py",
+        "sha256": "ac9fb8297549216832c937ddf4ba2c9ed5a51e328ba034c0de3077b54261b88d",
+        "container_id": "c3ae5d96b9b46fd201b8ddfe68412f77c33ef0cbe2d41b4ededcbc5d200189e1"
+      },
+      {
+        "path": "/opt/verl/verl/__init__.py",
+        "file": ".local/research/omni-npu-sharding-v1/verl_init.py",
+        "sha256": "260339b9b23521c802cf4593e041914d1f3f3db6d8fcc9f4f6cc037a548c0970",
+        "container_id": "c3ae5d96b9b46fd201b8ddfe68412f77c33ef0cbe2d41b4ededcbc5d200189e1"
+      }
+    ]
+  },
+  "import_order_correction": "v1 imported removed Transformers alias before verl. Importing verl installs existing NGA alias shim; v1 is a probe import-order failure, not proof that legacy worker import fails. v4 mappings ran after verl import; first entry is requested AutoModelForVision2Seq resolved to AutoModelForImageTextToText.",
+  "scope": "Independent actual container/source audit and checkpoint-header reconstruction of all 108 explicit unit parameter counts. No NPU/FSDP collective/weight loading/forward/optimizer acceptance."
+}

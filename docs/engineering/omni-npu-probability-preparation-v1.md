@@ -64,3 +64,8 @@ log-softmax额外分配。静态清单见[内存核算](omni-thinker-npu-memory-
 
 teacher-forcing仅对已经采样的响应计算概率：仍由同一个多模态模型直接消费
 音频与任务，不使用转写文本或独立文本模型。
+
+随后完成[分片结构核查](omni-fsdp-layout-v1.md)：原完整配置未命中所检查的
+AutoModel映射，默认wrap列表含不存在的旧解码层类而失败。显式Thinker与
+真实层类在meta模型中形成108个单元，最大BF16 1.4310 GiB，已与checkpoint
+头部计数独立核对。这只是结构准备，未验证NPU算子、FSDP初始化或完整前向。
