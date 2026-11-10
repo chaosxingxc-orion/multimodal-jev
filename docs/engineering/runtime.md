@@ -1,5 +1,12 @@
 # Multimodal Jev runtime release
 
+2026-11-10 update: the user allocated physical NPU 4–7 on host `npu` (175).
+The original image passed [real NPU runtime admission](npu-audio-runtime-v1-result.json):
+four-device arithmetic and a single-device BF16 Qwen3-ASR audio forward/backward
+plus one LoRA update. Native verl training, NPU vLLM inference and distributed
+model training remain separate gates. Earlier build-time statements below are
+historical observations; see [allocation](npu175-allocation.md) for current scope.
+
 The first runtime is an additive child image of the image used by the NGA Qwen3.5/verl work. It pins the base by digest:
 
 - base tag at inventory time: `nga-verl-qwen35-v030:20261029`

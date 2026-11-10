@@ -1,0 +1,37 @@
+{
+  "recorded_at_utc": "2026-11-10T01:42:41.782337+00:00",
+  "authorization": "User explicitly requested academic research be delegated to a Codex subprocess.",
+  "source_commit": "086faf12b21906975b94b6b7ad252fe9446438e5",
+  "thread_id": "01a1c31e-9535-7df1-a70e-60cfa485a187",
+  "launch": {
+    "started_at_utc": "2026-11-10T01:42:03.486565+00:00",
+    "supervisor_pid": 2491635,
+    "child_pid": 2491636,
+    "command": [
+      "codex",
+      "exec",
+      "-c",
+      "approval_policy=\"never\"",
+      "--sandbox",
+      "danger-full-access",
+      "--json",
+      "--color",
+      "never",
+      "-C",
+      "/home/xingchao/workspace/multimodal-jev",
+      "-o",
+      "/home/xingchao/workspace/multimodal-jev/.local/delegations/academic-baselines-v1/final.md",
+      "-"
+    ],
+    "task_sha256": "24a6df22dd742ddeef00af7c9b9973404c089029c11d502c430b47880c0a3f7a"
+  },
+  "artifacts_root": "/home/xingchao/workspace/multimodal-jev/.local/delegations/academic-baselines-v1",
+  "status_at_recording": "started; research not yet reviewed or complete",
+  "deliverables": [
+    "docs/research/07-academic-baseline-lock.md",
+    "docs/research/academic-baseline-lock.json",
+    "docs/research/academic-baseline-sources-v1.json",
+    "experiments/academic-baseline-comparison-v1.md"
+  ],
+  "scope": "Dataset-specific academic baselines, original sources, comparison protocol and reproduction requirements; no training, resource mutation, Git commit or push."
+}

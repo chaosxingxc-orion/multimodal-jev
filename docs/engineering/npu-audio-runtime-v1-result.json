@@ -1,0 +1,106 @@
+{
+  "verified_at_utc": "2026-11-10T01:47:05.730977+00:00",
+  "container_id": "41fa0d216d28ece79f55876f5d19e08bcd13dd8ba70ad143d9e6100a8e67fe90",
+  "image_id": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T01:44:30.09397862Z",
+    "FinishedAt": "2026-11-10T01:45:03.93898388Z"
+  },
+  "physical_device_nodes": [
+    "/dev/davinci4",
+    "/dev/davinci5",
+    "/dev/davinci6",
+    "/dev/davinci7",
+    "/dev/davinci_manager",
+    "/dev/devmm_svm",
+    "/dev/hisi_hdc"
+  ],
+  "privileged": false,
+  "network_mode": "none",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/npu-audio-runtime-v1",
+  "result": {
+    "status": "passed",
+    "config": {
+      "physical_devices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "model_id": "Qwen/Qwen3-ASR-0.6B-hf",
+      "model_revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+      "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+      "dtype": "bfloat16",
+      "seed": 17,
+      "audio": "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/wavs/speakers/2BqVo8kVB2Skwgyb/0a3129c0-4474-11e9-a9a5-5dbec3b8816a.wav"
+    },
+    "config_sha256": "3fe520cee85e9d76f2e2d6d06a14879dd36a1e7f7f5e11955cda23e0d6160f5c",
+    "audio_sha256": "dd7bc70332103e75adfed56d0045770e88c5465317b13efe426c83bf429b8d69",
+    "device_nodes": [
+      "davinci4",
+      "davinci5",
+      "davinci6",
+      "davinci7"
+    ],
+    "devices": [
+      {
+        "logical_device": "npu:0",
+        "name": "Ascend910B3",
+        "matmul_exact": true
+      },
+      {
+        "logical_device": "npu:1",
+        "name": "Ascend910B3",
+        "matmul_exact": true
+      },
+      {
+        "logical_device": "npu:2",
+        "name": "Ascend910B3",
+        "matmul_exact": true
+      },
+      {
+        "logical_device": "npu:3",
+        "name": "Ascend910B3",
+        "matmul_exact": true
+      }
+    ],
+    "model_device": "npu:0",
+    "packages": {
+      "torch": "2.10.0+cpu",
+      "torch-npu": "2.10.0.post7",
+      "transformers": "5.14.1",
+      "peft": "0.21.2",
+      "verl": "0.8.0.dev0",
+      "vllm": "0.30.0+empty",
+      "vllm-ascend": "0.30.0rc2"
+    },
+    "transcription": "Change language.",
+    "prompt_tokens": 146,
+    "response_tokens": 6,
+    "loss": 10.965129852294922,
+    "gradient_norm_before_clip": 42.077571868896484,
+    "changed_tensors": 56,
+    "trainable_tensors": 112,
+    "optimizer_states": 112,
+    "trainable_parameters": 573440,
+    "max_abs_ce_logprob_error": 9.5367431640625e-07,
+    "elapsed_seconds": 28.52314722997835,
+    "scope": "four-device arithmetic and single-device real audio BF16 LoRA step; not distributed training, verl update_policy, vLLM generation or academic task accuracy"
+  },
+  "evidence_sha256": {
+    "launch.json": "c22948d980451b55fa5f5dd05f75fd66fe26013cef632037ca88d3ee4bbbce82",
+    "source-manifest.json": "c9dd3fc432c96af8c8c1b6fa8d57769dfe2679fc96fcdbc939cad9972ada7840",
+    "config.json": "3fe520cee85e9d76f2e2d6d06a14879dd36a1e7f7f5e11955cda23e0d6160f5c",
+    "run/result.json": "e57d939d221ee07e2a08b45b139902d28b20f460fed1ed5b8e6428ac081dd5be",
+    "run/terminal.json": "1b41f04c6e8d19b530ad1c1b85b227f5a2e253243eac87dc1f77015af66b7106"
+  }
+}
