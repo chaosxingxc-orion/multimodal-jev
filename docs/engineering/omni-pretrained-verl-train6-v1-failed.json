@@ -1,0 +1,60 @@
+{
+  "container_id": "2685a84d57a62d655f2d97401b9ebbede83ce9378f3f9a47648f4842ce6dffe4",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-10T15:16:31.75166075Z",
+    "FinishedAt": "2026-11-10T16:29:12.08321611Z"
+  },
+  "comparison": {
+    "errors": {
+      "microbatch": 0.40625,
+      "unpadded": [
+        0.9680581092834473,
+        0.8296089172363281
+      ]
+    },
+    "atol": 0.1,
+    "passed": false,
+    "note": "BF16 CPU diagnostic threshold, not NPU/vLLM parity or quality acceptance"
+  },
+  "recomputed_errors": {
+    "unpadded": [
+      0.9680581092834473,
+      0.8296089172363281
+    ],
+    "microbatch": 0.40625
+  },
+  "forward_seconds": [
+    2135.305327399983,
+    2083.8684350799886
+  ],
+  "terminal": {
+    "exit_code": 1,
+    "error": "ValueError('predeclared BF16 actor comparison threshold exceeded')",
+    "finished_unix": 1794328147.471315
+  },
+  "observer_terminal": {
+    "exit_code": 1,
+    "error": "ValueError('comparison failed; preserve evidence without replay')",
+    "finished_unix": 1794328242.4613028
+  },
+  "source_roster_verified": true,
+  "files_sha256": {
+    "run/microbatch-1.json": "802ffc126efe17b58edc1dea211ab2962b1c4e5bb820fd5626e901ffd40e422f",
+    "run/microbatch-2.json": "8b1bf02c23ac9f61ebafcea58b807805abbdc5cc441ebbb2e07ff577f30a5cb2",
+    "run/comparison.json": "4c99db2a0f735853736186ee8e31b0666b8e57af0910d8b0af7f313ab348c715",
+    "run/identity.json": "d67c39908b041a15654f29ec91e7a1794f5ecde2204a5c969baed60dec70a9df",
+    "run/terminal.json": "25ceb28a469334183f0ccd9e32918bc2afe4782d90bfdbd37b068875560eb448",
+    "terminal-inspection.json": "da09a6429ecfb9664c42ccc30d42327acba753da89d554d668154787a5d8fba6"
+  },
+  "scope": "Independent failure verification of complete six-row two-microbatch frozen CPU comparison. No success acceptance, training or threshold relaxation; failure prevents post-success weight rehash in original runner."
+}

@@ -1,6 +1,10 @@
 # 预训练 Thinker 的真实 verl wrapper 比较协议
 
-工具 `probe_omni_pretrained_verl.py` 已实现，完整模型比较现已派发，结果待验收。
+工具 `probe_omni_pretrained_verl.py` 已实现，完整模型比较现已结束，数值门槛失败。
+完整终态与独立重算见 [失败报告](omni-pretrained-verl-train6-v1-failed.json)：
+两种微批对未填充参考最大误差分别 0.968058、0.829609，微批间差异 0.40625，
+均超过原定 0.1。两遍实际前向耗时分别 2135.31、2083.87 秒。原容器退出 1，
+观察器也记录失败，没有重放推理或生成成功验收。以下保留执行前协议和过程记录。
 执行前要求原 TRAIN6 全部前向和独立验收通过，并固定 acceptance、inspection 哈希。
 调用方必须重新查询原精确容器并捕获 inspection；不能用未终止容器或部分结果。
 

@@ -4,6 +4,15 @@
 预登记 0.1；证据见 [部分诊断](omni-pretrained-verl-train6-v1-partial-diagnostic.json)。
 原实验及其固定源码保持不变，microbatch=2 结束后仍按原阈值验收。
 
+原完整比较现已结束并独立确认失败：microbatch 1/2 对参考分别 0.968058/0.829609，
+互相差异 0.40625。见 [终态报告](omni-pretrained-verl-train6-v1-failed.json)。
+已确认原容器退出后，使用与已验收 preflight 完全相同的源码快照 `2ff1e6a`
+启动完整五条件诊断，精确容器
+`0de5e886048040b9fa5489586f4a7fcddea88085701bd1818a8a6a94946e36db`。
+16 CPU/160 GiB/18000 秒加 30 秒退出宽限，模型冻结，无网络/NPU，无重试。
+保留原六条全部输入、30 次前向，不是旧失败实验的自动重跑，也不是权重训练。
+命令和前置证据见 [诊断启动凭证](omni-precision-train6-v1-launched.json)。
+
 已修正工作树 CPU logprob 适配：FP16/BF16 logits 先提升 FP32 再做 log-softmax，
 FP32/FP64 保持原精度。近确定 EOS 的小负概率不再因 BF16 归一化变成零。
 测试同时检查 autocast 环境、交叉熵参考、梯度和输入不变。
