@@ -1,0 +1,70 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-expert-conversion-probe-v1",
+  "container_id": "b629588f640cfbf0253d585b962554af1a56d8fd640355235a70e00796d6213e",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T14:34:55.18425997Z",
+    "FinishedAt": "2026-11-10T14:35:08.03335141Z"
+  },
+  "script_sha256": "3198b9546574fa6f847cee3c7da552f9144499d2190b546c6b48e1fae07d022c",
+  "intent_sha256": "b53c977eaa23d4bc0631ba0909f0e75e20c731996f6cc4ab4cee65faec036c20",
+  "result_sha256": "84e71089b11e6d321c3abadefb4d65e36e2a62aefda9598f8e91f059bf1636d3",
+  "log_sha256": "f590f312e9310964e243baf4db04cabf0336247746922f850469c542d8e1692e",
+  "result": {
+    "scope": "Real fixed HF WeightConverter and CPU expert forward, synthetic weights with 128 experts and tiny hidden dimensions. No checkpoint payload, audio, from_pretrained, TP/EP, NPU or training.",
+    "seed": 17,
+    "experts": 128,
+    "source_tensors": 384,
+    "converted_tensors": 2,
+    "exact_all_expert_values": true,
+    "forward_max_abs_error": 0.0,
+    "atol": 1e-06,
+    "rtol": 1e-05,
+    "negative_control_max_abs_errors": {
+      "expert_order": 0.019690603017807007,
+      "gate_up_order": 0.04638294130563736
+    },
+    "conversion_operations": [
+      {
+        "sources": [
+          "mlp.experts.*.gate_proj.weight",
+          "mlp.experts.*.up_proj.weight"
+        ],
+        "targets": [
+          "mlp.experts.gate_up_proj"
+        ],
+        "operations": [
+          "MergeModulelist",
+          "Concatenate"
+        ]
+      },
+      {
+        "sources": [
+          "mlp.experts.*.down_proj.weight"
+        ],
+        "targets": [
+          "mlp.experts.down_proj"
+        ],
+        "operations": [
+          "MergeModulelist"
+        ]
+      }
+    ],
+    "source_sha256": {
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/conversion_mapping.py": "cb40dd3862fd187a95948e40945f66a661cc4d64466b6544fc4111fd1bb312a3",
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/core_model_loading.py": "bdba8ed71e303c626f91972b4787922f5f23d17060c37145adbbee1ae36599c6",
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340"
+    },
+    "weight_updates": 0
+  },
+  "verified_unix": 1794321426.0206752
+}
