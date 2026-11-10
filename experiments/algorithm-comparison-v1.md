@@ -61,3 +61,38 @@ sft-continuation-runner-smoke.json templates, a new output directory and the
 registered shared export root. Rebuilding in a temporary directory produced
 exactly equal parsed JSON for all15 committed configs. The builder refuses an
 existing output directory and validates the initializer manifest hash.
+
+## Measured TRAIN input budgets
+
+The [processor receipt](../docs/engineering/train-pool-budget-profile-v1-result.json)
+records a successful CPU-only run in the pinned NGA image, source `27f4146`.
+The real Qwen processor measured all 186 initializer TRAIN views after validating
+the manifest, adapter/export lineage and 31 source audio hashes. No model
+forward, sampled output, development selection or optimization was involved.
+Prompt lengths range from 155 to 955 tokens, gold responses including assistant
+end tokens from 6 to 8, and valid audio features from 130 to 358 frames. The
+largest prompt plus the 32-token generation cap fits the 2,048-token context.
+
+| Six-epoch quantity per seed | SFT if fully executed | n4 RL upper bound |
+| --- | ---: | ---: |
+| Response sequences | 1,116 | 4,464 |
+| Effective gradient input tokens | 765,594 | 3,173,976 |
+| Effective parity input tokens | 0 | 3,173,976 |
+| Audio frames per single sequence pass | 275,076 | 1,100,304 |
+| Largest batch effective gradient tokens | 4,205 | 17,420 |
+
+All 15 config totals were independently recomputed from saved per-example
+lengths and frozen schedules. RL bounds assume every response reaches 32
+tokens and every batch has an update; actual response lengths and zero-advantage
+no-ops must be taken from execution receipts. Audio frames in this table are
+counted once per sequence, not summed across gradient/parity passes. These are
+unpadded effective lengths, excluding generation, engine loading and exports;
+they are not FLOPs or a hardware time estimate. The input-token ratio cannot
+be used to select a learning-rate multiplier or claim compute matching.
+
+One further comparison confound is explicit: current SFT averages each gold
+sequence loss equally, while the verl policy loss averages response tokens.
+Any future change in loss reduction must be registered separately and preserve
+the initializer and existing runs. The budget-controlled protocol still needs
+an enforced stopping rule, separate reporting of generation and parity work,
+and scale/LR controls before its results can answer the same-budget question.

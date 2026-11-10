@@ -1,0 +1,415 @@
+{
+  "observed_unix": 1794270010.1971858,
+  "source_commit": "27f414648436bab3a2f592cda6cec2efded3deab",
+  "container_id": "4f1786e5954639080bab5d7ccb771a40711fa3fdc9c5512fbd716e455f484247",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T00:17:01.06701602Z",
+    "FinishedAt": "2026-11-10T00:17:54.29718297Z"
+  },
+  "result_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/train-pool-budget-profile-v1/run/result.json",
+  "result_sha256": "b4bc107fbc08e21809ea1d3a44d695de1aa7bd72a3643687fb88ade3d4791909",
+  "train_recordings": 31,
+  "train_views": 186,
+  "lengths": {
+    "prompt_tokens": {
+      "min": 155,
+      "max": 955,
+      "sum_unique_views": 126297
+    },
+    "gold_tokens": {
+      "min": 6,
+      "max": 8,
+      "sum_unique_views": 1302
+    },
+    "audio_frames": {
+      "min": 130,
+      "max": 358,
+      "sum_unique_views": 45846
+    }
+  },
+  "runtime": {
+    "torch": "2.10.0+cpu",
+    "transformers": "5.14.1",
+    "elapsed_seconds": 17.71443647000706
+  },
+  "independent_arithmetic_checked_configs": 15,
+  "profiles": {
+    "17-grpo-center.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "17-grpo-standard.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "17-pair-grpo-center.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "17-pair-grpo-standard.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "17-sft.json": {
+      "total": {
+        "sequences": 1116,
+        "prompt_tokens": 757782,
+        "response_tokens": 7812,
+        "audio_frames": 275076,
+        "gradient_sequences": 1116,
+        "gradient_tokens": 765594,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 6,
+        "prompt_tokens": 4163,
+        "response_tokens": 42,
+        "audio_frames": 2148,
+        "gradient_sequences": 6,
+        "gradient_tokens": 4205,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 1
+      }
+    },
+    "29-grpo-center.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "29-grpo-standard.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "29-pair-grpo-center.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "29-pair-grpo-standard.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "29-sft.json": {
+      "total": {
+        "sequences": 1116,
+        "prompt_tokens": 757782,
+        "response_tokens": 7812,
+        "audio_frames": 275076,
+        "gradient_sequences": 1116,
+        "gradient_tokens": 765594,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 6,
+        "prompt_tokens": 4163,
+        "response_tokens": 42,
+        "audio_frames": 2148,
+        "gradient_sequences": 6,
+        "gradient_tokens": 4205,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 1
+      }
+    },
+    "43-grpo-center.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "43-grpo-standard.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "43-pair-grpo-center.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "43-pair-grpo-standard.json": {
+      "total": {
+        "sequences": 4464,
+        "prompt_tokens": 3031128,
+        "response_tokens": 142848,
+        "audio_frames": 1100304,
+        "gradient_sequences": 4464,
+        "gradient_tokens": 3173976,
+        "no_grad_sequences": 4464,
+        "no_grad_tokens": 3173976,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 24,
+        "prompt_tokens": 16652,
+        "response_tokens": 768,
+        "audio_frames": 8592,
+        "gradient_sequences": 24,
+        "gradient_tokens": 17420,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 17420,
+        "optimizer_steps": 1
+      }
+    },
+    "43-sft.json": {
+      "total": {
+        "sequences": 1116,
+        "prompt_tokens": 757782,
+        "response_tokens": 7812,
+        "audio_frames": 275076,
+        "gradient_sequences": 1116,
+        "gradient_tokens": 765594,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 186
+      },
+      "largest_batch_by_field": {
+        "sequences": 6,
+        "prompt_tokens": 4163,
+        "response_tokens": 42,
+        "audio_frames": 2148,
+        "gradient_sequences": 6,
+        "gradient_tokens": 4205,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 1
+      }
+    }
+  },
+  "scope": "TRAIN-only processor measurement; no forward, sampling or optimization; effective unpadded lengths, not FLOPs, padded execution costs or matched budgets",
+  "limitations": [
+    "SFT totals conditional on executing full schedule; RL totals are cap-based upper bounds, not observed costs.",
+    "No FLOPs or padded work estimate; rollout, model loading and export costs excluded.",
+    "SFT uses example-mean gold loss; RL uses response-token-mean policy loss.",
+    "No matched-budget efficacy or cross-task generalization claim."
+  ]
+}
