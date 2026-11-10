@@ -195,3 +195,28 @@ v2/v3的所有分组和统计完全一致；旧版本保留作审计记录。后
 三个划分的父消息哈希均与原adapter全量审计一致。证据见
 `sfc-jev-candidate-adapter-static-v1.json`，可用 `audit_sfc_candidate_adapter.py` 重复检查。
 该次全量检查使用合成占位指令，不是真实教师候选，也未进行TEST生成或按TEST结果选提示。
+
+## SFC 专用教师执行与响应校验
+
+`configure_sfc_teacher.py`、`run_sfc_teacher_once.py` 和 `sfc_teacher_wire.py`
+现已独立实现 SFC 的 `train_id` 反馈适配，不借用 FSC 的 `train`/分组 schema。
+配置器要求显式指定准备收据和分区哈希，固定原始教师模板、六轮/四会话/78决策学习反馈、
+最多两条1500字符候选；不改动既有排队推理源码。
+固定沿用 Omni executor SHA256
+`c9f9bbd333f038955945db82d946cb2757bafbc340b1a8ca476f52f3ab406bd4`，
+教师 `glm-5.3-flash`、thinking enabled、max_tokens32768、单次读取180秒、总请求900秒。
+配置只引用已有凭据环境变量，不复制凭据；配置动作不派发API。
+
+运行器在创建进程前独占写入持久派发意图，以配置和执行器哈希绑定此次请求。
+失败、缺少PID或响应、超时均保留尝试且禁止自动重放；进程观察总限960秒。
+校验器核对实际 request.json 与固定学习消息一致，再从 response.sse 重建最终正文，
+检查 stop/[DONE]、单响应、稳定ID/模型、正文一致性和用量一致性。
+教师私有 reasoning 不进入候选文件。报告为 length、缺失结束事件、响应后附加数据、
+工具调用或模型变化均拒绝。缺失用量保留 unknown，不能记作零成本；
+若供应商报告输出超过预算，仍保留可读的用量证据但不暂存候选。
+
+`wire_authenticated=true` 仅表示本地保存的执行器/请求/SSE证据一致，
+不是供应商数字签名或对抗本地恶意篡改的认证。即使校验通过，
+semantic_review 仍为 pending、candidate_accepted=false，也不启动候选推理。
+真实调用尚未配置或派发，等待 TRAIN78 工程验收后生成实际学习反馈。
+当前仅完成合成响应和失败注入测试；语义审查、候选实际processor预算和引擎评估仍未完成。
