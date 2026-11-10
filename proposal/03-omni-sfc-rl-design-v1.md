@@ -161,6 +161,12 @@ selection 选模型，官方 test_id/test_ood 不参与提示、奖励或训练�
 未用于奖励/提示设计的来源。Audio2Tool/MMAR/真实交互仅在原始访问、标签与 scorer
 满足条件后纳入，不能用静态 SFC 离线函数预测替代工具执行成功率。
 
+已有 [三数据集音频哈希交叉核查](../docs/engineering/native-cross-dataset-audio-v2.md)：
+111333 个请求、九个官方划分之间的 36 对交集均无相同文件哈希。
+这不覆盖重编码/裁剪或语义近重复，也不改变已参与开发的事实。FSC train 内有
+一组两条重复音频，未落入当前 learning64/selection256；未来全量训练派生分区
+需按音频连接组聚合，不能只依赖既有 source_group 唯一性。
+
 逐任务报告官方 scorer、严格 call multiset、all-decisions-correct、格式/schema 有效率、
 present/absent 各自正确率、active/inactive 分层、逻辑一致且正确比例、成本。
 会话是统计聚类单位；同一音频派生的多决策不算独立样本。方差与置信区间需反映

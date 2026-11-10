@@ -1,0 +1,390 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/native-cross-dataset-audio-v2",
+  "source_commit": "6360e43851ad348c5f0bb2c52f8a8f9a5a60a6ae",
+  "result_sha256": "d9140cc9a44a1c3ff99e9b9f550b776a9b1bd3803aab75539f53c8cb19531c4f",
+  "result": {
+    "schema": "native-audio-overlap-audit-v1",
+    "sources": {
+      "fsc-native": {
+        "release": "/mnt/cephfs/xingchao/datasets/fsc-native/49e2e27359d606a9a37e062d14fae87fb82eb8be94dab9836cbb095d59cea2dd",
+        "manifest_sha256": "4c6448fc67add8546510fe589d6947cbe5340aebec1f711e382e8584d9b704d2",
+        "requests": {
+          "test": {
+            "path": "/mnt/cephfs/xingchao/datasets/fsc-native/49e2e27359d606a9a37e062d14fae87fb82eb8be94dab9836cbb095d59cea2dd/test.requests.jsonl",
+            "sha256": "f270a52213ad116c72636e4e76f8e1c2d53d57908cb470b54e7e792bcf0fb874"
+          },
+          "train": {
+            "path": "/mnt/cephfs/xingchao/datasets/fsc-native/49e2e27359d606a9a37e062d14fae87fb82eb8be94dab9836cbb095d59cea2dd/train.requests.jsonl",
+            "sha256": "4e0c44b73e8232b30ce64c69761a5dc4a75da149596d0fc571264acd6628d021"
+          },
+          "valid": {
+            "path": "/mnt/cephfs/xingchao/datasets/fsc-native/49e2e27359d606a9a37e062d14fae87fb82eb8be94dab9836cbb095d59cea2dd/valid.requests.jsonl",
+            "sha256": "2506505cfbad119a2c98a3d61a8e3dadf6b19175246ffcd19786f32a65f92052"
+          }
+        }
+      },
+      "slurp-native": {
+        "release": "/mnt/cephfs/xingchao/datasets/slurp-native/240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add",
+        "manifest_sha256": "b93bf66b6f855513a2d6118d09c9bcd37d5a722c87083681bf05491d54c55c65",
+        "requests": {
+          "test": {
+            "path": "/mnt/cephfs/xingchao/datasets/slurp-native/240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add/test.requests.jsonl",
+            "sha256": "69f871d49407a6dbd10cb5cb24ad712497880796c92d41a83424ac878ff78fe4"
+          },
+          "train": {
+            "path": "/mnt/cephfs/xingchao/datasets/slurp-native/240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add/train.requests.jsonl",
+            "sha256": "b297b2c6f3914af232e295ea2ef2b06907a19f7426dc02a63d314c2759727cf1"
+          },
+          "valid": {
+            "path": "/mnt/cephfs/xingchao/datasets/slurp-native/240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add/valid.requests.jsonl",
+            "sha256": "6ad7d81ee85199ec41e71d2186bd6cfe45d4b67165fb6d9700fdfcd8eafa034d"
+          }
+        }
+      },
+      "sfc-native": {
+        "release": "/mnt/cephfs/xingchao/datasets/sfc-native/8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067",
+        "manifest_sha256": "2872e96d12651c9729540434e05c9cdfe14a51a48dc3000cc568c171020c1518",
+        "requests": {
+          "test_id": {
+            "path": "/mnt/cephfs/xingchao/datasets/sfc-native/8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067/test_id.requests.jsonl",
+            "sha256": "050327ad7ac35b80ee38ea79c2771e0c54188cb9692830cfa71f60a09a2a89cf"
+          },
+          "test_ood": {
+            "path": "/mnt/cephfs/xingchao/datasets/sfc-native/8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067/test_ood.requests.jsonl",
+            "sha256": "2875c7a9e739102b5f3ceec56a20d4bd4df834bde1f79a58bb6fa61b9221be78"
+          },
+          "train_id": {
+            "path": "/mnt/cephfs/xingchao/datasets/sfc-native/8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067/train_id.requests.jsonl",
+            "sha256": "bdc77a32df3265ea8061256c9f28e6d5d86b811edd3e2086bf25989b08fe6b60"
+          }
+        }
+      }
+    },
+    "counts": {
+      "fsc-native/test": {
+        "requests": 3793,
+        "source_groups": 3793,
+        "audio_occurrences": 3793,
+        "unique_audio_hashes": 3793,
+        "hashes_used_by_multiple_requests": 0
+      },
+      "fsc-native/train": {
+        "requests": 23132,
+        "source_groups": 23132,
+        "audio_occurrences": 23132,
+        "unique_audio_hashes": 23131,
+        "hashes_used_by_multiple_requests": 1
+      },
+      "fsc-native/valid": {
+        "requests": 3118,
+        "source_groups": 3118,
+        "audio_occurrences": 3118,
+        "unique_audio_hashes": 3118,
+        "hashes_used_by_multiple_requests": 0
+      },
+      "slurp-native/test": {
+        "requests": 13078,
+        "source_groups": 2974,
+        "audio_occurrences": 13078,
+        "unique_audio_hashes": 13078,
+        "hashes_used_by_multiple_requests": 0
+      },
+      "slurp-native/train": {
+        "requests": 50627,
+        "source_groups": 11513,
+        "audio_occurrences": 50627,
+        "unique_audio_hashes": 50627,
+        "hashes_used_by_multiple_requests": 0
+      },
+      "slurp-native/valid": {
+        "requests": 8690,
+        "source_groups": 2033,
+        "audio_occurrences": 8690,
+        "unique_audio_hashes": 8690,
+        "hashes_used_by_multiple_requests": 0
+      },
+      "sfc-native/test_id": {
+        "requests": 2590,
+        "source_groups": 1986,
+        "audio_occurrences": 3194,
+        "unique_audio_hashes": 2590,
+        "hashes_used_by_multiple_requests": 604
+      },
+      "sfc-native/test_ood": {
+        "requests": 771,
+        "source_groups": 593,
+        "audio_occurrences": 949,
+        "unique_audio_hashes": 771,
+        "hashes_used_by_multiple_requests": 178
+      },
+      "sfc-native/train_id": {
+        "requests": 5534,
+        "source_groups": 4499,
+        "audio_occurrences": 6569,
+        "unique_audio_hashes": 5534,
+        "hashes_used_by_multiple_requests": 1035
+      }
+    },
+    "pairs": [
+      {
+        "left": "fsc-native/test",
+        "right": "fsc-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/test",
+        "right": "fsc-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/test",
+        "right": "sfc-native/test_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/test",
+        "right": "sfc-native/test_ood",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/test",
+        "right": "sfc-native/train_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/test",
+        "right": "slurp-native/test",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/test",
+        "right": "slurp-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/test",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/train",
+        "right": "fsc-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/train",
+        "right": "sfc-native/test_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/train",
+        "right": "sfc-native/test_ood",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/train",
+        "right": "sfc-native/train_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/train",
+        "right": "slurp-native/test",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/train",
+        "right": "slurp-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/train",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/valid",
+        "right": "sfc-native/test_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/valid",
+        "right": "sfc-native/test_ood",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/valid",
+        "right": "sfc-native/train_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/valid",
+        "right": "slurp-native/test",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/valid",
+        "right": "slurp-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "fsc-native/valid",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_id",
+        "right": "sfc-native/test_ood",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_id",
+        "right": "sfc-native/train_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_id",
+        "right": "slurp-native/test",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_id",
+        "right": "slurp-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_id",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_ood",
+        "right": "sfc-native/train_id",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_ood",
+        "right": "slurp-native/test",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_ood",
+        "right": "slurp-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/test_ood",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/train_id",
+        "right": "slurp-native/test",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/train_id",
+        "right": "slurp-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "sfc-native/train_id",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "slurp-native/test",
+        "right": "slurp-native/train",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "slurp-native/test",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      },
+      {
+        "left": "slurp-native/train",
+        "right": "slurp-native/valid",
+        "shared_audio_hashes": 0,
+        "left_affected_requests": 0,
+        "right_affected_requests": 0
+      }
+    ],
+    "target_files_read": false,
+    "manifest_metadata_read": true,
+    "waveforms_rehashed": false,
+    "model_called": false,
+    "scope": "Exact encoded-file hashes inherited from pinned complete request releases. No decoded-waveform, near-duplicate, transcript, semantic or pretraining contamination claim.",
+    "plan_sha256": "35a42d43a533097dd27926a51c991f044c6d3067aa55a62a6869db4e6c987f31",
+    "runner_sha256": "a09870b819e699e3f757e073353ca1e2fd8b8d820d72c4007b0253657e8a866c"
+  }
+}
