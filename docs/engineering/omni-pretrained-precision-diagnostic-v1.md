@@ -76,3 +76,8 @@ FP32 归一化的 EOS log-prob 为 -0.000034808505，原生 BF16 归一化为 0�
 完整记录不等于 parity 验收，以及“响应概率相同但其他词的 logits 不同”的反例。
 与报告同时保存的[运行状态](omni-runtime-observation-20261110-precision-partial-01.json)
 来自精确 Docker ID 的实时 inspect；当时 CPU 诊断、SLURP 和 FSC 基线均仍在运行。
+
+[第二份部分报告](omni-precision-train6-v1-logit-audit-partial-02.json)增加首条输入的
+fp32_features 条件：保存的全词表 logits 与 autocast/reference 完全一致。
+目前仅覆盖 3/30 条件，不能据此排除其他输入的特征精度影响；音频/文本补齐及
+实际微批形状仍需后续完整诊断和 actual-verl 复验。

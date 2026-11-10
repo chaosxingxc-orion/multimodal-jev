@@ -1,0 +1,245 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-context-population-v2",
+  "launch": {
+    "container_id": "c98f54290f9da8e52526b895e847d45629c9242012276b653300d8b327629a0f",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "524eb1e794d52fb3d4aed1531e1728f0e7e27355",
+    "intent_sha256": "4c25f66f5437db024aedb2e405c3ad66a881982bb34d615ee15b137b4e9b82ba"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T16:50:37.59604092Z",
+    "FinishedAt": "2026-11-10T16:50:53.38223233Z"
+  },
+  "result": {
+    "status": "arithmetic_complete",
+    "requests": 30731,
+    "by_tier": {
+      "1": 4292,
+      "2": 6320,
+      "3": 4292,
+      "4": 4276,
+      "5": 4292,
+      "6": 4292,
+      "7": 2146,
+      "8": 821
+    },
+    "maxima": {
+      "1": {
+        "tier": 1,
+        "query_id": "query_01972",
+        "paths": [
+          "public/tier1_direct_audios/query_01972/speaker_02_3dspeaker_speaker_3D_SPK_04060.wav"
+        ],
+        "audio_count": 1,
+        "input_tokens": 15280,
+        "audio_frames": [
+          65464
+        ],
+        "audio_tokens": [
+          8510
+        ]
+      },
+      "2": {
+        "tier": 2,
+        "query_id": "query_02467",
+        "paths": [
+          "public/tier2_parametric_audios/query_02467/speaker_01_3dspeaker_speaker_3D_SPK_00481.wav"
+        ],
+        "audio_count": 1,
+        "input_tokens": 6918,
+        "audio_frames": [
+          1134
+        ],
+        "audio_tokens": [
+          148
+        ]
+      },
+      "3": {
+        "tier": 3,
+        "query_id": "query_01778",
+        "paths": [
+          "public/tier3_multi_intent_audios/query_01778/speaker_03_3dspeaker_speaker_3D_SPK_04060.wav"
+        ],
+        "audio_count": 1,
+        "input_tokens": 15280,
+        "audio_frames": [
+          65464
+        ],
+        "audio_tokens": [
+          8510
+        ]
+      },
+      "4": {
+        "tier": 4,
+        "query_id": "query_01492",
+        "paths": [
+          "public/tier4_implicit_audios/query_01492/speaker_04_3dspeaker_speaker_3D_SPK_04060.wav"
+        ],
+        "audio_count": 1,
+        "input_tokens": 15280,
+        "audio_frames": [
+          65464
+        ],
+        "audio_tokens": [
+          8510
+        ]
+      },
+      "5": {
+        "tier": 5,
+        "query_id": "query_00283",
+        "paths": [
+          "public/tier5_needle_audios/query_00283/speaker_21_yodas_speaker_c1I4gQB_orU.wav"
+        ],
+        "audio_count": 1,
+        "input_tokens": 15280,
+        "audio_frames": [
+          65464
+        ],
+        "audio_tokens": [
+          8510
+        ]
+      },
+      "6": {
+        "tier": 6,
+        "query_id": "query_00202",
+        "paths": [
+          "public/tier6_correction_audios/query_00202/speaker_00_voxpopuli_speaker_129073.wav"
+        ],
+        "audio_count": 1,
+        "input_tokens": 15280,
+        "audio_frames": [
+          65464
+        ],
+        "audio_tokens": [
+          8510
+        ]
+      },
+      "7": {
+        "tier": 7,
+        "query_id": "query_02030",
+        "paths": [
+          "public/tier7_multiturn_audios/query_02030/turn_00_user_3dspeaker_speaker_3D_SPK_05717.wav",
+          "public/tier7_multiturn_audios/query_02030/turn_01_agent_3dspeaker_speaker_3D_SPK_09044.wav",
+          "public/tier7_multiturn_audios/query_02030/turn_02_user_3dspeaker_speaker_3D_SPK_05717.wav",
+          "public/tier7_multiturn_audios/query_02030/turn_03_agent_3dspeaker_speaker_3D_SPK_09044.wav",
+          "public/tier7_multiturn_audios/query_02030/turn_04_user_3dspeaker_speaker_3D_SPK_05717.wav"
+        ],
+        "audio_count": 5,
+        "input_tokens": 17206,
+        "audio_frames": [
+          254,
+          1310,
+          270,
+          65464,
+          12571
+        ],
+        "audio_tokens": [
+          33,
+          171,
+          35,
+          8510,
+          1634
+        ]
+      },
+      "8": {
+        "tier": 8,
+        "query_id": "query_00314",
+        "paths": [
+          "public/tier8_intent_blending_audios/query_00314/mixed.wav"
+        ],
+        "audio_count": 1,
+        "input_tokens": 6987,
+        "audio_frames": [
+          1670
+        ],
+        "audio_tokens": [
+          217
+        ]
+      }
+    },
+    "exceeded_with_1024_output": {
+      "4096": {
+        "1": 4292,
+        "2": 6320,
+        "3": 4292,
+        "4": 4276,
+        "5": 4292,
+        "6": 4292,
+        "7": 2146,
+        "8": 821
+      },
+      "8192": {
+        "1": 1,
+        "3": 3,
+        "4": 3,
+        "5": 3,
+        "6": 15,
+        "7": 703
+      },
+      "16384": {
+        "7": 11
+      },
+      "32768": {}
+    },
+    "text_layouts": 7,
+    "prior_real_processor_comparisons": [
+      {
+        "selection": "longest_clip",
+        "input_tokens": 15290,
+        "exact_match": true
+      },
+      {
+        "selection": "longest_dialogue",
+        "input_tokens": 17206,
+        "exact_match": true
+      }
+    ],
+    "input_hashes": {
+      "inventory": "01be8bb56beaa2996481761fbcc534510f89b58213a53668ab9e394b61cb0ef0",
+      "headers": "472340a98cca0b3a74f89b22af0935f85d38c7d464caec36875aa6a2a668d8da",
+      "prompt": "c2fb813b0ff9b480b9f1d59e3b025d2c9290edd4c05bc84c83a5a0bccc1155d7",
+      "prior_identity": "69323fb033f9e93ea46ad154605f8dcd2523c8d5d6a80fdfadd6e2cc0661e199",
+      "prior_result": "750bbffcf99e140786f6d702d189869720be947f5f76be4e594b7885d1ed8358"
+    },
+    "requests_sha256": "fa2bff0aadf7c3aaa00787e39b82023333caad3aa812a675e958afaf570f9423",
+    "processor_source_sha256": "5ebde9431e03451e4d958afb1602704b1f184ebff8b6caf1d2875e3de6853172",
+    "length_helper_source_sha256": "5ebde9431e03451e4d958afb1602704b1f184ebff8b6caf1d2875e3de6853172",
+    "runner_sha256": "1e6a7089234f1a777c7b410d54331f991b3adeb0deacaaacb2063e1e9cc560a7",
+    "elapsed_seconds": 3.440740839985665,
+    "answers_read": false,
+    "waveforms_read": false,
+    "model_loaded": false,
+    "scope": "Whole pinned inventory header-derived hop-aligned token budget with real tokenizer/helper; provisional Tier7 layout, not full waveform processing or engine/quality acceptance."
+  },
+  "source_and_coverage_arithmetic_verified": true,
+  "result_sha256": "d6944ad5b2541c82258979d3f7ba2edca400aa6062059c1fb6a716a9a28d7e18",
+  "prior_failed_launch": {
+    "container_id": "8969803df78770ea4f99304cfa5bb096f7ea532e77c37d8e21362cf9d918b12b",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "524eb1e794d52fb3d4aed1531e1728f0e7e27355",
+    "intent_sha256": "6ddb24b6aa2164390d18979309a87fc833a1f5e739d9bb3e1042fe26caa23e00"
+  },
+  "prior_failed_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-10T16:50:07.19206802Z",
+    "FinishedAt": "2026-11-10T16:50:07.63072727Z"
+  },
+  "prior_failure": "Snapshot omitted package initializer dependencies; import failed before run creation, no model inference."
+}
