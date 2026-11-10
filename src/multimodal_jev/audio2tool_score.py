@@ -119,3 +119,77 @@ def evaluate(targets,predictions,official):
                   indexed_slot_micro_f1=2*tp/(2*tp+fp+fn) if 2*tp+fp+fn else None,
                   scope='All declared records including errors; official primitive metrics under local JSON parsing. Not unchanged official evaluator or paper protocol.')
     return report,details
+
+
+def validate_projected_target(target,official):
+    """Check coverage declarations rather than trusting an unknown-to-empty repair."""
+    from .audio2tool_targets import literal_call
+    primary=target['primary'];validate_calls([primary])
+    annotations=target['additional_annotations'];expected=[primary['name']];complete=[primary]
+    missing=False
+    for a in annotations:
+        if set(a)!={'raw','name','arguments','argument_evidence'}:
+            raise ValueError('explicit extra-call evidence required')
+        if official.normalize_tool_name(a['raw'])!=official.normalize_tool_name(a['name']):
+            raise ValueError('extra tool label differs')
+        expected.append(a['raw'])
+        if a['argument_evidence']=='unavailable':
+            if a['arguments'] is not None:raise ValueError('unknown arguments must remain None')
+            missing=True
+        elif a['argument_evidence']=='explicit_literal_call':
+            call=dict(name=a['name'],arguments=a['arguments']);validate_calls([call])
+            if typed(literal_call(a['raw']))!=typed(call):raise ValueError('explicit argument evidence differs')
+            complete.append(call)
+        else:raise ValueError('unknown argument evidence status')
+    if (target['official_expected_tools']!=expected
+            or target['full_call_argument_coverage']!=('incomplete' if missing else 'complete')
+            or typed(target['full_calls'])!=typed(None if missing else complete)):
+        raise ValueError('target coverage or call evidence differs')
+
+
+def evaluate_projected(targets,predictions,official):
+    """Full-record primary/name metrics; full-argument subset has its own denominator."""
+    expected={r['id']:r for r in targets};observed={r['id']:r for r in predictions}
+    if (not targets or len(expected)!=len(targets) or len(observed)!=len(predictions)
+            or set(expected)!=set(observed)):
+        raise ValueError('complete unique target and terminal-prediction coverage required')
+    details=[]
+    for key,target in expected.items():
+        validate_projected_target(target,official)
+        record=observed[key]
+        if set(record)!={'id','raw_text','error'} or (record['error'] is not None and type(record['error']) is not str):
+            raise ValueError('explicit terminal raw text and error required')
+        pred=[];valid=False
+        if record['error'] is None:
+            try:pred=parse_prediction(record['raw_text']);valid=True
+            except ValueError:pass
+        primary=target['primary'];first=pred[0] if pred else dict(name='',arguments={})
+        param=official.compute_parameter_accuracy(first['arguments'],primary['arguments'])
+        names=[c['name'] for c in pred]
+        tools=official.compute_multi_tool_metrics(names,target['official_expected_tools'])
+        full=target['full_calls']
+        detail=dict(id=key,tier=target['tier'],format_valid=valid,runtime_error=record['error'] is not None,
+            strict_primary_exact=bool(valid and pred and typed(first)==typed(primary)),
+            official_primary_exact=bool(valid and pred and official.compute_exact_match(
+                first['name'],first['arguments'],primary['name'],primary['arguments'])),
+            official_primary_tool_accuracy=bool(valid and pred and official.compute_tool_accuracy(first['name'],primary['name'])),
+            official_primary_parameter_f1=param['f1'] if valid else 0.,
+            official_tool_set_exact=bool(valid and tools['all_tools_match']),
+            official_tool_set_f1=tools['tool_f1'] if valid else 0.,
+            strict_ordered_names_exact=bool(valid and names==[primary['name']]+[a['name'] for a in target['additional_annotations']]),
+            full_arguments_available=full is not None,
+            strict_full_calls_exact=None if full is None else bool(valid and typed(pred)==typed(full)))
+        details.append(detail)
+    metrics=('strict_primary_exact','official_primary_exact','official_primary_tool_accuracy',
+             'official_primary_parameter_f1','official_tool_set_exact','official_tool_set_f1','strict_ordered_names_exact')
+    def summarize(items):
+        n=len(items);covered=[r for r in items if r['full_arguments_available']]
+        return dict(records=n,format_valid=sum(r['format_valid'] for r in items),
+            runtime_errors=sum(r['runtime_error'] for r in items),
+            full_record_metrics={k:sum(r[k] for r in items)/n for k in metrics},
+            full_arguments_subset=dict(eligible_records=len(covered),unavailable_records=n-len(covered),
+                strict_full_calls_exact=sum(r['strict_full_calls_exact'] for r in covered)/len(covered) if covered else None),
+            full_population_strict_calls_exact=(sum(r['strict_full_calls_exact'] for r in covered)/n if len(covered)==n else None))
+    return dict(all=summarize(details),by_tier={str(t):summarize([r for r in details if r['tier']==t])
+        for t in sorted({r['tier'] for r in details})},
+        scope='Full release-record primary and name metrics, including errors. Additional-argument subset explicitly separate. Fixed official primitives with local JSON parsing; not original evaluator/paper equivalence.'),details

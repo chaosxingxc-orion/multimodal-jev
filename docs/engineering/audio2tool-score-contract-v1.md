@@ -78,3 +78,23 @@ registry。它们既有裸工具名也有调用字符串；原始字符串/顺�
 标志已核对，见[目标投影结果](audio2tool-targets-v1-verified.json)。评分核心上一节
 的evaluate仍要求完整gold calls，不能直接喂入此投影中的未知full_calls；后续需接入
 明确的主调用/名称评分入口，不把缺失参数伪装成完整目标。
+
+## 全量投影目标评分入口
+
+`evaluate_projected` 现已接通上述目标：主调用exact/参数F1/工具accuracy及工具集合
+exact/F1使用全部声明记录分母，同时提供类型严格主调用exact和有序名称exact。
+官方指标调用固定原函数，仍标明本地JSON解析及全错误分母差异。
+每个tier及总体分别报告记录数、格式有效数、runtime error数。
+
+目标覆盖声明会重新核验：原始附加标签、归一化名称、显式字面量参数与full_calls
+必须一致，unknown不得替换成{}。未知参数不妨碍全量名称/主调用评分；完整参数
+子集只在独立 `full_arguments_subset` 下报告分母与严格exact。只要有一条目标参数
+不可用，`full_population_strict_calls_exact` 即为None，不将子集分数冒充全量。
+
+26项目标/解析/评分测试通过，并实际运行全30733条两个合成控制：
+all_runtime_failures所有主指标为0且runtime error分母30733；primary_only_oracle
+严格主调用为1。两者均保持25969可用/4764不可用、全量完整调用exact为None。
+合成oracle只用来检验评分身份映射，不产生actor反馈，不作为模型成绩，也不落盘
+伪模型预测。见[全量合成控制](audio2tool-projected-score-controls-v1.json)。
+正式评分仍须先验收真实模型预测容器、输入/输出覆盖和失败账本；当前没有Audio2Tool
+模型输出，不能用这些控制结果替代冻结基线或泛化评测。
