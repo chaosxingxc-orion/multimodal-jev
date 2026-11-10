@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import pytest
 
 torch=pytest.importorskip('torch')
-from multimodal_jev.verl_cpu_logprobs import cpu_logprobs,native_actor_cpu_logprobs
+from multimodal_jev.verl_cpu_logprobs import cpu_logprobs,native_actor_cpu_logprobs,native_actor_cpu_device
 
 
 def test_cpu_forward_and_gradient_match_cross_entropy_on_noncontiguous_logits():
@@ -35,3 +35,26 @@ def test_scoped_dispatch_restored_after_failure(monkeypatch):
 def test_invalid_label_shape_rejected():
     with pytest.raises(ValueError,match='aligned'):
         cpu_logprobs(torch.zeros(2,3,4),torch.zeros(2,2,dtype=torch.long))
+
+
+def test_cpu_device_override_restores_on_exception(monkeypatch):
+    original = object()
+    module = SimpleNamespace(get_device_id=original)
+    monkeypatch.setitem(sys.modules, 'verl.workers.actor', SimpleNamespace(dp_actor=module))
+    actor = SimpleNamespace(device_name='cpu', actor_module=torch.nn.Linear(2, 3))
+    with pytest.raises(RuntimeError):
+        with native_actor_cpu_device(actor):
+            assert module.get_device_id() == torch.device('cpu')
+            raise RuntimeError('fixture')
+    assert module.get_device_id is original
+
+
+def test_device_override_rejects_non_cpu_actor_before_mutation(monkeypatch):
+    original = object()
+    module = SimpleNamespace(get_device_id=original)
+    monkeypatch.setitem(sys.modules, 'verl.workers.actor', SimpleNamespace(dp_actor=module))
+    actor = SimpleNamespace(device_name='cpu', actor_module=torch.nn.Linear(2, 3, device='meta'))
+    with pytest.raises(ValueError, match='CPU actor'):
+        with native_actor_cpu_device(actor):
+            pass
+    assert module.get_device_id is original

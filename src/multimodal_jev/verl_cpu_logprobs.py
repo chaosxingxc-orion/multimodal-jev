@@ -25,3 +25,25 @@ def native_actor_cpu_logprobs():
         yield
     finally:
         dp_actor.logprobs_from_logits=original
+
+
+@contextmanager
+def native_actor_cpu_device(actor):
+    """Explicit CPU placement for native wrapper methods in isolated probes.
+
+    The pinned device helper calls current_device even for CPU. Validate the
+    actual actor before replacing only dp_actor's imported helper; never enable
+    this adapter for accelerator or concurrent actors.
+    """
+    import torch
+    from verl.workers.actor import dp_actor
+    tensors = list(actor.actor_module.parameters()) + list(actor.actor_module.buffers())
+    if (actor.device_name != 'cpu' or not tensors
+            or any(t.device.type != 'cpu' for t in tensors)):
+        raise ValueError('explicit nonempty CPU actor required')
+    original = dp_actor.get_device_id
+    dp_actor.get_device_id = lambda: torch.device('cpu')
+    try:
+        yield
+    finally:
+        dp_actor.get_device_id = original
