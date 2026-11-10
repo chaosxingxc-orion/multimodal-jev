@@ -1,0 +1,141 @@
+{
+  "schema": "omni-pretrained-verl-partial-diagnostic-v1",
+  "observed_utc": "2026-11-10T16:02:59.586856+00:00",
+  "container_id": "2685a84d57a62d655f2d97401b9ebbede83ce9378f3f9a47648f4842ce6dffe4",
+  "container_state": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 138860,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T15:16:31.75166075Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "microbatch1_sha256": "802ffc126efe17b58edc1dea211ab2962b1c4e5bb820fd5626e901ffd40e422f",
+  "prior_result_sha256": "2b08275c98794fe49ba4189151dbb793b3d9cfdd315d24267c5c1c5b1c9152ec",
+  "identity_sha256": "d67c39908b041a15654f29ec91e7a1794f5ecde2204a5c969baed60dec70a9df",
+  "progress": {
+    "phase": "actual_verl_compute_log_prob",
+    "heartbeat_unix": 1794326063.5787303,
+    "micro_batch_size": 2
+  },
+  "max_error_from_unpadded": 0.9680581092834473,
+  "predeclared_atol": 0.1,
+  "partial_gate_passed": false,
+  "rows": [
+    {
+      "original_index": 2,
+      "audio_count": 2,
+      "prompt_tokens": 1228,
+      "unpadded": [
+        -0.9526049494743347,
+        -4.887569048150908e-06
+      ],
+      "actual_verl_microbatch1": [
+        -0.94921875,
+        0.0
+      ],
+      "absolute_errors": [
+        0.003386199474334717,
+        4.887569048150908e-06
+      ]
+    },
+    {
+      "original_index": 0,
+      "audio_count": 1,
+      "prompt_tokens": 1074,
+      "unpadded": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "actual_verl_microbatch1": [
+        -4.5625,
+        0.0
+      ],
+      "absolute_errors": [
+        0.15093326568603516,
+        3.480850500636734e-05
+      ]
+    },
+    {
+      "original_index": 5,
+      "audio_count": 2,
+      "prompt_tokens": 826,
+      "unpadded": [
+        -5.267108917236328,
+        -0.0001134808044298552
+      ],
+      "actual_verl_microbatch1": [
+        -4.59375,
+        0.0
+      ],
+      "absolute_errors": [
+        0.6733589172363281,
+        0.0001134808044298552
+      ]
+    },
+    {
+      "original_index": 1,
+      "audio_count": 1,
+      "prompt_tokens": 976,
+      "unpadded": [
+        -4.540982723236084,
+        -1.3351351299206726e-05
+      ],
+      "actual_verl_microbatch1": [
+        -4.9375,
+        0.0
+      ],
+      "absolute_errors": [
+        0.396517276763916,
+        1.3351351299206726e-05
+      ]
+    },
+    {
+      "original_index": 3,
+      "audio_count": 1,
+      "prompt_tokens": 977,
+      "unpadded": [
+        -4.938191890716553,
+        -1.9788545614574105e-05
+      ],
+      "actual_verl_microbatch1": [
+        -5.90625,
+        0.0
+      ],
+      "absolute_errors": [
+        0.9680581092834473,
+        1.9788545614574105e-05
+      ]
+    },
+    {
+      "original_index": 4,
+      "audio_count": 1,
+      "prompt_tokens": 709,
+      "unpadded": [
+        -3.5611798763275146,
+        -1.168244216387393e-05
+      ],
+      "actual_verl_microbatch1": [
+        -3.4375,
+        0.0
+      ],
+      "absolute_errors": [
+        0.12367987632751465,
+        1.168244216387393e-05
+      ]
+    }
+  ],
+  "scope": "Partial evidence only; original run remains in progress. No complete acceptance, training, NPU/vLLM parity, replay or threshold change.",
+  "candidate_explanations": [
+    "Current CPU logprob adapter uses BF16 log_softmax whereas reference promotes logits to FP32; effect on first-token error not isolated.",
+    "Actual verl wraps model in CPU BF16 autocast; reference explicitly casts audio features and runs without outer autocast.",
+    "Left padding and audio feature padding differ; longest unpadded row error is .00339, shorter rows exceed .1. Correlation does not establish cause."
+  ],
+  "next_action": "Keep original immutable run and acceptance observer. At terminal inspect both microbatches; isolate logprob precision, autocast/features and text padding separately with fixed inputs before any new full-model dispatch."
+}
