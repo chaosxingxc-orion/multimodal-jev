@@ -12,6 +12,16 @@ Retain all official real recordings: TRAIN50628, devel8690, TEST13078. Exclude
 synthetic only from this explicitly real-only condition; never merge its
 results with real+synthetic trained academic models. Preserve utterance IDs,
 recording filenames, speakers and reference token spans in scoring provenance.
+
+2026-11-10 duplicate audit correction: TRAIN has 50628 recording entries but
+50627 unique filenames. One audio appears under two utterance IDs with conflicting
+person fillers. Match the pinned official loader's last-occurrence-per-filename
+semantics, preserving both annotations in a conflict audit. Merge both utterance
+components (and all their recordings) into one source group before learning or
+selection allocation. No duplicate audio is counted as independent evidence.
+Devel8690 and TEST13078 are already unique. Old release v1 failed closed at the
+duplicate; keep its terminal and partial stage. Publish corrected release v2
+under a new content hash, never overwrite the original metadata.
 No transcript-based removal or held-out-domain filtering in the native release.
 
 Input is audio or actual ASR evidence plus a TRAIN-defined taxonomy. Reference
