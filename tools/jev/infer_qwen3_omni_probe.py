@@ -13,6 +13,7 @@ from multimodal_jev.consumption import canonical
 from multimodal_jev.end_to_end import require_audio_task_route
 from multimodal_jev.frozen_contract import FrozenContract
 from multimodal_jev.omni_probe_contract import select_learning
+from multimodal_jev.omni_slurp_contract import validate_runtime
 from multimodal_jev.waveform_control import condition_audio
 
 
@@ -30,6 +31,7 @@ def verify_assets(cfg):
 
 def run(cfg,out,*,population_selector=select_learning):
     require_audio_task_route(cfg)
+    validate_runtime(cfg)
     if (cfg['parameters_frozen'] is not True or cfg['split']!='train'
             or cfg.get('adapter') is not None):
         raise ValueError('fixed TRAIN learning groups, frozen official base only')
@@ -42,12 +44,15 @@ def run(cfg,out,*,population_selector=select_learning):
     identity=dict(config=cfg,requests_sha256=file_hash(cfg['requests']),instruction_sha256=file_hash(cfg['instruction']),
         asset_audit_sha256=file_hash(cfg['asset_audit']),model_files=audit['files'],runner_sha256=file_hash(__file__),
         source_sha256={n:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/n) for n in
-                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','waveform_control.py']},
+                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','waveform_control.py','omni_slurp_contract.py','slurp_native.py']},
         versions={p:importlib.metadata.version(p) for p in ['torch','torch-npu','transformers','vllm','vllm-ascend']})
     if population_selector is not select_learning:
         import inspect
         identity['population_selector_sha256']=file_hash(inspect.getfile(population_selector))
-        identity['selection_protocol_sha256']=cfg['selection_protocol_sha256']
+        if 'selection_protocol_sha256' in cfg:
+            identity['selection_protocol_sha256']=cfg['selection_protocol_sha256']
+    if contract.taxonomy_sha256 is not None:
+        identity['taxonomy_sha256']=contract.taxonomy_sha256
     atomic_json(out/'identity.json',identity)
     atomic_json(out/'selection.json',{'ids':[r['id'] for r in rows]})
     from transformers import Qwen3OmniMoeProcessor
@@ -59,7 +64,7 @@ def run(cfg,out,*,population_selector=select_learning):
         max_model_len=4096,max_num_seqs=1,max_num_batched_tokens=4096,
         gpu_memory_utilization=.85,enforce_eager=True,trust_remote_code=False,
         limit_mm_per_prompt={'audio':1,'image':0,'video':0},enable_prefix_caching=False)
-    params=SamplingParams(temperature=0.,max_tokens=128,seed=17)
+    params=SamplingParams(temperature=0.,max_tokens=cfg['max_new_tokens'],seed=17)
     instruction=Path(cfg['instruction']).read_text();records=[]
     cache=out/'records';cache.mkdir()
     for i,row in enumerate(rows):

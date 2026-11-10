@@ -1,0 +1,55 @@
+{
+  "schema": "jev-omni-slurp-text-preflight-v1",
+  "sources": {
+    "native": {
+      "requests": 60,
+      "source_groups": [
+        "slurp:12507",
+        "slurp:13261",
+        "slurp:13742",
+        "slurp:11241",
+        "slurp:3675",
+        "slurp:335",
+        "slurp:9699",
+        "slurp:15614",
+        "slurp:15099",
+        "slurp:15648",
+        "slurp:6210",
+        "slurp:13003",
+        "slurp:4038",
+        "slurp:3484",
+        "slurp:6961",
+        "slurp:12063"
+      ],
+      "requests_sha256": "b297b2c6f3914af232e295ea2ef2b06907a19f7426dc02a63d314c2759727cf1",
+      "instruction_sha256": "b171e5d82372d47f2056f883a92ba520313eef8c08a04bac850d8dc18e86933f"
+    },
+    "jev": {
+      "requests": 336,
+      "source_groups": [
+        "slurp:12507"
+      ],
+      "requests_sha256": "8fff6d3097fb9e9ada62110ae0cdf362e39104fe73456f8e964f035f5afc763a",
+      "instruction_sha256": "ed46633fb5e106d755f96e160fb5845d063a5ce30d6fa0245a8d91086cadb1c1"
+    }
+  },
+  "scope": "CPU processor/template/tokenizer only; one unexpanded audio placeholder; actual audio tokens not included; no model task inference or context-fit guarantee",
+  "by_format": {
+    "native": {
+      "requests": 60,
+      "min_text_tokens": 853,
+      "max_text_tokens": 853,
+      "all_task_definitions_retained": true,
+      "text_alone_exceeds_context": 0,
+      "planned_output_budget": 256
+    },
+    "jev": {
+      "requests": 336,
+      "min_text_tokens": 212,
+      "max_text_tokens": 1427,
+      "all_task_definitions_retained": true,
+      "text_alone_exceeds_context": 0,
+      "planned_output_budget": 256
+    }
+  }
+}
