@@ -39,3 +39,11 @@ cover zero-advantage/momentum no-op behavior, variable microbatches, Ray/FSDP,
 two-rank model execution, asynchronous vLLM audio integration or learning efficacy.
 It does not export a policy for development evaluation. Those remain subsequent
 requirements before switching the registered comparison executor.
+
+The [queue receipt](../docs/engineering/native-verl-update-policy-v1-queued.json)
+pins immutable source4e40cd7 and the exact dependency container. The detached
+supervisor observes that handle and launches only on successful Docker and
+application terminals with matching reference hashes. It does not restart
+dependencies or infer failure from old heartbeats. Scoped CPU-device adapter
+tests verify restoration after exceptions and rejection of non-CPU tensors;
+all five CPU dispatcher/device tests pass in the system torch environment.

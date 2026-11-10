@@ -29,8 +29,16 @@
 补充实测：原生 actor 的 CPU 前向在 log-prob 阶段失败，固定版本的
 `utils/torch_functional.py` 根据已安装算子而非 logits 设备选择 NPU 交叉熵。
 见[失败与显式 CPU 适配协议](../../experiments/native-verl-actor-forward-v1.md)。
-v2 只在独立进程中显式替换 log-prob 分发，运行结果仍待验证；不得称为未修改
-worker 的成功执行。
+v2 在独立进程中显式替换 log-prob 分发，已通过真实音频前向对照，最大误差
+3.0517578125e-5；见[结果](native-verl-actor-forward-v2-result.json)。不得称为
+未修改 worker 的成功执行。真实模型梯度/AdamW 对照仍在运行。
+
+后续[原生 update_policy 验证](../../experiments/native-verl-update-policy-v1.md)
+已登记并排队，必须等待上述梯度对照成功。它直接调用 compute_log_prob 和
+update_policy，显式保留 rollout 概率、验证零 dropout，并与同一初始化器的
+参考梯度/参数/优化器状态比较；CPU 设备与 log-prob 适配均明确记录。
+本次仅验证单个完整微批；变长微批缩放、零优势动量处理与真实分布式模型路径
+仍是独立的必要验收，不能用这个队列代替。
 
 [两进程 Gloo 损失验证](../../experiments/distributed-verl-loss-v1.md)已通过：
 固定 core_algos.py 的 global_batch_info 在不等 token 分片和不等微批数下恢复
