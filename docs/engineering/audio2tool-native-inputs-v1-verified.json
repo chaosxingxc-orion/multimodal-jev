@@ -1,0 +1,49 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-native-inputs-v1",
+  "result": {
+    "status": "prepared",
+    "requests": 30733,
+    "unique_inputs": 30731,
+    "counts_by_tier": {
+      "1": 4292,
+      "2": 6320,
+      "3": 4292,
+      "4": 4278,
+      "5": 4292,
+      "6": 4292,
+      "7": 2146,
+      "8": 821
+    },
+    "duplicate_input_groups": [
+      [
+        "audio2tool:tier4:release:468",
+        "audio2tool:tier4:release:469"
+      ],
+      [
+        "audio2tool:tier4:release:1534",
+        "audio2tool:tier4:release:1535"
+      ]
+    ],
+    "actor_audio_references": 36417,
+    "post_decision_audio_references": 4,
+    "input_hashes": {
+      "inventory": "01be8bb56beaa2996481761fbcc534510f89b58213a53668ab9e394b61cb0ef0",
+      "mapping": "f4440148e1d09c8067e9aaba3fe5ba5393947ea742a371a78fd24c3cab1dba10",
+      "dialogues": "8eb63cd51e91fc0594217f518ce20b5e68e4e05521ee7090845e5b8f8ac74feb",
+      "structure": "7a03a0d9b837d982aa3c4e554d25b631b5dfb0eb32af99fd9e7916ecc9e62409",
+      "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+    },
+    "inputs_sha256": "f7e4ebe4e7cf2cf411f3f26a8714bbdd0a493c0c7aeb98dd4199112d197e1a35",
+    "system_file_sha256": "78f1efa905f76929bbe2b1bf60208b2887e6773869aa091bf034853112d915f4",
+    "runner_sha256": "aba00cd4f32914dfc8e5926fe9a17f26db22c41c50485b73648072150a4a787c",
+    "model_loaded": false,
+    "annotations_opened": false,
+    "predictions_reused": false,
+    "scope": "All release-record actor inputs; fixed local JSON protocol, complete independent registry. No official paper prompt equivalence, full context/engine/scorer acceptance or Jev target conversion."
+  },
+  "complete_release_mapping_verified": true,
+  "source_sha256": {
+    "src/multimodal_jev/audio2tool_input.py": "7ec4b1f8901104fbcdade9026975dbeb471b3c8cbf62f197c069b974e2e176a9",
+    "tools/jev/prepare_audio2tool_inputs.py": "aba00cd4f32914dfc8e5926fe9a17f26db22c41c50485b73648072150a4a787c"
+  }
+}
