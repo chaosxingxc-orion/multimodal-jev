@@ -100,3 +100,20 @@ MMAR生成结果。后续容量运行按16CPU/128GiB/8GiB共享内存准备，�
 资产和边界音频/ID哈希均已独立核对。见
 [入口预检查核验](mmar-omni-inference-preflight-v1-verified.json)。
 未创建LLM引擎、未加载权重，不能替代下一步NPU容量和完整任务生成。
+
+## NPU容量命令与源码已准备，尚未派发
+
+`mmar-omni-capacity-v2/preparation.json`固定完整create命令、120份原入口预检查
+源码（`38d21d7`）、原输入、处理器证据和模型资产清单。准备时实际重新inspect
+入口预检查容器，核对成功终态、命令/挂载/资源及所有源码与Git一致；没有新增
+模型或数据下载。见[容量准备记录](mmar-omni-capacity-v2-prepared.json)。
+
+容量命令保留原单一边界（56秒、815输入tokens）、只生成1 token；NPU6/7、
+16 CPU/128 GiB/8 GiB共享内存、3600秒加30秒预算，端口64200。原模型、音频、
+processor记录和源码只读，只复制inputs而不挂载references。正式派发仍须接在
+已有Audio2Tool完整解码队列之后，使用共用`npu67-sampling-resource.lock`并核对
+实际设备占用；当前仅准备产物，没有创建容器或启动新队列。
+
+首次`mmar-omni-capacity-v1`准备因协调脚本手写输入SHA漏掉`83c`而失败；复制
+的输入实际SHA与原发布包一致。该失败及`preparation-terminal.json`保留，未
+创建任何容器或派发推理。更正协调脚本后使用独立v2目录，不覆盖旧失败证据。
