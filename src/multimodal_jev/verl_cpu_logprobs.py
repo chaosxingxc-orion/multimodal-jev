@@ -3,12 +3,19 @@ from contextlib import contextmanager
 
 
 def cpu_logprobs(logits, labels, inplace_backward=True):
+    """Normalize low-precision logits in FP32, preserving the autograd path.
+
+    BF16 normalization can round a near-certain token's log probability to
+    exactly zero. Keep FP64 inputs at FP64 for reference/gradient diagnostics.
+    This adapter does not change the model forward or accelerator dispatcher.
+    """
     import torch
     if logits.device.type!='cpu' or labels.device.type!='cpu':
         raise ValueError('CPU-only log-prob adapter received accelerator tensors')
     if logits.shape[:-1]!=labels.shape or labels.dtype!=torch.long:
         raise ValueError('aligned integer response labels required')
-    return torch.log_softmax(logits,dim=-1).gather(-1,labels.unsqueeze(-1)).squeeze(-1)
+    normalization_logits = logits.float() if logits.dtype in (torch.float16, torch.bfloat16) else logits
+    return torch.log_softmax(normalization_logits,dim=-1).gather(-1,labels.unsqueeze(-1)).squeeze(-1)
 
 
 @contextmanager

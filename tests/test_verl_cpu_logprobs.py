@@ -37,6 +37,25 @@ def test_invalid_label_shape_rejected():
         cpu_logprobs(torch.zeros(2,3,4),torch.zeros(2,2,dtype=torch.long))
 
 
+@pytest.mark.parametrize('dtype', [torch.float16, torch.bfloat16])
+def test_low_precision_preserves_small_negative_logprob_and_gradient(dtype):
+    # A confident EOS-like prediction exposes loss of normalization precision.
+    logits=torch.tensor([[0.,-12.,-13.],[-3.,0.,-2.]],dtype=dtype,requires_grad=True)
+    original=logits.detach().clone()
+    labels=torch.tensor([0,2])
+    with torch.autocast('cpu',dtype=torch.bfloat16):
+        result=cpu_logprobs(logits,labels)
+    expected=-torch.nn.functional.cross_entropy(logits.float(),labels,reduction='none')
+    assert result.dtype==torch.float32
+    assert -1e-4 < result[0].item() < 0.
+    torch.testing.assert_close(result,expected,rtol=1e-6,atol=1e-9)
+    actual_grad=torch.autograd.grad(result.sum(),logits,retain_graph=True)[0]
+    expected_grad=torch.autograd.grad(expected.sum(),logits)[0]
+    torch.testing.assert_close(actual_grad,expected_grad,rtol=0,atol=0)
+    assert actual_grad[0,0] > 0
+    torch.testing.assert_close(logits.detach(),original,rtol=0,atol=0)
+
+
 def test_cpu_device_override_restores_on_exception(monkeypatch):
     original = object()
     module = SimpleNamespace(get_device_id=original)
