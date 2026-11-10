@@ -67,3 +67,22 @@ SHA256的独立registry原始字节。它生成完整152工具签名/描述/defa
 全量请求预算及按tier超限算术独立核验，见[结果](audio2tool-native-context-v1-verified.json)。
 这是全量预算加三例真实波形处理，未重处理全体波形、未验证本提示的vLLM engine/
 NPU显存或生成质量，也没有完成官方scorer接入与论文复现。
+
+## 正式推理共用的音频加载接口
+
+`audio2tool_audio.load_audio` 现在对每段音频验证路径留在数据集目录内、字节数、
+SHA256与原24kHz/mono/PCM16 WAV格式。哈希与解码使用同一个字节缓冲区，避免
+先验证再重开文件导致验证内容与消费内容不一致。完整解码后使用现有polyphase
+重采样，核对预期样本数，再右侧补零到160样本边界；每段保存源身份、转换、补零数、
+actor波形哈希与预期帧数。Tier7依次消费包括agent在内的完整已登记决策前缀。
+
+`prepare_request` 绑定固定registry和原renderer，将同一批已验证波形交给vLLM请求，
+检查全部音频占位数量。它尚不代表HF/vLLM特征一致、engine容量或生成验收。
+31项相关测试通过，覆盖实际WAV重采样/仅右侧补零、角色顺序、文件变化、越界软链接、
+registry替换及请求音频对象绑定；测试中的processor为接口替身，不是实际HF验证。
+
+`check_audio2tool_audio_loader.py` 在宿主CPU上对固定全量清单和预算哈希做核验，并按
+输入token数确定性选择三种模式各自最大样本，真实加载原始音频。三例帧数与此前
+实际HF验收结果全部一致，包括五段最长对话。结果及numpy/scipy/soundfile版本见
+[音频加载验证](audio2tool-audio-loader-v1-verified.json)。本次没有加载模型或调用
+HF/vLLM engine；宿主验证不冒充固定镜像验证，也未遍历解码全部36419个音频。

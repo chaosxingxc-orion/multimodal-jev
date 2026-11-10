@@ -1,0 +1,159 @@
+{
+  "status": "passed",
+  "inputs_sha256": "f7e4ebe4e7cf2cf411f3f26a8714bbdd0a493c0c7aeb98dd4199112d197e1a35",
+  "budgets_sha256": "87e750243a3dcc56ca006e9f661dcaa2ac130cc27fd7312d6e986892aa1ef223",
+  "cases": [
+    {
+      "id": "audio2tool:tier7:release:2030",
+      "mode": "dialogue_last_user",
+      "audios": [
+        {
+          "path": "public/tier7_multiturn_audios/query_02030/turn_00_user_3dspeaker_speaker_3D_SPK_05717.wav",
+          "sha256": "e7cd0c9ac20583dfd43905f25a7544302e24f3e0cc38103ddcf71713b6784784",
+          "bytes": 121814,
+          "conversion": {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 60885,
+            "target_rate": 16000,
+            "target_samples": 40590,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          "right_zero_padding_samples": 50,
+          "actor_samples": 40640,
+          "expected_frames": 254,
+          "actor_waveform_sha256": "3a6101d9c29451aebb06c75640cf96b3b5ab3f6030cac30de5eee3ba556294c1"
+        },
+        {
+          "path": "public/tier7_multiturn_audios/query_02030/turn_01_agent_3dspeaker_speaker_3D_SPK_09044.wav",
+          "sha256": "f936b711a1aed91181553b62bf95987a9161a4ca3567a2d2f25996f191eaca35",
+          "bytes": 628694,
+          "conversion": {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 314325,
+            "target_rate": 16000,
+            "target_samples": 209550,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          "right_zero_padding_samples": 50,
+          "actor_samples": 209600,
+          "expected_frames": 1310,
+          "actor_waveform_sha256": "b960ba70a5962b55cd92945046d6948083aa65df539eaf480153c6b97967c746"
+        },
+        {
+          "path": "public/tier7_multiturn_audios/query_02030/turn_02_user_3dspeaker_speaker_3D_SPK_05717.wav",
+          "sha256": "e2012fed4e73d043b125d0593c9abc9a5f506fab4e2d2adf397d3bfe26924940",
+          "bytes": 129494,
+          "conversion": {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 64725,
+            "target_rate": 16000,
+            "target_samples": 43150,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          "right_zero_padding_samples": 50,
+          "actor_samples": 43200,
+          "expected_frames": 270,
+          "actor_waveform_sha256": "e6949cabcdb40db193859f1d208c60dd93a330114ed02d979819af2b087c00c0"
+        },
+        {
+          "path": "public/tier7_multiturn_audios/query_02030/turn_03_agent_3dspeaker_speaker_3D_SPK_09044.wav",
+          "sha256": "8ee586debbf5a5ef9ec871b8c29b2cf9b103232a54f4056082dada0a2d2aec00",
+          "bytes": 31422404,
+          "conversion": {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 15711180,
+            "target_rate": 16000,
+            "target_samples": 10474120,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          "right_zero_padding_samples": 120,
+          "actor_samples": 10474240,
+          "expected_frames": 65464,
+          "actor_waveform_sha256": "1548622d9e393ed717bd0490f1f443e6185d88c0440c3cd7dca0028eae23c244"
+        },
+        {
+          "path": "public/tier7_multiturn_audios/query_02030/turn_04_user_3dspeaker_speaker_3D_SPK_05717.wav",
+          "sha256": "e9f5de7fd0f6d79d48d850dccd919b26183db78d0934794a8c5b47c0bd1f62d6",
+          "bytes": 6033704,
+          "conversion": {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 3016830,
+            "target_rate": 16000,
+            "target_samples": 2011220,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          "right_zero_padding_samples": 140,
+          "actor_samples": 2011360,
+          "expected_frames": 12571,
+          "actor_waveform_sha256": "4c42b6680ddd7d236e03dcb072d415cc52a31f1e3fbe2de76023daf4dd490fed"
+        }
+      ]
+    },
+    {
+      "id": "audio2tool:tier8:release:314",
+      "mode": "foreground_mixture",
+      "audios": [
+        {
+          "path": "public/tier8_intent_blending_audios/query_00314/mixed.wav",
+          "sha256": "08864cf39c8abb260a3ec55e2be83adbd3f23c7378714bfc8b502a1a0212d042",
+          "bytes": 801500,
+          "conversion": {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 400728,
+            "target_rate": 16000,
+            "target_samples": 267152,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          "right_zero_padding_samples": 48,
+          "actor_samples": 267200,
+          "expected_frames": 1670,
+          "actor_waveform_sha256": "4efdea87a134dd9500dc8149da315553af874296dbff3bc0c5d9fab5c3b82445"
+        }
+      ]
+    },
+    {
+      "id": "audio2tool:tier1:release:3943",
+      "mode": "single_audio",
+      "audios": [
+        {
+          "path": "public/tier1_direct_audios/query_01972/speaker_02_3dspeaker_speaker_3D_SPK_04060.wav",
+          "sha256": "3da4625cdae6f7c21e03754aed2a05ff97c37c4e035d43bde3ee0fe268b4cdd8",
+          "bytes": 31422404,
+          "conversion": {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 15711180,
+            "target_rate": 16000,
+            "target_samples": 10474120,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          "right_zero_padding_samples": 120,
+          "actor_samples": 10474240,
+          "expected_frames": 65464,
+          "actor_waveform_sha256": "3c83add1c615c192b37152f17f1633b9c01b3adac127bc73e8c12824c37d2ae5"
+        }
+      ]
+    }
+  ],
+  "elapsed_seconds": 3.295212580356747,
+  "versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.14.0"
+  },
+  "source_files": {
+    "tools/jev/check_audio2tool_audio_loader.py": "122ab657f638b614261ae0b90b8ee97702f1eae97de44ad9ec0c07a7bbee0989",
+    "src/multimodal_jev/audio2tool_audio.py": "d055550264c707cda619ed8055011f03cebabb6ccdc60ac880a003023ce2fa48",
+    "src/multimodal_jev/audio2tool_input.py": "7ec4b1f8901104fbcdade9026975dbeb471b3c8cbf62f197c069b974e2e176a9",
+    "src/multimodal_jev/audio2tool_dialogue_input.py": "30d94c4f35420d23f3daf62185f8b1cdc5d92f381f3e90cebbc6a10776e60086",
+    "src/multimodal_jev/sfc_audio.py": "00c258d470092462b31acea146c55ab672f8b6cd0bcbaeb7ec63b4c585f62b79",
+    "src/multimodal_jev/omni_waveform_boundary.py": "d77473e88592f1228dfa6c55af27ccc517c999abcad36cf4d5b243813dc1d67e"
+  },
+  "scope": "Three deterministic mode maxima with real original waveform bytes, complete decoding and frame comparison to prior accepted HF budgets. Host CPU only; no model, HF processor or vLLM engine invocation; not full-population audio decoding or model performance."
+}
