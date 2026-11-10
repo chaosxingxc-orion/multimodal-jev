@@ -17,6 +17,7 @@ def run(args):
     from transformers.integrations import moe
     from transformers.models.qwen3_omni_moe import modeling_qwen3_omni_moe as hf
     from transformers.models.qwen3_omni_moe.configuration_qwen3_omni_moe import Qwen3OmniMoeTextConfig
+    from multimodal_jev.omni_cpu_expert_projection import fp32_grouped_linear
 
     torch.set_num_threads(16)
     start = time.monotonic()
@@ -153,7 +154,8 @@ def run(args):
                     raise ValueError('unexpected grouped ordering')
             else:
                 save('activation',restore(x))
-            out = original_linear(x,w,offs,*a,**kw)
+            projection = fp32_grouped_linear if args.fp32_projections else original_linear
+            out = projection(x,w,offs,*a,**kw)
             save('gate_up' if number == 0 else 'down',restore(out))
             linear_calls.append(dict(stage='gate_up' if number == 0 else 'down',offsets=offs.tolist(),
                                      input_shape=list(x.shape),output_shape=list(out.shape)))
@@ -178,7 +180,8 @@ def run(args):
             raise ValueError('missing grouped expert projections')
         exact = {name:difference(values[name],original['stages'][name]) for name in
                  ('router.logits','router.weights','router.indices','mlp')}
-        if not all(c['equal'] for c in exact.values()):
+        required_exact = ('router.logits','router.weights','router.indices') if args.fp32_projections else tuple(exact)
+        if not all(exact[name]['equal'] for name in required_exact):
             raise ValueError('isolated block failed to reproduce original complete-layer path')
         p = args.output/f'micro-{size}-offset-{offset}.pt'
         torch.save(dict(token_mask=original['token_mask'],stages=values),p)
@@ -218,15 +221,19 @@ def run(args):
             raise ValueError('model assets changed during diagnostic')
     atomic_json(args.output/'result.json',dict(status='diagnostic_complete',reports=calls,differences=differences,
         source_sha256=file_hash(__file__),decoder_result_sha256=file_hash(args.decoder/'result.json'),
+        fp32_projections=args.fp32_projections,
+        projection_source_sha256=file_hash(inspect.getfile(fp32_grouped_linear)) if args.fp32_projections else None,
         experts_implementation=config._experts_implementation,original_expert_tensors_verified=384,
         model_files_verified={n:pins[n] for n in sorted(verified)},elapsed_seconds=time.monotonic()-start,weight_updates=0,
-        scope='Isolated original layer1 MoE from saved real norm inputs; grouped projection/activation/down/weighted outputs restored to token/top-k order. Exact reproduction of prior full-layer router and MoE outputs required. No attention, audio, later layers, actor probabilities, training or NPU.'))
+        scope=('Experimental CPU FP32 expert projections, cast back to BF16; original routing/grouping retained, original MoE deviations reported. ' if args.fp32_projections else 'Original HF expert projections; original full-layer MoE outputs must match exactly. ')
+              +'Isolated layer1 MoE from saved real norm inputs; projection/activation/down/weighted outputs saved in token/top-k order. No attention, audio, later layers, actor probabilities, training or NPU.'))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     for key in ('model','decoder','first','prefix','output'):
         parser.add_argument('--'+key,type=Path,required=True)
+    parser.add_argument('--fp32-projections',action='store_true')
     args = parser.parse_args()
     args.output.mkdir(exist_ok=False)
     try:
