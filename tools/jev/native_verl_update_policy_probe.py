@@ -54,17 +54,8 @@ def run(args):
     processor, base = load_runtime(config['model_path'], 'cpu', 'float32')
     model = PeftModel.from_pretrained(base, config['initial_adapter'], is_trainable=True)
     # Native train() must not introduce dropout absent in reference eval().
-    dropout_values = {}
-    def check_config(value, prefix='config'):
-        if isinstance(value, dict):
-            for key, child in value.items():
-                name = prefix+'.'+key
-                if 'dropout' in key.lower() and isinstance(child, (int, float)):
-                    dropout_values[name] = child
-                check_config(child, name)
-        elif isinstance(value, list):
-            for i, child in enumerate(value): check_config(child, prefix+f'.{i}')
-    check_config(model.config.to_dict())
+    from multimodal_jev.model_admission import config_dropout_values
+    dropout_values = config_dropout_values(model.config.to_dict())
     for name, module in model.named_modules():
         if isinstance(module, torch.nn.modules.dropout._DropoutNd):
             dropout_values['module.'+name] = module.p

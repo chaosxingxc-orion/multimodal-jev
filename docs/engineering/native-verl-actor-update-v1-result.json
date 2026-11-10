@@ -1,0 +1,151 @@
+{
+  "container_id": "a08ccc3497f705e0a2e14723a36ccb06155e43c18c624b70497e5f1582b89730",
+  "independent_tensor_counts": {
+    "parameters": 112,
+    "gradients": 112,
+    "exp_avg": 112,
+    "exp_avg_sq": 112
+  },
+  "independent_max_errors": {
+    "parameters": 0.0,
+    "gradients": 0.0,
+    "exp_avg": 0.0,
+    "exp_avg_sq": 0.0
+  },
+  "comparison_sha256": "eedb2fd409efe2503df559028f859a4e4bd5697bc25eabd8ca1d12e34044bfdb",
+  "result": {
+    "status": "passed",
+    "reference_metrics": {
+      "status": "updated",
+      "updated": true,
+      "loss": -0.03535493090748787,
+      "grad_norm": 3.0577285289764404,
+      "training_budget": {
+        "sequences": 12,
+        "prompt_tokens": 8050,
+        "response_tokens": 80,
+        "audio_frames": 2220,
+        "gradient_sequences": 12,
+        "gradient_tokens": 8130,
+        "no_grad_sequences": 12,
+        "no_grad_tokens": 8130,
+        "optimizer_steps": 1
+      },
+      "rewards": [
+        0.0,
+        -0.1,
+        0.0,
+        -0.1,
+        0.0,
+        -0.1,
+        0.0,
+        1.1,
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "max_logprob_error": 5.6624412536621094e-05,
+      "metrics": {
+        "actor/pg_clipfrac": 0.0,
+        "actor/ppo_kl": -2.630538574521779e-06,
+        "actor/pg_clipfrac_lower": 0.0,
+        "actor/policy_loss": -0.03535493090748787
+      },
+      "reward_details": {
+        "mode": "pair-grpo",
+        "base_rewards": [
+          0.0,
+          -0.1,
+          0.0,
+          -0.1,
+          0.0,
+          -0.1,
+          0.0,
+          1.1,
+          1.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "pair_bonuses": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "relations_by_replicate": {
+          "0": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          },
+          "1": {
+            "invariance": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 1,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 1,
+              "both_correct": 0
+            }
+          }
+        }
+      },
+      "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+      "micro_batch_size": 12,
+      "response_tokens": 80,
+      "kl_coefficient": 0.0,
+      "kl_estimator": null,
+      "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+    },
+    "native_loss": -0.03535493090748787,
+    "native_grad_norm": 3.0577285289764404,
+    "native_parity_error": 5.6624412536621094e-05,
+    "max_errors": {
+      "parameters": 0.0,
+      "gradients": 0.0,
+      "exp_avg": 0.0,
+      "exp_avg_sq": 0.0
+    },
+    "failures": [],
+    "atol": 2e-06,
+    "rtol": 0.0002,
+    "response_tokens": 80,
+    "config_sha256": "e5c9aaf57797ad4805523e9027d830fda98a6fb8dcebdb10ef9f9b345d8e2f43",
+    "comparison_sha256": "eedb2fd409efe2503df559028f859a4e4bd5697bc25eabd8ca1d12e34044bfdb",
+    "actor_source_sha256": "207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce",
+    "cpu_logprob_adapter": true,
+    "scope": "real Qwen LoRA gradient/AdamW parity through native microbatch forward with explicit CPU dispatcher; not native update_policy, Ray/FSDP, multi-rank model training or efficacy"
+  },
+  "scope": "native microbatch forward/backward and AdamW parity; not full update_policy or distributed/NPU training"
+}

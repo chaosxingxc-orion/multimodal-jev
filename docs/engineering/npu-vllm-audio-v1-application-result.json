@@ -1,0 +1,55 @@
+{
+  "container_id": "a144f983e2b4a8701e4f6a1d1b82b16eedcaaf2d148ebd77dd908c6e636c3eab",
+  "application_terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794275452.6133742
+  },
+  "result": {
+    "status": "passed",
+    "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+    "prompts": 6,
+    "rollouts": 12,
+    "rollouts_sha256": "6e37b032bc70780538a98aea9cff4b45f11c933c69a6719371d5673dd7deabc1",
+    "generation_budget": {
+      "requests": 6,
+      "responses": 12,
+      "prompt_tokens_per_request": [
+        930,
+        930,
+        932,
+        907,
+        163,
+        163
+      ],
+      "request_prompt_tokens": 4025,
+      "replicated_prompt_tokens": 8050,
+      "generated_tokens": 80,
+      "response_tokens_per_record": [
+        6,
+        8,
+        6,
+        8,
+        6,
+        8,
+        6,
+        8,
+        6,
+        6,
+        6,
+        6
+      ],
+      "length_terminated_responses": 0,
+      "engine_generate_seconds": 12.505713889957406,
+      "scope": "observed engine token counts; replicated prompts are exposures, not measured prefill work or FLOPs"
+    },
+    "engine_load_seconds": 173.3978402799694,
+    "scope": "vLLM sampling only; actor parity gate and optimizer update not yet run"
+  },
+  "container_status": "running_after_application_completed",
+  "correction": "Sampling completed; earlier progress-only reports misidentified process shutdown waiting as sampling waiting. Docker exit and HF audit remain pending.",
+  "evidence_sha256": {
+    "run/result.json": "265a915844b8f92488f58d75fad8c278d993935bf096a101d7bb5f8e38a729ff",
+    "run/rollouts.jsonl": "6e37b032bc70780538a98aea9cff4b45f11c933c69a6719371d5673dd7deabc1",
+    "run/terminal.json": "d3ff2231e7ab4066cb65ce5c5b77dae51bd458c283f6f790dec9144525823b12"
+  }
+}

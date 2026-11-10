@@ -1,0 +1,25 @@
+{
+  "container_id": "22e69fe67c8e27fb8c05621fa975cea0ca95a6fb933cf6faf948f2ee43e7f15d",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-10T01:56:33.63406836Z",
+    "FinishedAt": "2026-11-10T01:57:27.93372751Z"
+  },
+  "application_terminal": {
+    "exit_code": 1,
+    "error": "TypeError('can only concatenate str (not \"int\") to str')",
+    "finished_unix": 1794275846.2537777
+  },
+  "cause": "Dropout audit concatenated integer config id2label keys as strings; failed before native actor init/compute/update.",
+  "fix": "Traverse dict keys with str(key), retaining nested dropout detection and rejecting invalid probabilities.",
+  "new_run": "native-verl-update-policy-v2",
+  "recorded_at_utc": "2026-11-10T02:12:20.709005+00:00"
+}
