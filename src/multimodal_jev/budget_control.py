@@ -79,8 +79,16 @@ class BudgetController:
         steps = training['optimizer_steps']
         if steps not in (0, 1):
             raise ValueError('one update or zero-advantage no-op required')
-        expected = {'gradient_sequences': training['sequences'] * steps,
-                    'gradient_tokens': tokens * steps,
+        gradient_sequences = training['gradient_sequences']
+        if gradient_sequences not in (0, training['sequences']):
+            raise ValueError('zero or one complete gradient pass required')
+        gradient_passes = int(gradient_sequences != 0)
+        if steps > gradient_passes:
+            raise ValueError('optimizer step requires a gradient pass')
+        # Zero-gradient batches completed backward but deliberately skip AdamW.
+        # Charge their work independently of the optimizer step counter.
+        expected = {'gradient_sequences': training['sequences'] * gradient_passes,
+                    'gradient_tokens': tokens * gradient_passes,
                     'no_grad_sequences': training['sequences'] * self.no_grad_passes,
                     'no_grad_tokens': tokens * self.no_grad_passes}
         if any(training[k] != v for k, v in expected.items()):

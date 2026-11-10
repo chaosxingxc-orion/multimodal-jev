@@ -45,6 +45,28 @@ def test_exact_sft_boundary_and_first_batch_rejection():
         empty.consume(['a', 'b'], actual)
 
 
+def test_zero_gradient_still_charges_backward_without_optimizer_step():
+    budget=controller();ids=['a','b']
+    actual=batch_budget([10,10,20,20],[2,3,4,5],[50,50,100,100],
+                        gradient_passes=1,no_grad_passes=1,optimizer_steps=0)
+    generation={'requests':2,'responses':4,'generated_tokens':14,'replicated_prompt_tokens':60}
+    budget.consume(ids,actual,generation)
+    assert budget.used=={'training_tokens':148,'generated_tokens':14}
+    resumed=controller();resumed.consume(ids,actual,generation)
+    assert resumed.report()==budget.report()
+
+
+def test_optimizer_step_without_backward_and_partial_backward_are_rejected():
+    budget=controller();ids=['a','b']
+    actual=batch_budget([10,10,20,20],[2,3,4,5],[50,50,100,100],
+                        gradient_passes=0,no_grad_passes=1,optimizer_steps=1)
+    with pytest.raises(ValueError,match='requires a gradient'):
+        budget.consume(ids,actual)
+    with pytest.raises(ValueError,match='complete gradient'):
+        budget.consume(ids,{**actual,'gradient_sequences':2})
+    assert budget.used=={'training_tokens':0,'generated_tokens':0}
+
+
 def test_generation_limit_and_missing_accounting_fail_closed():
     budget = BudgetController({'training_tokens': 1000, 'generated_tokens': 31}, ROWS,
                               samples=2, response_cap=8, no_grad_passes=1)

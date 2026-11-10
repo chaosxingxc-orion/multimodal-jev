@@ -29,6 +29,11 @@ no-grad passes for a complete batch. Stop before that batch if either cap
 would be exceeded; do not skip it to search for a cheaper one. After success,
 charge actual tokens and release unused reservation. An RL zero-advantage batch
 charges parity and generation, but no gradient pass or optimizer update.
+A batch that completes backward and then detects a zero gradient charges both
+gradient and parity passes even though it skips the optimizer step. Work and
+optimizer counters must remain independent. This edge-case correction applies
+to new snapshots; the queued budgeted RL v1 snapshot predates it and will fail
+closed if it encounters that branch. Retain such a failure and revise explicitly.
 Reloading a trajectory reconstructs the ledger from completed receipts. Missing
 accounting, changed profiles, changed audio or processor contracts are errors.
 Actual processor lengths are checked before sampling/model forwards, and
