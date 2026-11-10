@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from .baseline import file_hash
+from .slurp_jev_full import expand_bundle
 
 
 def select_native_probe(cfg, rows):
@@ -42,5 +43,42 @@ def validate_runtime(cfg):
             or cfg['sampling'] != {'temperature':0., 'n':1}
             or cfg['max_new_tokens'] not in (128,256)):
         raise ValueError('registered BF16 greedy seed17 context4096 runtime required')
-    if cfg['max_new_tokens'] == 256 and cfg.get('task_format') != 'slurp-native':
-        raise ValueError('256 output tokens reserved for native SLURP probe')
+    if (cfg['max_new_tokens'] == 256 and cfg.get('task_format') != 'slurp-native'
+            and cfg.get('evaluation_phase') != 'slurp-jev-probe'):
+        raise ValueError('256 output tokens reserved for registered SLURP probes')
+
+
+def select_jev_probe(cfg, rows):
+    if (cfg['split'] != 'train' or cfg['task_format'] != 'jev'
+            or cfg['audio_condition'] != 'actual' or cfg['parameters_frozen'] is not True
+            or cfg['evaluation_phase'] != 'slurp-jev-probe' or cfg['max_new_tokens'] != 256):
+        raise ValueError('complete TRAIN SLURP-Jev frozen probe required')
+    prior = Path(cfg['population_reference'])
+    if file_hash(prior) != cfg['population_reference_sha256']:
+        raise ValueError('SLURP-Jev population reference changed')
+    reference = json.loads(prior.read_text())
+    for key in ('requests','source_groups','task_format','split'):
+        if cfg[key] != reference[key]:
+            raise ValueError('original Jev probe changed: '+key)
+    if (cfg['source_groups'] != ['slurp:12507']
+            or file_hash(cfg['instruction']) != file_hash(reference['instruction'])):
+        raise ValueError('original group and full multivalue instruction required')
+    request_path = Path(cfg['requests'])
+    materialized = json.loads((request_path.parent/'MANIFEST.json').read_text())
+    release = Path(materialized['source_release'])
+    manifest = json.loads((release/'MANIFEST.json').read_text())
+    if (file_hash(request_path) != materialized['requests_sha256']
+            or file_hash(release/'MANIFEST.json') != materialized['source_manifest_sha256']
+            or file_hash(release/'task-bank.json') != manifest['identity']['task_bank_sha256']
+            or file_hash(release/'train.bundles.jsonl') != manifest['splits']['train']['bundles_sha256']):
+        raise ValueError('full Jev release or materialized requests changed')
+    bank = json.loads((release/'task-bank.json').read_text())
+    expected = []
+    for line in (release/'train.bundles.jsonl').open():
+        bundle = json.loads(line)
+        if bundle['source_group'] in cfg['source_groups']:
+            expected.extend(expand_bundle(bundle,bank))
+    if (len(expected) != 336 or len({r['id'] for r in expected}) != 336 or rows != expected
+            or any(r['split'] != 'train' for r in rows)):
+        raise ValueError('all168 questions for both original recordings required')
+    return rows

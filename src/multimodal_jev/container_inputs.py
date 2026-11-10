@@ -12,6 +12,9 @@ def require_visible_inputs(argv, cfg):
     if cfg.get('task_format') == 'slurp-native':
         keys.remove('partition')
         keys.extend(['taxonomy','population_reference'])
+    elif cfg.get('evaluation_phase') == 'slurp-jev-probe':
+        keys.remove('partition')
+        keys.append('population_reference')
     if 'selection_protocol' in cfg:
         keys.append('selection_protocol')
     for key in keys:

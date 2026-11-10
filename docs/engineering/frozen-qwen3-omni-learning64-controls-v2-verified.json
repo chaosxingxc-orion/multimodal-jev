@@ -1,0 +1,173 @@
+{
+  "independent_comparison_matches": true,
+  "verified_unix": 1794300871.651395,
+  "comparison": {
+    "schema": "jev-omni-waveform-control-v1",
+    "actual_metrics": {
+      "replicates": [
+        {
+          "replicate": 0,
+          "by_variant": {
+            "native": {
+              "examples": 64,
+              "correct": 29,
+              "format_valid": 32,
+              "schema_valid": 32,
+              "accuracy": 0.453125
+            },
+            "permutation": {
+              "examples": 64,
+              "correct": 33,
+              "format_valid": 35,
+              "schema_valid": 35,
+              "accuracy": 0.515625
+            },
+            "rebind": {
+              "examples": 64,
+              "correct": 38,
+              "format_valid": 41,
+              "schema_valid": 41,
+              "accuracy": 0.59375
+            },
+            "missing_candidate": {
+              "examples": 64,
+              "correct": 0,
+              "format_valid": 31,
+              "schema_valid": 25,
+              "accuracy": 0.0
+            },
+            "noul.True": {
+              "examples": 64,
+              "correct": 52,
+              "format_valid": 54,
+              "schema_valid": 54,
+              "accuracy": 0.8125
+            },
+            "noul.False": {
+              "examples": 64,
+              "correct": 33,
+              "format_valid": 51,
+              "schema_valid": 51,
+              "accuracy": 0.515625
+            }
+          },
+          "pairs": {
+            "permutation": {
+              "groups": 64,
+              "both_correct": 26,
+              "both_correct_rate": 0.40625
+            },
+            "rebind": {
+              "groups": 64,
+              "both_correct": 25,
+              "both_correct_rate": 0.390625
+            },
+            "missing_candidate": {
+              "groups": 64,
+              "both_correct": 0,
+              "both_correct_rate": 0.0
+            },
+            "noul": {
+              "groups": 64,
+              "both_correct": 29,
+              "both_correct_rate": 0.453125
+            }
+          },
+          "all_six_correct": 0,
+          "all_six_correct_rate": 0.0
+        }
+      ],
+      "source_groups": 64,
+      "requests": 384,
+      "predictions": 384,
+      "coverage": 1.0,
+      "scope": "correlated derived views; paired correctness is required; not six independent recordings"
+    },
+    "waveform_sensitivity": {
+      "requests": 384,
+      "changed_raw": 364,
+      "changed_decisions": 244,
+      "both_invalid": 140,
+      "actual_only_valid": 244,
+      "zeros_only_valid": 0,
+      "both_valid": 0,
+      "scope": "TRAIN waveform sensitivity; different malformed outputs are not different decisions; zeros have no semantic gold and are not an unknown-label dataset"
+    },
+    "targets_sha256": "16e8d62670dfdf06add142ba927fc56d369a3ccb3fbf1972dd41d355ae98a9c5",
+    "actual_result_sha256": "6662089ff0b612a29c4134801b768ea835230b6bf27bbde8b55ee4a854ef9de4",
+    "zeros_result_sha256": "043e118f6e4f7d4fd883988d5ed3359fd82acb73eb3af50dfd5e356e85737519",
+    "scope": "fixed64TRAIN learning groups; not TEST efficacy; zeros not assigned gold unknown labels"
+  },
+  "containers": {
+    "actual": {
+      "id": "3bb98b6d19047bb7ea116dfec936547ea336d6505ac2d6f88da6d053e3f82b33",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T08:14:16.94483054Z",
+        "FinishedAt": "2026-11-10T08:31:54.69205674Z"
+      },
+      "application": {
+        "exit_code": 0,
+        "finished_unix": 1794299509.7332256
+      },
+      "result": {
+        "status": "passed",
+        "requests": 384,
+        "predictions": 384,
+        "audio_condition": "actual",
+        "format_valid": 244,
+        "schema_valid": 238,
+        "length_limited": 0,
+        "predictions_sha256": "521f3d8dd880becc800b47eb1f5360515befd61f357c71a82012f0ae1bb1b3d6",
+        "weight_updates": 0,
+        "model_files_unchanged": true,
+        "elapsed_seconds": 1052.2057212900254,
+        "scope": "direct frozen audio-to-task vLLM NPU fixed TRAIN learning population; no benchmark or HF parity claim"
+      }
+    },
+    "zeros": {
+      "id": "971ece9af074951d388fcb3bbb41f2316cb842cf163015957808c924ab945fc3",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T08:32:15.45167403Z",
+        "FinishedAt": "2026-11-10T08:51:24.59427133Z"
+      },
+      "application": {
+        "exit_code": 0,
+        "finished_unix": 1794300679.1240115
+      },
+      "result": {
+        "status": "passed",
+        "requests": 384,
+        "predictions": 384,
+        "audio_condition": "zeros",
+        "format_valid": 0,
+        "schema_valid": 0,
+        "length_limited": 0,
+        "predictions_sha256": "51fee537f2110b2a0f5d4174eb0ca2d6377823a94009c151c3ad4ad1c347bef2",
+        "weight_updates": 0,
+        "model_files_unchanged": true,
+        "elapsed_seconds": 1143.1174132300075,
+        "scope": "direct frozen audio-to-task vLLM NPU fixed TRAIN learning population; no benchmark or HF parity claim"
+      }
+    }
+  }
+}
