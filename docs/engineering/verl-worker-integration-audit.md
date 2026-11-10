@@ -47,6 +47,13 @@ update_policy，显式保留 rollout 概率、验证零 dropout，并与同一�
 该适配器目前明确拒绝多 rank、多 epoch、动态微批与 KL/entropy 等未验证组合，
 尚未接入正式训练配置。
 
+异步音频引擎边界已实现并[排队验证](../../experiments/async-vllm-audio-v1.md)：
+使用实际 AsyncLLM、原始单占位符提示和 actor 特征，保留全部采样副本，并要求
+引擎展开后的 prompt IDs 与 actor 完全一致。其成功也只证明引擎边界；尚未替换
+上表中的原生 Ray manager/server、agent-loop 多模态后处理与位置编码。
+默认 server 只取 outputs[0]，后续接入还必须明确保持 replicate 分组，不能丢失
+其余回答后仍声称完成 GRPO 采样。
+
 [两进程 Gloo 损失验证](../../experiments/distributed-verl-loss-v1.md)已通过：
 固定 core_algos.py 的 global_batch_info 在不等 token 分片和不等微批数下恢复
 全 batch 梯度，错误的局部平均负例能明显区分。此结果仅覆盖损失与 collective，

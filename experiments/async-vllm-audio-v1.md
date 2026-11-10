@@ -30,3 +30,10 @@ The adapter currently serializes request admission and does not establish
 multi-request concurrency, cancellation at Ray level, live weight synchronization,
 NPU execution or algorithm efficacy. Unit tests cover incomplete streams/groups,
 identity mismatch, context rejection and cancelled/failed request aborts.
+
+The [queue receipt](../docs/engineering/async-vllm-audio-v1-queued.json) pins
+sourcea3e97d8 and the byte-identical earlier synchronous sampling configuration.
+Its supervisor verifies the live budgeted-RL supervisor while waiting, then
+requires its successful terminal and exact rollout container exits. No actual
+async model inference is claimed at queue creation. Nine request-contract tests
+pass without a model; actual AsyncLLM generation and HF parity remain pending.
