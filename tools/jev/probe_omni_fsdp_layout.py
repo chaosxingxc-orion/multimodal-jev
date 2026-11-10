@@ -70,7 +70,12 @@ def run(args):
         model = hf.Qwen3OmniMoeThinkerForConditionalGeneration(config).to(torch.bfloat16)
     if any(p.device.type != 'meta' for p in model.parameters()):
         raise ValueError('all parameters must remain storage-free meta tensors')
-    default = layout(model, get_fsdp_wrap_policy(model, config={}))
+    default_error = None
+    try:
+        default = layout(model, get_fsdp_wrap_policy(model, config={}))
+    except Exception as exc:
+        default = []
+        default_error = repr(exc)
     classes = ['Qwen3OmniMoeThinkerTextDecoderLayer', 'Qwen3OmniMoeAudioEncoderLayer', 'Qwen3OmniMoeVisionBlock']
     explicit = layout(model, get_fsdp_wrap_policy(model, config={'transformer_layer_cls_to_wrap': classes}))
     if sum(g['module_class'] == classes[0] for g in explicit) != 48:
@@ -84,8 +89,10 @@ def run(args):
         thinker_class=type(model).__name__, thinker_no_split_modules=model._no_split_modules,
         thinker_parameters=sum(p.numel() for p in model.parameters()),
         experts_implementation=model.config.text_config._experts_implementation,
+        actual_module_classes=sorted({type(m).__name__ for m in model.modules()}),
+        default_policy_error=default_error,
         default_units=default, explicit_wrap_classes=classes, explicit_units=explicit,
-        default_largest_unit_bytes=max(g['bf16_bytes'] for g in default),
+        default_largest_unit_bytes=max((g['bf16_bytes'] for g in default), default=None),
         explicit_largest_unit_bytes=max(g['bf16_bytes'] for g in explicit),
         model_weights_loaded=False, npu_used=False, weight_updates=0,
         elapsed_seconds=time.monotonic()-start,
