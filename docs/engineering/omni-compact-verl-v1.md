@@ -294,3 +294,20 @@ MoE聚合、重建两次残差相加，并核对路由计数与grouped投影offs
 源码`8878b32`、同一固定镜像；已inspect核对命令、挂载、资源及122份源码。
 见[启动身份](omni-decoder-divergence-v1-launched.json)。此处只记录运行中状态，
 具体差异层和张量独立复核结果待该诊断完成后更新。
+
+### 首个差异定位到第1层MoE输出
+
+逐层诊断已退出0，无OOM，100.10秒，并依协议在第1层停止。外部核对实际容器、
+122份源码、保存tensor从第0层输出到第1层输入的连续性、两次残差重建及全部
+原逐层参考，见[逐层独立审计](omni-decoder-divergence-v1-verified.json)。
+第1层输入、input norm、attention、post-attention norm、router logits/weights/
+indices在两种batch大小下仍逐元素相等。原row5和row4各有1个MoE输出元素不同：
+最大误差`0.00006103515625`，最终残差各有1个元素不同、最大误差
+`0.0001220703125`。其他四条输出一致；六条单样本路径均精确重现原未填充参考。
+
+这是局部decoder重建中首次捕获的数值分歧，不足以证明它独自解释了完整actor
+最终概率误差。下一诊断`diagnose_omni_layer1_experts.py`只加载第1层MoE，读取已
+保存的真实post-attention norm输入，保留全部padding和原九次调用；捕获按原
+token/top-k顺序恢复的gate/up、激活、down、加权结果与聚合。要求路由及MoE
+输出精确重现上述完整第1层捕获，才解释子算子差异；不执行attention或后续层。
+预算900秒加30秒、16 CPU/16 GiB、无网络设备，不自动重放，不更改一致性阈值。

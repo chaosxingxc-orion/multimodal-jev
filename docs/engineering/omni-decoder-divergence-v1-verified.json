@@ -1,0 +1,1473 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-decoder-divergence-v1",
+  "container_id": "52e739eb5ede5c98e2047fcbb5ff21a5e392b6c145b60c01bbbb17cd435578b0",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "8878b32cdd1c17b8628160e286d4b701b2c80ece",
+  "intent_sha256": "24274eb8419b3faafece4cf4114d99443f2eedf50d84ae6f8edbc379b36c866d",
+  "source_files_verified": 122,
+  "result_sha256": "1ca2828a5cdc39cd592f6c6bf983822f018f6b02212157fc7d7cf9a2fc707ece",
+  "identity_sha256": "79d16a5b2532578b63b1ca818d31c1f18fbcb58190ec8c393a41d1a5381faf00",
+  "inspection_sha256": "92dc946ab000992f282bb64a2390bb36b559aade12745739adfb61db53e752bb",
+  "layers": [
+    {
+      "layer": 1,
+      "valid_difference_found": true,
+      "between": [
+        {
+          "row": 2,
+          "comparisons": [
+            {
+              "stage": "input",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "input_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "attention",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_residual",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.logits",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.weights",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.indices",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "mlp",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "output",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            }
+          ],
+          "first_valid_difference": null
+        },
+        {
+          "row": 0,
+          "comparisons": [
+            {
+              "stage": "input",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "input_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "attention",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_residual",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.logits",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.weights",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.indices",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "mlp",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "output",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            }
+          ],
+          "first_valid_difference": null
+        },
+        {
+          "row": 5,
+          "comparisons": [
+            {
+              "stage": "input",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "input_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "attention",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_residual",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.logits",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.weights",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.indices",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "mlp",
+              "valid": {
+                "equal": false,
+                "max_abs_error": 6.103515625e-05,
+                "differing_elements": 1
+              },
+              "full_padded": {
+                "equal": false,
+                "max_abs_error": 6.103515625e-05,
+                "differing_elements": 1
+              }
+            },
+            {
+              "stage": "output",
+              "valid": {
+                "equal": false,
+                "max_abs_error": 0.0001220703125,
+                "differing_elements": 1
+              },
+              "full_padded": {
+                "equal": false,
+                "max_abs_error": 0.0001220703125,
+                "differing_elements": 1
+              }
+            }
+          ],
+          "first_valid_difference": "mlp"
+        },
+        {
+          "row": 1,
+          "comparisons": [
+            {
+              "stage": "input",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "input_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "attention",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_residual",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.logits",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.weights",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.indices",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "mlp",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "output",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            }
+          ],
+          "first_valid_difference": null
+        },
+        {
+          "row": 3,
+          "comparisons": [
+            {
+              "stage": "input",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "input_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "attention",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_residual",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.logits",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.weights",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.indices",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "mlp",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "output",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            }
+          ],
+          "first_valid_difference": null
+        },
+        {
+          "row": 4,
+          "comparisons": [
+            {
+              "stage": "input",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "input_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "attention",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_residual",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "post_attention_norm",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.logits",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.weights",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "router.indices",
+              "valid": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              },
+              "full_padded": {
+                "equal": true,
+                "max_abs_error": 0.0,
+                "differing_elements": 0
+              }
+            },
+            {
+              "stage": "mlp",
+              "valid": {
+                "equal": false,
+                "max_abs_error": 6.103515625e-05,
+                "differing_elements": 1
+              },
+              "full_padded": {
+                "equal": false,
+                "max_abs_error": 6.103515625e-05,
+                "differing_elements": 1
+              }
+            },
+            {
+              "stage": "output",
+              "valid": {
+                "equal": false,
+                "max_abs_error": 0.0001220703125,
+                "differing_elements": 1
+              },
+              "full_padded": {
+                "equal": false,
+                "max_abs_error": 0.0001220703125,
+                "differing_elements": 1
+              }
+            }
+          ],
+          "first_valid_difference": "mlp"
+        }
+      ],
+      "reference": [
+        {
+          "row": 2,
+          "stage": "input",
+          "reference_sha256": "8d448d5ca461f3bf2bae56dfe1ef5d9198f380bd0da740e49947dea7c1a70ea0",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 2,
+          "stage": "attention",
+          "reference_sha256": "e7003212660d3d689f07ddde861bc7f207c230e4350b69830f756a80e283a529",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 2,
+          "stage": "router.logits",
+          "reference_sha256": "3984e3b66cb92e635cfc285cf026b3a800ce0535da1bc2fc54e6198971547856",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 2,
+          "stage": "router.weights",
+          "reference_sha256": "5282e7beebfe9efd3bdb2ab799efe9d6cbdeacf6845186ae3a6e940cc4762be4",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 2,
+          "stage": "router.indices",
+          "reference_sha256": "b0602ce28ffeacf004babddb67e677ea82b21d4d3d6286fa0db8797b05adaf07",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 2,
+          "stage": "mlp",
+          "reference_sha256": "04436d267300802bc9a00389bf4039d477ddd64c93969bb45294fe150fd719f4",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 2,
+          "stage": "output",
+          "reference_sha256": "3d6db4aa95e9143bc8faea044de6deb0b9d72b80614a0e71ff5a3beded74906a",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 0,
+          "stage": "input",
+          "reference_sha256": "72a0291feed1604da7415fd9e9bbeb5a16c2f08557a8ef3c61eae4f9718f078a",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 0,
+          "stage": "attention",
+          "reference_sha256": "537d4423c6aa322cd2fffcfecda3ab3030184f7f8fbc4b372379e41afca6caea",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 0,
+          "stage": "router.logits",
+          "reference_sha256": "d99187569b6c0a66a7b57a967055af045e47a732b5d947959e544cb58a857b88",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 0,
+          "stage": "router.weights",
+          "reference_sha256": "129c8988f968409fb2d5d2e4834665611f6caf257a3fbdf95f81faa1e9819046",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 0,
+          "stage": "router.indices",
+          "reference_sha256": "cff31abdd0ac0cbd3453edd4ed5d115fe23b7ef8ad47c35b04a5580ca561065e",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 0,
+          "stage": "mlp",
+          "reference_sha256": "940baba23fe8d1ead117deaec91084f9318dd51a5b516a03efc505e91c63f512",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 0,
+          "stage": "output",
+          "reference_sha256": "49dfa7ec4db1c97b9f73787621033ebedeaaff61228a6f7cfa18265421ab90af",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 5,
+          "stage": "input",
+          "reference_sha256": "cf5e90b25b6b199009a75e907074ca94d5a66843654696156e481321d5a30586",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 5,
+          "stage": "attention",
+          "reference_sha256": "9d1fdc355c1bdb8b228d94357cec86ca6effa6c07c5ce23e61d1ffed292354cb",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 5,
+          "stage": "router.logits",
+          "reference_sha256": "fef6fb8d0a7a143d99be6694edc3855cea5c4d5d6ce5e688800be0ddb86602ba",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 5,
+          "stage": "router.weights",
+          "reference_sha256": "11f5eb492c90d9e11cdd0620d81809f93793f8b7f82caa7b655c9bc8023b4b01",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 5,
+          "stage": "router.indices",
+          "reference_sha256": "efa6b90f7b1336a2d44cd8d5b262fd9e274e611a1dec92bb8c9ff64d9f49336c",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 5,
+          "stage": "mlp",
+          "reference_sha256": "8c66c71ded085862665f5fb7cb696e2ab869ef6ea684399072966bf1117f08c9",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": false,
+            "max_abs_error": 6.103515625e-05,
+            "differing_elements": 1
+          }
+        },
+        {
+          "row": 5,
+          "stage": "output",
+          "reference_sha256": "08fd3658c6a50d422130632069714163c76f967d6f9826a7da508fd08dddd0f0",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": false,
+            "max_abs_error": 0.0001220703125,
+            "differing_elements": 1
+          }
+        },
+        {
+          "row": 1,
+          "stage": "input",
+          "reference_sha256": "430a591d1eed2930897be122b7d152aa11361afac5d6551fd6e8a89b83d1adbc",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 1,
+          "stage": "attention",
+          "reference_sha256": "6b98c136224f79a315b984c929375a6c883a378c99e4131c67019fded89549c9",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 1,
+          "stage": "router.logits",
+          "reference_sha256": "f8b19d2a75345839d694cc9cfc14a2c26e59d844c8825ac14ff88fb1493d9ac9",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 1,
+          "stage": "router.weights",
+          "reference_sha256": "74a6c45147194838b2b1cbd71e664c442a06b9fdc8f4d2147456979b3f46654f",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 1,
+          "stage": "router.indices",
+          "reference_sha256": "fcd29cfbf25b72756b08dbdceed0399d3567e1da8d80bd157652c7500c7f389e",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 1,
+          "stage": "mlp",
+          "reference_sha256": "21d002ea7b4cee93a6ae53ea649b65486e3076e2ff7c13df4ad656f001ff2ce8",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 1,
+          "stage": "output",
+          "reference_sha256": "a12a52108bc97e84695277a34a14885bab337350def1b353978acb7fbf51af1c",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 3,
+          "stage": "input",
+          "reference_sha256": "1146a22df86f0fc20550b0efbcbfdddb131fbbab953ed07406fd575d9e5edbd8",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 3,
+          "stage": "attention",
+          "reference_sha256": "e2ece61f87d63e24de34aa4be0b462996d69dbed1a4303ec1e2db6284616131a",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 3,
+          "stage": "router.logits",
+          "reference_sha256": "0f2bfc211c792a3484eaeae42a611f0908a0aa5782ad4853ca16639daf6693b2",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 3,
+          "stage": "router.weights",
+          "reference_sha256": "3d7ae6885a9cc9fcb6db1ff4c5a55970b6478961131fca0e6270f679e97fd27d",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 3,
+          "stage": "router.indices",
+          "reference_sha256": "097ef6fd549e2774c47b9a921db864f7402c4d4c28c0b81ff211c115b0aa6458",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 3,
+          "stage": "mlp",
+          "reference_sha256": "cb99496c50abd401c8bf586f0522423482397f79443faa8857327c83ba03928c",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 3,
+          "stage": "output",
+          "reference_sha256": "47ca40d21bb045e08affd4fdac6f21b288d3f9289d1687e7443d6676b3e65633",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 4,
+          "stage": "input",
+          "reference_sha256": "45d13b00000cafc01e42275441f5a9c0342183f273c6520566d0a27eae32b728",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 4,
+          "stage": "attention",
+          "reference_sha256": "a53da1baa62e79287c742fd3bd839a29eabd08a8a62bf0e6e3a3044dacb9e78c",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 4,
+          "stage": "router.logits",
+          "reference_sha256": "403936e2312f06a831feab246f8eb0b8baf5ca5ca7a98fa7165ed04862fe7a20",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 4,
+          "stage": "router.weights",
+          "reference_sha256": "6341754ebe95dccc33150e8c023448dbec55d3258788762a86d5c09ced4cc3f5",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 4,
+          "stage": "router.indices",
+          "reference_sha256": "72ed417def6a4f138accd4a30f26da64f217ef4992094fb2fc6da2d3792e9b81",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          }
+        },
+        {
+          "row": 4,
+          "stage": "mlp",
+          "reference_sha256": "2ceeae7505710cc783dff6c150b61848fa6b1db0721c8ff7e788053c2e43d0be",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": false,
+            "max_abs_error": 6.103515625e-05,
+            "differing_elements": 1
+          }
+        },
+        {
+          "row": 4,
+          "stage": "output",
+          "reference_sha256": "44fb9fa3e82440eeb09d9837a07369e3a5beea2e8dde2f8c5fb338088fb875e8",
+          "micro1": {
+            "equal": true,
+            "max_abs_error": 0.0,
+            "differing_elements": 0
+          },
+          "micro2": {
+            "equal": false,
+            "max_abs_error": 0.0001220703125,
+            "differing_elements": 1
+          }
+        }
+      ],
+      "seconds": 87.02435863000574
+    }
+  ],
+  "saved_tensor_bytes": 428318484,
+  "elapsed_seconds": 100.10066524997819,
+  "weight_updates": 0,
+  "first_differing_layer": 1,
+  "scope": "Independent saved tensor chain from accepted complete layer0 through first divergent layer. All six samples, both microbatch sizes, full/valid stage comparisons and original references checked; both residuals reconstructed. Local decoder diagnostic only, not full actor/NPU/optimizer parity or task improvement."
+}
