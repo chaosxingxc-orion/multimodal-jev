@@ -5,6 +5,7 @@ Controlled response tokens and explicit CPU adapters. Not rollout probabilities
 or a training batch: old_log_probs are labeled synthetic placeholders.
 """
 import argparse
+from contextlib import nullcontext
 import importlib.metadata
 import inspect
 import json
@@ -73,6 +74,11 @@ def run(args):
     start=time.monotonic();out=args.output
     accepted,prior,identity=prior_evidence(args.prior,args.acceptance,args.acceptance_hash,
                                           args.inspection,args.inspection_hash)
+    compact_root=getattr(args,'compact_keys_root',None)
+    candidate=None
+    if compact_root and not args.preflight_only:
+        from multimodal_jev.omni_compact_acceptance import require_candidate
+        candidate=require_candidate(compact_root,args.compact_keys_inspection,args.compact_keys_inspection_hash)
     cfg=read(args.prior/'config.json');base,rows,preflight,checks=load_inputs(cfg)
     if identity['config']!=cfg:raise ValueError('prior input identity changed')
     import numpy as np
@@ -82,6 +88,10 @@ def run(args):
     from verl.workers.actor.dp_actor import DataParallelPPOActor
     from verl.utils.device import get_device_name
     from transformers import Qwen3OmniMoeProcessor,Qwen3OmniMoeThinkerForConditionalGeneration
+    from transformers.models.qwen3_omni_moe import modeling_qwen3_omni_moe as hf
+    from multimodal_jev.omni_compact_attention import compact_text_attention
+    if candidate and file_hash(inspect.getfile(inspect.unwrap(compact_text_attention)))!=candidate['adapter_sha256']:
+        raise ValueError('actual actor adapter differs from accepted full-model candidate')
     torch.set_num_threads(16);torch.manual_seed(17)
     if get_device_name()!='cpu':raise ValueError('CPU-only diagnostic')
     if file_hash(inspect.getfile(DataParallelPPOActor))!='207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce':
@@ -109,6 +119,7 @@ def run(args):
     atomic_json(out/'identity.json',dict(prior_acceptance_sha256=args.acceptance_hash,
         inspection_sha256=args.inspection_hash,config=cfg,order=order,keys=keys,response_ids=response,
         model_files=assets['files'],synthetic_old_log_probs=True,targets_read=False,
+        compact_keys_enabled=bool(compact_root),compact_candidate=candidate,
         source_files={str(p.relative_to(Path(__file__).parents[2])):file_hash(p)
             for folder in ('src/multimodal_jev','tools/jev') for p in (Path(__file__).parents[2]/folder).glob('*.py')}))
     if args.preflight_only:
@@ -135,9 +146,21 @@ def run(args):
             for size in (1,2):
                 progress('actual_verl_compute_log_prob',micro_batch_size=size)
                 begin=time.monotonic()
-                logp=compute_log_probs(actor,batch,micro_batch_size=size,pad_token_id=processor.tokenizer.pad_token_id).float()
+                with compact_text_attention(hf) if compact_root else nullcontext() as attention_records:
+                    logp=compute_log_probs(actor,batch,micro_batch_size=size,pad_token_id=processor.tokenizer.pad_token_id).float()
+                if compact_root:
+                    expected=[];width=batch.batch['input_ids'].shape[1]
+                    for offset in range(0,len(keys),size):
+                        lengths=batch.batch['attention_mask'][offset:offset+size].sum(-1).tolist()
+                        for layer in range(48):
+                            event=dict(layer=layer,mode='unchanged_no_mask' if all(n==width for n in lengths) else 'compact_masked_keys',
+                                       query_length=width,key_lengths=lengths)
+                            if event['mode']=='compact_masked_keys':event['original_key_length']=width
+                            expected.append(event)
+                    if attention_records!=expected:raise ValueError('actual verl compact-key layer/microbatch coverage differs')
                 values.append(logp)
                 atomic_json(out/f'microbatch-{size}.json',dict(log_probs=logp.tolist(),seconds=time.monotonic()-begin,
+                    compact_attention_records=attention_records,
                     max_error_from_unpadded=float((logp-prior_logp).abs().max())))
     finally:dist.destroy_process_group()
     assert torch.equal(old,batch.batch['old_log_probs']) and batch.meta_info==meta
@@ -161,6 +184,8 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     for key in ('prior','acceptance','inspection','output'):p.add_argument('--'+key,type=Path,required=True)
     for key in ('acceptance-hash','inspection-hash'):p.add_argument('--'+key,required=True)
+    p.add_argument('--compact-keys-root',type=Path)
+    p.add_argument('--compact-keys-inspection',type=Path);p.add_argument('--compact-keys-inspection-hash')
     p.add_argument('--preflight-only',action='store_true');a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
     try:run(a)
     except BaseException as exc:atomic_json(a.output/'terminal.json',dict(exit_code=1,error=repr(exc),finished_unix=time.time()));raise
