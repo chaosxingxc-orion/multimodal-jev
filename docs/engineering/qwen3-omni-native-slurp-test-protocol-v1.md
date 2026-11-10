@@ -18,3 +18,30 @@ FSC选择队列使用4/5，通信端口分开。单次容器最长86400秒，观
 
 该实验是冻结通用基座的完整原生任务基线，不能替代SpeechBrain任务训练
 权重的官方复测，也不能据其成绩宣称Jev跨任务提升。
+
+## 完整运行后的独立验收
+
+`tools/jev/verify_omni_slurp_test.py`在监督进程及应用成功终止后才读取预测。
+它核对登记时的精确容器、镜像、配置和Git推理快照，验证与TRAIN16探针的
+权重清单、运行版本、提示和解码参数一致；要求全部13078条录音/2974组，
+无重复、无遗漏、请求绑定正确，并核对上下文预算和截断计数。
+语义或格式失败不阻止工程验收，也不被修复。
+
+验收在已有官方评分环境中重新评分，归一化预测必须逐字节相同，整数计数
+必须精确一致。官方集合迭代顺序导致的浮点差异使用相对/绝对容差1e-12，
+每处非零差异均披露。该容差只用于独立复算核验，不用于判定模型提升。
+
+完整运行结束后，在工程根目录执行：
+
+```bash
+PYTHONPATH=src /mnt/cephfs/xingchao/experiments/multimodal-jev/environments/slurp-official-score-v1/bin/python \
+  tools/jev/verify_omni_slurp_test.py \
+  --root /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-native-test-v1 \
+  --launch-record docs/engineering/frozen-qwen3-omni-selection-and-slurp-test-launch-v1.json \
+  --native-probe /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-native-train16-v1 \
+  --output /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-native-test-v1-independent-acceptance
+```
+
+当前只完成验收代码测试，尚未对全量TEST执行验收。24项相关测试覆盖完整
+数量的合成记录、遗漏/重复/错绑/预算异常、浮点复算与运行前拒绝读取。
+编排测试显式模拟Docker和官方评分器，不代表真实模型或完整测试集成绩。
