@@ -1,0 +1,41 @@
+{
+  "tensor_names_match": false,
+  "thinker_tensors": 1407,
+  "parameters": 31719205488,
+  "input_shapes": {
+    "input_ids": [
+      1,
+      41
+    ],
+    "attention_mask": [
+      1,
+      41
+    ],
+    "feature_attention_mask": [
+      1,
+      100
+    ],
+    "input_features": [
+      1,
+      128,
+      100
+    ]
+  },
+  "prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|audio_start|><|audio_pad|><|audio_end|>Return exactly {\"value\":false}.<|im_end|>\n<|im_start|>assistant\n",
+  "feature_limit_seconds": 30,
+  "versions": {
+    "transformers": "5.14.1",
+    "torch": "2.10.0+cpu",
+    "torch-npu": "2.10.0.post7",
+    "accelerate": "1.15.0"
+  },
+  "model_code_sha256": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+  "scope": "meta architecture and synthetic waveform processor only; no weight load, task result or NPU inference",
+  "missing_count": 18432,
+  "extra_count": 96,
+  "terminal": {
+    "exit_code": 1,
+    "error": "AssertionError((1407, 19743))"
+  },
+  "interpretation": "Raw HF state names differ from publisher index for packed MoE experts. This assertion failed; processor succeeded. No weight loading or inference success is claimed; independent vLLM probe pending."
+}
