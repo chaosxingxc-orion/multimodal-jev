@@ -30,7 +30,7 @@ def alternatives(request):
     elif kind == 'score':
         options = [(v, 'Ordinal level ' + str(v)) for v in schema['levels']]
     else:
-        raise ValueError('finite direct readout cannot replace open_slot or full native SLURP')
+        raise ValueError('finite direct readout cannot replace open_slot/open_slots or full native SLURP')
     if schema['allow_unknown']:
         options.append((None, 'Unknown: evidence is insufficient or none of the listed alternatives is valid.'))
     if not 2 <= len(options) <= len(LABELS): raise ValueError('readout requires 2 to 36 alternatives')

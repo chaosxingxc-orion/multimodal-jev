@@ -1,0 +1,39 @@
+{
+  "result": {
+    "examples": 3793,
+    "predictions": 3793,
+    "missing": 0,
+    "parsed": 3793,
+    "joint_correct": 3774,
+    "joint_accuracy": 0.994990772475613,
+    "serialization_exact_correct": 3774,
+    "serialization_exact_accuracy": 0.994990772475613,
+    "component_correct": {
+      "action": 3781,
+      "object": 3788,
+      "location": 3788
+    },
+    "component_accuracy": {
+      "action": 0.9968362773530187,
+      "object": 0.9986817822304245,
+      "location": 0.9986817822304245
+    },
+    "scope": "native joint semantics and original serialization exact; not WER, JSON validity or Jev schema accuracy",
+    "status": "passed",
+    "split": "test",
+    "predictions_sha256": "b409f9b2658ff263ab2578fc299c7390d0becd0620b1c39f7d213e2945199e7b",
+    "elapsed_seconds": 13721.231975119968,
+    "comparison": "published weights on current pinned official inference; historical training environment not reproduced"
+  },
+  "independent_rescore_equal": true,
+  "model_files_reverified": true,
+  "csv_sha256": "663a12e4f7e7b86c1ab72a96b78bb1d797dbc878424f94ec249f3dd5c21ca488",
+  "identity_sha256": "83ca5c1a20a42e5826a4635dd8d0054373ec2ec5b3d8f991382feaa04ebe20f4",
+  "source_commit": "8846cd9709ef92bff5ccb281bf999d2562710fda",
+  "container_id": "efaaa0e22baafc6f8e15e75255ea57fe2336ff4f42530d59410fbd7cc558e790",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-speechbrain-official-v1/test",
+  "published_accuracy_percent": 99.6,
+  "observed_accuracy_percent": 99.4990772475613,
+  "difference_percentage_points": -0.10092275243869153,
+  "scope": "task-trained official weights, full FSC TEST, CPU official decoder; not zero-training base or historical training reproduction"
+}

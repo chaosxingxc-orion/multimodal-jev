@@ -28,7 +28,7 @@ class DecisionSchema:
     def __post_init__(self):
         if not self.id or not self.question:
             raise ValueError('schema id and question are required')
-        if self.decision_type not in {'choice', 'noul', 'score', 'open_slot'}:
+        if self.decision_type not in {'choice', 'noul', 'score', 'open_slot', 'open_slots'}:
             raise ValueError('unknown decision type')
         if self.decision_type == 'choice' and len(self.candidates) < 2:
             raise ValueError('choice requires at least two candidates')
@@ -55,6 +55,9 @@ class DecisionSchema:
             return type(value) is bool
         if self.decision_type == 'score':
             return type(value) in (int, float) and math.isfinite(value) and value in self.levels
+        if self.decision_type == 'open_slots':
+            # Empty means no annotated occurrences, not unknown; keep duplicates.
+            return type(value) is list and all(type(v) is str and bool(v.strip()) for v in value)
         return type(value) is str and bool(value.strip())
 
     @classmethod
