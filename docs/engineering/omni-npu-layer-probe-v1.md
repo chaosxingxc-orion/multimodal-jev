@@ -46,3 +46,23 @@ NPU容器或新监督进程。后续应接在既有资源队列之后或确认�
 FSDP/HCCL实际初始化、真实156响应的完整音频前向与逐token概率比较。原raw
 waveform探针不能直接作为vllm_hop协议下的on-policy证据；最终actor需使用
 [已验证波形边界](sfc-omni-waveform-parity-v1.md)及真实rollout响应。
+
+## 后续：已排队的一次NPU执行
+
+`omni-npu-layer-v1`监督进程现已启动，身份与实际进程核验见
+[排队记录](omni-npu-layer-v1-queued.json)。协调器源码403d019，运行器继续
+使用已预检的dbb9c0f快照。12项测试通过，覆盖原监督进程必须存活、原队列
+和两个精确容器的成功终态、命令/应用终态变化、设备占用，以及模糊create
+结果保留意图且不重复派发。
+
+顺序为原FSC TEST parent → p1全部结束 → 驱动与Docker均确认NPU4/5空闲 →
+仅物理NPU4的首层探针。使用npu45-diagnostic-resource.lock；现有FSC队列
+没有共享该锁，其释放依靠精确队列/容器依赖检查保证。锁不对不遵守锁的
+第三方任务提供原子排他保证。观察原队列最多350000秒，探针容器600秒加
+30秒退出宽限，终态观察900秒。瞬时SSH失败继续观察同一对象；已有派发意图
+或不明create/start结果不重放。失败保存证据；队列成功仅标记执行完成，
+不自动发布数值/容量验收，不启动完整模型或训练。
+
+启动后独立核对协调器PID/start/argv、122份队列源码和122份运行源码的Git
+身份，确认phase=waiting_fsc_test_queue、尚无probe launch.json。真实NPU
+兼容性与容量结论仍待实际执行和独立审计。
