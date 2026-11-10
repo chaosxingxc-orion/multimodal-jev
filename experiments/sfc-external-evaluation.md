@@ -190,3 +190,33 @@ both-turn counts for L3_1/L3_2; this is a scorer fixture, not model performance.
 See `docs/engineering/sfc-qwen3-omni-train6-score-fixture-v1.json`.
 Twenty-six related tests passed. The waiting supervisor is not evidence that
 SFC vLLM inference or full ID/OOD evaluation has completed.
+
+## Separate native requests and scoring targets
+
+Complete native SFC consumption release:
+`/mnt/cephfs/xingchao/datasets/sfc-native/8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067`.
+Each official split has `*.requests.jsonl` with only ID, split, source group,
+original messages/ordered audio paths and audio hashes. Separate
+`*.targets.jsonl` files preserve the original solution, parsed calls, metadata
+and a SHA256 binding to the request. Runtime messages use only `input`.
+This separation excludes the current answer, but deliberately retains the
+official supplied assistant history. It is not a claim that prior-turn text
+is free of semantic information.
+
+All 5534/2590/771 turns and 4499/1986/593 conversations are preserved.
+An independent full field-by-field check reconstructs every source record and
+confirms identical Omni message mapping; arrays, duplicate calls and literal
+`NAN` survive unchanged. Audio hashes inherit the already verified source;
+export additionally checks cross-split hash isolation without rehashing waves.
+Receipts: `docs/engineering/sfc-native-consumption-v1.json` and
+`docs/engineering/sfc-native-consumption-v1-independent.json`.
+
+The first export attempt rejected stage-specific first-message differences;
+no release was published and its temporary output was removed. Inspection
+found 918/544/148 two-stage groups with differing first messages, including
+function-list order changes, while their audio prefixes and hashes agree.
+The corrected exporter preserves each stage's exact original message and
+counts the differences rather than enforcing equality or normalizing order.
+Twenty-one relevant tests pass. The prepared six-turn probe keeps its original
+snapshot and input contract; this release is for subsequent full native runs.
+Typed SFC-Jev decomposition and full ID/OOD inference are still outstanding.

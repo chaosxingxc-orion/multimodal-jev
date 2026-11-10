@@ -1,0 +1,49 @@
+{
+  "path": "/mnt/cephfs/xingchao/datasets/sfc-native/8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067",
+  "release_id": "8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067",
+  "identity": {
+    "dataset": "sfc-native",
+    "source_release": "/mnt/cephfs/xingchao/datasets/jev/sfc-official/caf874db181b1eaf46c351c465c1fbfa4cc961a8768153ea46fbe95a70cf95ac",
+    "source_manifest_sha256": "44ac607da1b54bea329c646397e55c927aeb42fb15db64f100e13cd0fba8df00",
+    "source_files": {
+      "train_id": "48662014bb5e9ea4b6b02db8b9d32646e1552d1542b0d97eebf0a27c3e5f1425",
+      "test_id": "54554421d5f4498d78c3cb7005862cb1fd7dbf6c7e908c445f39eb76d6b4eb26",
+      "test_ood": "4401864514372fab095c3a3372372aa81f7519ad7a7fbe65bdfb0c9f6b1ace28"
+    },
+    "code_files": {
+      "sfc_consumption.py": "cd6ab271ae82bdfa1dbb969f357e5f1712e4bc153ed6b76503da286cfac1970d",
+      "sfc.py": "dd36935226870fbd3236a95c62999eb8521fd6f7b0d854fe9a7e9474a0211236",
+      "sfc_omni.py": "1503b81ea888f62bb2088d04a0f3638e5aeb8e0142b558f13a2f0470aa927d50",
+      "sfc_audio.py": "00c258d470092462b31acea146c55ab672f8b6cd0bcbaeb7ec63b4c585f62b79",
+      "consumption.py": "fda9094eec92384ed8a5c1d8e012ca034ecdddf86c6a4dfc11ba35111ac83675"
+    }
+  },
+  "splits": {
+    "train_id": {
+      "requests": 5534,
+      "source_groups": 4499,
+      "two_audio_requests": 1035,
+      "stage_specific_first_message_differences": 918,
+      "requests_sha256": "bdc77a32df3265ea8061256c9f28e6d5d86b811edd3e2086bf25989b08fe6b60",
+      "targets_sha256": "ecf898aeb74f56da6c46f7f555d6211fb3ffb8ba6814427307ae662a3324543d"
+    },
+    "test_id": {
+      "requests": 2590,
+      "source_groups": 1986,
+      "two_audio_requests": 604,
+      "stage_specific_first_message_differences": 544,
+      "requests_sha256": "050327ad7ac35b80ee38ea79c2771e0c54188cb9692830cfa71f60a09a2a89cf",
+      "targets_sha256": "5935615a17d3cca9ef061561ec5e1bab556f705b5006db0d236becacce8c14a1"
+    },
+    "test_ood": {
+      "requests": 771,
+      "source_groups": 593,
+      "two_audio_requests": 178,
+      "stage_specific_first_message_differences": 148,
+      "requests_sha256": "2875c7a9e739102b5f3ceec56a20d4bd4df834bde1f79a58bb6fa61b9221be78",
+      "targets_sha256": "ad2b5c0c3b88769ba084ccec4d2cbf73eb3d8817f4a5d3137c5fb542ecd46ff4"
+    }
+  },
+  "audio_hashes": "Inherited from verified source; cross-split isolation checked, waveform files not rehashed in this export.",
+  "scope": "Lossless native SFC supplied-history inputs; current targets/provenance in separate files. No typed Jev decomposition, inference or interactive execution."
+}
