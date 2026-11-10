@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 """Inspect full actor container and ledger before opening Audio2Tool targets."""
 import argparse
-from functools import lru_cache
 import inspect
 import json
 from pathlib import Path
 import shlex
 import subprocess
 
-from multimodal_jev.audio2tool_acceptance import HEADERS_SHA,TARGETS_SHA,audit_ledger,check_container
+from multimodal_jev.audio2tool_acceptance import HEADERS_SHA,TARGETS_SHA,audit_ledger,check_container,prompt_expander
 from multimodal_jev.audio2tool_engine import ASSET_AUDIT_SHA,ENGINE,VERSIONS,prior_records
 from multimodal_jev.audio2tool_inference import INPUT_SHA,BUDGET_SHA,read_population,require_capacity,write_once
-from multimodal_jev.audio2tool_input import messages
 from multimodal_jev.audio2tool_score import evaluate_projected,load_official
 from multimodal_jev.baseline import file_hash
 
@@ -80,19 +78,7 @@ def accept(args):
     processor=Qwen3OmniMoeProcessor.from_pretrained(cfg['model'],local_files_only=True)
     if file_hash(inspect.getfile(type(processor)))!=pidentity['hf_processor_source_sha256']:
         raise ValueError('accepted HF processor source required for independent rendering')
-    registry=Path(cfg['registry']).read_bytes();prompts={}
-    @lru_cache(maxsize=64)
-    def expanded(prompt,lengths):
-        parts=prompt.split('<|audio_pad|>')
-        text=parts[0]+''.join('<|audio_pad|>'*n+tail for n,tail in zip(lengths,parts[1:],strict=True))
-        return processor.tokenizer(text,add_special_tokens=False)['input_ids']
-    def expected(row,budget):
-        inp=row['input'];layout=(inp['mode'],tuple((a.get('turn'),a.get('role')) for a in inp['audios']))
-        if layout not in prompts:
-            prompts[layout]=processor.apply_chat_template(messages(inp,['']*len(inp['audios']),registry),
-                tokenize=False,add_generation_prompt=True)
-        prompt=prompts[layout]
-        return prompt,expanded(prompt,tuple(budget['audio_tokens']))
+    expected=prompt_expander(processor,Path(cfg['registry']).read_bytes())
     summary=audit_ledger(run/'ledger',rows,budgets,predictions,headers,expected)
     if summary['records']!=result['records'] or summary['length_limited']!=result['length_limited']:
         raise ValueError('ledger summary differs from actor terminal')

@@ -1,15 +1,42 @@
 """Independent read-only ledger and Docker-envelope checks before gold access."""
 import hashlib
+from functools import lru_cache
 import json
 import math
 from pathlib import Path
 import re
 
 from .audio2tool_inference import digest
+from .audio2tool_input import messages,validate
 
 IMAGE='sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c'
 HEADERS_SHA='472340a98cca0b3a74f89b22af0935f85d38c7d464caec36875aa6a2a668d8da'
 TARGETS_SHA='3aee2d3bff479982a6a34e955a1b65e1a42fb44b872a062c2125907a8284ca35'
+
+
+def prompt_expander(processor,registry):
+    """Independent tokenizer reconstruction; bounded cache, no audio decoding."""
+    prompts={}
+    @lru_cache(maxsize=64)
+    def expanded(prompt,lengths):
+        parts=prompt.split('<|audio_pad|>')
+        text=parts[0]+''.join('<|audio_pad|>'*n+tail for n,tail in zip(lengths,parts[1:],strict=True))
+        return tuple(processor.tokenizer(text,add_special_tokens=False)['input_ids'])
+    def expected(row,budget):
+        inp=row['input'];validate(inp)
+        lengths=budget['audio_tokens']
+        if (budget['id']!=row['id'] or len(lengths)!=len(inp['audios'])
+                or any(type(n) is not int or n<=0 for n in lengths)):
+            raise ValueError('complete ordered positive audio token lengths required')
+        layout=(inp['mode'],tuple((a.get('turn'),a.get('role')) for a in inp['audios']))
+        if layout not in prompts:
+            prompts[layout]=processor.apply_chat_template(messages(inp,['']*len(inp['audios']),registry),
+                tokenize=False,add_generation_prompt=True)
+        prompt=prompts[layout]
+        ids=list(expanded(prompt,tuple(lengths)))
+        if len(ids)!=budget['input_tokens']:raise ValueError('independent expansion differs from full budget')
+        return prompt,ids
+    return expected
 
 
 def check_container(item,plan,container_id):
