@@ -1,0 +1,72 @@
+{
+  "source_container_id": "c6d9e27b6166b3fe86f63b417b5bb2c3ed220473d4605c786c151fae5619c7d4",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-actor-source-audit-v1",
+  "files_sha256": {
+    "transformers/models/qwen3_omni_moe/processing_qwen3_omni_moe.py": "5ebde9431e03451e4d958afb1602704b1f184ebff8b6caf1d2875e3de6853172",
+    "transformers/models/qwen3_omni_moe/configuration_qwen3_omni_moe.py": "aedbdc88f6341b1a45e81d8cc34b8ff804c673df061d8cdfa7a9e462b38afdd4",
+    "transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+    "vllm/model_executor/models/qwen3_omni_moe_thinker.py": "0f44c586731ec7a589af4e58b1998f49ef17abf2907e70a66c0b338913e5fb81",
+    "verl/utils/model.py": "5614cd67ced6a9a541fc14c56d800eac7cef2ed906349f963fbd2a85eef55487"
+  },
+  "container_paths": {
+    "transformers/models/qwen3_omni_moe/processing_qwen3_omni_moe.py": "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/processing_qwen3_omni_moe.py",
+    "transformers/models/qwen3_omni_moe/configuration_qwen3_omni_moe.py": "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/configuration_qwen3_omni_moe.py",
+    "transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py",
+    "vllm/model_executor/models/qwen3_omni_moe_thinker.py": "/vllm-workspace/vllm/vllm/model_executor/models/qwen3_omni_moe_thinker.py",
+    "verl/utils/model.py": "/opt/verl/verl/utils/model.py"
+  },
+  "probe_container_id": "2456cbe59668614ad7111aa89fed2e22fef7dec4ac82cd8cabdee5618275cc08",
+  "probe_exit_code": 0,
+  "probe_script_sha256": "9739202de0fcdb3a64100e550cb19cf3d7ba26a36f9d2f21f8d68014cb5c2e0c",
+  "probe_result_sha256": "8f224fc7301ddd0e23a2535a821357e3074690a8ccb2fea7ccb97ca27a33f0e5",
+  "probe_result": {
+    "scope": "AST-extracted pinned methods; synthetic tensors and mocked audio tower; no model forward or training",
+    "torch_version": "2.10.0+cpu",
+    "source_sha256": {
+      "transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+      "verl/utils/model.py": "5614cd67ced6a9a541fc14c56d800eac7cef2ed906349f963fbd2a85eef55487"
+    },
+    "audio_only_rope_equals_cumulative_positions": true,
+    "rope_shape": [
+      3,
+      2,
+      10
+    ],
+    "rope_deltas": [
+      [
+        0.0
+      ],
+      [
+        0.0
+      ]
+    ],
+    "unpadded_batch_error": "Sizes of tensors must match except in dimension 0. Expected size 5 but got size 7 for tensor number 1 in the list.",
+    "padded_audio_lengths": [
+      5,
+      5,
+      7
+    ],
+    "audio_tower_input": {
+      "shape": [
+        4,
+        17
+      ],
+      "lengths": [
+        5,
+        5,
+        7
+      ]
+    },
+    "lengths_only_error": "'NoneType' object has no attribute 'sum'",
+    "model_loaded": false,
+    "weight_updates": 0
+  },
+  "failed_probe": {
+    "container_id": "555995e9892475f2319df2dc84abcdc2d6b66f80e26db93c676733523fc393cd",
+    "exit_code": 1,
+    "reason": "torch_npu backend autoload without host driver; CPU probe rerun with TORCH_DEVICE_BACKEND_AUTOLOAD=0"
+  },
+  "verified_unix": 1794317798.348798,
+  "scope": "Pinned source audit and AST-isolated synthetic CPU checks only; not model forward, vLLM/HF logits parity, NPU or training"
+}
