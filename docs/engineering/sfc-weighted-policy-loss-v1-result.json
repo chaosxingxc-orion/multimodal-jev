@@ -1,0 +1,79 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-weighted-policy-loss-v1",
+  "launch": {
+    "container_id": "b99488cb6a77de0e94be212dcad795e94014ddc9e214cc1de9509fb880b1faf8",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "9b957d8eb0116d9549ceb93c97b5a0cc5ef3ff21",
+    "intent_sha256": "aedd050f247fccc699bc9236141ea0d92db8fd8399c86a40f3ee21dbd6dd4b02"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T15:20:11.00276069Z",
+    "FinishedAt": "2026-11-10T15:20:24.08775872Z"
+  },
+  "result_sha256": "ce4b9d0fb150258393936d175932b90d2b31f10520964e2b72c4257fb6ebe4fa",
+  "log_sha256": "ce4b9d0fb150258393936d175932b90d2b31f10520964e2b72c4257fb6ebe4fa",
+  "result": {
+    "schema": "sfc-weighted-policy-loss-diagnostic-v1",
+    "audit_sha256": "65475f49ff795714ab978c25e5e39826b737eb89b0a93ab398c1564925ddc1ba",
+    "core_sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+    "class_weights": {
+      "active": 1.8956450287592441,
+      "inactive": 0.6791286429202237
+    },
+    "reports": {
+      "token-mean": {
+        "loss": 0.5345935225486755,
+        "reference_gradient": [
+          -0.07897454500198364,
+          0.11918418109416962
+        ],
+        "actual_gradient": [
+          -0.07897453755140305,
+          0.11918418109416962
+        ],
+        "accumulated_gradient": [
+          -0.07897453755140305,
+          0.11918417364358902
+        ],
+        "gradient_error": 7.450580596923828e-09,
+        "microbatch_error": 7.450580596923828e-09,
+        "incorrect_local_mean_error": 0.07482639700174332,
+        "class_weight_gradient_effect": 0.053907059133052826
+      },
+      "seq-mean-token-mean": {
+        "loss": 0.5412417054176331,
+        "reference_gradient": [
+          -0.06865011900663376,
+          0.08111462742090225
+        ],
+        "actual_gradient": [
+          -0.06865010410547256,
+          0.08111463487148285
+        ],
+        "accumulated_gradient": [
+          -0.06865009665489197,
+          0.08111463487148285
+        ],
+        "gradient_error": 1.4901161193847656e-08,
+        "microbatch_error": 2.2351741790771484e-08,
+        "incorrect_local_mean_error": 0.09591182321310043,
+        "class_weight_gradient_effect": 0.027401819825172424
+      }
+    },
+    "token_vs_response_gradient_difference": 0.03806954622268677,
+    "response_count": 16,
+    "valid_tokens": 46,
+    "model_loaded": false,
+    "weight_updates": 0,
+    "scope": "Synthetic differentiable logprob fixture through actual verl clipped policy loss. Positive post-standardization weights scale the clipped policy term; global denominators preserve microbatch gradients. No model gradients, optimizer, DDP, efficacy or training."
+  }
+}
