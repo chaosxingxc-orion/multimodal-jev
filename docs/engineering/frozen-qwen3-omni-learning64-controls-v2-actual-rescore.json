@@ -1,0 +1,120 @@
+{
+  "verified_unix": 1794299707.4922695,
+  "independent_score": {
+    "replicates": [
+      {
+        "replicate": 0,
+        "by_variant": {
+          "native": {
+            "examples": 64,
+            "correct": 29,
+            "format_valid": 32,
+            "schema_valid": 32,
+            "accuracy": 0.453125
+          },
+          "permutation": {
+            "examples": 64,
+            "correct": 33,
+            "format_valid": 35,
+            "schema_valid": 35,
+            "accuracy": 0.515625
+          },
+          "rebind": {
+            "examples": 64,
+            "correct": 38,
+            "format_valid": 41,
+            "schema_valid": 41,
+            "accuracy": 0.59375
+          },
+          "missing_candidate": {
+            "examples": 64,
+            "correct": 0,
+            "format_valid": 31,
+            "schema_valid": 25,
+            "accuracy": 0.0
+          },
+          "noul.True": {
+            "examples": 64,
+            "correct": 52,
+            "format_valid": 54,
+            "schema_valid": 54,
+            "accuracy": 0.8125
+          },
+          "noul.False": {
+            "examples": 64,
+            "correct": 33,
+            "format_valid": 51,
+            "schema_valid": 51,
+            "accuracy": 0.515625
+          }
+        },
+        "pairs": {
+          "permutation": {
+            "groups": 64,
+            "both_correct": 26,
+            "both_correct_rate": 0.40625
+          },
+          "rebind": {
+            "groups": 64,
+            "both_correct": 25,
+            "both_correct_rate": 0.390625
+          },
+          "missing_candidate": {
+            "groups": 64,
+            "both_correct": 0,
+            "both_correct_rate": 0.0
+          },
+          "noul": {
+            "groups": 64,
+            "both_correct": 29,
+            "both_correct_rate": 0.453125
+          }
+        },
+        "all_six_correct": 0,
+        "all_six_correct_rate": 0.0
+      }
+    ],
+    "source_groups": 64,
+    "requests": 384,
+    "predictions": 384,
+    "coverage": 1.0,
+    "scope": "correlated derived views; paired correctness is required; not six independent recordings"
+  },
+  "agrees_with_supervisor": true,
+  "result_sha256": "6662089ff0b612a29c4134801b768ea835230b6bf27bbde8b55ee4a854ef9de4",
+  "targets_sha256": "16e8d62670dfdf06add142ba927fc56d369a3ccb3fbf1972dd41d355ae98a9c5",
+  "actual_observation": {
+    "container_id": "3bb98b6d19047bb7ea116dfec936547ea336d6505ac2d6f88da6d053e3f82b33",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-10T08:14:16.94483054Z",
+      "FinishedAt": "2026-11-10T08:31:54.69205674Z"
+    }
+  },
+  "zeros_observation": {
+    "container_id": "971ece9af074951d388fcb3bbb41f2316cb842cf163015957808c924ab945fc3",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 2761971,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-10T08:32:15.45167403Z",
+      "FinishedAt": "0001-01-01T00:00:00Z"
+    }
+  }
+}
