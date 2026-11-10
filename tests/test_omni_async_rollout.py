@@ -57,6 +57,16 @@ def test_complete_k_preserves_audio_raw_prompt_and_zero_logprobs(monkeypatch):
     assert len(engine.calls)==1
 
 
+def test_real_vllm_sampling_params_keeps_sampled_token_logprobs(monkeypatch):
+    vllm=pytest.importorskip('vllm')
+    engine,sampler,prepared,request,call=fixture(monkeypatch)
+    sampler.params_factory=vllm.SamplingParams
+    records=asyncio.run(call())
+    params=engine.calls[0]['sampling_params']
+    assert isinstance(params,vllm.SamplingParams) and params.logprobs==0
+    assert params.n==2 and len(records)==2
+
+
 @pytest.mark.parametrize('mode',['error','cancel','empty','unfinished','identity','prompt','missing','logprobs'])
 def test_no_partial_group_or_ambiguous_retry(monkeypatch,mode):
     engine,sampler,prepared,request,call=fixture(monkeypatch,mode)
