@@ -5,6 +5,7 @@ from pathlib import Path
 from multimodal_jev.baseline import atomic_json,file_hash
 from watch_qwen3_omni_probe import inspect,wait,run as dispatch_and_score
 from compare_omni_waveform import compare
+from multimodal_jev.container_inputs import require_visible_inputs
 
 
 def run(root,predecessor):
@@ -29,12 +30,17 @@ def run(root,predecessor):
     for condition in ['actual','zeros']:
         child=root/condition;child.mkdir(exist_ok=False)
         shutil.copytree(root/'source',child/'source')
+        local_partition=child/'learning-selection-split.json'
+        shutil.copyfile(partition,local_partition)
+        if file_hash(local_partition)!=intent['partition_sha256']:
+            raise ValueError('copied partition differs')
         cfg=json.loads((predecessor/'config.json').read_text())
-        cfg.update(source_groups=groups,audio_condition=condition,partition=str(partition),partition_sha256=file_hash(partition),
+        cfg.update(source_groups=groups,audio_condition=condition,partition=str(local_partition),partition_sha256=file_hash(local_partition),
                    instruction=str(child/'source/configs/tasks/frozen-decision-prompt-v1.txt'),asset_audit=str(child/'asset-audit.json'),
                    purpose='frozen-qwen3-omni-learning64-waveform-control')
         atomic_json(child/'config.json',cfg);shutil.copyfile(predecessor/'asset-audit.json',child/'asset-audit.json')
         argv=[x.replace(str(predecessor),str(child)).replace(predecessor.name,root.name+'-'+condition) for x in old['argv']]
+        require_visible_inputs(argv,cfg)
         plan={**old,'root':str(child),'argv':argv,'source_commit':commit,'wait_for':[],
               'config_sha256':file_hash(child/'config.json'),'revision_reason':'registered64TRAIN waveform controls'}
         plan.pop('container_id');atomic_json(child/'intent.json',plan)

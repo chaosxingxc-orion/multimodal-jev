@@ -35,7 +35,7 @@ def compare(actual,zeros):
         if ai[key]!=zi[key]:raise ValueError('actor identity differs: '+key)
     ac,zc=dict(ai['config']),dict(zi['config'])
     for c in [ac,zc]:
-        for k in ['audio_condition','instruction','asset_audit']:c.pop(k)
+        for k in ['audio_condition','instruction','asset_audit','partition']:c.pop(k)
     if ac!=zc or rows!=zrows:raise ValueError('only waveform condition may differ')
     targets=Path(ac['requests']).with_name('train.targets.jsonl');gold=[json.loads(line) for line in targets.open()]
     # Silence has no native task labels. Score only the real-audio condition.
