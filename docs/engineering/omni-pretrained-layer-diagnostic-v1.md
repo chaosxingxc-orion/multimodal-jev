@@ -57,3 +57,8 @@ text padding四个相邻比较，完整BF16 logits逐元素相同，FP32响应lo
 这一无新增左padding对照与前两条text padding条件出现差异的观察一致，但尚不能
 区分具体SDPA/MoE/算子形状数值机制，也不改变原0.1概率一致性门槛。
 本次仅审计已保存tensor，没有重跑模型；全六条诊断和后续逐层定位仍未完成。
+
+随后保存tensor审计覆盖21/30条件（partial-09）。第四条row3的text_padding条件
+响应logp相邻最大差为0.9594621658325195，完整logits最大差1.21875；该行前面
+autocast、FP32 features和audio_padding相邻条件完整logits相同。原始诊断仍在
+运行，没有重放或放宽0.1门槛；这增加了padding相关差异证据，尚不证明具体算子根因。
