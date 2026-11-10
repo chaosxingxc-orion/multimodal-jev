@@ -12,7 +12,11 @@ Input is audio or actual ASR evidence plus a TRAIN-defined taxonomy. Reference
 transcription is allowed only in a separately named oracle control. Prediction
 must provide scenario, action and an entities array with every entity occurrence
 represented as type/filler. Repeated types and repeated identical fillers retain
-their multiplicity. Intent is the official scenario/action combination.
+their multiplicity. Joint intent scoring uses scenario/action together; retain
+the original intent field separately. The source has 162/30/37 utterances in
+train/devel/test whose raw intent string is not scenario + "_" + action.
+Do not interpret those raw aliases as unseen semantic classes or silently
+rewrite the original annotations. Verify the official scorer's contract.
 This composite native output is separate from the current single-value Jev
 consumer contract; do not encode all native entities as a first-span query.
 

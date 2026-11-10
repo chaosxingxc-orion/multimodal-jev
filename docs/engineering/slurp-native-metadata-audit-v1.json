@@ -67,7 +67,9 @@
         "transport_type",
         "weather_descriptor"
       ],
-      "native_spans_validated": true
+      "native_spans_validated": true,
+      "raw_intent_field_disagrees_with_scenario_action": 162,
+      "scenario_action_pairs": 60
     },
     "valid": {
       "metadata_sha256": "00d346b183ecc2d160853cd3dc20e8ccd207d9e1809cf6e2c05182076bd0ecc9",
@@ -136,7 +138,10 @@
       "entity_types_absent_from_train": [],
       "intents_absent_from_train": [
         "likeness"
-      ]
+      ],
+      "raw_intent_field_disagrees_with_scenario_action": 30,
+      "scenario_action_pairs": 59,
+      "scenario_action_pairs_absent_from_train": []
     },
     "test": {
       "metadata_sha256": "fe3449af69b42fda7163345482556066c35a80f7e552a6d67e212a0e2f0783cc",
@@ -205,7 +210,11 @@
       "entity_types_absent_from_train": [],
       "intents_absent_from_train": [
         "locations"
-      ]
+      ],
+      "raw_intent_field_disagrees_with_scenario_action": 37,
+      "scenario_action_pairs": 59,
+      "scenario_action_pairs_absent_from_train": []
     }
-  }
+  },
+  "raw_intent_note": "Original intent fields are retained verbatim; raw aliases are not canonical scenario/action classes. Official scorer semantics must be verified before reporting intent."
 }
