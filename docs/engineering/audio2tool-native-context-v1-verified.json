@@ -1,0 +1,199 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-native-context-v1",
+  "launch": {
+    "container_id": "fc2a323084806f50314cc221d6eb11655183cf0e2209605ac42954e607e97432",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "4867129a4abd61d93f56417e21b1d475dd44807f",
+    "intent_sha256": "aac79595e8cf357e714743562cafce346d76c458b5319a7193d565272ecac4e1"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T17:22:27.31135264Z",
+    "FinishedAt": "2026-11-10T17:22:53.64688306Z"
+  },
+  "result": {
+    "status": "passed",
+    "requests": 30733,
+    "layouts": 6,
+    "max_input_tokens": 17253,
+    "real_processor_maxima": [
+      {
+        "id": "audio2tool:tier7:release:2030",
+        "tier": 7,
+        "mode": "dialogue_last_user",
+        "input_tokens": 17253,
+        "frames": [
+          254,
+          1310,
+          270,
+          65464,
+          12571
+        ],
+        "audio_tokens": [
+          33,
+          171,
+          35,
+          8510,
+          1634
+        ],
+        "conversions": [
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 60885,
+            "target_rate": 16000,
+            "target_samples": 40590,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 314325,
+            "target_rate": 16000,
+            "target_samples": 209550,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 64725,
+            "target_rate": 16000,
+            "target_samples": 43150,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 15711180,
+            "target_rate": 16000,
+            "target_samples": 10474120,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          },
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 3016830,
+            "target_rate": 16000,
+            "target_samples": 2011220,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "feature_shape": [
+          5,
+          128,
+          65464
+        ],
+        "token_ids_exact": true,
+        "full_frames": true,
+        "all_finite": true
+      },
+      {
+        "id": "audio2tool:tier8:release:314",
+        "tier": 8,
+        "mode": "foreground_mixture",
+        "input_tokens": 7035,
+        "frames": [
+          1670
+        ],
+        "audio_tokens": [
+          217
+        ],
+        "conversions": [
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 400728,
+            "target_rate": 16000,
+            "target_samples": 267152,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "feature_shape": [
+          1,
+          128,
+          1670
+        ],
+        "token_ids_exact": true,
+        "full_frames": true,
+        "all_finite": true
+      },
+      {
+        "id": "audio2tool:tier1:release:3943",
+        "tier": 1,
+        "mode": "single_audio",
+        "input_tokens": 15322,
+        "frames": [
+          65464
+        ],
+        "audio_tokens": [
+          8510
+        ],
+        "conversions": [
+          {
+            "source_rate": 24000,
+            "source_channels": 1,
+            "source_samples": 15711180,
+            "target_rate": 16000,
+            "target_samples": 10474120,
+            "conversion": "channel mean then scipy.signal.resample_poly when needed"
+          }
+        ],
+        "feature_shape": [
+          1,
+          128,
+          65464
+        ],
+        "token_ids_exact": true,
+        "full_frames": true,
+        "all_finite": true
+      }
+    ],
+    "exceeded_with_1024_output": {
+      "4096": {
+        "1": 4292,
+        "2": 6320,
+        "3": 4292,
+        "4": 4278,
+        "5": 4292,
+        "6": 4292,
+        "7": 2146,
+        "8": 821
+      },
+      "8192": {
+        "1": 1,
+        "3": 3,
+        "4": 3,
+        "5": 3,
+        "6": 15,
+        "7": 895
+      },
+      "16384": {
+        "7": 11
+      },
+      "32768": {}
+    },
+    "input_hashes": {
+      "inputs": "f7e4ebe4e7cf2cf411f3f26a8714bbdd0a493c0c7aeb98dd4199112d197e1a35",
+      "headers": "472340a98cca0b3a74f89b22af0935f85d38c7d464caec36875aa6a2a668d8da",
+      "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+    },
+    "budgets_sha256": "87e750243a3dcc56ca006e9f661dcaa2ac130cc27fd7312d6e986892aa1ef223",
+    "renderer_sha256": "7ec4b1f8901104fbcdade9026975dbeb471b3c8cbf62f197c069b974e2e176a9",
+    "processor_sha256": "5ebde9431e03451e4d958afb1602704b1f184ebff8b6caf1d2875e3de6853172",
+    "runner_sha256": "9d7c9892fea7c309da99a85c727f2d9b7ff8205094e43b726e78050c7f8b7171",
+    "elapsed_seconds": 13.610356160032097,
+    "model_loaded": false,
+    "annotations_read": false,
+    "scope": "All 30733 fixed native records budgeted with real tokenizer; three mode maxima processed with complete verified waveforms and explicit hop alignment. No full-population waveform validation, vLLM engine/NPU memory, scoring or model inference."
+  },
+  "source_terminal_and_full_budget_roster_verified": true,
+  "result_sha256": "9a0cfee4bbb2b7efd3cbf7a0a634ed28446a4e149363780136a0a96b873707f1"
+}
