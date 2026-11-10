@@ -16,7 +16,12 @@ from multimodal_jev.end_to_end import require_audio_task_route
 def run(config, output):
     require_audio_task_route(config)
     import torch
-    from multimodal_jev.asr import load_runtime
+    family=config.get('model_family','qwen3_asr')
+    if family=='qwen3_asr':
+        from multimodal_jev.asr import load_runtime
+    elif family=='qwen2_5_omni':
+        from multimodal_jev.omni_runtime import load_runtime
+    else:raise ValueError('unsupported audio model family')
     from multimodal_jev.audio_policy import load_audio
     route=config['route']
     if config.get('adapter') is not None or config.get('parameters_frozen') is not True:
@@ -50,7 +55,7 @@ def run(config, output):
         'instruction_sha256':file_hash(config['instruction']),'models':identities,
         'runner_sha256':file_hash(__file__),
         'source_sha256':{name:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
-            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py','frozen_contract.py','slurp_native.py','teacher_candidates.py','end_to_end.py')}}
+            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py','frozen_contract.py','slurp_native.py','teacher_candidates.py','end_to_end.py','omni_runtime.py')}}
     if contract.taxonomy_sha256 is not None:identity['taxonomy_sha256']=contract.taxonomy_sha256
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('resume identity changed')
@@ -74,9 +79,14 @@ def run(config, output):
     for index,row in enumerate(rows):
         if file_hash(row['input']['audio'])!=row['audio_sha256']:raise ValueError('audio changed')
         wave=load_audio(row['input']['audio'])
+        if family=='qwen2_5_omni' and len(wave)>processor.feature_extractor.chunk_length*16000:
+            raise ValueError('audio exceeds extractor limit; truncation prohibited')
         system=contract.audio_instruction(row,instruction)
         messages=[{'role':'system','content':[{'type':'text','text':'English\n'+system}]},
             {'role':'user','content':[{'type':'audio','audio':wave}]}]
+        if family=='qwen2_5_omni':
+            from multimodal_jev.omni_runtime import task_messages
+            messages=task_messages(wave,system)
         prompt=processor.apply_chat_template(messages,tokenize=False,add_generation_prompt=True)
         batch=move(processor(text=[prompt],audio=[wave],sampling_rate=16000,return_tensors='pt'))
         decoder=processor.tokenizer
