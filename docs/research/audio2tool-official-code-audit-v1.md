@@ -38,6 +38,33 @@ Evaluator 将 `gt_query=sample.query_text` 传给模型。已检查的
 及音频目录。其他 tier loader 存在，但本次未逐一验证，不能声明当前默认 loader 直接兼容。
 客户端还有音频重采样和 PCM16 编码步骤，正式接入须固定并审计音频变换。
 
+## Loader 和候选供给补充审计
+
+已下载同 commit 的 base、Tier 1/2/3/7/8 loader 及单进程/多 GPU 入口，
+见 [来源与 SHA](audio2tool-loader-source-audit-v1.json)。这些 tier loader 读取
+`query_*/query_metadata.json` 等旧式目录，也不能直接解释当前固定 release 的平铺 JSON。
+尚未实现任何 release 转换，未读取真实 TEST 答案。
+
+实际导入官方模块、使用人工 QuerySample 和临时空音频文件名运行，发现：
+
+- 单进程入口在配置 tools_file 时调用 `dataset.set_tools_schema`，但 ReleaseDataset
+  及其 BaseDataset 没有此方法，人工调用得到 AttributeError。即使完成目录转换，
+  默认 example 配置仍有此接口问题。
+- ReleaseDataset 的备用 `get_tools_schema` 从样本的 gold 主工具名和首个非空 gold
+  参数字典的键构造 schema。不是独立完整工具表；只在 additional_tool_calls 中出现
+  的工具会遗漏。工具列表通过 set 构造，顺序也不保证稳定。不能称为固定候选的盲测。
+- 已检查的多 GPU worker 没有单进程入口中的 tools_file 加载/注入步骤，不能假定
+  两个入口候选相同。
+- Tier7 `_get_audio_paths` 先列全部 user，再追加 agent：人工三轮产生 1-user、
+  3-user、2-agent 的顺序。通用 evaluator 又将 audio_paths 当作 speaker 变体逐条调用
+  单音频 generate；不是把完整有序对话传入同一次 actor 请求。不能把这一路结果
+  解释成已验证多轮上下文理解。
+
+人工反例见 [loader fixtures](audio2tool-loader-fixtures-v1.json)。这些是当前源码的
+接口/协议诊断，不是证明论文实际运行用了这些路径。适配要求：工具候选来自独立固定
+registry，保留顺序与哈希；gold 仅进入 scorer；多轮角色/顺序保持原始任务定义；
+音频变体与对话轮次不得混为分母单位，缺失音频不能静默缩小评测集。
+
 ## 比较协议
 
 保留论文 v1 指标定义，另登记当前官方代码指标；两者不得混用名称或静默替换。

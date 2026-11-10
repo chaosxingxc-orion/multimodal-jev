@@ -925,7 +925,8 @@
       "local_status": "本地 prior manifest: 36419 WAV/71441 files；官方代码已定位，metrics 人工反例已执行；尚无本地模型成绩。",
       "blockers": [
         "当前官方 scorer 与论文锁定协议不一致：多工具集合匹配、逐样本平均参数 F1、错误样本排除；历史实现与完整多调用参数评分尚未对齐。",
-        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。"
+        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。",
+        "人工 loader 反例确认 release 缺少 tools schema setter、备用候选从 gold 字段生成、Tier7 轮次被当 speaker 逐音频评分；需独立 registry 和保序多轮适配。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,
@@ -996,7 +997,8 @@
       "local_status": "本地 prior manifest: 36419 WAV/71441 files；官方代码已定位，metrics 人工反例已执行；尚无本地模型成绩。",
       "blockers": [
         "当前官方 scorer 与论文锁定协议不一致：多工具集合匹配、逐样本平均参数 F1、错误样本排除；历史实现与完整多调用参数评分尚未对齐。",
-        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。"
+        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。",
+        "人工 loader 反例确认 release 缺少 tools schema setter、备用候选从 gold 字段生成、Tier7 轮次被当 speaker 逐音频评分；需独立 registry 和保序多轮适配。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,
@@ -1067,7 +1069,8 @@
       "local_status": "本地 prior manifest: 36419 WAV/71441 files；官方代码已定位，metrics 人工反例已执行；尚无本地模型成绩。",
       "blockers": [
         "当前官方 scorer 与论文锁定协议不一致：多工具集合匹配、逐样本平均参数 F1、错误样本排除；历史实现与完整多调用参数评分尚未对齐。",
-        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。"
+        "固定 HF release 与默认 release loader 布局不同，tier loader/候选供给需核验；历史 prompt、模型 revision 与解码配方未完全还原；全部 test 禁止训练。",
+        "人工 loader 反例确认 release 缺少 tools schema setter、备用候选从 gold 字段生成、Tier7 轮次被当 speaker 逐音频评分；需独立 registry 和保序多轮适配。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,

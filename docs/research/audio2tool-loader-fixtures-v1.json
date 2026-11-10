@@ -1,0 +1,27 @@
+{
+  "commit": "b9d5383ca30945fbafb965a04bea40117e1e8a82",
+  "fixtures": {
+    "release_registry_override_error": "'ReleaseDataset' object has no attribute 'set_tools_schema'",
+    "gold_derived_schema": [
+      {
+        "name": "gold_primary",
+        "description": "Tool: gold_primary",
+        "parameters": {
+          "gold_slot": {
+            "type": "string",
+            "description": "Parameter: gold_slot"
+          }
+        }
+      }
+    ],
+    "additional_only_tool_excluded": true,
+    "tier7_audio_order": [
+      "turn_1_user_a.wav",
+      "turn_3_user_a.wav",
+      "turn_2_agent_b.wav"
+    ]
+  },
+  "scope": "Executed pinned official loader functions on synthetic samples and empty temporary audio names; no real dataset answers or waveform decoding; evaluator speaker loop statically inspected",
+  "model_called": false,
+  "dataset_answers_read": false
+}

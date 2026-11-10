@@ -79,6 +79,12 @@ ESPnet 的两个官方 HF 权重 revision 已登记；README 声称的历史 git
 
 ### 2.4 Audio2Tool：最相关的强管线对照，但官方评分实现仍是门槛
 
+后续 loader 审计还确认候选和上下文协议问题：release loader 缺少入口要求的
+`set_tools_schema`；备用 schema 从 gold 主工具/参数键构造，遗漏仅附加调用工具。
+旧 Tier7 loader 的轮次列表被通用 evaluator 当 speaker 变体逐条评分。人工反例见
+[官方代码审计](audio2tool-official-code-audit-v1.md)。正式接入必须使用独立固定 registry、
+明确保序多轮输入与全分母，不能直接把默认入口作为完整论文复现。
+
 锁定 [2604.22821v1](https://arxiv.org/html/2604.22821v1) §5.1–5.2、Table 3，[官方页面](https://audio2tool.github.io/) 与 [HF 发布](https://huggingface.co/datasets/RVtech/Audio2Tool/tree/f1388da9a3189541ab82adac88824a0661670c43)。论文约 30k 与卡片 16,843 queries 不同；卡片 36,421 音频、本地固定 manifest **36,419 WAV / 71,441 总文件**亦有差异。后者继承 [dataset-audit](dataset-audit.json) 与本地资产验收，本次未重扫音频。
 
 官方仅 test。query、expected_tool_call、extracted_params、reasoning 不进入音频系统输入。候选 schema 供给规则需逐记录审计，防止只给正确工具形成泄漏；TTS 变体、tier、来源 query 需要聚类，不能当独立问题简单加权。

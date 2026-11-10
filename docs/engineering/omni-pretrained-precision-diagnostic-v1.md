@@ -45,5 +45,6 @@ FP32/FP64 保持原精度。近确定 EOS 的小负概率不再因 BF16 归一�
 同一源码的真实 processor 预检查容器
 `6db2e4c565fa7f80c0fb78d7b3d43aa236f4e553bd52f444494800534b18de4c`
 已启动，2 CPU/16 GiB/1800 秒上限，模型与数据只读；不加载模型权重。
-最近观测仍在运行，不能把测试通过当作该预检查或完整诊断完成。
+预检查已退出 0，完整六条、五条件输入准备通过，源码清单与容器资源已独立核验，
+见 [验收记录](omni-precision-preflight-v1-accepted.json)。这不代表完整模型诊断完成。
 精确启动信息与观测见 [测试/预检查凭证](omni-precision-tests-preflight-v1.json)。
