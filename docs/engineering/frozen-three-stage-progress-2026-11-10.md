@@ -178,3 +178,12 @@ vLLM实际加载/推理另立协议，源码4884a0a；等待当前ASR两路完�
 Qwen3-Omni队列已派发容器484b41074effe937668a69cfb43b8fb63fe66e33b41d923cae09ac3c5544b981，
 物理4/5卡TP2；正在实际加载，未产生任务结果。完整协议/所有指标与独立复核
 见 `frozen-direct-audio-heldout-v1-{result,independent-rescore}.json`。
+
+## Qwen3-Omni 首轮失败与定点修复
+
+首轮容器及应用exit1，预测0条：NPU worker在fork子进程重新初始化时报错，
+不是任务答案错误。已核验固定vLLM环境默认使用fork。保留全部失败现场。
+v2显式设置VLLM_WORKER_MULTIPROC_METHOD=spawn，仍使用原快照4884a0a、
+同一模型/音频/schema/提示/解码参数，物理4/5卡TP2；新目录记录，不覆盖v1。
+监督器PID2624545，旧容器确定退出后重新检查设备才派发；不自动重试。
+这是针对已定位运行时错误的修复，尚无模型任务成绩。

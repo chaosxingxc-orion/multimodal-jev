@@ -1,0 +1,34 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-direct-train1group-v1",
+  "container": {
+    "container_id": "484b41074effe937668a69cfb43b8fb63fe66e33b41d923cae09ac3c5544b981",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 1,
+      "Error": "",
+      "StartedAt": "2026-11-10T07:49:50.88209071Z",
+      "FinishedAt": "2026-11-10T07:52:57.50211501Z"
+    }
+  },
+  "application": {
+    "exit_code": 1,
+    "error": "RuntimeError(\"Engine core initialization failed. See root cause above. Failed core proc(s): {'EngineCore': 1}\")",
+    "finished_unix": 1794297171.6810954
+  },
+  "supervisor": {
+    "exit_code": 1,
+    "error": "RuntimeError('Omni probe failed; inspect retained logs')",
+    "finished_unix": 1794297272.0624855,
+    "automatic_retry": false
+  },
+  "predictions": 0,
+  "root_cause": "NPU worker initialization after fork is unsupported; spawn is required",
+  "known_failure_before_task_inference": true,
+  "task_accuracy": null
+}
