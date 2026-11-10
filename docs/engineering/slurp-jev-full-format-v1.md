@@ -66,6 +66,8 @@ scenario/action组合和55种实体类型。`{split}.bundles.jsonl` 每行只含
 
 官方评分夹具通过：固定TRAIN录音的完整gold输出重建SLU-F1为100%，全部空
 实体列表和非法输出为0%。这只是评分验证，不是模型成绩。首次真实消费探针
-固定1个TRAIN源组、2条录音、336题，单列结果，不代表整个数据集或泛化能力。
+固定1个TRAIN源组、2条录音、336题，已全部完成，耗时308.90秒；权重未变、无截断，
+有效JSON为0/336，原生重建SLU-F1为0。完整链路可运行但任务接口失败；不代表
+整个数据集或泛化能力，结果见 `slurp-jev-full-direct-train1group-v1-result.json`。
 
 该版本与历史domain-held-out/first-slot投影并存；后者不是完整原生SLURP。

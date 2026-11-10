@@ -1,0 +1,126 @@
+{
+  "counts": {
+    "decisions": 336,
+    "format_valid": 0,
+    "schema_valid": 0,
+    "recordings": 2,
+    "intent_native_correct": 0,
+    "intent_permutation_correct": 0,
+    "intent_rebind_correct": 0,
+    "intent_permutation_both_correct": 0,
+    "intent_rebind_both_correct": 0,
+    "intent_all_three_correct": 0,
+    "presence_pairs": 110,
+    "presence_both_correct": 0,
+    "absent_type_pairs": 106,
+    "absent_type_both_correct": 0,
+    "slot_queries": 110,
+    "slot_list_exact": 0,
+    "present_type_pairs": 4,
+    "present_type_both_correct": 0,
+    "nonempty_slot_queries": 4,
+    "nonempty_slot_list_exact": 0,
+    "native_reconstruction_valid": 0,
+    "all_decisions_correct": 0
+  },
+  "rates": {
+    "intent_native_accuracy": 0.0,
+    "intent_permutation_accuracy": 0.0,
+    "intent_rebind_accuracy": 0.0,
+    "intent_permutation_both_correct_rate": 0.0,
+    "intent_rebind_both_correct_rate": 0.0,
+    "intent_all_three_correct_rate": 0.0,
+    "all_decisions_correct_rate": 0.0,
+    "native_reconstruction_valid_rate": 0.0,
+    "presence_both_correct_rate": 0.0,
+    "present_type_both_correct_rate": 0.0,
+    "absent_type_both_correct_rate": 0.0,
+    "slot_list_exact_rate": 0.0,
+    "nonempty_slot_list_exact_rate": 0.0,
+    "multiple_slot_list_exact_rate": null
+  },
+  "scope": "correlated derived decisions; absent entities dominate aggregate accuracy; native SLU metrics require official reconstruction scoring",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-jev-full-direct-train1group-v1/run",
+  "release": "/mnt/cephfs/xingchao/datasets/slurp-jev-full/2cf048949e551884179516487b8f8809e4f19621381146f9dd64ac1c392596eb",
+  "split": "train",
+  "full_official_split": false,
+  "result_sha256": "7cb18aaba10fbfdce2f1fc1dd676dc852b3b50216b2ce1e68444f71d7ba5be0d",
+  "official_native_overall": {
+    "scenario": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      2.0
+    ],
+    "action": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      2.0
+    ],
+    "joint_intent": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.0,
+      2.0
+    ],
+    "entity_exact": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      4.0
+    ],
+    "word": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      4.0
+    ],
+    "char": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      4.0
+    ],
+    "slu_f1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      8.0
+    ]
+  },
+  "run_result": {
+    "status": "passed",
+    "requests": 336,
+    "predictions": 336,
+    "format_valid": 0,
+    "schema_valid": 0,
+    "length_limited": 0,
+    "route": "audio-direct",
+    "predictions_sha256": "a3a3963705290a5ba4a10093efa2f1e1ce61aaf3729ce4cfbbd5a24c56ae6a4c",
+    "weight_updates": 0,
+    "model_files_unchanged": true,
+    "elapsed_seconds": 308.9005050500273,
+    "scope": "frozen HF reference inference; separate scoring required; no vLLM parity or training claim"
+  },
+  "terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794292391.6941407
+  },
+  "container_id": "beeaf63e4e6d8869068bf775ce84e5fba9efb88500c5578fa606b88e3bb46812",
+  "interpretation": "complete TRAIN interface probe, 2 recordings/336 correlated decisions; zero valid JSON; no efficacy or full test claim"
+}
