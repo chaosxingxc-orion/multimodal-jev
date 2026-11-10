@@ -24,6 +24,17 @@ def test_invalid_json_rejected_without_repair(text):
     with pytest.raises(ValueError): strict_json(text)
 
 
+def test_diagnosis_can_cite_supplied_summary_but_candidate_requires_full_evidence():
+    context, payload = sample()
+    payload['diagnosis'][0]['evidence_ids'] = ['train-evidence-002']
+    assert validate_candidates(payload, context)
+    payload['candidates'][0]['evidence_ids'] = ['train-evidence-002']
+    with pytest.raises(ValueError, match='evidence'): validate_candidates(payload, context)
+    payload['candidates'][0]['evidence_ids'] = ['train-evidence-001']
+    payload['diagnosis'][0]['evidence_ids'] = ['invented']
+    with pytest.raises(ValueError, match='evidence'): validate_candidates(payload, context)
+
+
 @pytest.mark.parametrize('change', ['parent', 'evidence', 'duplicate', 'long', 'memorize', 'extra', 'empty'])
 def test_candidate_boundaries(change):
     context, payload = sample()

@@ -28,10 +28,10 @@ def validate_candidates(payload, context):
         raise ValueError('teacher schema or parent prompt changed')
     evidence = {r['evidence_id'] for r in context['representatives']}
 
-    def refs(row):
+    def refs(row, allowed):
         ids = row['evidence_ids']
         if (type(ids) is not list or not ids or any(type(x) is not str for x in ids)
-                or len(ids) != len(set(ids)) or not set(ids) <= evidence):
+                or len(ids) != len(set(ids)) or not set(ids) <= allowed):
             raise ValueError('unknown or duplicate teacher evidence IDs')
 
     def nonempty(row, keys):
@@ -43,7 +43,8 @@ def validate_candidates(payload, context):
     for row in payload['diagnosis']:
         if type(row) is not dict or set(row) != {'mechanism', 'evidence_ids', 'uncertainty'}:
             raise ValueError('exact diagnosis fields required')
-        nonempty(row, ('mechanism', 'uncertainty')); refs(row)
+        nonempty(row, ('mechanism', 'uncertainty'))
+        refs(row, {r['id'] for r in context['all_group_summary']})
     candidates = payload['candidates']
     if type(candidates) is not list or not 1 <= len(candidates) <= 4:
         raise ValueError('one to four candidates required')
@@ -51,7 +52,8 @@ def validate_candidates(payload, context):
     for row in candidates:
         if type(row) is not dict or set(row) != {'id', 'instruction', 'mechanism', 'evidence_ids', 'counterevidence', 'falsification'}:
             raise ValueError('exact candidate fields required')
-        nonempty(row, ('id', 'instruction', 'mechanism', 'counterevidence', 'falsification')); refs(row)
+        nonempty(row, ('id', 'instruction', 'mechanism', 'counterevidence', 'falsification'))
+        refs(row, evidence)
         if not re.fullmatch(r'p[1-4]', row['id']) or row['id'] in ids:
             raise ValueError('unique bounded candidate ID required')
         instruction = row['instruction']

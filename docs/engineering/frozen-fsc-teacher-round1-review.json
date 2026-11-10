@@ -1,0 +1,113 @@
+{
+  "review": {
+    "schema": "jev-teacher-semantic-review-v1",
+    "reviewer": "codex-primary",
+    "reviewed_unix": 1794281377.7335138,
+    "proposal_sha256": "9156e7bc34dc4c3a3df67e878d307af2e532e54149fb3c72c225018132d6fa8d",
+    "source_response_sha256": "ff9092dd4e8974b03272d2a68b96c293d54d773624c94fe089a37ab059c40dcb",
+    "evaluation_eligible": [
+      "p1"
+    ],
+    "prompt_selected": false,
+    "candidates": [
+      {
+        "id": "p1",
+        "instruction_sha256": "5a689051c8eede4f3d1015b1cba9ac11bc433cfdcabf352b8daf9a4186bbebc1",
+        "decision": "eligible_for_selection_evaluation",
+        "reason": "Procedural bare JSON and exactly-one-key constraints; preserves candidate identity, typed values, null allowance; no sample or task synonym mappings."
+      },
+      {
+        "id": "p2",
+        "decision": "rejected",
+        "reason": "Adds task facts: fixed synonyms and action/object/location/language rules; violates procedural-only restriction."
+      },
+      {
+        "id": "p3",
+        "decision": "rejected",
+        "reason": "Adds task synonym mappings and an unconditional listed-ID final check incompatible with noul/score/open_slot/null."
+      },
+      {
+        "id": "p4",
+        "decision": "rejected",
+        "reason": "Hardcodes location-none/language assumptions and unconditional best-listed-ID fallback, incompatible with general typed output and absent-evidence semantics."
+      }
+    ],
+    "importer_correction": "Diagnosis may cite supplied all_group_summary IDs; candidate mechanisms still require full representative IDs. No response text was edited. Initial validation error retained here.",
+    "selection_or_test_items_read_for_review": false
+  },
+  "attempts": [
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-teacher-round1-v1/request/response",
+      "result_sha256": "cbeae3174b8a1369790387a715f805904defb00f6d24ff8758e1e171940432c2",
+      "result": {
+        "automatic_retry": false,
+        "elapsed_seconds": 2.84463099995628,
+        "http_status": 400,
+        "state": "http_error",
+        "usage": null
+      }
+    },
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-teacher-round1-compat-v2/response",
+      "result_sha256": "2923066c2fa31e79d99b3e50d0009595ae363baf256df1c074d13c34bfc83416",
+      "result": {
+        "candidate_accepted": false,
+        "elapsed_seconds": 204.2519349399954,
+        "finish_reasons": [
+          "length"
+        ],
+        "http_status": 200,
+        "model": "glm-5.3-flash",
+        "request_id": null,
+        "response_sha256": "022cbd90104b11d02318ab852969c74da1174d39924fe3c58686d2bdd2ae2a44",
+        "semantic_validation": "pending",
+        "state": "response_received",
+        "usage": {
+          "completion_tokens": 8192,
+          "completion_tokens_details": {
+            "reasoning_tokens": 8191
+          },
+          "prompt_tokens": 11886,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          },
+          "total_tokens": 20078
+        }
+      }
+    },
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-teacher-round1-budget-v3/response",
+      "result_sha256": "952f3deae309b6a8a719bf2b5a3039092c3944ccd3e1cf240c4a7d14be62f805",
+      "result": {
+        "candidate_accepted": false,
+        "elapsed_seconds": 275.3677273602225,
+        "finish_reasons": [
+          "stop"
+        ],
+        "http_status": 200,
+        "model": "glm-5.3-flash",
+        "request_id": null,
+        "response_sha256": "ff9092dd4e8974b03272d2a68b96c293d54d773624c94fe089a37ab059c40dcb",
+        "semantic_validation": "pending",
+        "state": "response_received",
+        "usage": {
+          "completion_tokens": 11560,
+          "completion_tokens_details": {
+            "reasoning_tokens": 8940
+          },
+          "prompt_tokens": 11886,
+          "prompt_tokens_details": {
+            "cached_tokens": 11840
+          },
+          "total_tokens": 23446
+        }
+      }
+    }
+  ],
+  "known_usage_totals": {
+    "prompt_tokens": 23772,
+    "completion_tokens": 19752,
+    "total_tokens": 43524
+  },
+  "unknown_usage_attempts": 1
+}
