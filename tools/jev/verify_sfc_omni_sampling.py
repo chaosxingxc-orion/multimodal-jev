@@ -18,11 +18,11 @@ from sample_sfc_omni_learning import load_inputs
 from watch_qwen3_omni_probe import inspect
 
 
-def verify_container(root, plan, launch):
+def verify_container(root, plan, launch, inspection=None):
     if not (isinstance(launch['container_id'],str) and len(launch['container_id'])==64
             and all(c in '0123456789abcdef' for c in launch['container_id'])):
         raise ValueError('full hexadecimal container identity required')
-    state=inspect(launch['container_id'])
+    state=inspect(launch['container_id']) if inspection is None else inspection
     if (state['Id']!=launch['container_id'] or state['Image']!=plan['image']
             or state['State']['Status']!='exited' or state['State']['ExitCode']!=0
             or state['State'].get('OOMKilled',False)
@@ -36,10 +36,10 @@ def verify_container(root, plan, launch):
     return state
 
 
-def accept(root, tokenizer):
+def accept(root, tokenizer, inspection=None):
     plan=read_json(root/'preparation.json');launch=read_json(root/'launch.json')
     config=read_json(root/'config.json')
-    verify_container(root,plan,launch)
+    verify_container(root,plan,launch,inspection)
     source=root/'source'
     expected_sources={str(p.relative_to(source)) for directory in ('src/multimodal_jev','tools/jev')
                       for p in (source/directory).glob('*.py')}
@@ -91,10 +91,16 @@ def accept(root, tokenizer):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True)
-    p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--inspection',type=Path);p.add_argument('--inspection-hash');a=p.parse_args()
+    inspection=None
+    if a.inspection or a.inspection_hash:
+        if not a.inspection or not a.inspection_hash or file_hash(a.inspection)!=a.inspection_hash:
+            raise ValueError('exact coordinator-captured Docker inspection required')
+        inspection=read_json(a.inspection)
     if a.output.exists():raise FileExistsError('preserve earlier acceptance')
     cfg=read_json(a.root/'config.json');base=read_json(cfg['baseline_config'])
     from transformers import AutoTokenizer
     tokenizer=AutoTokenizer.from_pretrained(base['audio_model'],local_files_only=True)
-    print(json.dumps(result:=accept(a.root,tokenizer),indent=2))
+    print(json.dumps(result:=accept(a.root,tokenizer,inspection),indent=2))
     atomic_json(a.output,result)
