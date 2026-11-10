@@ -28,7 +28,7 @@ def verify_assets(cfg):
     return audit
 
 
-def run(cfg,out):
+def run(cfg,out,*,population_selector=select_learning):
     require_audio_task_route(cfg)
     if (cfg['parameters_frozen'] is not True or cfg['split']!='train'
             or cfg.get('adapter') is not None):
@@ -37,13 +37,17 @@ def run(cfg,out):
     audit=verify_assets(cfg)
     contract=FrozenContract(cfg)
     rows=[contract.validate(json.loads(line)) for line in Path(cfg['requests']).open()]
-    rows=select_learning(cfg,rows)
+    rows=population_selector(cfg,rows)
     condition=cfg.get('audio_condition','actual')
     identity=dict(config=cfg,requests_sha256=file_hash(cfg['requests']),instruction_sha256=file_hash(cfg['instruction']),
         asset_audit_sha256=file_hash(cfg['asset_audit']),model_files=audit['files'],runner_sha256=file_hash(__file__),
         source_sha256={n:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/n) for n in
                       ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','waveform_control.py']},
         versions={p:importlib.metadata.version(p) for p in ['torch','torch-npu','transformers','vllm','vllm-ascend']})
+    if population_selector is not select_learning:
+        import inspect
+        identity['population_selector_sha256']=file_hash(inspect.getfile(population_selector))
+        identity['selection_protocol_sha256']=cfg['selection_protocol_sha256']
     atomic_json(out/'identity.json',identity)
     atomic_json(out/'selection.json',{'ids':[r['id'] for r in rows]})
     from transformers import Qwen3OmniMoeProcessor
@@ -85,7 +89,7 @@ def run(cfg,out):
         format_valid=sum(r['format_valid'] for r in records),schema_valid=sum(r['schema_valid'] for r in records),
         length_limited=sum(r['length_limited'] for r in records),predictions_sha256=file_hash(path),weight_updates=0,
         model_files_unchanged=True,elapsed_seconds=time.monotonic()-start,
-        scope='direct frozen audio-to-task vLLM NPU fixed TRAIN learning population; no benchmark or HF parity claim'))
+        scope='direct frozen audio-to-task vLLM NPU registered TRAIN population; no TEST or HF parity claim'))
 
 
 if __name__=='__main__':

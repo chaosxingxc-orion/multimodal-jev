@@ -8,7 +8,10 @@ def require_visible_inputs(argv, cfg):
         if arg=='-v':
             source,target,*_=argv[i+1].split(':')
             mounts.append((Path(source),Path(target)))
-    for key in ('requests','instruction','asset_audit','partition','audio_model'):
+    keys = ['requests','instruction','asset_audit','partition','audio_model']
+    if 'selection_protocol' in cfg:
+        keys.append('selection_protocol')
+    for key in keys:
         path=Path(cfg[key])
         candidates=[(src,dst) for src,dst in mounts if path==dst or dst in path.parents]
         if not candidates:
