@@ -43,7 +43,8 @@ assert host['NetworkMode'] == 'none' and not host['Devices'] and not host['Privi
 assert px['Config']['Cmd'] == a[a.index(image)+1:]
 assert set(host['Binds']) == {a[i+1] for i,v in enumerate(a) if v == '-v'}
 assert all(a[i+1] in px['Config']['Env'] for i,v in enumerate(a) if v == '-e')
-assert read(preflight/'run/terminal.json') == {'exit_code': 0}
+terminal = read(preflight/'run/terminal.json')
+assert type(terminal['exit_code']) is int and terminal['exit_code'] == 0 and not terminal.get('error')
 preflight_evidence = read(Path('docs/engineering/omni-compact-verl-preflight-v1-verified.json'))
 assert sha(preflight/'run/result.json') == preflight_evidence['result_sha256'] == 'd683b4e55ae6779ac1c73f6a5bf587eefe8319d330286f443de3fc7a467f0665'
 assert sha(preflight/'run/identity.json') == preflight_evidence['identity_sha256']

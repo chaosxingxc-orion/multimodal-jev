@@ -84,3 +84,14 @@ actor helper SHA。使用原始无padding前向的prompt长度和固定顺序重
 正在最后一条前向。见[协调者启动记录](omni-compact-verl-dispatch-v1-launched.json)。
 此时完整actor尚未创建；后续须根据`omni-compact-verl-train6-v1/launch.json`中的
 精确容器ID观察执行，不再次手工运行启动器，以免与现有协调者竞争。
+
+### 首次协调者在容器创建前停止
+
+原候选已成功退出，协调者进入启动器后，在预检查应用终态校验处退出1：预检查
+终态同时包含`exit_code: 0`和`finished_unix`，启动器错误地要求字典严格只有
+退出码。原协调者终态、dispatch-result和launcher日志保留。已实际确认目标实验
+目录不存在，Docker也不存在`omni-compact-verl-train6-v1`容器；没有模型前向被重放。
+
+修订启动器允许正常附带完成时间，仍要求退出码为整数0且没有error，并保留实际
+Docker成功终态、预检查结果SHA、源码身份以及全六条候选logits门禁。修订版本
+单独固定快照后手动派发，旧协调者不重启，不覆盖原失败记录。
