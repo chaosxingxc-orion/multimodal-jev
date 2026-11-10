@@ -33,7 +33,8 @@ def audit(plan):
         names.add(name)
         if file_hash(manifest)!=item['manifest_sha256']:raise ValueError('registered manifest changed')
         data=json.loads(manifest.read_text())
-        if data['identity']['dataset']!=name or data['release_id']!=root.name:
+        native_slurp = name=='slurp-native' and data['identity'].get('schema')=='slurp-native-release-v1'
+        if (not native_slurp and data['identity'].get('dataset')!=name) or data['release_id']!=root.name:
             raise ValueError('native release identity differs')
         sources[name]=dict(release=str(root),manifest_sha256=item['manifest_sha256'],requests={})
         for split,info in sorted(data['splits'].items()):
@@ -55,14 +56,14 @@ def audit(plan):
                         if not isinstance(digest,str) or len(digest)!=64 or any(c not in '0123456789abcdef' for c in digest):
                             raise ValueError('valid encoded-audio hash required')
                         mapping[digest].add(row['id']);audio_occurrences+=1
-            if len(ids)!=info['requests'] or len(groups)!=info['source_groups']:
+            if len(ids)!=info['recordings' if native_slurp else 'requests'] or len(groups)!=info['source_groups']:
                 raise ValueError('complete native population required')
             cell=name+'/'+split;cells[cell]=mapping
             counts[cell]=dict(requests=len(ids),source_groups=len(groups),audio_occurrences=audio_occurrences,
                 unique_audio_hashes=len(mapping),hashes_used_by_multiple_requests=sum(len(v)>1 for v in mapping.values()))
             sources[name]['requests'][split]=dict(path=str(path),sha256=info['requests_sha256'])
     return dict(schema='native-audio-overlap-audit-v1',sources=sources,counts=counts,pairs=compare(cells),
-        targets_read=False,waveforms_rehashed=False,model_called=False,
+        target_files_read=False,manifest_metadata_read=True,waveforms_rehashed=False,model_called=False,
         scope='Exact encoded-file hashes inherited from pinned complete request releases. '
               'No decoded-waveform, near-duplicate, transcript, semantic or pretraining contamination claim.')
 

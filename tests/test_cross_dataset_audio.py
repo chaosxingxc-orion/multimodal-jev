@@ -33,6 +33,6 @@ def test_complete_input_only_manifest_binding(tmp_path,change):
     if change=='requests':path.write_text('{}')
     if change is None:
         result=audit(plan);assert result['counts']['native/train']['unique_audio_hashes']==1
-        assert result['targets_read'] is False and result['pairs']==[]
+        assert result['target_files_read'] is False and result['pairs']==[]
     else:
         with pytest.raises(ValueError):audit(plan)
