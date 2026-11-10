@@ -34,6 +34,14 @@ audio hashes 和 replicate。GRPO 的组必须是同一个完整模型输入的 
 之后才能切微批。当前 `sfc_jev_reward.bundle_rewards` 只计算一个完整 bundle/replicate，
 不负责采样、跨 rank 收集或 GRPO 分组；现有 FSC `JevExample` 也不能无损表达这个输入。
 
+新增 `sfc_reward_batch.compose` 在完整原始 TRAIN 上重现 learning/selection 分区，
+检查选定会话所有原始轮次及每决策 K 个固定编号响应；返回与原始记录顺序对齐的
+奖励和同输入 uid。uid 绑定 request（含音频哈希和历史）、decision、策略、指令、
+实际渲染 prompt 和展开 input IDs 的哈希。同会话不同轮次/问题不会合并为一个组。
+它还要求评分文本与 tokenizer 从采样 token 解码的文本一致，拒绝旧策略和缺失副本。
+prompt 证据必须由调用方在采样前从真实 processor/engine 登记；此纯函数不能认证
+伪造的运行元数据，也没有构造 Omni actor 张量或完成分布式采样。
+
 ## 已实现的离线奖励定义
 
 对决策 d 的原始输出 y，直接复用 `sfc_jev_score.score_bundle`：
