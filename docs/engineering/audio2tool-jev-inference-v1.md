@@ -62,3 +62,32 @@ context/attempt/terminal顺序、输入绑定、输出合同与最终计数。�
 输入依赖、identity、12份独立结果与应用终态。见
 [输入预检查验收](audio2tool-jev-engine-preflight-v1-verified.json)。
 模型未加载、NPU未使用；全量生成runner及独立actor验收仍待完成。
+
+## 完整生成入口已实现，尚未派发
+
+`infer_audio2tool_jev.py`配合`audio2tool_jev_inference.py`固定全部30733×457独立
+调用。`population`重新绑定每条native/Jev请求、全部音频预算与2742个真实tokenizer
+profile，并拒绝缺失布局/决策、改变输入或超出32768窗口。`--preflight-only`仅执行
+完整清单检查，不读取音频或加载模型；该宿主检查已通过，结果另存。
+
+实际执行保持greedy、seed17、1024输出、TP2/BF16/max_num_seqs=1及关闭prefix cache。
+每条音频只从源字节认证加载一次并在457次独立调用间保留同一波形对象；每次仍独立
+执行HF完整feature处理及vLLM生成，无KV/feature缓存新机制。逐项检查完整帧数、
+feature有限性、profile输入长度、实际vLLM token IDs与本次HF展开逐位一致。
+未知监督对actor不可见；重复发布输入独立执行。原始非法JSON、空解码文本和length
+截断全部落盘，实际引擎失败只保存该attempt后立即停止。模型文件实际前后验SHA，
+完整成功才耗尽分片验收迭代器并导出scorer接口，不写伪造的剩余预测。
+
+`audio2tool_jev_capacity.require_capacity`只接受协调者实际捕获并预先固定SHA的
+精确NPU6/7成功容量容器：固定镜像、16 CPU/128 GiB/8 GiB shm、一小时加30秒
+宽限、完整命令、只读源码挂载、环境/设备、不可变source、版本/模型/processor
+依赖、12份真实一token边界结果及成功应用终态。probe源码必须匹配此前已验收
+CPU preflight的原始快照；不同源码须另登记验证，不能悄悄替换。该验收不把CPU
+preflight当作NPU证据，调用者提供的inspection本身也不替代实际Docker观察。
+
+新增生成循环与容量检查连同账本/引擎共56项测试通过。生成测试使用模拟HF/engine，
+验证每决策单独调用、音频对象复用、帧数/非有限值/token错序拒绝、原文与截断保留、
+实际异常后不生成假剩余行。容量测试使用明确的合成容器及mock边界证据，覆盖
+运行中/失败/OOM/错设备/错命令/错资源/preflight/缺案例/错token/错模型/改源码/改SHA。
+它们不是NPU或完整actor执行证据。全量Jev正式launch plan、真实吞吐预算、独立
+actor来源验收尚未完成；当前只有输入清单preflight，不能给出模型性能或RL收益。

@@ -85,3 +85,22 @@ create成功后持久记录精确ID再start，失败/歧义不重试。后续实
 保持依赖顺序。最新保存tensor审计partial-12完成29/30条件：第六条autocast、
 FP32 features、audio_padding相邻完整logits均相同，text_padding仍在计算。
 全30条件成功终态及后续逐层派发仍待完成，不用局部tensor审计代替前驱终态。
+
+## 完整精度诊断已验收，逐层执行已派发
+
+原容器现已在2026-11-11 02:58:29北京时间退出0。外部协调者重新inspect并核验
+命令/镜像/挂载/环境/资源、完整源码与Git对应版本、全部30个保存logits及应用
+结果，见[完整精度诊断验收](omni-precision-train6-v1-verified.json)。
+六条样本reference→autocast→FP32 features→audio_padding的完整logits均一致。
+audio_padding→text_padding的响应logp最大差依次为
+`[0.14458656,0.38801003,0,0.95946217,0.12417722,0.67042732]`。
+5条新增左padding样本全部超过0.1门槛；无新增padding的row2对照逐元素相同。
+这是完整诊断的成功执行，不是数值一致性通过，更不是verl训练验收。
+
+完成上述依赖验收后，逐层容器
+`ad90d67b4f273cf171cf6b7fb0455a11f4367734b3a797f4fb0430935b916d28`
+已按登记预算启动，实际inspect为running，当前加载Thinker。源码固定为
+`03dca51ab0e784be47f4f9343e39e06dfe23c474`；容器intent SHA为
+`c41837a7fa477879b69e0c29aa8d891cccde2ef60ff73a3195eaf5f40c206d56`。
+见[逐层派发身份](omni-layers-train6-v1-launched.json)。它将完整覆盖原6条×2条件并
+保留与旧logits的复现偏差，不改变模型参数，不把已知响应差异自动归因于具体算子。
