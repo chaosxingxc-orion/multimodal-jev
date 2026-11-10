@@ -1,0 +1,45 @@
+{
+  "reviewed_at_utc": "2026-11-10T02:05:45.576332+00:00",
+  "subprocess_terminal": {
+    "started_at_utc": "2026-11-10T01:42:03.486565+00:00",
+    "supervisor_pid": 2491635,
+    "child_pid": 2491636,
+    "command": [
+      "codex",
+      "exec",
+      "-c",
+      "approval_policy=\"never\"",
+      "--sandbox",
+      "danger-full-access",
+      "--json",
+      "--color",
+      "never",
+      "-C",
+      "/home/xingchao/workspace/multimodal-jev",
+      "-o",
+      "/home/xingchao/workspace/multimodal-jev/.local/delegations/academic-baselines-v1/final.md",
+      "-"
+    ],
+    "task_sha256": "24a6df22dd742ddeef00af7c9b9973404c089029c11d502c430b47880c0a3f7a",
+    "exit_code": 0,
+    "finished_at_utc": "2026-11-10T02:00:13.616663+00:00"
+  },
+  "records": 58,
+  "datasets": 16,
+  "source_records": 160,
+  "source_payload_hashes_reverified": 77,
+  "independent_table_checks": [
+    "FSC 1904.03670v1 Table 2: 96.6/98.8 full test",
+    "SLURP EMNLP2020 Tables 7/8: 78.33 intent;70.84 SLU-F1",
+    "SpokenFC 2608.05126v2 Table 7: SFT71.90/73.93,GRPO74.15/75.10,EM73.08/73.24",
+    "Audio2Tool Table 3: selected rows and separate tier metrics",
+    "AudioJev Table 1: MMAR55.33±0.84 and Frozen53.50",
+    "SLUE2v2 Table8: test NEL frame56.3",
+    "tau pinned official doc:18 language-domain cells,900 task runs/trial"
+  ],
+  "corrections": [
+    "Corrected tau cells vs task-runs terminology",
+    "Updated concurrent model asset and NPU evidence without claiming full evaluation"
+  ],
+  "scope": "Primary-source spot checks and complete structural/source-hash checks; not independent reproduction of author experiments"
+}

@@ -1,0 +1,32 @@
+{
+  "container_id": "77c08281e80953dd2db61bd0a4e05585308e8afbab0a6fa6b6604ef6adbc6b26",
+  "image_id": "sha256:696e6adc27f7d1bfcc01633233fd75c7577778a6651be24173c9d66a5d4c0ef0",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-speechbrain-probe-v1",
+  "argv": [
+    "docker",
+    "run",
+    "-d",
+    "--pull=never",
+    "--network=none",
+    "--name",
+    "multimodal-jev-fsc-speechbrain-probe-v1",
+    "--cpus=4",
+    "--memory=8g",
+    "-e",
+    "HF_HUB_OFFLINE=1",
+    "-e",
+    "HF_HOME=/evidence/hf-cache",
+    "-v",
+    "/usr/local/Ascend/driver:/usr/local/Ascend/driver:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/models:/mnt/cephfs/xingchao/models:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/datasets:/mnt/cephfs/xingchao/datasets:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-speechbrain-probe-v1:/evidence:rw",
+    "sha256:696e6adc27f7d1bfcc01633233fd75c7577778a6651be24173c9d66a5d4c0ef0",
+    "python3",
+    "-B",
+    "/evidence/probe.py"
+  ]
+}

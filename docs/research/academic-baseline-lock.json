@@ -1,0 +1,3223 @@
+{
+  "schema_version": "1.0",
+  "research_date_local": "2026-11-09 America/Los_Angeles",
+  "created_at_utc": "2026-11-10T01:50:49.101456+00:00",
+  "scope": "bounded academic reference lock; not an exhaustive SOTA leaderboard",
+  "ranking_policy": "never pool datasets, metrics, splits, candidate protocols, training conditions, native/derived/interactive layers, or paper means and single checkpoints",
+  "records": [
+    {
+      "id": "fsc-lugosch2019-frozen",
+      "dataset": "FSC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/pdf/1904.03670v1",
+      "source_ids": [
+        "fsc-pdf",
+        "fsc-git-ref"
+      ],
+      "model_method": "Lugosch et al.: phoneme/word pretraining + frozen acoustic modules + intent RNN",
+      "code_url": "https://github.com/lorenlugosch/end-to-end-SLU",
+      "code_revision": "e94bd479de1a82663c38363979309089acebcd36",
+      "weight": null,
+      "split": "official test (3793); train 23132, valid 3118",
+      "metric": "joint action/object/location accuracy",
+      "input_modality": "audio",
+      "supervision_training_data": "LibriSpeech phoneme/word pretraining + full FSC train; no synthetic speakers",
+      "comparison_scope": "L1/native/FSC/pretrained-acoustic",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 98.8,
+          "unit": "percent",
+          "metric": "joint intent accuracy",
+          "source_id": "fsc-pdf",
+          "url": "https://arxiv.org/pdf/1904.03670v1",
+          "table": "Table 2",
+          "row": "No unfreezing / Accuracy (full)",
+          "setting": "full training data; not 10% condition",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "数据完整；原文、固定代码 README/config 已读",
+      "blockers": [
+        "README 指向预训练模型，但本次未核验模型文件完整性与可加载性；无已核验语义 checkpoint revision；论文 v1 与当前配置沿革须保留"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "fsc-speechbrain-direct",
+      "dataset": "FSC",
+      "priority": "A",
+      "reference_url": "https://raw.githubusercontent.com/speechbrain/speechbrain/develop/recipes/fluent-speech-commands/README.md",
+      "source_ids": [
+        "sb-fsc",
+        "sb-git-ref",
+        "fsc-weight",
+        "fsc-weight-card",
+        "sb-fsc-yaml"
+      ],
+      "model_method": "SpeechBrain direct seq2seq, LibriSpeech ASR pretrained encoder",
+      "code_url": "https://github.com/speechbrain/speechbrain",
+      "code_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+      "weight": {
+        "url": "https://huggingface.co/speechbrain/slu-direct-fluent-speech-commands-librispeech-asr",
+        "revision": "9163a11ee29a14241356a7cc2cc05672b73ba5fe",
+        "version": null
+      },
+      "split": "official test (3793)",
+      "metric": "joint intent accuracy",
+      "input_modality": "audio",
+      "supervision_training_data": "LibriSpeech supervised ASR pretraining + FSC train + recipe augmentation",
+      "comparison_scope": "L1/native/FSC/pretrained-acoustic",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 99.6,
+          "unit": "percent",
+          "metric": "joint intent accuracy",
+          "source_id": "sb-fsc",
+          "url": "https://raw.githubusercontent.com/speechbrain/speechbrain/develop/recipes/fluent-speech-commands/README.md",
+          "table": "README Results",
+          "row": "21-06-03 / train.yaml / Test Acc",
+          "setting": "official test; published 1xV100 recipe",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "主进程已校验 SLU 与递归 ASR 依赖全部 16 文件；隔离镜像 import/依赖检查和官方 decode_batch 单条 TRAIN CPU 推理通过；全量 test 未运行",
+      "blockers": [
+        "当前 pinned 官方 inference 版本不等于 2021 训练环境；完整 test 推理及原生指标复测待完成"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "Released checkpoint hyperparams verified: beam 80, temperature 1.25, eos threshold 1.5; no decoder override",
+        "precision": "float32 (local TRAIN probe)",
+        "max_output_tokens": null,
+        "sampling_rate_hz": 16000,
+        "note": "CPU float32 verified on one TRAIN recording; full test run pending"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope",
+      "local_evidence": [
+        "docs/engineering/fsc-speechbrain-assets-v1.json",
+        "docs/engineering/speechbrain-runtime-v1-build.json",
+        "docs/engineering/fsc-speechbrain-probe-v1-result.json"
+      ]
+    },
+    {
+      "id": "slurp-original-hermit",
+      "dataset": "SLURP",
+      "priority": "A",
+      "reference_url": "https://aclanthology.org/2020.emnlp-main.588.pdf",
+      "source_ids": [
+        "slurp-pdf",
+        "slurp-git-ref"
+      ],
+      "model_method": "Multi-ASR adapted with SLURP → HerMiT",
+      "code_url": "https://github.com/pswietojanski/slurp",
+      "code_revision": "8eb16545762be97ace75334109d73824217311f1",
+      "weight": null,
+      "split": "official real test (13078)",
+      "metric": "SLU-F1; entity exact F1; scenario/action/joint intent",
+      "input_modality": "audio → ASR text",
+      "supervision_training_data": "external multi-domain ASR + in-domain LM/speaker adaptation + SLURP adaptation; HerMiT trained on gold text",
+      "comparison_scope": "L1/native/SLURP/external-ASR",
+      "reproduction_type": "literature_reference",
+      "reported_result": [
+        {
+          "value": 70.84,
+          "unit": "percent",
+          "metric": "SLU-F1",
+          "source_id": "slurp-pdf",
+          "url": "https://aclanthology.org/2020.emnlp-main.588.pdf",
+          "table": "Table 8",
+          "row": "Multi-SLURP/HerMiT",
+          "setting": "official real test; Word-F1 69.34, Char-F1 72.39; entity exact F1 64.16",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        },
+        {
+          "value": 78.33,
+          "unit": "percent",
+          "metric": "joint scenario_action accuracy",
+          "source_id": "slurp-pdf",
+          "url": "https://aclanthology.org/2020.emnlp-main.588.pdf",
+          "table": "Table 7",
+          "row": "Multi-SLURP/HerMiT",
+          "setting": "same pipeline; not SLU-F1",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "原始 Multi-ASR/HerMiT 完整训练与 checkpoint 未核验；不承诺可立即复现"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slurp-speechbrain-hubert",
+      "dataset": "SLURP",
+      "priority": "A",
+      "reference_url": "https://huggingface.co/speechbrain/SLU-direct-SLURP-hubert-enc/raw/main/README.md",
+      "source_ids": [
+        "slurp-weight-card",
+        "sb-git-ref",
+        "slurp-weight",
+        "speechbrain-slurp",
+        "sb-slurp-pinned-yaml",
+        "slurp-metrics-impl",
+        "slurp-evaluate-pinned"
+      ],
+      "model_method": "SpeechBrain HuBERT-base-ls960 + attention decoder direct SLU",
+      "code_url": "https://github.com/speechbrain/speechbrain",
+      "code_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+      "weight": {
+        "url": "https://huggingface.co/speechbrain/SLU-direct-SLURP-hubert-enc",
+        "revision": "6644fb49e209d2c4c3ea6bfd8accbe06b2df28c4",
+        "version": null
+      },
+      "split": "official real test (13078); devel (8690)",
+      "metric": "SLU-F1; word/char entity F1; joint intent accuracy",
+      "input_modality": "audio",
+      "supervision_training_data": "current official recipe: train_real 50628 + train_synthetic 69253; HuBERT pretrained LS960; original weight training commit claimed aa018540 (not resolved)",
+      "comparison_scope": "L1/native/SLURP/real-plus-synthetic",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 75.1,
+          "unit": "percent",
+          "metric": "SLU-F1",
+          "source_id": "slurp-weight-card",
+          "url": "https://huggingface.co/speechbrain/SLU-direct-SLURP-hubert-enc/raw/main/README.md",
+          "table": "Model performance table",
+          "row": "30-11-21",
+          "setting": "test, official model card; current recipe mixes real/synthetic",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        },
+        {
+          "value": 87.54,
+          "unit": "percent",
+          "metric": "intent accuracy",
+          "source_id": "speechbrain-slurp",
+          "url": "https://raw.githubusercontent.com/speechbrain/speechbrain/develop/recipes/SLURP/README.md",
+          "table": "Performance summary",
+          "row": "Direct (HuBert)",
+          "setting": "README same recipe; not SLU-F1",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "模型卡短训练 commit aa018540 未成功解析；当前配方不能证明历史训练逐参数相同",
+        "scorer 必须覆盖全部预测并拒绝重复 ID；权重未加载"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "current recipe beam=80, temperature=1.25; historical checkpoint config pending",
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": 16000,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slurp-speechbrain-real-only",
+      "dataset": "SLURP",
+      "priority": "A",
+      "reference_url": "https://raw.githubusercontent.com/speechbrain/speechbrain/c0241278f93ef02cd5191f03caf4e5f8e1292bf6/recipes/SLURP/direct/hparams/train_with_wav2vec2.yaml",
+      "source_ids": [
+        "sb-slurp-pinned-yaml",
+        "sb-git-ref"
+      ],
+      "model_method": "SpeechBrain HuBERT direct SLU with train_real only (our controlled retrain)",
+      "code_url": "https://github.com/speechbrain/speechbrain",
+      "code_revision": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+      "weight": null,
+      "split": "official real train/devel/test",
+      "metric": "SLU-F1; intent accuracy; entity F1",
+      "input_modality": "audio",
+      "supervision_training_data": "50628 real train only; same public HuBERT initialization; disable synthetic explicitly",
+      "comparison_scope": "L1/native/SLURP/real-only",
+      "reproduction_type": "adaptation_retrain",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "这是重训适配，不沿用 75.10 论文/卡片分数；需冻结配方与预算"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "current recipe beam=80, temperature=1.25; historical checkpoint config pending",
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": 16000,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slurp-espnet-2pass-asr",
+      "dataset": "SLURP",
+      "priority": "A-external",
+      "reference_url": "https://raw.githubusercontent.com/espnet/espnet/master/egs2/slurp/slu1/README.md",
+      "source_ids": [
+        "espnet-slurp-readme",
+        "espnet-slurp-weight"
+      ],
+      "model_method": "ESPnet Conformer deliberation encoder + asr transcript",
+      "code_url": "https://github.com/espnet/espnet/tree/master/egs2/slurp/slu1",
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/espnet/slurp_slu_2pass",
+        "revision": "cdc0d54c60e2e36c91e60816658ebe07297bca27",
+        "version": null
+      },
+      "split": "official real test (13078)",
+      "metric": "intent classification accuracy",
+      "input_modality": "audio + ASR transcript",
+      "supervision_training_data": "recipe supervised SLURP; exact historical data/decoder requires pinned config audit",
+      "comparison_scope": "L1/native/SLURP/asr-assisted-intent",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 86.8,
+          "unit": "percent",
+          "metric": "intent classification accuracy",
+          "source_id": "espnet-slurp-readme",
+          "url": "https://raw.githubusercontent.com/espnet/espnet/master/egs2/slurp/slu1/README.md",
+          "table": "README ASR transcript table",
+          "row": "valid.acc.ave_10best/test",
+          "setting": "not entity/SLU-F1; README cites historical git 4e7d2ba3510463ae744d1a6d98f18388ad929a9d, not independently resolved",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "recipe HEAD revision 未核验；卡片权重仅元数据；gold 条件有额外输入"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slurp-espnet-2pass-gold",
+      "dataset": "SLURP",
+      "priority": "A-external",
+      "reference_url": "https://raw.githubusercontent.com/espnet/espnet/master/egs2/slurp/slu1/README.md",
+      "source_ids": [
+        "espnet-slurp-readme",
+        "espnet-slurp-gt-weight"
+      ],
+      "model_method": "ESPnet Conformer deliberation encoder + gold transcript",
+      "code_url": "https://github.com/espnet/espnet/tree/master/egs2/slurp/slu1",
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/espnet/slurp_slu_2pass_gt",
+        "revision": "6e45b6ea31678edb8d5690b34d590aac05c15919",
+        "version": null
+      },
+      "split": "official real test (13078)",
+      "metric": "intent classification accuracy",
+      "input_modality": "audio + human transcript",
+      "supervision_training_data": "recipe supervised SLURP; exact historical data/decoder requires pinned config audit",
+      "comparison_scope": "L1/native/SLURP/gold-assisted-intent",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 89.0,
+          "unit": "percent",
+          "metric": "intent classification accuracy",
+          "source_id": "espnet-slurp-readme",
+          "url": "https://raw.githubusercontent.com/espnet/espnet/master/egs2/slurp/slu1/README.md",
+          "table": "README ground truth transcript table",
+          "row": "valid.acc.ave_10best/test",
+          "setting": "not entity/SLU-F1; README cites historical git 4e7d2ba3510463ae744d1a6d98f18388ad929a9d, not independently resolved",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "recipe HEAD revision 未核验；卡片权重仅元数据；gold 条件有额外输入"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "sfc-sft-test_id",
+      "dataset": "SFC-Bench/SpokenFC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2608.05126v2",
+      "source_ids": [
+        "sfc-full"
+      ],
+      "model_method": "Qwen2.5-Omni-7B + LoRA SFT",
+      "code_url": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+      "code_revision": "5cd9dc679584ba9b14454908a0f2c85e74c00147",
+      "weight": null,
+      "split": "test_id",
+      "metric": "official overall accuracy; function accuracy; slot F1; strict supplementary metrics",
+      "input_modality": "audio + function schema + environment + supplied multi-turn history",
+      "supervision_training_data": "official train_id; paper one epoch LoRA LLM, frozen audio/vision/talker; final GRPO FP16 N=32",
+      "comparison_scope": "L1/native/SFC/test_id/SFC-trained",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 71.9,
+          "unit": "percent",
+          "metric": "official overall accuracy",
+          "source_id": "sfc-full",
+          "url": "https://arxiv.org/html/2608.05126v2",
+          "table": "Table 7",
+          "row": "SFT",
+          "setting": "test_id / Overall; turn-level; not closed-loop success",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "数据/scorer/多音频 CPU 接口已核验；无调用任务成功分数",
+      "blockers": [
+        "未发现可核验的发布任务 checkpoint，weight=null；base Omni 不是 SpokenFC 权重",
+        "SFT 未在仓库完整复刻，LLaMA-Factory 配置待补；代码默认 BF16/N=8 与论文不同",
+        "现有协议禁止将 SFC train 混入 Jev 训练；该重训是独立 proposed 轨道"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": "paper final FP16, N=32; EM/SFT exact full configuration still to resolve",
+        "epochs": 1,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "sfc-sft-test_ood",
+      "dataset": "SFC-Bench/SpokenFC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2608.05126v2",
+      "source_ids": [
+        "sfc-full"
+      ],
+      "model_method": "Qwen2.5-Omni-7B + LoRA SFT",
+      "code_url": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+      "code_revision": "5cd9dc679584ba9b14454908a0f2c85e74c00147",
+      "weight": null,
+      "split": "test_ood",
+      "metric": "official overall accuracy; function accuracy; slot F1; strict supplementary metrics",
+      "input_modality": "audio + function schema + environment + supplied multi-turn history",
+      "supervision_training_data": "official train_id; paper one epoch LoRA LLM, frozen audio/vision/talker; final GRPO FP16 N=32",
+      "comparison_scope": "L1/native/SFC/test_ood/SFC-trained",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 73.93,
+          "unit": "percent",
+          "metric": "official overall accuracy",
+          "source_id": "sfc-full",
+          "url": "https://arxiv.org/html/2608.05126v2",
+          "table": "Table 7",
+          "row": "SFT",
+          "setting": "test_ood / Overall; turn-level; not closed-loop success",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "数据/scorer/多音频 CPU 接口已核验；无调用任务成功分数",
+      "blockers": [
+        "未发现可核验的发布任务 checkpoint，weight=null；base Omni 不是 SpokenFC 权重",
+        "SFT 未在仓库完整复刻，LLaMA-Factory 配置待补；代码默认 BF16/N=8 与论文不同",
+        "现有协议禁止将 SFC train 混入 Jev 训练；该重训是独立 proposed 轨道"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": "paper final FP16, N=32; EM/SFT exact full configuration still to resolve",
+        "epochs": 1,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "sfc-grpo-test_id",
+      "dataset": "SFC-Bench/SpokenFC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2608.05126v2",
+      "source_ids": [
+        "sfc-full"
+      ],
+      "model_method": "SpokenFC-7B: SFT + GRPO fine-grained reward",
+      "code_url": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+      "code_revision": "5cd9dc679584ba9b14454908a0f2c85e74c00147",
+      "weight": null,
+      "split": "test_id",
+      "metric": "official overall accuracy; function accuracy; slot F1; strict supplementary metrics",
+      "input_modality": "audio + function schema + environment + supplied multi-turn history",
+      "supervision_training_data": "official train_id; paper one epoch LoRA LLM, frozen audio/vision/talker; final GRPO FP16 N=32",
+      "comparison_scope": "L1/native/SFC/test_id/SFC-trained",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 74.15,
+          "unit": "percent",
+          "metric": "official overall accuracy",
+          "source_id": "sfc-full",
+          "url": "https://arxiv.org/html/2608.05126v2",
+          "table": "Table 7",
+          "row": "SpokenFC-7B (Proposed)",
+          "setting": "test_id / Overall; turn-level; not closed-loop success",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "数据/scorer/多音频 CPU 接口已核验；无调用任务成功分数",
+      "blockers": [
+        "未发现可核验的发布任务 checkpoint，weight=null；base Omni 不是 SpokenFC 权重",
+        "SFT 未在仓库完整复刻，LLaMA-Factory 配置待补；代码默认 BF16/N=8 与论文不同",
+        "现有协议禁止将 SFC train 混入 Jev 训练；该重训是独立 proposed 轨道"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": "paper final FP16, N=32; EM/SFT exact full configuration still to resolve",
+        "epochs": 1,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "sfc-grpo-test_ood",
+      "dataset": "SFC-Bench/SpokenFC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2608.05126v2",
+      "source_ids": [
+        "sfc-full"
+      ],
+      "model_method": "SpokenFC-7B: SFT + GRPO fine-grained reward",
+      "code_url": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+      "code_revision": "5cd9dc679584ba9b14454908a0f2c85e74c00147",
+      "weight": null,
+      "split": "test_ood",
+      "metric": "official overall accuracy; function accuracy; slot F1; strict supplementary metrics",
+      "input_modality": "audio + function schema + environment + supplied multi-turn history",
+      "supervision_training_data": "official train_id; paper one epoch LoRA LLM, frozen audio/vision/talker; final GRPO FP16 N=32",
+      "comparison_scope": "L1/native/SFC/test_ood/SFC-trained",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 75.1,
+          "unit": "percent",
+          "metric": "official overall accuracy",
+          "source_id": "sfc-full",
+          "url": "https://arxiv.org/html/2608.05126v2",
+          "table": "Table 7",
+          "row": "SpokenFC-7B (Proposed)",
+          "setting": "test_ood / Overall; turn-level; not closed-loop success",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "数据/scorer/多音频 CPU 接口已核验；无调用任务成功分数",
+      "blockers": [
+        "未发现可核验的发布任务 checkpoint，weight=null；base Omni 不是 SpokenFC 权重",
+        "SFT 未在仓库完整复刻，LLaMA-Factory 配置待补；代码默认 BF16/N=8 与论文不同",
+        "现有协议禁止将 SFC train 混入 Jev 训练；该重训是独立 proposed 轨道"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": "paper final FP16, N=32; EM/SFT exact full configuration still to resolve",
+        "epochs": 1,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "sfc-grpo-em-test_id",
+      "dataset": "SFC-Bench/SpokenFC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2608.05126v2",
+      "source_ids": [
+        "sfc-full"
+      ],
+      "model_method": "SFT + GRPO exact-match reward",
+      "code_url": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+      "code_revision": "5cd9dc679584ba9b14454908a0f2c85e74c00147",
+      "weight": null,
+      "split": "test_id",
+      "metric": "official overall accuracy; function accuracy; slot F1; strict supplementary metrics",
+      "input_modality": "audio + function schema + environment + supplied multi-turn history",
+      "supervision_training_data": "official train_id; paper one epoch LoRA LLM, frozen audio/vision/talker; final GRPO FP16 N=32",
+      "comparison_scope": "L1/native/SFC/test_id/SFC-trained",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 73.08,
+          "unit": "percent",
+          "metric": "official overall accuracy",
+          "source_id": "sfc-full",
+          "url": "https://arxiv.org/html/2608.05126v2",
+          "table": "Table 7",
+          "row": "RL w/ EM Reward",
+          "setting": "test_id / Overall; turn-level; not closed-loop success",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "数据/scorer/多音频 CPU 接口已核验；无调用任务成功分数",
+      "blockers": [
+        "未发现可核验的发布任务 checkpoint，weight=null；base Omni 不是 SpokenFC 权重",
+        "SFT 未在仓库完整复刻，LLaMA-Factory 配置待补；代码默认 BF16/N=8 与论文不同",
+        "现有协议禁止将 SFC train 混入 Jev 训练；该重训是独立 proposed 轨道"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": "paper final FP16, N=32; EM/SFT exact full configuration still to resolve",
+        "epochs": 1,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "sfc-grpo-em-test_ood",
+      "dataset": "SFC-Bench/SpokenFC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2608.05126v2",
+      "source_ids": [
+        "sfc-full"
+      ],
+      "model_method": "SFT + GRPO exact-match reward",
+      "code_url": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+      "code_revision": "5cd9dc679584ba9b14454908a0f2c85e74c00147",
+      "weight": null,
+      "split": "test_ood",
+      "metric": "official overall accuracy; function accuracy; slot F1; strict supplementary metrics",
+      "input_modality": "audio + function schema + environment + supplied multi-turn history",
+      "supervision_training_data": "official train_id; paper one epoch LoRA LLM, frozen audio/vision/talker; final GRPO FP16 N=32",
+      "comparison_scope": "L1/native/SFC/test_ood/SFC-trained",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 73.24,
+          "unit": "percent",
+          "metric": "official overall accuracy",
+          "source_id": "sfc-full",
+          "url": "https://arxiv.org/html/2608.05126v2",
+          "table": "Table 7",
+          "row": "RL w/ EM Reward",
+          "setting": "test_ood / Overall; turn-level; not closed-loop success",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "数据/scorer/多音频 CPU 接口已核验；无调用任务成功分数",
+      "blockers": [
+        "未发现可核验的发布任务 checkpoint，weight=null；base Omni 不是 SpokenFC 权重",
+        "SFT 未在仓库完整复刻，LLaMA-Factory 配置待补；代码默认 BF16/N=8 与论文不同",
+        "现有协议禁止将 SFC train 混入 Jev 训练；该重训是独立 proposed 轨道"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": "paper final FP16, N=32; EM/SFT exact full configuration still to resolve",
+        "epochs": 1,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "sfc-omni7-zero-shot",
+      "dataset": "SFC-Bench/SpokenFC",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2608.05126v2",
+      "source_ids": [
+        "sfc-full",
+        "omni7-weight"
+      ],
+      "model_method": "Qwen2.5-Omni-7B LALM prompting baseline",
+      "code_url": "https://github.com/QwenAudio/FunResearch/tree/5cd9dc679584ba9b14454908a0f2c85e74c00147/SpokenFC",
+      "code_revision": "5cd9dc679584ba9b14454908a0f2c85e74c00147",
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Omni-7B",
+        "revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+        "version": null
+      },
+      "split": "test_id",
+      "metric": "official overall accuracy + strict supplement",
+      "input_modality": "audio + schema + supplied history",
+      "supervision_training_data": "base model, no SFC adaptation",
+      "comparison_scope": "L1/native/SFC/test_id/zero-shot",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 49.03,
+          "unit": "percent",
+          "metric": "overall accuracy",
+          "source_id": "sfc-full",
+          "url": "https://arxiv.org/html/2608.05126v2",
+          "table": "Table 5",
+          "row": "LALM / Qwen2.5-Omni",
+          "setting": "Average (Turn-Level); Table 7 base 48.80 is a different row and is not substituted",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Table 5 / Table 7 base rows differ; freeze exact prompt/route before reproduction",
+        "官方多音频推理未运行；现有 ASR-only 输出仅是转写"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "audio2tool-omni7",
+      "dataset": "Audio2Tool",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2604.22821v1",
+      "source_ids": [
+        "audio2tool-full",
+        "omni7-weight"
+      ],
+      "model_method": "Qwen2.5-Omni-7B zero-shot",
+      "code_url": "https://audio2tool.github.io/",
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Omni-7B",
+        "revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+        "version": null
+      },
+      "split": "all released test tiers; each tier separate",
+      "metric": "ordered tool accuracy; normalized exact match; micro slot F1",
+      "input_modality": "audio + tool definitions",
+      "supervision_training_data": "no Audio2Tool training; pretrained external models",
+      "comparison_scope": "L1/native/Audio2Tool/zero-shot/omni7",
+      "reproduction_type": "adaptation_retest",
+      "reported_result": [
+        {
+          "value": 79.5,
+          "unit": "percent",
+          "metric": "tool accuracy",
+          "source_id": "audio2tool-full",
+          "url": "https://arxiv.org/html/2604.22821v1",
+          "table": "Table 3",
+          "row": "Qwen-2.5-Omni-7B",
+          "setting": "Tier-1",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        },
+        {
+          "value": 14.7,
+          "unit": "percent",
+          "metric": "exact match",
+          "source_id": "audio2tool-full",
+          "url": "https://arxiv.org/html/2604.22821v1",
+          "table": "Table 3",
+          "row": "Qwen-2.5-Omni-7B",
+          "setting": "Tier-2",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "本地 prior manifest: 36419 WAV/71441 files；本次只核读小型发布元数据",
+      "blockers": [
+        "本次官方论文/站点/卡片未找到可核验完整 scorer/prompt 实现；code_url 是发布入口，不是已核验实现",
+        "独立 scorer 只能标自实现适配；精确 Whisper variant、Qwen revision、normalization 待核；test 禁止训练"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "audio2tool-whisper-qwen8",
+      "dataset": "Audio2Tool",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2604.22821v1",
+      "source_ids": [
+        "audio2tool-full"
+      ],
+      "model_method": "Whisper v3 → Qwen3-8B zero-shot",
+      "code_url": "https://audio2tool.github.io/",
+      "code_revision": null,
+      "weight": null,
+      "split": "all released test tiers; each tier separate",
+      "metric": "ordered tool accuracy; normalized exact match; micro slot F1",
+      "input_modality": "audio → transcript + tool definitions",
+      "supervision_training_data": "no Audio2Tool training; pretrained external models",
+      "comparison_scope": "L1/native/Audio2Tool/zero-shot/whisper-qwen8",
+      "reproduction_type": "adaptation_retest",
+      "reported_result": [
+        {
+          "value": 78.1,
+          "unit": "percent",
+          "metric": "tool accuracy",
+          "source_id": "audio2tool-full",
+          "url": "https://arxiv.org/html/2604.22821v1",
+          "table": "Table 3",
+          "row": "whisperv3 + Qwen 8B",
+          "setting": "Tier-1",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        },
+        {
+          "value": 10.8,
+          "unit": "percent",
+          "metric": "exact match",
+          "source_id": "audio2tool-full",
+          "url": "https://arxiv.org/html/2604.22821v1",
+          "table": "Table 3",
+          "row": "whisperv3 + Qwen 8B",
+          "setting": "Tier-2",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "本地 prior manifest: 36419 WAV/71441 files；本次只核读小型发布元数据",
+      "blockers": [
+        "本次官方论文/站点/卡片未找到可核验完整 scorer/prompt 实现；code_url 是发布入口，不是已核验实现",
+        "独立 scorer 只能标自实现适配；精确 Whisper variant、Qwen revision、normalization 待核；test 禁止训练"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "audio2tool-oracle-qwen8",
+      "dataset": "Audio2Tool",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2604.22821v1",
+      "source_ids": [
+        "audio2tool-full"
+      ],
+      "model_method": "Qwen3-8B oracle query zero-shot",
+      "code_url": "https://audio2tool.github.io/",
+      "code_revision": null,
+      "weight": null,
+      "split": "all released test tiers; each tier separate",
+      "metric": "ordered tool accuracy; normalized exact match; micro slot F1",
+      "input_modality": "ground-truth query text + tool definitions",
+      "supervision_training_data": "no Audio2Tool training; pretrained external models",
+      "comparison_scope": "L1/native/Audio2Tool/zero-shot/oracle-qwen8",
+      "reproduction_type": "oracle_evidence_control",
+      "reported_result": [
+        {
+          "value": 85.6,
+          "unit": "percent",
+          "metric": "tool accuracy",
+          "source_id": "audio2tool-full",
+          "url": "https://arxiv.org/html/2604.22821v1",
+          "table": "Table 3",
+          "row": "Qwen 8B",
+          "setting": "Tier-1",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        },
+        {
+          "value": 10.1,
+          "unit": "percent",
+          "metric": "exact match",
+          "source_id": "audio2tool-full",
+          "url": "https://arxiv.org/html/2604.22821v1",
+          "table": "Table 3",
+          "row": "Qwen 8B",
+          "setting": "Tier-2",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "本地 prior manifest: 36419 WAV/71441 files；本次只核读小型发布元数据",
+      "blockers": [
+        "本次官方论文/站点/卡片未找到可核验完整 scorer/prompt 实现；code_url 是发布入口，不是已核验实现",
+        "独立 scorer 只能标自实现适配；精确 Whisper variant、Qwen revision、normalization 待核；test 禁止训练"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmar-audiojev-paper-mean",
+      "dataset": "MMAR",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2610.01293v1",
+      "source_ids": [
+        "audiojev-full"
+      ],
+      "model_method": "AudioJev RD-SKL λ=0.5, Qwen2.5-Omni-3B",
+      "code_url": "https://github.com/SihanLv/AudioJev-Inference",
+      "code_revision": "8eeeab5e77d2c410fd6058e7bdf2b4125f11903e",
+      "weight": null,
+      "split": "all 1000 original-order questions",
+      "metric": "publisher word-set accuracy",
+      "input_modality": "full audio + question + original choices",
+      "supervision_training_data": "AudioJev semantic/joint/general mixed training; no MMAR labels per author",
+      "comparison_scope": "L1/native/MMAR/original-order/paper-mean",
+      "reproduction_type": "literature_reference",
+      "reported_result": [
+        {
+          "value": 55.33,
+          "unit": "percent",
+          "metric": "publisher accuracy",
+          "source_id": "audiojev-full",
+          "url": "https://arxiv.org/html/2610.01293v1",
+          "table": "Table 1 and Table 9",
+          "row": "AudioJev / MMAR",
+          "setting": "three-seed mean",
+          "sample_sd": 0.84,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "1000 条完整 release 和 oracle/scorer 控制已验证；无实际成绩",
+      "blockers": [
+        "官方 backend 必须 indexed CUDA；NPU 不满足",
+        "原始顺序与空选项需 renderer/backend 专用入口；service canonical sort 不等价",
+        "未运行模型；论文其余 seeds 权重未核验"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "one forward, candidate position-token logits, original order; not canonical service sorting",
+        "precision": "BF16 official CUDA SDPA",
+        "max_output_tokens": 0,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmar-audiojev-checkpoint",
+      "dataset": "MMAR",
+      "priority": "A",
+      "reference_url": "https://huggingface.co/shlv/AudioJev/raw/main/README.md",
+      "source_ids": [
+        "audiojev-card",
+        "audiojev-weight"
+      ],
+      "model_method": "AudioJev RD-SKL λ=0.5, Qwen2.5-Omni-3B",
+      "code_url": "https://github.com/SihanLv/AudioJev-Inference",
+      "code_revision": "8eeeab5e77d2c410fd6058e7bdf2b4125f11903e",
+      "weight": {
+        "url": "https://huggingface.co/shlv/AudioJev",
+        "revision": "d23dddb9669021bb2ef8cae5c07fe24b3e35702d",
+        "version": null
+      },
+      "split": "all 1000 original-order questions",
+      "metric": "publisher word-set accuracy",
+      "input_modality": "full audio + question + original choices",
+      "supervision_training_data": "AudioJev semantic/joint/general mixed training; no MMAR labels per author",
+      "comparison_scope": "L1/native/MMAR/original-order/checkpoint",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 56.3,
+          "unit": "percent",
+          "metric": "publisher accuracy",
+          "source_id": "audiojev-card",
+          "url": "https://huggingface.co/shlv/AudioJev/raw/main/README.md",
+          "table": "Evaluation table",
+          "row": "AudioJev / MMAR",
+          "setting": "seed 20261001, final general step 2048",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "1000 条完整 release 和 oracle/scorer 控制已验证；无实际成绩",
+      "blockers": [
+        "官方 backend 必须 indexed CUDA；NPU 不满足",
+        "原始顺序与空选项需 renderer/backend 专用入口；service canonical sort 不等价",
+        "未运行模型；论文其余 seeds 权重未核验"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "one forward, candidate position-token logits, original order; not canonical service sorting",
+        "precision": "BF16 official CUDA SDPA",
+        "max_output_tokens": 0,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmar-qwen2audio-official",
+      "dataset": "MMAR",
+      "priority": "A",
+      "reference_url": "https://raw.githubusercontent.com/ddlBoJack/MMAR/main/README.md",
+      "source_ids": [
+        "mmar-repo",
+        "mmar-git-ref",
+        "qwen2audio-weight"
+      ],
+      "model_method": "Qwen2-Audio-7B-Instruct with original MMAR inference/scorer",
+      "code_url": "https://github.com/ddlBoJack/MMAR",
+      "code_revision": "3bce090a967db576c8ad433b290a8da582d6d2a0",
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen2-Audio-7B-Instruct",
+        "revision": "0a095220c30b7b31434169c3086508ef3ea5bf0a",
+        "version": null
+      },
+      "split": "all 1000",
+      "metric": "publisher word-set accuracy",
+      "input_modality": "audio + question + choices",
+      "supervision_training_data": "pretrained external instruction model; zero-shot benchmark",
+      "comparison_scope": "L1/native/MMAR/generative-external",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 30.0,
+          "unit": "percent",
+          "metric": "accuracy",
+          "source_id": "mmar-repo",
+          "url": "https://raw.githubusercontent.com/ddlBoJack/MMAR/main/README.md",
+          "table": "README Leaderboard",
+          "row": "Qwen2-Audio-Instruct / Avg",
+          "setting": "current official README; not asserted identical to original paper version",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "benchmark inference parameters/model revision used for published number unreported; current weight metadata does not prove historical identity"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmar-frozen-omni-audiojev",
+      "dataset": "MMAR",
+      "priority": "A",
+      "reference_url": "https://arxiv.org/html/2610.01293v1",
+      "source_ids": [
+        "audiojev-full"
+      ],
+      "model_method": "Frozen Omni 3B candidate-label logits (AudioJev same-backbone reference)",
+      "code_url": "https://github.com/SihanLv/AudioJev-Inference",
+      "code_revision": "8eeeab5e77d2c410fd6058e7bdf2b4125f11903e",
+      "weight": null,
+      "split": "all 1000 original choices",
+      "metric": "publisher accuracy + semantic flip/SKL diagnostics",
+      "input_modality": "audio + question + choices",
+      "supervision_training_data": "base Qwen2.5-Omni-3B, no RD-SKL task fitting",
+      "comparison_scope": "L1/native/MMAR/AudioJev-backbone-control",
+      "reproduction_type": "adaptation_retest",
+      "reported_result": [
+        {
+          "value": 53.5,
+          "unit": "percent",
+          "metric": "accuracy",
+          "source_id": "audiojev-full",
+          "url": "https://arxiv.org/html/2610.01293v1",
+          "table": "Table 1",
+          "row": "Frozen Omni 3B / MMAR",
+          "setting": "paper frozen same-backbone protocol",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "base weight revision and prompt-level equivalence pending; no verified local score"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "one forward, candidate position-token logits, original order; not canonical service sorting",
+        "precision": "BF16 official CUDA SDPA",
+        "max_output_tokens": 0,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "macslu-omni3-sft",
+      "dataset": "MAC-SLU",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2512.01603v1",
+      "source_ids": [
+        "macslu-full",
+        "macslu-git-ref"
+      ],
+      "model_method": "Qwen2.5-Omni-3B SFT",
+      "code_url": "https://github.com/Gatsby-web/MAC_SLU",
+      "code_revision": "d54453f63e0dc57b17d3cb2cfea35fb7da6a4489",
+      "weight": null,
+      "split": "official test; train/dev/test text records 17997/1391/1151",
+      "metric": "multi-intent accuracy; slot F1; overall accuracy",
+      "input_modality": "audio",
+      "supervision_training_data": "official train SFT; ASR frozen; Qwen3-8B fine-tuned NLU for pipeline",
+      "comparison_scope": "L1/extension/MAC-SLU/audio",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 56.56,
+          "unit": "percent",
+          "metric": "overall accuracy",
+          "source_id": "macslu-full",
+          "url": "https://arxiv.org/html/2512.01603v1",
+          "table": "Table 6",
+          "row": "Qwen2.5-Omni-3B",
+          "setting": "SFT; intent accuracy 89.98, slot F1 82.86",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "本次未核验 task weights；repo only generic LoRA-SFT guidance; exact config needed",
+        "TTS Chinese; candidate labels and intent-slot binding preserved"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "macslu-paraformer-qwen8-sft",
+      "dataset": "MAC-SLU",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2512.01603v1",
+      "source_ids": [
+        "macslu-full",
+        "macslu-git-ref"
+      ],
+      "model_method": "Paraformer + Qwen3-8B SFT",
+      "code_url": "https://github.com/Gatsby-web/MAC_SLU",
+      "code_revision": "d54453f63e0dc57b17d3cb2cfea35fb7da6a4489",
+      "weight": null,
+      "split": "official test; train/dev/test text records 17997/1391/1151",
+      "metric": "multi-intent accuracy; slot F1; overall accuracy",
+      "input_modality": "ASR text",
+      "supervision_training_data": "official train SFT; ASR frozen; Qwen3-8B fine-tuned NLU for pipeline",
+      "comparison_scope": "L1/extension/MAC-SLU/ASR text",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 47.18,
+          "unit": "percent",
+          "metric": "overall accuracy",
+          "source_id": "macslu-full",
+          "url": "https://arxiv.org/html/2512.01603v1",
+          "table": "Table 6",
+          "row": "Paraformer + Qwen3-8B",
+          "setting": "SFT; intent accuracy 88.92, slot F1 79.09",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "本次未核验 task weights；repo only generic LoRA-SFT guidance; exact config needed",
+        "TTS Chinese; candidate labels and intent-slot binding preserved"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "macslu-qwen8-gold-sft",
+      "dataset": "MAC-SLU",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2512.01603v1",
+      "source_ids": [
+        "macslu-full",
+        "macslu-git-ref"
+      ],
+      "model_method": "Qwen3-8B SFT",
+      "code_url": "https://github.com/Gatsby-web/MAC_SLU",
+      "code_revision": "d54453f63e0dc57b17d3cb2cfea35fb7da6a4489",
+      "weight": null,
+      "split": "official test; train/dev/test text records 17997/1391/1151",
+      "metric": "multi-intent accuracy; slot F1; overall accuracy",
+      "input_modality": "gold text",
+      "supervision_training_data": "official train SFT; ASR frozen; Qwen3-8B fine-tuned NLU for pipeline",
+      "comparison_scope": "L1/extension/MAC-SLU/gold text",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 60.73,
+          "unit": "percent",
+          "metric": "overall accuracy",
+          "source_id": "macslu-full",
+          "url": "https://arxiv.org/html/2512.01603v1",
+          "table": "Table 6",
+          "row": "Qwen3-8B",
+          "setting": "SFT; intent accuracy 90.91, slot F1 84.69",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "本次未核验 task weights；repo only generic LoRA-SFT guidance; exact config needed",
+        "TTS Chinese; candidate labels and intent-slot binding preserved"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue1-ner-e2e",
+      "dataset": "SLUE Phase 1",
+      "priority": "B",
+      "reference_url": "https://raw.githubusercontent.com/asappresearch/slue-toolkit/ed23039507c8f01b704a5c43ed89b6e808a49405/baselines/ner/README.md",
+      "source_ids": [
+        "slue-pinned-ner",
+        "slue-git-ref",
+        "slue1-full"
+      ],
+      "model_method": "wav2vec2-base task fine-tuning",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official VoxPopuli NER test",
+      "metric": "entity phrase+type micro-F1; label-F1",
+      "input_modality": "audio",
+      "supervision_training_data": "official fine-tune labels; dev selection; SSL/text pretraining; LM/no-LM separate for NER",
+      "comparison_scope": "L1/extension/SLUE1/ner/e2e",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase1 音频 gated；未获得账号授权资产",
+        "recipe README 有模型名/命令不一致，需核脚本参数；无已核验 task checkpoint"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue1-ner-pipeline",
+      "dataset": "SLUE Phase 1",
+      "priority": "B",
+      "reference_url": "https://raw.githubusercontent.com/asappresearch/slue-toolkit/ed23039507c8f01b704a5c43ed89b6e808a49405/baselines/ner/README.md",
+      "source_ids": [
+        "slue-pinned-ner",
+        "slue-git-ref",
+        "slue1-full"
+      ],
+      "model_method": "wav2vec2 ASR → DeBERTa task classifier",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official VoxPopuli NER test",
+      "metric": "entity phrase+type micro-F1; label-F1",
+      "input_modality": "audio → transcript",
+      "supervision_training_data": "official fine-tune labels; dev selection; SSL/text pretraining; LM/no-LM separate for NER",
+      "comparison_scope": "L1/extension/SLUE1/ner/pipeline",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase1 音频 gated；未获得账号授权资产",
+        "recipe README 有模型名/命令不一致，需核脚本参数；无已核验 task checkpoint"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue1-sentiment-e2e",
+      "dataset": "SLUE Phase 1",
+      "priority": "B",
+      "reference_url": "https://raw.githubusercontent.com/asappresearch/slue-toolkit/ed23039507c8f01b704a5c43ed89b6e808a49405/baselines/sentiment/README.md",
+      "source_ids": [
+        "slue-pinned-sentiment",
+        "slue-git-ref",
+        "slue1-full"
+      ],
+      "model_method": "wav2vec2-base task fine-tuning",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official VoxCeleb sentiment v0.2 test",
+      "metric": "macro recall; macro F1",
+      "input_modality": "audio",
+      "supervision_training_data": "official fine-tune labels; dev selection; SSL/text pretraining; LM/no-LM separate for NER",
+      "comparison_scope": "L1/extension/SLUE1/sentiment/e2e",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase1 音频 gated；未获得账号授权资产",
+        "recipe README 有模型名/命令不一致，需核脚本参数；无已核验 task checkpoint"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue1-sentiment-pipeline",
+      "dataset": "SLUE Phase 1",
+      "priority": "B",
+      "reference_url": "https://raw.githubusercontent.com/asappresearch/slue-toolkit/ed23039507c8f01b704a5c43ed89b6e808a49405/baselines/sentiment/README.md",
+      "source_ids": [
+        "slue-pinned-sentiment",
+        "slue-git-ref",
+        "slue1-full"
+      ],
+      "model_method": "wav2vec2 ASR → DeBERTa task classifier",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official VoxCeleb sentiment v0.2 test",
+      "metric": "macro recall; macro F1",
+      "input_modality": "audio → transcript",
+      "supervision_training_data": "official fine-tune labels; dev selection; SSL/text pretraining; LM/no-LM separate for NER",
+      "comparison_scope": "L1/extension/SLUE1/sentiment/pipeline",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase1 音频 gated；未获得账号授权资产",
+        "recipe README 有模型名/命令不一致，需核脚本参数；无已核验 task checkpoint"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue2-dac",
+      "dataset": "SLUE Phase 2",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2212.10525v2",
+      "source_ids": [
+        "slue2-full-v2",
+        "slue-git-ref"
+      ],
+      "model_method": "wav2vec2-base ASR → DeBERTa",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official task splits; test",
+      "metric": "macro F1",
+      "input_modality": "audio (pipeline uses predicted text)",
+      "supervision_training_data": "task official fine-tune; NEL inherits NER, no independent NEL train; summary ASR uses TEDLIUM-3",
+      "comparison_scope": "L1/extension/SLUE2/dac",
+      "reproduction_type": "recipe_adaptation",
+      "reported_result": [
+        {
+          "value": 70.7,
+          "unit": "percent",
+          "metric": "macro F1",
+          "source_id": "slue2-full-v2",
+          "url": "https://arxiv.org/html/2212.10525v2",
+          "table": "Table 5",
+          "row": "pipeline-w2v2",
+          "setting": "test; QA verified-test reported separately, not used here",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase2 downloaded ≠ task adapters complete；QA/SUMM recipe and model revisions still need task-specific pin",
+        "Phase1 gate may block NER→NEL retraining；long-audio truncation must match publication"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue2-qa",
+      "dataset": "SLUE Phase 2",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2212.10525v2",
+      "source_ids": [
+        "slue2-full-v2",
+        "slue-git-ref"
+      ],
+      "model_method": "wav2vec2 ASR → DeBERTa answer span + MFA",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official task splits; test",
+      "metric": "frame-F1 (test and verified-test separate)",
+      "input_modality": "spoken question + spoken document; pipeline ASR plus alignment; oracle text separate",
+      "supervision_training_data": "task official fine-tune; NEL inherits NER, no independent NEL train; summary ASR uses TEDLIUM-3",
+      "comparison_scope": "L1/extension/SLUE2/qa",
+      "reproduction_type": "recipe_adaptation",
+      "reported_result": [
+        {
+          "value": 39.6,
+          "unit": "percent",
+          "metric": "frame-F1",
+          "source_id": "slue2-full-v2",
+          "url": "https://arxiv.org/html/2212.10525v2",
+          "table": "Table 6",
+          "row": "pipeline-w2v2",
+          "setting": "test; QA verified-test reported separately, not used here",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase2 downloaded ≠ task adapters complete；QA/SUMM recipe and model revisions still need task-specific pin",
+        "Phase1 gate may block NER→NEL retraining；long-audio truncation must match publication"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "ASR for spoken question and document; answer text span aligned with MFA into time interval; preserve oracle versus speech inputs."
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue2-qa-dual",
+      "dataset": "SLUE Phase 2",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2212.10525v2",
+      "source_ids": [
+        "slue2-full-v2",
+        "slue-git-ref"
+      ],
+      "model_method": "DUAL wav2vec2-large → kmeans → Longformer",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official task splits; test",
+      "metric": "frame-F1 (test and verified-test separate)",
+      "input_modality": "spoken question + spoken document; pipeline ASR plus alignment; oracle text separate",
+      "supervision_training_data": "task official fine-tune; NEL inherits NER, no independent NEL train; summary ASR uses TEDLIUM-3",
+      "comparison_scope": "L1/extension/SLUE2/qa-dual",
+      "reproduction_type": "recipe_adaptation",
+      "reported_result": [
+        {
+          "value": 21.8,
+          "unit": "percent",
+          "metric": "frame-F1",
+          "source_id": "slue2-full-v2",
+          "url": "https://arxiv.org/html/2212.10525v2",
+          "table": "Table 6",
+          "row": "E2E-DUAL",
+          "setting": "test; QA verified-test reported separately, not used here",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase2 downloaded ≠ task adapters complete；QA/SUMM recipe and model revisions still need task-specific pin",
+        "Phase1 gate may block NER→NEL retraining；long-audio truncation must match publication"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "ASR for spoken question and document; answer text span aligned with MFA into time interval; preserve oracle versus speech inputs."
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue2-summ",
+      "dataset": "SLUE Phase 2",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2212.10525v2",
+      "source_ids": [
+        "slue2-full-v2",
+        "slue-git-ref"
+      ],
+      "model_method": "HuBERT-Conformer ASR → LED; paired E2E baseline",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official task splits; test",
+      "metric": "ROUGE-1/2/L; METEOR; BERTScore",
+      "input_modality": "audio (pipeline uses predicted text)",
+      "supervision_training_data": "task official fine-tune; NEL inherits NER, no independent NEL train; summary ASR uses TEDLIUM-3",
+      "comparison_scope": "L1/extension/SLUE2/summ",
+      "reproduction_type": "recipe_adaptation",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase2 downloaded ≠ task adapters complete；QA/SUMM recipe and model revisions still need task-specific pin",
+        "Phase1 gate may block NER→NEL retraining；long-audio truncation must match publication"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "slue2-nel",
+      "dataset": "SLUE Phase 2",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2212.10525v2",
+      "source_ids": [
+        "slue2-full-v2",
+        "slue-git-ref"
+      ],
+      "model_method": "wav2vec2 CTC NER delimiters; paired ASR → DeBERTa",
+      "code_url": "https://github.com/asappresearch/slue-toolkit",
+      "code_revision": "ed23039507c8f01b704a5c43ed89b6e808a49405",
+      "weight": null,
+      "split": "official NEL test; v2 Table 8 test; Appendix Table 18 dev and Table 19 dev/test separate",
+      "metric": "frame-F1 and word-F1 at rho=1/0.8/0.5",
+      "input_modality": "audio (pipeline uses predicted text)",
+      "supervision_training_data": "task official fine-tune; NEL inherits NER, no independent NEL train; summary ASR uses TEDLIUM-3",
+      "comparison_scope": "L1/extension/SLUE2/nel",
+      "reproduction_type": "recipe_adaptation",
+      "reported_result": [
+        {
+          "value": 56.3,
+          "unit": "percent",
+          "metric": "frame-F1",
+          "source_id": "slue2-full-v2",
+          "url": "https://arxiv.org/html/2212.10525v2",
+          "table": "Table 8",
+          "row": "E2E-w2v2",
+          "setting": "test; word-F1 rho=0.8 is separately 59.6",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Phase2 downloaded ≠ task adapters complete；QA/SUMM recipe and model revisions still need task-specific pin",
+        "Phase1 gate may block NER→NEL retraining；long-audio truncation must match publication"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "spokenwoz-space-wavlm",
+      "dataset": "SpokenWOZ",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2305.13040v2",
+      "source_ids": [
+        "spokenwoz-full",
+        "spokenwoz-git-ref"
+      ],
+      "model_method": "SPACE+WavLM_align state tracker (paired SPACE text-only)",
+      "code_url": "https://github.com/AlibabaResearch/DAMO-ConvAI/tree/main/spokenwoz",
+      "code_revision": "faf754671f5b850e1b4d1ff870db37a6a2480df6",
+      "weight": null,
+      "split": "official test (fixed release version must match)",
+      "metric": "joint goal accuracy; offline response Inform/Success/BLEU separate",
+      "input_modality": "audio + dialogue text history",
+      "supervision_training_data": "SpokenWOZ train plus pretrained SPACE/WavLM",
+      "comparison_scope": "L1/extension/SpokenWOZ/DST",
+      "reproduction_type": "retrain_reproduction",
+      "reported_result": [
+        {
+          "value": 25.65,
+          "unit": "percent",
+          "metric": "JGA",
+          "source_id": "spokenwoz-full",
+          "url": "https://arxiv.org/html/2305.13040v2",
+          "table": "Table 7",
+          "row": "SPACE+WavLM_align",
+          "setting": "all slots, not -w/o cross-turn slot column",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "权重未核验；当前 fixed test 与论文 test 对齐待审；静态对话不是真实环境完成"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "minds14-labse",
+      "dataset": "MINDS-14",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/pdf/2104.08524",
+      "source_ids": [
+        "minds-paper"
+      ],
+      "model_method": "Google ASR → frozen LaBSE → intent MLP, target-only standard",
+      "code_url": null,
+      "code_revision": null,
+      "weight": null,
+      "split": "paper repeated 60/40 random splits (described as 3-fold); not HF official test",
+      "metric": "per-language intent accuracy; macro language average",
+      "input_modality": "audio → Google ASR transcript",
+      "supervision_training_data": "60% in-domain + AUX-TARGET; frozen sentence encoder; paper 3 runs",
+      "comparison_scope": "L1/extension/MINDS14/paper-partition",
+      "reproduction_type": "literature_reference",
+      "reported_result": [
+        {
+          "value": 93.4,
+          "unit": "percent",
+          "metric": "language-average accuracy",
+          "source_id": "minds-paper",
+          "url": "https://arxiv.org/pdf/2104.08524",
+          "table": "Table 1",
+          "row": "Average / target-only / standard / LaBSE",
+          "setting": "uses auxiliary training data; not no-aux or translate-to-EN",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "公开 HF 主要 train；原 fold IDs/code/task checkpoint 未核验；不可把新随机划分复现分数"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "minds14-audiojev",
+      "dataset": "MINDS-14",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2610.01293v1",
+      "source_ids": [
+        "audiojev-full",
+        "audiojev-weight"
+      ],
+      "model_method": "AudioJev RD-SKL on 672 recordings, six language varieties",
+      "code_url": "https://github.com/SihanLv/AudioJev-Inference",
+      "code_revision": "8eeeab5e77d2c410fd6058e7bdf2b4125f11903e",
+      "weight": {
+        "url": "https://huggingface.co/shlv/AudioJev",
+        "revision": "d23dddb9669021bb2ef8cae5c07fe24b3e35702d",
+        "version": null
+      },
+      "split": "author subset 672; IDs need publication verification",
+      "metric": "accuracy",
+      "input_modality": "audio + intent candidates",
+      "supervision_training_data": "AudioJev mixed supervised fitting",
+      "comparison_scope": "L1/extension/MINDS14/AudioJev-subset",
+      "reproduction_type": "literature_reference",
+      "reported_result": [
+        {
+          "value": 88.59,
+          "unit": "percent",
+          "metric": "accuracy",
+          "source_id": "audiojev-full",
+          "url": "https://arxiv.org/html/2610.01293v1",
+          "table": "Table 1",
+          "row": "AudioJev / MINDS",
+          "setting": "three seeds; subset does not match Gerz folds",
+          "sample_sd": 0.23,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "subset IDs and selection need exact lock; must not rank against 93.4"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "one forward, candidate position-token logits, original order; not canonical service sorting",
+        "precision": "BF16 official CUDA SDPA",
+        "max_output_tokens": 0,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmsu-omni7",
+      "dataset": "MMSU",
+      "priority": "B",
+      "reference_url": "https://raw.githubusercontent.com/dingdongwang/mmsu/main/README.md",
+      "source_ids": [
+        "mmsu-repo",
+        "mmsu-git-ref",
+        "omni7-weight"
+      ],
+      "model_method": "Qwen2.5-Omni-7B official MMSU prompting/evaluation",
+      "code_url": "https://github.com/dingdongwang/mmsu",
+      "code_revision": "217d1d3f5ad59203ed16f44c0fd913f4f8add2b4",
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen2.5-Omni-7B",
+        "revision": "ae9e1690543ffd5c0221dc27f79834d0294cba00",
+        "version": null
+      },
+      "split": "full 5000 / 47 tasks",
+      "metric": "official average and task/dimension accuracy",
+      "input_modality": "audio + question + choices",
+      "supervision_training_data": "pretrained zero-shot",
+      "comparison_scope": "L1/extension/MMSU/full",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 60.57,
+          "unit": "percent",
+          "metric": "Avg (All)",
+          "source_id": "mmsu-repo",
+          "url": "https://raw.githubusercontent.com/dingdongwang/mmsu/main/README.md",
+          "table": "README Leaderboard",
+          "row": "Qwen2.5-Omni-7B",
+          "setting": "full suite; inspect evaluator weighting before matching",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "full/short subsets differ; inference adapter must be supplied; task aggregation must be audited"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmsu-audiojev-short",
+      "dataset": "MMSU",
+      "priority": "B",
+      "reference_url": "https://huggingface.co/shlv/AudioJev/raw/main/README.md",
+      "source_ids": [
+        "audiojev-card",
+        "audiojev-weight"
+      ],
+      "model_method": "AudioJev released checkpoint",
+      "code_url": "https://github.com/SihanLv/AudioJev-Inference",
+      "code_revision": "8eeeab5e77d2c410fd6058e7bdf2b4125f11903e",
+      "weight": {
+        "url": "https://huggingface.co/shlv/AudioJev",
+        "revision": "d23dddb9669021bb2ef8cae5c07fe24b3e35702d",
+        "version": null
+      },
+      "split": "3931 short audio / 39 families",
+      "metric": "accuracy",
+      "input_modality": "audio + choices",
+      "supervision_training_data": "AudioJev mixed training",
+      "comparison_scope": "L1/extension/MMSU/short-subset",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 62.45,
+          "unit": "percent",
+          "metric": "accuracy",
+          "source_id": "audiojev-card",
+          "url": "https://huggingface.co/shlv/AudioJev/raw/main/README.md",
+          "table": "Evaluation table",
+          "row": "MMSU evaluated short-audio subset",
+          "setting": "single seed; not full 5000",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "exact short subset IDs needed; CUDA"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "one forward, candidate position-token logits, original order; not canonical service sorting",
+        "precision": "BF16 official CUDA SDPA",
+        "max_output_tokens": 0,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmau-qwen2audio",
+      "dataset": "MMAU",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2410.19168v1",
+      "source_ids": [
+        "mmau-full",
+        "mmau-git-ref",
+        "qwen2audio-weight"
+      ],
+      "model_method": "Qwen2-Audio-7B-Instruct official benchmark reference",
+      "code_url": "https://github.com/Sakshi113/MMAU",
+      "code_revision": "110127f54c0dfba3faa5ec9feee4a7e4148679c5",
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen2-Audio-7B-Instruct",
+        "revision": "0a095220c30b7b31434169c3086508ef3ea5bf0a",
+        "version": null
+      },
+      "split": "test-mini 1000; hidden test 9000; full separate",
+      "metric": "publisher accuracy by sound/music/speech and difficulty",
+      "input_modality": "audio + question + options",
+      "supervision_training_data": "pretrained external zero-shot",
+      "comparison_scope": "L1/extension/MMAU/release-specific",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "2024 paper vs MMAU-v05.15.25 changed labels/audio; no unambiguous comparable reported result inserted",
+        "hidden scorer HF Space, no test fitting; exact release match required"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "mmau-audiojev",
+      "dataset": "MMAU",
+      "priority": "B",
+      "reference_url": "https://huggingface.co/shlv/AudioJev/raw/main/README.md",
+      "source_ids": [
+        "audiojev-card",
+        "audiojev-weight"
+      ],
+      "model_method": "AudioJev released checkpoint",
+      "code_url": "https://github.com/SihanLv/AudioJev-Inference",
+      "code_revision": "8eeeab5e77d2c410fd6058e7bdf2b4125f11903e",
+      "weight": {
+        "url": "https://huggingface.co/shlv/AudioJev",
+        "revision": "d23dddb9669021bb2ef8cae5c07fe24b3e35702d",
+        "version": null
+      },
+      "split": "full 10000 (1000 public + 9000 hidden)",
+      "metric": "publisher accuracy; partitions separate",
+      "input_modality": "audio + original choices",
+      "supervision_training_data": "AudioJev mixed training; author discloses 119 hidden audio-source overlaps",
+      "comparison_scope": "L1/extension/MMAU/full-author-reference",
+      "reproduction_type": "official_weight_retest",
+      "reported_result": [
+        {
+          "value": 69.41,
+          "unit": "percent",
+          "metric": "accuracy",
+          "source_id": "audiojev-card",
+          "url": "https://huggingface.co/shlv/AudioJev/raw/main/README.md",
+          "table": "Evaluation table",
+          "row": "MMAU full",
+          "setting": "single released checkpoint; not three-seed 68.88",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "source overlap; hidden evaluation access; release identity and CUDA"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": "one forward, candidate position-token logits, original order; not canonical service sorting",
+        "precision": "BF16 official CUDA SDPA",
+        "max_output_tokens": 0,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "voicebench-naive",
+      "dataset": "VoiceBench",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2410.17196v1",
+      "source_ids": [
+        "voicebench-full",
+        "voicebench-git-ref"
+      ],
+      "model_method": "Whisper-large-v3 → LLaMA-3.1-8B-Instruct (Naive), paired LLaMA-Omni",
+      "code_url": "https://github.com/MatthewCYM/VoiceBench",
+      "code_revision": "b56154172f2a57a43d29005de7d0471d748d70d1",
+      "weight": null,
+      "split": "each official subset; sd-qa by accent",
+      "metric": "GPT judge score; QA accuracy; IFEval; harm refusal (separate)",
+      "input_modality": "audio → text; human/text instructions control",
+      "supervision_training_data": "pretrained, no benchmark test fitting",
+      "comparison_scope": "L1/extension/VoiceBench/per-subtask",
+      "reproduction_type": "recipe_adaptation",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "paper Table 2 identifies architecture; current toolkit extended tasks, cannot copy overall mean",
+        "judge gpt-4o-mini README vs paper judge/settings must be pinned; no task weight revision verified"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "fdb-v3-cascade",
+      "dataset": "FDB-v3",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2604.04847v1",
+      "source_ids": [
+        "fdb-full",
+        "fdb-git-ref"
+      ],
+      "model_method": "Silero VAD + Whisper STT → gpt-4o → OpenAI TTS",
+      "code_url": "https://github.com/DanielLin94144/Full-Duplex-Bench/tree/main/v3",
+      "code_revision": "3e799c45a045256f47d5f1c9cda90157e2d2ec9e",
+      "weight": null,
+      "split": "official 100 human-recorded examples",
+      "metric": "tool selection F1; judged argument accuracy; Pass@1; latency; turn taking",
+      "input_modality": "streaming human audio + tool responses",
+      "supervision_training_data": "zero-shot API systems",
+      "comparison_scope": "L3/real-interaction/FDB-v3/cascade",
+      "reproduction_type": "official_pipeline_retest",
+      "reported_result": [
+        {
+          "value": 0.45,
+          "unit": "fraction",
+          "metric": "Pass@1",
+          "source_id": "fdb-full",
+          "url": "https://arxiv.org/html/2604.04847v1",
+          "table": "Table 2",
+          "row": "Cascaded",
+          "setting": "all expected tools and arguments; GPT-4o argument judge; LiveKit",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "LiveKit/provider/judge credentials and model snapshots; full waveform dataset not autonomous user simulator",
+        "本地仅已下载 100 input.wav；未跑模型；latency hardware/network dependent"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "fdb-v3-realtime",
+      "dataset": "FDB-v3",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2604.04847v1",
+      "source_ids": [
+        "fdb-full",
+        "fdb-git-ref"
+      ],
+      "model_method": "gpt-realtime-1.5 native realtime",
+      "code_url": "https://github.com/DanielLin94144/Full-Duplex-Bench/tree/main/v3",
+      "code_revision": "3e799c45a045256f47d5f1c9cda90157e2d2ec9e",
+      "weight": null,
+      "split": "official 100 human-recorded examples",
+      "metric": "tool selection F1; judged argument accuracy; Pass@1; latency; turn taking",
+      "input_modality": "streaming human audio + tool responses",
+      "supervision_training_data": "zero-shot API systems",
+      "comparison_scope": "L3/real-interaction/FDB-v3/realtime",
+      "reproduction_type": "official_pipeline_retest",
+      "reported_result": [
+        {
+          "value": 0.6,
+          "unit": "fraction",
+          "metric": "Pass@1",
+          "source_id": "fdb-full",
+          "url": "https://arxiv.org/html/2604.04847v1",
+          "table": "Table 2",
+          "row": "GPT-Realtime",
+          "setting": "all expected tools and arguments; GPT-4o argument judge; LiveKit",
+          "sample_sd": null,
+          "provenance": "author_report_not_local_reproduction"
+        }
+      ],
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "LiveKit/provider/judge credentials and model snapshots; full waveform dataset not autonomous user simulator",
+        "本地仅已下载 100 input.wav；未跑模型；latency hardware/network dependent"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": null,
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "eva-gpt-realtime",
+      "dataset": "EVA-Bench",
+      "priority": "B",
+      "reference_url": "https://arxiv.org/html/2605.13841v1",
+      "source_ids": [
+        "eva-full",
+        "eva-git-ref"
+      ],
+      "model_method": "GPT-Realtime-1.5; paired Nova + GPT-5.4 + Sonic cascade",
+      "code_url": "https://github.com/ServiceNow/eva",
+      "code_revision": "8e101906119e1ddf3314d49913009f3a04327f0d",
+      "weight": null,
+      "split": "paper 213 clean scenarios, 3 domains, k=5; perturbed 90 k=3 separate",
+      "metric": "EVA-A; EVA-X; pass@1/pass@k/pass^k; component metrics",
+      "input_modality": "live bidirectional speech, tools, simulator",
+      "supervision_training_data": "zero-shot system evaluation; no test prompt tuning",
+      "comparison_scope": "L3/real-interaction/EVA/paper-domains",
+      "reproduction_type": "official_pipeline_retest",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "only airline entry locally; cannot recreate three-domain aggregate",
+        "Table 2/Figure 2/Appendix B define systems; API/provider/judge configurations not frozen locally; no score copied to partial release"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "本次 git ls-remote 验证的当前分支，非论文训练 commit；除显式固定历史协议者外，运行前还需下载代码内容并锁 scorer。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "tau2-voice-v2",
+      "dataset": "tau2-bench voice",
+      "priority": "A-followup",
+      "reference_url": "https://raw.githubusercontent.com/sierra-research/tau2-bench/033bf082f48e4a3c6a1256208e93cf2ce9c3bb6f/docs/running-the-benchmark.md",
+      "source_ids": [
+        "tau-pinned-doc"
+      ],
+      "model_method": "pinned voice-v2 native provider + matched text-v1; GPT realtime / Gemini explicit model IDs required",
+      "code_url": "https://github.com/sierra-research/tau2-bench",
+      "code_revision": "033bf082f48e4a3c6a1256208e93cf2ce9c3bb6f",
+      "weight": null,
+      "split": "voice-v2: 18 language-domain cells (3 domains × 6 languages), 50 frozen tasks/cell; 900 task runs/trial",
+      "metric": "full task completion, communication/NL assertions, speech fidelity, turn-taking; pass@1 and pass^k separate",
+      "input_modality": "full-duplex audio and real tool environment",
+      "supervision_training_data": "no task-label training; simulator/provider pinned per run",
+      "comparison_scope": "L3/real-interaction/tau2/voice-v2",
+      "reproduction_type": "official_pipeline_retest",
+      "reported_result": null,
+      "local_status": "固定代码/场景；TRAIN oracle DB/replay 检查完成；模型/语音未运行",
+      "blockers": [
+        "provider IDs/budget/voice overrides and judges pending",
+        "oracle TRAIN replay only checks environment component; no end-to-end success",
+        "NPU authorization does not provide speech API"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "继承既有固定协议；本次重新读取固定代码或官方协议并对照本地证据。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "tau-voice-paper-v1",
+      "dataset": "tau2-bench voice",
+      "priority": "A-external",
+      "reference_url": "https://arxiv.org/html/2603.13686v1",
+      "source_ids": [
+        "tau-voice-full"
+      ],
+      "model_method": "gpt-realtime-1.5 / Gemini Live 2.5 / Grok Voice vs GPT-5/GPT-4.1 text",
+      "code_url": "https://github.com/sierra-research/tau2-bench",
+      "code_revision": null,
+      "weight": null,
+      "split": "paper original English 278 tasks; Clean/Realistic",
+      "metric": "pass@1 and voice interaction metrics",
+      "input_modality": "native speech API; text reference separate",
+      "supervision_training_data": "paper simulator GPT-4.1; ElevenLabs v3; fixed speech conditions",
+      "comparison_scope": "L3/literature/tau-voice-v1",
+      "reproduction_type": "literature_reference",
+      "reported_result": null,
+      "local_status": "未运行本地学术复测",
+      "blockers": [
+        "Table 3/6 protocol differs from pinned voice-v2 and providers; original paper code revision unverified; no pooled comparison"
+      ],
+      "lock_status": "locked_comparison_target",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "academic method or official publisher reference",
+      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+    },
+    {
+      "id": "ours-fsc-asr-text",
+      "dataset": "FSC",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "Qwen3-ASR-0.6B → fixed Qwen3-0.6B",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio→ASR text",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/FSC/asr-text",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-fsc-gold-text",
+      "dataset": "FSC",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "human transcript → same fixed Qwen3-0.6B",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "human transcript",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/FSC/gold-text",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-fsc-frozen-head",
+      "dataset": "FSC",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "frozen Qwen3-ASR-0.6B acoustic features + task head",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/FSC/frozen-head",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-fsc-generative-sft",
+      "dataset": "FSC",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "Qwen3-ASR-0.6B generative SFT",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio + schema",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/FSC/generative-sft",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-fsc-typed-sft",
+      "dataset": "FSC",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "Qwen3-ASR-0.6B typed readout SFT",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio + schema",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/FSC/typed-sft",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-fsc-budget-rl",
+      "dataset": "FSC",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "same initialized Qwen3-ASR-0.6B, equal-budget RL",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio + schema",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/FSC/budget-rl",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-slurp-asr-text",
+      "dataset": "SLURP",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "Qwen3-ASR-0.6B → fixed Qwen3-0.6B",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio→ASR text",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/SLURP/asr-text",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-slurp-gold-text",
+      "dataset": "SLURP",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "human transcript → same fixed Qwen3-0.6B",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "human transcript",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/SLURP/gold-text",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-slurp-frozen-head",
+      "dataset": "SLURP",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "frozen Qwen3-ASR-0.6B acoustic features + task head",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/SLURP/frozen-head",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-slurp-generative-sft",
+      "dataset": "SLURP",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "Qwen3-ASR-0.6B generative SFT",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio + schema",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/SLURP/generative-sft",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-slurp-typed-sft",
+      "dataset": "SLURP",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "Qwen3-ASR-0.6B typed readout SFT",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio + schema",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/SLURP/typed-sft",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    },
+    {
+      "id": "ours-slurp-budget-rl",
+      "dataset": "SLURP",
+      "priority": "A-required-control",
+      "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
+      "source_ids": [
+        "qwen06-meta"
+      ],
+      "model_method": "same initialized Qwen3-ASR-0.6B, equal-budget RL",
+      "code_url": null,
+      "code_revision": null,
+      "weight": {
+        "url": "https://huggingface.co/Qwen/Qwen3-ASR-0.6B-hf",
+        "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+        "version": "0.6B-hf"
+      },
+      "split": "official test only after frozen train/dev protocol; existing small valid panels are development",
+      "metric": "L1 native metrics separately; L2 permutation/rebinding/missing/Noul metrics separately",
+      "input_modality": "audio + schema",
+      "supervision_training_data": "full official train, real-only primary SLURP; shared source groups and seeds; text model fixed c1899de289a04d12100db370d81485cdf75e47ca",
+      "comparison_scope": "L1+L2/our-matched-rerun/SLURP/budget-rl",
+      "reproduction_type": "self_implementation",
+      "reported_result": null,
+      "local_status": "已有 CPU/dev 诊断，不计公开论文基线或最终 test 成绩",
+      "blockers": [
+        "full training budget/config/typed-head adapter not frozen; NPU validation required",
+        "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
+      ],
+      "lock_status": "method_locked_execution_proposed",
+      "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
+      "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
+      "training_settings": {
+        "precision": null,
+        "epochs": null,
+        "optimizer": null,
+        "learning_rate": null,
+        "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
+      },
+      "inference_settings": {
+        "decoding": null,
+        "precision": null,
+        "max_output_tokens": null,
+        "sampling_rate_hz": null,
+        "note": "精确历史 decoding 未核验；执行前冻结。"
+      },
+      "reference_role": "model metadata only; no academic result claimed",
+      "primary_table": "proposed matched reruns"
+    }
+  ]
+}
