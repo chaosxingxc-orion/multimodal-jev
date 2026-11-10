@@ -37,6 +37,34 @@ First round capped at1 teacher request/8192 generated tokens and4 candidates.
 No second round without a new budget. Test predictions, labels and metrics never
 enter teacher material or candidate selection. Test once after prompt selection.
 
+## Registered transport correction v2 (2026-11-10)
+
+The first request terminated with HTTP 400 from the provider's internal MaaS
+component; usage is unknown and no prompt candidate was returned. Preserve its
+request and terminal receipt. Register exactly one additional request in a new
+directory, with identical messages/model/token limit (8192), changing only
+`thinking.type` from `disabled` to `enabled`, a mode used in the Omni reference.
+This tests compatibility; the generic error does not establish its root cause.
+Maximum cumulative requested output is 16384 tokens across these two attempts;
+actual usage must be reported separately, including unknown first-call usage.
+No automatic retries, repair calls, or candidate promotion. Keep the original
+four-candidate limit and all frozen learning/selection/test boundaries. A
+truncated or malformed response is retained and rejected without repair.
+
+## Registered completion-budget extension v3 (2026-11-10)
+
+The compatibility attempt received HTTP 200 but terminated with finish_reason
+length: 11886 prompt tokens, 8192 completion tokens (8191 reported reasoning),
+zero final-content characters. It produced no importable candidate. Preserve
+this attempt; it does not establish an optimization result.
+Register one further request with the same messages/model/enabled thinking,
+max_tokens 32768 and total timeout 900 seconds, in a new immutable directory.
+This is a bounded completion-budget extension, not a silent retry or repair.
+Cumulative requested output ceiling across all three attempts is 49152 tokens;
+the first attempt's unknown usage remains unknown. Keep at most four candidates
+and unchanged learning/selection/test populations. No further requests are
+scheduled under this protocol; reject another truncated response.
+
 Runtime budgets: full3793 baseline per route max4h; learning256 draws max1h;
 selection per prompt max1h. Guard outer runtime has extra30s shutdown grace.
 Source is immutable and model files are rehashed before/after. Source groups,

@@ -10,6 +10,7 @@ import time
 from multimodal_jev.baseline import atomic_json, file_hash
 from multimodal_jev.consumption import canonical, inference_messages, validate_request
 from multimodal_jev.policy_identity import checkpoint_identity
+from multimodal_jev.frozen_evidence import load_evidence
 
 
 def run(config, output):
@@ -50,7 +51,7 @@ def run(config, output):
         'instruction_sha256':file_hash(config['instruction']),'models':identities,
         'runner_sha256':file_hash(__file__),
         'source_sha256':{name:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
-            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py')}}
+            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py')}}
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('resume identity changed')
     atomic_json(output/'identity.json',identity)
@@ -68,9 +69,19 @@ def run(config, output):
             raise ValueError('context overflow; truncation prohibited')
     def check_time():
         if time.monotonic()-start>config['wall_seconds']:raise TimeoutError('inference walltime exceeded')
-    progress('audio_model_load',0,len(rows))
-    processor,model=load_runtime(config['audio_model'],config['device'],config['dtype'])
-    model.requires_grad_(False)
+    reuse=config.get('asr_evidence')
+    if reuse is not None:
+        pinned=load_evidence(reuse,rows,config,identities)
+        for audio_hash,record in pinned.items():
+            path=asr_cache/(audio_hash+'.json')
+            if path.exists() and json.loads(path.read_text())!=record:
+                raise ValueError('local transcript differs from pinned evidence')
+            atomic_json(path,record)
+        progress('reused_pinned_transcriptions',len(pinned),len(pinned))
+    else:
+        progress('audio_model_load',0,len(rows))
+        processor,model=load_runtime(config['audio_model'],config['device'],config['dtype'])
+        model.requires_grad_(False)
     if route=='asr-text':
         unique={r['audio_sha256']:r for r in rows}
         for i,(audio_hash,row) in enumerate(unique.items()):
@@ -93,7 +104,8 @@ def run(config, output):
                 atomic_json(path,record)
             progress('transcription',i+1,len(unique))
         texts={r['id']:json.loads((asr_cache/(r['audio_sha256']+'.json')).read_text())['transcription'] for r in rows}
-        del model,processor;gc.collect()
+        if reuse is None:del model,processor
+        gc.collect()
         if config['device'].startswith('npu'):torch.npu.empty_cache()
         progress('text_model_load',0,len(rows))
         tokenizer=AutoTokenizer.from_pretrained(config['text_model'],local_files_only=True)
@@ -153,6 +165,7 @@ def run(config, output):
         'format_valid':sum(r['format_valid'] for r in records),'schema_valid':sum(r['schema_valid'] for r in records),
         'length_limited':sum(r['length_limited'] for r in records),'route':route,
         'predictions_sha256':file_hash(path),'weight_updates':0,'model_files_unchanged':True,
+        'asr_evidence':reuse,
         'elapsed_seconds':time.monotonic()-start,
         'scope':'frozen HF reference inference; separate scoring required; no vLLM parity or training claim'})
 
