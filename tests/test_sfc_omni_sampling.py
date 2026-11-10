@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 
@@ -7,6 +8,7 @@ from multimodal_jev.baseline import file_hash
 
 
 def setup(tmp_path, monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).parents[1]/'tools/jev'))
     tool=load_tool('sample_sfc_omni_learning')
     base=tmp_path/'base.json';base.write_text('{}')
     part=tmp_path/'partition.json';part.write_text(json.dumps({'learning':['g']}))
