@@ -3,7 +3,7 @@
 import argparse
 import json
 from pathlib import Path
-from multimodal_jev.advantage_summary import summarize_signal
+from multimodal_jev.advantage_summary import summarize_signal, summarize_sequence_coefficients
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.task_schema import JevExample
 
@@ -38,6 +38,7 @@ def main():
     if {ex.example_id for ex in examples}!=wanted:
         raise ValueError('manifest selection missing')
     report=summarize_signal(audit,examples)
+    report['sequence_coefficients']=summarize_sequence_coefficients(audit,examples,records)
     report.update(audit_sha256=file_hash(a.audit/'result.json'),
                   rollout_sha256=audit['rollout_sha256'],policy_id=audit['policy_id'])
     with a.output.open('x') as handle:json.dump(report,handle,indent=2,allow_nan=False)

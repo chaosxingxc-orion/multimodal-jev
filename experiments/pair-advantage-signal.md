@@ -107,3 +107,48 @@ differences across3 prompts in1 recording. Centering spreads a bonus's change
 over the prompt's four responses, so this count is not the bonus count. This
 validates reporting on completed evidence; it is not the full31-record result
 and does not select a preferred normalization.
+
+## Completed full initializer pool and identical-sequence diagnosis
+
+The [full-pool receipt](../docs/engineering/pair-signal-full-pool-v3-result.json)
+verifies exact sampler and pinned-verl audit container exits, application
+terminals, and the saved response hash. All744 responses from186 TRAIN prompts
+and31 recordings are present;61 receive nonzero pair bonuses. At the registered
+strictly-greater-than1e-5 descriptive threshold, standardized advantages differ
+materially for24 responses across6 prompts and4 recordings. The maximum
+difference is1.4999855756759644. Center-only differences cover236 responses,
+59 prompts and22 recordings. This broader pool contradicts extrapolating the
+earlier two-recording near-equivalence to the full initializer pool.
+
+An additional **post-observation diagnostic**, without changing rewards or
+training configurations, sums signed pair-minus-base advantage coefficients for
+identical prompt IDs and complete response token sequences. Three `noul.True`
+prompts each produce four identical `{"value":true}` responses: all base rewards
+are1, but only one replicate receives the0.2 pair bonus because of its paired
+view. Standard normalization creates approximately+1.5/-0.5/-0.5/-0.5 advantages.
+Their sum has magnitude at most2.294778823852539e-6; the stored old log
+probabilities are identical within these three groups. All12 reported response
+sign changes are zero-to-nonzero transitions in these groups, not reversals
+between positive and negative advantages.
+
+Under deterministic forward with the same prompt/audio and identical response,
+these coefficients multiply the same derivative and nearly cancel. Individual
+advantage differences therefore overstate the distinguishable learning signal.
+Across all495 prompt/sequence buckets, standardized coefficient sums exceed
+1e-5 in only8 buckets across3 prompts and2 recordings; the largest absolute
+sum is0.019215941429138184. Center-only sums remain material in165 buckets,
+56 prompts and22 recordings. These are unnormalized coefficient sums, **not
+measured model gradients** or directly comparable gradient norms. Different
+old log probabilities/PPO clipping and stochastic forward can break the
+cancellation argument; maximum saved old-logprob spread across all identical
+sequence buckets is6.556510925292969e-6.
+
+The extended summary checks response alignment and complete token/logprob
+arrays. Its cancellation and distinct-sequence controls pass; an independent
+raw-record recomputation reproduces the8 material standardized buckets and
+3 cancelling prompts. The original coverage artifact remains alongside
+`coverage-v2.json` in the evidence root. Neither diagnostic selects a winning
+normalization or proves learning/generalization. Keep the registered matched
+SFT/standardized/center-only reward-by-normalization study and learning-rate
+controls unchanged; actual model gradients and matched development outcomes
+are required before interpreting the coefficient contrast as useful learning.

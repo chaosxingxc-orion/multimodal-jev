@@ -1,6 +1,6 @@
 from types import SimpleNamespace as NS
 import pytest
-from multimodal_jev.advantage_summary import summarize_signal
+from multimodal_jev.advantage_summary import summarize_signal, summarize_sequence_coefficients
 
 
 def fixture():
@@ -35,3 +35,41 @@ def test_incomplete_or_untrustworthy_audit_rejected(change):
     elif change=='nan':audit['center_only_control']['grpo'][0]=float('nan')
     else:examples[0].split='valid'
     with pytest.raises(ValueError):summarize_signal(audit,examples)
+
+
+def sequence_fixture():
+    audit, examples = fixture()
+    audit['per_response'][0]['pair_grpo'] = 0.
+    audit['per_response'][1]['pair_grpo'] = -2.
+    records = [dict(example_id=r['example_id'], replicate=r['replicate'],
+                    token_ids=[1, 2], log_probs=[-.3, -.5]) for r in audit['per_response']]
+    return audit, examples, records
+
+
+def test_identical_sequences_cancel_but_distinct_prompts_do_not_merge():
+    audit, examples, records = sequence_fixture()
+    result = summarize_sequence_coefficients(audit, examples, records)
+    assert result['overall']['sequence_buckets'] == 3
+    assert result['overall']['standard']['cancelled_material_buckets'] == 1
+    assert result['overall']['standard']['material_buckets'] == 0
+    assert result['overall']['center_only']['cancelled_material_buckets'] == 2
+
+
+def test_distinct_token_sequences_preserve_signal_and_report_old_logprob_spread():
+    audit, examples, records = sequence_fixture()
+    records[1]['token_ids'] = [1, 3]
+    records[3]['log_probs'] = [-.4, -.5]
+    result = summarize_sequence_coefficients(audit, examples, records)
+    assert result['overall']['standard']['material_buckets'] == 2
+    assert result['overall']['standard']['material_prompts'] == 1
+    assert result['overall']['max_old_logprob_spread'] == pytest.approx(.1)
+
+
+@pytest.mark.parametrize('change', ['order', 'length', 'nan', 'empty'])
+def test_sequence_projection_rejects_invalid_records(change):
+    audit, examples, records = sequence_fixture()
+    if change == 'order': records.reverse()
+    elif change == 'length': records[0]['log_probs'].pop()
+    elif change == 'nan': records[0]['log_probs'][0] = float('nan')
+    else: records[0]['token_ids'] = []
+    with pytest.raises(ValueError): summarize_sequence_coefficients(audit, examples, records)

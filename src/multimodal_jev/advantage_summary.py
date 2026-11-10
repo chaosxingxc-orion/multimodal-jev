@@ -56,3 +56,67 @@ def summarize_signal(audit, examples, *, threshold=1e-5):
             'by_recording':{k:aggregate(v) for k,v in sorted(by_group.items())},
             'scope':'TRAIN mechanism coverage; response-level signs, not token counts; '
                     'no actor update, winning normalization or efficacy inference'}
+
+
+def summarize_sequence_coefficients(audit, examples, records, *, threshold=1e-5):
+    """Sum advantage differences for identical prompt/response token sequences.
+
+    This is a coefficient diagnostic, not a model gradient calculation. Equal
+    sequences share derivatives only with deterministic forward and identical
+    inputs; PPO ratios/clipping also depend on stored old log probabilities.
+    """
+    summarize_signal(audit, examples, threshold=threshold)
+    rows = audit['per_response']
+    if len(records) != len(rows):
+        raise ValueError('complete aligned rollout required')
+    lookup = {ex.example_id: ex for ex in examples}
+    buckets = defaultdict(list)
+    for i, (row, record) in enumerate(zip(rows, records)):
+        if (row['example_id'], row['replicate']) != (record['example_id'], record['replicate']):
+            raise ValueError('rollout response order differs from audit')
+        tokens, logps = record['token_ids'], record['log_probs']
+        if (not tokens or len(tokens) != len(logps)
+                or any(type(t) is not int or t < 0 for t in tokens)
+                or any(type(p) not in (int, float) or not math.isfinite(p) for p in logps)):
+            raise ValueError('valid response tokens and finite aligned log probabilities required')
+        buckets[(row['example_id'], tuple(tokens))].append(i)
+    projected = []
+    for (uid, tokens), indices in buckets.items():
+        ex = lookup[uid]
+        item = {'example_id': uid, 'source_group': ex.metadata['source_group'],
+                'variant': ex.metadata['variant'], 'replicates': [rows[i]['replicate'] for i in indices],
+                'response_tokens': len(tokens),
+                'max_old_logprob_spread': max(
+                    max(records[i]['log_probs'][t] for i in indices)
+                    - min(records[i]['log_probs'][t] for i in indices)
+                    for t in range(len(tokens)))}
+        for mode in ('standard', 'center_only'):
+            delta = [(rows[i]['pair_grpo'] - rows[i]['grpo']) if mode == 'standard'
+                     else (audit['center_only_control']['pair_grpo'][i]
+                           - audit['center_only_control']['grpo'][i]) for i in indices]
+            item[mode] = {'signed_coefficient_sum': math.fsum(delta),
+                          'max_response_difference': max(abs(d) for d in delta)}
+        projected.append(item)
+
+    def aggregate(items):
+        result = {'sequence_buckets': len(items),
+                  'max_old_logprob_spread': max(r['max_old_logprob_spread'] for r in items)}
+        for mode in ('standard', 'center_only'):
+            material = [r for r in items if abs(r[mode]['signed_coefficient_sum']) > threshold]
+            cancelled = [r for r in items if r[mode]['max_response_difference'] > threshold
+                         and abs(r[mode]['signed_coefficient_sum']) <= threshold]
+            result[mode] = {'material_buckets': len(material),
+                            'material_prompts': len({r['example_id'] for r in material}),
+                            'material_recordings': len({r['source_group'] for r in material}),
+                            'cancelled_material_buckets': len(cancelled),
+                            'max_abs_coefficient_sum': max(abs(r[mode]['signed_coefficient_sum']) for r in items)}
+        return result
+
+    variants = sorted({r['variant'] for r in projected})
+    return {'threshold': threshold, 'threshold_rule': 'absolute unnormalized signed coefficient sum strictly greater than threshold',
+            'overall': aggregate(projected),
+            'by_variant': {v: aggregate([r for r in projected if r['variant'] == v]) for v in variants},
+            'per_sequence': projected,
+            'scope': 'identical example_id and complete response token IDs only; signed advantage sums before loss normalization; '
+                     'conditional deterministic-gradient cancellation diagnostic, not measured gradients or efficacy; '
+                     'nonzero old-logprob spread, stochastic forward or different PPO clipping can prevent cancellation'}
