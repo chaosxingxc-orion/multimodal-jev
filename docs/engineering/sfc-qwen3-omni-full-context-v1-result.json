@@ -1,0 +1,66 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-full-context-v1",
+  "launch": {
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-full-context-v1",
+    "container_id": "94d9a217dccc145559a379a64246ac666692374e6e613b002e9dac10a6ad61b9",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "f0c8b55f827996ba0092f2be05e130d5ee9e335a",
+    "intent_sha256": "ba6a797c766ac713930f002326c8e4d151af1a7fcd16c284612c6455af438c98",
+    "devices": [],
+    "automatic_retry": false
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T10:36:59.987298Z",
+    "FinishedAt": "2026-11-10T10:42:57.45602903Z"
+  },
+  "result": {
+    "status": "passed",
+    "identity_sha256": "6595e18a0bca767e55e586425bfd922e160a60dc7253f3fa234d87cb1e665d5e",
+    "splits": {
+      "train_id": {
+        "records": 5534,
+        "source_groups": 4499,
+        "min_input_tokens": 280,
+        "max_input_tokens": 1486,
+        "audio_over_limit": 8,
+        "context_overflow": 0,
+        "max_audio_seconds": 39.65075,
+        "records_sha256": "524ed0aeb03050d143f3b61e0e601df6482cae4a9be5ece8c7efaccf53149403"
+      },
+      "test_id": {
+        "records": 2590,
+        "source_groups": 1986,
+        "min_input_tokens": 278,
+        "max_input_tokens": 1378,
+        "audio_over_limit": 0,
+        "context_overflow": 0,
+        "max_audio_seconds": 29.7125625,
+        "records_sha256": "86a9c6e1af9af94370fc3e75d002a41596c2607edd19f0c3e525f3e0d1ecf741"
+      },
+      "test_ood": {
+        "records": 771,
+        "source_groups": 593,
+        "min_input_tokens": 276,
+        "max_input_tokens": 1020,
+        "audio_over_limit": 0,
+        "context_overflow": 0,
+        "max_audio_seconds": 21.0025,
+        "records_sha256": "1ee0db7a26fce568f4a6374ff8223ba448d2d071308dcb71ee4aab60a0f67bde"
+      }
+    },
+    "all_inputs_fit": false,
+    "audio_files_hashed": 8895,
+    "elapsed_seconds": 322.883831300016,
+    "scope": "Complete CPU HF processor input audit; oversized audio recorded without truncation. No weights, generation, gold scoring, vLLM equivalence or task efficacy claim."
+  },
+  "limitation": "audio_over_limit is the audit conservative feature_extractor.n_samples threshold, not yet established model limit; these requests have no computed input token count"
+}
