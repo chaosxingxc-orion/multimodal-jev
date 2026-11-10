@@ -166,3 +166,16 @@ padding差异，也不能将其归因于默认路径从flash退回math。尚需�
 attention实现，也不把math替换宣称为修复。完整六条trace仍运行，row1运行报告
 同样首先在layer0 attention出现差异，两条件最终logits精确复现原诊断；该行完整
 中间张量尚待独立审计。
+
+## Padding 形状对照预算
+
+`diagnose_omni_sdpa_padding.py`继续只消费已验收row0有效Q/K/V，保持有效因果图不变，
+在默认/math后端分别执行7种布局：无padding、154左padding零值/有限随机值、154
+右padding零值/有限随机值、只给K/V加左padding、只给Q加左padding。共14个算子
+调用；所有被排除位置为合成值，不能冒充原完整模型的padding激活。实际mask只
+允许有效query访问原始因果keys，保存每种有效输出及profiler算子身份。先核对
+无padding端点与左padding端点是否逐元素复现已验收attention输出，再解释数值机制。
+随机填充值与零填充值对照检验被排除值的影响，Q-only/KV-only对照分离两轴形状。
+预算固定同一镜像16 CPU/8 GiB、300秒加10秒，无网络设备、无模型权重、无训练；
+源代码提交后固定快照，create记录容器ID再start，不自动重试。即使局部对照通过，
+仍需全模型和NPU/verl实测，不能直接宣称优化器或训练已准备好。
