@@ -77,3 +77,10 @@ actor helper SHA。使用原始无padding前向的prompt长度和固定顺序重
 21项协调者测试通过，覆盖运行/终态/OOM、暂时观察失败、最多一次派发、禁止重放、
 来源和启动器改动、等待预算及执行器改变。这些测试的Docker状态和子进程返回值
 为合成fixture；实际协调进程及容器身份将在独立派发记录中保存。
+
+协调者已从固定源码`b7b58bf`启动：PID `2948247`，process start `291856436`，
+计划SHA `a82700e270eb8524f2fc6ca0e822bcec2d0cb3e013ad3420f7747ce24dc11119`。
+已通过`/proc`核对真实命令和进程身份，当前在等待原候选完成；候选已完成5/6条，
+正在最后一条前向。见[协调者启动记录](omni-compact-verl-dispatch-v1-launched.json)。
+此时完整actor尚未创建；后续须根据`omni-compact-verl-train6-v1/launch.json`中的
+精确容器ID观察执行，不再次手工运行启动器，以免与现有协调者竞争。
