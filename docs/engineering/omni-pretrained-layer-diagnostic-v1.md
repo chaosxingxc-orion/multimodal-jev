@@ -127,3 +127,27 @@ attention core及o-proj张量，使独立审计者可重新计算全部中间差
 自动重试。必须先检查无padding输出与原trace逐元素一致，并检查两条件差异统计
 是否复现原报告，才解释内部差异；不满足时保留失败证据，不宣称复现机制。原始
 全6条逐层诊断继续执行；本项仅为row0定位，不替代全6条或NPU/verl概率一致性验收。
+
+## 首层 attention 分解结果
+
+固定源码`48d5504`的容器`a90aa28a7add50f685fa89471553643bcee788c6f55f98adf705afd79d30a934`
+已退出0，诊断计时16.51秒。独立审计重新加载并核验24份两条件张量，确认RoPE
+cos/sin、input norm、Q/K/V投影、Q/K norm、RoPE后Q/K共10个阶段逐元素相同。
+第一个不同阶段为`attention_core`，161709个元素不同，最大绝对差0.000244140625；
+o-proj后188166个元素不同，最大差0.00390625。无padding端点精确复现完整trace，
+两条件端点差异统计复现原报告。见[独立验收](omni-first-attention-row0-v1-verified.json)。
+
+实际mask路径不同：无padding时mask为None，padding时为`[1,1,1230,1230]`布尔mask。
+从该精确容器读取的Transformers `integrations/sdpa_attention.py`表明：
+`use_gqa_in_sdpa`在此版本主要根据torch版本、mask是否为None及head维度判定。
+因而无mask路径传入`enable_gqa=True`，有mask路径先`repeat_kv`显式展开K/V；
+这同时改变了SDPA调用形式，不能仅以“padding引起舍入”解释。仍需同形状、相同
+有效Q/K/V的对照和实际operator观测，才能区分mask、GQA及kernel的贡献。
+目前没有NPU概率一致性、完整六条机制修复或训练收益结论。
+
+下一步`diagnose_omni_sdpa_dispatch.py`只读取已验收的有效Q/K/V及attention输出，
+固定1076长度，比较隐式/显式因果mask、GQA/显式repeat、默认/math后端共8种组合。
+每种调用用CPU profiler记录实际SDPA operator，保存输出供独立重算。先要求原
+无padding端点精确复现，再解释变化；不重建padding、不加载模型、不重放任务。
+预算同一固定镜像16 CPU/8 GiB、300秒加10秒、无网络设备；只读原实验与源码，
+实际容器ID在start前落盘，失败不重试。本算子诊断不能直接证明完整模型修复。

@@ -1,0 +1,136 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-first-attention-row0-v1",
+  "launch": {
+    "container_id": "a90aa28a7add50f685fa89471553643bcee788c6f55f98adf705afd79d30a934",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "48d550453406b4c0399f463ed3b5896aff574667",
+    "intent_sha256": "175b4cc144a2de9f898062aa49ec00d8d26ff1174afb6ca020580a23e23178f0"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T19:23:25.91823732Z",
+    "FinishedAt": "2026-11-10T19:23:55.01769052Z"
+  },
+  "source_files_verified": 113,
+  "result_sha256": "389652411c69533f07a151d7f89acde2c8a3d90e8900f4772327e93032ad329b",
+  "stages": [
+    {
+      "stage": "rotary_cos",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "rotary_sin",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "input_norm",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "q_proj",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "q_norm",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "k_proj",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "k_norm",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "v_proj",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "q_rope",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "k_rope",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "stage": "attention_core",
+      "equal": false,
+      "differing_elements": 161709,
+      "max_abs_error": 0.000244140625,
+      "mean_abs_error": 1.1254057596943312e-07
+    },
+    {
+      "stage": "o_proj",
+      "equal": false,
+      "differing_elements": 188166,
+      "max_abs_error": 0.00390625,
+      "mean_abs_error": 9.212117788592877e-07
+    }
+  ],
+  "first_difference": "attention_core",
+  "paired_tensors_verified": 24,
+  "unpadded_endpoint_exact": true,
+  "padded_endpoint_statistics_reproduced": true,
+  "masks": [
+    {
+      "condition": "audio_padding",
+      "mask_is_none": true,
+      "shape": null,
+      "dtype": null
+    },
+    {
+      "condition": "text_padding",
+      "mask_is_none": false,
+      "shape": [
+        1,
+        1,
+        1230,
+        1230
+      ],
+      "dtype": "torch.bool"
+    }
+  ],
+  "elapsed_seconds": 16.510677639977075,
+  "parity_accepted": false,
+  "limitation": "One captured TRAIN row on CPU BF16/SDPA. Padded endpoint compared to original reported statistics only; original padded layer tensor was not saved. Does not distinguish mask/shape/kernel contributions or prove NPU/verl parity; no training."
+}
