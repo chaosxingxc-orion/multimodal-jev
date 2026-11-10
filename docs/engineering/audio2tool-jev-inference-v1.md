@@ -126,3 +126,10 @@ renderer与真实tokenizer重建每种布局/决策，核对原processor profile
 音频预算比较token级展开与完整字符串真实分词，共5484次；再核对12个既有真实
 HF/vLLM案例。完整30733×457成本算术也复算，但不宣称重新分词1404万项、处理
 新波形或执行NPU。执行结果另存，不自动重试失败。
+
+上述真实tokenizer检查已用固定源码`bd3e312d756685f78a259e3faabbae4f72478112`
+派发为容器`d53bebec308516046f027ed4db37b6b668fdf1666c8f19c919179540d80a57db`，
+intent SHA为`fca53297b6e676c8f544cfcb23181b8cd3d5cd860985a6da8b084660548c0228`。
+已实际inspect为running；[派发身份](audio2tool-jev-acceptance-prompts-v1-launched.json)
+保存精确句柄。当前仍在检查profile，尚未完成全部5484次真实分词及12例对照，
+不能把启动或局部进度当作独立重建已验收。
