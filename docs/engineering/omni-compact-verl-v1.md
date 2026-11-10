@@ -288,3 +288,9 @@ MoE聚合、重建两次残差相加，并核对路由计数与grouped投影offs
 按实际触及的原分片校验前后SHA，保留默认grouped_mm与compact attention，
 预算5400秒加30秒，16 CPU/16 GiB，无网络设备，不自动重放。该定位不读取任务
 标签、不重跑音频编码、不计算输出头或完整actor概率，不派发权重更新。
+
+后续定位已实际启动，容器
+`52e739eb5ede5c98e2047fcbb5ff21a5e392b6c145b60c01bbbb17cd435578b0`，
+源码`8878b32`、同一固定镜像；已inspect核对命令、挂载、资源及122份源码。
+见[启动身份](omni-decoder-divergence-v1-launched.json)。此处只记录运行中状态，
+具体差异层和张量独立复核结果待该诊断完成后更新。
