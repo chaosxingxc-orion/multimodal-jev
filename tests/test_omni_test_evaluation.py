@@ -143,7 +143,8 @@ def test_prepare_full_test_exports_same_selection_snapshot(tmp_path,monkeypatch)
     assert receipt['requests_per_prompt']==22758 and receipt['dispatched'] is False
     child=root/'parent'
     assert (child/'source/tools/jev/infer_qwen3_omni_test.py').exists()
-    assert file_hash(child/'source/tools/jev/infer_qwen3_omni_probe.py')==file_hash(Path('tools/jev/infer_qwen3_omni_probe.py'))
+    committed=subprocess.check_output(['git','show',commit+':tools/jev/infer_qwen3_omni_probe.py'])
+    assert file_hash(child/'source/tools/jev/infer_qwen3_omni_probe.py')==hashlib.sha256(committed).hexdigest()
     intent=json.loads((child/'intent.json').read_text())
     assert intent['physical_devices']==[4,5] and intent['observation_seconds']==86700
     assert not (child/'dispatch.log').exists()

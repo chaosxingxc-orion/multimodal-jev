@@ -14,6 +14,7 @@ from multimodal_jev.end_to_end import require_audio_task_route
 from multimodal_jev.frozen_contract import FrozenContract
 from multimodal_jev.omni_probe_contract import select_learning
 from multimodal_jev.omni_test_contract import select_test
+from multimodal_jev.omni_slurp_test_contract import select_native_test
 from multimodal_jev.omni_slurp_contract import validate_runtime
 from multimodal_jev.waveform_control import condition_audio
 
@@ -33,7 +34,7 @@ def verify_assets(cfg):
 def run(cfg,out,*,population_selector=select_learning):
     require_audio_task_route(cfg)
     validate_runtime(cfg)
-    allowed_split = 'test' if population_selector is select_test else 'train'
+    allowed_split = 'test' if population_selector in (select_test,select_native_test) else 'train'
     if (cfg['parameters_frozen'] is not True or cfg['split']!=allowed_split
             or cfg.get('adapter') is not None):
         raise ValueError('registered population and frozen official base only')
@@ -46,7 +47,7 @@ def run(cfg,out,*,population_selector=select_learning):
     identity=dict(config=cfg,requests_sha256=file_hash(cfg['requests']),instruction_sha256=file_hash(cfg['instruction']),
         asset_audit_sha256=file_hash(cfg['asset_audit']),model_files=audit['files'],runner_sha256=file_hash(__file__),
         source_sha256={n:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/n) for n in
-                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','omni_test_contract.py','waveform_control.py','omni_slurp_contract.py','slurp_native.py']},
+                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','omni_test_contract.py','omni_slurp_test_contract.py','waveform_control.py','omni_slurp_contract.py','slurp_native.py']},
         versions={p:importlib.metadata.version(p) for p in ['torch','torch-npu','transformers','vllm','vllm-ascend']})
     if population_selector is not select_learning:
         import inspect
