@@ -1,0 +1,29 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-teacher-feedback-readiness-v1",
+  "launch": {
+    "argv": [
+      "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+      "-B",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-teacher-feedback-readiness-v1/source/tools/jev/watch_sfc_teacher_feedback.py",
+      "--root",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-teacher-feedback-readiness-v1"
+    ],
+    "pid": 2784711,
+    "process_start": "289361771",
+    "source_commit": "4d8104073a3697fe54b8fb6614f281e44a3276e8",
+    "observer_plan_sha256": "1bc3797021ddc6cd12776ad0b3e53aa6c43b6062e0da65e158502d0ac6206f1c",
+    "started_unix": 1794316961.8839686,
+    "API_dispatch": false,
+    "automatic_retry": false
+  },
+  "progress": {
+    "phase": "waiting_train78",
+    "ready": false,
+    "heartbeat_unix": 1794316962.0803986
+  },
+  "verified_unix": 1794316977.9172037,
+  "tests": "64 feedback observer/candidate context/teacher wire/prompt adapter/context tests passed",
+  "API_sent": false,
+  "weight_updates": 0,
+  "scope": "Live feedback-only supervisor bound to exact existing TRAIN78 dependency; no feedback exists yet, no new API or inference dispatch."
+}
