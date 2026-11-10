@@ -1,0 +1,55 @@
+{
+  "schema": "jev-omni-teacher-rejection-v1",
+  "reviewed_unix": 1794301301.2011454,
+  "parent_prompt_sha256": "ab9c559716d480775dc93bbfc3f62ac5c7e1a2aa7c95a8c6b10d72b61ad982a2",
+  "response_sha256": "cd9a1c17c274161a962f1c2a1dbbeb160131c90957f1890e6b6b903ff98a19b3",
+  "evaluation_eligible": [],
+  "prompt_selected": false,
+  "selection_or_test_items_read_for_review": false,
+  "candidates": [
+    {
+      "id": "p1",
+      "decision": "rejected_before_selection",
+      "instruction_sha256": "53ca0d78911181ce6240b901f1f2cdb39f751451099b41519649e3dc809e2223",
+      "reasons": [
+        "Forbids null for every yes/no question although dynamic Noul schemas may allow unknown.",
+        "Restricts null to choice, overriding allowed unknown for other decision types.",
+        "Conflates open_slot string with open_slots list and does not preserve the typed contract."
+      ],
+      "references_outside_representatives": [
+        "fsc:1c16961f439ba0093cb741c0:noul.False",
+        "fsc:90d7effef10a557daba47d62:noul.True"
+      ]
+    },
+    {
+      "id": "p2",
+      "decision": "rejected_before_selection",
+      "instruction_sha256": "5f2c1f64ff83ac40f7da9cd6bc146a80120b5b92b0c8d7bffd52c32e1ab7eea1",
+      "reasons": [
+        "Invents none=unspecified and action/object/location rules, explicitly forbidden in the teacher contract.",
+        "Forbids null for yes/no regardless of allow_unknown.",
+        "Conflates open_slot and open_slots output types."
+      ],
+      "references_outside_representatives": [
+        "fsc:03b0169fc992129f296269a3:missing_candidate"
+      ]
+    }
+  ],
+  "diagnosis_corrections": [
+    "No supplied universal none=unspecified semantics; teacher was explicitly told not to redefine none.",
+    "Zeros produced zero strict-valid JSON but aggregate data does not establish every output was fenced; only inspected representatives support that narrower statement.",
+    "Deterministic greedy decoding was fixed; do not explain format variation as sampling changes without evidence."
+  ],
+  "usage": {
+    "completion_tokens": 13345,
+    "completion_tokens_details": {
+      "reasoning_tokens": 11746
+    },
+    "prompt_tokens": 38477,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 51822
+  },
+  "scope": "complete response rejected structurally and semantically; no candidate evaluated, no prompt manually repaired"
+}
