@@ -130,3 +130,18 @@ Qwen3-Omni、BF16、TP2、seed17、4096 上下文、1024 输出、greedy 和关�
 并逐 token 比较 vLLM 实际 prompt IDs 与 HF processor 结果，前后校验全部模型文件。
 独立验收成功后才读取这六轮 TRAIN 的目标并评分，不设置答案正确率门槛。
 该队列尚无生成结果；不能报告为完成引擎验证或证明模型任务能力。
+
+## 全量上下文检查
+
+`sfc-jev-omni-full-context-v1` 已启动 CPU 容器，固定源码
+`6e93bd2856407c8b77a6680d99e0b338ac89539a`，使用与推理相同的镜像和 processor。
+对全部 8895 个 bundle、136722 个决策逐条执行真实 HF processor，
+包括超过 30 秒的完整音频；不截断、不排除长音频、不读取 targets、不加载权重。
+4 CPU/16 GiB 内存、无 NPU 映射、无网络，最大运行窗口21600秒。
+每个决策记录 prompt/token hash、音频帧覆盖和4096/1024预算是否溢出，
+每个 bundle 保存进度；进程未完成不能声称全量适配通过。
+启动证据见 `sfc-jev-omni-full-context-v1-launch.json`。
+
+结束后执行 `tools/jev/verify_sfc_jev_context.py --root <运行目录> --output <新证据文件>`，
+核对准确容器成功退出、源文件/输入哈希、全量有序决策覆盖、每条帧/预算记录和聚合统计。
+该校验器复核记录覆盖与一致性，不重新计算音频特征，也不代替 vLLM 引擎或模型能力评估。
