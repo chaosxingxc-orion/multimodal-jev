@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Detached single-dispatch test evaluator, waiting for exact baseline ASR evidence."""
+"""Detached single-dispatch selected-prompt evaluator using exact baseline ASR evidence."""
 import argparse
 import json
 from pathlib import Path
@@ -51,6 +51,8 @@ def execute(root):
     selection = json.loads(selection_path.read_text())
     if file_hash(root / 'instruction.txt') != selection['selected_instruction_sha256']:
         raise ValueError('selected prompt changed')
+    if file_hash(root / 'config-template.json') != plan['config_template_sha256']:
+        raise ValueError('registered evaluation configuration changed')
     wait_container(plan['baseline_container_id'], plan['image'], root,
                    'waiting_completed_baseline_for_paired_asr', plan['deadline_unix'])
     export_evidence(original / 'run', root / 'asr-evidence.json')
@@ -82,9 +84,10 @@ def execute(root):
         with (root / (name + '.log')).open('x') as log:
             subprocess.run([sys.executable, str(root / 'source/tools/jev/score_frozen_requests.py'),
                             '--run', str(run), '--targets', plan['targets'],
-                            '--output', str(root / name)], stdout=log, stderr=subprocess.STDOUT, check=True)
+                            '--output', str(root / name)] + (['--six-views'] if plan.get('six_views') else []),
+                           stdout=log, stderr=subprocess.STDOUT, check=True)
     atomic_json(root / 'terminal.json', {'exit_code': 0, 'finished_unix': time.time(),
-                                         'scope': 'complete frozen selected prompt test and baseline scores'})
+                                         'scope': 'complete frozen selected prompt and baseline scores; see configuration split/purpose'})
 
 
 if __name__ == '__main__':
