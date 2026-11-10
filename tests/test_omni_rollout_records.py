@@ -2,7 +2,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from multimodal_jev.omni_rollout_records import capture, sampling_kwargs
+from multimodal_jev.omni_rollout_records import capture, sampling_kwargs, validate_sampling
 from multimodal_jev.sfc_reward_batch import compose, digest
 from test_sfc_reward_batch import fixture
 
@@ -70,3 +70,13 @@ def test_sampling_policy_matches_unmodified_actor_distribution():
     assert p['min_tokens']==0 and p['stop'] is None and not p['ignore_eos']
     for args in [(1,17),(True,17),(2,-1),(2,17,0),(2,17,1025)]:
         with pytest.raises(ValueError): sampling_kwargs(*args)
+
+
+def test_effective_sampling_cannot_silently_change_distribution():
+    params=NS(**sampling_kwargs(2,17));params.stop=[];params.stop_token_ids=[]
+    assert validate_sampling(params,2,17)['stop']==[]
+    for field,value in [('temperature',.7),('top_k',20),('watermarking',True),
+                        ('allowed_token_ids',[1]),('logit_bias',{1:2}),
+                        ('structured_outputs',{'json':True}),('extra_args',{'custom':True})]:
+        changed=NS(**vars(params));setattr(changed,field,value)
+        with pytest.raises(ValueError):validate_sampling(changed,2,17)

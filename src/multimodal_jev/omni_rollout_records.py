@@ -21,7 +21,24 @@ def sampling_kwargs(group_size, seed, max_tokens=1024):
                 max_tokens=max_tokens, min_tokens=0, logprobs=0, prompt_logprobs=None,
                 stop=None, stop_token_ids=None, ignore_eos=False,
                 skip_special_tokens=True, spaces_between_special_tokens=False,
-                include_stop_str_in_output=False, detokenize=True)
+                include_stop_str_in_output=False, detokenize=True, watermarking=False)
+
+
+def validate_sampling(params, group_size, seed, max_tokens=1024):
+    """Check the actual constructed SamplingParams, including hidden transforms."""
+    expected = sampling_kwargs(group_size, seed, max_tokens)
+    for name, value in expected.items():
+        actual = getattr(params, name)
+        # vLLM normalizes absent stopping lists to empty lists.
+        if name in ('stop', 'stop_token_ids') and actual == [] and value is None:
+            continue
+        if actual != value:
+            raise ValueError('effective sampling parameter differs: ' + name)
+    for name in ('structured_outputs', 'logit_bias', 'allowed_token_ids', 'bad_words',
+                 'logits_processors', 'logprob_token_ids', 'extra_args'):
+        if getattr(params, name, None):
+            raise ValueError('additional sampling transform forbidden: ' + name)
+    return {name: getattr(params, name) for name in expected}
 
 
 def capture(response, request, decision_id, prepared, tokenizer, *, policy_sha256,
