@@ -75,6 +75,9 @@ def run(cfg,out):
             finish_reason=answer.finish_reason,length_limited=answer.finish_reason=='length',seconds=time.monotonic()-t)
         atomic_json(cache/(hashlib.sha256(row['id'].encode()).hexdigest()+'.json'),record);records.append(record)
         atomic_json(out/'progress.json',dict(phase='decision',done=i+1,total=6,heartbeat_unix=time.time()))
+    atomic_json(out/'progress.json',dict(phase='engine_shutdown',done=6,total=6,heartbeat_unix=time.time()))
+    llm.llm_engine.engine_core.shutdown(timeout=30)
+    atomic_json(out/'progress.json',dict(phase='final_model_verification',done=6,total=6,heartbeat_unix=time.time()))
     verify_assets(cfg)
     path=out/'predictions.jsonl';path.write_bytes(b''.join(canonical(r) for r in records))
     atomic_json(out/'result.json',dict(status='passed',requests=6,predictions=6,
