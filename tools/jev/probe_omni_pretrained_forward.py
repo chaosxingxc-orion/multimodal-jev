@@ -17,6 +17,15 @@ from sample_sfc_omni_learning import load_inputs
 from infer_qwen3_omni_probe import verify_assets
 
 
+def loading_report(value):
+    """Lossless JSON representation for HF loading-info sets and shape tuples."""
+    if isinstance(value,dict):return {k:loading_report(v) for k,v in value.items()}
+    if isinstance(value,set):return sorted(loading_report(v) for v in value)
+    if isinstance(value,(list,tuple)):return [loading_report(v) for v in value]
+    if value is None or type(value) in (str,int,float,bool):return value
+    raise TypeError('unsupported loading report value: '+type(value).__name__)
+
+
 def run(config,out):
     import torch
     from transformers import Qwen3OmniMoeProcessor,Qwen3OmniMoeThinkerForConditionalGeneration
@@ -44,6 +53,7 @@ def run(config,out):
     model,loading=Qwen3OmniMoeThinkerForConditionalGeneration.from_pretrained(
         base['audio_model'],local_files_only=True,trust_remote_code=False,
         dtype=torch.bfloat16,device_map='cpu',attn_implementation='sdpa',output_loading_info=True)
+    loading=loading_report(loading)
     atomic_json(out/'loading-info.json',loading)
     if any(loading.get(k) for k in ('missing_keys','mismatched_keys','error_msgs')):
         raise ValueError('incomplete or mismatched pretrained Thinker load')
