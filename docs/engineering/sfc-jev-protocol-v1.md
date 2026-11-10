@@ -114,3 +114,19 @@ vLLM adapter 的原始 prompt/波形引用与 HF 输入一致，但未启动 vLL
 容器退出码 0、应用退出码 0；无 NPU 映射，未读取 target 文件。
 下一步接入受控 TRAIN 推理，验证引擎实际 token IDs 和生成路径；
 全量任务上下文长度仍须实际测量，不能从这六轮或字符长度推定。
+
+## 受控 TRAIN 推理队列
+
+`sfc-jev-qwen3-omni-train78-v1` 已准备并启动等待调度器，记录见
+`sfc-jev-qwen3-omni-train78-v1-queued.json`。源码固定在
+`9055cdebdae30d0dd6ea969bb2d60e90a02d236b`，直接继承原生 SFC 的冻结
+Qwen3-Omni、BF16、TP2、seed17、4096 上下文、1024 输出、greedy 和关闭前缀缓存配置。
+所有78个决策使用相同输出预算；不根据 gold 或 Noul 预测跳过 calls。
+
+唯一直接前置是已排队的原生 SFC TRAIN6，后者依赖 SLURP 原生 TEST 和迁移 TRAIN 验证。
+调度器检查精确进程与容器身份、前置验收和可用 NPU6/7；完成等待不代表已开始推理。
+推理窗口7200秒，容器观察7500秒；失败或不明确派发均不自动重试。
+推理不读取当前目标答案；对每个决策核对 CPU preflight 的 prompt/token hash 和完整音频帧，
+并逐 token 比较 vLLM 实际 prompt IDs 与 HF processor 结果，前后校验全部模型文件。
+独立验收成功后才读取这六轮 TRAIN 的目标并评分，不设置答案正确率门槛。
+该队列尚无生成结果；不能报告为完成引擎验证或证明模型任务能力。
