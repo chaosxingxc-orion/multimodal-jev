@@ -81,3 +81,7 @@ AutoModel映射，默认wrap列表含不存在的旧解码层类而失败。显�
 [独立核验](omni-probability-capture-tests-v1-verified.json)确认源码、容器和
 JUnit。下一步仍是队列中的实际NPU层探针及完整真实采样概率验收，不能以
 合成actor测试代替真实数值结论。
+
+完整模型的后续加载还须遵循[位置编码精度约束](omni-buffer-precision-v1.md)：
+显式BF16权重加载不能用全模型dtype cast舍入原始FP32 buffer。九份真实历史
+prefix证据与未舍入RoPE精确一致；FSDP再转FP32不能修复已发生的数值变化。

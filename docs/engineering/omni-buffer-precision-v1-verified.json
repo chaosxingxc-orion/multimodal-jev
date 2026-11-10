@@ -1,0 +1,830 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-buffer-precision-v1",
+  "container_id": "9cfb0a24ff47cd8f27d7f66f14ea8555fb215680fd6d04d9cb47e2243c209044",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "81c3f6828b609ad1aca7d56e14a7591447a75c36",
+  "intent_sha256": "e3099f042eb264d2d58550ddaa7a8807379ab9981eb8836f93b95812002d4b70",
+  "source_files_verified": 124,
+  "inspection_sha256": "bc8a6af1f12b8c7f3c4eda8c7d34727a820dc3c142d9e6b6a50a673b046c2aa5",
+  "result_sha256": "98d823f9dc1f82f9f9813035f58dd2c5bb04580a9a55101ef4dc642efc2df07b",
+  "result": {
+    "status": "diagnostic_complete",
+    "config_sha256": "eab5093d47807aaf894119506b238b2b1cee70d08456e894fee9a012d88f2e0d",
+    "parameters": 31719205488,
+    "parameter_storage": "meta",
+    "buffer_reports": [
+      {
+        "name": "audio_tower.positional_embedding.positional_embedding",
+        "shape": [
+          1500,
+          1280
+        ],
+        "persistent": false,
+        "before_dtype": "torch.float32",
+        "intermediate_dtype": "torch.bfloat16",
+        "final_dtype": "torch.float32",
+        "elements": 1920000,
+        "changed_elements": 1918343,
+        "max_abs_error": 0.001953125,
+        "mean_abs_error": 0.0007220594780585852,
+        "exact": false
+      },
+      {
+        "name": "visual.rotary_pos_emb.inv_freq",
+        "shape": [
+          18
+        ],
+        "persistent": false,
+        "before_dtype": "torch.float32",
+        "intermediate_dtype": "torch.bfloat16",
+        "final_dtype": "torch.float32",
+        "elements": 18,
+        "changed_elements": 17,
+        "max_abs_error": 0.0018279552459716797,
+        "mean_abs_error": 0.0001547302777503824,
+        "exact": false
+      },
+      {
+        "name": "model.rotary_emb.inv_freq",
+        "shape": [
+          64
+        ],
+        "persistent": false,
+        "before_dtype": "torch.float32",
+        "intermediate_dtype": "torch.bfloat16",
+        "final_dtype": "torch.float32",
+        "elements": 64,
+        "changed_elements": 63,
+        "max_abs_error": 0.0011547207832336426,
+        "mean_abs_error": 7.025136062033255e-05,
+        "exact": false
+      },
+      {
+        "name": "model.rotary_emb.original_inv_freq",
+        "shape": [
+          64
+        ],
+        "persistent": false,
+        "before_dtype": "torch.float32",
+        "intermediate_dtype": "torch.bfloat16",
+        "final_dtype": "torch.float32",
+        "elements": 64,
+        "changed_elements": 63,
+        "max_abs_error": 0.0011547207832336426,
+        "mean_abs_error": 7.025136062033255e-05,
+        "exact": false
+      }
+    ],
+    "rotary_reports": [
+      {
+        "sequence_length": 1230,
+        "output_dtype": "torch.bfloat16",
+        "cos": {
+          "elements": 157440,
+          "changed_elements": 62352,
+          "max_abs_error": 1.30078125,
+          "mean_abs_error": 0.026987042778164026,
+          "exact": false
+        },
+        "sin": {
+          "elements": 157440,
+          "changed_elements": 79888,
+          "max_abs_error": 1.30078125,
+          "mean_abs_error": 0.027045755235220844,
+          "exact": false
+        }
+      },
+      {
+        "sequence_length": 4096,
+        "output_dtype": "torch.bfloat16",
+        "cos": {
+          "elements": 524288,
+          "changed_elements": 252628,
+          "max_abs_error": 2.0,
+          "mean_abs_error": 0.07628117172043858,
+          "exact": false
+        },
+        "sin": {
+          "elements": 524288,
+          "changed_elements": 299174,
+          "max_abs_error": 2.0,
+          "mean_abs_error": 0.07629861165537477,
+          "exact": false
+        }
+      }
+    ],
+    "artifacts": {
+      "buffers.pt": "3dacf80830556ee95e6426f245e9c32ccab69de0c7c8f70c06722c0dcbbae784",
+      "rotary.pt": "d6fb48e7428ebe49d28f55c35d51a8ad789518ae63c4e350e5654a1bb7935c20"
+    },
+    "source_sha256": {
+      "/opt/verl/verl/workers/fsdp_workers.py": "1de59e6b6f48b26716c9c75649aaef842f9ace44f6da3a3ad64dd2a45f9535f7",
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/accelerate/big_modeling.py": "aa5ff729d8177c29e757ab2fb8a4e9a2b2edd50b3a931d5d159e270066eab426",
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/torch/distributed/fsdp/_runtime_utils.py": "024033706d8950b99a464562d355a83448d516243e59e609e44c0b3ae91fd4f2",
+      "runner": "5818ab53710a2d553b50c5d69fa1fb15668e51e6b6c79fe78d7f2b586227f4bb"
+    },
+    "versions": {
+      "torch": "2.10.0+cpu",
+      "transformers": "5.14.1",
+      "accelerate": "1.15.0"
+    },
+    "buffer_cast_helper": "def _cast_buffers_to_dtype_and_device(\n    buffers: list[torch.Tensor],\n    buffer_dtypes: list[Optional[torch.dtype]],\n    device: torch.device,\n) -> None:\n    \"\"\"\n    Casts ``buffers`` to the dtypes given by ``buffer_dtypes`` and moves them\n    to ``device``. If an element in ``buffer_dtypes`` is ``None``, then the\n    corresponding buffer is only moved to ``device``.\n    \"\"\"\n    _p_assert(\n        buffer_dtypes is None or len(buffers) == len(buffer_dtypes),\n        f\"Expects `buffers` and `buffer_dtypes` to have the same length if \"\n        f\"`buffer_dtypes` is specified but got {len(buffers)} and \"\n        f\"{len(buffer_dtypes)}\",\n    )\n    for buffer, buffer_dtype in zip(buffers, buffer_dtypes):\n        if not torch.is_floating_point(buffer) or buffer_dtype is None:\n            buffer.data = buffer.to(device=device)\n        else:\n            buffer.data = buffer.to(device=device, dtype=buffer_dtype)\n",
+    "elapsed_seconds": 0.36474906996591017,
+    "weights_loaded": false,
+    "npu_used": false,
+    "weight_updates": 0,
+    "scope": "Full original config with meta parameters and real constructor buffers; actual whole-model dtype cast and FSDP buffer cast helper on CPU, plus rotary-only calls on synthetic positions. No pretrained load, FSDP collectives, NPU forward, sampled probabilities or task quality claim."
+  },
+  "independent_buffer_and_rotary_reduction": true,
+  "synthetic_rotary_formula_exact": true,
+  "original_text_inv_freq_formula_exact": true,
+  "original_prefix_result_sha256": "fb10bfc904f23e4ebb408ce3a685c9eac66a55f3bfd48b50dfae95443c5e08e7",
+  "real_prefix_comparisons": [
+    {
+      "tensor_file": "micro-1-offset-0.pt",
+      "tensor_sha256": "604baa51eb43ad34ef40775d8a66a305ced0dc3de4c4d25f3312e2427ba4ff4e",
+      "micro_batch_size": 1,
+      "offset": 0,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 62352,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.026987042778164026,
+              "exact": false
+            },
+            "valid": {
+              "elements": 157440,
+              "changed_elements": 62352,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.026987042778164026,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 79888,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.027045755235220844,
+              "exact": false
+            },
+            "valid": {
+              "elements": 157440,
+              "changed_elements": 79888,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.027045755235220844,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-1-offset-1.pt",
+      "tensor_sha256": "0f9bb7775144ebcfc60029ce816f3711d4a5051d754f87489d0ff6555ed1c635",
+      "micro_batch_size": 1,
+      "offset": 1,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 137728,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 137728,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 53360,
+              "max_abs_error": 1.15625,
+              "mean_abs_error": 0.02080406982459249,
+              "exact": false
+            },
+            "valid": {
+              "elements": 137728,
+              "changed_elements": 53360,
+              "max_abs_error": 1.15625,
+              "mean_abs_error": 0.02378160398164383,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 70232,
+              "max_abs_error": 1.15625,
+              "mean_abs_error": 0.02071283406509859,
+              "exact": false
+            },
+            "valid": {
+              "elements": 137728,
+              "changed_elements": 68692,
+              "max_abs_error": 1.15625,
+              "mean_abs_error": 0.023664753013342397,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-1-offset-2.pt",
+      "tensor_sha256": "ea6b129bc1dacffcd89bec98f98da42c34699a0a1a158b3e88fba4471f9242d5",
+      "micro_batch_size": 1,
+      "offset": 2,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 105984,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 105984,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 38976,
+              "max_abs_error": 0.912109375,
+              "mean_abs_error": 0.012355068062878843,
+              "exact": false
+            },
+            "valid": {
+              "elements": 105984,
+              "changed_elements": 38976,
+              "max_abs_error": 0.912109375,
+              "mean_abs_error": 0.018353543136885236,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 55304,
+              "max_abs_error": 0.91796875,
+              "mean_abs_error": 0.012387933238311027,
+              "exact": false
+            },
+            "valid": {
+              "elements": 105984,
+              "changed_elements": 51284,
+              "max_abs_error": 0.91796875,
+              "mean_abs_error": 0.018359767140343715,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-1-offset-3.pt",
+      "tensor_sha256": "6632eb6bf0ee53d4ee11993cf9991834a368424ad8758f5cd3b0cdcae1bdebbc",
+      "micro_batch_size": 1,
+      "offset": 3,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 125184,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 125184,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 47490,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.017181455026327716,
+              "exact": false
+            },
+            "valid": {
+              "elements": 125184,
+              "changed_elements": 47490,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.02160857840734467,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 64312,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.01721335906474813,
+              "exact": false
+            },
+            "valid": {
+              "elements": 125184,
+              "changed_elements": 61792,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.02162609577125628,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-1-offset-4.pt",
+      "tensor_sha256": "3cc9aa003b4623964fa6339151d8e83790641114e6acaada04e2d842063f5b9c",
+      "micro_batch_size": 1,
+      "offset": 4,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 125312,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 125312,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 47546,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.01720956205693263,
+              "exact": false
+            },
+            "valid": {
+              "elements": 125312,
+              "changed_elements": 47546,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.02162181954037501,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 64382,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.017254230987310895,
+              "exact": false
+            },
+            "valid": {
+              "elements": 125312,
+              "changed_elements": 61872,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.021655446238077577,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-1-offset-5.pt",
+      "tensor_sha256": "3cf6e13967a0afbc10939fc83dc2a546ecf04f4e880b46673218b4a978c80111",
+      "micro_batch_size": 1,
+      "offset": 5,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 91008,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 91008,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 32508,
+              "max_abs_error": 0.79296875,
+              "mean_abs_error": 0.009130088161162245,
+              "exact": false
+            },
+            "valid": {
+              "elements": 91008,
+              "changed_elements": 32508,
+              "max_abs_error": 0.79296875,
+              "mean_abs_error": 0.01579466728302329,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 157440,
+              "changed_elements": 48456,
+              "max_abs_error": 0.796875,
+              "mean_abs_error": 0.009157606112823739,
+              "exact": false
+            },
+            "valid": {
+              "elements": 91008,
+              "changed_elements": 43266,
+              "max_abs_error": 0.796875,
+              "mean_abs_error": 0.015778227113239708,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-2-offset-0.pt",
+      "tensor_sha256": "674d9bd966976f333e101efc55e47a4af626d2162884fe3d00f9c8ac5ad1e358",
+      "micro_batch_size": 2,
+      "offset": 0,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 295168,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 295168,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 115712,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.023895556301378258,
+              "exact": false
+            },
+            "valid": {
+              "elements": 295168,
+              "changed_elements": 115712,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.0254913566788337,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 150120,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.023879294650159717,
+              "exact": false
+            },
+            "valid": {
+              "elements": 295168,
+              "changed_elements": 148580,
+              "max_abs_error": 1.30078125,
+              "mean_abs_error": 0.025468149688498722,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-2-offset-2.pt",
+      "tensor_sha256": "09f62db9afabb6509bf44ff1e4c8206b538da58ddb6bd40435d9b249c0bd7f0f",
+      "micro_batch_size": 2,
+      "offset": 2,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 231168,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 231168,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 86466,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.014768261544603279,
+              "exact": false
+            },
+            "valid": {
+              "elements": 231168,
+              "changed_elements": 86466,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.02011623665543968,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 119616,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.01480064615152958,
+              "exact": false
+            },
+            "valid": {
+              "elements": 231168,
+              "changed_elements": 113076,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.020128576332499024,
+              "exact": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "tensor_file": "micro-2-offset-4.pt",
+      "tensor_sha256": "166539d7903fcc2c5cf89af56cac360ec3305d6dc908243402e70bb7d30f14e5",
+      "micro_batch_size": 2,
+      "offset": 4,
+      "comparisons": {
+        "before": {
+          "cos": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 216320,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            },
+            "valid": {
+              "elements": 216320,
+              "changed_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "exact": true
+            }
+          }
+        },
+        "restored": {
+          "cos": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 80054,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.013169825109047437,
+              "exact": false
+            },
+            "valid": {
+              "elements": 216320,
+              "changed_elements": 80054,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.01917027796938266,
+              "exact": false
+            }
+          },
+          "sin": {
+            "full": {
+              "elements": 314880,
+              "changed_elements": 112838,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.013205918550067317,
+              "exact": false
+            },
+            "valid": {
+              "elements": 216320,
+              "changed_elements": 105138,
+              "max_abs_error": 1.04296875,
+              "mean_abs_error": 0.01918284103230259,
+              "exact": false
+            }
+          }
+        }
+      }
+    }
+  ],
+  "scope": "Actual container/source and saved-tensor audit; FP32 reference matches all nine historical real pretrained prefix rotary tensors exactly. BF16 roundtrip differs in every call. No new full actor probability, NPU or quality result."
+}

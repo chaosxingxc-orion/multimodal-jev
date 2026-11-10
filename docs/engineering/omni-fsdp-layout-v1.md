@@ -59,3 +59,13 @@ NPU的FSDP路径。把HF模块按层放到两张卡不能称为verl分布式acto
 
 v4映射列表第一项使用alias实际类名，与第三项同为AutoModelForImageTextToText。
 原查询顺序和shim已在独立核验明确记录，不把重复项当成额外支持证据。
+
+## 后续发现：BF16 整模型 cast 改变位置编码
+
+[buffer 精度探针](omni-buffer-precision-v1.md)确认：旧 worker 的
+`actor_module.to(torch_dtype)` 在显式 BF16 加载方案中会舍入四个 FP32
+位置编码 buffer，随后 FSDP cast 回 FP32 仍无法恢复。原 FP32 RoPE 与九份
+历史真实预训练 prefix 张量完全一致，往返版本均不一致。完整分片实现必须
+单独保留并验收非持久化 buffer，不能仅以参数哈希和 108 单元计数验收。
+该探针仅使用 meta 参数、真实 buffer 和 rotary-only CPU 调用，未验证
+NPU/FSDP 通信、完整模型加载或任务影响。
