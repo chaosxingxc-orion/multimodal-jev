@@ -1,0 +1,169 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-vllm-processor-v2",
+  "launch": {
+    "container_id": "fa8a704d07def626fd37bf965b1bf33ce8eb4e8b6b88138033db880b63d9cd6e",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "8e3a9bc0f323703b1bd6be05f4fb01d09bc24f2f"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T16:32:26.94225078Z",
+    "FinishedAt": "2026-11-10T16:33:24.55312379Z"
+  },
+  "result": {
+    "status": "passed",
+    "records": [
+      {
+        "selection": "longest_clip",
+        "original_samples": [
+          10474252
+        ],
+        "hop_padded_samples": [
+          10474400
+        ],
+        "vllm_frames": [
+          65465
+        ],
+        "expected_untruncated_frames": [
+          65465
+        ],
+        "vllm_shape": [
+          128,
+          65465
+        ],
+        "input_tokens": 15290,
+        "comparisons": {
+          "raw": {
+            "frames": [
+              65464
+            ],
+            "shape": [
+              128,
+              65464
+            ],
+            "vllm_dtype": "torch.bfloat16",
+            "hf_dtype": "torch.float32",
+            "token_ids_equal": false,
+            "shape_equal": false,
+            "unquantized_fp32_max_error": null,
+            "max_feature_error": null,
+            "features_close": false
+          },
+          "hop_padded": {
+            "frames": [
+              65465
+            ],
+            "shape": [
+              128,
+              65465
+            ],
+            "vllm_dtype": "torch.bfloat16",
+            "hf_dtype": "torch.float32",
+            "token_ids_equal": true,
+            "shape_equal": true,
+            "unquantized_fp32_max_error": 0.0039061307907104492,
+            "max_feature_error": 0.0,
+            "features_close": true
+          }
+        },
+        "seconds": 2.6621650499873795,
+        "fits_32768_with_1024_output": true
+      },
+      {
+        "selection": "longest_dialogue",
+        "original_samples": [
+          40590,
+          209550,
+          43150,
+          10474120,
+          2011220
+        ],
+        "hop_padded_samples": [
+          40640,
+          209600,
+          43200,
+          10474240,
+          2011360
+        ],
+        "vllm_frames": [
+          254,
+          1310,
+          270,
+          65464,
+          12571
+        ],
+        "expected_untruncated_frames": [
+          254,
+          1310,
+          270,
+          65464,
+          12571
+        ],
+        "vllm_shape": [
+          128,
+          79869
+        ],
+        "input_tokens": 17206,
+        "comparisons": {
+          "raw": {
+            "frames": [
+              254,
+              1310,
+              270,
+              65463,
+              12571
+            ],
+            "shape": [
+              128,
+              79868
+            ],
+            "vllm_dtype": "torch.bfloat16",
+            "hf_dtype": "torch.float32",
+            "token_ids_equal": true,
+            "shape_equal": false,
+            "unquantized_fp32_max_error": null,
+            "max_feature_error": null,
+            "features_close": false
+          },
+          "hop_padded": {
+            "frames": [
+              254,
+              1310,
+              270,
+              65464,
+              12571
+            ],
+            "shape": [
+              128,
+              79869
+            ],
+            "vllm_dtype": "torch.bfloat16",
+            "hf_dtype": "torch.float32",
+            "token_ids_equal": true,
+            "shape_equal": true,
+            "unquantized_fp32_max_error": 0.0039055347442626953,
+            "max_feature_error": 0.0,
+            "features_close": true
+          }
+        },
+        "seconds": 7.614221399999224,
+        "fits_32768_with_1024_output": true
+      }
+    ],
+    "model_loaded": false,
+    "answers_read": false,
+    "scope": "Real vLLM and HF CPU processors for two header-selected extremes; 32768 context with 7-audio configuration. No engine, weight loading, NPU memory, full-dataset fit or task-quality claim."
+  },
+  "source_and_arithmetic_verified": true,
+  "result_sha256": "750bbffcf99e140786f6d702d189869720be947f5f76be4e594b7885d1ed8358",
+  "identity_sha256": "790fcafdc020839507df54ae303c946f42f0364cbd188ec6d975c0b956f3aaab",
+  "scope": "Independent terminal, source, full-frame/budget arithmetic and stored complete comparisons verified; feature equality itself executed by pinned runner, not recomputed here. No model or engine acceptance."
+}

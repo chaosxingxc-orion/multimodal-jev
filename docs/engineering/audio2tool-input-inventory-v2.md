@@ -103,3 +103,28 @@ v2 产物哈希与 v1 一致，证明此次改为可复用入口未改变内容�
 只验证 processor 能力，不宣称最终业务协议。vLLM 会预补齐到 hop 边界，须另做真实
 processor 对比；vLLM STT 配置中的 clip 长度也不能直接套到端到端多模态任务。
 尚无长音频模型推理、NPU 内存或 HF/vLLM 一致性结果。
+
+## 后续真实 vLLM processor 对比
+
+已完成相同两例的真实 CPU vLLM 多模态 processor 对比，ModelConfig 为
+32768、audio limit=7，未创建 engine 或加载权重。v1 比较器遇到 BF16/FP32
+`allclose` 类型不匹配而退出 1；失败保留，见 [v1/v2 记录](audio2tool-vllm-processor-v1-v2.json)。
+vLLM processing context 会将浮点特征转换为模型 dtype，v2 明确比较 HF cast-BF16
+并另报未量化 FP32 误差，原比较容差 1e-5 未放宽。
+
+| 条件 | vLLM token 数 | 原始 HF 对比 | 相同 hop padding + BF16 对比 |
+| --- | ---: | --- | --- |
+| 最长单段 | 15,290 | 原始 HF 少 1 帧和 1 token | token 一致，特征最大误差 0 |
+| 最长对话 | 17,206 | token 相同，但原始 HF 特征少 1 帧 | token 一致，特征最大误差 0 |
+
+vLLM 将每段波形补零到 160 samples 的倍数；真实语音未裁剪。未量化 FP32 与
+BF16 特征最大差异约 0.003906，不能把量化差异冒充音频处理算法差异。
+这也证明只检查 token 一致不足以证明音频特征一致。
+
+精确容器 `fa8a704d07def626fd37bf965b1bf33ce8eb4e8b6b88138033db880b63d9cd6e`
+退出 0，源码 `8e3a9bc`，2 CPU/20 GiB/900 秒，无网络、无设备，禁用 Ascend plugin
+用于 CPU processor 检查。两例处理分别 2.66、7.61 秒；与模型生成时延无关。
+终态、源码和采样数/帧数/预算算术已独立核对，见
+[v2 结果](audio2tool-vllm-processor-v2-verified.json)。
+本结果不回写正在运行的 SFC/SLURP/FSC 输入，不证明当前 verl 数值差异由此引起；
+未来 actor/rollout 配对须明确采用相同波形边界及 dtype，并重新验证。
