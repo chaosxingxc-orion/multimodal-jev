@@ -85,3 +85,18 @@ fp32_features 条件：保存的全词表 logits 与 autocast/reference 完全�
 [第三份部分报告](omni-precision-train6-v1-logit-audit-partial-03.json)增加首条输入的
 audio_padding 条件，两个响应位置的全词表 logits 仍相同。仅完成 4/30 条件；
 公共长度对具体输入可能不增加 padding，因此此结果也不能外推为音频补齐普遍无影响。
+
+## 首条输入的五条件差异
+
+[第四份部分报告](omni-precision-train6-v1-logit-audit-partial-04.json)覆盖第一条输入全部
+五条件（5/30）。reference/autocast/fp32_features/audio_padding 的全词表 logits 相同；
+text_padding 对前一个条件的响应 log-prob 最大误差为 **0.1445865631**，超过原 0.1 门槛。
+首条原 prompt 1074 token，公共宽度1228，因此增加154个被 attention mask 排除的
+左 padding；有效 token 的 position_ids 仍从0递增。音频条件与前一个 cell 完全相同。
+两个响应位置的全词表 logits 最大误差1.125，全词表 log-prob 最大误差1.24999237。
+实际 false token 的 FP32 log-prob 从 -4.4115667343 变为 -4.5561532974。
+
+这提供了文本补齐相关差异的具体证据，但没有区分 attention kernel 数值、MoE计算
+形状或其他内部实现原因，不能将 BF16 归一化误差当作该变化的解释。仍需全部六条、
+实际 verl 微批1/2及后续HF/vLLM的独立检查；不修改原门槛、不重跑原失败实验。
+观测时同一精确容器继续运行并进入 row1/reference。

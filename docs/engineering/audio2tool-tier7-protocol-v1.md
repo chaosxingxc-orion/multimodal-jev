@@ -37,7 +37,8 @@
 连续 user 轮次照常保留。对应前缀共 7830 段，仍是完整 2146 条对话分母。
 该规则由任务时点决定，不依据模型输出或得分；它必须在正式请求配置中显式固定。
 
-当前尚未生成该规则下的正式 actor 请求或执行推理。之前全对话的 32768 容量审计
+该规则下的音频输入清单现已生成，正式任务 prompt/推理请求尚未固定，未执行推理。
+之前全对话的 32768 容量审计
 保留为较宽输入的容量证据，不冒充最终决策协议；将来正式 prompt 若变化仍须重验。
 同时，不能据此宣称复原了论文实际历史输入方式；论文 v1 与当前发布代码差异仍存在。
 
@@ -46,3 +47,21 @@
 以及 gold 调用均不得成为 actor 输入。目标仍只进入独立 scorer，数据全体保持外部 TEST。
 当前结构审计不证明目标调用与最后用户请求语义一致，也不解决发布 scorer 的顺序、
 重复调用、参数类型和全分母评分差异。
+
+## 已实现的输入投影
+
+`audio2tool_dialogue_input.decision_input` 只接受原无答案索引的明确字段集合，
+生成 `input.audios` 和独立 `provenance.post_decision_audios`；不原样复制未知字段。
+`messages` 仅接收 `input`、调用者核验后的波形、任务文字及独立 registry 哈希，
+不能把 provenance 当输入，也拒绝转写/答案等额外字段。完整有序音频及角色标记
+放在一次 user 消息中，音频位置与既有 processor 探针布局一致；不将 agent 声音
+转换为文本 assistant 历史。真正的 waveform hash/重采样和任务文字与 registry 的
+绑定仍由调用方检查，renderer 本身不声称已完成这两项验证。
+
+准备器仅打开固定 inventory、结构审计投影和独立 registry，不打开标注源文件。
+产物为 `audio2tool-tier7-decision-inputs-v1/inputs.jsonl` 和 `registry.json`，全部
+2146 条保持 external_test。独立逐条核对 active+post 恰好重建原索引，顺序/哈希/
+角色/字节数均保留；actor 7830 段、post 4 段，完整152工具表与原产物一致。
+19 项输入/协议测试通过，覆盖未来音频、连续 user、波形顺序和额外字段拒绝。
+见[完整准备与复核](audio2tool-tier7-decision-inputs-v1-verified.json)。
+这只是输入侧转换，尚未完成 scorer、Jev target 转换、模型推理或论文协议复现。

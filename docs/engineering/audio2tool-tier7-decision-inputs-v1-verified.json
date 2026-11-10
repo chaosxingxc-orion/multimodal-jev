@@ -1,0 +1,33 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-tier7-decision-inputs-v1",
+  "result": {
+    "status": "prepared",
+    "requests": 2146,
+    "actor_audio_segments": 7830,
+    "post_decision_audio_segments": 4,
+    "modified_boundaries": [
+      "audio2tool:tier7:query_00373",
+      "audio2tool:tier7:query_01258",
+      "audio2tool:tier7:query_01744",
+      "audio2tool:tier7:query_02023"
+    ],
+    "independent_tools": 152,
+    "input_hashes": {
+      "inventory": "01be8bb56beaa2996481761fbcc534510f89b58213a53668ab9e394b61cb0ef0",
+      "structure": "7a03a0d9b837d982aa3c4e554d25b631b5dfb0eb32af99fd9e7916ecc9e62409",
+      "registry": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4"
+    },
+    "inputs_sha256": "8eb63cd51e91fc0594217f518ce20b5e68e4e05521ee7090845e5b8f8ac74feb",
+    "registry_json_sha256": "d91d58772cc1d8bff48a4aece92ee211b87f54c3b32da986b27861b5ca6174b5",
+    "runner_sha256": "c429095095b0430e0e64838e8db96bb3c1c02115a8dfb8a436d7e1d5456d1f70",
+    "model_loaded": false,
+    "annotations_opened": false,
+    "scope": "Complete Tier7 audio-only decision prefixes and independent registry; no fixed task prompt, tokenizer/engine acceptance, scoring, Jev target conversion or model inference. Prior structure audit parsed labeled TEST release; this preparer does not."
+  },
+  "full_inventory_reconstruction_verified": true,
+  "independent_registry_unchanged": true,
+  "source_sha256": {
+    "src/multimodal_jev/audio2tool_dialogue_input.py": "30d94c4f35420d23f3daf62185f8b1cdc5d92f381f3e90cebbc6a10776e60086",
+    "tools/jev/prepare_audio2tool_dialogue_inputs.py": "c429095095b0430e0e64838e8db96bb3c1c02115a8dfb8a436d7e1d5456d1f70"
+  }
+}

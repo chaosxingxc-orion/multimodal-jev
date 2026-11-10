@@ -1,0 +1,131 @@
+{
+  "schema": "omni-precision-logit-audit-v1",
+  "status": "partial_artifacts",
+  "identity_sha256": "e39bdebee8d2d434df8a51efc9d57b4f697462f0a67e8577d72f7f2e97cae9dd",
+  "completed_cells": 5,
+  "expected_cells": 30,
+  "record_sha256": {
+    "row-00-reference.json": "751a76abd6a46c61ef47a086d8230a1f5625c862c80af1dabcb6ec90ca80dbad",
+    "row-00-autocast.json": "df572733824a563769b8ea4b11dd66498804327f2f937846414d7c2f8ee60879",
+    "row-00-fp32_features.json": "9c64c3fc23fa247f48363f2ac079857c809791f4534ad2af10c990282bd5faa9",
+    "row-00-audio_padding.json": "95d23ec732de0cb7997f72e62f51547f2f71612f7d53f9856e14f82622b502de",
+    "row-00-text_padding.json": "34ca2ebabfe80c8dba90a7b841bf2f6c20c5071f0e140472e43a66e52adc5d31"
+  },
+  "records": [
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "reference",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "fd863e8f3f19f029a7bb1b2699493eb27a84bda139e31cf74ee8f4b265eebfa5",
+      "seconds": 315.24652849999256
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "autocast",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "0bae359d822304d4b74db31abe884601a3649f412abe8fd3928f15d420206ebc",
+      "seconds": 309.65087478997884,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "fp32_features",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "c2300fc2c290050ee89e1da953ffe032a99136d37886519641f13dd5506a0d43",
+      "seconds": 308.4473273699987,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "audio_padding",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "4fc3e3f4145d833289ff7f4f3eb966d37a260b9df1b9078b65b3b7aa3756115e",
+      "seconds": 307.80141934001585,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "text_padding",
+      "fp32_log_probs": [
+        -4.556153297424316,
+        -2.6702524337451905e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.5625,
+        0.0
+      ],
+      "normalization_max_error": 0.006346702575683594,
+      "logits_sha256": "19b86961e3334c0f72de438601f8a634238fc5e5c3c762dde09b021ad156db3a",
+      "seconds": 363.0276656599599,
+      "predecessor_response_max_error": 0.14458656311035156,
+      "predecessor_full_logits_max_error": 1.125,
+      "predecessor_full_logprobs_max_error": 1.2499923706054688,
+      "predecessor_logits_equal": false
+    }
+  ],
+  "inference_replayed": false,
+  "parity_accepted": false,
+  "scope": "Saved logits only; no container/source/weight acceptance or actual-verl parity verdict.",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-precision-train6-v1/run"
+}
