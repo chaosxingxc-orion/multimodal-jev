@@ -26,6 +26,7 @@ if __name__ == '__main__':
     p.add_argument('--release', type=Path, required=True)
     p.add_argument('--predictions', type=Path, required=True)
     p.add_argument('--publisher-scorer', type=Path, required=True)
+    p.add_argument('--prediction-format', choices=('probabilities', 'raw-text'), default='probabilities')
     args = p.parse_args()
     manifest = json.loads((args.release / 'MANIFEST.json').read_text())
     references = args.release / 'references.json'
@@ -33,9 +34,13 @@ if __name__ == '__main__':
         raise ValueError('references changed')
     if file_hash(args.publisher_scorer) != manifest['publisher_scorer_sha256']:
         raise ValueError('publisher scorer changed')
-    result = score(json.loads(references.read_text()),
+    scorer = score
+    if args.prediction_format == 'raw-text':
+        from multimodal_jev.mmar_omni import score_text
+        scorer = score_text
+    result = scorer(json.loads(references.read_text()),
                    [json.loads(s) for s in args.predictions.read_text().splitlines()],
                    publisher_match(args.publisher_scorer))
-    print(json.dumps({**result, 'release_id': manifest['release_id'],
+    print(json.dumps({**result, 'release_id': manifest['release_id'], 'prediction_format': args.prediction_format,
                       'predictions_sha256': file_hash(args.predictions),
                       'scorer_sha256': file_hash(args.publisher_scorer)}, indent=2))
