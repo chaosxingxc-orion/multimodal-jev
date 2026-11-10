@@ -79,3 +79,25 @@ def test_disk_allocation_failure_is_retained_without_resubmission(tmp_path,monke
     with pytest.raises(RuntimeError,match='allocation failed'):
         executor.execute('actor',output,['tool'])
     assert (output.parent/'rollout-launch-intent.json').exists()
+
+
+def test_explicit_cpu_kv_allocation_is_in_launch_identity(tmp_path,monkeypatch):
+    executor,output=fixture(tmp_path)
+    executor.runtime['rollout']['kv_cache_gib']=3
+    def call(host,argv):
+        if argv[1]=='image':return NS(returncode=0,stdout='[]',stderr='')
+        assert 'VLLM_CPU_KVCACHE_SPACE=3' in argv
+        return NS(returncode=125,stdout='',stderr='unknown flag: --fixture')
+    monkeypatch.setattr(module,'call',call)
+    with pytest.raises(RuntimeError):executor.execute('rollout',output,['tool'])
+    intent=json.loads((output.parent/'rollout-launch-intent.json').read_text())
+    assert 'VLLM_CPU_KVCACHE_SPACE=3' in intent['argv']
+    executor.runtime['rollout']['kv_cache_gib']=2
+    with pytest.raises(ValueError,match='command changed'):executor.execute('rollout',output,['tool'])
+
+
+@pytest.mark.parametrize('value',[0,-1,True,1.5,4])
+def test_invalid_cpu_kv_allocation_rejected(tmp_path,monkeypatch,value):
+    executor,output=fixture(tmp_path);executor.runtime['rollout']['kv_cache_gib']=value
+    monkeypatch.setattr(module,'call',lambda *a:pytest.fail('must validate before launch'))
+    with pytest.raises(ValueError,match='KV cache'):executor.execute('rollout',output,['tool'])

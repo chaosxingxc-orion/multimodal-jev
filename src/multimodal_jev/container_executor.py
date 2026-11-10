@@ -66,8 +66,11 @@ class ContainerExecutor:
             cpuset=spec.get('cpuset')
             if not isinstance(cpuset,str) or not re.fullmatch(r'[0-9,-]+',cpuset):
                 raise ValueError('explicit rollout CPU set required')
+            kv_cache_gib=spec.get('kv_cache_gib',1)
+            if type(kv_cache_gib) is not int or not 1<=kv_cache_gib<spec['memory_gib']:
+                raise ValueError('positive integer KV cache smaller than container memory required')
             argv+=['--cpuset-cpus='+cpuset,'--shm-size=2g','-e','OMP_NUM_THREADS='+str(spec['cpus']),
-                   '-e','VLLM_CPU_OMP_THREADS_BIND='+cpuset,'-e','VLLM_CPU_KVCACHE_SPACE=1']
+                   '-e','VLLM_CPU_OMP_THREADS_BIND='+cpuset,'-e','VLLM_CPU_KVCACHE_SPACE='+str(kv_cache_gib)]
         else:
             argv+=['-v','/usr/local/Ascend/driver:/usr/local/Ascend/driver:ro']
         shared=Path(self.runtime['shared_root']).resolve()

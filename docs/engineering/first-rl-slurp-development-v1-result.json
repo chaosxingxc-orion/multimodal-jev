@@ -1,0 +1,693 @@
+{
+  "observed_unix": 1794268925.3347876,
+  "comparison_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/first-rl-development-comparison-v1/run/slurp/comparison.json",
+  "comparison_sha256": "210faf2e24650357bbc32373e53fcc53ecac3297fa7cc6c53448978f853252ad",
+  "recomputed_with_current_common_scorer": true,
+  "containers": {
+    "base": {
+      "id": "d0787114de9f56f6be9d1664030e4b86e609aadfd9f44c7d6e96646a8a7465d2",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T20:48:55.62496519Z",
+        "FinishedAt": "2026-11-09T21:31:25.79818744Z"
+      }
+    },
+    "candidate": {
+      "id": "0bc9e0f4ccb06b91f5ba95d16ed5a8adcd03600b6f03e2e8c9610d26472dc362",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:12:57.40290343Z",
+        "FinishedAt": "2026-11-09T23:59:27.856634Z"
+      }
+    }
+  },
+  "manifest_sha256": "8da2269b1e21e65b20d96100e11ddc092ab6414e433aef437bda7689f0aa5327",
+  "prediction_sha256": {
+    "base": "3e89a4b1c777abe993358a9b5d30802838682abc876f187ba34b7d55ab49df63",
+    "candidate": "1703e3184a625186e8a68001a31644165ec5544a11ff4de572c989ce2e876e24"
+  },
+  "summary": {
+    "base": {
+      "format_valid": 168,
+      "schema_valid": 159,
+      "total": 168,
+      "nonnull_targets": 81,
+      "nonnull_correct": 0,
+      "null_targets": 87,
+      "correct_null": 71,
+      "false_refusals": 72,
+      "answered": 25,
+      "by_variant": {
+        "native": {
+          "count": 24,
+          "correct": 0,
+          "refusals": 22,
+          "correct_refusals": 0
+        },
+        "permutation": {
+          "count": 24,
+          "correct": 0,
+          "refusals": 19,
+          "correct_refusals": 0
+        },
+        "rebind": {
+          "count": 24,
+          "correct": 0,
+          "refusals": 22,
+          "correct_refusals": 0
+        },
+        "slot.date": {
+          "count": 24,
+          "correct": 14,
+          "refusals": 16,
+          "correct_refusals": 14
+        },
+        "slot.time": {
+          "count": 24,
+          "correct": 18,
+          "refusals": 20,
+          "correct_refusals": 18
+        },
+        "slot.person": {
+          "count": 24,
+          "correct": 20,
+          "refusals": 22,
+          "correct_refusals": 20
+        },
+        "slot.place_name": {
+          "count": 24,
+          "correct": 19,
+          "refusals": 22,
+          "correct_refusals": 19
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 24,
+          "both_correct": 0,
+          "both_correct_rate": 0.0,
+          "semantic_equal": 0
+        },
+        "rebind": {
+          "groups": 24,
+          "both_correct": 0,
+          "both_correct_rate": 0.0,
+          "semantic_equal": 0
+        },
+        "missing_candidate": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null,
+          "semantic_equal": null
+        },
+        "noul": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null
+        }
+      }
+    },
+    "candidate": {
+      "format_valid": 168,
+      "schema_valid": 158,
+      "total": 168,
+      "nonnull_targets": 81,
+      "nonnull_correct": 0,
+      "null_targets": 87,
+      "correct_null": 59,
+      "false_refusals": 69,
+      "answered": 40,
+      "by_variant": {
+        "native": {
+          "count": 24,
+          "correct": 0,
+          "refusals": 22,
+          "correct_refusals": 0
+        },
+        "permutation": {
+          "count": 24,
+          "correct": 0,
+          "refusals": 19,
+          "correct_refusals": 0
+        },
+        "rebind": {
+          "count": 24,
+          "correct": 0,
+          "refusals": 21,
+          "correct_refusals": 0
+        },
+        "slot.date": {
+          "count": 24,
+          "correct": 11,
+          "refusals": 13,
+          "correct_refusals": 11
+        },
+        "slot.time": {
+          "count": 24,
+          "correct": 13,
+          "refusals": 14,
+          "correct_refusals": 13
+        },
+        "slot.person": {
+          "count": 24,
+          "correct": 18,
+          "refusals": 20,
+          "correct_refusals": 18
+        },
+        "slot.place_name": {
+          "count": 24,
+          "correct": 17,
+          "refusals": 19,
+          "correct_refusals": 17
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 24,
+          "both_correct": 0,
+          "both_correct_rate": 0.0,
+          "semantic_equal": 0
+        },
+        "rebind": {
+          "groups": 24,
+          "both_correct": 0,
+          "both_correct_rate": 0.0,
+          "semantic_equal": 0
+        },
+        "missing_candidate": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null,
+          "semantic_equal": null
+        },
+        "noul": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null
+        }
+      }
+    }
+  },
+  "speaker_bootstrap": {
+    "heldout-valid/format": {
+      "count": 42,
+      "clusters": 6,
+      "base_rate": 1.0,
+      "candidate_rate": 1.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/native": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/native/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/pair.permutation": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/pair.rebind": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/permutation": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/permutation/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/rebind": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/rebind/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.6666666666666666,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.8,
+      "candidate_rate": 0.8,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.person": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.6666666666666666,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.person/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.8,
+      "candidate_rate": 0.8,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.person/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.place_name": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.6666666666666666,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.place_name/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.8,
+      "candidate_rate": 0.8,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.place_name/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.time": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.6666666666666666,
+      "candidate_rate": 0.6666666666666666,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.time/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.8,
+      "candidate_rate": 0.8,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.time/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/format": {
+      "count": 126,
+      "clusters": 16,
+      "base_rate": 1.0,
+      "candidate_rate": 1.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.permutation": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.rebind": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.5555555555555556,
+      "candidate_rate": 0.3888888888888889,
+      "delta": -0.16666666666666669,
+      "delta_ci95": [
+        -0.35294117647058826,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date/null": {
+      "count": 17,
+      "clusters": 16,
+      "base_rate": 0.5882352941176471,
+      "candidate_rate": 0.4117647058823529,
+      "delta": -0.17647058823529416,
+      "delta_ci95": [
+        -0.375,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/slot.person": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.8888888888888888,
+      "candidate_rate": 0.7777777777777778,
+      "delta": -0.11111111111111105,
+      "delta_ci95": [
+        -0.29411764705882354,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.person/null": {
+      "count": 17,
+      "clusters": 15,
+      "base_rate": 0.9411764705882353,
+      "candidate_rate": 0.8235294117647058,
+      "delta": -0.11764705882352944,
+      "delta_ci95": [
+        -0.3125,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.person/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/slot.place_name": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.8333333333333334,
+      "candidate_rate": 0.7222222222222222,
+      "delta": -0.11111111111111116,
+      "delta_ci95": [
+        -0.2777777777777778,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.place_name/null": {
+      "count": 16,
+      "clusters": 14,
+      "base_rate": 0.9375,
+      "candidate_rate": 0.8125,
+      "delta": -0.125,
+      "delta_ci95": [
+        -0.3333333333333333,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.place_name/present": {
+      "count": 2,
+      "clusters": 2,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.7777777777777778,
+      "candidate_rate": 0.5,
+      "delta": -0.2777777777777778,
+      "delta_ci95": [
+        -0.5,
+        -0.1
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time/null": {
+      "count": 17,
+      "clusters": 15,
+      "base_rate": 0.8235294117647058,
+      "candidate_rate": 0.5294117647058824,
+      "delta": -0.2941176470588235,
+      "delta_ci95": [
+        -0.5555555555555556,
+        -0.09523809523809523
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    }
+  },
+  "interpretation": "one FSC update does not improve nonnull SLURP decisions (0/81 for both); correct null predictions fall71->59 of87, and false refusals72->69; more responses without correct nonnull answers. All-null control87/168 exceeds both mixed-view totals. Descriptive fixed development diagnosis, no causal algorithm comparison or final generalization claim."
+}

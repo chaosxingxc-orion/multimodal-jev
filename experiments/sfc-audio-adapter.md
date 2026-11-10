@@ -104,3 +104,15 @@ See [failure and new launch](../docs/engineering/sfc-vllm-cpu-v1-failure-v2-laun
 The full-pool reward diagnosis v1 queue stopped on this dependency failure;
 a [new v2 queue](../docs/engineering/pair-signal-full-pool-v2-queued.json) observes
 the exact v2 SFC container and retains identical diagnosis configuration.
+
+CPU v2 also exited1 before generation: actual allocation remained1GiB despite
+the engine parameter. This CPU build's VLLM_CPU_KVCACHE_SPACE environment setting
+overrode it. The executor now permits an explicit rollout.kv_cache_gib (positive
+integer below container memory), persists it in launch identity, and rejects
+changes on an existing stage. CPU v3 sets both environment and engine to3GiB;
+all prompt/audio/context/decoding inputs remain unchanged. See
+[new launch](../docs/engineering/sfc-vllm-cpu-v3-launch.json).
+The old full-pool queue stopped, and the observation-only two-step launcher was
+stopped before any schedule submission. New separately named
+[dependency queues](../docs/engineering/sfc-v3-dependent-queues.json) observe v3;
+no training container was stopped or automatically resubmitted.

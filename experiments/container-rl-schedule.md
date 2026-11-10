@@ -102,3 +102,14 @@ See [chain result](../docs/engineering/vllm-two-step-chain-v3-result.json) and
 Both iterations had zero pair bonuses: this demonstrates on-policy continuation,
 not an algorithmic advantage. The separate mixed-length actor is still pending;
 the prepared instrumented scheduler has not launched.
+
+A detached one-shot launcher now waits for mixed-actor Docker/application
+success and a read-only artifact audit, followed by successful SFC CPU and
+full-pool sampling/audit completion to release the local CPU allocation. It
+checks the prepared source/config hashes before invoking the unchanged scheduler.
+After two iterations it verifies all six exact container exits, runs independent
+actor step1/step2 audits and requires complete trajectory budget receipts.
+Failures stop without resubmission. The initial queue was stopped before launch
+when SFC v2 failed; the [replacement queue](../docs/engineering/sfc-v3-dependent-queues.json)
+observes SFC v3 and the corresponding new full-pool queue. This is queued work,
+not a completed scheduler integration or algorithm comparison.

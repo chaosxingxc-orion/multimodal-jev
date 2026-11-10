@@ -25,3 +25,34 @@ four CPU cores and16GiB per evaluation. Verify the completed actor terminal,
 Docker exit and saved adapter hashes before launching. The two existing SFT
 comparators must have successful exact container IDs and complete matching
 predictions before finalization. Do not alter the historical SFT outputs.
+
+## Completed SLURP diagnostic
+
+The168-view SLURP candidate and unchanged SFT comparator both have verified
+exact Docker exit0 and complete predictions. Recomputing the comparison with
+the current common scorer reproduces the saved2,000-draw speaker bootstrap.
+See [result](../docs/engineering/first-rl-slurp-development-v1-result.json).
+
+| Measure | SFT initializer | One FSC RL update |
+| --- | ---: | ---: |
+| Strict format |168/168|168/168|
+| Schema valid |159/168|158/168|
+| Correct non-null targets |0/81|0/81|
+| Correct null targets |71/87|59/87|
+| False refusals on non-null targets |72/81|69/81|
+| Native intent |0/24|0/24|
+| Permutation/rebind both-correct |0/24 each|0/24 each|
+
+Date/time/person/place slot correctness changes14/18/20/19 to11/13/18/17
+(each out of24), entirely from absent-slot null predictions. Answers increase
+from25 to40 without a correct non-null answer. The all-null control obtains87
+correct rows, exceeding both policies' mixed-view totals; those totals must not
+be presented as semantic transfer. Most nonzero per-variant bootstrap intervals
+include zero; the valid-partition time-slot interval is negative, but these are
+descriptive multiple development comparisons, not corrected confirmatory tests.
+
+This fixed one-update policy shows no non-null transfer gain and loses correct
+abstentions. It is neither a matched-budget algorithm comparison nor evidence
+that all RL methods fail. The initializer, continuation checks and full-pool
+TRAIN signal diagnosis stay fixed; no checkpoint/learning-rate/prompt selection
+is made from this diagnostic. FSC evaluation remains pending separately.
