@@ -39,6 +39,12 @@
 
 FSC 已完整下载的状态继承本地验收。本项目 **94.1522% ± 0.2275 pp** 是 [frozen head valid 三 seed 结果](../../experiments/fsc-frozen-audio-full.md)，不是 test，也不是上述学术方法复现。现有 **31 条训练录音 / 186 视图**的 SFT/RL 是开发诊断；六视图来自同源录音，不能算独立扩大的样本量。后续要同时交付全量 native test 和独立的六视图 test 表。
 
+冻结Qwen3-Omni父提示后续已完成完整官方TEST的3793录音×6视图并独立复核：
+native严格JSON候选选择1752/3793（46.1904%），六视图全对9/3793（0.2373%），
+见[完整结果表](../../experiments/fsc-omni-official-test-v2-parent.md)。这是无FSC权重
+训练、带严格消费格式的端到端基线，与上述监督训练分类器的条件不同；不能
+将它称为学术模型复现。已冻结p1的同协议TEST对照仍在运行，尚无完整提升结论。
+
 ### 2.2 SLURP：实体指标、intent 和训练来源分别锁定
 
 [EMNLP 2020 原论文](https://aclanthology.org/2020.emnlp-main.588.pdf) Table 6：real train/dev/test **50,628 / 8,690 / 13,078 录音**；synthetic **69,253** 来自已有本地完整性验收，另列，绝不并入 real。文本条数与录音条数不同，多麦克风/同文本录音应保留来源关联。

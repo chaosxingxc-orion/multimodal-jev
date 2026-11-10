@@ -1,0 +1,94 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-official-test-v2/parent",
+  "container_id": "ae16d2e146ecab6207ac5779b6b561336a6d8ef941a83e4e279c9fde4526ebb0",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "553c27d823c7e2209fa4041ba7632e5e9d3e3d02",
+  "source_files_verified": 729,
+  "intent_sha256": "c920bd9e03de905495f695e6bacd043f5e316962e9b5806d405901c7e96c539a",
+  "inspection_sha256": "c46dd38eea3a410bf692fdddf46706927f6cca6fc973a5641c476b026226457d",
+  "protocol_sha256": "55b0e6def7b629dfe5e8912450f00d2218930000291b0866e48b64d5c779a3bf",
+  "result_sha256": "2d7734c204d7583f074673bc2ecd568e9d50870dbcc9e67539c7702da09fbc7d",
+  "score_sha256": "2fddff196491d8e82062c78bac9eb96769fba1b48ede31acba03ef4ab9f9dd7f",
+  "predictions_sha256": "340b02cc4b20dd6bc721bf71bcc4c9e4f00df4e45029a3181071a1ee60b2834a",
+  "targets_sha256": "66125831109ffe3471042ff43596b7e42fd5410874d74c47e489be25e0a3e875",
+  "metrics": {
+    "replicate": 0,
+    "by_variant": {
+      "native": {
+        "examples": 3793,
+        "correct": 1752,
+        "format_valid": 1922,
+        "schema_valid": 1922,
+        "accuracy": 0.4619035064592671
+      },
+      "permutation": {
+        "examples": 3793,
+        "correct": 2037,
+        "format_valid": 2176,
+        "schema_valid": 2176,
+        "accuracy": 0.5370419193250725
+      },
+      "rebind": {
+        "examples": 3793,
+        "correct": 1768,
+        "format_valid": 1981,
+        "schema_valid": 1981,
+        "accuracy": 0.4661218033219088
+      },
+      "missing_candidate": {
+        "examples": 3793,
+        "correct": 36,
+        "format_valid": 1802,
+        "schema_valid": 1501,
+        "accuracy": 0.009491167940943844
+      },
+      "noul.True": {
+        "examples": 3793,
+        "correct": 2561,
+        "format_valid": 2825,
+        "schema_valid": 2825,
+        "accuracy": 0.6751911415765884
+      },
+      "noul.False": {
+        "examples": 3793,
+        "correct": 2291,
+        "format_valid": 3117,
+        "schema_valid": 3117,
+        "accuracy": 0.6040073820195097
+      }
+    },
+    "pairs": {
+      "permutation": {
+        "groups": 3793,
+        "both_correct": 1382,
+        "both_correct_rate": 0.3643553915106776
+      },
+      "rebind": {
+        "groups": 3793,
+        "both_correct": 1410,
+        "both_correct_rate": 0.37173741102030056
+      },
+      "missing_candidate": {
+        "groups": 3793,
+        "both_correct": 19,
+        "both_correct_rate": 0.005009227524387028
+      },
+      "noul": {
+        "groups": 3793,
+        "both_correct": 1729,
+        "both_correct_rate": 0.45583970471921964
+      }
+    },
+    "all_six_correct": 9,
+    "all_six_correct_rate": 0.002372791985235961
+  },
+  "source_groups": 3793,
+  "requests": 22758,
+  "length_limited": 0,
+  "output_tokens": 217240,
+  "sum_request_seconds": 39622.3808517296,
+  "elapsed_seconds": 40276.46704328002,
+  "weight_updates": 0,
+  "test_feedback_used_for_optimization": false,
+  "scope": "Full frozen parent official FSC TEST: independent strict raw JSON scoring, all six correlated views, original native label mappings, paired outcomes and actual NPU4/5 container authenticated. p1 comparison pending; no weight-training or cross-task improvement claim. Native view uses our JSON candidate-selection interface and is not an identical academic supervised classifier protocol."
+}
