@@ -1,0 +1,34 @@
+{
+  "schema": "sfc-jev-prompt-selection-rules-registration-v2",
+  "plan": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-complete-shards-v1/selection.json",
+  "plan_sha256": "239932c3cc568ee181a0d562e514b20d6341b2b7a4c83b6c22bbfaf2916d452c",
+  "partition": {
+    "part": "selection",
+    "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-prompt-partition-v3.json",
+    "sha256": "84df8dc98723a50baa7352be11049cd8c692fb2e2da94ff5de650392abe09330"
+  },
+  "bundles": 1106,
+  "conversations": 899,
+  "decisions": 17469,
+  "shards": 18,
+  "rules_files": {
+    "tools/jev/compare_sfc_prompt_selection.py": "ebb4371beefa3cf398ea90dee1800d67682c78ecbaa24b96b84bdeb9989577ef",
+    "tools/jev/run_sfc_jev_shard_queue.py": "8afcdbc94d95b11fd09d7c2730a73865382659ae44d080aa69b21d65e6f6265c",
+    "src/multimodal_jev/sfc_prompt_selection.py": "834c3c08cc13563213e7117de228a426443ae526d04e25a9a242c1065647864b",
+    "src/multimodal_jev/sfc_jev_score.py": "ac5f84b5f7fb1904e98619db8a2ae3a4adc9e3c1544815615b3961981668a059",
+    "src/multimodal_jev/sfc.py": "dd36935226870fbd3236a95c62999eb8521fd6f7b0d854fe9a7e9474a0211236",
+    "src/multimodal_jev/sfc_jev.py": "d1719145864f0cf6025e9cb9ebc0dc7fe84711e6a9493ed5b9f65676d9c18ef7",
+    "src/multimodal_jev/sfc_definitions.py": "3e5b9bc13d7b2a88590befcde0e05f766798c3c1dccd65b9d839e9a963560c9c",
+    "src/multimodal_jev/consumption.py": "fda9094eec92384ed8a5c1d8e012ca034ecdddf86c6a4dfc11ba35111ac83675",
+    "src/multimodal_jev/sfc_consumption.py": "cd6ab271ae82bdfa1dbb969f357e5f1712e4bc153ed6b76503da286cfac1970d",
+    "src/multimodal_jev/sfc_omni.py": "1503b81ea888f62bb2088d04a0f3638e5aeb8e0142b558f13a2f0470aa927d50",
+    "src/multimodal_jev/sfc_audio.py": "00c258d470092462b31acea146c55ab672f8b6cd0bcbaeb7ec63b4c585f62b79",
+    "src/multimodal_jev/baseline.py": "cf9e1ca0e901d0d0c694e920f7db6623e46151d767d11ea657cce9fc2f729927",
+    "src/multimodal_jev/task_schema.py": "62f4335ce2529947196a49f6b52233a3e5152ac97128b47933ec9029c84335eb"
+  },
+  "protocol_sha256": "b698ee61cb0411351f2d60169dbc351edf7a0c175ad96d9201ea37db09909439",
+  "candidate_roster": null,
+  "selection_dispatched": false,
+  "scope": "Queue enforces full selection comparison binding before dispatch. Ranking and population unchanged; actual candidate roster and selection results do not yet exist. Local records are not external timestamp authentication.",
+  "supersedes_sha256": "53295d19150ac4299bade7a99fa0ac676c565004598368ea6f9b2855be34adb9"
+}

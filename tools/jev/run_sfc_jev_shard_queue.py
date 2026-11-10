@@ -21,6 +21,7 @@ from verify_sfc_jev_context import verify as verify_context
 from watch_sfc_native_full import dispatch_once
 from merge_sfc_jev_shards import score as merge_score
 from multimodal_jev.sfc_candidate_execution import context_spec
+from compare_sfc_prompt_selection import dispatch_binding
 
 
 def code_files(source):
@@ -55,7 +56,7 @@ def check_source(root,intent):
         raise ValueError('execute the exported queue runner with its source/src on PYTHONPATH')
     import inspect
     for func in (select_inputs,check_probe,verify_plan,accept_probe,accept_shard,verify_context,
-                 dispatch_once,merge_score,file_hash,atomic_json):
+                 dispatch_once,merge_score,file_hash,atomic_json,dispatch_binding):
         path=Path(inspect.getsourcefile(func)).resolve()
         if not path.is_relative_to(source):
             raise ValueError('queue dependencies must load from exported source')
@@ -78,12 +79,23 @@ def check_template(cfg):
     return plan
 
 
-def prepare(root,template,template_hash,scorer,scorer_hash,source_commit):
+def comparison_binding(root,cfg,plan,comparison):
+    selection=plan['partition'] is not None and plan['partition']['part']=='selection'
+    if not selection:
+        if comparison is not None:raise ValueError('comparison binding is only for selection')
+        return None
+    if not isinstance(comparison,dict) or set(comparison)!={'path','sha256'}:
+        raise ValueError('selection queue requires a preregistered comparison spec')
+    return dispatch_binding(root,cfg,plan,comparison['path'],comparison['sha256'])
+
+
+def prepare(root,template,template_hash,scorer,scorer_hash,source_commit,comparison=None):
     """Export a pinned commit locally; no NPU allocation or generation."""
     root=Path(root).resolve();template=Path(template)
     if file_hash(template)!=template_hash or file_hash(scorer)!=scorer_hash:
         raise ValueError('registered template or scorer changed')
     cfg=read(template);plan=check_template(cfg)
+    comparison=comparison_binding(root,cfg,plan,comparison)
     if root.exists():raise FileExistsError('preserve previous queue preparation')
     revision,files,source_files=committed_snapshot(Path(__file__).resolve().parents[2],source_commit)
     versions={k:importlib.metadata.version(k) for k in ('opencc-python-reimplemented','regex')}
@@ -107,7 +119,7 @@ def prepare(root,template,template_hash,scorer,scorer_hash,source_commit):
         split=plan['split'],partition=plan['partition'],physical_devices=[6,7],image=cfg['image'],
         source=str(source),source_commit=revision,source_files=source_files,wall_seconds_per_shard=86400,
         official_scorer=str(Path(scorer).resolve()),official_scorer_sha256=scorer_hash,
-        scorer_versions=versions,
+        scorer_versions=versions,comparison=comparison,
         automatic_retry=False,dispatched=False,
         scope='Complete fixed-prompt population. Preparation does not allocate NPU, call a teacher or train weights.')
     atomic_json(root/'queue-plan.json',intent)
@@ -128,6 +140,7 @@ def check_pins(root,intent):
             or cfg['shard_plan_sha256']!=intent['shard_plan_sha256']):
         raise ValueError('queue template differs')
     plan=check_template(cfg)
+    comparison_binding(root,cfg,plan,intent.get('comparison'))
     if (intent['shard_ids']!=[s['id'] for s in plan['shards']]
             or any(intent[k]!=plan[k] for k in ('bundles','decisions','split','partition'))):
         raise ValueError('entire registered population required')
@@ -178,7 +191,8 @@ def execute(root,expected_plan_hash):
     if any((root/s).exists() for s in intent['shard_ids']):raise FileExistsError('prior shard preparation exists')
     cfg,plan=check_pins(root,intent)
     with (root/'dispatch-intent.json').open('x') as handle:
-        handle.write(json.dumps(dict(queue_plan_sha256=expected_plan_hash,started_unix=time.time(),automatic_retry=False)))
+        handle.write(json.dumps(dict(queue_plan_sha256=expected_plan_hash,started_unix=time.time(),automatic_retry=False,
+            comparison_sha256=(intent.get('comparison') or {}).get('sha256'))))
         handle.flush()
         import os
         os.fsync(handle.fileno())
@@ -213,11 +227,14 @@ def execute(root,expected_plan_hash):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--prepare',action='store_true')
     p.add_argument('--template',type=Path);p.add_argument('--template-hash');p.add_argument('--official-scorer',type=Path)
-    p.add_argument('--scorer-hash');p.add_argument('--source-commit');p.add_argument('--queue-plan-hash');a=p.parse_args()
+    p.add_argument('--scorer-hash');p.add_argument('--source-commit');p.add_argument('--queue-plan-hash')
+    p.add_argument('--comparison-spec',type=Path);p.add_argument('--comparison-hash');a=p.parse_args()
     if a.prepare:
         if not all((a.template,a.template_hash,a.official_scorer,a.scorer_hash,a.source_commit)):
             p.error('all preparation pins including source commit required')
-        print(json.dumps(prepare(a.root,a.template,a.template_hash,a.official_scorer,a.scorer_hash,a.source_commit),indent=2))
+        if bool(a.comparison_spec)!=bool(a.comparison_hash):p.error('both comparison pins required')
+        comparison=None if a.comparison_spec is None else dict(path=str(a.comparison_spec),sha256=a.comparison_hash)
+        print(json.dumps(prepare(a.root,a.template,a.template_hash,a.official_scorer,a.scorer_hash,a.source_commit,comparison),indent=2))
     else:
         if not a.queue_plan_hash:p.error('queue plan hash required')
         with (a.root/'queue.lock').open('a') as lock:

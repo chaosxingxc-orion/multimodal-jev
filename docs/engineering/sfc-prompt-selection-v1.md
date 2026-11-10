@@ -67,6 +67,20 @@ PYTHONPATH=src .venv/bin/python tools/jev/compare_sfc_prompt_selection.py \
 比较器不会把自报时间戳或事后提供的 spec 哈希当成派发前登记证据。
 源代码固定机制也不替代真实候选质量验证。
 
+### 队列绑定修订（v2）
+
+完整 selection 队列在 prepare 时必须传入 `--comparison-spec` 和
+`--comparison-hash`，并在 queue-plan 中保存完整名单的绑定。
+队列校验计划、实际 prompt/instruction/candidate 身份和预定 completed-runs 路径；
+缺失或不匹配时在 dispatch-intent 写入前拒绝执行。后续每个分片也重新检查。
+dispatch-intent 在第一次生成前落盘并 fsync，包含 comparison SHA256。
+比较器要求 queue-plan 与 dispatch-intent 绑定同一份 spec，记录二者哈希。
+这些是本地执行顺序的证据链，不是外部时间戳认证，不能防止有权限者整体伪造记录。
+learning 和 TEST 队列不能误用 selection comparison 参数。
+
+评分排序和数据人口没有改变。v1 规则哈希记录作为历史证据保留；
+v2 登记新增的队列与比较器源码哈希，尚未生成真实候选或执行 selection。
+
 ## 后续范围
 
 胜出结果必须另行绑定 TEST 的提示冻结协议后，才能运行候选 TEST；

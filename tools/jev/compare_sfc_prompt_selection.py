@@ -17,7 +17,7 @@ from merge_sfc_jev_shards import collect
 def rules_files():
     """Bind the comparator and semantic scoring dependencies before dispatch."""
     root=Path(__file__).parents[2]
-    names=['tools/jev/compare_sfc_prompt_selection.py']
+    names=['tools/jev/compare_sfc_prompt_selection.py','tools/jev/run_sfc_jev_shard_queue.py']
     names += ['src/multimodal_jev/'+name+'.py' for name in (
         'sfc_prompt_selection','sfc_jev_score','sfc','sfc_jev',
         'sfc_definitions','consumption','sfc_consumption','sfc_omni','sfc_audio',
@@ -25,7 +25,7 @@ def rules_files():
     return {name:file_hash(root/name) for name in names}
 
 
-def run(spec_path, spec_hash):
+def load_spec(spec_path, spec_hash):
     if file_hash(spec_path)!=spec_hash:raise ValueError('registered selection spec changed')
     spec=json.loads(spec_path.read_text())
     if set(spec)!={'schema','plan','plan_sha256','roster','prompts','rules_files'} or spec['schema']!='sfc-jev-prompt-comparison-v1':
@@ -40,6 +40,41 @@ def run(spec_path, spec_hash):
     if (type(roster) is not list or not 2<=len(roster)<=3 or roster[0]!='parent'
             or roster!=[k for k in ('parent','p1','p2') if k in roster] or set(spec['prompts'])!=set(roster)):
         raise ValueError('full preregistered candidate roster required')
+    for pin in spec['prompts'].values():
+        if set(pin)!={'roster_path','instruction_sha256','candidate'}:
+            raise ValueError('exact pre-dispatch candidate binding required')
+    return spec,plan
+
+
+def dispatch_binding(root, cfg, plan, spec_path, spec_hash):
+    """Check a queue against the complete roster before any generation."""
+    spec,registered=load_spec(Path(spec_path),spec_hash)
+    if (registered!=plan or Path(spec['plan']).resolve()!=Path(cfg['shard_plan']).resolve()
+            or spec['plan_sha256']!=cfg['shard_plan_sha256']):
+        raise ValueError('queue differs from registered selection plan')
+    pin=spec['prompts'].get(cfg['prompt_id'])
+    if (pin is None or Path(pin['roster_path']).resolve()!=Path(root).resolve()/'completed-runs.json'
+            or pin['instruction_sha256']!=cfg['instruction_sha256'] or pin['candidate']!=cfg.get('candidate')):
+        raise ValueError('queue differs from registered selection candidate')
+    return dict(path=str(Path(spec_path).resolve()),sha256=spec_hash)
+
+
+def check_dispatch_record(completed, spec_hash):
+    """Require the one-shot queue to have bound this spec before dispatch."""
+    root=completed.parent
+    intent=json.loads((root/'queue-plan.json').read_text())
+    dispatch=json.loads((root/'dispatch-intent.json').read_text())
+    if ((intent.get('comparison') or {}).get('sha256')!=spec_hash
+            or dispatch.get('comparison_sha256')!=spec_hash
+            or dispatch.get('queue_plan_sha256')!=file_hash(root/'queue-plan.json')):
+        raise ValueError('selection dispatch did not bind the comparison spec')
+    return dict(queue_plan_sha256=file_hash(root/'queue-plan.json'),
+                dispatch_intent_sha256=file_hash(root/'dispatch-intent.json'))
+
+
+def run(spec_path, spec_hash):
+    spec,plan=load_spec(spec_path,spec_hash)
+    plan_path=Path(spec['plan']);roster=spec['roster']
     all_predictions={};input_rows=None;actors={};evidence={}
     for prompt in roster:
         pin=spec['prompts'][prompt]
@@ -48,6 +83,7 @@ def run(spec_path, spec_hash):
         # Roster path is predeclared; completed bytes cannot exist before dispatch.
         # collect rechecks each exact Docker identity and complete population.
         completed=Path(pin['roster_path']);completed_hash=file_hash(completed)
+        dispatch_evidence=check_dispatch_record(completed,spec_hash)
         _,rows,predictions,receipts,actor=collect(plan_path,spec['plan_sha256'],completed,completed_hash)
         cfg=actor['config']
         if (cfg['prompt_id']!=prompt or cfg['instruction_sha256']!=pin['instruction_sha256']
@@ -65,7 +101,7 @@ def run(spec_path, spec_hash):
         actors[prompt]=common
         all_predictions[prompt]=[{k:p[k] for k in ('example_id','decision_id','request_sha256','raw_text')}
                                  for p in predictions]
-        evidence[prompt]=dict(roster_sha256=completed_hash,shards=receipts)
+        evidence[prompt]=dict(roster_sha256=completed_hash,shards=receipts,dispatch=dispatch_evidence)
     # Only after every prompt's entire population has passed engineering checks.
     release=Path(plan['release']);manifest=json.loads((release/'MANIFEST.json').read_text())
     target=release/'train_id.targets.jsonl'

@@ -174,3 +174,13 @@ print('exported imports accepted')
     result=subprocess.run([sys.executable,'-B','-c',script,str(root)],cwd=tmp_path,
         env={**os.environ,'PYTHONPATH':str(source/'src')},capture_output=True,text=True,check=True)
     assert result.stdout.strip()=='exported imports accepted'
+
+
+def test_selection_without_comparison_stops_before_dispatch_intent(tmp_path,monkeypatch):
+    m,root,intent,cfg,plan=fixture(tmp_path,monkeypatch)
+    selection={**plan,'partition':{'part':'selection'},'split':'train_id'}
+    monkeypatch.setattr(m,'check_template',lambda _:selection)
+    monkeypatch.setattr(m,'dispatch_once',lambda *a:pytest.fail('must not dispatch'))
+    with pytest.raises(ValueError,match='preregistered comparison'):
+        m.execute(root,file_hash(root/'queue-plan.json'))
+    assert not (root/'dispatch-intent.json').exists()

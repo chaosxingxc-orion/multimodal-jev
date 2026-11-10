@@ -63,7 +63,7 @@ def test_incomplete_population_never_selects_a_prompt(change):
     with pytest.raises(ValueError):compare(rows,gold,preds,roster)
 
 
-@pytest.mark.parametrize('change',[None,'failed_candidate','runtime','instruction','learning','rules'])
+@pytest.mark.parametrize('change',[None,'failed_candidate','runtime','instruction','learning','rules','dispatch'])
 def test_comparison_checks_all_runs_before_selection_labels(tmp_path,monkeypatch,change):
     from pathlib import Path
     from multimodal_jev.baseline import file_hash
@@ -88,6 +88,10 @@ def test_comparison_checks_all_runs_before_selection_labels(tmp_path,monkeypatch
             candidate=None if name=='parent' else {'fixture':True}) for name in ('parent','p1')})
     if change=='rules':spec['rules_files']['src/multimodal_jev/sfc_jev_score.py']='changed'
     path=tmp_path/'spec.json';path.write_bytes(canonical(spec))
+    queue=roster.parent/'queue-plan.json'
+    queue.write_bytes(canonical(dict(comparison=dict(path=str(path),sha256=file_hash(path)))))
+    (roster.parent/'dispatch-intent.json').write_bytes(canonical(dict(
+        queue_plan_sha256=file_hash(queue),comparison_sha256='wrong' if change=='dispatch' else file_hash(path))))
     if change is None:
         result=tool.run(path,file_hash(path))
         assert calls==['parent','p1'] and result['winner']=='parent'
@@ -96,3 +100,34 @@ def test_comparison_checks_all_runs_before_selection_labels(tmp_path,monkeypatch
         # No target file: the expected engineering failure must occur first.
         (release/'train_id.targets.jsonl').unlink()
         with pytest.raises(ValueError):tool.run(path,file_hash(path))
+
+
+@pytest.mark.parametrize('change',[None,'missing','rules','prompt','root','plan','nonselection'])
+def test_selection_queue_requires_matching_preregistered_spec(tmp_path,monkeypatch,change):
+    from pathlib import Path
+    from multimodal_jev.baseline import file_hash,atomic_json
+    from test_sfc_jev_merge import fixture as merge_fixture
+    from test_sfc_jev import load_tool
+    monkeypatch.syspath_prepend(str(Path(__file__).parents[1]/'tools/jev'))
+    _,plan_path,_,_,_=merge_fixture(tmp_path,monkeypatch,'selection')
+    queue=load_tool('run_sfc_jev_shard_queue')
+    comparator=load_tool('compare_sfc_prompt_selection')
+    plan=json.loads(plan_path.read_text());root=tmp_path/'new-queue'
+    cfg=dict(shard_plan=str(plan_path),shard_plan_sha256=file_hash(plan_path),
+        prompt_id='parent',instruction_sha256='parenthash')
+    spec=dict(schema='sfc-jev-prompt-comparison-v1',plan=str(plan_path),plan_sha256=file_hash(plan_path),
+        rules_files=comparator.rules_files(),roster=['parent','p1'],prompts={
+            p:dict(roster_path=str((root if p=='parent' else tmp_path/'p1')/'completed-runs.json'),
+                   instruction_sha256=p+'hash',candidate=None) for p in ('parent','p1')})
+    if change=='rules':spec['rules_files']={}
+    path=tmp_path/'comparison.json';atomic_json(path,spec)
+    binding=dict(path=str(path),sha256=file_hash(path))
+    if change=='missing':binding=None
+    if change=='prompt':cfg['instruction_sha256']='changed'
+    if change=='root':root=tmp_path/'other'
+    if change=='plan':plan={**plan,'bundles':0}
+    if change=='nonselection':plan={**plan,'partition':None}
+    if change is None:assert queue.comparison_binding(root,cfg,plan,binding)==binding
+    else:
+        with pytest.raises(ValueError):queue.comparison_binding(root,cfg,plan,binding)
+    assert not root.exists()
