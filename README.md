@@ -8,8 +8,10 @@
 的类型化决策读出、语义一致性评估方法，以及 [omni](https://github.com/chaosxingxc-orion/omni)
 的多模态证据处理与可复现实验组织方式。
 
-当前阶段：已完成资源调研、共享下载、NGA/verl/vLLM 兼容镜像及 CPU SFT 初始化，正在进行开发集对照评测；
-尚未完成学界基线复现、NPU 训练或 RL 效果验证。详细结论见 [研究报告](docs/research/README.md)，下载与整理状态见 [本地资源](docs/research/06-local-assets.md)。
+当前主线使用本地 **Qwen3-Omni-30B-A3B-Instruct**，直接消费音频与任务定义，输出任务结果。
+已准备固定NGA/verl/vLLM镜像，正在执行冻结基线、原生/Jev比较与接口验证；学界基线
+完整复现、真实Omni权重训练收益和跨任务泛化尚未完成。Qwen3-ASR保留为专用ASR参考
+及未来适配对象。详细结论见 [研究报告](docs/research/README.md)，本地资产见 [本地资源](docs/research/06-local-assets.md)。
 研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
 
 当前执行顺序已调整为：**冻结基座推理 → 远程教师 TFRL 提示词优化 → xx-jev 数据及同类优化**。
@@ -56,8 +58,19 @@ python3 -m venv .venv
 来源与初始化边界见 [参考说明](docs/references.md)，协作规则见 [AGENTS.md](AGENTS.md)。
 本地 `wiki/` 是仓库内文档，尚未配置独立 GitHub Wiki 同步。
 
-三阶段目标、前瞻实验设计及当前限制见 [RL 研究协议](proposal/01-rl-research-protocol.md)；
+长期算法问题、受控对照与泛化判据见 [Omni RL 设计](proposal/03-omni-sfc-rl-design-v1.md)；
 镜像兼容性见 [运行时说明](docs/engineering/runtime.md)，数据与奖励入口见 [数据契约](docs/engineering/data-contract.md)。
+
+工程证据入口包括[完整CPU数值修复候选](docs/engineering/omni-compact-keys-diagnostic-v1.md)、
+[真实verl冻结actor比较](docs/engineering/omni-compact-verl-v1.md)和
+[Audio2Tool原生/Jev解码成本测量](docs/engineering/audio2tool-decode-profile-v1.md)。
+六条CPU候选响应logits与参考一致不证明NPU概率一致、训练收益或任务泛化。
+
+## 历史实验记录
+
+以下保留早期ASR、SFT与转写对照记录供追溯，所述“已启动”“等待执行”均为当时
+状态，不是当前任务安排。串联文本模型和参考转写替换不再派发；旧SFT/RL配置不能
+直接用于当前Omni actor。原始设计见[历史RL协议](proposal/01-rl-research-protocol.md)。
 
 实现进度：已加入 [冻结声学头开发实验](experiments/fsc-frozen-audio-pilot.md)、
 [音频策略与 verl 接入审计](docs/engineering/audio-rl-integration.md)，以及成对正确性奖励。
