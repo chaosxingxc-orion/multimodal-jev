@@ -1,0 +1,64 @@
+{
+  "container_id": "2b33c0283241d09ec935f534c712b11cd558d05304672242ce48f1c8d97ea53c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T02:14:47.27958571Z",
+    "FinishedAt": "2026-11-10T02:18:56.23224613Z"
+  },
+  "result": {
+    "status": "passed",
+    "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+    "prompts": 6,
+    "rollouts": 12,
+    "rollouts_sha256": "6e37b032bc70780538a98aea9cff4b45f11c933c69a6719371d5673dd7deabc1",
+    "generation_budget": {
+      "requests": 6,
+      "responses": 12,
+      "prompt_tokens_per_request": [
+        930,
+        930,
+        932,
+        907,
+        163,
+        163
+      ],
+      "request_prompt_tokens": 4025,
+      "replicated_prompt_tokens": 8050,
+      "generated_tokens": 80,
+      "response_tokens_per_record": [
+        6,
+        8,
+        6,
+        8,
+        6,
+        8,
+        6,
+        8,
+        6,
+        6,
+        6,
+        6
+      ],
+      "length_terminated_responses": 0,
+      "engine_generate_seconds": 13.789255699957721,
+      "scope": "observed engine token counts; replicated prompts are exposures, not measured prefill work or FLOPs"
+    },
+    "engine_load_seconds": 184.98504771996522,
+    "scope": "vLLM sampling only; actor parity gate and optimizer update not yet run"
+  },
+  "application_terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794277130.4245107
+  },
+  "scope": "BF16 sampler and explicit shutdown passed; probability gate remains failed on v1 and has not been re-admitted",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/npu-vllm-audio-v2",
+  "v1_v2_complete_record_equality": true
+}

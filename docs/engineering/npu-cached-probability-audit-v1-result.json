@@ -1,0 +1,31 @@
+{
+  "container_id": "fff280223d58b8fe19d0703bbf3bcb5ffdbb0509c6f92c31240b2bbb23dbb05c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-10T02:19:16.44661729Z",
+    "FinishedAt": "2026-11-10T02:20:00.6353006Z"
+  },
+  "result": {
+    "status": "failed",
+    "max_logprob_error": 0.18904954195022583,
+    "threshold": 0.02,
+    "responses": 12,
+    "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+    "device": "npu:0",
+    "dtype": "bfloat16",
+    "cached_decode": true,
+    "rollout_sha256": "6e37b032bc70780538a98aea9cff4b45f11c933c69a6719371d5673dd7deabc1",
+    "scope": "same merged weights HF single-response probability diagnosis; no optimizer or full-batch parity proof"
+  },
+  "independent_max_error": 0.18904954195022583,
+  "conclusion": "Cached BF16 HF replay does not resolve the mismatch; cannot attribute it solely to full-sequence versus cache decoding.",
+  "admitted_for_rl": false
+}
