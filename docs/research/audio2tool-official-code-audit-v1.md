@@ -42,8 +42,9 @@ Evaluator 将 `gt_query=sample.query_text` 传给模型。已检查的
 
 已下载同 commit 的 base、Tier 1/2/3/7/8 loader 及单进程/多 GPU 入口，
 见 [来源与 SHA](audio2tool-loader-source-audit-v1.json)。这些 tier loader 读取
-`query_*/query_metadata.json` 等旧式目录，也不能直接解释当前固定 release 的平铺 JSON。
-尚未实现任何 release 转换，未读取真实 TEST 答案。
+`query_*/query_metadata.json` 等目录。后续重新核对完整固定下载清单发现，release
+除平铺 JSON 外，`*_audios` 内也包含上述目录，故不能据平铺 JSON 就断言旧 loader
+布局不兼容。目录级对应已确认；字段解析和完整加载尚未核验。未读取真实 TEST 答案。
 
 实际导入官方模块、使用人工 QuerySample 和临时空音频文件名运行，发现：
 
