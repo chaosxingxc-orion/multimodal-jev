@@ -9,6 +9,13 @@ from multimodal_jev.sfc_audio import load_sfc_audio
 from multimodal_jev.sfc_omni import messages
 
 
+def expected_mask_frames(lengths,hop):
+    # Whisper drops the final STFT frame, including the final mask entry for
+    # non-hop-aligned batch padding. Shorter clips retain ceil(length/hop).
+    frames=max(lengths)//hop
+    return [min((n+hop-1)//hop,frames) for n in lengths]
+
+
 def run(prior,out):
     import torch
     from transformers import Qwen3OmniMoeProcessor
@@ -41,7 +48,7 @@ def run(prior,out):
             prompt=processor.apply_chat_template(messages(row['input'],waves),tokenize=False,add_generation_prompt=True)
             batch=processor(text=[prompt],audio=waves,sampling_rate=16000,return_tensors='pt',padding=True)
             # Feature mask is sampled every hop_length from the full waveform mask.
-            expected=[(len(w)+processor.feature_extractor.hop_length-1)//processor.feature_extractor.hop_length for w in waves]
+            expected=expected_mask_frames([len(w) for w in waves],processor.feature_extractor.hop_length)
             observed=batch['feature_attention_mask'].sum(-1).tolist()
             if expected!=observed:raise ValueError('audio frame coverage differs; possible truncation')
             if not torch.isfinite(batch['input_features']).all():raise ValueError('nonfinite features')
