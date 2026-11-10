@@ -1,0 +1,208 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-npu-layer-preflight-v1",
+  "container_id": "58edfb4a9aeb925b8649a77f76fb8368e95bef0975ffbeb2131557472bd2c7bd",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "dbb9c0fdb922e6ae519ddb26ad00f56990b9c4a9",
+  "intent_sha256": "56637200f3ba9df54118e2eb23624b4a6083ea221022e2cb66315002d0c5b16b",
+  "source_files_verified": 122,
+  "result_sha256": "118e5d793fece1ee059423d809213eaa731924abf88fa2aec04796b359524494",
+  "identity_sha256": "da2f9d7a3dacde52cfea5369ec7232537297dca1aa90bb4085c2ccf6fca457c2",
+  "inspection_sha256": "78703732631e37ed84fcfb9a0ab1759eaceb96671ebdd7d9137dd7c1928b377c",
+  "result": {
+    "status": "preflight_complete",
+    "identity_sha256": "da2f9d7a3dacde52cfea5369ec7232537297dca1aa90bb4085c2ccf6fca457c2",
+    "outputs": [],
+    "calls": 9,
+    "preflight_only": true,
+    "npu_forward_calls": 0,
+    "weight_updates": 0,
+    "elapsed_seconds": 10.77978353999788,
+    "scope": "Original first-layer materialization and prefix validation; optional real NPU compatibility/capacity only. No full actor, FSDP, on-policy probability, optimizer or training acceptance."
+  },
+  "identity": {
+    "prefix_result_sha256": "fb10bfc904f23e4ebb408ce3a685c9eac66a55f3bfd48b50dfae95443c5e08e7",
+    "prefix_identity_sha256": "da5eeb4af8108237816ff5632dc95138a71208b8c200dc2cbb15bf1ab2693cea",
+    "order": [
+      2,
+      0,
+      5,
+      1,
+      3,
+      4
+    ],
+    "calls": [
+      {
+        "size": 1,
+        "offset": 0,
+        "input_file": "micro-1-offset-0.pt",
+        "input_sha256": "604baa51eb43ad34ef40775d8a66a305ced0dc3de4c4d25f3312e2427ba4ff4e",
+        "input_shape": [
+          1,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          1230
+        ]
+      },
+      {
+        "size": 1,
+        "offset": 1,
+        "input_file": "micro-1-offset-1.pt",
+        "input_sha256": "0f9bb7775144ebcfc60029ce816f3711d4a5051d754f87489d0ff6555ed1c635",
+        "input_shape": [
+          1,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          1076
+        ]
+      },
+      {
+        "size": 1,
+        "offset": 2,
+        "input_file": "micro-1-offset-2.pt",
+        "input_sha256": "ea6b129bc1dacffcd89bec98f98da42c34699a0a1a158b3e88fba4471f9242d5",
+        "input_shape": [
+          1,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          828
+        ]
+      },
+      {
+        "size": 1,
+        "offset": 3,
+        "input_file": "micro-1-offset-3.pt",
+        "input_sha256": "6632eb6bf0ee53d4ee11993cf9991834a368424ad8758f5cd3b0cdcae1bdebbc",
+        "input_shape": [
+          1,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          978
+        ]
+      },
+      {
+        "size": 1,
+        "offset": 4,
+        "input_file": "micro-1-offset-4.pt",
+        "input_sha256": "3cc9aa003b4623964fa6339151d8e83790641114e6acaada04e2d842063f5b9c",
+        "input_shape": [
+          1,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          979
+        ]
+      },
+      {
+        "size": 1,
+        "offset": 5,
+        "input_file": "micro-1-offset-5.pt",
+        "input_sha256": "3cf6e13967a0afbc10939fc83dc2a546ecf04f4e880b46673218b4a978c80111",
+        "input_shape": [
+          1,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          711
+        ]
+      },
+      {
+        "size": 2,
+        "offset": 0,
+        "input_file": "micro-2-offset-0.pt",
+        "input_sha256": "674d9bd966976f333e101efc55e47a4af626d2162884fe3d00f9c8ac5ad1e358",
+        "input_shape": [
+          2,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          1230,
+          1076
+        ]
+      },
+      {
+        "size": 2,
+        "offset": 2,
+        "input_file": "micro-2-offset-2.pt",
+        "input_sha256": "09f62db9afabb6509bf44ff1e4c8206b538da58ddb6bd40435d9b249c0bd7f0f",
+        "input_shape": [
+          2,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          828,
+          978
+        ]
+      },
+      {
+        "size": 2,
+        "offset": 4,
+        "input_file": "micro-2-offset-4.pt",
+        "input_sha256": "166539d7903fcc2c5cf89af56cac360ec3305d6dc908243402e70bb7d30f14e5",
+        "input_shape": [
+          2,
+          1230,
+          2048
+        ],
+        "valid_lengths": [
+          979,
+          711
+        ]
+      }
+    ],
+    "model_files": {
+      "config.json": "eab5093d47807aaf894119506b238b2b1cee70d08456e894fee9a012d88f2e0d",
+      "model-00001-of-00015.safetensors": "f95d142b727fbd0698f0ed9478e222d4f29467df855e21862e46bd1401049065"
+    },
+    "parameters": 623120640,
+    "source_sha256": {
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/models/qwen3_omni_moe/modeling_qwen3_omni_moe.py": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+      "/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/integrations/moe.py": "e99275daeefeb07a826c144347c6ce3dd12dd066d36d9be059f1cf413d6ec216",
+      "runner": "fbda72eaa15128f9218237b43ca185759a7a0dfb7f6cd6b5ddf2f646faa1e16f"
+    },
+    "conversions": [
+      {
+        "sources": [
+          "mlp.experts.*.gate_proj.weight",
+          "mlp.experts.*.up_proj.weight"
+        ],
+        "targets": [
+          "mlp.experts.gate_up_proj"
+        ],
+        "operations": [
+          "MergeModulelist",
+          "Concatenate"
+        ]
+      },
+      {
+        "sources": [
+          "mlp.experts.*.down_proj.weight"
+        ],
+        "targets": [
+          "mlp.experts.down_proj"
+        ],
+        "operations": [
+          "MergeModulelist"
+        ]
+      }
+    ],
+    "expert_tensors_exact": 384,
+    "experts_implementation": "grouped_mm",
+    "preflight_only": true,
+    "attention": "original SDPA with saved original mask",
+    "weight_updates": 0
+  },
+  "loader_matches_prior_verified_layer": true,
+  "scope": "Independent CPU load-preflight container/source/prefix tensor audit. Original loader body matched previously verified first-layer loader; no new CPU/NPU forward, capacity, FSDP or optimizer acceptance."
+}
