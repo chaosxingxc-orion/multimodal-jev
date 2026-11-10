@@ -205,3 +205,8 @@ token，并重算两条件最终logits均精确复现原诊断，见
 [row2审计](omni-layers-train6-v1-row02-audit.json)。中间两条件一致性仍来自固定
 trace运行报告，原程序未保留第二条件全层张量；审计不把报告校验冒充第二套张量
 重算。完整trace已进入row3，全部六条成功终态尚未完成。
+
+row3随后也完成逐层诊断与独立审计：336份参考张量、785706240字节、979有效
+token，两条件最终logits均精确复现原诊断；首差异仍在layer0 attention。
+见[row3审计](omni-layers-train6-v1-row03-audit.json)。原完整trace已进入row4；
+其余样本及整体成功终态仍待完成，旧逐层第二条件张量缺失的审计限制不变。

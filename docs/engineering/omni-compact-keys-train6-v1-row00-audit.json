@@ -1,0 +1,52 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-compact-keys-train6-v1",
+  "container_id": "742651b35fe69b6f7679a56136fd3643c03c07f915799937f70d6e6d87bd9da4",
+  "state_at_audit": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1210947,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T19:44:23.56972871Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "intent_sha256": "07902e61933c77a245530c681110a9cf39842485a0c203159244caea301b42e9",
+  "source_commit": "64e530d4094c275e61c7f0d3c4958f0d694b5399",
+  "source_files_verified": 339,
+  "identity_sha256": "00cf201583fcd97ebee37cebd977828b0e653f03971f9d40b1552bb026bad12f",
+  "row_report_sha256": "b7736ae7cb2bb902799e4631233910a85b05244b8eef5f760404b08e2c6d832c",
+  "row": 0,
+  "valid_tokens": 1076,
+  "padding": 154,
+  "attention_calls_verified": 48,
+  "logits_sha256": "655f655b3b67d0f575f4be5d51ec1e3480c27194a19700a6b205568ae8c2bb14",
+  "fp32_log_probs": [
+    -4.411566734313965,
+    -3.480850500636734e-05
+  ],
+  "comparisons": {
+    "audio_padding": {
+      "exact_logits": true,
+      "max_logits_error": 0.0,
+      "max_response_logp_error": 0.0,
+      "reference_sha256": "4fc3e3f4145d833289ff7f4f3eb966d37a260b9df1b9078b65b3b7aa3756115e"
+    },
+    "text_padding": {
+      "exact_logits": false,
+      "max_logits_error": 1.125,
+      "max_response_logp_error": 0.14458656311035156,
+      "reference_sha256": "19b86961e3334c0f72de438601f8a634238fc5e5c3c762dde09b021ad156db3a"
+    }
+  },
+  "response_gate_passed": true,
+  "threshold": 0.1,
+  "elapsed_seconds": 364.02980656997534,
+  "completed_rows_at_audit": 1,
+  "expected_rows": 6,
+  "parity_accepted": false,
+  "limitation": "Partial CPU full-model candidate result on original TRAIN row0. Actual source/container and saved response logits independently checked. Not complete six-row success, actual verl/NPU parity, optimizer or task improvement; no inference replay."
+}

@@ -37,3 +37,15 @@ mm_processor_cache_gb/type及共享内存单对象上限。读取不到配置时
 调用、输入错序/缺帧在engine前拒绝、实际runtime错误、解码不一致保留输出、
 preflight不产生推理声明，以及缺项/错序/错误耗时/失败记录禁止汇总。这些引擎
 返回值是合成fixture；真实CPU输入预检查和NPU结果另存。
+
+## 真实CPU输入预检查已验收
+
+源码`2dee707`的精确容器`fdf7a9a736b0be8b40951908b886f1121c98898d199c7d9527fb8e421511aee1`
+退出0，实际执行50.51秒。协调者核验命令、资源、挂载、环境、完整源码与Git、
+全部16份attempt/record与原始processor的prompt/audio/长度身份。4个native和12个
+Jev都完成真实HF处理与输入token检查；未加载权重、未运行vLLM引擎。
+见[CPU独立验收](audio2tool-decode-preflight-v1-verified.json)。
+native旧证据采用带空格JSON的token哈希，新receipt为canonical JSON，二者不能
+直接比较哈希值；固定运行源码从同一实际ID数组核对旧哈希并生成新收据。独立审计
+明确保留这一证据边界，未声称仅凭两种不同哈希能复算输入ID。
+NPU profile尚未派发，实际解码耗时及全量执行预算仍未取得。

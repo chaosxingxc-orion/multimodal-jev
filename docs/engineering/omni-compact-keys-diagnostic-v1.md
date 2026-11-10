@@ -50,3 +50,15 @@ intent SHA `07902e61933c77a245530c681110a9cf39842485a0c203159244caea301b42e9`。
 协调者已记录启动时宿主可用内存与共享盘空间；原逐层诊断继续运行。
 见[完整派发身份](omni-compact-keys-train6-v1-launched.json)。当前没有完整候选结果，
 不能将输入预检查或容器启动记为概率一致性通过。
+
+## 首条完整模型候选结果
+
+row0已完成，完整冻结前向364.03秒。独立协调者复核实际容器/源码和保存logits，
+48层均记录1230个query、原1230个key缩减为1076个可达key。左padding输入不变，
+候选的完整响应logits与原audio_padding（无新增text padding）参考逐元素相同，
+响应logp最大差0；与旧text_padding相比logp最大差0.1445865631，完整logits最大差
+1.125。见[首条独立审计](omni-compact-keys-train6-v1-row00-audit.json)。
+
+这表明候选在首条原始CPU完整模型样本上恢复了参考数值；原逐层诊断中出现的后续
+MoE分歧并未在这条修正后的响应logits中留下差异。仅此还不能推定全部层内部完全
+一致或其余五条通过；当前进入row1，原六条0.1门槛、实际verl/NPU与训练仍未验收。
