@@ -23,6 +23,11 @@ def run(args):
     prefix=json.loads((args.prefix/'result.json').read_text())
     if prefix['identity_sha256']!=file_hash(args.prefix/'identity.json'):raise ValueError('prefix identity changed')
     identity=json.loads((args.prefix/'identity.json').read_text())
+    if file_hash(args.trace/'result.json')!='23ee087e133334428c0e0fcc85b728a4f7459350954b32ef7a22b1b6a284a161':
+        raise ValueError('original complete reference trace required')
+    trace_reports=json.loads((args.trace/'result.json').read_text())['reports']
+    if file_hash(inspect.getfile(inspect.unwrap(compact_text_attention)))!=identity['source_files']['src/multimodal_jev/omni_compact_attention.py']:
+        raise ValueError('original actor compact attention adapter required')
     weights={r['file']:r['sha256'] for r in identity['model_files']}
     for name in ('config.json','model-00001-of-00015.safetensors'):
         if file_hash(args.model/name)!=weights[name]:raise ValueError('original model assets required')
@@ -71,6 +76,7 @@ def run(args):
             tensor=args.output/f'micro-{size}-row-{original_row}.pt';torch.save(row_values,tensor)
             all_values[size,original_row]=row_values
             old=json.loads((args.trace/f'row-{original_row:02d}.json').read_text())
+            if old!=trace_reports[original_row]:raise ValueError('reference trace row changed')
             ref=args.trace/f'row-{original_row:02d}-trace/layer-00.attention.pt'
             if file_hash(ref)!=old['reference']['layer-00.attention']['sha256']:raise ValueError('reference attention changed')
             original=torch.load(ref,map_location='cpu',weights_only=True)
