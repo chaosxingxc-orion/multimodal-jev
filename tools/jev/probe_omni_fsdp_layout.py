@@ -42,7 +42,7 @@ def layout(model, policy):
 def run(args):
     import torch
     import transformers
-    from transformers import AutoConfig, AutoModel, AutoModelForCausalLM, AutoModelForImageTextToText, AutoModelForVision2Seq
+    from transformers import AutoConfig
     from transformers import initialization
     from transformers.models.qwen3_omni_moe import modeling_qwen3_omni_moe as hf
     from transformers.models.qwen3_omni_moe.configuration_qwen3_omni_moe import Qwen3OmniMoeThinkerConfig
@@ -55,10 +55,14 @@ def run(args):
     raw = json.loads(args.config.read_text())
     full_config = AutoConfig.for_model(**raw)
     mappings = []
-    for cls in (AutoModelForVision2Seq, AutoModelForCausalLM, AutoModelForImageTextToText, AutoModel):
+    for name in ('AutoModelForVision2Seq', 'AutoModelForCausalLM', 'AutoModelForImageTextToText', 'AutoModel'):
+        cls = getattr(transformers, name, None)
+        if cls is None:
+            mappings.append(dict(auto_class=name, available=False, supports_full_config=False, resolved_class=None))
+            continue
         supported = type(full_config) in cls._model_mapping.keys()
         target = cls._model_mapping[type(full_config)] if supported else None
-        mappings.append(dict(auto_class=cls.__name__, supports_full_config=supported,
+        mappings.append(dict(auto_class=cls.__name__, available=True, supports_full_config=supported,
             resolved_class=target.__name__ if target is not None else None))
     config = Qwen3OmniMoeThinkerConfig(**raw['thinker_config'])
     config._attn_implementation = 'sdpa'

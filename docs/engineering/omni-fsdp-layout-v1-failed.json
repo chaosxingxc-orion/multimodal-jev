@@ -1,0 +1,28 @@
+{
+  "container_id": "7480ed0de743b24da56fb8682422e9600977a8d96a5935b12770c0fe84300c73",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "f3e69c7eff212eba9686692a8a5d7e91f9a600df",
+  "intent_sha256": "714b683d7c660755590dc0609ad7dfc1f2a29edbbdeef8ff958024d5690f546f",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-fsdp-layout-v1",
+  "source_files_verified": 122,
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-10T23:22:28.92588893Z",
+    "FinishedAt": "2026-11-10T23:22:40.61074506Z"
+  },
+  "terminal": {
+    "exit_code": 1,
+    "error": "ImportError(\"cannot import name 'AutoModelForVision2Seq' from 'transformers' (/usr/local/python3.12.13/lib/python3.12/site-packages/transformers/__init__.py)\")"
+  },
+  "terminal_sha256": "81bb5301b25ee7cf05ee2a0d72c565fe3e5d518441f911e866438c73f21225b7",
+  "inspection_sha256": "5da7f2ddc7039f30f2b62335911a03436b93d30db9c50028d3fce9c113bfc3da",
+  "scope": "Probe failed during import before model construction; no weights, NPU, forward or training. Same removed import is present in pinned legacy verl fsdp_workers._build_model_optimizer; this is not a claim about all verl worker implementations."
+}
