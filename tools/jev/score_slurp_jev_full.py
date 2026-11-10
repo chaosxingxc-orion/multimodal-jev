@@ -48,7 +48,16 @@ def score_run(run,release,repository,output):
             or set(selected)!={r['example_id'] for r in predictions}
             or len(predictions)!=len(selected) or result['predictions']!=len(predictions)):
         raise ValueError('complete materialized request coverage required')
-    targets={r['id']:r for r in map(json.loads,(release/f'{split}.targets.jsonl').open())}
+    def selected_rows(path):
+        rows={}
+        for line in path.open():
+            row=json.loads(line)
+            if row['id'] not in by_bundle:continue
+            if row['id'] in rows:raise ValueError('duplicate target or native source ID')
+            rows[row['id']]=row
+        if set(rows)!=set(by_bundle):raise ValueError('selected target or source missing')
+        return rows
+    targets=selected_rows(release/f'{split}.targets.jsonl')
     native=Path(manifest['identity']['native_release'])
     if file_hash(native/'MANIFEST.json')!=manifest['identity']['native_manifest_sha256']:
         raise ValueError('native source changed')
@@ -56,8 +65,8 @@ def score_run(run,release,repository,output):
     for kind in ('requests','targets'):
         if file_hash(native/f'{split}.{kind}.jsonl')!=native_manifest['splits'][split][kind+'_sha256']:
             raise ValueError('native source records changed')
-    native_requests={r['id']:r for r in map(json.loads,(native/f'{split}.requests.jsonl').open())}
-    native_targets={r['id']:r for r in map(json.loads,(native/f'{split}.targets.jsonl').open())}
+    native_requests=selected_rows(native/f'{split}.requests.jsonl')
+    native_targets=selected_rows(native/f'{split}.targets.jsonl')
     counts=Counter();seen=set();reconstructed=[];native_selected=[]
     for line in (release/f'{split}.bundles.jsonl').open():
         bundle=json.loads(line)
