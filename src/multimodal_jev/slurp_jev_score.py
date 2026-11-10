@@ -80,6 +80,11 @@ def score_bundle(bundle, target, bank, predictions):
 def summarize(counts):
     denominators = {
         **{'intent_'+v+'_accuracy':'recordings' for v in ('native','permutation','rebind')},
+        'intent_permutation_both_correct_rate':'recordings',
+        'intent_rebind_both_correct_rate':'recordings',
+        'intent_all_three_correct_rate':'recordings',
+        'all_decisions_correct_rate':'recordings',
+        'native_reconstruction_valid_rate':'recordings',
         'presence_both_correct_rate':'presence_pairs',
         'present_type_both_correct_rate':'present_type_pairs',
         'absent_type_both_correct_rate':'absent_type_pairs',
