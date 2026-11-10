@@ -1,0 +1,43 @@
+{
+  "clips_over_30_seconds": 150,
+  "longest_independently_verified": [
+    {
+      "path": "public/tier7_multiturn_audios/query_00577/turn_00_user_voxpopuli_speaker_204332.wav",
+      "seconds": 654.6407083333334,
+      "frames": 15711377,
+      "sha256": "5b63b95427ac8f628945e2ad9165f1e85e8d9a318456620f0f020fb8883dcfd7",
+      "sha256_matches_manifest": true,
+      "independent_header_library": "libsndfile via soundfile"
+    },
+    {
+      "path": "public/tier6_correction_audios/query_00206/speaker_02_voxpopuli_speaker_112760.wav",
+      "seconds": 654.6378333333333,
+      "frames": 15711308,
+      "sha256": "4d56b9d4cd227af180a1be6cd2957946db9bdbc02df653af0b901e1cf41b26af",
+      "sha256_matches_manifest": true,
+      "independent_header_library": "libsndfile via soundfile"
+    },
+    {
+      "path": "public/tier6_correction_audios/query_01985/speaker_00_voxpopuli_speaker_4267.wav",
+      "seconds": 654.637375,
+      "frames": 15711297,
+      "sha256": "321e225884f148258dd4d3efed638b83b785acd2225441fa8930e5e448dfc8b4",
+      "sha256_matches_manifest": true,
+      "independent_header_library": "libsndfile via soundfile"
+    }
+  ],
+  "scope": "Three longest deterministic header records independently checked and full WAV bytes hashed; no listening, transcription, or labels. Does not diagnose synthesis quality or validate all waveform hashes.",
+  "processor_config_path": "/mnt/cephfs/xingchao/models/qwen3-omni-30b-a3b-instruct/preprocessor_config.json",
+  "processor_n_samples": 4800000,
+  "processor_sampling_rate": 16000,
+  "configured_max_clip_seconds": 300,
+  "clips_over_configured_max": 32,
+  "over_configured_max_per_tier": {
+    "tier1_direct_audios": 1,
+    "tier3_multi_intent_audios": 3,
+    "tier4_implicit_audios": 1,
+    "tier5_needle_audios": 1,
+    "tier6_correction_audios": 15,
+    "tier7_multiturn_audios": 11
+  }
+}

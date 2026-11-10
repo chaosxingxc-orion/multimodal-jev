@@ -1,0 +1,71 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-registry-context-v1",
+  "launch": {
+    "container_id": "0739fd467c71f572384f2e982240e1abcce635a83eea0edd82b90a8554376f11",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "ca65890f9cd0b02061628a522c3795d8fea838aa"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T16:19:20.55494416Z",
+    "FinishedAt": "2026-11-10T16:19:34.16518659Z"
+  },
+  "result": {
+    "registry_sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+    "model": "/mnt/cephfs/xingchao/models/qwen3-omni-30b-a3b-instruct",
+    "output_budget_for_arithmetic": 1024,
+    "versions": {
+      "transformers": "5.14.1",
+      "tokenizers": "0.22.2"
+    },
+    "processor_assets": {
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "chat_template.json": "90c1b81f29e41b7642b0cc02c877a10c8bf6751a8d8fa1d16ac9a718cf1c3d86",
+      "model.safetensors.index.json": "03ffe9a54efe9007ceb788c2b036f5c589094918c4582add4e92bc17e1cba838",
+      "config.json": "eab5093d47807aaf894119506b238b2b1cee70d08456e894fee9a012d88f2e0d",
+      "generation_config.json": "7fa40989be8e43c078907810c41c25d33747523afce3d5a34d5850f930c886cb",
+      "tokenizer_config.json": "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670",
+      "preprocessor_config.json": "b10e27fd4542cf89ec7145942b87f3e65408d4e9f9d031a29acdd293c15fb3fc",
+      "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    "results": {
+      "official_client_compact": {
+        "tools": 152,
+        "text_tokens": 3580,
+        "prompt_sha256": "e9736d92b7e2842cc2df2373a86ce7eed39d4e3b4804dc84f95f672f2b397976",
+        "remaining_for_audio_and_extra_text": {
+          "4096": -508,
+          "8192": 3588,
+          "16384": 11780,
+          "32768": 28164
+        }
+      },
+      "complete_definitions": {
+        "tools": 152,
+        "text_tokens": 6777,
+        "prompt_sha256": "c2fb813b0ff9b480b9f1d59e3b025d2c9290edd4c05bc84c83a5a0bccc1155d7",
+        "remaining_for_audio_and_extra_text": {
+          "4096": -3705,
+          "8192": 391,
+          "16384": 8583,
+          "32768": 24967
+        }
+      }
+    },
+    "runner_sha256": "6cbd97136b63631b9662c1ac4608861c829262a8a97eaebfabc149bcf903ae64",
+    "model_loaded": false,
+    "audio_read": false,
+    "answers_read": false,
+    "scope": "Full candidate registry text-only token lower bounds. No multimodal fit, engine memory, quality, or paper prompt equivalence claim."
+  },
+  "source_hashes_verified": true,
+  "result_sha256": "c1f54fe2dbb1f51d9164bfdcd29bb7ce6bd6592a09972efa0d643e5a32962bbb"
+}
