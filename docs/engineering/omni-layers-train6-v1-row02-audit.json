@@ -1,0 +1,777 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-layers-train6-v1",
+  "container_id": "ad90d67b4f273cf171cf6b7fb0455a11f4367734b3a797f4fb0430935b916d28",
+  "state_at_audit": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1017355,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T18:58:58.94541986Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "intent_sha256": "c41837a7fa477879b69e0c29aa8d891cccde2ef60ff73a3195eaf5f40c206d56",
+  "source_commit": "03dca51ab0e784be47f4f9343e39e06dfe23c474",
+  "identity_sha256": "43c3c69f082ad043a74cfff0602962b11226209f22462f2da6d952a00207ae38",
+  "row_report_sha256": "637a6df7a5c2b122082d50c4a7102106518de242e00308220a47ef15c828ef62",
+  "row": 2,
+  "key": [
+    "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+    "f00.present"
+  ],
+  "completed_rows_at_audit": 3,
+  "expected_rows": 6,
+  "reference_files_verified": 336,
+  "reference_tensor_bytes": 987148800,
+  "valid_tokens": 1230,
+  "replay": [
+    {
+      "cell": "audio_padding",
+      "old_sha256": "2fa3bdb65f259c4e7879bb72c39890232b29964566ea73b823d1a8e19cc85d10",
+      "new_sha256": "2fa3bdb65f259c4e7879bb72c39890232b29964566ea73b823d1a8e19cc85d10",
+      "exact": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "cell": "text_padding",
+      "old_sha256": "5c98cc9536515b212a4871e15e55d3af195e122887d44af0d701872c8a8041ca",
+      "new_sha256": "5c98cc9536515b212a4871e15e55d3af195e122887d44af0d701872c8a8041ca",
+      "exact": true,
+      "max_abs_error": 0.0
+    }
+  ],
+  "first_difference": null,
+  "first_layer_reported_events": [
+    {
+      "event": "layer-00.input",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-00.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-00.router.logits",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-00.router.weights",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-00.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-00.mlp",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-00.output",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    }
+  ],
+  "per_layer_reported_attention_and_routes": [
+    {
+      "event": "layer-00.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-00.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-01.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-01.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-02.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-02.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-03.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-03.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-04.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-04.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-05.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-05.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-06.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-06.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-07.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-07.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-08.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-08.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-09.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-09.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-10.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-10.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-11.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-11.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-12.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-12.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-13.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-13.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-14.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-14.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-15.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-15.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-16.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-16.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-17.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-17.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-18.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-18.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-19.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-19.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-20.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-20.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-21.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-21.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-22.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-22.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-23.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-23.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-24.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-24.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-25.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-25.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-26.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-26.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-27.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-27.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-28.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-28.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-29.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-29.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-30.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-30.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-31.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-31.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-32.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-32.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-33.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-33.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-34.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-34.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-35.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-35.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-36.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-36.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-37.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-37.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-38.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-38.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-39.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-39.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-40.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-40.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-41.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-41.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-42.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-42.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-43.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-43.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-44.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-44.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-45.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-45.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-46.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-46.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    },
+    {
+      "event": "layer-47.attention",
+      "equal": true,
+      "differing_elements": 0,
+      "max_abs_error": 0.0,
+      "mean_abs_error": 0.0
+    },
+    {
+      "event": "layer-47.router.indices",
+      "equal": true,
+      "differing_elements": 0,
+      "ordered_route_changed_tokens": 0,
+      "expert_set_changed_tokens": 0
+    }
+  ],
+  "observed_runtime_source_sha256": "a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340",
+  "parity_accepted": false,
+  "inference_replayed_by_audit": false,
+  "limitations": "Partial row audit, not complete six-row terminal acceptance. All reference tensor bytes/shape/dtype/finite checked and final logits independently compared to prior run. Per-layer deltas and routes are source-measured reports: padded per-layer tensors were not persisted, so these deltas cannot be independently recomputed from disk. First attention hook includes normalization, QKV, RoPE, SDPA and output projection; no specific operator root cause yet."
+}

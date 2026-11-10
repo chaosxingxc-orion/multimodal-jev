@@ -40,3 +40,12 @@ create成功后先保存精确容器ID/intent SHA，再start；create/start失�
 实际inspection传递、验收结果变化、create/start歧义、容器身份变化、同ID观察重试
 与禁止重放。完成依赖和容器分支为合成fixture，不冒充实际NPU运行证据。队列启动
 身份另行保存；本准备说明不代表队列已启动或容量已通过。
+
+## 队列已启动，等待实际 native 容量前驱
+
+协调者源码固定`17f5442`，实际PID `2932524`、process_start `291613588`，
+计划SHA `60062a646a9aa20fb5d11ce05a8762f9d46612edae92cc51cabc7b016951e83a`。
+独立核验`/proc`的PID/start/非zombie状态及完整argv，114份队列源码与Git快照
+一致；实际progress为`waiting_accepted_native_capacity`。原native协调者
+PID `2895373`也核实身份与存活。见[队列启动核验](audio2tool-jev-engine-capacity-v1-queued.json)。
+尚无Jev NPU intent/container/结果；实际完成依赖后的分支仍需运行验收。

@@ -198,3 +198,10 @@ attention实现，也不把math替换宣称为修复。完整六条trace仍运�
 row1也已完成独立参考张量审计：336份、784903680字节，978有效token，两条件
 最终logits均逐元素复现原精度诊断，见[row1审计](omni-layers-train6-v1-row01-audit.json)。
 该行首个差异仍是layer0 attention；逐层padding张量未保存的原限制仍然存在。
+
+row2零新增padding天然对照已完成：固定源码报告48层×7事件全部逐元素一致，
+first_difference为null。独立审计验证336份参考张量、987148800字节和1230有效
+token，并重算两条件最终logits均精确复现原诊断，见
+[row2审计](omni-layers-train6-v1-row02-audit.json)。中间两条件一致性仍来自固定
+trace运行报告，原程序未保留第二条件全层张量；审计不把报告校验冒充第二套张量
+重算。完整trace已进入row3，全部六条成功终态尚未完成。
