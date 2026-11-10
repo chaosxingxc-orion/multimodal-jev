@@ -1,0 +1,60 @@
+{
+  "schema": "omni-precision-logit-audit-v1",
+  "status": "partial_artifacts",
+  "identity_sha256": "e39bdebee8d2d434df8a51efc9d57b4f697462f0a67e8577d72f7f2e97cae9dd",
+  "completed_cells": 2,
+  "expected_cells": 30,
+  "record_sha256": {
+    "row-00-reference.json": "751a76abd6a46c61ef47a086d8230a1f5625c862c80af1dabcb6ec90ca80dbad",
+    "row-00-autocast.json": "df572733824a563769b8ea4b11dd66498804327f2f937846414d7c2f8ee60879"
+  },
+  "records": [
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "reference",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "fd863e8f3f19f029a7bb1b2699493eb27a84bda139e31cf74ee8f4b265eebfa5",
+      "seconds": 315.24652849999256
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "autocast",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "0bae359d822304d4b74db31abe884601a3649f412abe8fd3928f15d420206ebc",
+      "seconds": 309.65087478997884,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    }
+  ],
+  "inference_replayed": false,
+  "parity_accepted": false,
+  "scope": "Saved logits only; no container/source/weight acceptance or actual-verl parity verdict.",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-precision-train6-v1/run",
+  "analyzer_sha256": "1e8c0809e9bcefa5dae7a2e8cbe9d122f0910002b72e18704979a0ba5ce1106b"
+}

@@ -57,3 +57,22 @@ FP32/FP64 保持原精度。近确定 EOS 的小负概率不再因 BF16 归一�
 预检查已退出 0，完整六条、五条件输入准备通过，源码清单与容器资源已独立核验，
 见 [验收记录](omni-precision-preflight-v1-accepted.json)。这不代表完整模型诊断完成。
 精确启动信息与观测见 [测试/预检查凭证](omni-precision-tests-preflight-v1.json)。
+
+## 已保存 logits 的独立分析
+
+新增 `tools/jev/analyze_omni_precision_logits.py`：只读取已完成记录和保存的张量，
+核验 identity/记录对应关系、张量 SHA、形状、有限性、BF16 精度，并重新计算
+两种归一化及相邻条件的全词表差异。允许读取运行中的连续记录前缀，不重跑模型。
+完成 30 个条件也只标记 artifacts_complete，不替代容器终态、源码/权重核验，
+不自动判定 actual-verl parity 通过。输出必须放在原 run 之外且不得覆盖已有报告。
+
+[首份部分报告](omni-precision-train6-v1-logit-audit-partial-01.json)覆盖第一条输入的
+reference/autocast 两次前向：两位置的全词表 logits 完全一致，相邻最大差异为 0。
+两份 `.pt` 文件 SHA 不同不能作为张量不同的证据；已实际加载张量比较。
+FP32 归一化的 EOS log-prob 为 -0.000034808505，原生 BF16 归一化为 0；
+两 token 最大归一化误差 0.0053167343。该观察不能外推其余五条或解释此前全部偏差。
+
+本地系统 Python 的 6 项测试通过，覆盖篡改哈希/概率/身份、缺失中间记录、
+完整记录不等于 parity 验收，以及“响应概率相同但其他词的 logits 不同”的反例。
+与报告同时保存的[运行状态](omni-runtime-observation-20261110-precision-partial-01.json)
+来自精确 Docker ID 的实时 inspect；当时 CPU 诊断、SLURP 和 FSC 基线均仍在运行。
