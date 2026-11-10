@@ -9,6 +9,9 @@ def require_visible_inputs(argv, cfg):
             source,target,*_=argv[i+1].split(':')
             mounts.append((Path(source),Path(target)))
     keys = ['requests','instruction','asset_audit','partition','audio_model']
+    if cfg.get('task_format') == 'slurp-native':
+        keys.remove('partition')
+        keys.extend(['taxonomy','population_reference'])
     if 'selection_protocol' in cfg:
         keys.append('selection_protocol')
     for key in keys:

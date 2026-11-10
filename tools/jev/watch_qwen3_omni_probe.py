@@ -51,6 +51,13 @@ def run(root):
         raise RuntimeError('application failed')
     if cfg.get('audio_condition','actual')=='zeros':
         return  # Silence has no native gold; paired diagnostic runs separately.
+    if cfg.get('task_format')=='slurp-native':
+        import os
+        subprocess.run([plan['scorer_python'],str(root/'source/tools/jev/score_slurp_native.py'),
+            '--run',str(root/'run'),'--targets',str(Path(cfg['requests']).with_name('train.targets.jsonl')),
+            '--repository',plan['scorer_repository'],'--output',str(root/'score')],
+            env={**os.environ,'PYTHONPATH':str(root/'source/src')},check=True)
+        return
     subprocess.run([sys.executable,str(root/'source/tools/jev/score_frozen_requests.py'),'--run',str(root/'run'),
         '--targets',str(Path(cfg['requests']).with_name('train.targets.jsonl')),'--six-views','--output',str(root/'score.json')],check=True)
 
