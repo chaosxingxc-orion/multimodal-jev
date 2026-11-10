@@ -29,6 +29,11 @@ def select(parent_run, candidates, review_path, targets_path, partition_path):
         raise ValueError('registered disjoint64/256 groups required')
     parent, _ = load_run(parent_run, 'actual')
     cfg = parent['config']; require_audio_task_route(cfg)
+    if review.get('parent_prompt_sha256') != parent['instruction_sha256']:
+        raise ValueError('semantic review belongs to another parent prompt')
+    if (review.get('selection_or_test_items_read_for_review') is not False
+            or review.get('prompt_selected') is not False):
+        raise ValueError('review must precede held-out evaluation and selection')
     if (cfg['split'] != 'train' or cfg['parameters_frozen'] is not True
             or set(cfg['source_groups']) != selection):
         raise ValueError('complete frozen selection population required')
