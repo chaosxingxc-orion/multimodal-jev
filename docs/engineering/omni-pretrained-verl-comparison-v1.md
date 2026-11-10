@@ -76,3 +76,10 @@ temperature=1、padded、SP=1、静态微批、无 fused、无 prefix grouping�
 容器检查过提前验收拒绝。实际完整比较仍在运行，尚未生成验收结论。
 inspection 由协调进程捕获并固定哈希；这是本地证据关联，不是外部签名认证。
 验收后协调进程还须重查同一容器终态，且不能因观察超时重放推理。
+
+已启动固定源码的 `watch_omni_verl_acceptance.py` 后台协调进程，精确 PID/start ticks
+和 plan 哈希见 [启动记录](omni-pretrained-verl-train6-v1-observer-launched.json)。
+最多观察 15000 秒；成功退出后调用独立标准库验收器，重查原容器终态后才保存
+acceptance/result。失败或超时保存 terminal，不启动容器、不重放模型。
+瞬时 SSH 错误继续查询同一精确 ID；已有 verification intent 则拒绝重复验收。
+观察器与验收器合计 35 项测试通过，启动后确认进程身份及首条 running 观察记录。
