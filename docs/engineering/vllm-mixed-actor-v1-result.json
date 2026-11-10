@@ -1,0 +1,255 @@
+{
+  "observed_unix": 1794269474.9572237,
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-mixed-actor-v1",
+  "containers": {
+    "actor": {
+      "id": "b385b10b3bae7022c49a95c6faea9971bc3d4d5c479c0c706b7c8fc32b0efe9b",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:06:02.66176025Z",
+        "FinishedAt": "2026-11-10T00:08:36.00849866Z"
+      }
+    },
+    "audit": {
+      "id": "560d16cc696c8aa0453c083bbc26472ad6301a1d2a2c3781441f12e8a56c8f6a",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T00:08:51.12272678Z",
+        "FinishedAt": "2026-11-10T00:09:20.3113945Z"
+      }
+    }
+  },
+  "result": {
+    "status": "passed",
+    "config": {
+      "model_path": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+      "device": "cpu",
+      "dtype": "float32",
+      "cpu_threads": 4,
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lr": 1e-05,
+      "max_logprob_error": 0.02,
+      "rollout_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-mixed-rollout-v1/run",
+      "parent_run": null,
+      "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-audio-sft-init-v1/run/adapter",
+      "seed": 17,
+      "reward_mode": "pair-grpo",
+      "pair_bonus_weight": 0.2,
+      "response_logits_only": false,
+      "train_manifest": "/mnt/cephfs/xingchao/datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c/train.jsonl"
+    },
+    "base_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458",
+    "optimizer_config": {
+      "lr": 1e-05,
+      "weight_decay": 0.0,
+      "foreach": false,
+      "fused": false
+    },
+    "optimizer_sha256": "c34e36f321960d149be6d2fbe116490e37b0c5b7de5e1662dc3d87d3510f728b",
+    "adapter_files": {
+      "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+      "adapter_config.json": "2ffbd1ccf1cef7b825eb2a1ee80c4c1b428992a268a218107bbd6b0d16d7c3fa",
+      "adapter_model.safetensors": "cb74ab18ab085a62d60e062005123d7c9a31a6df5891b46475897a17fc671625"
+    },
+    "updates": 1,
+    "iteration": 1,
+    "reward_mode": "pair-grpo",
+    "pair_bonus_weight": 0.2,
+    "reference_policy": null,
+    "metrics": {
+      "status": "updated",
+      "updated": true,
+      "loss": -0.03235296159982681,
+      "grad_norm": 2.801666259765625,
+      "training_budget": {
+        "sequences": 24,
+        "prompt_tokens": 16292,
+        "response_tokens": 153,
+        "audio_frames": 5856,
+        "gradient_sequences": 24,
+        "gradient_tokens": 16445,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 16445,
+        "optimizer_steps": 1
+      },
+      "rewards": [
+        1.1333333333333333,
+        -0.1,
+        1.2,
+        -0.1,
+        1.2,
+        -0.1,
+        0.0,
+        1.1,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        -0.1,
+        -0.1,
+        -0.1,
+        -0.1,
+        -0.1,
+        -0.1,
+        0.0,
+        -0.1,
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "max_logprob_error": 0.00012612342834472656,
+      "metrics": {
+        "actor/pg_clipfrac": 0.0,
+        "actor/ppo_kl": -1.7181562270707218e-06,
+        "actor/pg_clipfrac_lower": 0.0,
+        "actor/policy_loss": -0.03235296159982681
+      },
+      "reward_details": {
+        "mode": "pair-grpo",
+        "base_rewards": [
+          1.0,
+          -0.1,
+          1.0,
+          -0.1,
+          1.0,
+          -0.1,
+          0.0,
+          1.1,
+          1.0,
+          1.0,
+          0.0,
+          0.0,
+          -0.1,
+          -0.1,
+          -0.1,
+          -0.1,
+          -0.1,
+          -0.1,
+          0.0,
+          -0.1,
+          1.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "pair_bonuses": [
+          0.13333333333333333,
+          0.0,
+          0.2,
+          0.0,
+          0.2,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "relations_by_replicate": {
+          "0": {
+            "invariance": {
+              "pairs": 2,
+              "both_correct": 1
+            },
+            "definition_discrimination": {
+              "pairs": 2,
+              "both_correct": 1
+            },
+            "candidate_coverage": {
+              "pairs": 2,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 2,
+              "both_correct": 0
+            }
+          },
+          "1": {
+            "invariance": {
+              "pairs": 2,
+              "both_correct": 0
+            },
+            "definition_discrimination": {
+              "pairs": 2,
+              "both_correct": 0
+            },
+            "candidate_coverage": {
+              "pairs": 2,
+              "both_correct": 0
+            },
+            "binary_discrimination": {
+              "pairs": 2,
+              "both_correct": 0
+            }
+          }
+        }
+      },
+      "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+      "micro_batch_size": 24,
+      "response_tokens": 153,
+      "kl_coefficient": 0.0,
+      "kl_estimator": null,
+      "scope": "single audio PPO update using verl GRPO advantages; not efficacy evaluation"
+    },
+    "scope": "one persisted actor iteration; export and next fresh rollout required; no efficacy claim"
+  },
+  "tensor_audit": {
+    "status": "passed",
+    "reports": [
+      {
+        "status": "passed",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/vllm-cpu-mixed-actor-v1/run",
+        "adapter_tensors": 112,
+        "optimizer_states": 112,
+        "optimizer_step": 1,
+        "all_weights_and_moments_finite": true,
+        "iteration": 1,
+        "changed_adapter_tensors": 112,
+        "updated": true,
+        "max_logprob_error": 0.00012612342834472656,
+        "parent_run": null,
+        "result_sha256": "fa60b6fff62774dbffdd6165d3a5410e14107a2de1da31b47692dfeed12dc80b",
+        "optimizer_sha256": "c34e36f321960d149be6d2fbe116490e37b0c5b7de5e1662dc3d87d3510f728b",
+        "adapter_files": {
+          "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+          "adapter_config.json": "2ffbd1ccf1cef7b825eb2a1ee80c4c1b428992a268a218107bbd6b0d16d7c3fa",
+          "adapter_model.safetensors": "cb74ab18ab085a62d60e062005123d7c9a31a6df5891b46475897a17fc671625"
+        },
+        "scope": "saved artifact hashes, finite tensors, AdamW counters and local parent consistency; not Docker exit, rollout/export integrity, gradient equivalence or efficacy proof"
+      }
+    ]
+  },
+  "host_read_limit": "legacy snapshot adapter safetensors is root-owned0600; full hash/tensor inspection succeeded in read-only mounted audit container; no content mutation",
+  "scope": "actual24-response mixed-length CPU full-projection actor update with112 finite step1 states and112 changed tensors; no NPU or efficacy claim"
+}

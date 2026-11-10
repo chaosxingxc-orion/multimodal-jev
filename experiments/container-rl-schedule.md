@@ -113,3 +113,13 @@ Failures stop without resubmission. The initial queue was stopped before launch
 when SFC v2 failed; the [replacement queue](../docs/engineering/sfc-v3-dependent-queues.json)
 observes SFC v3 and the corresponding new full-pool queue. This is queued work,
 not a completed scheduler integration or algorithm comparison.
+
+The mixed-length actor dependency has now passed: exact Docker exit0,24 real
+responses/153 response tokens, maximum probability difference0.0001261234,
+one optimizer update with gradient norm2.8016663. The separately executed
+read-only audit also exited0 and verified112 finite AdamW states at step1 and
+112 changed adapter tensors. The legacy snapshot's adapter remains root-owned
+0600; hash/tensor validation used the container's read-only mount, without
+changing its contents. See [receipt](../docs/engineering/vllm-mixed-actor-v1-result.json).
+The instrumented scheduler now waits for the running full-pool diagnosis to
+release local CPU resources; its numerical dependencies have completed.
