@@ -12,6 +12,8 @@ from multimodal_jev.sfc_prompt_candidates import stage
 from test_sfc_prompt_candidates import proposal
 from test_sfc_jev_shards import fixture as input_fixture
 from test_sfc_jev import load_tool
+from test_sfc_teacher_wire import fixture as wire_fixture,response as wire_response,update as wire_update
+from multimodal_jev import sfc_teacher_wire as wire
 
 sys.path.insert(0,str(Path(__file__).parents[1]/'tools/jev'))
 
@@ -29,6 +31,27 @@ def test_staged_instruction_bound_without_semantic_approval(tmp_path):
     assert identity['semantic_review']=='pending' and identity['candidate_accepted'] is False
     (spec['staging']/'p1.txt').write_text('changed')
     with pytest.raises(ValueError,match='changed'):load_candidate(**spec)
+
+
+def test_verified_teacher_stage_loads_without_losing_wire_custody(tmp_path,monkeypatch):
+    root,payload=wire_fixture(tmp_path,monkeypatch);intent_hash=wire_response(root,payload)
+    candidates=root/'candidates';wire.stage_wire(root,candidates,intent_hash)
+    spec=dict(staging=candidates,staging_hash=file_hash(candidates/'staged.json'),candidate_id='p1')
+    text,identity=load_candidate(**spec)
+    assert text==payload['candidates'][0]['instruction'] and identity['candidate_accepted'] is False
+    assert identity['semantic_review']=='pending'
+    wire_update(root/'response/request.json',lambda d:d.update(model='changed'))
+    with pytest.raises(ValueError,match='request differs'):load_candidate(**spec)
+
+
+def test_rehashed_teacher_instruction_cannot_override_original_wire(tmp_path,monkeypatch):
+    root,payload=wire_fixture(tmp_path,monkeypatch);intent_hash=wire_response(root,payload)
+    candidates=root/'candidates';wire.stage_wire(root,candidates,intent_hash)
+    (candidates/'p1.txt').write_text('A different generic instruction.')
+    wire_update(candidates/'staged.json',lambda d:d['candidates'][0].update(
+        instruction_sha256=file_hash(candidates/'p1.txt'),characters=len((candidates/'p1.txt').read_text())))
+    with pytest.raises(ValueError,match='verified teacher'):
+        load_candidate(candidates,file_hash(candidates/'staged.json'),'p1')
 
 
 @pytest.mark.parametrize('change',['receipt','id','duplicate','parent'])

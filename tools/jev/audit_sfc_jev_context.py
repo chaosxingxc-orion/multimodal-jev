@@ -63,7 +63,8 @@ def run(model, release, output, *, candidate=None):
     if prompt_identity is not None:
         identity['prompt']=prompt_identity
         for name in ('src/multimodal_jev/sfc_candidate_context.py','src/multimodal_jev/sfc_prompt_candidates.py',
-                     'src/multimodal_jev/teacher_candidates.py'):
+                     'src/multimodal_jev/teacher_candidates.py','src/multimodal_jev/sfc_teacher_wire.py',
+                     'src/multimodal_jev/sfc_teacher_feedback.py'):
             identity['source_files'][name]=file_hash(Path(__file__).parents[2]/name)
     atomic_json(output/'identity.json',identity)
     processor=Qwen3OmniMoeProcessor.from_pretrained(model,local_files_only=True)
