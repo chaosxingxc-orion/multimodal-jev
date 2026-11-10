@@ -1,0 +1,232 @@
+{
+  "observed_unix": 1794277946.2255368,
+  "status": "passed",
+  "containers": [
+    {
+      "iteration": 0,
+      "role": "rollout",
+      "host": "local",
+      "container_id": "cb1deb5b8210e906d3e90437bef3a189cbfa3ccb63b6804404d47a41ae0bfeb3",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T01:02:24.20810217Z",
+        "FinishedAt": "2026-11-10T01:06:47.71284195Z"
+      }
+    },
+    {
+      "iteration": 0,
+      "role": "actor",
+      "host": "npu",
+      "container_id": "653d4ce2b65dd39b10b4ac2783eb735cb34d6dabe8763dea55ca694bf000d16f",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T01:05:34.00155968Z",
+        "FinishedAt": "2026-11-10T01:35:52.03959742Z"
+      }
+    },
+    {
+      "iteration": 0,
+      "role": "export",
+      "host": "npu",
+      "container_id": "4486ce5db729bf41add6e4fd26b64d99469694bd193d04c06b79e86422964238",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T01:36:10.83993044Z",
+        "FinishedAt": "2026-11-10T01:42:08.35743015Z"
+      }
+    },
+    {
+      "iteration": 1,
+      "role": "rollout",
+      "host": "local",
+      "container_id": "366913b337d5b4273711d4aedb224ebe7d123e145968fb388f47d948a1bb22ac",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T01:43:44.23493215Z",
+        "FinishedAt": "2026-11-10T01:48:11.4306754Z"
+      }
+    },
+    {
+      "iteration": 1,
+      "role": "actor",
+      "host": "npu",
+      "container_id": "7a4a5a476f83229bce927f78d1d9c00e66527f10f752a74bfe213b50fe234544",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T01:46:54.6340727Z",
+        "FinishedAt": "2026-11-10T02:17:39.02123888Z"
+      }
+    },
+    {
+      "iteration": 1,
+      "role": "export",
+      "host": "npu",
+      "container_id": "8897d37ea1a707dde4d2d682333d21c7d92f6ac49adaa0cd2d4ef4a775ef0d9c",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T02:18:02.32407388Z",
+        "FinishedAt": "2026-11-10T02:24:21.49125753Z"
+      }
+    }
+  ],
+  "budget": {
+    "training": {
+      "observed_iterations": 2,
+      "expected_iterations": 2,
+      "observed_subtotal": {
+        "sequences": 24,
+        "prompt_tokens": 16100,
+        "response_tokens": 162,
+        "audio_frames": 4440,
+        "gradient_sequences": 24,
+        "gradient_tokens": 16262,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 16262,
+        "optimizer_steps": 2
+      },
+      "total": {
+        "sequences": 24,
+        "prompt_tokens": 16100,
+        "response_tokens": 162,
+        "audio_frames": 4440,
+        "gradient_sequences": 24,
+        "gradient_tokens": 16262,
+        "no_grad_sequences": 24,
+        "no_grad_tokens": 16262,
+        "optimizer_steps": 2
+      }
+    },
+    "generation": {
+      "observed_iterations": 2,
+      "expected_iterations": 2,
+      "observed_subtotal": {
+        "requests": 12,
+        "responses": 24,
+        "request_prompt_tokens": 8050,
+        "replicated_prompt_tokens": 16100,
+        "generated_tokens": 162,
+        "length_terminated_responses": 0,
+        "engine_generate_seconds": 176.59003952005878
+      },
+      "total": {
+        "requests": 12,
+        "responses": 24,
+        "request_prompt_tokens": 8050,
+        "replicated_prompt_tokens": 16100,
+        "generated_tokens": 162,
+        "length_terminated_responses": 0,
+        "engine_generate_seconds": 176.59003952005878
+      }
+    },
+    "engine_load_seconds": {
+      "observed_iterations": 2,
+      "expected_iterations": 2,
+      "observed_subtotal": 286.58941143006086,
+      "total": 286.58941143006086
+    },
+    "export_seconds": {
+      "observed_iterations": 2,
+      "expected_iterations": 2,
+      "observed_subtotal": 735.6350911299814,
+      "total": 735.6350911299814
+    }
+  },
+  "all_stages_completed": true,
+  "accounting_complete": true,
+  "saved_actor_audit": {
+    "status": "passed",
+    "reports": [
+      {
+        "status": "passed",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/container-audio-rl-two-step-v1/iteration-0000/actor",
+        "adapter_tensors": 112,
+        "optimizer_states": 112,
+        "optimizer_step": 1,
+        "all_weights_and_moments_finite": true,
+        "iteration": 1,
+        "changed_adapter_tensors": 112,
+        "updated": true,
+        "max_logprob_error": 5.6624412536621094e-05,
+        "parent_run": null,
+        "result_sha256": "ffe32a450fcccadcceea498b62d8d6cff5a636683c73eed0ac775bf41eadfe28",
+        "optimizer_sha256": "0e63b14c960f4df30c1df72db659d0f6eb761083a2ad1843429583ef5f3b0d85",
+        "adapter_files": {
+          "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+          "adapter_config.json": "ce22311b5472f2a8239b69fb86db010e6d4dd1257dd2f3af918d0f3ff1499e52",
+          "adapter_model.safetensors": "6470d16f84a1b248a835f384c9c4312e7fdaab933fffd0a72fbc24404deea930"
+        },
+        "scope": "saved artifact hashes, finite tensors, AdamW counters and local parent consistency; not Docker exit, rollout/export integrity, gradient equivalence or efficacy proof"
+      },
+      {
+        "status": "passed",
+        "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/container-audio-rl-two-step-v1/iteration-0001/actor",
+        "adapter_tensors": 112,
+        "optimizer_states": 112,
+        "optimizer_step": 2,
+        "all_weights_and_moments_finite": true,
+        "iteration": 2,
+        "changed_adapter_tensors": 112,
+        "updated": true,
+        "max_logprob_error": 5.2809715270996094e-05,
+        "parent_run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/container-audio-rl-two-step-v1/iteration-0000/actor",
+        "result_sha256": "35947d50bc804663cb50a9f1f63d5382acfcc11505ffb9065c452fa2f00ee359",
+        "optimizer_sha256": "6e629788b5b1f7e9a2f7b0d70a578ad7b596d61efb288c99374c05a6e886f9a1",
+        "adapter_files": {
+          "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+          "adapter_config.json": "7ba83f4974c8e1d5fc17f6b43cac7a3370055ef728e39a4a7936097f65993939",
+          "adapter_model.safetensors": "92e861646a82da4b16c47b99225cd1a651c6ee7d5983d90c2ef85bbd209fe59e"
+        },
+        "scope": "saved artifact hashes, finite tensors, AdamW counters and local parent consistency; not Docker exit, rollout/export integrity, gradient equivalence or efficacy proof"
+      }
+    ]
+  },
+  "scope": "two CPU on-policy scheduler iterations, exact container exits, independently recomputed budget and saved artifact hashes; no native update_policy, NPU or efficacy claim"
+}
