@@ -98,3 +98,30 @@ create/start歧义、已存在部分inspection或intent均保留并禁止自动�
 实际状态为`waiting_both_capacities`，未创建NPU容器；原Jev容量协调者也确认存活。
 见[解码队列身份](audio2tool-decode-profile-v1-queued.json)。队列启动不代表容量或
 解码完成，后续应观察此原进程及其记录的精确容器，不能重复派发同一测量。
+
+## 完整测量的外部验收入口
+
+`verify_audio2tool_decode.py`在固定镜像CPU环境运行，不加载模型权重。外部协调者
+须先实际inspect四个精确容器（profile、原CPU预检查、native容量、Jev容量），
+将对象保存为包含`profile/preflight/native/jev`的JSON并固定SHA，再调用：
+
+```bash
+python3 tools/jev/verify_audio2tool_decode.py \
+  --root /mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-decode-profile-v1 \
+  --evidence /output/fresh-inspections.json \
+  --evidence-hash ACTUAL_SHA256 \
+  --output /output/acceptance.json
+```
+
+验收入口核对原固定preparation、实际NPU资源/命令/挂载/环境、完整运行源码与
+预检查快照、输入文件SHA，以及派发时和最新两套容量证据。运行identity中的容量
+验收必须与派发时复算结果一致，最新容量证据除inspection SHA外也须一致。
+随后核验原processor资产和HF源码，在固定版本中加载真实processor/tokenizer，
+独立解码16条输出并调用已有artifact审计重算统计。全模型资产清单绑定原manifest；
+权重文件和波形不在此重复加载，其实际执行校验由固定运行源码及终态证据承担。
+
+新增24项验收信封测试，与artifact/profile/队列测试合计77项通过；覆盖原预检查
+运行失败/资源/命令偏差、intent额外参数、容量证据修改、两种容量重新验收及运行
+identity错配。容量成功分支使用合成fixture，不冒充实际NPU运行。本次另实际
+inspect原CPU预检查容器，固定intent/result SHA与新preflight检查均通过。
+完整profile尚待队列前驱，未执行完整最终验收，也没有实际吞吐或得分声明。
