@@ -170,3 +170,23 @@ The prepared six-turn probe contains no >30-second audio; its conservative
 guard must not be reused as a full-data exclusion rule. A future full runner
 must preserve long audio and verify complete feature coverage, rather than
 dropping it based on `feature_extractor.n_samples`.
+
+## Queued six-turn engine validation
+
+`watch_sfc_omni_probe.py` is now running from immutable coordinator snapshot
+`f1fbc6b`, waiting on the exact native SLURP TEST and transfer TRAIN supervisors.
+It binds process start times, launch/configuration hashes and successful
+container identities, independently accepts transfer TRAIN execution, checks
+that NPU6/7 are free, then dispatches the already prepared inference snapshot
+`556b8eb` once. Ambiguous launch or any failure is retained without replay.
+Queue receipt: `docs/engineering/sfc-qwen3-omni-train6-v1-queued.json`.
+
+After all six raw outputs succeed, acceptance checks complete IDs, original
+input/audio bindings, model/runtime/source identity, token parity and truncation.
+Only then are the six original TRAIN labels selected for official-plus-strict
+scoring. Invalid JSON is scored as generated; no accuracy gate is imposed.
+The exact six-turn scoring integration passed with oracle predictions, including
+both-turn counts for L3_1/L3_2; this is a scorer fixture, not model performance.
+See `docs/engineering/sfc-qwen3-omni-train6-score-fixture-v1.json`.
+Twenty-six related tests passed. The waiting supervisor is not evidence that
+SFC vLLM inference or full ID/OOD evaluation has completed.

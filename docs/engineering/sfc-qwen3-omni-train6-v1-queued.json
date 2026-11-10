@@ -1,0 +1,34 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-train6-v1",
+  "launch": {
+    "pid": 2732643,
+    "process_start": "288475209",
+    "started_unix": 1794308096.2625408,
+    "coordinator_commit": "f1fbc6b84407477a5fde08052e544a143d222f02",
+    "queue_plan_sha256": "ce39524f6cdd1989401c26c0a0f99e05ec00b3e967f08d7452fa5615e0d575c0",
+    "argv": [
+      "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+      "-B",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-train6-v1/queue-source/tools/jev/watch_sfc_omni_probe.py",
+      "--root",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-train6-v1"
+    ],
+    "automatic_retry": false
+  },
+  "verified_unix": 1794308132.5524695,
+  "progress": {
+    "phase": "waiting_dependencies",
+    "ready": {
+      "native_test": false,
+      "transfer_train": false
+    },
+    "heartbeat_unix": 1794308116.4384909
+  },
+  "physical_devices": [
+    6,
+    7
+  ],
+  "inference_dispatched": false,
+  "tests": "26 passed: SFC queue, probe contract, dependency observation and native SFC scorer tests",
+  "scope": "Supervisor live; waits for exact native SLURP TEST and transfer TRAIN validation. Six TRAIN turns only, no weight updates."
+}
