@@ -124,3 +124,14 @@ verl 或设备，因此本次使用项目 `.venv` 的纯 Python 测试，不启�
 
 验证命令：`PYTHONPATH=src .venv/bin/python -m pytest -q tests/test_omni_probability_audit.py`。
 结果为 54 passed，0.17 秒；`git diff --check` 通过。
+
+加入张量导出适配器后，宿主四个相关测试文件合计 112 passed、2 skipped
+（宿主缺 verl）。固定镜像同四个测试文件实际执行 114 passed、0 skipped，
+JUnit 耗时 12.430 秒，容器退出 0、无 OOM。源码固定为
+`0be2fee9bab6e4ca160ffbc037d9e620e1feaad7`，容器为
+`d61e29ef99aea5ee16df905de75992e043f483a971c9038954ed90d045e392ff`，
+使用既定 `52ba94e1...` 镜像，2 CPU / 8 GiB、无网络、无设备映射。
+外部核验容器配置、127 份源码与 Git 对象、JUnit 项目及零跳过结果，见
+[固定镜像独立核验记录](omni-probability-capture-tests-v1-verified.json)。
+没有真实音频/权重加载、NPU forward 或优化器更新；actor 输出在本测试中
+是合成值，验证的是接口对齐与数值审计流程。

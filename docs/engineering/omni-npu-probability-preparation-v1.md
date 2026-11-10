@@ -74,3 +74,10 @@ AutoModel映射，默认wrap列表含不存在的旧解码层类而失败。显�
 它要求显式预登记协议，检查原JSON概率、全部有效token及所有运行两两差异；
 整段比率仅作描述，不以正负误差抵消代替逐token验收。目前仅合成测试，
 尚未登记正式NPU阈值或生成真实actor概率通过证据。
+
+概率输出端现已通过 `omni_probability_capture.recompute` 衔接：预检完整原始
+身份后只调用一次 actor，按有效 mask 导出原精度概率并绑定原记录哈希。
+固定镜像实际 DataProto 重排及合成输出全流程测试 114 通过、0 跳过；
+[独立核验](omni-probability-capture-tests-v1-verified.json)确认源码、容器和
+JUnit。下一步仍是队列中的实际NPU层探针及完整真实采样概率验收，不能以
+合成actor测试代替真实数值结论。
