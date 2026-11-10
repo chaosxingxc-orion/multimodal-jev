@@ -1,0 +1,52 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-compact-keys-train6-v1",
+  "container_id": "742651b35fe69b6f7679a56136fd3643c03c07f915799937f70d6e6d87bd9da4",
+  "state_at_audit": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1210947,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T19:44:23.56972871Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "intent_sha256": "07902e61933c77a245530c681110a9cf39842485a0c203159244caea301b42e9",
+  "source_commit": "64e530d4094c275e61c7f0d3c4958f0d694b5399",
+  "source_files_verified": 339,
+  "identity_sha256": "00cf201583fcd97ebee37cebd977828b0e653f03971f9d40b1552bb026bad12f",
+  "row_report_sha256": "464967f24f06c9855aa5ae8294ae6c3321999b91f3f316c903a72a65ee2eb644",
+  "row": 1,
+  "valid_tokens": 978,
+  "padding": 252,
+  "attention_calls_verified": 48,
+  "logits_sha256": "0f5df870c3fc6c23f84fb528cd3e019f80bbace44021a5bc2416b98ada9739bc",
+  "fp32_log_probs": [
+    -4.540982723236084,
+    -1.3351351299206726e-05
+  ],
+  "comparisons": {
+    "audio_padding": {
+      "exact_logits": true,
+      "max_logits_error": 0.0,
+      "max_response_logp_error": 0.0,
+      "reference_sha256": "df91a39bba128112ee13f112fce0bc2ccb5724b135a3692feb727c6c37efdf3b"
+    },
+    "text_padding": {
+      "exact_logits": false,
+      "max_logits_error": 1.390625,
+      "max_response_logp_error": 0.38801002502441406,
+      "reference_sha256": "09ad0edeebc41e22f372ba6f96f4a718eb040e40e37a069eaf595bd1ac3ecbce"
+    }
+  },
+  "response_gate_passed": true,
+  "threshold": 0.1,
+  "elapsed_seconds": 343.70457411999814,
+  "completed_rows_at_audit": 2,
+  "expected_rows": 6,
+  "parity_accepted": false,
+  "limitation": "Partial CPU full-model candidate result on original TRAIN row0. Actual source/container and saved response logits independently checked. Not complete six-row success, actual verl/NPU parity, optimizer or task improvement; no inference replay."
+}

@@ -1,0 +1,46 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-compact-verl-preflight-v1",
+  "launch": {
+    "container_id": "459db7b318cc73801b085727ac95dc04dc145543c11a47ddbd448b2ec749c2d5",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "dd1e4475c8c3b27befbed27d498c0c7e54150830",
+    "intent_sha256": "27def22be94fa95659037efb1c4718577f336c858305629920b86127067e6cd8"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T20:00:04.00536799Z",
+    "FinishedAt": "2026-11-10T20:01:27.08117963Z"
+  },
+  "result": {
+    "status": "passed",
+    "preflight_only": true,
+    "model_loaded": false,
+    "tensor_shape": [
+      6,
+      1230
+    ],
+    "order": [
+      2,
+      0,
+      5,
+      1,
+      3,
+      4
+    ],
+    "weight_updates": 0
+  },
+  "result_sha256": "d683b4e55ae6779ac1c73f6a5bf587eefe8319d330286f443de3fc7a467f0665",
+  "identity_sha256": "48794d44801f4aa26dd26ab8e3530105ca512f838f1e61c0a12e1346817b147f",
+  "source_files_verified": 342,
+  "compact_keys_enabled": true,
+  "candidate_accepted": false,
+  "scope": "Exact successful fixed-image preflight with real verl DataProto and original complete TRAIN6 audio/processor inputs; mixed-audio order and padded shape preserved. No model or actor compute_log_prob, compact candidate acceptance, NPU parity or training."
+}

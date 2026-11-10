@@ -31,3 +31,17 @@ attention数学语义及梯度测试；不以这些fixture代替预训练actor�
 （6条×microbatch条件2种），无网络/设备、模型与输入只读，不自动重试。先固定
 源码与输入，create成功持久记录精确ID后start。当前只准备输入预检查，完整候选
 尚未全部完成，未派发新的完整verl模型对照、NPU或训练。
+
+## 固定镜像真实输入预检查通过
+
+源码`dd1e447`的容器
+`459db7b318cc73801b085727ac95dc04dc145543c11a47ddbd448b2ec749c2d5`已退出0，
+intent SHA为`27def22be94fa95659037efb1c4718577f336c858305629920b86127067e6cd8`。
+外部协调者实际inspect并核对命令/资源/挂载/环境、342份源码与Git、原前向验收
+链及全部学习样本身份。实际verl DataProto形状`[6,1230]`，顺序`[2,0,5,1,3,4]`，
+保持真实单/双音频特征。见[独立输入验收](omni-compact-verl-preflight-v1-verified.json)。
+
+identity明确记录compact_keys_enabled=true、compact_candidate=null：此处只准备
+输入，没有把运行中的候选当作已验收，也没有加载模型或执行actor.compute_log_prob。
+宿主被跳过的测试模块仍属于宿主未执行；实际镜像预检查补充真实DataProto运行证据，
+不冒充同一套单元测试已在镜像重跑。新的完整actor比较仍等待六条候选全部通过。

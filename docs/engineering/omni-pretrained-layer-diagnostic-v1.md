@@ -210,3 +210,8 @@ row3随后也完成逐层诊断与独立审计：336份参考张量、785706240�
 token，两条件最终logits均精确复现原诊断；首差异仍在layer0 attention。
 见[row3审计](omni-layers-train6-v1-row03-audit.json)。原完整trace已进入row4；
 其余样本及整体成功终态仍待完成，旧逐层第二条件张量缺失的审计限制不变。
+
+row4已完成并独立核验336份参考张量、570620160字节、711有效token，两条件
+最终logits精确复现原诊断，首差异仍在layer0 attention。见
+[row4审计](omni-layers-train6-v1-row04-audit.json)。完整trace已进入最后一条row5，
+仍保留相同的逐层第二条件张量未落盘限制，尚待整体成功终态。
