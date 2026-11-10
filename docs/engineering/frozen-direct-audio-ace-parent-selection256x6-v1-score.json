@@ -1,0 +1,85 @@
+{
+  "replicates": [
+    {
+      "replicate": 0,
+      "by_variant": {
+        "native": {
+          "examples": 256,
+          "correct": 7,
+          "format_valid": 256,
+          "schema_valid": 256,
+          "accuracy": 0.02734375
+        },
+        "permutation": {
+          "examples": 256,
+          "correct": 6,
+          "format_valid": 256,
+          "schema_valid": 256,
+          "accuracy": 0.0234375
+        },
+        "rebind": {
+          "examples": 256,
+          "correct": 7,
+          "format_valid": 256,
+          "schema_valid": 256,
+          "accuracy": 0.02734375
+        },
+        "missing_candidate": {
+          "examples": 256,
+          "correct": 0,
+          "format_valid": 256,
+          "schema_valid": 256,
+          "accuracy": 0.0
+        },
+        "noul.True": {
+          "examples": 256,
+          "correct": 245,
+          "format_valid": 256,
+          "schema_valid": 256,
+          "accuracy": 0.95703125
+        },
+        "noul.False": {
+          "examples": 256,
+          "correct": 3,
+          "format_valid": 256,
+          "schema_valid": 256,
+          "accuracy": 0.01171875
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 256,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        },
+        "rebind": {
+          "groups": 256,
+          "both_correct": 7,
+          "both_correct_rate": 0.02734375
+        },
+        "missing_candidate": {
+          "groups": 256,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        },
+        "noul": {
+          "groups": 256,
+          "both_correct": 1,
+          "both_correct_rate": 0.00390625
+        }
+      },
+      "all_six_correct": 0,
+      "all_six_correct_rate": 0.0
+    }
+  ],
+  "source_groups": 256,
+  "requests": 1536,
+  "predictions": 1536,
+  "coverage": 1.0,
+  "scope": "correlated derived views; paired correctness is required; not six independent recordings",
+  "split": "train",
+  "purpose": "direct-audio-ACE-selection",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-direct-audio-ace-parent-selection256x6-v1/run",
+  "targets_sha256": "16e8d62670dfdf06add142ba927fc56d369a3ccb3fbf1972dd41d355ae98a9c5",
+  "result_sha256": "08b7e4e179adb3f3ad83b280bfb9504c962774d09d974ffb00595bb358ab60f3"
+}

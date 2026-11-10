@@ -1,0 +1,103 @@
+{
+  "coverage": 1.0,
+  "examples": 60,
+  "format_valid": 0,
+  "full_official_split": false,
+  "malformed": 60,
+  "malformed_policy": "complete ID retained; invalid scenario/action sentinel and zero predicted entities; no output repair; official entity metrics give no accuracy credit for empty-empty entities",
+  "metric_columns": [
+    "precision",
+    "recall",
+    "f1",
+    "tp",
+    "fp",
+    "fn"
+  ],
+  "predictions": 60,
+  "purpose": "native-SLURP-direct-TRAIN-engineering",
+  "release_id": "240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add",
+  "result_sha256": "bbf834060659eb660e56d2988a2b1f1be24bc09338ed239fa6c2445544b646c3",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-slurp-native-audio-direct-train16-v2/run",
+  "schema_valid": 0,
+  "scope": "official micro metrics on complete selected recording population; see split and full-official-split flag",
+  "scorer_source_manifest_sha256": "0f06204497486a5bc742ea4b06638ec77fc5a01bd4e5c0aec0fa916b4fe371d3",
+  "split": "train",
+  "targets_sha256": "5b523713a60672b61b0c050a9e3d42059e47797da14778816deacf2f849c1f88",
+  "overall_metrics": {
+    "action": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      60.0,
+      60.0
+    ],
+    "char": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      65.0
+    ],
+    "entity_exact": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      65.0
+    ],
+    "joint_intent": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      60.0,
+      60.0
+    ],
+    "scenario": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      60.0,
+      60.0
+    ],
+    "slu_f1": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      130.0
+    ],
+    "word": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      65.0
+    ]
+  },
+  "run_result": {
+    "status": "passed",
+    "requests": 60,
+    "predictions": 60,
+    "format_valid": 0,
+    "schema_valid": 0,
+    "length_limited": 0,
+    "route": "audio-direct",
+    "predictions_sha256": "1fc0ac8d8a374be12a548b3a6ced544b13a75b9fa4419df5e443282dcc2eb8e3",
+    "weight_updates": 0,
+    "model_files_unchanged": true,
+    "elapsed_seconds": 70.61520068004029,
+    "scope": "frozen HF reference inference; separate scoring required; no vLLM parity or training claim"
+  },
+  "terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794288790.4799619
+  },
+  "container_id": "90483694598d884d402612448f44899f17560d3d0cb406fab0bdc57efb35eb2d"
+}
