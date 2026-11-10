@@ -1,0 +1,50 @@
+{
+  "schema": "jev-omni-teacher-review-v1",
+  "reviewed_unix": 1794303282.341911,
+  "parent_prompt_sha256": "ab9c559716d480775dc93bbfc3f62ac5c7e1a2aa7c95a8c6b10d72b61ad982a2",
+  "response_sha256": "f056ee87fe2b199910b9a6e70c56010c858ba3d74af59add6274f6fe3cb3f9ae",
+  "evaluation_eligible": [
+    "p1"
+  ],
+  "prompt_selected": false,
+  "selection_or_test_items_read_for_review": false,
+  "candidates": [
+    {
+      "id": "p1",
+      "decision": "eligible_for_selection_evaluation",
+      "instruction_sha256": "9afee24f46b9ff5a575e4827b52f52fa422a9de34db823a36c08e218a2a57ead",
+      "instruction_characters": 1341,
+      "checks": [
+        "Exact schema question governs task; no command-only noul reinterpretation",
+        "choice IDs bound to current candidates; explicit no-match null exception overrides best-fit wording",
+        "All five types preserved including open_slots duplicates/order and empty-list semantics",
+        "Null remains conditional for every type; decidably false is false",
+        "No sample IDs, transcript, memorized answers, native none redefinition or task-specific labels",
+        "Raw JSON required, no output repair or actor decode changes"
+      ],
+      "limitations": [
+        "Best fits wording may still encourage over-selection; independent missing-candidate evaluation required",
+        "Generic presence/absence wording is explanatory; no transfer efficacy established"
+      ]
+    }
+  ],
+  "diagnosis_corrections": [
+    "Claim every zeros output was fenced is not established by aggregate zeros_only_valid=0. Only representative raw outputs support fencing; do not promote this claim into results."
+  ],
+  "usage": {
+    "completion_tokens": 11186,
+    "completion_tokens_details": {
+      "reasoning_tokens": 10200
+    },
+    "prompt_tokens": 30300,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 41486
+  },
+  "cumulative_known_omni_teacher_tokens": 232966,
+  "usage_unknown_attempts": [
+    "v4 HTTP400"
+  ],
+  "scope": "TRAIN-only semantic eligibility, not prompt selection or efficacy approval"
+}
