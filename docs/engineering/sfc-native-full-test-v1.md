@@ -60,3 +60,15 @@ length输出作为模型结果保留并统计；格式错误不能触发重新�
 本文件是协议，不是启动记录；精确进程/队列证据另存。
 随后将原生结果与同官方划分的Jev结果比较。教师只使用TRAIN学习反馈，
 完整TEST的输出和标签均不参与提示优化、奖励设计调参或候选筛选。
+
+## 已启动的等待队列
+
+`sfc-native-qwen3-omni-full-test-v1` 已固定源码
+`8310f638e436f193103deddbebff22a14074bfd4` 并启动本地调度器：
+PID2763532，process_start288952416，队列SHA256
+`e6af71aed1b76c1d90ee2979b4a4a632c555a5f7da21991413afc277ba35f8e8`。
+唯一直接依赖为已排队的 `sfc-jev-qwen3-omni-train78-v1`，
+其精确进程和四份准备/启动文件哈希均已固定；原生TRAIN6输入/配置/源码也另行绑定。
+已核验进程存活、状态waiting_jev_train78；两个TEST子目录尚不存在，未派发TEST容器。
+证据 `sfc-native-qwen3-omni-full-test-v1-queued.json`。
+当前队列只推进冻结原生基线，不启动权重训练或教师API。
