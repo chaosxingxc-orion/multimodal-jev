@@ -14,8 +14,8 @@ class FrozenContract:
         self.taxonomy = None
         self.taxonomy_sha256 = None
         if self.kind == 'slurp-native':
-            if config['route'] != 'asr-text':
-                raise ValueError('native SLURP currently requires ASR-text route')
+            if config['route'] != 'audio-direct':
+                raise ValueError('native SLURP requires end-to-end audio-direct route')
             path = Path(config['taxonomy'])
             self.taxonomy = json.loads(path.read_text())
             self.taxonomy_sha256 = hashlib.sha256(canonical(self.taxonomy)).hexdigest()
@@ -37,6 +37,12 @@ class FrozenContract:
     def messages(self, row, evidence, instruction):
         if self.kind == 'jev': return inference_messages(row, evidence, instruction)
         return slurp_native.messages(row, self.taxonomy, evidence, instruction)
+
+    def audio_instruction(self, row, instruction):
+        self.validate(row)
+        if self.kind == 'jev':
+            return instruction+'\nDecision definition:\n'+json.dumps(row['input']['schema'],sort_keys=True)
+        return instruction+'\nTask definition:\n'+canonical(self.taxonomy).decode()
 
     def prediction(self, row, raw):
         if self.kind == 'jev':

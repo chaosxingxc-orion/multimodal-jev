@@ -23,7 +23,7 @@ def setup(tmp_path):
     taxonomy={'scenario_action_pairs':[['email','send']], 'entity_types':['person']}
     path=tmp_path/'taxonomy.json';path.write_bytes(canonical(taxonomy))
     digest=hashlib.sha256(canonical(taxonomy)).hexdigest()
-    cfg={'task_format':'slurp-native','route':'asr-text','taxonomy':str(path),'taxonomy_sha256':digest}
+    cfg={'task_format':'slurp-native','route':'audio-direct','taxonomy':str(path),'taxonomy_sha256':digest}
     row={'id':'private-id','split':'train','source_group':'private-group','audio_sha256':'hash',
          'input':{'audio':'/audio','schema_sha256':digest}}
     return cfg,row
@@ -45,5 +45,12 @@ def test_native_refuses_label_fields_changed_taxonomy_and_unsupported_route(tmp_
     with pytest.raises(ValueError):contract.validate({**row,'target':'leak'})
     row['input']['schema_sha256']='changed'
     with pytest.raises(ValueError):contract.validate(row)
-    cfg['route']='audio-direct'
+    cfg['route']='asr-text'
     with pytest.raises(ValueError):FrozenContract(cfg)
+
+
+def test_native_direct_prompt_has_task_definition_without_reference_or_ids(tmp_path):
+    cfg,row=setup(tmp_path);contract=FrozenContract(cfg)
+    prompt=contract.audio_instruction(row,'Listen to the audio.')
+    assert 'scenario_action_pairs' in prompt and 'entity_types' in prompt
+    assert 'private' not in prompt and '/audio' not in prompt

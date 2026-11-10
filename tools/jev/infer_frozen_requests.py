@@ -12,9 +12,11 @@ from multimodal_jev.consumption import canonical
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.frozen_evidence import load_evidence
 from multimodal_jev.frozen_contract import FrozenContract
+from multimodal_jev.end_to_end import require_audio_task_route
 
 
 def run(config, output):
+    require_audio_task_route(config)
     import torch
     from transformers import AutoTokenizer, Qwen3ForCausalLM
     from multimodal_jev.asr import load_runtime
@@ -52,7 +54,7 @@ def run(config, output):
         'instruction_sha256':file_hash(config['instruction']),'models':identities,
         'runner_sha256':file_hash(__file__),
         'source_sha256':{name:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
-            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py','frozen_contract.py','slurp_native.py','teacher_candidates.py')}}
+            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py','frozen_contract.py','slurp_native.py','teacher_candidates.py','end_to_end.py')}}
     if contract.taxonomy_sha256 is not None:identity['taxonomy_sha256']=contract.taxonomy_sha256
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('resume identity changed')
@@ -120,7 +122,7 @@ def run(config, output):
         if file_hash(row['input']['audio'])!=row['audio_sha256']:raise ValueError('audio changed')
         if route=='audio-direct':
             wave=load_audio(row['input']['audio'])
-            system=instruction+'\nDecision definition:\n'+json.dumps(row['input']['schema'],sort_keys=True)
+            system=contract.audio_instruction(row,instruction)
             messages=[{'role':'system','content':[{'type':'text','text':'English\n'+system}]},
                 {'role':'user','content':[{'type':'audio','audio':wave}]}]
             prompt=processor.apply_chat_template(messages,tokenize=False,add_generation_prompt=True)

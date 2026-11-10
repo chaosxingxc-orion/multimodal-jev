@@ -10,9 +10,11 @@ import sys
 import time
 from multimodal_jev.baseline import atomic_json, file_hash
 from run_selected_frozen_test import observe, wait_container
+from multimodal_jev.end_to_end import require_audio_task_route
 
 
 def execute(root):
+    require_audio_task_route(json.loads((root/'config-template.json').read_text()))
     plan=json.loads((root/'plan.json').read_text())
     state=Path(plan['release_state']); deadline=plan['deadline_unix']
     while not (state/'terminal.json').exists():

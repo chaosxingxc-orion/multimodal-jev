@@ -1,5 +1,11 @@
 # Frozen native SLURP implementation contract
 
+**User route correction:** the ASR→text probe registered below is cancelled.
+Retain its immutable schedule as history; do not resume it. Current execution
+must feed audio plus taxonomy directly into one speech multimodal actor and
+emit the full native composite result. Dataset export and official scoring
+remain applicable. A new direct-audio protocol/config must precede dispatch.
+
 2026-11-10. Complements the native academic lock; no completed inference claim.
 
 Retain all official real recordings: TRAIN50628, devel8690, TEST13078. Exclude

@@ -1,5 +1,11 @@
 # FSC frozen baseline and external-teacher prompt experiment v1
 
+**Route correction:** ASR→text teacher/actor experiments below are retired by
+the user's explicit end-to-end requirement. Keep their results and costs as
+historical diagnostics; p1 is not an end-to-end improvement and its pending
+full test was cancelled. New learning feedback must come from an actor that
+directly consumes audio and task definitions.
+
 2026-11-10. Implements proposal/02-frozen-baselines-tfrl-jev.md without weight training.
 
 Base checkpoints remain the official 0.6B HF ASR and Qwen3-0.6B text models.

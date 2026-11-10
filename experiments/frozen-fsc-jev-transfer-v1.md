@@ -1,5 +1,10 @@
 # Frozen FSC-Jev baseline and native-prompt transfer
 
+**Retired execution route after explicit user correction:** this ASR→text
+protocol is historical only. Completed probes are not end-to-end transfer
+evidence. No further cascade inference or teacher calls may be scheduled.
+Six-view release and scorer remain valid for a new direct-audio actor protocol.
+
 2026-11-10. Freeze before observing six-view inference.
 
 Use release e046b9e58357e26343b628adce1bcbe178472fa2de0290b6480d489c52fc527c,

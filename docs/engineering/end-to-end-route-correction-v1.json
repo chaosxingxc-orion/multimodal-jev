@@ -1,0 +1,39 @@
+{
+  "reason": "user requires end-to-end audio task route; stop ASR-to-text-to-LM branch",
+  "time": 1794283313.216741,
+  "supervisors": [
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-asr-text-test-p1-v1",
+      "pid": 2538855,
+      "signal": "SIGTERM",
+      "verified_cmdline": "/home/xingchao/workspace/multimodal-jev/.venv/bin/python /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-asr-text-test-p1-v1/source/tools/jev/run_selected_frozen_test.py --root /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-asr-text-test-p1-v1 ",
+      "live_after": false
+    },
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-slurp-native-train16groups-v1",
+      "pid": 2561648,
+      "signal": "SIGTERM",
+      "verified_cmdline": "/home/xingchao/workspace/multimodal-jev/.venv/bin/python /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-slurp-native-train16groups-v1/source/tools/jev/run_slurp_native_probe.py --root /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-slurp-native-train16groups-v1 ",
+      "live_after": false
+    }
+  ],
+  "containers": [
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-asr-text-test-v1",
+      "container_id": "2e716c366be247e06bd5a8bc8c0c723c92910cc10a78b79ee7ea65a78d838c98",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-11-10T02:49:12.15733707Z",
+        "FinishedAt": "2026-11-10T04:00:33.69375655Z"
+      }
+    }
+  ]
+}
