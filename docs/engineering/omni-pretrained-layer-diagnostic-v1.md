@@ -62,3 +62,9 @@ text padding四个相邻比较，完整BF16 logits逐元素相同，FP32响应lo
 响应logp相邻最大差为0.9594621658325195，完整logits最大差1.21875；该行前面
 autocast、FP32 features和audio_padding相邻条件完整logits相同。原始诊断仍在
 运行，没有重放或放宽0.1门槛；这增加了padding相关差异证据，尚不证明具体算子根因。
+
+保存tensor审计随后覆盖24/30（partial-10）和26/30（partial-11）条件。
+第五条row4的autocast、FP32 features与audio_padding三个相邻条件完整logits相同；
+text_padding（左padding519）响应logp相邻最大差为0.12417721748352051，完整logits
+最大差为1.4375，仍超过原0.1响应概率门槛。第六条reference已保存，余下条件仍
+运行中。只复算原保存logits，未重跑模型、放宽阈值或启动逐层模型诊断。

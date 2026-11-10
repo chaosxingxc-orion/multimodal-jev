@@ -205,3 +205,9 @@ native调用仅从预测的参数列表与工具序列按次数和顺序重组�
 次数与顺序必须保留。它们只验证评分，不作为模型预测文件写出，也不提供actor或
 教师反馈。控制用固定镜像CPU执行，预登记2 CPU/8 GiB/3600秒上限，无网络或设备；
 成功须完成三组报告与完整终态，失败保留且不自动重跑。具体派发和验收另存记录。
+
+完整控制容器`1e2ee3aede770bdf5408929cf59ea1fa6031c4cf86b38ab256da2d9d714db823`
+已用源码`01cfdc3c99c04b7e5c99c103e122230f07fc330b`派发并实际inspect确认运行。
+见[派发身份](audio2tool-jev-score-controls-v1-launched.json)。运行中不算三组控制通过。
+另已完成[全量推理工作量审计](audio2tool-jev-workload-v1.md)：完整独立决策的逻辑
+输入约982亿tokens，是native的462.7倍；这不是实测NPU计算量或吞吐。
