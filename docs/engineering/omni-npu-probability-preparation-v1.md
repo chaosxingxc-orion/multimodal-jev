@@ -69,3 +69,8 @@ teacher-forcing仅对已经采样的响应计算概率：仍由同一个多模�
 AutoModel映射，默认wrap列表含不存在的旧解码层类而失败。显式Thinker与
 真实层类在meta模型中形成108个单元，最大BF16 1.4310 GiB，已与checkpoint
 头部计数独立核对。这只是结构准备，未验证NPU算子、FSDP初始化或完整前向。
+
+完整采样响应的数值比较入口已实现，见[概率核验协议与CLI](omni-probability-audit-v1.md)。
+它要求显式预登记协议，检查原JSON概率、全部有效token及所有运行两两差异；
+整段比率仅作描述，不以正负误差抵消代替逐token验收。目前仅合成测试，
+尚未登记正式NPU阈值或生成真实actor概率通过证据。
