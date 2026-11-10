@@ -51,7 +51,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--rollout',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--device',default='cpu')
-    p.add_argument('--dtype',choices=['float32','bfloat16'],default='float32')
+    p.add_argument('--dtype',choices=['float32','bfloat16','float16'],default='float32')
     args=p.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     try:
