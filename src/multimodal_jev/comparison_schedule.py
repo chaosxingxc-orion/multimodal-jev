@@ -57,3 +57,34 @@ def comparison_configs(rl_template,sft_template,batches,seed,export_root):
             config['actor']['norm_adv_by_std']=normalized
             configs[name]=config
     return configs
+
+
+def budget_comparison_configs(templates, profile_path, profile_sha256, export_root):
+    """Expand registered LR controls, preserving each frozen schedule verbatim."""
+    import re
+    arms = ('sft', 'grpo-standard', 'grpo-center', 'pair-grpo-standard', 'pair-grpo-center')
+    expected = {f'{seed}-{arm}.json' for seed in (17,29,43) for arm in arms}
+    if set(templates) != expected:
+        raise ValueError('all fifteen registered templates required')
+    if not re.fullmatch(r'[a-f0-9]{64}', profile_sha256):
+        raise ValueError('profile SHA256 required')
+    result = {}
+    for seed in (17,29,43):
+        baseline = templates[f'{seed}-sft.json']
+        for arm in arms:
+            source = templates[f'{seed}-{arm}.json']
+            if source['seed'] != seed or source['batches'] != baseline['batches']:
+                raise ValueError('within-seed schedules differ')
+            if any(source.get(k) != baseline.get(k) for k in ('initial_adapter','initial_checkpoint')):
+                raise ValueError('within-seed initializers differ')
+            for lr_label, lr in (('3e-6',3e-6),('1e-5',1e-5),('3e-5',3e-5)):
+                config = deepcopy(source)
+                actor = config if arm == 'sft' else config['actor']
+                actor['lr'] = lr
+                config['budget_control'] = {
+                    'profile_path': str(profile_path), 'profile_sha256': profile_sha256,
+                    'limits': {'training_tokens':765594,'generated_tokens':142848}}
+                if arm != 'sft':
+                    config['export_root'] = f'{export_root}/{seed}/{arm}/lr-{lr_label}'
+                result[f'{seed}-{arm}-lr-{lr_label}.json'] = config
+    return result

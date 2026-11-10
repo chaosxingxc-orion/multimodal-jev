@@ -1,6 +1,6 @@
 from types import SimpleNamespace as NS
 import pytest
-from multimodal_jev.comparison_schedule import source_batches,comparison_configs,VIEWS
+from multimodal_jev.comparison_schedule import source_batches,comparison_configs,VIEWS,budget_comparison_configs
 
 
 def examples():
@@ -40,3 +40,29 @@ def test_arms_hold_training_settings_fixed_and_do_not_mutate_templates():
         comparison_configs(rl,{**sft,'initial_adapter':'other'},[['a']],17,'out')
     with pytest.raises(ValueError,match='setting'):
         comparison_configs(rl,{**sft,'lr':1e-4},[['a']],17,'out')
+
+
+def test_budget_matrix_preserves_schedules_and_isolates_lr_export_paths():
+    actor=dict(model_path='base',lr=1e-5,lora_rank=4,lora_alpha=8,device='cpu',dtype='float32',cpu_threads=4)
+    common=dict(initial_adapter='adapter',initial_checkpoint='merged')
+    rl=dict(actor=actor,manifest='train',sampling={'n':2},engine={},**common)
+    sft=dict(**actor,train_manifest='train',**common)
+    templates={}
+    for seed in (17,29,43):
+        templates.update({f'{seed}-{name}.json':cfg for name,cfg in
+            comparison_configs(rl,sft,[[f'example-{seed}']],seed,'old').items()})
+    result=budget_comparison_configs(templates,'profile','a'*64,'new')
+    assert len(result)==45
+    exports=[]
+    for name,cfg in result.items():
+        source=templates[name.split('-lr-')[0]+'.json']
+        assert cfg['batches']==source['batches'] and cfg['initial_adapter']==source['initial_adapter']
+        assert cfg['budget_control']['limits']=={'training_tokens':765594,'generated_tokens':142848}
+        is_sft='-sft-' in name
+        current=cfg if is_sft else cfg['actor']
+        assert current['lr']==float(name.split('-lr-')[1].removesuffix('.json'))
+        assert (source if is_sft else source['actor'])['lr']==1e-5
+        if not is_sft:exports.append(cfg['export_root'])
+    assert len(exports)==len(set(exports))==36
+    with pytest.raises(ValueError,match='fifteen'):
+        budget_comparison_configs({},'profile','a'*64,'new')

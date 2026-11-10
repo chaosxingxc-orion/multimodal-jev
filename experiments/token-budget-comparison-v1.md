@@ -77,3 +77,19 @@ no-ops, replay and whole-group stopping. Real budgeted SFT and multi-step RL
 execution must additionally pass before launching this matrix. Resource
 allocation and scale sensitivity execution remain pending; this document is a
 registration, not a launch receipt or an efficacy result.
+
+The successful [v2 processor receipt](../docs/engineering/train-pool-budget-profile-v2-result.json)
+pins the new contract; all 186 length records and all 15 schedule profiles
+exactly match v1. `tools/jev/build_budget_comparison_configs.py` materializes
+45 configurations in a new directory and validates the six distinct seed/input
+mode combinations against the real profile, model, manifest and audio hashes.
+LR/reward variants retain identical data and profile identities; every arm
+still needs its own execution preflight. The
+[preparation receipt](../docs/engineering/token-budget-comparison-v1-preparation.json)
+records all generated config hashes and separate RL export roots. Configs are
+in shared storage, not launched. Rebuilding must use a fresh output directory.
+
+The [real SFT gate](budgeted-sft-execution-v1.md) has its own
+[launch receipt](../docs/engineering/budgeted-sft-execution-v1-queued.json).
+Its small cap tests the stopping mechanism only; it is not one of the 45
+formal trajectories and cannot count toward their efficacy results.
