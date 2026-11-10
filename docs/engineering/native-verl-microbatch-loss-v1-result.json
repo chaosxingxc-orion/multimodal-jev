@@ -1,0 +1,201 @@
+{
+  "observed_unix": 1794274225.6888485,
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/native-verl-microbatch-loss-v1",
+  "container_id": "73f54b88103fdbdb4fe717948325b213800c52801996042e69848cb33fa57fac",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T01:27:28.72552277Z",
+    "FinishedAt": "2026-11-10T01:28:14.29199619Z"
+  },
+  "image_id": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "result_sha256": "984ce11b4708a460433533246b5dc836bac719c00033aa591c11a149f270be58",
+  "result": {
+    "status": "passed",
+    "cases": {
+      "full": {
+        "max_errors": {
+          "parameters": 0.0,
+          "gradients": 0.0,
+          "exp_avg": 0.0,
+          "exp_avg_sq": 0.0
+        },
+        "native_metrics": {
+          "actor/pg_loss": -0.023693766444921494,
+          "actor/kl_loss": 0.0,
+          "actor/pg_clipfrac": [
+            0.0
+          ],
+          "actor/ppo_kl": [
+            -0.00020378681074362248
+          ],
+          "actor/pg_clipfrac_lower": [
+            0.0
+          ],
+          "actor/grad_norm": [
+            0.02224590629339218
+          ]
+        },
+        "microbatch_tokens": [
+          299
+        ]
+      },
+      "micro8": {
+        "max_errors": {
+          "parameters": 0.0,
+          "gradients": 4.190951585769653e-09,
+          "exp_avg": 2.9103830456733704e-10,
+          "exp_avg_sq": 8.526512829121202e-14
+        },
+        "native_metrics": {
+          "actor/pg_loss": -0.023693769955571042,
+          "actor/kl_loss": 0.0,
+          "actor/pg_clipfrac": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "actor/ppo_kl": [
+            -0.0013951386790722609,
+            0.0003821365244220942,
+            0.0014485741266980767,
+            -0.00010060264321509749,
+            -0.001710310229100287,
+            0.00030728746787644923
+          ],
+          "actor/pg_clipfrac_lower": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "actor/grad_norm": [
+            0.022245904430747032
+          ]
+        },
+        "microbatch_tokens": [
+          52,
+          51,
+          48,
+          49,
+          51,
+          48
+        ]
+      },
+      "micro12": {
+        "max_errors": {
+          "parameters": 0.0,
+          "gradients": 1.862645149230957e-09,
+          "exp_avg": 1.1641532182693481e-10,
+          "exp_avg_sq": 8.526512829121202e-14
+        },
+        "native_metrics": {
+          "actor/pg_loss": -0.023693765979260206,
+          "actor/kl_loss": 0.0,
+          "actor/pg_clipfrac": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "actor/ppo_kl": [
+            -0.0017540454864501953,
+            0.002047767397016287,
+            -2.3600847271154635e-05,
+            -0.001022420241497457
+          ],
+          "actor/pg_clipfrac_lower": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "actor/grad_norm": [
+            0.022245904430747032
+          ]
+        },
+        "microbatch_tokens": [
+          77,
+          74,
+          74,
+          74
+        ]
+      },
+      "wrong_local_mean8": {
+        "max_errors": {
+          "parameters": 0.0,
+          "gradients": 0.0005456390790641308,
+          "exp_avg": 5.4564094170928e-05,
+          "exp_avg_sq": 5.747294196112307e-09
+        },
+        "native_metrics": {
+          "actor/pg_loss": -0.022775831735392178,
+          "actor/kl_loss": 0.0,
+          "actor/pg_clipfrac": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "actor/ppo_kl": [
+            -0.0013951386790722609,
+            0.0003821365244220942,
+            0.0014485741266980767,
+            -0.00010060264321509749,
+            -0.001710310229100287,
+            0.00030728746787644923
+          ],
+          "actor/pg_clipfrac_lower": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "actor/grad_norm": [
+            0.022201422601938248
+          ]
+        },
+        "microbatch_tokens": [
+          52,
+          51,
+          48,
+          49,
+          51,
+          48
+        ]
+      }
+    },
+    "failures": [],
+    "responses": 48,
+    "response_tokens": 299,
+    "atol": 2e-06,
+    "rtol": 0.0002,
+    "actor_source_sha256": "207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce",
+    "core_source_sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+    "policy_id": "e28da9d0b70dc639fec442395eec4133154904726564b48dcd19001348f6541c",
+    "rollout_sha256": "27eb932a54402471b6c82235f7d17aa60a4d00f5cee8f237a43efbabd987adb6",
+    "comparison_sha256": "70ba586c6b4376c2abc155b7f9518cae6da1c064892aadf6c67dcfba669373b8",
+    "scope": "native update_policy loop/loss/AdamW with explicit three-parameter forward fixture and saved real rollout rewards; no ASR model, audio-forward, distributed or efficacy claim"
+  },
+  "independent_tensor_audit": {
+    "passed": true,
+    "negative_gradient_error": 0.0005456390790641308
+  },
+  "limitation": "negative control has identical first AdamW parameter update despite differing gradients/moments; checking parameters alone would miss the normalization error; no real-model or distributed claim"
+}

@@ -40,6 +40,13 @@ update_policy，显式保留 rollout 概率、验证零 dropout，并与同一�
 本次仅验证单个完整微批；变长微批缩放、零优势动量处理与真实分布式模型路径
 仍是独立的必要验收，不能用这个队列代替。
 
+原生 update_policy 的[静态微批损失验证](../../experiments/native-verl-microbatch-loss-v1.md)
+已经通过。通过注册损失显式补偿原生微批平均，8/12 行微批梯度与全批参考误差
+均小于5e-9；未补偿负例误差约5.46e-4。这里使用三参数 log-prob 前向夹具及
+48 个真实采样回答，不能替代 Qwen 模型的微批、分布式或 NPU 验证。
+该适配器目前明确拒绝多 rank、多 epoch、动态微批与 KL/entropy 等未验证组合，
+尚未接入正式训练配置。
+
 [两进程 Gloo 损失验证](../../experiments/distributed-verl-loss-v1.md)已通过：
 固定 core_algos.py 的 global_batch_info 在不等 token 分片和不等微批数下恢复
 全 batch 梯度，错误的局部平均负例能明显区分。此结果仅覆盖损失与 collective，

@@ -28,3 +28,20 @@ batch token and response counts and compute advantages before splitting.
 This gate validates actual native loop scaling, not ASR forward, Ray/FSDP,
 NPU training, no-op optimizer behavior or efficacy. Production use additionally
 needs the real-Qwen microbatch gradient/state gate and verified batch admission.
+
+## Completed fixture result
+
+The [receipt](../docs/engineering/native-verl-microbatch-loss-v1-result.json)
+records exact Docker/application exit0 and independent saved-tensor comparisons.
+There are299 response tokens. Native full-batch results match the reference
+exactly. With the registered adapter,8-row and12-row microbatches have maximum
+preclip gradient errors4.190951585769653e-9 and1.862645149230957e-9 respectively;
+parameters and both moments pass the original tolerances. The8-row chunks have
+52/51/48/49/51/48 effective tokens, so equal row count does not mean equal tokens.
+
+The unadapted local-mean negative control has gradient error0.0005456390790641308
+and first-moment error5.4564094170928e-5. Its first AdamW parameter update is
+nevertheless identical in this fixture: checking updated parameters alone would
+miss this scaling error. No inference about the ASR model's microbatch numerical
+parity follows. Invalid configurations, multiple ranks, invalid masks and loss
+registry collisions are covered by16 passing system-torch admission tests.
