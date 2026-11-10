@@ -1,0 +1,50 @@
+{
+  "observed_at_utc": "2026-11-10T02:09:25.627708+00:00",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-speechbrain-official-v1",
+  "train_gate": {
+    "examples": 1,
+    "predictions": 1,
+    "missing": 0,
+    "parsed": 1,
+    "joint_correct": 1,
+    "joint_accuracy": 1.0,
+    "serialization_exact_correct": 1,
+    "serialization_exact_accuracy": 1.0,
+    "component_correct": {
+      "action": 1,
+      "object": 1,
+      "location": 1
+    },
+    "component_accuracy": {
+      "action": 1.0,
+      "object": 1.0,
+      "location": 1.0
+    },
+    "scope": "native joint semantics and original serialization exact; not WER, JSON validity or Jev schema accuracy",
+    "status": "passed",
+    "split": "train",
+    "predictions_sha256": "a8382a9930ede170321e86b89f5bc2a48dd3fed300ed53801d67971026dad18e",
+    "elapsed_seconds": 3.064991010003723,
+    "comparison": "published weights on current pinned official inference; historical training environment not reproduced"
+  },
+  "test_container_id": "efaaa0e22baafc6f8e15e75255ea57fe2336ff4f42530d59410fbd7cc558e790",
+  "test_state": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1291038,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T02:07:05.47496425Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "image": "sha256:696e6adc27f7d1bfcc01633233fd75c7577778a6651be24173c9d66a5d4c0ef0",
+  "expected_test_records": 3793,
+  "supervisor_pid": 2506088,
+  "supervisor_sha256": "9c43b53b87b050307f63d2966a8a44ef5409a7e5ee0bc0650ebd8875b1548fb2",
+  "test_config_sha256": "03cb62ea46dff35839389133b948376825bdba0cde54eefd1158abfb0add07fc",
+  "status": "train_runner_scorer_passed_test_running_no_score_yet"
+}

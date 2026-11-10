@@ -1,6 +1,6 @@
 # 学术基线锁定 v1
 
-调研日期：2026-11-09（America/Los_Angeles；实际来源访问为 2026-11-10 UTC）。本次锁定的是**比较对象、证据口径和复现路径**，调研子进程没有运行训练、模型评测或设备验证；主进程同期运行验证在下文另引工程凭证。不是穷尽最新 SOTA 的排行榜。机器登记见 [academic-baseline-lock.json](academic-baseline-lock.json)，来源和失败记录见 [academic-baseline-sources-v1.json](academic-baseline-sources-v1.json)，执行门槛见 [横比方案](../../experiments/academic-baseline-comparison-v1.md)。
+调研日期：2026-11-10（Asia/Shanghai；来源访问时间保留 UTC）。本次锁定的是**比较对象、证据口径和复现路径**，调研子进程没有运行训练、模型评测或设备验证；主进程同期运行验证在下文另引工程凭证。不是穷尽最新 SOTA 的排行榜。机器登记见 [academic-baseline-lock.json](academic-baseline-lock.json)，来源和失败记录见 [academic-baseline-sources-v1.json](academic-baseline-sources-v1.json)，执行门槛见 [横比方案](../../experiments/academic-baseline-comparison-v1.md)。
 
 ## 1. 锁定结论与边界
 

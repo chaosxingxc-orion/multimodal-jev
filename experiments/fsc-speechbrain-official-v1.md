@@ -19,8 +19,8 @@ for scoring and resume only under identical model/source/config/data identities.
 The first registered TRAIN recording must complete the same runner and scorer,
 with the original target serialization matching its saved output, before the
 full test starts. This checks wiring only and does not establish accuracy.
-The test has exactly one fixed inference pass; the compute allowance is up to
-24 CPU-core-hours (four cores × six hours), evaluated after completed utterances.
+The test has exactly one fixed inference pass; the decoding wall-time allowance is six hours with four CPU cores, evaluated
+after completed utterances; import/load/startup overhead is recorded separately.
 If this allowance is reached, retain partial coverage and do not report a full
 test reproduction. Engine/process errors retain all evidence and require
 inspection, not automatic retries with changed settings.

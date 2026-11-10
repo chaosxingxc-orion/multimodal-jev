@@ -1,6 +1,6 @@
 # 学术横向比较冻结方案 v1
 
-日期：2026-11-09 America/Los_Angeles。关联 [学术报告](../docs/research/07-academic-baseline-lock.md) 与 [机器登记](../docs/research/academic-baseline-lock.json)。此文件锁定后续比较规则和必需对照；**不启动任何实验，不改动既有协议、运行状态、容器或 CPU 后台任务**。`locked` 指当前即可执行的研究约束，不表示某运行已经完成；`proposed` 指仍须生成具体配置、资源预算与启动凭证的实验。
+日期：2026-11-10 Asia/Shanghai。关联 [学术报告](../docs/research/07-academic-baseline-lock.md) 与 [机器登记](../docs/research/academic-baseline-lock.json)。此文件锁定后续比较规则和必需对照；**不启动任何实验，不改动既有协议、运行状态、容器或 CPU 后台任务**。`locked` 指当前即可执行的研究约束，不表示某运行已经完成；`proposed` 指仍须生成具体配置、资源预算与启动凭证的实验。
 
 ## 1. 版本、假设与判定对象（locked）
 
