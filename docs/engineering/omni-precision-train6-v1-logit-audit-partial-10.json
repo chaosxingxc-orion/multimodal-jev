@@ -1,0 +1,570 @@
+{
+  "schema": "omni-precision-logit-audit-v1",
+  "status": "partial_artifacts",
+  "identity_sha256": "e39bdebee8d2d434df8a51efc9d57b4f697462f0a67e8577d72f7f2e97cae9dd",
+  "completed_cells": 24,
+  "expected_cells": 30,
+  "record_sha256": {
+    "row-00-reference.json": "751a76abd6a46c61ef47a086d8230a1f5625c862c80af1dabcb6ec90ca80dbad",
+    "row-00-autocast.json": "df572733824a563769b8ea4b11dd66498804327f2f937846414d7c2f8ee60879",
+    "row-00-fp32_features.json": "9c64c3fc23fa247f48363f2ac079857c809791f4534ad2af10c990282bd5faa9",
+    "row-00-audio_padding.json": "95d23ec732de0cb7997f72e62f51547f2f71612f7d53f9856e14f82622b502de",
+    "row-00-text_padding.json": "34ca2ebabfe80c8dba90a7b841bf2f6c20c5071f0e140472e43a66e52adc5d31",
+    "row-01-reference.json": "6e74133b5e208b4fa0aebbb5cdf6203cb581827499d982d636a7712de95a2ed1",
+    "row-01-autocast.json": "3dab5f95d536e54c714752b3183c24e53eef3850a98abad890d4fa1e912e9345",
+    "row-01-fp32_features.json": "3ea382c374d07d485853760c0db38d679595309c051561af77a14f138eaf8cc2",
+    "row-01-audio_padding.json": "4d988bba09cd075e490fb99b4d046ce03a2e2e38a9faab84ed7f9037c613a4f5",
+    "row-01-text_padding.json": "8a2ebf1fd937d9712167861b3e1efbea6047793b40e50c268683abce6bbf8992",
+    "row-02-reference.json": "9fb69e228d7db72317a086892ae302b11c789b6d9795c0cdcd43321a74eeefff",
+    "row-02-autocast.json": "940d632fdf3a1def8d0d890fe449308ba5dda949024c27d0980b46ae21f78061",
+    "row-02-fp32_features.json": "fd992428b1e73402f6c4a7d19d57d302e6f1ccacc309734811f4a1614d56d223",
+    "row-02-audio_padding.json": "3ad7ad6c2b93f278875739426b8ebeed3700b5cf710961d77f559bde2f3cd117",
+    "row-02-text_padding.json": "c1ecd78140673cf1623a544576e0840411ec98dc9fa08b4ec49594858579693e",
+    "row-03-reference.json": "105b720e5a87df16b59c9b21c7f8eed54d6d4ceb8d1726a405aec4c74f9ca28f",
+    "row-03-autocast.json": "31aaf6a28f726ed0ef24a9b060d866faa866168505de68ee71dc4e0256854797",
+    "row-03-fp32_features.json": "a17f16cad81e6f32486a318a89c3acc40b4527f5962ab5521c7da4a4f5c47e9d",
+    "row-03-audio_padding.json": "27c9378e960a525cd52704d2da189cdc6ba811cbcd29c3b8a6a7d0ea496a9957",
+    "row-03-text_padding.json": "08a31de76a72debd0c45474d4d11a9a88d42f933891f96b41a4b3c35d67e2aad",
+    "row-04-reference.json": "423ecdddd481187d314f3d314f24f8c21ca6cce827fbaddc240eb512231d2dfd",
+    "row-04-autocast.json": "6f7352b7cf194d26166755fc1afe1066cadfcffb5914c52362ca5e35b3bcb6a8",
+    "row-04-fp32_features.json": "620f9f41de17af7017395e599416c275eb23244fbd0b04506a51834645d09027",
+    "row-04-audio_padding.json": "b7cc51496a0ccad032db7b620d926504b68d4131231c0f58cf2bd8af17a994f4"
+  },
+  "records": [
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "reference",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "fd863e8f3f19f029a7bb1b2699493eb27a84bda139e31cf74ee8f4b265eebfa5",
+      "seconds": 315.24652849999256
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "autocast",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "0bae359d822304d4b74db31abe884601a3649f412abe8fd3928f15d420206ebc",
+      "seconds": 309.65087478997884,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "fp32_features",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "c2300fc2c290050ee89e1da953ffe032a99136d37886519641f13dd5506a0d43",
+      "seconds": 308.4473273699987,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "audio_padding",
+      "fp32_log_probs": [
+        -4.411566734313965,
+        -3.480850500636734e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.40625,
+        0.0
+      ],
+      "normalization_max_error": 0.005316734313964844,
+      "logits_sha256": "4fc3e3f4145d833289ff7f4f3eb966d37a260b9df1b9078b65b3b7aa3756115e",
+      "seconds": 307.80141934001585,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 0,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "text_padding",
+      "fp32_log_probs": [
+        -4.556153297424316,
+        -2.6702524337451905e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.5625,
+        0.0
+      ],
+      "normalization_max_error": 0.006346702575683594,
+      "logits_sha256": "19b86961e3334c0f72de438601f8a634238fc5e5c3c762dde09b021ad156db3a",
+      "seconds": 363.0276656599599,
+      "predecessor_response_max_error": 0.14458656311035156,
+      "predecessor_full_logits_max_error": 1.125,
+      "predecessor_full_logprobs_max_error": 1.2499923706054688,
+      "predecessor_logits_equal": false
+    },
+    {
+      "row": 1,
+      "key": [
+        "sfc:audio/final_data_audio/level_1/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "reference",
+      "fp32_log_probs": [
+        -4.540982723236084,
+        -1.3351351299206726e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.53125,
+        0.0
+      ],
+      "normalization_max_error": 0.009732723236083984,
+      "logits_sha256": "e29cc965767d0c2613d8d85cf3fe2ff526c87f13aa2a222391ed0e4b100476c0",
+      "seconds": 271.27540878002765
+    },
+    {
+      "row": 1,
+      "key": [
+        "sfc:audio/final_data_audio/level_1/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "autocast",
+      "fp32_log_probs": [
+        -4.540982723236084,
+        -1.3351351299206726e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.53125,
+        0.0
+      ],
+      "normalization_max_error": 0.009732723236083984,
+      "logits_sha256": "82009be39f719c57cda39d4b753db362f84e04fd04c0425fe7655ea5df345f94",
+      "seconds": 270.7994612599723,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 1,
+      "key": [
+        "sfc:audio/final_data_audio/level_1/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "fp32_features",
+      "fp32_log_probs": [
+        -4.540982723236084,
+        -1.3351351299206726e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.53125,
+        0.0
+      ],
+      "normalization_max_error": 0.009732723236083984,
+      "logits_sha256": "6e3e094bdd58468847e3909c94206d516e00a6b3fbd0defc0728e1d483b0b6df",
+      "seconds": 271.01518362999195,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 1,
+      "key": [
+        "sfc:audio/final_data_audio/level_1/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "audio_padding",
+      "fp32_log_probs": [
+        -4.540982723236084,
+        -1.3351351299206726e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.53125,
+        0.0
+      ],
+      "normalization_max_error": 0.009732723236083984,
+      "logits_sha256": "df91a39bba128112ee13f112fce0bc2ccb5724b135a3692feb727c6c37efdf3b",
+      "seconds": 270.5112056400394,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 1,
+      "key": [
+        "sfc:audio/final_data_audio/level_1/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "text_padding",
+      "fp32_log_probs": [
+        -4.928992748260498,
+        -1.764281842042692e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.9375,
+        0.0
+      ],
+      "normalization_max_error": 0.008507251739501953,
+      "logits_sha256": "09ad0edeebc41e22f372ba6f96f4a718eb040e40e37a069eaf595bd1ac3ecbce",
+      "seconds": 353.06934182997793,
+      "predecessor_response_max_error": 0.38801002502441406,
+      "predecessor_full_logits_max_error": 1.390625,
+      "predecessor_full_logprobs_max_error": 1.9062423706054688,
+      "predecessor_logits_equal": false
+    },
+    {
+      "row": 2,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+        "f00.present"
+      ],
+      "cell": "reference",
+      "fp32_log_probs": [
+        -0.9526049494743347,
+        -4.887569048150908e-06
+      ],
+      "native_dtype_log_probs": [
+        -0.94921875,
+        0.0
+      ],
+      "normalization_max_error": 0.003386199474334717,
+      "logits_sha256": "62b8256190d30f52ff7455e5a4ab5abebe264e3f763e009ac5f4487ccc1e3629",
+      "seconds": 349.03918674000306
+    },
+    {
+      "row": 2,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+        "f00.present"
+      ],
+      "cell": "autocast",
+      "fp32_log_probs": [
+        -0.9526049494743347,
+        -4.887569048150908e-06
+      ],
+      "native_dtype_log_probs": [
+        -0.94921875,
+        0.0
+      ],
+      "normalization_max_error": 0.003386199474334717,
+      "logits_sha256": "31802e371473e704923e28bf541533d2a85113774b9014c749f1eb0f137f05a9",
+      "seconds": 350.2991751800291,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 2,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+        "f00.present"
+      ],
+      "cell": "fp32_features",
+      "fp32_log_probs": [
+        -0.9526049494743347,
+        -4.887569048150908e-06
+      ],
+      "native_dtype_log_probs": [
+        -0.94921875,
+        0.0
+      ],
+      "normalization_max_error": 0.003386199474334717,
+      "logits_sha256": "74dd1ac68585d3590c3d6ef9515bde49008d6f18a0fc01cfc9b2f6a912ffe72f",
+      "seconds": 349.74699989997316,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 2,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+        "f00.present"
+      ],
+      "cell": "audio_padding",
+      "fp32_log_probs": [
+        -0.9526049494743347,
+        -4.887569048150908e-06
+      ],
+      "native_dtype_log_probs": [
+        -0.94921875,
+        0.0
+      ],
+      "normalization_max_error": 0.003386199474334717,
+      "logits_sha256": "2fa3bdb65f259c4e7879bb72c39890232b29964566ea73b823d1a8e19cc85d10",
+      "seconds": 352.1225389500032,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 2,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_2/train_id/id_1_2.wav",
+        "f00.present"
+      ],
+      "cell": "text_padding",
+      "fp32_log_probs": [
+        -0.9526049494743347,
+        -4.887569048150908e-06
+      ],
+      "native_dtype_log_probs": [
+        -0.94921875,
+        0.0
+      ],
+      "normalization_max_error": 0.003386199474334717,
+      "logits_sha256": "5c98cc9536515b212a4871e15e55d3af195e122887d44af0d701872c8a8041ca",
+      "seconds": 353.29496420000214,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 3,
+      "key": [
+        "sfc:audio/final_data_audio/level_2/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "reference",
+      "fp32_log_probs": [
+        -4.938191890716553,
+        -1.9788545614574105e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.9375,
+        0.0
+      ],
+      "normalization_max_error": 0.0006918907165527344,
+      "logits_sha256": "7e5491d55c8371afafdf2a42f722956ef0aefdce3471699641423332b402881b",
+      "seconds": 273.954143490002
+    },
+    {
+      "row": 3,
+      "key": [
+        "sfc:audio/final_data_audio/level_2/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "autocast",
+      "fp32_log_probs": [
+        -4.938191890716553,
+        -1.9788545614574105e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.9375,
+        0.0
+      ],
+      "normalization_max_error": 0.0006918907165527344,
+      "logits_sha256": "c4b7b995bbaef73e9ff05321a60b5a289a52ddcce662b1820155c2910ac9ea60",
+      "seconds": 273.4284398800228,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 3,
+      "key": [
+        "sfc:audio/final_data_audio/level_2/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "fp32_features",
+      "fp32_log_probs": [
+        -4.938191890716553,
+        -1.9788545614574105e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.9375,
+        0.0
+      ],
+      "normalization_max_error": 0.0006918907165527344,
+      "logits_sha256": "c0f531009925fb65fcf8fcb7d48f4531196dfa0f4bda20b5fcd027b46b3b691e",
+      "seconds": 273.9302139299689,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 3,
+      "key": [
+        "sfc:audio/final_data_audio/level_2/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "audio_padding",
+      "fp32_log_probs": [
+        -4.938191890716553,
+        -1.9788545614574105e-05
+      ],
+      "native_dtype_log_probs": [
+        -4.9375,
+        0.0
+      ],
+      "normalization_max_error": 0.0006918907165527344,
+      "logits_sha256": "4363013fae1581626330cd1b33ba2854732a9ddf25b17819076d3142494db031",
+      "seconds": 274.22837164002704,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 3,
+      "key": [
+        "sfc:audio/final_data_audio/level_2/train_id/id_1.wav",
+        "f00.present"
+      ],
+      "cell": "text_padding",
+      "fp32_log_probs": [
+        -5.897654056549072,
+        -2.13382354559144e-05
+      ],
+      "native_dtype_log_probs": [
+        -5.90625,
+        0.0
+      ],
+      "normalization_max_error": 0.008595943450927734,
+      "logits_sha256": "9761b86afd5cf20433e2e88d0c39bcb8c8576675f68d7cba7accf3638501fbfb",
+      "seconds": 354.35591879999265,
+      "predecessor_response_max_error": 0.9594621658325195,
+      "predecessor_full_logits_max_error": 1.21875,
+      "predecessor_full_logprobs_max_error": 1.2407112121582031,
+      "predecessor_logits_equal": false
+    },
+    {
+      "row": 4,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_1/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "reference",
+      "fp32_log_probs": [
+        -3.5611798763275146,
+        -1.168244216387393e-05
+      ],
+      "native_dtype_log_probs": [
+        -3.5625,
+        0.0
+      ],
+      "normalization_max_error": 0.0013201236724853516,
+      "logits_sha256": "8e670328464f0a3de2dde9b9401e0ee2ec75858b098e5f87fb20df8666a83c4c",
+      "seconds": 197.32790351996664
+    },
+    {
+      "row": 4,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_1/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "autocast",
+      "fp32_log_probs": [
+        -3.5611798763275146,
+        -1.168244216387393e-05
+      ],
+      "native_dtype_log_probs": [
+        -3.5625,
+        0.0
+      ],
+      "normalization_max_error": 0.0013201236724853516,
+      "logits_sha256": "95515c969c3bcfc1165e72c8656ee832352a79f4afe8e5c89aa368e556bc63e3",
+      "seconds": 195.88040044996887,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 4,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_1/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "fp32_features",
+      "fp32_log_probs": [
+        -3.5611798763275146,
+        -1.168244216387393e-05
+      ],
+      "native_dtype_log_probs": [
+        -3.5625,
+        0.0
+      ],
+      "normalization_max_error": 0.0013201236724853516,
+      "logits_sha256": "6785c0bcaf6aa704ea803836bfc879df7787a4406f415a6e6f4290cc5b288c54",
+      "seconds": 197.01405961002456,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    },
+    {
+      "row": 4,
+      "key": [
+        "sfc:audio/final_data_audio/level_3_1/train_id/id_1_1.wav",
+        "f00.present"
+      ],
+      "cell": "audio_padding",
+      "fp32_log_probs": [
+        -3.5611798763275146,
+        -1.168244216387393e-05
+      ],
+      "native_dtype_log_probs": [
+        -3.5625,
+        0.0
+      ],
+      "normalization_max_error": 0.0013201236724853516,
+      "logits_sha256": "5b07d197c3a2b3ad870d922e55fd83c2caaef15e21de07eeef53f6ee85988be1",
+      "seconds": 199.3761476899963,
+      "predecessor_response_max_error": 0.0,
+      "predecessor_full_logits_max_error": 0.0,
+      "predecessor_full_logprobs_max_error": 0.0,
+      "predecessor_logits_equal": true
+    }
+  ],
+  "inference_replayed": false,
+  "parity_accepted": false,
+  "scope": "Saved logits only; no container/source/weight acceptance or actual-verl parity verdict."
+}

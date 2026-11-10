@@ -37,7 +37,8 @@ unavailable_decisions。Tier7完整决策前缀与Tier8原始mixed.wav沿用已�
 `audio2tool_jev_runtime.messages` 验证完整registry重新生成的任务库，选择一个登记
 决策，将native system输出契约替换为当前JSON类型，同时保留全部工具说明、完整
 音频顺序、角色提示和前景指令。它接受波形但不自行验证其字节来源；正式runner仍须
-调用已实现音频加载器。尚未接入实际HF/vLLM生成、上下文容量或NPU实验。
+调用已实现音频加载器。实际HF/vLLM processor上下文检查已完成（见后文）；
+尚未接入Jev模型生成或NPU容量实验。
 
 ## 缺失标注不是unknown答案
 
@@ -102,8 +103,8 @@ driver保留进程身份、源码清单、日志与退出码，失败stage不会
 
 请求文件约20.8 MB、compact gold约26.9 MB、公共bank约271 KB；原WAV只引用共享
 native数据，不复制音频。后续单决策adapter另提交于 `a32e963`，没有修改该数据版本。
-尚需真实processor上下文验证、冻结Jev推理与native配对评分，当前只完成数据发布，
-不能据此宣布Jev收益或跨任务泛化成功。
+现已补充真实processor上下文验证及严格评分实现；冻结Jev推理与native实测配对
+仍未完成，不能据此宣布Jev收益或跨任务泛化成功。
 
 ## 完整标注上的恒不调用退化控制
 
@@ -129,3 +130,65 @@ native数据，不复制音频。后续单决策adapter另提交于 `a32e963`，
 替代业务效果。未来RL权重仍只能从学习集确定，不能依据本external_test频次调参。
 全量解析结果见[退化控制](audio2tool-jev-absence-control-v1.json)，两个反例测试覆盖
 重复缺参调用的存在性计数及未知注册工具拒绝；它们不是模型成绩。
+
+## 全量上下文预算与真实processor验收
+
+固定镜像中的CPU审计容器
+`cb441ebf6e471cbf5c40763894696f7877f776a80c0ce80a97a8886c38bd0b33`
+已退出0，主体312.65秒，2 CPU / 20 GiB，无网络、NPU设备和模型权重加载。
+固定源码为`130c34a97f7d3346a70ebaece19372b375f534d6`。
+6种音频/角色布局×457决策得到2742个真实tokenizer profile，结合全部30733条
+原始音频token预算覆盖14044981项输入。每种布局/决策均检查特殊音频token展开。
+
+最大输入为18168 tokens，预留1024输出后的窗口溢出数如下。该输出预留只证明
+输入预算适配，不保证1024足以生成任意完整调用列表，正式推理仍须记录截断。
+
+| 上下文窗口 | 超限决策数 |
+| --- | ---: |
+| 4096 | 14044981 |
+| 8192 | 665900 |
+| 16384 | 14624 |
+| 32768 | 0 |
+
+真实音频处理覆盖三种输入模式×三种决策，以及七段音频边界×三种决策，共12例。
+HF/vLLM展开后的token IDs逐项一致，BF16音频特征逐项一致，保留完整音频帧。
+独立验收重新检查精确容器终态、镜像/命令/挂载/资源、全部源码与Git commit一致性、
+2742个profile及完整输入预算算术、12个独立结果文件与原音频来源绑定。
+结果见[上下文验收](audio2tool-jev-context-v1-verified.json)，验收脚本为
+`tools/jev/verify_audio2tool_jev_context_result_v1.py`。
+没有重复运行processor，也没有据此接受NPU engine显存容量或推理效果。
+
+## 严格Jev评分与native桥接
+
+`audio2tool_jev_score.py`直接解析原始输出，禁止去Markdown围栏、JSON修复、
+重复键、非有限值、bool/int混淆、缺参填空与工具名纠正。每条必须有全部457项
+输入SHA绑定的终态预测，哪怕该项gold不可用。预测字段固定为
+`example_id, decision_id, request_sha256, raw_text, error`；运行失败仍在分母内，
+基础设施尚未产出的预测不伪造成失败。参数null只允许出现在合法JSON参数内部。
+
+Noul、参数列表、工具序列分别报告可评分分母与正确数，参数缺失只排除对应列表
+exact分母；格式有效率仍覆盖全部输出。参数类型校验目前是对象列表的结构校验，
+没有把原始自由文本signature/constraints宣称为已执行的完整JSON Schema验证。
+
+present与absent各自转换为“是否需要工具”的语义正负类，分别统计TP/FP/FN/TN、
+正类无效和负类无效数。recall分母包含正类无效，specificity分母包含负类无效；
+balanced accuracy平均这两个值。precision在没有有效预测正例时为null；F1把正类
+无效算作漏检，同时单独报告全部无效数及valid rate，绝不把负类无效算成正确TN。
+汇总和各tier都保留完整分母及两种极性结果，正反一致性不代替语义正确率。
+
+native调用仅从预测的参数列表与工具序列按次数和顺序重组；不能用Noul判断过滤、
+补齐或重排调用。有效调用即使与Noul矛盾也照常进行native评分，矛盾单独计数。
+某参数列表格式错误或序列次数不符则native重组失败，仍占原生分母。native指标
+复用已锁定官方primitive和本地严格JSON协议；缺失附加参数的全量strict exact
+保持null，完整25969条子集单列，不冒充论文原样复现或全量exact。
+
+`tools/jev/score_audio2tool_jev.py`固定release/registry/官方metrics哈希，流式要求
+原始发布顺序与bank决策顺序，核验全部30733×457以及6623不可评分列表。评分前后
+校验输入和预测字节哈希，只在完整成功后写出报告，不支持静默子集。CLI使用
+`--release --registry --official-metrics --predictions --output`五个路径参数。
+报告明确`actor_execution_verified=false`：尚须未来生成runner与独立验收器证明
+实际音频、模板、输出token/raw text和精确容器来源；单独拿到评分不能声称模型成绩。
+
+46项相关测试通过，其中新评分/完整流覆盖30项，覆盖类型差异、重复和顺序、
+缺参/null、Noul矛盾不修改native、恒不调用退化、运行失败与不完整预测拒绝。
+这些是fixture控制，没有生成外部测试预测、调用教师或据此设计RL权重。

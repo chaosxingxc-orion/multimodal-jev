@@ -1,0 +1,256 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-jev-context-v1",
+  "launch": {
+    "container_id": "cb441ebf6e471cbf5c40763894696f7877f776a80c0ce80a97a8886c38bd0b33",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "130c34a97f7d3346a70ebaece19372b375f534d6",
+    "intent_sha256": "c6d137d805c7d4d3ec8bf7331dcb90f32970e9112ca507898e608d2a5c80cc15"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T18:20:47.04278011Z",
+    "FinishedAt": "2026-11-10T18:26:19.17494368Z"
+  },
+  "result": {
+    "status": "passed",
+    "requests": 30733,
+    "decisions": 14044981,
+    "layouts": 6,
+    "profiles": 2742,
+    "max_input_tokens": 18168,
+    "exceeded_with_1024_output": {
+      "4096": {
+        "noul": 9342832,
+        "typed_call_list": 4671416,
+        "typed_tool_sequence": 30733
+      },
+      "8192": {
+        "noul": 390669,
+        "typed_call_list": 244498,
+        "typed_tool_sequence": 30733
+      },
+      "16384": {
+        "noul": 9728,
+        "typed_call_list": 4864,
+        "typed_tool_sequence": 32
+      },
+      "32768": {
+        "noul": 0,
+        "typed_call_list": 0,
+        "typed_tool_sequence": 0
+      }
+    },
+    "profiles_sha256": "dafcfb8a6e42b34c176aefa62927ccac15d586d0ca23e01b4d80cecb6297e0b2",
+    "manifest_sha256": "56921792b06636d83bd6b8a21e49ae0f887f3de68a9813d75fe1b98d83c0f062",
+    "source_sha256": {
+      "tools/jev/audit_audio2tool_jev_context.py": "a243e9e323efb06e74f1917de49e5ec6371c0a3187f156611b9eb2636c4b43e1",
+      "src/multimodal_jev/audio2tool_jev_runtime.py": "7b7cb00b43e40e68b12171296ebf65d5191229c58a8b6cf1c3263a5f4907c2d5",
+      "src/multimodal_jev/audio2tool_jev.py": "73ae25324ad0b6f46529943d9baeacc029735a74a2eb0c9f1cd649adccd05285",
+      "src/multimodal_jev/audio2tool_audio.py": "d055550264c707cda619ed8055011f03cebabb6ccdc60ac880a003023ce2fa48"
+    },
+    "elapsed_seconds": 312.6510669600102,
+    "model_loaded": false,
+    "targets_read": false,
+    "scope": "Full 30733x457 input budget via all 2742 real-tokenizer layout/decision profiles and exact expansion checks. Twelve real HF/vLLM audio processor cases. No NPU engine, inference score, target access or training.",
+    "real_processor_cases": [
+      {
+        "case": "dialogue_last_user:noul",
+        "id": "audio2tool:tier7:release:2030",
+        "decision_id": "tool.24.present",
+        "input_tokens": 17326,
+        "frames": [
+          254,
+          1310,
+          270,
+          65464,
+          12571
+        ],
+        "input_ids_sha256": "0a42b2fbeea5b675360bc1dd8f4d0d9c15c7d5652c909ce1cfdef6e8a8c03499",
+        "prompt_sha256": "e8e427825050d816b6c937ba688ea4160f46f5d3f5a9f9a268ae3e4740703b93",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "dialogue_last_user:typed_call_list",
+        "id": "audio2tool:tier7:release:2030",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 17378,
+        "frames": [
+          254,
+          1310,
+          270,
+          65464,
+          12571
+        ],
+        "input_ids_sha256": "4febe29d898591e08c0cc8cad349ae9ee0ce2533239da4017d6f01c645d9a282",
+        "prompt_sha256": "e97c107c4c40c21765346389dd8e7c2ae60c2e926492a1e5faf86074aa9fb122",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "dialogue_last_user:typed_tool_sequence",
+        "id": "audio2tool:tier7:release:2030",
+        "decision_id": "tools.sequence",
+        "input_tokens": 18168,
+        "frames": [
+          254,
+          1310,
+          270,
+          65464,
+          12571
+        ],
+        "input_ids_sha256": "169f3fd4364894df85c7960b96ae83e1a5a65fff9b16a5565013b44423f906b9",
+        "prompt_sha256": "8791b27eddccb612ebce1736bf1e6ca4480487383cfa1489604f5ec5612122d2",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "foreground_mixture:noul",
+        "id": "audio2tool:tier8:release:314",
+        "decision_id": "tool.24.present",
+        "input_tokens": 7117,
+        "frames": [
+          1670
+        ],
+        "input_ids_sha256": "d22ad8df20ec6ce9710bee9c6fbaed12741ab114a052e7aa54ccce59a8a25598",
+        "prompt_sha256": "b792480abd84badd22b18b56cd4c2fbac9822561cbc6567fb304078214363d7e",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "foreground_mixture:typed_call_list",
+        "id": "audio2tool:tier8:release:314",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 7169,
+        "frames": [
+          1670
+        ],
+        "input_ids_sha256": "1115285a21aada052b9b4fe24b364201ed8edc0df72bdf81ed57ae2e5b613a48",
+        "prompt_sha256": "bcc60441839867be96ff61ca285004426dcf3836bb83315c66ced7de4acaeeee",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "foreground_mixture:typed_tool_sequence",
+        "id": "audio2tool:tier8:release:314",
+        "decision_id": "tools.sequence",
+        "input_tokens": 7959,
+        "frames": [
+          1670
+        ],
+        "input_ids_sha256": "09ae4b18b678d85bb77a13e5fd9c7af2e7cf919fe245c225054a65dcfd74457f",
+        "prompt_sha256": "45bc91980d31384e904356fdaf0537381454d245dfa5ba26f9fb5a62ec42cda3",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "seven_audio:noul",
+        "id": "audio2tool:tier7:release:1118",
+        "decision_id": "tool.24.present",
+        "input_tokens": 8403,
+        "frames": [
+          582,
+          2820,
+          1022,
+          2118,
+          1038,
+          2390,
+          1078
+        ],
+        "input_ids_sha256": "a3dc7a388a811fe2b6bae6f20b0e17d9aca9d4720db7fc970e6698a5a7d3f39b",
+        "prompt_sha256": "6ad2e831d0913d26906e1444392382d4dc508642875b0e75043167e9c0ca1a88",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "seven_audio:typed_call_list",
+        "id": "audio2tool:tier7:release:1118",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 8455,
+        "frames": [
+          582,
+          2820,
+          1022,
+          2118,
+          1038,
+          2390,
+          1078
+        ],
+        "input_ids_sha256": "2d9366e19005636585a127e2addca25256e9255b613b76529df23609d01e9430",
+        "prompt_sha256": "14d280b57753134380308cfa7711b63b3968206b70ed138a015c4e8e238435dd",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "seven_audio:typed_tool_sequence",
+        "id": "audio2tool:tier7:release:1118",
+        "decision_id": "tools.sequence",
+        "input_tokens": 9245,
+        "frames": [
+          582,
+          2820,
+          1022,
+          2118,
+          1038,
+          2390,
+          1078
+        ],
+        "input_ids_sha256": "2ff1363490f0b2a5f9e99e2a1441bf950c4c3fc71ece3f68af41f06e952b36aa",
+        "prompt_sha256": "dde00b474b14366c91f31d94a307f3867599085432c682dabf861ff76d3ce7dc",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "single_audio:noul",
+        "id": "audio2tool:tier1:release:3943",
+        "decision_id": "tool.24.present",
+        "input_tokens": 15392,
+        "frames": [
+          65464
+        ],
+        "input_ids_sha256": "f463b549a7738d4937797f5492c12104da4013c255c11f50f569068fd934d1a0",
+        "prompt_sha256": "b0a1f2c247e705823269fc40b3c570d0894c3c84b0fde04fd532a9e6c5fa25f4",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "single_audio:typed_call_list",
+        "id": "audio2tool:tier1:release:3943",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 15444,
+        "frames": [
+          65464
+        ],
+        "input_ids_sha256": "6f54926811624ae53cb98e6ed2dac3e1ca2430fb91a889379c4f6326addc6784",
+        "prompt_sha256": "1990cceaa41681da6b8008693b7049e3853c17a5e8f532d49fb24e537d5cc71a",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      },
+      {
+        "case": "single_audio:typed_tool_sequence",
+        "id": "audio2tool:tier1:release:3943",
+        "decision_id": "tools.sequence",
+        "input_tokens": 16234,
+        "frames": [
+          65464
+        ],
+        "input_ids_sha256": "c26c2d32959cd78beb64acdd035b68a825ff67f859146da721df26ba369decef",
+        "prompt_sha256": "29bda9098e1357761725387ae05a72960ece6b49fcb7c5b33ab396ff9bb4ebdf",
+        "token_ids_exact": true,
+        "bf16_features_exact": true
+      }
+    ]
+  },
+  "result_sha256": "10d23786e92bc6300dfa3b9da4ba6e0855523be4977a125bcba2d1b51852aec2",
+  "verifier_sha256": "2c558b944c32aecbe5b2547e6009c83fd19a037ec933893590c8aa328e2b84f7",
+  "source_files_verified": 107,
+  "verification": "Live exact-container inspection; pinned launch intent, Cmd, binds, env, CPU/memory/network/devices; snapshot hashes against Git commit; full 2742-profile independent budget arithmetic over 30733 native rows; all 12 individual case files and source audio receipt bindings. Does not rerun processors or claim NPU engine capacity."
+}
