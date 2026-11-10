@@ -2,7 +2,7 @@ import copy
 import json
 import pytest
 from multimodal_jev.baseline import file_hash
-from multimodal_jev.teacher_candidates import strict_json, validate_candidates, stage_candidates
+from multimodal_jev.teacher_candidates import strict_json, validate_candidates, stage_candidates, load_proposal
 
 
 def sample():
@@ -90,3 +90,15 @@ def test_request_specific_character_budget_rejects_before_staging(tmp_path):
     with pytest.raises(ValueError, match='registered candidate budget'):
         stage_candidates(root, tmp_path/'candidates')
     assert not (tmp_path/'candidates').exists()
+
+
+def test_revision_loader_verifies_wire_even_for_structurally_rejected_proposal(tmp_path):
+    root=request_fixture(tmp_path)
+    cfg, context, result, payload=load_proposal(root)
+    assert payload==sample()[1]
+    path=root/'response/response.json';response=json.loads(path.read_text())
+    altered=copy.deepcopy(payload);altered['candidates'][0]['instruction']='silently changed'
+    response['choices'][0]['message']['content']=json.dumps(altered)
+    path.write_text(json.dumps(response))
+    with pytest.raises(ValueError,match='custody'):
+        load_proposal(root)

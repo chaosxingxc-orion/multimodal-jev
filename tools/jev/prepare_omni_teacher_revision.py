@@ -6,7 +6,7 @@ from pathlib import Path
 
 from multimodal_jev.baseline import atomic_json, file_hash
 from multimodal_jev.consumption import canonical
-from multimodal_jev.teacher_candidates import strict_json
+from multimodal_jev.teacher_candidates import strict_json, load_proposal
 from configure_omni_teacher import configure
 
 CORRECTION = '''
@@ -46,8 +46,10 @@ def prepare(source, output, executor):
             or context['split']!='train' or context['selection_or_test_feedback'] is not False
             or context['parent_prompt_sha256']!=review['parent_prompt_sha256']):
         raise ValueError('same Omni TRAIN feedback required')
-    response=json.loads((source/'response/response.json').read_text())
-    context['previous_proposal']=strict_json(response['choices'][0]['message']['content'])
+    _, bound_context, _, proposal = load_proposal(source)
+    if bound_context != context:
+        raise ValueError('configured prior feedback differs from revision source')
+    context['previous_proposal']=proposal
     context['local_rejection_feedback']=dict(candidates=review['candidates'],diagnosis_corrections=review['diagnosis_corrections'])
     context['representative_evidence_ids']=[r['evidence_id'] for r in context['representatives']]
     raw=canonical(context)

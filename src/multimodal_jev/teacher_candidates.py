@@ -68,8 +68,9 @@ def validate_candidates(payload, context):
     return candidates
 
 
-def stage_candidates(request_root, output):
-    root, output = Path(request_root), Path(output)
+def load_proposal(request_root):
+    """Verify completed wire content even when a proposal fails structural screening."""
+    root = Path(request_root)
     cfg = json.loads((root / 'executor-config.private.json').read_text())
     messages_path = Path(cfg['messages']['path'])
     if file_hash(messages_path) != cfg['messages']['sha256']:
@@ -111,6 +112,12 @@ def stage_candidates(request_root, output):
             or response['choices'][0]['message']['content'] != content):
         raise ValueError('teacher final content custody changed')
     payload = strict_json(content)
+    return cfg, context, result, payload
+
+
+def stage_candidates(request_root, output):
+    root, output = Path(request_root), Path(output)
+    cfg, context, result, payload = load_proposal(root)
     candidates = validate_candidates(payload, context)
     # Registered narrower per-request budgets override the generic four-prompt
     # schema. Check before creating output, not after staging executable inputs.
