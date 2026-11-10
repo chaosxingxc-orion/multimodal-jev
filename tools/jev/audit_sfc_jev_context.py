@@ -35,7 +35,13 @@ def check_coverage(request, ids, observed_frames, lengths, hop, audio_id):
                 input_ids_sha256=hashlib.sha256(canonical(ids)).hexdigest())
 
 
-def run(model, release, output):
+def run(model, release, output, *, candidate=None):
+    render=messages;prompt_identity=None
+    if candidate is not None:
+        from multimodal_jev.sfc_candidate_context import load_candidate
+        from multimodal_jev.sfc_prompt_candidates import messages as candidate_messages
+        instruction,prompt_identity=load_candidate(**candidate)
+        render=lambda row,decision,audios:candidate_messages(row,decision,audios,instruction)
     import torch
     from transformers import Qwen3OmniMoeProcessor
     from transformers.models.qwen3_omni_moe.processing_qwen3_omni_moe import Qwen3OmniMoeProcessorKwargs
@@ -54,6 +60,11 @@ def run(model, release, output):
              'src/multimodal_jev/sfc_omni.py','src/multimodal_jev/sfc_consumption.py')},
         processor_assets={p.name:file_hash(p) for p in model.iterdir() if p.is_file() and p.suffix in ('.json','.txt','.jinja')},
         context_limit=4096,output_budget=1024,targets_read=False)
+    if prompt_identity is not None:
+        identity['prompt']=prompt_identity
+        for name in ('src/multimodal_jev/sfc_candidate_context.py','src/multimodal_jev/sfc_prompt_candidates.py',
+                     'src/multimodal_jev/teacher_candidates.py'):
+            identity['source_files'][name]=file_hash(Path(__file__).parents[2]/name)
     atomic_json(output/'identity.json',identity)
     processor=Qwen3OmniMoeProcessor.from_pretrained(model,local_files_only=True)
     audio_id=processor.tokenizer.convert_tokens_to_ids('<|audio_pad|>')
@@ -77,7 +88,7 @@ def run(model, release, output):
                 counts['long_audio_bundles']+=any(n>processor.feature_extractor.n_samples for n in lengths)
                 counts['max_audio_seconds']=max(counts['max_audio_seconds'],*durations)
                 for decision in row['input']['decisions']:
-                    prompt=processor.apply_chat_template(messages(row,decision['id'],waves),tokenize=False,add_generation_prompt=True)
+                    prompt=processor.apply_chat_template(render(row,decision['id'],waves),tokenize=False,add_generation_prompt=True)
                     batch=processor(text=[prompt],audio=waves,sampling_rate=16000,return_tensors='pt',padding=True)
                     if not torch.isfinite(batch['input_features']).all():raise ValueError('nonfinite audio features')
                     coverage=check_coverage(row,batch['input_ids'][0].tolist(),batch['feature_attention_mask'].sum(-1).tolist(),
@@ -100,6 +111,10 @@ def run(model, release, output):
         elapsed_seconds=time.monotonic()-start,
         scope='Actual CPU HF processor for every decision in all released splits, including audio longer than 30 seconds. '
               'Input-only context audit, no model weights, labels, generation, vLLM-engine parity or task-quality claim.')
+    if candidate is not None:
+        _,current=load_candidate(**candidate)
+        if current!=prompt_identity:raise ValueError('candidate changed during processor audit')
+        result['prompt']=prompt_identity
     atomic_json(output/'result.json',result)
     return result
 
@@ -107,8 +122,13 @@ def run(model, release, output):
 if __name__=='__main__':
     p=argparse.ArgumentParser()
     for k in ('model','release','output'):p.add_argument('--'+k,type=Path,required=True)
-    a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
-    try:print(json.dumps(run(a.model,a.release,a.output),indent=2))
+    p.add_argument('--staging',type=Path);p.add_argument('--staging-hash');p.add_argument('--candidate-id')
+    a=p.parse_args();candidate=None
+    if any(v is not None for v in (a.staging,a.staging_hash,a.candidate_id)):
+        if not all((a.staging,a.staging_hash,a.candidate_id)):p.error('all candidate pins required')
+        candidate=dict(staging=a.staging,staging_hash=a.staging_hash,candidate_id=a.candidate_id)
+    a.output.mkdir(parents=True,exist_ok=False)
+    try:print(json.dumps(run(a.model,a.release,a.output,candidate=candidate),indent=2))
     except BaseException as exc:
         atomic_json(a.output/'terminal.json',dict(exit_code=1,error=repr(exc),finished_unix=time.time()));raise
     atomic_json(a.output/'terminal.json',dict(exit_code=0,finished_unix=time.time()))

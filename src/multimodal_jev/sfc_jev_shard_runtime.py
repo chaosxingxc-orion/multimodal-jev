@@ -30,6 +30,8 @@ def select_inputs(cfg):
     rows=load_shard(plan,cfg['shard_id'])
     root=Path(cfg['context_audit']);run=root/'run';result=read(run/'result.json');identity=read(run/'identity.json')
     acceptance=read(cfg['context_acceptance'])
+    if any('prompt' in value for value in (identity,result,acceptance)):
+        raise ValueError('candidate context cannot replace frozen parent evidence')
     if (file_hash(run/'result.json')!=cfg['context_result_sha256']
             or file_hash(cfg['context_acceptance'])!=cfg['context_acceptance_sha256']
             or acceptance['result_sha256']!=cfg['context_result_sha256']

@@ -9,13 +9,22 @@ from multimodal_jev.consumption import canonical
 from watch_qwen3_omni_probe import inspect
 
 
-def verify(root):
+def verify(root, *, candidate=None):
     launch=json.loads((root/'launch.json').read_text());item=inspect(launch['container_id'])
     if (item['Id']!=launch['container_id'] or item['Image']!=launch['image']
             or item['State']['Status']!='exited' or item['State']['ExitCode']!=0
             or item['HostConfig'].get('Devices')):
         raise ValueError('exact successful CPU container required')
     run=root/'run';result=json.loads((run/'result.json').read_text());identity=json.loads((run/'identity.json').read_text())
+    prompt_identity=None
+    if candidate is None:
+        if 'prompt' in identity or 'prompt' in result:
+            raise ValueError('candidate context cannot be accepted as parent context')
+    else:
+        from multimodal_jev.sfc_candidate_context import load_candidate
+        _,prompt_identity=load_candidate(**candidate)
+        if identity.get('prompt')!=prompt_identity or result.get('prompt')!=prompt_identity:
+            raise ValueError('exact staged candidate context required')
     if (json.loads((run/'terminal.json').read_text())['exit_code']!=0 or result['status']!='passed'
             or file_hash(run/'identity.json')!=result['identity_sha256'] or identity['targets_read'] is not False
             or identity['context_limit']!=4096 or identity['output_budget']!=1024):
@@ -63,14 +72,21 @@ def verify(root):
         reports[split]=observed
     fits=all(r['context_overflow']==0 for r in reports.values())
     if result['all_inputs_fit'] is not fits:raise ValueError('context fit claim differs')
-    return dict(root=str(root),container_id=item['Id'],result_sha256=file_hash(run/'result.json'),
+    accepted=dict(root=str(root),container_id=item['Id'],result_sha256=file_hash(run/'result.json'),
         verifier_sha256=file_hash(Path(__file__)),splits=reports,all_inputs_fit=fits,
         scope='Independent exact decision coverage and context summary check; uses recorded processor evidence, '
               'does not recompute features or establish vLLM parity/generation quality.')
+    if prompt_identity is not None:accepted['prompt']=prompt_identity
+    return accepted
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
-    a=p.parse_args();result=verify(a.root)
+    p.add_argument('--staging',type=Path);p.add_argument('--staging-hash');p.add_argument('--candidate-id')
+    a=p.parse_args();candidate=None
+    if any(v is not None for v in (a.staging,a.staging_hash,a.candidate_id)):
+        if not all((a.staging,a.staging_hash,a.candidate_id)):p.error('all candidate pins required')
+        candidate=dict(staging=a.staging,staging_hash=a.staging_hash,candidate_id=a.candidate_id)
+    result=verify(a.root,candidate=candidate)
     with a.output.open('xb') as f:f.write(canonical(result))
     print(json.dumps(result,indent=2))

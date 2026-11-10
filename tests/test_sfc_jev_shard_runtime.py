@@ -52,7 +52,7 @@ def test_parent_shard_matches_every_context_decision_without_targets(tmp_path):
     assert len(checks)==12 and not list(Path(plan['release']).glob('*.targets.jsonl'))
 
 
-@pytest.mark.parametrize('change',['candidate','prompt','budget','split','plan_hash','context_hash','acceptance','source'])
+@pytest.mark.parametrize('change',['candidate','prompt','budget','split','plan_hash','context_hash','acceptance','source','candidate_context'])
 def test_changed_runtime_or_evidence_is_rejected(tmp_path,change):
     cfg,_,_=fixture(tmp_path)
     if change=='candidate':cfg['prompt_id']='p1'
@@ -63,6 +63,9 @@ def test_changed_runtime_or_evidence_is_rejected(tmp_path,change):
     if change=='context_hash':cfg['context_result_sha256']='bad'
     if change=='acceptance':cfg['context_acceptance_sha256']='bad'
     if change=='source':(Path(cfg['context_audit'])/'source/src/multimodal_jev/sfc_audio.py').write_text('changed')
+    if change=='candidate_context':
+        p=Path(cfg['context_acceptance']);value=json.loads(p.read_text());value['prompt']={'candidate_id':'p1'}
+        p.write_bytes(canonical(value));cfg['context_acceptance_sha256']=file_hash(p)
     with pytest.raises(ValueError):contract.select_inputs(cfg)
 
 
