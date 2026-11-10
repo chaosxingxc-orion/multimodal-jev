@@ -111,5 +111,8 @@ def test_transfer_shard_preparation_mounts_all_evidence_without_dispatch(tmp_pat
     assert intent['physical_devices']==[6,7] and 'HCCL_IF_BASE_PORT=63500' in intent['argv']
     assert '/dev/davinci6:/dev/davinci6' in intent['argv']
     assert '/dev/davinci4:/dev/davinci4' not in intent['argv']
+    name=intent['argv'][intent['argv'].index('--name')+1]
+    import hashlib
+    assert name=='jev-transfer-parent-shard-0000-'+hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:12]
     assert (root/'source/tools/jev/infer_qwen3_omni_slurp_transfer.py').exists()
     assert not (root/'launch.json').exists()

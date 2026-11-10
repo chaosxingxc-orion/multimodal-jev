@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Prepare a complete transfer shard with explicit mounts, without dispatch."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -53,6 +54,10 @@ def prepare(root,protocol_path,shard_id,prompt_id,native_probe,source_commit,dev
         if arg.startswith('HCCL_IF_BASE_PORT='):arg='HCCL_IF_BASE_PORT='+('62500' if devices==[4,5] else '63500')
         if devices==[6,7]:arg=arg.replace('/dev/davinci4','/dev/davinci6').replace('/dev/davinci5','/dev/davinci7')
         argv.append(arg)
+    # Shard directory names repeat across prompts and across queues. Docker's
+    # host-wide namespace requires a unique name for each immutable run path.
+    name_index=argv.index('--name')+1
+    argv[name_index]='jev-transfer-'+prompt_id+'-'+shard_id+'-'+hashlib.sha256(str(root.resolve()).encode()).hexdigest()[:12]
     # Protocol references remain immutable at their original paths.
     mounts={selection,Path(protocol['shard_plan']).parent}
     for mount in sorted(mounts):argv[2:2]=['-v',str(mount)+':'+str(mount)+':ro']
