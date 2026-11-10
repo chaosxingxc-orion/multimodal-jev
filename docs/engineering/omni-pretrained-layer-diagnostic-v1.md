@@ -30,3 +30,20 @@ inspection必须由外部协调者实际inspect捕获并固定哈希；文件自
 `08e3b135494578d6a8f90d6b583aa9e7b8e913fdbf409de4c375aeb7b3bf1593`，
 2 CPU/16 GiB/1800秒上限，无网络/设备，模型与数据只读。
 源树为 `omni-layers-preflight-v1/source`，完整模型诊断尚未派发。
+
+## 预检查验收与依赖分支测试
+
+上述精确容器现已退出0；独立核对完整源码、模型清单、原六条身份、response、
+固定容器资源及两条件结果。六条左padding计数为 `[154,252,0,251,519,402]`，
+与已验收原始前向的prompt长度逐条匹配。第三条是无需新增左padding的天然对照。
+见[预检查验收](omni-layers-preflight-v1-verified.json)。模型权重未加载。
+
+随后仅增强完整执行的 `complete_dependency` 分支：固定原 intent SHA，
+核对实际容器命令、CPU/内存/无网络无设备、身份和source commit，避免重新哈希
+改动的intent即可绕过原登记。预检查未经过该完整执行分支；新的分支不冒充已执行
+预训练诊断。输入准备和前向代码未改变，既有快照保持原样。
+
+包含成功完整信封、运行中/失败/OOM、命令/资源/identity/source篡改、结果缺行、
+权重更新和重新哈希intent的反例；这些依赖测试明确mock logits审计，实际logits
+审计另有独立测试。与trace清理、logits审计一共24项测试通过。当前原30条件诊断
+尚未完成，完整模型逐层执行仍未派发，不以输入preflight替代该依赖验收。

@@ -104,3 +104,9 @@ text_padding 对前一个条件的响应 log-prob 最大误差为 **0.1445865631
 进一步的[mask/rotary/SDPA机制检查](omni-padding-mechanism-v1.md)确认合成输入上
 有效因果边与位置完全一致，但BF16 SDPA在增加masked位置后仍可产生小数值差异。
 这不是预训练模型根因或已解决证据；实际专家路由与逐层激活仍待验证。
+
+[第五份部分报告](omni-precision-train6-v1-logit-audit-partial-05.json)覆盖8/30条件：
+第二条reference/autocast/fp32_features的全词表logits完全相同，正在执行audio_padding。
+报告同时保存精确容器实时状态；尚无完整诊断或actual-verl一致性验收。
+下一步逐层入口的完整六条输入已通过[真实processor预检查](omni-layers-preflight-v1-verified.json)，
+完整模型执行仍须等待原诊断终态。

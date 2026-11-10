@@ -25,6 +25,7 @@ from infer_qwen3_omni_probe import verify_assets
 PRECISION_CONTAINER='0de5e886048040b9fa5489586f4a7fcddea88085701bd1818a8a6a94946e36db'
 IMAGE='sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c'
 IDENTITY_HASH='e39bdebee8d2d434df8a51efc9d57b4f697462f0a67e8577d72f7f2e97cae9dd'
+INTENT_HASH='59eaf736137c18ea7a0a89485c5c663aeb610532fb576ba7886adc9d3d8ecb4a'
 HF_HASH='a55c7951f8ad316ab3abeadb09c51bc577ae3ffb673b40ebb5f17abac1348340'
 
 
@@ -57,8 +58,17 @@ def complete_dependency(root,inspection_path,inspection_hash):
         raise ValueError('precision application failed')
     launch=read(root/'launch.json');intent=read(root/'intent.json')
     if (launch['container_id']!=PRECISION_CONTAINER or launch['image']!=IMAGE
-            or file_hash(root/'intent.json')!=launch['intent_sha256']):
+            or launch['intent_sha256']!=INTENT_HASH
+            or file_hash(root/'intent.json')!=INTENT_HASH
+            or launch['source_commit']!=intent['source_commit']):
         raise ValueError('precision launch identity differs')
+    if (file_hash(root/'run/identity.json')!=IDENTITY_HASH
+            or state['Config']['Cmd']!=intent['argv'][intent['argv'].index(IMAGE)+1:]
+            or state['HostConfig']['NetworkMode']!='none'
+            or state['HostConfig']['Devices'] or state['HostConfig']['Privileged']
+            or state['HostConfig']['Memory']!=160*1024**3
+            or state['HostConfig']['NanoCpus']!=16000000000):
+        raise ValueError('precision command, resources or identity differs')
     for name,pin in intent['source_files'].items():
         if file_hash(Path(intent['source_root'])/name)!=pin:
             raise ValueError('original precision source snapshot changed')
