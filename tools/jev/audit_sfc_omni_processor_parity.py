@@ -36,6 +36,7 @@ def run(args):
         if file_hash(Path(base['audio_model'])/name)!=pin:raise ValueError('processor asset changed')
     hf=Qwen3OmniMoeProcessor.from_pretrained(base['audio_model'],local_files_only=True)
     raw=prepare(hf,rows)
+    aligned_prepared=prepare(hf,rows,waveform_boundary='vllm_hop')
     for key,values in evidence(raw).items():
         if any(checks[key][name]!=value for name,value in values.items()):
             raise ValueError('prior actor input identity changed')
@@ -66,10 +67,13 @@ def run(args):
                     mm_data_items=parsed),TimingContext(enabled=False))
                 data=processed['mm_kwargs'].get_data();feature=data['input_audio_features']
                 frame_lengths=data['audio_feature_lengths'].tolist();expected=[len(w)//hop for w in padded]
-                aligned=hf(text=[prompt],audio=padded,sampling_rate=16000,return_tensors='pt',padding=True,truncation=False)
+                aligned=aligned_prepared[key]
+                if (aligned['original_samples']!=list(map(len,waves))
+                        or aligned['processed_samples']!=list(map(len,padded))):
+                    raise ValueError('actual actor hop-alignment evidence differs')
                 comparisons={}
                 for name,inputs,ids in [('raw_actor',old,old['input_ids'].tolist()),
-                                       ('hop_aligned_actor',aligned,aligned['input_ids'][0].tolist())]:
+                                       ('hop_aligned_actor',aligned,aligned['input_ids'].tolist())]:
                     mask=inputs['feature_attention_mask'];ref=inputs['input_features'].permute(0,2,1)[mask.bool()].permute(1,0)
                     same_shape=feature.shape==ref.shape
                     delta=(feature.float()-ref.to(feature.dtype).float()).abs() if same_shape else None

@@ -10,16 +10,22 @@ from .baseline import file_hash
 from .sfc_audio import load_sfc_audio
 from .sfc_jev_runtime import messages, validate_bundle
 from .sfc_reward_batch import compose, digest
+from .omni_waveform_boundary import align_to_hop
 
 
-def prepare(processor, requests, *, render=messages):
+def prepare(processor, requests, *, render=messages, waveform_boundary='raw'):
     """Input-only preparation, with file hashes checked before waveform loading.
 
     Caller pins processor assets and render implementation in its run snapshot.
     Outputs remain in CPU memory and must not be mutated between preparation
     and make_batch. No supervision is passed to the renderer or processor.
+    waveform_boundary='vllm_hop' is an explicit versioned input change. Default
+    raw preserves historical experiments; token evidence alone is not feature
+    parity. Callers must register and verify the selected boundary separately.
     """
     import torch
+    if waveform_boundary not in ('raw','vllm_hop'):
+        raise ValueError('explicit raw or vllm_hop waveform boundary required')
     if not requests or len({r['id'] for r in requests}) != len(requests):
         raise ValueError('unique nonempty request roster required')
     prepared = {}
@@ -34,6 +40,9 @@ def prepare(processor, requests, *, render=messages):
             if file_hash(path) != pin:
                 raise ValueError('source audio changed')
             waves.append(load_sfc_audio(path)[0])
+        original_samples=[len(w) for w in waves]
+        if waveform_boundary=='vllm_hop':
+            waves=align_to_hop(waves,processor.feature_extractor.hop_length)
         reference = None
         for decision in row['input']['decisions']:
             prompt = processor.apply_chat_template(render(row, decision['id'], waves),
@@ -74,7 +83,9 @@ def prepare(processor, requests, *, render=messages):
                 request_sha256=digest(row), prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(),
                 input_ids_sha256=digest(ids[0].tolist()), input_ids=ids[0],
                 input_features=reference[0], feature_attention_mask=reference[1],
-                audio_token_lengths=list(map(len, spans)))
+                audio_token_lengths=list(map(len, spans)),
+                waveform_boundary=waveform_boundary,original_samples=original_samples,
+                processed_samples=[len(w) for w in waves])
     return prepared
 
 
