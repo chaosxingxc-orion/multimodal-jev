@@ -141,3 +141,25 @@ actor源码仍为已通过真实预检查的`dd1e447`，intent SHA为
 额外保存logits，不能称为再次独立计算完整词表概率。固定响应仍为false+EOS，
 old_log_probs仍明确为synthetic占位；没有优化器、权重更新或任务质量提升结论。
 microbatch=2、两条件互比和成功终态仍待完成，整体CPU actor一致性尚未验收。
+
+### 镜像内补跑真实 verl 接口测试
+
+此前宿主因缺少 verl 而跳过的 `tests/test_omni_pretrained_verl.py` 已在固定镜像
+`sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c`
+内实际执行：2 passed、0 skipped，34.842 秒。源码固定为 `c77a08d`，容器
+`14482f56005726cb41d74f5177817b1f1963a01108db949f1afb6b2a8d179389`
+已退出 0。协调者实际 inspect 并核对命令、默认入口、2 CPU/8 GiB、无网络设备、
+只读源码挂载、349 份源码与 Git 内容及 JUnit 中的两个具体测试名。见
+[独立核验记录](omni-real-verl-interface-tests-v2-verified.json)。
+
+测试使用合成 token/音频特征，调用真实 `verl.DataProto` 和
+`verl.utils.model.extract_multi_modal_inputs`，验证单/双音频合并、特征补零、
+左填充、响应因果边界，以及超长输入和缺少 pad token 时拒绝执行。
+没有挂载模型权重、加载模型或执行优化器；不能据此声称 NPU 或任务效果通过。
+
+首次容器 `18765059d1a4971dfeb4aef7d1e9fc2045931882e19a5d2d20680cbec19c96be`
+绕过默认 runtime-entrypoint，缺少 CANN devlib 库路径，实际结果为 1 passed、
+1 failed：多模态 helper 导入时找不到 `libascend_hal.so`。其源码、JUnit、日志、
+实际 inspect 和失败终态保留在 `omni-real-verl-interface-tests-v1`。
+第二次独立运行仅恢复固定镜像的默认入口，源码与测试内容相同；未安装依赖、
+未挂载宿主驱动或 NPU，也未修改已有模型实验的运行环境。
