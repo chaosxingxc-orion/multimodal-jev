@@ -1,0 +1,40 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-selection-to-test-v1",
+  "launch": {
+    "pid": 2685223,
+    "started_unix": 1794303526.534829,
+    "source_commit": "872e7a50e5894e92fa50dc7368fa6c52b4b11145",
+    "automatic_retry": false
+  },
+  "intent": {
+    "selection_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-selection256-v1",
+    "test_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-official-test-v1",
+    "selection_pid": 2677031,
+    "selection_process_start": "288002133",
+    "inputs": {
+      "evaluation-launch.json": "a05677dc6a74d9bd65b695d6503a43ddf0296a03121494bbc520cdd6a9f36057",
+      "queue-intent.json": "69fc93b2322333e11b601813d5094d2e6fe3c16e5e3f61c381f51e0e4ac76c29",
+      "selection-protocol.json": "ad49ffc323c844111baf0e33f3eb56376991ee267e69d5771c2cfae5002ea095"
+    },
+    "source_files": {
+      "tools/jev/register_omni_test.py": "71035b476923b64429d2a4472b8563735873b9b94f11c7a6392ada5babc817b0",
+      "tools/jev/run_omni_test_queue.py": "0afad81b953df0caa38f0e36f444cac8af0f04a72d9b0df9a27706f7d3386e58",
+      "tools/jev/compare_omni_test.py": "48c89b3780f263ebc90152096a4bf33ecd37cfe4af66f50e18d8f95244668200",
+      "tools/jev/infer_qwen3_omni_probe.py": "7b8757e3f75bcfbd6a2680d12826b3efe4c0d9c98a096c90c23233e2e39be345",
+      "tools/jev/infer_qwen3_omni_test.py": "93dbda4394755934e7d1bb500705f70ca0a3f110cc5f3d81eee04c79bcc5b105",
+      "src/multimodal_jev/omni_test_contract.py": "6c665401ef365390fe3e3d97cab83d29dc9ac848519a4e582256b1b6d1f30469"
+    },
+    "automatic_retry": false,
+    "source_commit": "872e7a50e5894e92fa50dc7368fa6c52b4b11145",
+    "physical_devices": [
+      4,
+      5
+    ],
+    "scope": "Wait on complete exact selection; independently reproduce winner; same selection source/image TEST; no teacher followup or weight training"
+  },
+  "observed_progress": {
+    "phase": "waiting_selection",
+    "heartbeat_unix": 1794303686.6371832
+  },
+  "scope": "Live waiting supervisor; TEST has not been dispatched"
+}

@@ -71,3 +71,12 @@ scenario/action组合和55种实体类型。`{split}.bundles.jsonl` 每行只含
 整个数据集或泛化能力，结果见 `slurp-jev-full-direct-train1group-v1-result.json`。
 
 该版本与历史domain-held-out/first-slot投影并存；后者不是完整原生SLURP。
+
+后续Qwen3-Omni原提示TRAIN探针已完成336题，严格合法46题，独立复评分一致；
+见`frozen-qwen3-omni-slurp-jev-train1group-v1-result.json`。不能把旧ASR的0/336
+和该Omni探针当作同模型提示优化收益。
+
+完整TEST的执行清单已按完整语义组划为136片，保留全部2197104题，不读取gold；
+见`slurp-jev-full-test-shards-v1-audit.json`。该清单仅准备执行边界，尚未派发
+完整SLURP-Jev TEST。FSC提示迁移的固定比较定义见
+`qwen3-omni-slurp-jev-transfer-protocol-v1.md`。
