@@ -42,7 +42,35 @@ abort、非法token类型、提示/波形收据/采样率变化等反例。测�
 记录见[准备信息](audio2tool-engine-capacity-v1-prepared.json)，共享目录的
 `audio2tool-engine-capacity-v1/preparation.json` 保存完整命令。
 
-当前未创建NPU容器，也未启动自动调度器。现有SLURP→SFC→sampling队列继续优先；
+准备时未创建NPU容器或启动自动调度器。现有SLURP→SFC→sampling队列继续优先；
 派发时需核验sampling成功验收和精确容器，取得共享NPU6/7锁并检查设备空闲，再固定
 本次create intent和容器ID后启动。准备文件不是运行成功证据；未来实际执行与验收
 仍需记录容器命令/资源/终态、四例输出以及源/模型/输入不变性。
+
+## 已启动有界的顺序等待队列
+
+新增 `watch_audio2tool_capacity.py`，协调者源码 `a7bc70b`，保持原NPU入口与准备
+命令不变。原始engine源码仍是已验收的 `db9db7a` 快照；队列源码另存
+`audio2tool-engine-capacity-v1/queue-source`，两者均固定完整文件哈希。
+
+进程PID `2895373`、process_start `291038787` 已实际核对存活，队列计划SHA
+`66e8a43a7d4fae5dcd1e00d827149cbc281138fbdcd59018000f5050ffd8d4be`。
+观察时状态为waiting_accepted_sampling，尚无NPU launch或运行终态，详见
+[队列启动核验](audio2tool-engine-capacity-v1-queued.json)。
+
+依赖等待上限350000秒。它绑定既有sampling队列计划和启动收据、PID/start identity；
+缺少终态时必须确认该精确进程仍活着，不能仅凭心跳文件推定运行。成功终态后还需
+inspect采样容器和独立验收容器，检查实际命令、源码、156条响应验收与结果哈希，
+确认其原native SFC依赖成功。此处不读取标签、不根据任务质量选择是否派发。
+
+随后取得现有 `npu67-sampling-resource.lock`，枚举实际运行容器，确认NPU6/7未被
+映射且没有可能占用设备的privileged容器。繁忙时继续等待，不抢占。派发采用
+docker create→持久化精确ID→docker start；create/start超时保留歧义和日志，
+不重发。运行观察上限3900秒，瞬时SSH/inspect错误只重试观察同一ID，不启动替代容器。
+观察超时不等于容器已停止；终态失败保留原尝试，不进入全量推理。
+
+容量成功退出后由当前独立`require_capacity`核验精确镜像/命令/资源/源码及四例
+实际单token结果，再保存acceptance。未接自动全量生成或训练。
+27项队列与capacity门禁测试通过，包含live依赖、PID替换、失败依赖、验收命令/响应数
+改变、create/start歧义、不重复提交以及设备占用等反例；完成依赖分支是合成信封测试，
+当前仅等待分支在真实环境运行，不能据此宣称NPU执行或容量验收已完成。
