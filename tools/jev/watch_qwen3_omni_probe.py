@@ -44,6 +44,10 @@ def run(root):
     (root/'container.log').write_text(logs.stdout+logs.stderr)
     if state['ExitCode']!=0:raise RuntimeError('Omni probe failed; inspect retained logs')
     cfg=json.loads((root/'config.json').read_text())
+    if json.loads((root/'run/terminal.json').read_text())['exit_code']!=0:
+        raise RuntimeError('application failed')
+    if cfg.get('audio_condition','actual')=='zeros':
+        return  # Silence has no native gold; paired diagnostic runs separately.
     subprocess.run([sys.executable,str(root/'source/tools/jev/score_frozen_requests.py'),'--run',str(root/'run'),
         '--targets',str(Path(cfg['requests']).with_name('train.targets.jsonl')),'--six-views','--output',str(root/'score.json')],check=True)
 

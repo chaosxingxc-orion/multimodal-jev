@@ -12,6 +12,8 @@ from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.consumption import canonical
 from multimodal_jev.end_to_end import require_audio_task_route
 from multimodal_jev.frozen_contract import FrozenContract
+from multimodal_jev.omni_probe_contract import select_learning
+from multimodal_jev.waveform_control import condition_audio
 
 
 def verify_assets(cfg):
@@ -29,19 +31,18 @@ def verify_assets(cfg):
 def run(cfg,out):
     require_audio_task_route(cfg)
     if (cfg['parameters_frozen'] is not True or cfg['split']!='train'
-            or cfg.get('adapter') is not None or len(cfg['source_groups'])!=1):
-        raise ValueError('one fixed TRAIN source group, frozen official base only')
+            or cfg.get('adapter') is not None):
+        raise ValueError('fixed TRAIN learning groups, frozen official base only')
     start=time.monotonic();atomic_json(out/'progress.json',dict(phase='verifying_model',heartbeat_unix=time.time()))
     audit=verify_assets(cfg)
     contract=FrozenContract(cfg)
     rows=[contract.validate(json.loads(line)) for line in Path(cfg['requests']).open()]
-    rows=[r for r in rows if r['source_group'] in cfg['source_groups']]
-    if len(rows)!=6 or len({r['id'] for r in rows})!=6 or any(r['split']!='train' for r in rows):
-        raise ValueError('complete six-view TRAIN group required')
+    rows=select_learning(cfg,rows)
+    condition=cfg.get('audio_condition','actual')
     identity=dict(config=cfg,requests_sha256=file_hash(cfg['requests']),instruction_sha256=file_hash(cfg['instruction']),
         asset_audit_sha256=file_hash(cfg['asset_audit']),model_files=audit['files'],runner_sha256=file_hash(__file__),
         source_sha256={n:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/n) for n in
-                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py']},
+                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','waveform_control.py']},
         versions={p:importlib.metadata.version(p) for p in ['torch','torch-npu','transformers','vllm','vllm-ascend']})
     atomic_json(out/'identity.json',identity)
     atomic_json(out/'selection.json',{'ids':[r['id'] for r in rows]})
@@ -59,7 +60,7 @@ def run(cfg,out):
     cache=out/'records';cache.mkdir()
     for i,row in enumerate(rows):
         if file_hash(row['input']['audio'])!=row['audio_sha256']:raise ValueError('audio changed')
-        wave=load_audio(row['input']['audio'])
+        wave=condition_audio(load_audio(row['input']['audio']),condition,cfg['split'])
         if len(wave)>processor.feature_extractor.chunk_length*16000:raise ValueError('audio truncation prohibited')
         definition=contract.audio_instruction(row,instruction)
         messages=[{'role':'system','content':'You are a helpful assistant.'},
@@ -69,22 +70,22 @@ def run(cfg,out):
         response=llm.generate([{'prompt':prompt,'multi_modal_data':{'audio':(wave,16000)}}],params,use_tqdm=False)
         if len(response)!=1 or len(response[0].outputs)!=1:raise ValueError('single output required')
         answer=response[0].outputs[0];record=contract.prediction(row,answer.text)
-        record.update(replicate=0,source_group=row['source_group'],split='train',audio_condition='actual',
+        record.update(replicate=0,source_group=row['source_group'],split='train',audio_condition=condition,
             request_sha256=hashlib.sha256(canonical(row)).hexdigest(),prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(),
             input_tokens=len(response[0].prompt_token_ids),token_ids=list(answer.token_ids),
             finish_reason=answer.finish_reason,length_limited=answer.finish_reason=='length',seconds=time.monotonic()-t)
         atomic_json(cache/(hashlib.sha256(row['id'].encode()).hexdigest()+'.json'),record);records.append(record)
-        atomic_json(out/'progress.json',dict(phase='decision',done=i+1,total=6,heartbeat_unix=time.time()))
-    atomic_json(out/'progress.json',dict(phase='engine_shutdown',done=6,total=6,heartbeat_unix=time.time()))
+        atomic_json(out/'progress.json',dict(phase='decision',done=i+1,total=len(rows),heartbeat_unix=time.time()))
+    atomic_json(out/'progress.json',dict(phase='engine_shutdown',done=len(rows),total=len(rows),heartbeat_unix=time.time()))
     llm.llm_engine.engine_core.shutdown(timeout=30)
-    atomic_json(out/'progress.json',dict(phase='final_model_verification',done=6,total=6,heartbeat_unix=time.time()))
+    atomic_json(out/'progress.json',dict(phase='final_model_verification',done=len(rows),total=len(rows),heartbeat_unix=time.time()))
     verify_assets(cfg)
     path=out/'predictions.jsonl';path.write_bytes(b''.join(canonical(r) for r in records))
-    atomic_json(out/'result.json',dict(status='passed',requests=6,predictions=6,
+    atomic_json(out/'result.json',dict(status='passed',requests=len(rows),predictions=len(records),audio_condition=condition,
         format_valid=sum(r['format_valid'] for r in records),schema_valid=sum(r['schema_valid'] for r in records),
         length_limited=sum(r['length_limited'] for r in records),predictions_sha256=file_hash(path),weight_updates=0,
         model_files_unchanged=True,elapsed_seconds=time.monotonic()-start,
-        scope='direct frozen audio-to-task vLLM NPU single TRAIN group; no benchmark or HF parity claim'))
+        scope='direct frozen audio-to-task vLLM NPU fixed TRAIN learning population; no benchmark or HF parity claim'))
 
 
 if __name__=='__main__':
