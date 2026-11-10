@@ -25,6 +25,9 @@ def wait(root,cid,image,deadline):
 
 def run(root):
     plan=json.loads((root/'intent.json').read_text());deadline=time.monotonic()+7200
+    observation_seconds=plan.get('observation_seconds',3900)
+    if type(observation_seconds) is not int or not 3900 <= observation_seconds <= 7500:
+        raise ValueError('bounded observation deadline required')
     for dep in plan['wait_for']:
         state=wait(root,dep['container_id'],dep['image'],deadline)
         if state['ExitCode']!=0:raise RuntimeError('dependency failed; inspect before dispatch')
@@ -38,7 +41,7 @@ def run(root):
     if result.returncode or len(cid)!=64 or any(c not in '0123456789abcdef' for c in cid):
         raise RuntimeError('dispatch ambiguous; no automatic retry')
     atomic_json(root/'launch.json',{**plan,'container_id':cid})
-    state=wait(root,cid,plan['image'],time.monotonic()+3900)
+    state=wait(root,cid,plan['image'],time.monotonic()+observation_seconds)
     atomic_json(root/'docker-terminal.json',dict(container_id=cid,state=state))
     logs=subprocess.run(['ssh','npu','docker logs '+cid],capture_output=True,text=True,timeout=30)
     (root/'container.log').write_text(logs.stdout+logs.stderr)

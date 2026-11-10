@@ -47,7 +47,7 @@ def register(controls, review_path, candidates, output):
     if len(partition['selection']) != 256 or len(set(partition['selection'])) != 256:
         raise ValueError('exact selection256 required')
     cfg.update(source_groups=partition['selection'], evaluation_phase='selection',
-               purpose='frozen-qwen3-omni-reviewed-selection256')
+               purpose='frozen-qwen3-omni-reviewed-selection256', wall_seconds=7200)
     report = dict(schema='jev-omni-selection-protocol-v1', actor_config=actor_config(cfg),
         prompts=prompts, review_sha256=file_hash(review_path),
         requests_sha256=identity['requests_sha256'], partition_sha256=cfg['partition_sha256'],
