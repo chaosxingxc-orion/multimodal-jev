@@ -81,3 +81,35 @@ def test_transfer_registration_requires_complete_reproducible_selection(tmp_path
     monkeypatch.setattr(registration,'select',lambda *args:{**result,'selected_id':'p1'})
     with pytest.raises(ValueError,match='reproduce'):registration.register(selection,tmp_path/'plan.json',tmp_path/'bad.json')
     assert not (tmp_path/'bad.json').exists()
+
+
+def test_transfer_shard_preparation_mounts_all_evidence_without_dispatch(tmp_path,monkeypatch):
+    import sys,subprocess
+    sys.path.insert(0,str(Path(__file__).parents[1]/'tools/jev'))
+    import prepare_omni_slurp_transfer_shard as preparation
+    cfg,_=fixture(tmp_path)
+    parent=tmp_path/'parent';parent.mkdir()
+    (parent/'instruction.txt').write_bytes(Path(cfg['instruction']).read_bytes())
+    (parent/'config.json').write_bytes(canonical({'asset_audit':cfg['asset_audit']}))
+    model=tmp_path/'model';model.mkdir()
+    protocol_path=Path(cfg['transfer_protocol']);protocol=json.loads(protocol_path.read_text())
+    protocol['runtime']['audio_model']=str(model);protocol['image']='image'
+    protocol_path.write_bytes(canonical(protocol))
+    native=tmp_path/'native';native.mkdir()
+    (native/'evaluation-terminal.json').write_text('{"exit_code":0}')
+    argv=['docker','run','--name','native','--device','/dev/davinci4:/dev/davinci4',
+        '--device','/dev/davinci5:/dev/davinci5','-e','HCCL_IF_BASE_PORT=62500',
+        '-v',str(native)+':'+str(native)+':rw','-v',str(tmp_path)+':'+str(tmp_path)+':ro',
+        'image','timeout','--signal=TERM','--kill-after=30s','3600s','python3',
+        str(native/'source/tools/jev/infer_qwen3_omni_slurp_probe.py')]
+    (native/'launch.json').write_bytes(canonical(dict(argv=argv,image='image',scorer_python='/python',scorer_repository='/scorer')))
+    commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+    root=tmp_path/'transfer'
+    receipt=preparation.prepare(root,protocol_path,'shard-0000','parent',native,commit,[6,7])
+    assert receipt['dispatched'] is False and receipt['requests']==840 and receipt['recordings']==5
+    intent=json.loads((root/'intent.json').read_text())
+    assert intent['physical_devices']==[6,7] and 'HCCL_IF_BASE_PORT=63500' in intent['argv']
+    assert '/dev/davinci6:/dev/davinci6' in intent['argv']
+    assert '/dev/davinci4:/dev/davinci4' not in intent['argv']
+    assert (root/'source/tools/jev/infer_qwen3_omni_slurp_transfer.py').exists()
+    assert not (root/'launch.json').exists()
