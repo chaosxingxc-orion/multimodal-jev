@@ -1,0 +1,85 @@
+{
+  "replicates": [
+    {
+      "replicate": 0,
+      "by_variant": {
+        "native": {
+          "examples": 64,
+          "correct": 20,
+          "format_valid": 30,
+          "schema_valid": 30,
+          "accuracy": 0.3125
+        },
+        "permutation": {
+          "examples": 64,
+          "correct": 13,
+          "format_valid": 35,
+          "schema_valid": 34,
+          "accuracy": 0.203125
+        },
+        "rebind": {
+          "examples": 64,
+          "correct": 22,
+          "format_valid": 49,
+          "schema_valid": 48,
+          "accuracy": 0.34375
+        },
+        "missing_candidate": {
+          "examples": 64,
+          "correct": 0,
+          "format_valid": 37,
+          "schema_valid": 37,
+          "accuracy": 0.0
+        },
+        "noul.True": {
+          "examples": 64,
+          "correct": 0,
+          "format_valid": 55,
+          "schema_valid": 0,
+          "accuracy": 0.0
+        },
+        "noul.False": {
+          "examples": 64,
+          "correct": 0,
+          "format_valid": 57,
+          "schema_valid": 0,
+          "accuracy": 0.0
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 64,
+          "both_correct": 9,
+          "both_correct_rate": 0.140625
+        },
+        "rebind": {
+          "groups": 64,
+          "both_correct": 15,
+          "both_correct_rate": 0.234375
+        },
+        "missing_candidate": {
+          "groups": 64,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        },
+        "noul": {
+          "groups": 64,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        }
+      },
+      "all_six_correct": 0,
+      "all_six_correct_rate": 0.0
+    }
+  ],
+  "source_groups": 64,
+  "requests": 384,
+  "predictions": 384,
+  "coverage": 1.0,
+  "scope": "correlated derived views; paired correctness is required; not six independent recordings",
+  "split": "train",
+  "purpose": "fsc-jev-six-view-engineering-probe",
+  "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-jev-asr-text-train64x6-v1/run",
+  "targets_sha256": "16e8d62670dfdf06add142ba927fc56d369a3ccb3fbf1972dd41d355ae98a9c5",
+  "result_sha256": "291b3266206e88b7f464efcd9ba637c98821613e6a79091abd761e5eda72a744"
+}
