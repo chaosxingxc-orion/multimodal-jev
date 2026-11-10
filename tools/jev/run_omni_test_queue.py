@@ -28,13 +28,28 @@ def test_argv(prior, parent, child, selection_root, test_root, key):
     return argv
 
 
-def prepare(root, protocol_path):
+def export_source(repository, commit, destination):
+    """Resolve a real Git repository explicitly; never depend on launch cwd."""
+    repository=Path(repository).resolve()
+    resolved=subprocess.check_output(['git','-C',str(repository),'rev-parse',commit+'^{commit}'],text=True).strip()
+    if resolved!=commit:raise ValueError('full pinned source commit required')
+    archive=subprocess.run(['git','-C',str(repository),'archive',commit],capture_output=True,check=True)
+    destination.mkdir()
+    subprocess.run(['tar','-x','-C',str(destination)],input=archive.stdout,check=True)
+
+
+def prepare(root, protocol_path, source_repository=None):
     protocol = json.loads(protocol_path.read_text())
     selection_root = Path(protocol['selection_result']).parent
     if json.loads((selection_root/'evaluation-terminal.json').read_text())['exit_code'] != 0:
         raise ValueError('completed selection required')
     queue = json.loads((selection_root/'queue-intent.json').read_text())
     commit = queue['source_commit']
+    repository=Path(source_repository) if source_repository is not None else Path(__file__).resolve().parents[2]
+    # Validate before creating preparation artifacts. Snapshots have no .git;
+    # their callers must pass --source-repository pointing at the actual repo.
+    resolved=subprocess.check_output(['git','-C',str(repository),'rev-parse',commit+'^{commit}'],text=True).strip()
+    if resolved!=commit:raise ValueError('full pinned source commit required')
     prior = json.loads((selection_root/'parent/launch.json').read_text())
     if prior['image'] != protocol['image'] or prior['physical_devices'] != [4,5]:
         raise ValueError('same image and authorized NPU4/5 required')
@@ -44,11 +59,8 @@ def prepare(root, protocol_path):
             raise ValueError('frozen TEST prompt changed')
     root.mkdir(parents=True,exist_ok=False)
     shutil.copyfile(protocol_path,root/'test-protocol.json')
-    source=root/'source';source.mkdir()
-    archive=subprocess.Popen(['git','archive',commit],stdout=subprocess.PIPE)
-    subprocess.run(['tar','-x','-C',str(source)],stdin=archive.stdout,check=True)
-    archive.stdout.close()
-    if archive.wait(): raise RuntimeError('source snapshot export failed')
+    source=root/'source'
+    export_source(repository,commit,source)
     if not (source/'tools/jev/infer_qwen3_omni_test.py').exists():
         raise ValueError('TEST runner must be frozen before selection inference')
     rows=[json.loads(line) for line in Path(protocol['actor_config']['requests']).open()]
@@ -106,10 +118,11 @@ if __name__ == '__main__':
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--prepare',action='store_true')
     p.add_argument('--protocol',type=Path)
+    p.add_argument('--source-repository',type=Path)
     a=p.parse_args()
     if a.prepare:
         if a.protocol is None: p.error('--protocol required')
-        print(json.dumps(prepare(a.root,a.protocol),indent=2))
+        print(json.dumps(prepare(a.root,a.protocol,a.source_repository),indent=2))
     else:
         with (a.root/'queue.lock').open('a') as lock:
             fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

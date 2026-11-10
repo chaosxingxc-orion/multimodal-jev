@@ -59,7 +59,8 @@ nga 原语是 choice/noul/score；本协议的 `typed_call_list` 是本项目扩
 有序音频和已提供历史，仅替换 TRAIN 中已人工核验并固定 SHA256 的十种首轮前缀，
 以及固定的第二轮输出指令；未知指令直接报错，不静默删除。
 当前决策只要求一个 JSON 布尔值或参数对象数组，不引入 tools/XML 输出协议。
-全量 136722 个决策通过静态映射审计；尚未完成实际 processor/vLLM 的验证。
+全量 136722 个决策通过静态映射审计；六轮 TRAIN 的 78 个决策已通过实际 CPU
+processor 验证，vLLM 引擎内部处理和生成仍待验证。
 完整 context 保留候选菜单，因此本版本不能宣称候选隔离或 IIA 已成立。
 
 Noul 先用 JSON 布尔输出测量；只有实际验证 logit 读出后才能称为原生 typed 推理。
@@ -104,5 +105,12 @@ v1 发布完整基础任务，不把尚未实现的扩展写成已交付。
 四个完整 TRAIN 会话的六轮、78 个决策使用 gold 作为模拟输出，已通过该桥接及官方评分。
 记录见 `sfc-jev-native-bridge-train6-fixture-v1.json`；这是评分器 fixture，不能作为模型成绩。
 全量静态映射/递归 schema 证据见 `sfc-jev-runtime-static-audit-v1.json`。
-下一步在冻结镜像上运行真实波形 processor 校验，再接入受控 TRAIN 推理；
-全量任务上下文长度仍须实际测量，字符长度不能替代 token/audio 特征预算。
+冻结镜像上的真实波形 processor 校验已完成，证据为
+`sfc-jev-omni-processor-train-v1-result.json`。四个完整 TRAIN 会话的六轮、78 个决策，
+输入 689–1504 tokens，全部满足 4096 上下文加 1024 输出预算。
+两个双音频请求交换特征的最大误差均为 1.1920928955078125e-7；
+同一音频不同决策的特征完全一致，逐条帧覆盖检查通过。
+vLLM adapter 的原始 prompt/波形引用与 HF 输入一致，但未启动 vLLM 引擎或加载模型。
+容器退出码 0、应用退出码 0；无 NPU 映射，未读取 target 文件。
+下一步接入受控 TRAIN 推理，验证引擎实际 token IDs 和生成路径；
+全量任务上下文长度仍须实际测量，不能从这六轮或字符长度推定。
