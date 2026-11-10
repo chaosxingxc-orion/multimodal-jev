@@ -112,6 +112,17 @@ def stage_candidates(request_root, output):
         raise ValueError('teacher final content custody changed')
     payload = strict_json(content)
     candidates = validate_candidates(payload, context)
+    # Registered narrower per-request budgets override the generic four-prompt
+    # schema. Check before creating output, not after staging executable inputs.
+    if (root / 'prepared.json').exists():
+        prepared = json.loads((root / 'prepared.json').read_text())
+        limit = prepared.get('max_candidates', 4)
+        characters = prepared.get('max_instruction_characters', 4000)
+        if (type(limit) is not int or not 1 <= limit <= 4
+                or type(characters) is not int or not 1 <= characters <= 4000):
+            raise ValueError('invalid registered candidate limits')
+        if len(candidates) > limit or any(len(r['instruction']) > characters for r in candidates):
+            raise ValueError('teacher exceeded registered candidate budget')
     output.mkdir(parents=True, exist_ok=False)
     (output / 'proposal.json').write_bytes(canonical(payload))
     receipt = {'schema': 'jev-teacher-staging-v1', 'semantic_review': 'pending',

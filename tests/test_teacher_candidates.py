@@ -82,3 +82,11 @@ def test_truncated_response_is_not_imported(tmp_path, finish, done):
     root = request_fixture(tmp_path, finish, done)
     with pytest.raises(ValueError): stage_candidates(root, tmp_path / 'candidates')
     assert not (tmp_path / 'candidates').exists()
+
+
+def test_request_specific_character_budget_rejects_before_staging(tmp_path):
+    root = request_fixture(tmp_path)
+    (root/'prepared.json').write_text(json.dumps({'max_candidates': 2, 'max_instruction_characters': 5}))
+    with pytest.raises(ValueError, match='registered candidate budget'):
+        stage_candidates(root, tmp_path/'candidates')
+    assert not (tmp_path/'candidates').exists()
