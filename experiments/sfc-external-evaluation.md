@@ -112,3 +112,20 @@ lengths. Preserve all levels and both turns; never drop an oversized example
 or silently truncate it. No new model download or SFC inference has been
 launched by this adapter work. Native SFC output remains the official call-list
 format; typed SFC-Jev decomposition is a separate future dataset protocol.
+
+The subsequent TRAIN processor check has now completed successfully in the
+pinned image, CPU only, without model weights. The first source conversation
+lexicographically in each of the four levels yields six complete turns;
+expanded inputs contain 577–1044 tokens, all fitting 4096 with a 1024-token
+output budget. Both two-audio turns pass the waveform reversal control:
+feature rows and masks reverse with the audio, while unreversed features differ.
+Maximum reversal residual is 1.1920929e-7. Evidence:
+`docs/engineering/sfc-qwen3-omni-processor-train-v1-result.json`.
+This verifies feature ordering, not that a model uses both recordings correctly.
+
+A full 8895-input CPU processor audit is running separately under
+`sfc-qwen3-omni-full-context-v1`, with no NPU devices mapped. It records actual
+expanded context lengths, audio duration limits and every overflow instead of
+dropping or truncating samples. Its launch is recorded in
+`docs/engineering/sfc-qwen3-omni-full-context-v1-launch.json`; complete results
+are still pending. Native vLLM multi-audio generation remains unverified.
