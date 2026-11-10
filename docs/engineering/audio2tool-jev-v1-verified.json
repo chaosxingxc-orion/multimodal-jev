@@ -1,0 +1,87 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-jev-export-v1",
+  "launch": {
+    "pid": 2898728,
+    "process_start": "291098643",
+    "source_commit": "47dd43d3064c853191ea2a4e6228ddac844238d6",
+    "intent_sha256": "5744fe684a54260888c2b435d8aa56c9526dc6f041bc8659bf8a20da1eb49b1f",
+    "driver_sha256": "c3defc687cfb14f5eb94129358497591d579341ff007525d40bc7f83b2335d10",
+    "started_unix": 1794334330.6079757
+  },
+  "terminal": {
+    "exit_code": 0,
+    "elapsed_seconds": 366.0944712799974
+  },
+  "independent_audit": {
+    "status": "verified",
+    "release": "/mnt/cephfs/xingchao/datasets/audio2tool-jev/a3a34fdd0da98e6f6c53e9201751993e37202f931a1240a7475bf90593c50235",
+    "manifest_sha256": "56921792b06636d83bd6b8a21e49ae0f887f3de68a9813d75fe1b98d83c0f062",
+    "records": 30733,
+    "unique_inputs": 30731,
+    "decisions": 14044981,
+    "complete_argument_records": 25969,
+    "incomplete_argument_records": 4764,
+    "available_decisions_by_type": {
+      "noul": 9342832,
+      "typed_call_list": 4664793,
+      "typed_tool_sequence": 30733
+    },
+    "unavailable_call_list_decisions": 6623,
+    "verifier_sha256": "80e740662c83129954843b1afa80184fe538837dd4ad187c69c65929aed84543",
+    "scope": "All exported requests and compact gold independently compared with pinned native source rows; complete sequence and unavailable supervision arithmetic checked. No inference, teacher access, training or evaluation results."
+  },
+  "independent_audit_sha256": "c326f50c0ec8b2b5ad1637cd34277600fea6e93e6d0cd9e317954ac9093ef5c4",
+  "manifest": {
+    "release_id": "a3a34fdd0da98e6f6c53e9201751993e37202f931a1240a7475bf90593c50235",
+    "identity": {
+      "dataset": "audio2tool-jev",
+      "split": "external_test",
+      "inputs_sha256": "f7e4ebe4e7cf2cf411f3f26a8714bbdd0a493c0c7aeb98dd4199112d197e1a35",
+      "targets_sha256": "3aee2d3bff479982a6a34e955a1b65e1a42fb44b872a062c2125907a8284ca35",
+      "registry_sha256": "7c50b0e8b49f514b169f4040c38ac67ca69ebaf361f754f1f3e994c7cb09d0a4",
+      "task_bank_sha256": "b68017ef338762f9d761f473c12891fe4ad79ef022ab483de6311fc921564122",
+      "official_metrics_sha256": "b092cc5ba1bac59d58dbfeb56c7f7cf63f1970df59892ea7b56ee24ac2c86802",
+      "source_files": {
+        "tools/jev/prepare_audio2tool_jev.py": "f3c6ea82f650595af91a12805e8d7edb47a80960f491d5a0abbd9df3b7f13cd9",
+        "src/multimodal_jev/audio2tool_jev.py": "73ae25324ad0b6f46529943d9baeacc029735a74a2eb0c9f1cd649adccd05285",
+        "src/multimodal_jev/audio2tool_input.py": "7ec4b1f8901104fbcdade9026975dbeb471b3c8cbf62f197c069b974e2e176a9",
+        "src/multimodal_jev/audio2tool_inventory.py": "64708d59355fddd5d040ceda9aa4aaf85cde18b7a97e4fc752313881393f98d2",
+        "src/multimodal_jev/audio2tool_score.py": "97f526fe531c81c3d34ad950707bcff3a6d24e9bc822f95737e7f9de25c24ae6",
+        "src/multimodal_jev/audio2tool_targets.py": "0a8267302c34b8d3f0d87aa7a2104ac9d2eef267ffcb18197db7925a53b1b022",
+        "src/multimodal_jev/audio2tool_inference.py": "e917f0809d16f214c7eeb8c7b1e081de50f5abcd1de3548b8bf8300d7615504b"
+      }
+    },
+    "records": 30733,
+    "counts_by_tier": {
+      "1": 4292,
+      "2": 6320,
+      "3": 4292,
+      "4": 4278,
+      "5": 4292,
+      "6": 4292,
+      "7": 2146,
+      "8": 821
+    },
+    "decisions_per_record": 457,
+    "decisions": 14044981,
+    "complete_argument_records": 25969,
+    "incomplete_argument_records": 4764,
+    "available_decisions_by_type": {
+      "noul": 9342832,
+      "typed_call_list": 4664793,
+      "typed_tool_sequence": 30733
+    },
+    "unavailable_decisions_by_type": {
+      "typed_call_list": 6623
+    },
+    "requests_sha256": "802cbc12d6e44e4e5fbfde222b96e66d745bdfece598b898b759080120a692d2",
+    "targets_sha256": "e57f77eb3baa27f66a96a165780b9a57fc5d86fd21a6eb020c8b9cf7a2ff44ff",
+    "task_bank_file_sha256": "5ed8d18a6d5237296e5431a93327b85f9a954e5f697da6a7de87f713e2d70412",
+    "elapsed_seconds": 365.97873044013977,
+    "full_calls_reconstruction": "Exact ordered typed reconstruction for all 25969 complete records; partial records preserve original evidence and explicit unavailable call-list supervision.",
+    "scope": "Full external-test data conversion only. No task/prompt selection from model results, inference or training. Typed extensions are project protocols; sequence annotation order is not verified execution chronology."
+  },
+  "exported_source_manifest_verified": true,
+  "targets_permissions": "0600",
+  "scope": "Successful complete data conversion and independent source comparison; no model inference, teacher access, training or task-performance claim."
+}
