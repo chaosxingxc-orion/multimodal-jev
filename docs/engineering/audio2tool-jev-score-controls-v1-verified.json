@@ -1,0 +1,375 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-jev-score-controls-v1",
+  "launch": {
+    "container_id": "1e2ee3aede770bdf5408929cf59ea1fa6031c4cf86b38ab256da2d9d714db823",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "01cfdc3c99c04b7e5c99c103e122230f07fc330b",
+    "intent_sha256": "a8423d00c3fb0432a52211cf07939a2883b7b96c5087fda78583858404b35766"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T18:38:33.88431761Z",
+    "FinishedAt": "2026-11-10T19:03:04.23427226Z"
+  },
+  "result_sha256": "59e067f2cc664f7450a5ff54aeb7d8b0a516bff02bec982d5948e55a114ab892",
+  "elapsed_seconds": 1469.8015726900194,
+  "source_files_verified": 108,
+  "independent_gold_counts": {
+    "records": 30733,
+    "positive": 37723,
+    "negative": 4633693,
+    "unknown": 6623,
+    "complete": 25969,
+    "empty_primary_args": 8290
+  },
+  "by_tier_counts": {
+    "1": {
+      "records": 4292,
+      "positive": 4292,
+      "negative": 648092,
+      "unknown": 0,
+      "complete": 4292,
+      "empty_primary_args": 4164
+    },
+    "2": {
+      "records": 6320,
+      "positive": 6320,
+      "negative": 954320,
+      "unknown": 0,
+      "complete": 6320,
+      "empty_primary_args": 4
+    },
+    "3": {
+      "records": 4292,
+      "positive": 10062,
+      "negative": 642322,
+      "unknown": 5452,
+      "complete": 290,
+      "empty_primary_args": 1046
+    },
+    "4": {
+      "records": 4278,
+      "positive": 4278,
+      "negative": 645978,
+      "unknown": 0,
+      "complete": 4278,
+      "empty_primary_args": 772
+    },
+    "5": {
+      "records": 4292,
+      "positive": 4292,
+      "negative": 648092,
+      "unknown": 0,
+      "complete": 4292,
+      "empty_primary_args": 1516
+    },
+    "6": {
+      "records": 4292,
+      "positive": 4292,
+      "negative": 648092,
+      "unknown": 0,
+      "complete": 4292,
+      "empty_primary_args": 454
+    },
+    "7": {
+      "records": 2146,
+      "positive": 2146,
+      "negative": 324046,
+      "unknown": 0,
+      "complete": 2146,
+      "empty_primary_args": 210
+    },
+    "8": {
+      "records": 821,
+      "positive": 2041,
+      "negative": 122751,
+      "unknown": 1171,
+      "complete": 59,
+      "empty_primary_args": 124
+    }
+  },
+  "cases": {
+    "all_runtime_failures": {
+      "report_sha256": "2a9d764690e3452057c67726ba6bc88b9dd8305a0be4dc64e60f3e749dd02f55",
+      "all": {
+        "counts": {
+          "decisions": 14044981,
+          "tools": 4671416,
+          "runtime_errors": 14044981,
+          "format_valid": 0,
+          "noul_decisions": 9342832,
+          "noul_available": 9342832,
+          "noul_unavailable": 0,
+          "noul_correct": 0,
+          "typed_call_list_decisions": 4671416,
+          "typed_call_list_available": 4664793,
+          "typed_call_list_unavailable": 6623,
+          "typed_call_list_correct": 0,
+          "typed_tool_sequence_decisions": 30733,
+          "typed_tool_sequence_available": 30733,
+          "typed_tool_sequence_unavailable": 0,
+          "typed_tool_sequence_correct": 0,
+          "present_semantic_invalid_negative": 4633693,
+          "absent_semantic_invalid_negative": 4633693,
+          "valid_noul_pairs": 0,
+          "complementary_noul_pairs": 0,
+          "consistent_tool_triples": 0,
+          "present_semantic_invalid_positive": 37723,
+          "absent_semantic_invalid_positive": 37723,
+          "records": 30733,
+          "native_assembly_valid": 0,
+          "all_predictions_consistent": 0
+        },
+        "format_valid_rate": 0.0,
+        "decision_accuracy": {
+          "noul": 0.0,
+          "typed_call_list": 0.0,
+          "typed_tool_sequence": 0.0
+        },
+        "complementary_pair_rate": 0.0,
+        "consistent_tool_triple_rate": 0.0,
+        "semantic_presence": {
+          "present": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "invalid_positive": 37723,
+            "invalid_negative": 4633693,
+            "precision": null,
+            "recall": 0.0,
+            "specificity": 0.0,
+            "f1": 0.0,
+            "balanced_accuracy": 0.0,
+            "valid_rate": 0.0
+          },
+          "absent": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "invalid_positive": 37723,
+            "invalid_negative": 4633693,
+            "precision": null,
+            "recall": 0.0,
+            "specificity": 0.0,
+            "f1": 0.0,
+            "balanced_accuracy": 0.0,
+            "valid_rate": 0.0
+          }
+        }
+      },
+      "native": {
+        "records": 30733,
+        "format_valid": 0,
+        "runtime_errors": 30733,
+        "full_record_metrics": {
+          "strict_primary_exact": 0.0,
+          "official_primary_exact": 0.0,
+          "official_primary_tool_accuracy": 0.0,
+          "official_primary_parameter_f1": 0.0,
+          "official_tool_set_exact": 0.0,
+          "official_tool_set_f1": 0.0,
+          "strict_ordered_names_exact": 0.0
+        },
+        "full_arguments_subset": {
+          "eligible_records": 25969,
+          "unavailable_records": 4764,
+          "strict_full_calls_exact": 0.0
+        },
+        "full_population_strict_calls_exact": null
+      }
+    },
+    "always_absent": {
+      "report_sha256": "be693765602bf50c54c844cc19f0dbac6c31bd70c06ef5c6b2e2d0332ae52433",
+      "all": {
+        "counts": {
+          "decisions": 14044981,
+          "tools": 4671416,
+          "runtime_errors": 0,
+          "format_valid": 14044981,
+          "noul_decisions": 9342832,
+          "noul_available": 9342832,
+          "noul_unavailable": 0,
+          "noul_correct": 9267386,
+          "typed_call_list_decisions": 4671416,
+          "typed_call_list_available": 4664793,
+          "typed_call_list_unavailable": 6623,
+          "typed_call_list_correct": 4633693,
+          "typed_tool_sequence_decisions": 30733,
+          "typed_tool_sequence_available": 30733,
+          "typed_tool_sequence_unavailable": 0,
+          "typed_tool_sequence_correct": 0,
+          "present_semantic_tn": 4633693,
+          "absent_semantic_tn": 4633693,
+          "valid_noul_pairs": 4671416,
+          "complementary_noul_pairs": 4671416,
+          "consistent_tool_triples": 4671416,
+          "present_semantic_fn": 37723,
+          "absent_semantic_fn": 37723,
+          "records": 30733,
+          "native_assembly_valid": 30733,
+          "all_predictions_consistent": 30733
+        },
+        "format_valid_rate": 1.0,
+        "decision_accuracy": {
+          "noul": 0.9919247183295172,
+          "typed_call_list": 0.9933330375002707,
+          "typed_tool_sequence": 0.0
+        },
+        "complementary_pair_rate": 1.0,
+        "consistent_tool_triple_rate": 1.0,
+        "semantic_presence": {
+          "present": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 37723,
+            "tn": 4633693,
+            "invalid_positive": 0,
+            "invalid_negative": 0,
+            "precision": null,
+            "recall": 0.0,
+            "specificity": 1.0,
+            "f1": 0.0,
+            "balanced_accuracy": 0.5,
+            "valid_rate": 1.0
+          },
+          "absent": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 37723,
+            "tn": 4633693,
+            "invalid_positive": 0,
+            "invalid_negative": 0,
+            "precision": null,
+            "recall": 0.0,
+            "specificity": 1.0,
+            "f1": 0.0,
+            "balanced_accuracy": 0.5,
+            "valid_rate": 1.0
+          }
+        }
+      },
+      "native": {
+        "records": 30733,
+        "format_valid": 30733,
+        "runtime_errors": 0,
+        "full_record_metrics": {
+          "strict_primary_exact": 0.0,
+          "official_primary_exact": 0.0,
+          "official_primary_tool_accuracy": 0.0,
+          "official_primary_parameter_f1": 0.26974262193733123,
+          "official_tool_set_exact": 0.0,
+          "official_tool_set_f1": 0.0,
+          "strict_ordered_names_exact": 0.0
+        },
+        "full_arguments_subset": {
+          "eligible_records": 25969,
+          "unavailable_records": 4764,
+          "strict_full_calls_exact": 0.0
+        },
+        "full_population_strict_calls_exact": null
+      }
+    },
+    "available_annotation_oracle": {
+      "report_sha256": "ae47b17a303c88a53b78f2a03306eefb5e98cea8f2026f0449692babfe09855c",
+      "all": {
+        "counts": {
+          "decisions": 14044981,
+          "tools": 4671416,
+          "runtime_errors": 0,
+          "format_valid": 14044981,
+          "noul_decisions": 9342832,
+          "noul_available": 9342832,
+          "noul_unavailable": 0,
+          "noul_correct": 9342832,
+          "typed_call_list_decisions": 4671416,
+          "typed_call_list_available": 4664793,
+          "typed_call_list_unavailable": 6623,
+          "typed_call_list_correct": 4664793,
+          "typed_tool_sequence_decisions": 30733,
+          "typed_tool_sequence_available": 30733,
+          "typed_tool_sequence_unavailable": 0,
+          "typed_tool_sequence_correct": 30733,
+          "present_semantic_tn": 4633693,
+          "absent_semantic_tn": 4633693,
+          "valid_noul_pairs": 4671416,
+          "complementary_noul_pairs": 4671416,
+          "consistent_tool_triples": 4671416,
+          "present_semantic_tp": 37723,
+          "absent_semantic_tp": 37723,
+          "records": 30733,
+          "native_assembly_valid": 30733,
+          "all_predictions_consistent": 30733
+        },
+        "format_valid_rate": 1.0,
+        "decision_accuracy": {
+          "noul": 1.0,
+          "typed_call_list": 1.0,
+          "typed_tool_sequence": 1.0
+        },
+        "complementary_pair_rate": 1.0,
+        "consistent_tool_triple_rate": 1.0,
+        "semantic_presence": {
+          "present": {
+            "tp": 37723,
+            "fp": 0,
+            "fn": 0,
+            "tn": 4633693,
+            "invalid_positive": 0,
+            "invalid_negative": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": 1.0,
+            "f1": 1.0,
+            "balanced_accuracy": 1.0,
+            "valid_rate": 1.0
+          },
+          "absent": {
+            "tp": 37723,
+            "fp": 0,
+            "fn": 0,
+            "tn": 4633693,
+            "invalid_positive": 0,
+            "invalid_negative": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "specificity": 1.0,
+            "f1": 1.0,
+            "balanced_accuracy": 1.0,
+            "valid_rate": 1.0
+          }
+        }
+      },
+      "native": {
+        "records": 30733,
+        "format_valid": 30733,
+        "runtime_errors": 0,
+        "full_record_metrics": {
+          "strict_primary_exact": 1.0,
+          "official_primary_exact": 1.0,
+          "official_primary_tool_accuracy": 1.0,
+          "official_primary_parameter_f1": 1.0,
+          "official_tool_set_exact": 1.0,
+          "official_tool_set_f1": 1.0,
+          "strict_ordered_names_exact": 1.0
+        },
+        "full_arguments_subset": {
+          "eligible_records": 25969,
+          "unavailable_records": 4764,
+          "strict_full_calls_exact": 1.0
+        },
+        "full_population_strict_calls_exact": null
+      }
+    }
+  },
+  "scope": "Exact live-container terminal/source/resource acceptance plus independent full-native-annotation arithmetic for all and each tier. Three complete 30733x457 synthetic controls; no actor predictions, inference score, teacher feedback or training."
+}
