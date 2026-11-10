@@ -12,6 +12,29 @@ from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.rl_run import load_rollout_run
 
 
+def cached_response_logprobs(model,inputs,boundary):
+    """Teacher-force the saved response one token at a time with a KV cache.
+
+    Diagnostic for prefill/decode shape sensitivity; never sample replacements.
+    Acoustic features enter only the original prefill, as in online decoding.
+    """
+    import torch
+    prompt={key:(value[:,:boundary] if key in {'input_ids','attention_mask','position_ids'} else value)
+            for key,value in inputs.items()}
+    output=model(**prompt,use_cache=True)
+    values=[]
+    response=inputs['input_ids'][:,boundary:]
+    for index in range(response.shape[-1]):
+        values.append(torch.log_softmax(output.logits[:,-1].float(),dim=-1)
+                      .gather(-1,response[:,index:index+1]))
+        if index+1<response.shape[-1]:
+            output=model(input_ids=response[:,index:index+1],
+                attention_mask=inputs['attention_mask'][:,:boundary+index+1],
+                position_ids=inputs['position_ids'][:,boundary+index:boundary+index+1],
+                past_key_values=output.past_key_values,use_cache=True)
+    return torch.cat(values,dim=-1)
+
+
 def run(args):
     import torch
     from multimodal_jev.asr import load_runtime
@@ -33,7 +56,10 @@ def run(args):
                 for key,value in inputs.items()}
         start=time.monotonic()
         with torch.inference_mode():
-            logp=response_log_probs(model(**inputs,use_cache=False).logits,inputs['input_ids'],boundary)[0]
+            if getattr(args,'cached_decode',False):
+                logp=cached_response_logprobs(model,inputs,boundary)[0]
+            else:
+                logp=response_log_probs(model(**inputs,use_cache=False).logits,inputs['input_ids'],boundary)[0]
         old=torch.tensor(record.log_probs,device=logp.device);diff=(logp-old).abs()
         row={'example_id':ex.example_id,'replicate':record.replicate,'token_ids':record.token_ids,
              'vllm_logprobs':record.log_probs,'hf_logprobs':logp.tolist(),'max_error':float(diff.max()),
@@ -43,6 +69,7 @@ def run(args):
     passed=all(r['finite'] and r['max_error']<=0.02 for r in results)
     return {'status':'passed' if passed else 'failed','max_logprob_error':max_error,'threshold':0.02,
             'responses':len(results),'policy_id':identity['policy_id'],'device':device,'dtype':dtype,
+            'cached_decode':getattr(args,'cached_decode',False),
             'rollout_sha256':file_hash(args.rollout/'rollouts.jsonl'),
             'scope':'same merged weights HF single-response probability diagnosis; no optimizer or full-batch parity proof'}
 
@@ -52,6 +79,7 @@ if __name__=='__main__':
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--device',default='cpu')
     p.add_argument('--dtype',choices=['float32','bfloat16','float16'],default='float32')
+    p.add_argument('--cached-decode',action='store_true')
     args=p.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     try:
