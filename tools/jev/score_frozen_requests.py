@@ -11,6 +11,7 @@ from multimodal_jev.consumption_score import score
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True)
     p.add_argument('--targets',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--six-views',action='store_true')
     args=p.parse_args()
     if args.output.exists():raise FileExistsError('preserve scored result')
     identity=json.loads((args.run/'identity.json').read_text())
@@ -34,7 +35,11 @@ if __name__=='__main__':
     request_hashes={r['id']:hashlib.sha256(canonical(r)).hexdigest() for r in requests}
     for r in predictions:
         if r['request_sha256']!=request_hashes[r['example_id']]:raise ValueError('prediction/request binding changed')
-    report=score(requests,targets,predictions)
+    if args.six_views:
+        from multimodal_jev.six_view_score import score_six_views
+        report=score_six_views(requests,targets,predictions)
+    else:
+        report=score(requests,targets,predictions)
     report.update(split=identity['config']['split'],purpose=identity['config']['purpose'],
         run=str(args.run),targets_sha256=file_hash(args.targets),result_sha256=file_hash(args.run/'result.json'))
     atomic_json(args.output,report)
