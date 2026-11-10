@@ -50,3 +50,16 @@ def test_single_token_and_finite_logit_checks():
 def test_open_slots_not_recast_as_closed_choices():
     ex=replace(example(),schema=DecisionSchema('s','open_slot','Who?'),target='Amy')
     with pytest.raises(ValueError,match='open_slot'):alternatives(request_from_example(ex))
+
+
+def test_fixed_asr_header_contains_no_transcript_or_answer():
+    from multimodal_jev.direct_readout import audio_messages,ASR_TASK_PREFIX
+    wave=object()
+    messages,kwargs=audio_messages(wave,'task',ASR_TASK_PREFIX)
+    assert kwargs=={'continue_final_message':True}
+    assert messages[1]['content'][0]['audio'] is wave
+    assert messages[-1]['content']==[{'type':'text','text':'language English<asr_text>'}]
+    plain,kwargs=audio_messages(wave,'task')
+    assert len(plain)==2 and kwargs=={'add_generation_prompt':True}
+    with pytest.raises(ValueError,match='fixed ASR header'):
+        audio_messages(wave,'task','language English<asr_text>turn on the lights')

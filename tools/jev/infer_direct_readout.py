@@ -8,7 +8,7 @@ from pathlib import Path
 import time
 from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.consumption import canonical,validate_request
-from multimodal_jev.direct_readout import prompt,label_tokens,decision
+from multimodal_jev.direct_readout import prompt,label_tokens,decision,audio_messages,ASR_TASK_PREFIX
 from multimodal_jev.end_to_end import require_audio_task_route
 from multimodal_jev.policy_identity import checkpoint_identity
 
@@ -19,6 +19,8 @@ def run(cfg,output):
         raise ValueError('frozen official checkpoint required')
     if cfg['split']!='train' or cfg['audio_condition'] not in ('actual','zeros'):
         raise ValueError('registered TRAIN actual/zero-waveform probe required')
+    if cfg.get('output_prefix','') not in ('',ASR_TASK_PREFIX):
+        raise ValueError('only fixed ASR header or empty prefix permitted')
     import torch
     from multimodal_jev.asr import load_runtime
     from multimodal_jev.audio_policy import load_audio
@@ -54,9 +56,8 @@ def run(cfg,output):
             import numpy as np
             wave=np.zeros_like(wave)
         system,options=prompt(row,instruction);ids=label_tokens(processor.tokenizer,options)
-        messages=[{'role':'system','content':[{'type':'text','text':'English\n'+system}]},
-                  {'role':'user','content':[{'type':'audio','audio':wave}]}]
-        rendered=processor.apply_chat_template(messages,tokenize=False,add_generation_prompt=True)
+        messages,template_args=audio_messages(wave,system,cfg.get('output_prefix',''))
+        rendered=processor.apply_chat_template(messages,tokenize=False,**template_args)
         digest=hashlib.sha256(rendered.encode()).hexdigest()
         path=cache/(hashlib.sha256(row['id'].encode()).hexdigest()+'.json')
         if path.exists():

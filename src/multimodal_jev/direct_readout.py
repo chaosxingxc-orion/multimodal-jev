@@ -4,6 +4,19 @@ import math
 from .consumption import validate_request
 
 LABELS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+ASR_TASK_PREFIX = 'language English<asr_text>'
+
+
+def audio_messages(waveform, system, output_prefix=''):
+    """Optional fixed protocol header, never an audio-derived transcript."""
+    if output_prefix not in ('', ASR_TASK_PREFIX):
+        raise ValueError('only registered fixed ASR header is permitted')
+    messages = [{'role': 'system', 'content': [{'type': 'text', 'text': 'English\n' + system}]},
+                {'role': 'user', 'content': [{'type': 'audio', 'audio': waveform}]}]
+    if output_prefix:
+        messages.append({'role': 'assistant', 'content': [{'type': 'text', 'text': output_prefix}]})
+    return messages, ({'continue_final_message': True} if output_prefix
+                      else {'add_generation_prompt': True})
 
 
 def alternatives(request):
