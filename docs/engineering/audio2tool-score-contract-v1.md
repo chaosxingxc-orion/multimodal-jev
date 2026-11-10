@@ -52,3 +52,29 @@ micro-F1分母为0时返回None，不能仅靠空输出获得成功。目标解�
 下一步目标转换必须显式固定字段优先级并保存冲突，不能默默以expected_tool_call
 覆盖结构字段，或相反将不一致擦除。additional_tool_calls的名称/参数编码还需单独
 核查后接入完整有序目标。现阶段不宣称目标转换、官方基线复现或Jev评测已完成。
+
+## 结构化主目标与附加调用覆盖
+
+已完成scorer-only目标投影 `audio2tool-targets-v1/targets.jsonl`，全部30733条与actor
+输入release身份/音频路径逐条对齐。转换器固定八份release字节SHA，目标文件留在
+共享实验目录并限制权限，不提交仓库、不传给actor或教师。
+
+官方BaseDataset的all_expected_tools实际是 `[tool_name] + additional_tool_calls`，
+evaluator用结构化tool_name/extracted_params评分主调用。投影因此保留该主目标，
+原expected_tool_call另存，记录可解析时的完整调用一致性，冲突不被抹除。
+这里的一致性包括工具名，故与上表仅参数一致计数不同。
+
+Tier3附加标签5810项、Tier8共1259项，全部经固定官方normalize_tool_name对应独立
+registry。它们既有裸工具名也有调用字符串；原始字符串/顺序/重复保留供官方工具
+指标使用。仅严格有限JSON字面量调用可提供附加arguments；裸工具名和不支持语法的
+参数标记None/unavailable，显式 `tool()` 才对应已知空字典。
+
+全部目标中25969条有完整可投影调用参数，4764条不完整（Tier3 4002、Tier8 762）。
+这些是编码覆盖，不能解释为标签正确性。完整集合的严格多调用参数EM目前不可定义；
+不得去掉4764条后仍称全量EM，也不得把None换成{}。全量主调用/工具名称仍可按官方
+字段评分；若另报参数可用子集，必须标明覆盖和独立分母。
+
+目标工具新增8项测试，与评分核心共19项通过。全量目标哈希、顺序/身份以及未知
+标志已核对，见[目标投影结果](audio2tool-targets-v1-verified.json)。评分核心上一节
+的evaluate仍要求完整gold calls，不能直接喂入此投影中的未知full_calls；后续需接入
+明确的主调用/名称评分入口，不把缺失参数伪装成完整目标。

@@ -110,3 +110,8 @@ text_padding 对前一个条件的响应 log-prob 最大误差为 **0.1445865631
 报告同时保存精确容器实时状态；尚无完整诊断或actual-verl一致性验收。
 下一步逐层入口的完整六条输入已通过[真实processor预检查](omni-layers-preflight-v1-verified.json)，
 完整模型执行仍须等待原诊断终态。
+
+[第六份部分报告](omni-precision-train6-v1-logit-audit-partial-06.json)覆盖10/30条件：
+第二条的text_padding相对audio_padding响应log-prob变化0.3880100250，超过原0.1门槛，
+全词表logits最大变化1.390625。第二条前四条件全部一致，文本新增252个左padding。
+两条原输入都出现该条件相关变化；仍未定位内部根因，未完成全六条验收。
