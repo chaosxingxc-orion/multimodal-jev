@@ -232,3 +232,35 @@ v2/v3的所有分组和统计完全一致；旧版本保留作审计记录。后
 semantic_review 仍为 pending、candidate_accepted=false，也不启动候选推理。
 真实调用尚未配置或派发，等待 TRAIN78 工程验收后生成实际学习反馈。
 当前仅完成合成响应和失败注入测试；语义审查、候选实际processor预算和引擎评估仍未完成。
+
+## 完整人口的会话分片执行计划
+
+已准备 `sfc-jev-complete-shards-v1`，输入计划与实际物化证据见
+`sfc-jev-complete-shard-plans-v1.json`。分片只是运行单位，不修改发布划分或任务定义。
+目标每片1024决策，完整source_group不可拆分，各会话内按音频阶段排序，
+保留每个函数的present、absent、calls全部问题，不按gold或Noul预测筛选。
+
+| 人口 | bundles | 会话 | 决策 | 分片 |
+|---|---:|---:|---:|---:|
+| TRAIN学习区 | 4428 | 3600 | 69210 | 69 |
+| TRAIN选择区 | 1106 | 899 | 17469 | 18 |
+| 完整ID TEST | 2590 | 1986 | 38697 | 39 |
+| 完整OOD TEST | 771 | 593 | 11346 | 12 |
+
+`sfc_jev_shards.py` 从原始输入重建并核验每个bundle定义、完整会话和音频前缀；
+TRAIN必须绑定v3分区哈希并从全部TRAIN复现分区，不能把学习/选择混用。
+TEST不接受人口过滤参数。分片顺序仅按source_group排序，与标签和模型成绩无关。
+每片固定有序bundle IDs、完整输入哈希和有序决策键哈希；加载或物化前重新生成全计划，
+拒绝缺片、重复片、遗漏阶段/决策、分区变化或内容变化。
+若单会话决策数超过目标，整组保留并标记超额，不拆会话；本次实际四个人口均无超额组。
+
+计划位于 `/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-complete-shards-v1/`。
+`learning.json`/`selection.json`固定v3分区；`test_id.json`/`test_ood.json`覆盖完整官方测试。
+`plan_sfc_jev_shards.py`可重新生成新计划，`materialize_sfc_jev_shard.py`
+要求显式计划哈希，只输出所选片requests和来源manifest，不读取或输出targets。
+首个学习片已实际物化并校验，未派发推理。它不替代既有TRAIN78的固定输入与队列。
+
+以上是完整执行准备，不是模型成绩、候选选择预算或实测运行时估算。
+分片推理器、逐片工程验收、完整合并及官方评分仍须接入；
+正式运行预算需结合TRAIN78实测耗时，候选提示还需单独验证processor长度。
+仅完成全部注册分片并逐条验证输出后，才能报告对应完整人口的分数。
