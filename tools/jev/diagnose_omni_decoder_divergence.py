@@ -19,6 +19,7 @@ def run(args):
     from transformers.integrations import moe
     from transformers.models.qwen3_omni_moe import modeling_qwen3_omni_moe as hf
     from transformers.models.qwen3_omni_moe.configuration_qwen3_omni_moe import Qwen3OmniMoeTextConfig
+    from multimodal_jev.omni_cpu_expert_projection import fp32_grouped_linear
 
     torch.set_num_threads(16)
     start = time.monotonic()
@@ -129,7 +130,7 @@ def run(args):
         if not torch.equal(v['token_mask'], inp['token_mask']):
             raise ValueError('prefix mask changed')
         inputs[key] = {k: t for k, t in inp.items() if k != 'hidden_states'}
-        states[key] = v['stages']['output']
+        states[key] = inp['hidden_states'] if args.fp32_projections else v['stages']['output']
         initial_files.append(dict(size=key[0], offset=key[1], sha256=file_hash(p)))
         del v, inp
     refs = read(args.trace / 'result.json')['reports']
@@ -141,14 +142,18 @@ def run(args):
         return dict(equal=bool(torch.equal(a, b)), max_abs_error=float((a.float()-b.float()).abs().max()),
                     differing_elements=int((a != b).sum()))
 
-    atomic_json(args.output / 'identity.json', dict(order=order, start_layer=1, maximum_layer=47,
-        stop_rule='Stop after any valid-token batch1/batch2 stage difference or original-reference difference; no output head or actor probabilities.',
+    start_layer = 0 if args.fp32_projections else 1
+    atomic_json(args.output / 'identity.json', dict(order=order, start_layer=start_layer, maximum_layer=47,
+        fp32_projections=args.fp32_projections,
+        projection_source_sha256=file_hash(inspect.getfile(fp32_grouped_linear)) if args.fp32_projections else None,
+        stop_rule=('Stop after any valid-token batch1/batch2 stage difference; original BF16 reference deviations are recorded separately.' if args.fp32_projections else
+                   'Stop after any valid-token batch1/batch2 stage difference or original-reference difference; no output head or actor probabilities.'),
         initial_files=initial_files, first_result_sha256=file_hash(args.first/'result.json'),
         prefix_result_sha256=file_hash(args.prefix/'result.json'), trace_result_sha256=file_hash(args.trace/'result.json'),
         experts_implementation=config._experts_implementation, weight_updates=0))
     summaries = []
     found = False
-    for layer_index in range(1, config.num_hidden_layers):
+    for layer_index in range(start_layer, config.num_hidden_layers):
         begin = time.monotonic()
         atomic_json(args.output / 'progress.json', dict(phase='load_layer', layer=layer_index, heartbeat_unix=time.time()))
         layer = load_layer(layer_index)
@@ -187,12 +192,16 @@ def run(args):
             hooks.append(layer.post_attention_layernorm.register_forward_hook(after('post_attention_norm')))
             hooks.append(layer.mlp.gate.register_forward_hook(router_hook))
             hooks.append(layer.mlp.register_forward_hook(after('mlp')))
+            original_projection = moe._grouped_linear
             try:
+                if args.fp32_projections:
+                    moe._grouped_linear = fp32_grouped_linear
                 with torch.inference_mode(), torch.autocast('cpu', dtype=torch.bfloat16), compact_text_attention(hf) as events:
                     out = layer(states[key], attention_mask=inp['attention_mask'], position_ids=inp['position_ids'],
                                 position_embeddings=inp['position_embeddings'], use_cache=False)
                     save('output', out)
             finally:
+                moe._grouped_linear = original_projection
                 for hook in hooks:
                     hook.remove()
             if len(events) != 1 or events[0]['layer'] != layer_index:
@@ -219,7 +228,7 @@ def run(args):
                 reference.append(dict(row=row, stage=stage, reference_sha256=file_hash(rp),
                                       micro1=difference(single[stage][0, mask], ref), micro2=difference(pair[stage][j, mask], ref)))
         found = (any(d['first_valid_difference'] is not None for d in between)
-                 or any(not r[s]['equal'] for r in reference for s in ('micro1', 'micro2')))
+                 or (not args.fp32_projections and any(not r[s]['equal'] for r in reference for s in ('micro1', 'micro2'))))
         # Persist every stage, including equal layers. External audits can locate
         # the first difference from tensors rather than trusting summary flags.
         saved = []
@@ -242,17 +251,21 @@ def run(args):
         if file_hash(args.model/name) != model_pins[name]:
             raise ValueError('model file changed during diagnostic')
     atomic_json(args.output/'result.json', dict(status='diagnostic_complete', valid_difference_found=found,
+        fp32_projections=args.fp32_projections,
         layers=summaries, first_differing_layer=layer_index if found else None,
         model_files_verified={name:model_pins[name] for name in sorted(verified)},
         identity_sha256=file_hash(args.output/'identity.json'), source_sha256=file_hash(__file__),
         elapsed_seconds=time.monotonic()-start, weight_updates=0,
-        scope='Sequential local decoder continuation from accepted real first-layer outputs, all six original rows and both microbatch sizes. Stops at first valid-stage/reference difference. No audio encoding, output head, full actor probability replay, NPU, optimizer or training.'))
+        scope=('Uniform FP32 expert projection candidate from actual layer0 prefix; original BF16 reference deviations recorded, stop at first valid inter-batch stage difference. ' if args.fp32_projections else
+               'Sequential original decoder continuation from accepted real first-layer outputs; stop at first valid-stage/reference difference. ')
+              +'All six original rows and both microbatch sizes. No audio encoding, output head, full actor probability replay, NPU, optimizer or training.'))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     for key in ('model', 'first', 'prefix', 'trace', 'output'):
         parser.add_argument('--'+key, type=Path, required=True)
+    parser.add_argument('--fp32-projections',action='store_true')
     args = parser.parse_args()
     args.output.mkdir(exist_ok=False)
     try:

@@ -1,0 +1,22 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-fp32-expert-runtime-tests-v1",
+  "container_id": "376b2d557f9efbf82182ba991f62c73b4411ff2a39294a512c32494d6b9145c8",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "2e57b682776effdc27e97a0d272c5665d475378e",
+  "intent_sha256": "cf863fe6ebdfc22e8c6c33fb5186d0ccf62f07e66295d4553e30f233f3bde4b8",
+  "source_files_verified": 3,
+  "inspection_sha256": "9e7b127c5d8ecd435a77e84e505c10bf85213396a9d21088834339b93b48d0a9",
+  "junit_sha256": "921b3025644ef879e878021b25c3f852e96cd5def77e1d620365e31514902c77",
+  "tests": [
+    "test_grouped_output_and_gradients_against_per_token_equations[False]",
+    "test_grouped_output_and_gradients_against_per_token_equations[True]",
+    "test_bf16_ambient_autocast_cannot_demote_projection",
+    "test_rejects_missing_or_invalid_routes[offsets0]",
+    "test_rejects_missing_or_invalid_routes[offsets1]",
+    "test_rejects_missing_or_invalid_routes[offsets2]"
+  ],
+  "passed": 6,
+  "skipped": 0,
+  "seconds": 2.188,
+  "scope": "Actual fixed-image CPU synthetic projection/gradient/autocast and invalid-route tests; no model weights, NPU or optimizer updates."
+}
