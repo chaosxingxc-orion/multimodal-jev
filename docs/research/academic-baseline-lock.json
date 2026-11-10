@@ -143,7 +143,10 @@
         "evidence_sha256": "4081701d0091cce503790e43370444705d3bd6bc086c23ee0e51031137638483",
         "predictions_sha256": "b409f9b2658ff263ab2578fc299c7390d0becd0620b1c39f7d213e2945199e7b",
         "difference_from_published_percentage_points": -0.10092275243869153
-      }
+      },
+      "historical_code_revision_claim_resolved": "f1f421b3bb58dabc75d67c3fd5f6e3359943b927",
+      "historical_source_audit": "speechbrain-history-source-audit-v1.json",
+      "historical_code_caveat": "Resolved card commit recipe inspected; WER/CER code found, published accuracy computation and exact training overrides remain unverified."
     },
     {
       "id": "slurp-original-hermit",
@@ -239,7 +242,7 @@
       "split": "official real test (13078); devel (8690)",
       "metric": "SLU-F1; word/char entity F1; joint intent accuracy",
       "input_modality": "audio",
-      "supervision_training_data": "current official recipe: train_real 50628 + train_synthetic 69253; HuBERT pretrained LS960; original weight training commit claimed aa018540 (not resolved)",
+      "supervision_training_data": "current official recipe: train_real 50628 + train_synthetic 69253; HuBERT pretrained LS960; original weight training commit claimed aa0185408025e80f6c748d2c7af7fa96958c2231 (resolved; tree lacks the claimed HuBERT recipe)",
       "comparison_scope": "L1/native/SLURP/real-plus-synthetic",
       "reproduction_type": "official_weight_retest",
       "reported_result": [
@@ -270,7 +273,7 @@
       ],
       "local_status": "未运行本地学术复测",
       "blockers": [
-        "模型卡短训练 commit aa018540 未成功解析；当前配方不能证明历史训练逐参数相同",
+        "模型卡 commit 已解析为 aa0185408025e80f6c748d2c7af7fa96958c2231；完整 tree 无 train_with_wav2vec2.py/yaml，所存 direct 配方使用 LibriSpeech ASR 而非 HuBERT，历史训练绑定仍未成立",
         "scorer 必须覆盖全部预测并拒绝重复 ID；权重未加载"
       ],
       "lock_status": "locked_comparison_target",
@@ -291,7 +294,8 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "academic method or official publisher reference",
-      "primary_table": "native dataset-specific or external reference; see comparison_scope"
+      "primary_table": "native dataset-specific or external reference; see comparison_scope",
+      "historical_source_audit": "speechbrain-history-source-audit-v1.json"
     },
     {
       "id": "slurp-speechbrain-real-only",

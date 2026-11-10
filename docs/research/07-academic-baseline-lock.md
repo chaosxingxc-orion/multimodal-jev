@@ -35,7 +35,7 @@
 | No unfreezing | v1 Table 2，Accuracy (full) | **98.8%** | LibriSpeech 音素/词预训练、冻结预训练声学模块，训练语义模块 |
 | SpeechBrain direct | 官方 [recipe Results](https://github.com/speechbrain/speechbrain/tree/c0241278f93ef02cd5191f03caf4e5f8e1292bf6/recipes/fluent-speech-commands)，`21-06-03 / train.yaml / Test Acc` | **99.60%** | LibriSpeech seq2seq ASR 初始化、FSC supervised direct 训练；外部预训练与增强须披露 |
 
-原实现 [end-to-end-SLU](https://github.com/lorenlugosch/end-to-end-SLU/tree/e94bd479de1a82663c38363979309089acebcd36) 已核 README 和 `experiments/no_unfreezing.cfg`，其中 `unfreezing_type=0`、全量 real、synthetic speaker 比例为零；README 声明提供 LibriSpeech 预训练模型，本次未读取 checkpoint。公开 [SpeechBrain 权重](https://huggingface.co/speechbrain/slu-direct-fluent-speech-commands-librispeech-asr/tree/9163a11ee29a14241356a7cc2cc05672b73ba5fe) 已核 HF revision 与文件元数据。主进程随后下载并校验该权重及独立 LibriSpeech ASR 依赖，官方 `decode_batch` 已完成一条 TRAIN 音频推理；见 [资产记录](../engineering/fsc-speechbrain-assets-v1.json) 和 [探针结果](../engineering/fsc-speechbrain-probe-v1-result.json)，后续主进程已完成完整 TEST3793 的公开权重复测：joint 3774/3793（99.4991%），序列精确匹配同值，见 [独立复核结果](../engineering/fsc-speechbrain-official-v1-test-result.json)。这比作者报告99.60%低0.1009个百分点，属于当前固定官方推理/CPU环境的任务训练权重复测，不是零训练基座，也不是历史训练全过程复现。原学术调研与后续实测证据分别保留。当前 recipe commit 不是历史训练 commit，不能由两者同时可访问推断逐参数复现。模型卡给出历史短 hash `f1f421b3`，尚未在本次核验完整 commit。当前 recipe 的 beam=80、temperature=1.25 只作为已读配置，权重复测须以随权重 hyperparams 为准。FSC 数据仍受原发布方专用学术许可约束，模型卡的 CC0 标签不覆盖语料许可。
+原实现 [end-to-end-SLU](https://github.com/lorenlugosch/end-to-end-SLU/tree/e94bd479de1a82663c38363979309089acebcd36) 已核 README 和 `experiments/no_unfreezing.cfg`，其中 `unfreezing_type=0`、全量 real、synthetic speaker 比例为零；README 声明提供 LibriSpeech 预训练模型，本次未读取 checkpoint。公开 [SpeechBrain 权重](https://huggingface.co/speechbrain/slu-direct-fluent-speech-commands-librispeech-asr/tree/9163a11ee29a14241356a7cc2cc05672b73ba5fe) 已核 HF revision 与文件元数据。主进程随后下载并校验该权重及独立 LibriSpeech ASR 依赖，官方 `decode_batch` 已完成一条 TRAIN 音频推理；见 [资产记录](../engineering/fsc-speechbrain-assets-v1.json) 和 [探针结果](../engineering/fsc-speechbrain-probe-v1-result.json)，后续主进程已完成完整 TEST3793 的公开权重复测：joint 3774/3793（99.4991%），序列精确匹配同值，见 [独立复核结果](../engineering/fsc-speechbrain-official-v1-test-result.json)。这比作者报告99.60%低0.1009个百分点，属于当前固定官方推理/CPU环境的任务训练权重复测，不是零训练基座，也不是历史训练全过程复现。原学术调研与后续实测证据分别保留。当前 recipe commit 不是历史训练 commit，不能由两者同时可访问推断逐参数复现。后续已解析模型卡短 hash 为 `f1f421b3bb58dabc75d67c3fd5f6e3359943b927` 并读取历史配方；默认值不证明实际训练覆盖项，历史脚本的 WER/CER 也不能替代 accuracy，详见 [历史源码追溯](speechbrain-history-v1.md)。当前 recipe 的 beam=80、temperature=1.25 只作为已读配置，权重复测须以随权重 hyperparams 为准。FSC 数据仍受原发布方专用学术许可约束，模型卡的 CC0 标签不覆盖语料许可。
 
 FSC 已完整下载的状态继承本地验收。本项目 **94.1522% ± 0.2275 pp** 是 [frozen head valid 三 seed 结果](../../experiments/fsc-frozen-audio-full.md)，不是 test，也不是上述学术方法复现。现有 **31 条训练录音 / 186 视图**的 SFT/RL 是开发诊断；六视图来自同源录音，不能算独立扩大的样本量。后续要同时交付全量 native test 和独立的六视图 test 表。
 
@@ -51,7 +51,7 @@ FSC 已完整下载的状态继承本地验收。本项目 **94.1522% ± 0.2275 
 | ESPnet 2-pass deliberation + ASR transcript | [官方 README](https://github.com/espnet/espnet/blob/master/egs2/slurp/slu1/README.md)，`valid.acc.ave_10best/test` | **86.8% intent** | 音频+ASR 转写辅助，单独表 |
 | ESPnet 2-pass deliberation + gold transcript | 同 README 的 ground truth 条件、同 test 行 | **89.0% intent** | 音频+人工文本证据参考，不能冒充纯音频 |
 
-SpeechBrain 的 [固定当前配方](https://github.com/speechbrain/speechbrain/blob/c0241278f93ef02cd5191f03caf4e5f8e1292bf6/recipes/SLURP/direct/hparams/train_with_wav2vec2.yaml) 使用 `facebook/hubert-base-ls960`，`train_splits=[train_synthetic, train_real]`，冻结卷积部分、其余 encoder 可训练，attention decoder；beam size 80、temperature 1.25。模型卡声明历史训练 commit `aa018540`，此次对应路径返回 404，故**当前配方可读不等于历史配方全部核实**。real-only 强对照采用同 recipe 显式去掉 synthetic 重训，分数空置。
+SpeechBrain 的 [固定当前配方](https://github.com/speechbrain/speechbrain/blob/c0241278f93ef02cd5191f03caf4e5f8e1292bf6/recipes/SLURP/direct/hparams/train_with_wav2vec2.yaml) 使用 `facebook/hubert-base-ls960`，`train_splits=[train_synthetic, train_real]`，冻结卷积部分、其余 encoder 可训练，attention decoder；beam size 80、temperature 1.25。模型卡声明历史训练 commit `aa018540`，初次按当前路径查询返回 404。后续已解析为 `aa0185408025e80f6c748d2c7af7fa96958c2231`：完整 tree 无卡片引用的 wav2vec2 训练文件，历史 direct 配方是 LibriSpeech ASR 编码器而非 HuBERT，见 [源码追溯](speechbrain-history-v1.md)。故**历史 commit 可解析仍不证明 HuBERT 权重的训练配方已核实**。real-only 强对照采用同 recipe 显式去掉 synthetic 重训，分数空置。
 
 ESPnet 的两个官方 HF 权重 revision 已登记；README 声称的历史 git hash 尚未独立核验，登记 `code_revision=null`。特别避免沿用 [ESPnet-SLU 2111.14706v1](https://arxiv.org/pdf/2111.14706v1) Table 5 中混杂的 `IC (F1)` 列来替换 SLU-F1：该表把 SpeechBrain 75.1 放在 IC 列，和官方模型卡含义不同。本报告优先采用明确原始指标来源，保留论文作方法参考。
 
@@ -160,7 +160,7 @@ MASSIVE/ATIS/SNIPS 文本版、VoiceAgentBench、From Text to Voice、VGBench、
 
 已有 `.local/research/sources` 只作线索和对照，源登记明确 `prior_cache_original_retrieval`；缓存原检索时间不冒充此次访问。共享模型/语料的完成状态引用本地验收，本次没有重哈希大文件，没有启动 CPU/NPU/CUDA 模型。主要未核验项：
 
-1. Audio2Tool 完整官方 scorer/normalization/prompt 与历史 checkpoint；SFC task weights、SFT exact config；SpeechBrain 历史训练 commit。
+1. Audio2Tool 完整官方 scorer/normalization/prompt 与历史 checkpoint；SFC task weights、SFT exact config；SpeechBrain SLURP HuBERT 历史 commit 与配方不一致、FSC 实际训练覆盖项仍缺失。
 2. 新增官方权重的本地加载兼容性、许可证随资产落盘和推理完整性；API 模型历史快照可用性。
 3. SLUE gated 数据、Phase2 各任务专用 adapter；MMAU 新旧 release 对齐与 hidden scoring；MMSU/MINDS 作者子集 IDs。
 4. CUDA 主机/环境尚未满足；NPU 四卡已完成基础算术与单卡音频 LoRA 更新验证；原生 verl 与 NPU vLLM 概率一致性尚未证明，见 [NPU 结果](../engineering/npu-audio-runtime-v1-result.json)。provider 预算、voices 和 judge 凭据仍待落实。
