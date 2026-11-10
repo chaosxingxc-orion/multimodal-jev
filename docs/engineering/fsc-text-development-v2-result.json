@@ -1,0 +1,157 @@
+{
+  "observed_unix": 1794273595.3407097,
+  "comparison_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/text-evidence-comparison-v2/run/fsc/comparison.json",
+  "comparison_sha256": "2be7b2063d2b8c6d4f25bcb3e2bafc315c4828ab43d257b74fee28f15d9de359",
+  "recomputed_common_comparison_equal": true,
+  "containers": {
+    "base": {
+      "container_id": "4063f355d522b8a7ccc729c0b3879d92930a1bdfcf154d0651e907b983a24133",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:23:15.81414709Z",
+        "FinishedAt": "2026-11-10T01:11:31.2710592Z"
+      }
+    },
+    "candidate": {
+      "container_id": "0002ab32447042429beb775f6bda15b70c32d3d39d58f6ad1c29bbc8bd1aa53d",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:23:16.23913816Z",
+        "FinishedAt": "2026-11-10T01:10:20.83563024Z"
+      }
+    }
+  },
+  "summaries": {
+    "base": {
+      "input_mode": "asr-text",
+      "total": 186,
+      "format_valid": 186,
+      "schema_valid": 124,
+      "correct_by_variant": {
+        "native": {
+          "correct": 14,
+          "count": 31
+        },
+        "permutation": {
+          "correct": 14,
+          "count": 31
+        },
+        "rebind": {
+          "correct": 14,
+          "count": 31
+        },
+        "missing_candidate": {
+          "correct": 0,
+          "count": 31
+        },
+        "noul.True": {
+          "correct": 0,
+          "count": 31
+        },
+        "noul.False": {
+          "correct": 0,
+          "count": 31
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 31,
+          "both_correct": 9,
+          "both_correct_rate": 0.2903225806451613,
+          "semantic_equal": 14
+        },
+        "rebind": {
+          "groups": 31,
+          "both_correct": 13,
+          "both_correct_rate": 0.41935483870967744,
+          "semantic_equal": 26
+        },
+        "missing_candidate": {
+          "groups": 31,
+          "both_correct": 0,
+          "both_correct_rate": 0.0,
+          "semantic_equal": null
+        },
+        "noul": {
+          "groups": 31,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        }
+      }
+    },
+    "candidate": {
+      "input_mode": "reference-text",
+      "total": 186,
+      "format_valid": 186,
+      "schema_valid": 124,
+      "correct_by_variant": {
+        "native": {
+          "correct": 15,
+          "count": 31
+        },
+        "permutation": {
+          "correct": 16,
+          "count": 31
+        },
+        "rebind": {
+          "correct": 16,
+          "count": 31
+        },
+        "missing_candidate": {
+          "correct": 0,
+          "count": 31
+        },
+        "noul.True": {
+          "correct": 0,
+          "count": 31
+        },
+        "noul.False": {
+          "correct": 0,
+          "count": 31
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 31,
+          "both_correct": 10,
+          "both_correct_rate": 0.3225806451612903,
+          "semantic_equal": 14
+        },
+        "rebind": {
+          "groups": 31,
+          "both_correct": 15,
+          "both_correct_rate": 0.4838709677419355,
+          "semantic_equal": 25
+        },
+        "missing_candidate": {
+          "groups": 31,
+          "both_correct": 0,
+          "both_correct_rate": 0.0,
+          "semantic_equal": null
+        },
+        "noul": {
+          "groups": 31,
+          "both_correct": 0,
+          "both_correct_rate": 0.0
+        }
+      }
+    }
+  },
+  "scope": "FSC exploratory development transcript controls, 31 recordings/186 correlated views; no prompt reselection, acoustic upper bound, RL benefit or final-test claim"
+}

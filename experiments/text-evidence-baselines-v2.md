@@ -57,3 +57,29 @@ does not solve schema adherence or abstention, and is not an acoustic upper
 bound. Preserve these results without post-hoc answer repair or another prompt
 selection on the same development set. The original fenced-output v1 protocol
 remains separately reported. FSC v1/v2 controls continue independently.
+
+## Completed FSC v2 controls
+
+Both v2 FSC containers exited0 with186 complete predictions. Recomputing the
+common comparison exactly reproduces the saved results, including the2,000
+speaker-bootstrap draws; see [receipt](../docs/engineering/fsc-text-development-v2-result.json).
+
+| Measure | ASR transcript | Reference transcript |
+| --- | ---: | ---: |
+| Strict format valid |186/186|186/186|
+| Schema valid |124/186|124/186|
+| Native correct |14/31|15/31|
+| Permutation correct |14/31|16/31|
+| Rebind correct |14/31|16/31|
+| Correct missing-candidate null |0/31|0/31|
+| Noul True / False correct |0/31,0/31|0/31,0/31|
+| Permutation both-correct |9/31|10/31|
+| Rebind both-correct |13/31|15/31|
+
+All62 boolean answers in each condition violate the boolean schema despite
+valid outer JSON. Reference text modestly changes choice correctness but does
+not resolve the observed schema/refusal failures. This small development
+comparison does not establish that ASR quality is irrelevant; it shows that
+transcription repair alone is insufficient in this fixed text-model setup.
+The v2 finalizer is complete for both datasets. Original v1 artifacts remain
+separate; no development-driven prompt repair or model selection follows.
