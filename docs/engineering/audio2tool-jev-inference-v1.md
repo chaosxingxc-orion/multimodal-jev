@@ -91,3 +91,38 @@ preflight当作NPU证据，调用者提供的inspection本身也不替代实际D
 运行中/失败/OOM/错设备/错命令/错资源/preflight/缺案例/错token/错模型/改源码/改SHA。
 它们不是NPU或完整actor执行证据。全量Jev正式launch plan、真实吞吐预算、独立
 actor来源验收尚未完成；当前只有输入清单preflight，不能给出模型性能或RL收益。
+
+## 独立actor验收与评分入口
+
+`accept_and_score_audio2tool_jev.py`通过SSH实际inspect精确actor与容量容器，核对
+预先固定SHA的计划、完整命令、NPU6/7及16 CPU/128 GiB/8 GiB shm、冻结引擎/模型/
+源码、成功应用终态和完整结果。全量actor时间预算取预登记plan的正整数wall_seconds，
+必须与timeout精确一致；不把native的86400秒预算强套到1404万决策上。当前没有
+生成该正式plan或派发全量Jev。source与run采用宿主相同绝对路径挂载，源码只读。
+
+先认证完整账本，再进行任何gold哈希/文件访问。`audio2tool_jev_acceptance`按固定
+renderer与真实tokenizer重建每种布局/决策，核对原processor profile的prompt哈希、
+文本token数及所有音频占位。缓存最多2742套静态模板token，按各条实际音频token
+预算逐项展开；不缓存模型状态或预测。已验收的特殊token可加性为此提供依据，
+新增固定镜像检查仍需确认该重建实现与原始完整字符串分词和真实processor一致。
+
+全量账本审计耗尽所有分片，重新检查每条源音频身份及独立header的重采样/补零算术，
+每决策prompt和输入token哈希、实际输出token独立解码与raw_text严格一致、scorer
+投影逐行相同、截断/耗时/输出token计数和最终摘要。即使同时改账本与预测并重哈希，
+修复后的JSON仍无法通过输出token解码检查。它不重解码全量WAV；音频真实执行依赖
+独立锁定的actor源码中对同一字节buffer的认证/解码与已验收容器成功执行。
+
+验收结束再次inspect原actor并核对plan未变，写独立acceptance记录；随后才调用
+现有严格完整评分器。评分输入SHA必须与验收一致。原始评分器仍明确不认证actor；
+只有该组合入口成功后才标记actor_execution_verified=true。不以哈希链本身冒充
+可信运行，也不以本地protocol分数冒充论文原样复现、RL提升或泛化证据。
+
+新增独立验收与已有ledger/inference/capacity共66项测试通过；包括同步改原文与
+预测、同步改音频收据与账本链、token错序、错误预算、缺/多投影、错容器资源/命令/
+源码、gold在验收失败前不可读等反例。这些为fixture，不是已完成的全量真实actor验收。
+
+`check_audio2tool_jev_acceptance_prompts.py`预登记固定镜像CPU检查：2 CPU/20 GiB、
+1800秒加10秒终止宽限、无网络设备。覆盖全部2742布局/决策，每项以实际最小/最大
+音频预算比较token级展开与完整字符串真实分词，共5484次；再核对12个既有真实
+HF/vLLM案例。完整30733×457成本算术也复算，但不宣称重新分词1404万项、处理
+新波形或执行NPU。执行结果另存，不自动重试失败。
