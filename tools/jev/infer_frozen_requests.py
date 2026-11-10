@@ -11,10 +11,14 @@ from multimodal_jev.consumption import canonical
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.frozen_contract import FrozenContract
 from multimodal_jev.end_to_end import require_audio_task_route
+from multimodal_jev.waveform_control import condition_audio
 
 
 def run(config, output):
     require_audio_task_route(config)
+    condition=config.get('audio_condition','actual')
+    if condition not in ('actual','zeros') or (condition=='zeros' and config['split']!='train'):
+        raise ValueError('actual audio or TRAIN-only zero-waveform diagnostic required')
     import torch
     family=config.get('model_family','qwen3_asr')
     if family=='qwen3_asr':
@@ -55,7 +59,7 @@ def run(config, output):
         'instruction_sha256':file_hash(config['instruction']),'models':identities,
         'runner_sha256':file_hash(__file__),
         'source_sha256':{name:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
-            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py','frozen_contract.py','slurp_native.py','teacher_candidates.py','end_to_end.py','omni_runtime.py')}}
+            for name in ('consumption.py','asr.py','audio_policy.py','policy_evaluation.py','answers.py','task_schema.py','frozen_evidence.py','frozen_contract.py','slurp_native.py','teacher_candidates.py','end_to_end.py','omni_runtime.py','waveform_control.py')}}
     if contract.taxonomy_sha256 is not None:identity['taxonomy_sha256']=contract.taxonomy_sha256
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('resume identity changed')
@@ -79,6 +83,7 @@ def run(config, output):
     for index,row in enumerate(rows):
         if file_hash(row['input']['audio'])!=row['audio_sha256']:raise ValueError('audio changed')
         wave=load_audio(row['input']['audio'])
+        wave=condition_audio(wave,condition,config['split'])
         if family=='qwen2_5_omni' and len(wave)>processor.feature_extractor.chunk_length*16000:
             raise ValueError('audio exceeds extractor limit; truncation prohibited')
         system=contract.audio_instruction(row,instruction)
@@ -110,6 +115,7 @@ def run(config, output):
                 ids=tokens[0,batch['input_ids'].shape[-1]:].tolist();raw=decoder.decode(ids,skip_special_tokens=True)
                 record=contract.prediction(row,raw)
                 record.update(replicate=replicate,source_group=row['source_group'],split=row['split'],
+                    audio_condition=condition,
                     prompt_sha256=prompt_sha,request_sha256=hashlib.sha256(canonical(row)).hexdigest(),
                     input_tokens=int(batch['input_ids'].shape[-1]),token_ids=ids,seconds=time.monotonic()-t,
                     length_limited=len(ids)>=config['max_new_tokens'])
@@ -125,7 +131,7 @@ def run(config, output):
         'format_valid':sum(r['format_valid'] for r in records),'schema_valid':sum(r['schema_valid'] for r in records),
         'length_limited':sum(r['length_limited'] for r in records),'route':route,
         'predictions_sha256':file_hash(path),'weight_updates':0,'model_files_unchanged':True,
-        'elapsed_seconds':time.monotonic()-start,
+        'elapsed_seconds':time.monotonic()-start,'audio_condition':condition,
         'scope':'frozen HF reference inference; separate scoring required; no vLLM parity or training claim'})
 
 
