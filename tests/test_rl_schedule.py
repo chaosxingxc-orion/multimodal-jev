@@ -94,3 +94,37 @@ def test_preflight_failure_never_invokes_rollout(tmp_path,monkeypatch):
     with pytest.raises(ValueError,match='published export file changed'):
         m.run(config,tmp_path/'schedule')
     assert not calls and not (tmp_path/'schedule').exists()
+
+
+@pytest.mark.parametrize('limit,expected_iterations', [(0,0),(104,1),(208,2)])
+def test_budget_stops_before_whole_batch_and_replays_completed_prefix(tmp_path,monkeypatch,limit,expected_iterations):
+    from test_budget_control import profiled_fixture
+    m=module();config=profiled_fixture(tmp_path)
+    config['budget_control']['limits']={'training_tokens':limit,'generated_tokens':64}
+    root=tmp_path/'run';root.mkdir();events=[]
+    def execute(tool,child,output):
+        if output.exists():return
+        output.mkdir();events.append(tool)
+        if tool=='sample_audio_policy.py':
+            assert child['budget_prompt_counts']['ex']['prompt_tokens']==10
+            result={'prompts':1,'rollouts':2,'generation_budget':{
+                'requests':1,'responses':2,'request_prompt_tokens':10,
+                'replicated_prompt_tokens':20,'generated_tokens':32,
+                'length_terminated_responses':2,'engine_generate_seconds':1.,
+                'prompt_tokens_per_request':[10],'response_tokens_per_record':[16,16]}}
+        else:
+            result={'updates':int(output.parent.name.split('-')[-1])+1,
+                    'metrics':{'training_budget':child['training_reservation']}}
+        (output/'result.json').write_text(json.dumps(result))
+    def export(actor,export_root,stage):return str(export_root/'merged')
+    monkeypatch.setattr(m,'execute',execute);monkeypatch.setattr(m,'export_actor',export)
+    m.run(config,root)
+    result=json.loads((root/'result.json').read_text())
+    assert result['iterations']==expected_iterations
+    assert len(events)==expected_iterations*2
+    assert result['stop_reason']==('schedule_completed' if expected_iterations==2 else 'budget_exhausted')
+    assert result['budget_control']['used']['training_tokens']==expected_iterations*104
+    if expected_iterations==0:assert result['last_actor_run'] is None
+    m.run(config,root)
+    assert json.loads((root/'result.json').read_text())==result
+    assert len(events)==expected_iterations*2

@@ -35,7 +35,7 @@ def validate_rollouts(examples,records,policy_id,group_size):
 def update_actor(model,processor,optimizer,examples,audios,records,policy_id,group_size,
                  max_logprob_error=0.02,max_grad_norm=1.0,reward_mode='grpo',pair_bonus_weight=0.2,
                  micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3',progress=None,
-                 response_logits_only=False,norm_adv_by_std=True):
+                 response_logits_only=False,norm_adv_by_std=True,training_reservation=None):
     import torch
     from verl.utils.model import extract_multi_modal_inputs
     from .audio_policy import response_log_probs
@@ -84,6 +84,9 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
     def budget(gradient_passes,optimizer_steps):
         return batch_budget(prompt_lengths,response_lengths,audio_lengths,gradient_passes=gradient_passes,
                             no_grad_passes=1+int(reference_model is not None),optimizer_steps=optimizer_steps)
+    if training_reservation is not None:
+        from .budget_control import validate_training_reservation
+        validate_training_reservation(budget(1,1),training_reservation)
     def chunks():
         for begin in range(0,len(records),micro_batch_size):
             part=batch[begin:begin+micro_batch_size]

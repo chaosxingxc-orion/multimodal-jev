@@ -14,6 +14,8 @@ import time
 from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.rl_preflight import validate_schedule
+from multimodal_jev.budget_control import load_budget_controller
+from multimodal_jev.trajectory_budget import generation_counts
 
 
 def completed(path):
@@ -74,19 +76,28 @@ def export_actor(actor,export_root,stage):
 def run(config,root):
     source=Path(__file__).parents[2]
     preflight=validate_schedule(config)
+    budget=load_budget_controller(config)
     identity={'config':config,**preflight,
               'source_sha256':{str(p.relative_to(source)):file_hash(p) for directory in
                                (source/'src/multimodal_jev',source/'tools/jev') for p in sorted(directory.glob('*.py'))}}
     if (root/'identity.json').exists() and json.loads((root/'identity.json').read_text())!=identity:
         raise ValueError('schedule identity changed')
     atomic_json(root/'identity.json',identity)
-    checkpoint=config['initial_checkpoint'];parent=None;total_updates=0
+    checkpoint=config['initial_checkpoint'];parent=None;total_updates=0;iterations=0
+    stop_reason='schedule_completed';next_ids=None
     for i,example_ids in enumerate(config['batches']):
+        if budget is not None and not budget.admit(example_ids):
+            stop_reason='budget_exhausted';next_ids=example_ids
+            if (root/f'iteration-{i:04d}').exists():
+                raise ValueError('unadmitted iteration artifacts require inspection')
+            break
         stage=root/f'iteration-{i:04d}';stage.mkdir(exist_ok=True)
         atomic_json(root/'progress.json',{'iteration':i,'phase':'rollout','heartbeat_unix':time.time()})
         rollout_config={'checkpoint':checkpoint,'manifest':config['manifest'],'example_ids':example_ids,
                         'sampling':{**config['sampling'],'seed':config['seed']+i},'engine':config['engine']}
         if 'audio_input_mode' in config:rollout_config['audio_input_mode']=config['audio_input_mode']
+        if budget is not None:
+            rollout_config['budget_prompt_counts']={uid:budget.counts[uid] for uid in example_ids}
         execute('sample_audio_policy.py',rollout_config,stage/'rollout')
         # The actor's immutable base is explicit in the actor section.  The
         # rollout checkpoint may be a merged export from the previous
@@ -97,17 +108,28 @@ def run(config,root):
                       'initial_adapter':config.get('initial_adapter') if parent is None else None,
                       'seed':config['seed']+i,'reward_mode':config['reward_mode'],
                       'pair_bonus_weight':config['pair_bonus_weight']}
+        if budget is not None:
+            actor_config['training_reservation']=budget.reservation(example_ids)[1]
         atomic_json(root/'progress.json',{'iteration':i,'phase':'actor','heartbeat_unix':time.time()})
         execute('update_audio_actor.py',actor_config,stage/'actor')
         actor_result=json.loads((stage/'actor/result.json').read_text())
+        if budget is not None:
+            rollout_result=json.loads((stage/'rollout/result.json').read_text())
+            budget.consume(example_ids,actor_result['metrics']['training_budget'],
+                           generation_counts(rollout_result))
+            atomic_json(root/'budget-progress.json',budget.report())
         total_updates=actor_result['updates'];parent=stage/'actor'
         atomic_json(root/'progress.json',{'iteration':i,'phase':'export','heartbeat_unix':time.time()})
         # Equal-reward no-op iterations can export identical weights. Separate
         # iteration roots retain the distinct lineage without overwriting receipts.
         checkpoint=export_actor(parent,Path(config['export_root'])/f'iteration-{i:04d}',stage/'export')
-    atomic_json(root/'result.json',{'status':'passed','iterations':len(config['batches']),
-                'optimizer_updates':total_updates,'checkpoint':checkpoint,'last_actor_run':str(parent),
-                'scope':'completed on-policy iteration schedule; independent evaluation still required'})
+        iterations+=1
+    atomic_json(root/'result.json',{'status':'passed','iterations':iterations,
+                'scheduled_iterations':len(config['batches']),'stop_reason':stop_reason,
+                'budget_control':budget.report(next_ids) if budget is not None else None,
+                'optimizer_updates':total_updates,'checkpoint':checkpoint,
+                'last_actor_run':str(parent) if parent is not None else None,
+                'scope':'executed on-policy schedule prefix; independent evaluation and budget comparison still required'})
 
 
 if __name__=='__main__':

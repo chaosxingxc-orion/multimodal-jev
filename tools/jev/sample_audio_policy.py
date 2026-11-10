@@ -44,6 +44,15 @@ def main():
             for ex in examples:
                 if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('audio hash changed')
             audios=[load_audio(ex.audio) for ex in examples]
+            if 'budget_prompt_counts' in config:
+                from multimodal_jev.audio_policy import hf_prompt
+                expected=config['budget_prompt_counts']
+                if set(expected)!=wanted:raise ValueError('budget prompt selection mismatch')
+                for ex,audio in zip(examples,audios):
+                    inputs=hf_prompt(processor,ex,audio)
+                    if (inputs['input_ids'].shape[-1]!=expected[ex.example_id]['prompt_tokens'] or
+                            int(inputs['input_features_mask'].sum())!=expected[ex.example_id]['audio_frames']):
+                        raise ValueError('rollout processor differs from budget profile')
             atomic_json(args.output/'progress.json',{'phase':'engine_load','heartbeat_unix':time.time()})
             load_started=time.monotonic()
             rollout=VllmAudioRollout(str(checkpoint),processor,policy_id,config['engine'],

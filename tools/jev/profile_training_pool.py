@@ -7,6 +7,7 @@ import time
 
 from multimodal_jev.baseline import atomic_json, file_hash
 from multimodal_jev.budget_profile import schedule_profile
+from multimodal_jev.budget_control import contract_hashes
 from multimodal_jev.rl_preflight import validate_schedule
 from multimodal_jev.sft import training_batches
 
@@ -73,6 +74,7 @@ def run(args):
     result = {'scope': 'TRAIN-only processor measurement; no forward, sampling or optimization; '
               'effective unpadded lengths, not FLOPs, padded execution costs or matched budgets',
               'initializer_identity_sha256': file_hash(args.initializer_identity),
+              'contract_sha256': contract_hashes(),
               'config_sha256': {p.name: file_hash(p) for p in paths},
               'preflight': preflight, 'torch': torch.__version__,
               'transformers': transformers.__version__,

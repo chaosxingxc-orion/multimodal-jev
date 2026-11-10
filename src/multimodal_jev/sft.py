@@ -4,6 +4,7 @@ import hashlib,json,random,time
 from pathlib import Path
 from .baseline import atomic_json,file_hash,select_examples
 from .training_budget import batch_budget,sum_budgets
+from .budget_control import load_budget_controller
 
 
 def initialization_identity(config):
@@ -94,9 +95,10 @@ def train(config,output):
     initialization=initialization_identity(config)
     torch.set_num_threads(config['cpu_threads']);torch.manual_seed(config['seed'])
     batches=training_batches(config);rows=[ex for batch in batches for ex in batch]
+    controller=load_budget_controller(config,sft=True)
     identity={'config':config,'manifest_sha256':file_hash(config['train_manifest']),
               'weights_sha256':file_hash(Path(config['model_path'])/'model.safetensors'),
-              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','asr.py','baseline.py','training_budget.py','policy_identity.py')},
+              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','asr.py','baseline.py','training_budget.py','budget_control.py','policy_identity.py')},
               'example_ids':[ex.example_id for ex in rows],
               'batch_example_ids':[[ex.example_id for ex in batch] for batch in batches]}
     if initialization is not None:
@@ -117,12 +119,35 @@ def train(config,output):
         set_peft_model_state_dict(model,saved['adapter']);optimizer.load_state_dict(saved['optimizer'])
         step=saved['step'];history=saved['history'];torch.set_rng_state(saved['rng'])
     start=time.monotonic();total=len(batches)
+    if controller is not None:
+        if len(history)!=step:raise ValueError('SFT resume history disagrees with step')
+        for index,item in enumerate(history):
+            controller.consume([ex.example_id for ex in batches[index]],item['budget'])
+    stop_reason='schedule_completed';next_ids=None
     for index in range(step,total):
         subset=batches[index]
+        ids=[ex.example_id for ex in subset]
+        if controller is not None and not controller.admit(ids):
+            stop_reason='budget_exhausted';next_ids=ids;break
+        prepared=None
+        if controller is not None:
+            from .budget_control import validate_training_reservation
+            prepared=[];observed=[]
+            for ex in subset:
+                if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('source audio changed')
+                inputs,boundary=teacher_forcing(processor,ex,load_audio(ex.audio))
+                prepared.append((inputs,boundary))
+                observed.append(batch_budget([boundary],[int((inputs['labels']!=-100).sum())],
+                    [int(inputs['input_features_mask'].sum())],gradient_passes=1,
+                    no_grad_passes=0,optimizer_steps=0))
+            actual=sum_budgets(observed);actual['optimizer_steps']=1
+            validate_training_reservation(actual,controller.reservation(ids)[1])
+            if actual!=controller.reservation(ids)[1]:raise ValueError('SFT gold lengths changed')
         optimizer.zero_grad(set_to_none=True);losses=[];budgets=[]
-        for ex in subset:
+        for ex_index,ex in enumerate(subset):
             if file_hash(ex.audio)!=ex.metadata['audio_sha256']:raise ValueError('source audio changed')
-            inputs,boundary=teacher_forcing(processor,ex,load_audio(ex.audio))
+            inputs,boundary=(prepared[ex_index] if prepared is not None else
+                             teacher_forcing(processor,ex,load_audio(ex.audio)))
             budgets.append(batch_budget([boundary],[int((inputs['labels']!=-100).sum())],
                            [int(inputs['input_features_mask'].sum())],gradient_passes=1,
                            no_grad_passes=0,optimizer_steps=0))
@@ -136,6 +161,9 @@ def train(config,output):
         budget=sum_budgets(budgets);budget['optimizer_steps']=1
         history.append({'step':index+1,'loss':sum(losses)/len(losses),'gradient_norm':float(norm),
                         'budget':budget})
+        if controller is not None:
+            controller.consume(ids,budget)
+            atomic_json(output/'budget-progress.json',controller.report())
         state={'step':index+1,'adapter':get_peft_model_state_dict(model),'optimizer':optimizer.state_dict(),
                'history':history,'rng':torch.get_rng_state()}
         temp=output/'resume.tmp';torch.save(state,temp);temp.replace(checkpoint)
@@ -143,8 +171,11 @@ def train(config,output):
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     for path in (output/'adapter').iterdir():
         if path.is_file():path.chmod(path.stat().st_mode | 0o444)
-    result={'status':'passed','examples':len(rows),'source_groups':len({ex.metadata['source_group'] for ex in rows}),
-            'updates':total,'history':history,'config':config,
+    executed=[ex for batch in batches[:len(history)] for ex in batch]
+    result={'status':'passed','examples':len(executed),'source_groups':len({ex.metadata['source_group'] for ex in executed}),
+            'updates':len(history),'scheduled_updates':total,'stop_reason':stop_reason,
+            'budget_control':controller.report(next_ids) if controller is not None else None,
+            'history':history,'config':config,
             'training_budget':sum_budgets(row['budget'] for row in history),
             'initialization':initialization,
             'adapter_files':{p.name:file_hash(p) for p in sorted((output/'adapter').iterdir()) if p.is_file()},

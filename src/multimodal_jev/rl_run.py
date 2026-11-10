@@ -105,7 +105,7 @@ def train(config,output):
               'manifest_sha256':rollout['manifest_sha256'],'example_ids':[ex.example_id for ex in examples],
               'adapter_files':({p.name:file_hash(p) for p in sorted(adapter.iterdir()) if p.is_file()} if adapter else None),
               'source_sha256':{name:file_hash(Path(__file__).with_name(name)) for name in
-                              ('rl_run.py','rl_update.py','reference_policy.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py','training_budget.py','advantage_config.py')}}
+                              ('rl_run.py','rl_update.py','reference_policy.py','verl_audio.py','paired_rollout.py','reward.py','answers.py','audio_policy.py','actor_state.py','training_budget.py','budget_control.py','advantage_config.py')}}
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('actor retry identity mismatch')
     atomic_json(output/'identity.json',identity)
@@ -152,7 +152,8 @@ def train(config,output):
                          micro_batch_size=config.get('micro_batch_size'),reference_model=reference_model,
                          kl_coefficient=reference['coefficient'] if reference else 0.,
                          kl_estimator=reference['estimator'] if reference else 'k3',progress=progress,
-                         response_logits_only=config.get('response_logits_only',False),norm_adv_by_std=norm_adv_by_std)
+                         response_logits_only=config.get('response_logits_only',False),norm_adv_by_std=norm_adv_by_std,
+                         training_reservation=config.get('training_reservation'))
     model.save_pretrained(output/'adapter');processor.save_pretrained(output/'processor')
     # Safetensors may create root-owned mode0600 files inside the container.
     # The host supervisor must verify hashes before publishing the next policy.
