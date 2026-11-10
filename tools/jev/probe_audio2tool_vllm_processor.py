@@ -65,11 +65,18 @@ def run(args):
             mask=batch['feature_attention_mask'];observed=mask.sum(-1).tolist()
             reference=batch['input_features'].permute(0,2,1)[mask.bool()].permute(1,0)
             shape_equal=list(feature.shape)==list(reference.shape)
+            # vLLM processing context casts floating inputs to model dtype.
+            # Compare at that boundary without relaxing feature tolerance;
+            # retain the unquantized FP32 difference as separate evidence.
+            cast_reference=reference.to(feature.dtype)
             comparisons[mode]=dict(frames=observed,shape=list(reference.shape),
+                vllm_dtype=str(feature.dtype),hf_dtype=str(reference.dtype),
                 token_ids_equal=processed['prompt_token_ids']==batch['input_ids'][0].tolist(),
-                shape_equal=shape_equal,max_feature_error=float((feature-reference).abs().max()) if shape_equal else None,
-                features_close=bool(torch.allclose(feature,reference,atol=1e-5,rtol=1e-5)) if shape_equal else False)
-            del batch,mask,reference
+                shape_equal=shape_equal,
+                unquantized_fp32_max_error=float((feature.float()-reference.float()).abs().max()) if shape_equal else None,
+                max_feature_error=float((feature.float()-cast_reference.float()).abs().max()) if shape_equal else None,
+                features_close=bool(torch.allclose(feature.float(),cast_reference.float(),atol=1e-5,rtol=1e-5)) if shape_equal else False)
+            del batch,mask,reference,cast_reference
         expected=[len(w)//hop for w in padded]
         record=dict(selection=name,original_samples=list(map(len,waves)),hop_padded_samples=list(map(len,padded)),
             vllm_frames=frames,expected_untruncated_frames=expected,
