@@ -58,6 +58,21 @@ def validate_input(request, receipt, ids, frames, prior):
         raise ValueError('actual input differs from accepted full processor run')
 
 
+def prepare_checked(processor, row, audio_root, prior):
+    """Shared real input path for capacity, full inference and CPU preflight."""
+    import torch
+    from .mmar_omni import prepare_request
+    request, receipt = prepare_request(processor, row, audio_root)
+    wave = request['multi_modal_data']['audio'][0][0]
+    batch = processor(text=[request['prompt']], audio=[wave], sampling_rate=16000,
+                      return_tensors='pt', padding=True, truncation=False)
+    ids = batch['input_ids'][0].tolist()
+    validate_input(request, receipt, ids, batch['feature_attention_mask'].sum(-1).tolist(), prior)
+    if not torch.isfinite(batch['input_features']).all():
+        raise ValueError('nonfinite audio features')
+    return request, receipt, ids
+
+
 def accept_response(responses, ids, budget):
     if len(responses) != 1 or not responses[0].finished or len(responses[0].outputs) != 1:
         raise ValueError('one completed generation required')

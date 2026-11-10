@@ -10,9 +10,9 @@ import time
 from multimodal_jev.audio2tool_engine import ASSET_AUDIT_SHA, VERSIONS
 from multimodal_jev.audio2tool_inference import write_once
 from multimodal_jev.baseline import atomic_json, file_hash
-from multimodal_jev.mmar_omni import INPUT_SHA, prepare_request
+from multimodal_jev.mmar_omni import INPUT_SHA
 from multimodal_jev.mmar_inference import (ENGINE, PROCESSOR_RESULT_SHA, population,
-    capacity_indices, ids_hash, validate_input, accept_response, admit_capacity)
+    capacity_indices, ids_hash, prepare_checked, accept_response, admit_capacity)
 
 MODEL = '/mnt/cephfs/xingchao/models/qwen3-omni-30b-a3b-instruct'
 
@@ -41,7 +41,6 @@ def run(args):
     for name,pin in processor_identity['processor_assets'].items():
         if file_hash(args.model/name) != pin:
             raise ValueError('processor assets differ from accepted run')
-    import torch
     from transformers import Qwen3OmniMoeProcessor
     from vllm import LLM, SamplingParams
     processor = Qwen3OmniMoeProcessor.from_pretrained(args.model, local_files_only=True)
@@ -64,15 +63,7 @@ def run(args):
         params = SamplingParams(**sampling)
         for done,i in enumerate(selected):
             row = rows[i]; progress('input', done=done, total=len(selected), id=row['id'])
-            request, receipt = prepare_request(processor, row, args.audio_root)
-            wave = request['multi_modal_data']['audio'][0][0]
-            batch = processor(text=[request['prompt']], audio=[wave], sampling_rate=16000,
-                              return_tensors='pt', padding=True, truncation=False)
-            ids = batch['input_ids'][0].tolist()
-            validate_input(request, receipt, ids, batch['feature_attention_mask'].sum(-1).tolist(), prior[i])
-            if not torch.isfinite(batch['input_features']).all():
-                raise ValueError('nonfinite audio features')
-            del batch
+            request, receipt, ids = prepare_checked(processor, row, args.audio_root, prior[i])
             attempt = dict(id=row['id'], input_tokens=len(ids), input_ids_sha256=ids_hash(ids), audio=receipt,
                 request_sha256=hashlib.sha256(json.dumps(row,sort_keys=True).encode()).hexdigest(),
                 prompt_sha256=hashlib.sha256(request['prompt'].encode()).hexdigest())
