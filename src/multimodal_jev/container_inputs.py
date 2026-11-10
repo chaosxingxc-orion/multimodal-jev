@@ -13,6 +13,9 @@ def require_visible_inputs(argv, cfg):
     if cfg.get('evaluation_phase') == 'test':
         keys.remove('partition')
         keys.append('test_protocol')
+    if cfg.get('evaluation_phase') == 'slurp-jev-transfer':
+        keys.remove('partition')
+        keys.append('transfer_protocol')
     if cfg.get('task_format') == 'slurp-native':
         keys.remove('partition')
         keys.extend(['taxonomy','population_reference'])
@@ -25,6 +28,11 @@ def require_visible_inputs(argv, cfg):
     if cfg.get('evaluation_phase') == 'test':
         protocol = json.loads(Path(cfg['test_protocol']).read_text())
         inputs.update({key:protocol[key] for key in ('selection_result','selection_protocol')})
+    if cfg.get('evaluation_phase') == 'slurp-jev-transfer':
+        protocol=json.loads(Path(cfg['transfer_protocol']).read_text())
+        inputs.update({key:protocol[key] for key in ('selection_result','selection_protocol','shard_plan')})
+        plan=json.loads(Path(protocol['shard_plan']).read_text())
+        inputs['jev_release']=plan['release']
     for key, value in inputs.items():
         path=Path(value)
         candidates=[(src,dst) for src,dst in mounts if path==dst or dst in path.parents]

@@ -15,6 +15,7 @@ from multimodal_jev.frozen_contract import FrozenContract
 from multimodal_jev.omni_probe_contract import select_learning
 from multimodal_jev.omni_test_contract import select_test
 from multimodal_jev.omni_slurp_test_contract import select_native_test
+from multimodal_jev.omni_slurp_transfer_contract import select_transfer_shard
 from multimodal_jev.omni_slurp_contract import validate_runtime
 from multimodal_jev.waveform_control import condition_audio
 
@@ -34,7 +35,7 @@ def verify_assets(cfg):
 def run(cfg,out,*,population_selector=select_learning):
     require_audio_task_route(cfg)
     validate_runtime(cfg)
-    allowed_split = 'test' if population_selector in (select_test,select_native_test) else 'train'
+    allowed_split = 'test' if population_selector in (select_test,select_native_test,select_transfer_shard) else 'train'
     if (cfg['parameters_frozen'] is not True or cfg['split']!=allowed_split
             or cfg.get('adapter') is not None):
         raise ValueError('registered population and frozen official base only')
@@ -61,6 +62,13 @@ def run(cfg,out,*,population_selector=select_learning):
         if any(identity[k] != v for k,v in protocol['actor_identity'].items()):
             raise ValueError('TEST actor differs from completed selection')
         identity['test_protocol_sha256'] = cfg['test_protocol_sha256']
+    if population_selector is select_transfer_shard:
+        protocol=json.loads(Path(cfg['transfer_protocol']).read_text())
+        if identity['versions']!=protocol['versions'] or identity['model_files']!=protocol['model_files']:
+            raise ValueError('transfer model or runtime versions differ from selection')
+        identity['transfer_protocol_sha256']=cfg['transfer_protocol_sha256']
+        for name in ('slurp_jev_shards.py','slurp_jev_full.py','omni_slurp_transfer_contract.py'):
+            identity['source_sha256'][name]=file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
     atomic_json(out/'identity.json',identity)
     atomic_json(out/'selection.json',{'ids':[r['id'] for r in rows]})
     from transformers import Qwen3OmniMoeProcessor

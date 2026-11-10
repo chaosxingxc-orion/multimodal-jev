@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .baseline import file_hash
 from .consumption import canonical
-from .slurp_jev_full import validate_bundle
+from .slurp_jev_full import validate_bundle,expand_bundle
 
 
 def plan_shards(release,split,recordings_per_shard=100):
@@ -76,3 +76,22 @@ def load_shard(plan,shard_id):
             or len(rows)*len(bank['tasks'])!=shard['decisions']):
         raise ValueError('complete registered shard required')
     return rows,bank
+
+
+def materialize_shard(plan_path,shard_id,output):
+    """Expand one registered shard in source order, with no target dependency."""
+    plan_path,output=Path(plan_path),Path(output)
+    plan=json.loads(plan_path.read_text());bundles,bank=load_shard(plan,shard_id)
+    output.mkdir(parents=True,exist_ok=False)
+    path=output/(plan['split']+'.requests.jsonl');count=0
+    with path.open('xb') as handle:
+        for bundle in bundles:
+            for request in expand_bundle(bundle,bank):
+                handle.write(canonical(request));count+=1
+    receipt=dict(source_release=plan['release'],source_manifest_sha256=plan['source_manifest_sha256'],
+        split=plan['split'],source_groups=sorted({r['source_group'] for r in bundles}),
+        recordings=len(bundles),requests=count,requests_sha256=file_hash(path),
+        shard_id=shard_id,shard_plan=str(plan_path.resolve()),shard_plan_sha256=file_hash(plan_path),
+        builder_sha256=file_hash(__file__),scope='Complete label-free registered shard; not the full split')
+    with (output/'MANIFEST.json').open('xb') as handle:handle.write(canonical(receipt))
+    return receipt
