@@ -80,3 +80,8 @@ text_padding（左padding519）响应logp相邻最大差为0.12417721748352051�
 Git快照、identity及全部30份logits；运行入口再次执行既有complete_dependency。
 create成功后持久记录精确ID再start，失败/歧义不重试。后续实际身份单独记录，
 本预算登记不表示已经派发或已经找到数值差异根因。
+
+原精确容器实际inspect仍为running时，派发协调者已拒绝创建后续实验目录/容器，
+保持依赖顺序。最新保存tensor审计partial-12完成29/30条件：第六条autocast、
+FP32 features、audio_padding相邻完整logits均相同，text_padding仍在计算。
+全30条件成功终态及后续逐层派发仍待完成，不用局部tensor审计代替前驱终态。
