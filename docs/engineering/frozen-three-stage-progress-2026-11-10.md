@@ -109,3 +109,17 @@ SLURP-Jev 完整消费包已完成导出与全量原生标签比对，覆盖全�
 
 相关运行、launch、score、result JSON 见本目录 `frozen-direct-*`、
 `frozen-slurp-native-audio-direct-train16-v2-*` 与 `slurp-native-release-v2-verified.json`。
+
+## 独立冻结 Omni 对照准备
+
+官方Qwen2.5-Omni-3B revision f75b40e3da2003cdd6e1829b1f420ca70797c34e
+已从HF重新核验元数据，18文件约12GB正在下载，逐文件核对官方LFS/Git哈希。
+原NPU镜像可导入Thinker类（Transformers5.14.1）；这不代表模型已加载或推理成功。
+新增直接音频→自由JSON接口，严格检查Thinker参数、仅忽略官方语音输出分支；
+同一音频模型消费波形与动态schema，不使用转写。14项相关测试通过。
+
+独立探针快照e33bb47，固定原学习集第一组及全部六视图、seed17/BF16/eager，
+物理175卡4。后台监督器等待资产下载成功后检查设备、派发、核验终态并评分；
+无自动重试。首轮仍是TRAIN接口探针，不能据一条录音宣称性能提升。它与正在
+卡5/6运行的ASR完整TEST分开，不复用ASR教师提示，不启动训练或新增教师请求。
+见[独立探针协议](../../experiments/frozen-omni3b-direct-probe-v1.md)。

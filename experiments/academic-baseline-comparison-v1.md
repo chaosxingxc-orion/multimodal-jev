@@ -10,7 +10,7 @@ L1 原生官方任务、L2 派生 schema 决策、L3 真实交互执行分别建
 
 - H1：类型化读出在同骨干/训练暴露下能提高结构有效性，但语义正确性需要独立验证。格式成功不算意图/槽位成功。
 - H2：候选排列对齐训练能改善顺序稳定性，同时仍响应定义和语义改变。只有 flip/SKL 下降、正确率未保持时，不接受“决策更可靠”的联合结论。
-- H3：音频直读相对 ASR→文本的差异来自证据利用。人工 transcript→同文本模型用于分离 ASR 错误和决策瓶颈，不预设人工文本一定上界。
+- H3（按用户端到端约束修订）：固定音频任务模型应响应音频语义和动态任务定义。使用真实/全零波形控制、相反命题及定义重绑定检验；波形敏感性本身不等于理解。历史串联/人工转写控制仅归档，不再派发。
 - H4：RL 在固定预算下改善语义/执行收益。若只增加 rollout、训练 token 或设备时间，只能报额外成本收益，不能报同预算优势。
 - H5：L1/L2 收益能转化为 L3 真实任务完成。没有完整模型驱动环境轨迹和官方终态评测，H5 保持未验证。
 
@@ -21,7 +21,7 @@ L1 原生官方任务、L2 派生 schema 决策、L3 真实交互执行分别建
 | 0 数据与 scorer | FSC 官方三划分；SLURP real/synthetic 分离；SFC official+strict；MMAR publisher；退化/反例控制 | 只读 hash/ID/音频清单验证；所有 prediction 缺失、重复、未知 ID 的策略固定。Audio2Tool scorer 尚未达到官方复现门槛 |
 | 1 FSC 官方基线 | SpeechBrain direct 官方权重复测；Lugosch frozen pretraining 重训参考；原生 joint intent | 先官方权重完整加载和 TRAIN 样例验证，再全 test 固定单次推理；重训先补预训练 checkpoint 与 recipe。当前主进程可能另行准备资产，此文件不操作它 |
 | 2 SLURP 官方基线 | HuBERT direct 官方权重复测；原文 HerMiT 外部参考；real-only HuBERT 受控重训；ESPnet 2-pass 独立 intent 栏 | 必须分出 real+synth 与 real-only；检查 SpeechBrain 历史 recipe；完成 full 13078 预测 ID 集再调用原 scorer |
-| 3 同骨干矩阵 | ASR→固定 Qwen3-0.6B、人工 transcript→同模型、冻结声学+head、0.6B 生成式 SFT、typed SFT、同预算 RL | full FSC / real-only SLURP 配置、任务接口和预算尚未冻结；不能直接把 31 录音诊断扩称全量 |
+| 3 同骨干矩阵 | 当前优先冻结直接音频基线与离线教师提示优化；后续生成式/typed SFT、同预算 RL 保持暂停；历史串联路线归档 | full FSC / real-only SLURP 配置、任务接口和预算尚未冻结；不能直接把 31 录音诊断扩称全量 |
 | 4 外部函数调用 | SFC test-ID/OOD 全级别、Audio2Tool 分 tier；共同保持 schema/多音频/历史 | SFC 原始协议为 FSC/SLURP-trained transfer。SpokenFC 内域 SFT/GRPO 重训单独 proposed，未授权以此文件改变原协议；Audio2Tool 补官方 scorer 或明确自实现适配 |
 | 5 AudioJev | MMAR official checkpoint 原始顺序、Frozen Omni3B、MMAR 原生 Qwen2-Audio；论文三 seeds 独立文献栏 | 独立 CUDA 环境、模型可加载、完整 1000 输入、保存 logits/predictions/退出码；NPU port 需要新轨道与数值对照 |
 | 6 扩展 | MAC-SLU；SLUE1/2 分任务；SpokenWOZ；MINDS/MMSU/MMAU/VoiceBench 分表 | gates、子集 IDs、隐藏评分和各任务依赖按登记补齐；不扩大下载清单 |
