@@ -15,7 +15,7 @@ from multimodal_jev.frozen_contract import FrozenContract
 from multimodal_jev.omni_probe_contract import select_learning
 from multimodal_jev.omni_test_contract import select_test
 from multimodal_jev.omni_slurp_test_contract import select_native_test
-from multimodal_jev.omni_slurp_transfer_contract import select_transfer_shard
+from multimodal_jev.omni_slurp_transfer_contract import select_transfer_shard,select_transfer_train
 from multimodal_jev.omni_slurp_contract import validate_runtime
 from multimodal_jev.waveform_control import condition_audio
 
@@ -67,6 +67,7 @@ def run(cfg,out,*,population_selector=select_learning):
         if identity['versions']!=protocol['versions'] or identity['model_files']!=protocol['model_files']:
             raise ValueError('transfer model or runtime versions differ from selection')
         identity['transfer_protocol_sha256']=cfg['transfer_protocol_sha256']
+    if population_selector in (select_transfer_shard,select_transfer_train):
         for name in ('slurp_jev_shards.py','slurp_jev_full.py','omni_slurp_transfer_contract.py'):
             identity['source_sha256'][name]=file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
     atomic_json(out/'identity.json',identity)

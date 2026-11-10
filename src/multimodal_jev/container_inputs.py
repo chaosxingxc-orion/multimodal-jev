@@ -16,6 +16,8 @@ def require_visible_inputs(argv, cfg):
     if cfg.get('evaluation_phase') == 'slurp-jev-transfer':
         keys.remove('partition')
         keys.append('transfer_protocol')
+    if cfg.get('evaluation_phase') == 'slurp-jev-transfer-train':
+        keys.remove('partition')
     if cfg.get('task_format') == 'slurp-native':
         keys.remove('partition')
         keys.extend(['taxonomy','population_reference'])

@@ -24,7 +24,11 @@ def wait(root,cid,image,deadline):
 
 
 def run(root):
-    plan=json.loads((root/'intent.json').read_text());deadline=time.monotonic()+7200
+    plan=json.loads((root/'intent.json').read_text())
+    dependency_seconds=plan.get('dependency_observation_seconds',7200)
+    if type(dependency_seconds) is not int or not 7200<=dependency_seconds<=90000:
+        raise ValueError('bounded dependency observation deadline required')
+    deadline=time.monotonic()+dependency_seconds
     observation_seconds=plan.get('observation_seconds',3900)
     cfg=json.loads((root/'config.json').read_text())
     maximum = 86700 if cfg.get('evaluation_phase') in ('test','slurp-native-test','slurp-jev-transfer') else 7500
@@ -59,7 +63,7 @@ def run(root):
         raise RuntimeError('application failed')
     if cfg.get('audio_condition','actual')=='zeros':
         return  # Silence has no native gold; paired diagnostic runs separately.
-    if cfg.get('evaluation_phase') in ('slurp-jev-probe','slurp-jev-transfer'):
+    if cfg.get('evaluation_phase') in ('slurp-jev-probe','slurp-jev-transfer','slurp-jev-transfer-train'):
         subprocess.run([plan['scorer_python'],str(root/'source/tools/jev/score_slurp_jev_full.py'),
             '--run',str(root/'run'),'--release',plan['jev_release'],
             '--repository',plan['scorer_repository'],'--output',str(root/'score')],

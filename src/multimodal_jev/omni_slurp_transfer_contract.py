@@ -10,6 +10,29 @@ from .slurp_jev_shards import load_shard
 RUNTIME_KEYS=('audio_model','dtype','seed','max_context_tokens','max_new_tokens',
               'sampling','route','model_family','parameters_frozen','task_format','audio_condition')
 
+TRAIN_REQUEST_SHA='8fff6d3097fb9e9ada62110ae0cdf362e39104fe73456f8e964f035f5afc763a'
+PARENT_PROMPT_SHA='ab9c559716d480775dc93bbfc3f62ac5c7e1a2aa7c95a8c6b10d72b61ad982a2'
+
+
+def select_transfer_train(cfg,rows):
+    """Exercise the exact new engine on the original complete TRAIN probe."""
+    validate_runtime(cfg)
+    if (cfg['split']!='train' or cfg['evaluation_phase']!='slurp-jev-transfer-train'
+            or cfg['task_format']!='jev' or cfg['audio_condition']!='actual'
+            or cfg['max_new_tokens']!=128 or cfg['parameters_frozen'] is not True
+            or cfg['source_groups']!=['slurp:12507']):
+        raise ValueError('fixed original TRAIN transfer validation required')
+    path=Path(cfg['requests'])
+    if (file_hash(path)!=TRAIN_REQUEST_SHA
+            or file_hash(cfg['instruction'])!=PARENT_PROMPT_SHA):
+        raise ValueError('original TRAIN requests and FSC parent prompt required')
+    expected=[json.loads(line) for line in path.open()]
+    if (rows!=expected or len(rows)!=336 or len({r['id'] for r in rows})!=336
+            or len({r['id'].rsplit('::',1)[0] for r in rows})!=2
+            or any(r['split']!='train' or r['source_group']!='slurp:12507' for r in rows)):
+        raise ValueError('all168 tasks on both original TRAIN recordings required')
+    return rows
+
 
 def select_transfer_shard(cfg,rows):
     validate_runtime(cfg)
