@@ -66,3 +66,7 @@ p1在TEST之前已通过冻结选择协议确定；原队列在父提示成功�
 `6f6fe878a1cbf6906cc679a5f2abcdb6403075cffc23b692f90bb7dbb03d957a`。
 该容器已实际inspect为running，尚无完整评分。不得使用本页TEST反馈修改候选、
 提示或评分规则；后续提升结论需等待两边完整结果和逐录音配对比较。
+
+[p1启动独立核验](../docs/engineering/frozen-qwen3-omni-fsc-p1-test-v2-launch-verified.json)
+已核对实际NPU4/5容器、729份冻结源码、TEST前选定的提示哈希、与父提示完全相同
+的22758条输入名单和actor身份。此记录只证明正确派发，不能充当终态或提升验收。
