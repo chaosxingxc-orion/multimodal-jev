@@ -1,0 +1,64 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-actor-batch-train6-v1",
+  "container_id": "39ec59374da17a9cd90b68913f921e4ec2d7bb0ed65effbfae36276ef24f909d",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "98e9c64c0a0a7075edf8ec5dedd737f311b21916",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T13:40:29.59020614Z",
+    "FinishedAt": "2026-11-10T13:43:10.15556975Z"
+  },
+  "result_sha256": "193f20351d46008488426629c30a24c2cf171f30aa128607d06176616c89e115",
+  "result": {
+    "scope": "Real CPU Omni processor and verl DataProto on six TRAIN turns; synthetic responses/logprobs, no model/gradient/optimizer or engine parity",
+    "bundles": 6,
+    "decisions": 78,
+    "responses": 156,
+    "prompt_groups": 78,
+    "tensor_shape": [
+      156,
+      1507
+    ],
+    "reordered_microbatch_audio_count": 3,
+    "rejected_controls": [
+      "missing",
+      "logprob",
+      "text",
+      "prompt",
+      "context",
+      "prepared_tokens"
+    ],
+    "elapsed_seconds": 124.88694594003027,
+    "manifest_sha256": "805445af367f69012d8c942e0550da57cbe5a7adfa187ba31b46962f832ca3a9",
+    "partition_sha256": "84df8dc98723a50baa7352be11049cd8c692fb2e2da94ff5de650392abe09330",
+    "processor_assets": {
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "chat_template.json": "90c1b81f29e41b7642b0cc02c877a10c8bf6751a8d8fa1d16ac9a718cf1c3d86",
+      "model.safetensors.index.json": "03ffe9a54efe9007ceb788c2b036f5c589094918c4582add4e92bc17e1cba838",
+      "config.json": "eab5093d47807aaf894119506b238b2b1cee70d08456e894fee9a012d88f2e0d",
+      "generation_config.json": "7fa40989be8e43c078907810c41c25d33747523afce3d5a34d5850f930c886cb",
+      "tokenizer_config.json": "dc3c31c3bdaedd5016382bb3cbe07323026775ad51f5a4fb564505992ae4a670",
+      "preprocessor_config.json": "b10e27fd4542cf89ec7145942b87f3e65408d4e9f9d031a29acdd293c15fb3fc",
+      "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3"
+    },
+    "source_files": {
+      "src/multimodal_jev/omni_actor_batch.py": "a8f604ccf571444f21ca5d30db27802451ba41396622a67769affca3f2a85320",
+      "src/multimodal_jev/sfc_reward_batch.py": "5c3f05320cf8b1110f5b073182c5d12d38eae2e340315f40d93107ead58f53b2",
+      "tools/jev/probe_omni_actor_batch.py": "6a8bc2139f53842039affa2a33e8987e7ae721d381f49b37ed8c619d96757386"
+    },
+    "targets_read": "selected learning turns only; whole TRAIN target bytes hashed",
+    "model_loaded": false,
+    "weight_updates": 0
+  },
+  "verified_unix": 1794318300.402757,
+  "tests": "79 existing reward/identity/runtime tests passed; actual processor/verl probe plus six negative controls",
+  "scope": "Real CPU Omni processor and verl DataProto on six TRAIN turns; synthetic responses/logprobs, no model/gradient/optimizer or engine parity"
+}
