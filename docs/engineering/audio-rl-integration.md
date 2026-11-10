@@ -1,5 +1,22 @@
 # 音频 RL 接入审计与当前组件
 
+## 当前状态（以此节及链接结果为准）
+
+下文保留早期接入审计，部分“尚未实测”描述代表当时状态。当前已经完成真实
+CPU vLLM 采样、HF actor 的 verl DataProto/GRPO/PPO 更新、模型导出及第二轮
+重新采样与优化器继续更新，见[两轮结果](vllm-two-step-chain-v3-result.json)。
+[变长批次结果](vllm-mixed-actor-v1-result.json)还验证了两条录音的完整投影更新。
+这些是工程闭环，不能推导出算法收益；现有结果尚未证明跨任务泛化提升。
+
+当前执行器仍由本项目串联采样、actor 与导出进程。使用 verl 的数据与损失函数
+不等于完成原生 Ray/FSDP worker 接入。固定镜像的原生 worker 已重新做只读源码
+审计，见[接入差异](verl-worker-integration-audit.md)。默认音频 server、分布式
+worker、NPU 训练和交互式 Agentic Speech 仍需实现并实际验证。
+
+新增可选预算控制支持 SFT/RL 的整组预留、实际记账与预算停止，见
+[协议](../../experiments/token-budget-comparison-v1.md)。45 份配置仅完成静态准备；
+真实预算验证与正式有效性实验必须分别报告，不能把配置数量当作已完成实验量。
+
 本轮源码审计基于镜像 `52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c`。
 
 ## 已实现组件

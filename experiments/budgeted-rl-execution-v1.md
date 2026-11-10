@@ -36,3 +36,10 @@ This is a real integration gate, not one of the formal 45 efficacy trajectories.
 It does not establish distributed verl workers, NPU execution, normalization
 superiority or cross-task gains. The primary comparison remains unlaunched
 until resource allocation and all required execution gates are verified.
+
+The [queue receipt](../docs/engineering/budgeted-rl-execution-v1-queued.json)
+records the immutable source/config preparation and live supervisor. The first
+group reserves34,552 training token units and768 generated tokens. The
+successful SFT gate is now available; the existing instrumented two-step
+schedule is still a dependency. No budgeted RL rollout or actor launch is
+claimed by this preparation receipt.

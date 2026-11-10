@@ -20,3 +20,20 @@ application terminal and failure evidence. A timeout is observation failure,
 not permission to restart. No automatic retry and no promotion to the formal
 comparison without successful result and saved-state checks. This does not
 validate the multi-step RL budget path, which remains a separate required gate.
+
+## Completed execution
+
+Both exact training and audit containers exited0. The
+[result](../docs/engineering/budgeted-sft-execution-v1-result.json) records one
+update over all six views: 4,127 prompt tokens plus 42 gold response tokens,
+1,890 audio frames, loss0.1440768683 and pre-clipping gradient norm6.713084221.
+The cap of4,169 training tokens was consumed exactly; the second batch's4,067
+token reservation was rejected before its model work. Result counters report
+one of two scheduled updates and `budget_exhausted`.
+
+The separate read-only audit loaded the saved adapter and resume state:
+112 adapter tensors changed from the initializer;112 finite AdamW states all
+have step1. Saved history/step and result hashes agree. Host-side arithmetic
+independently reproduced both batch costs from the pinned processor profile.
+This verifies the real SFT stopping path, not an efficacy comparison or the
+pending RL budget gate.

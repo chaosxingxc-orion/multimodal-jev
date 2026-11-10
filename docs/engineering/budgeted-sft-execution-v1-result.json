@@ -1,0 +1,116 @@
+{
+  "observed_unix": 1794271148.8240685,
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/budgeted-sft-execution-v1",
+  "containers": {
+    "run": {
+      "container_id": "f2fc4b3695bb6df7562ac06bd54b5953582c455393aeb5d7bf5cb739f593212b",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T00:27:14.20357042Z",
+        "FinishedAt": "2026-11-10T00:36:10.30776149Z"
+      }
+    },
+    "audit": {
+      "container_id": "adef32c5b1b99579ab1b8590054e50ef5e92c7fc61b7581f7d3851f70d5990d4",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T00:36:15.82365984Z",
+        "FinishedAt": "2026-11-10T00:36:44.59035663Z"
+      }
+    }
+  },
+  "source_commit": "d4277eddd42dd48393664fd525ff0c6ba53d0d4e",
+  "config_sha256": "737b28ac89d992b6ef646e1efe2a707eeefd8f86c6323193d86ca17275f070f0",
+  "audit_sha256": "4e44498968a9a40f9d1c2e06df0657fa695835e6ab2acdc1ac14e7bfef3cd703",
+  "independent_profile_arithmetic_verified": true,
+  "measured_first_batch": {
+    "prompt_tokens": 4127,
+    "gold_tokens": 42,
+    "audio_frames": 1890
+  },
+  "history": [
+    {
+      "step": 1,
+      "loss": 0.1440768682708343,
+      "gradient_norm": 6.7130842208862305,
+      "budget": {
+        "sequences": 6,
+        "prompt_tokens": 4127,
+        "response_tokens": 42,
+        "audio_frames": 1890,
+        "gradient_sequences": 6,
+        "gradient_tokens": 4169,
+        "no_grad_sequences": 0,
+        "no_grad_tokens": 0,
+        "optimizer_steps": 1
+      }
+    }
+  ],
+  "audit": {
+    "status": "passed",
+    "updates": 1,
+    "finite_optimizer_states": 112,
+    "changed_adapter_tensors": 112,
+    "budget_control": {
+      "limits": {
+        "training_tokens": 4169,
+        "generated_tokens": 0
+      },
+      "used": {
+        "generated_tokens": 0,
+        "training_tokens": 4169
+      },
+      "remaining": {
+        "generated_tokens": 0,
+        "training_tokens": 0
+      },
+      "iterations": [
+        {
+          "example_ids": [
+            "fsc:fbe9938734b2a7046cca2eab:native",
+            "fsc:fbe9938734b2a7046cca2eab:permutation",
+            "fsc:fbe9938734b2a7046cca2eab:rebind",
+            "fsc:fbe9938734b2a7046cca2eab:missing_candidate",
+            "fsc:fbe9938734b2a7046cca2eab:noul.True",
+            "fsc:fbe9938734b2a7046cca2eab:noul.False"
+          ],
+          "reservation": {
+            "training_tokens": 4169,
+            "generated_tokens": 0
+          },
+          "spent": {
+            "training_tokens": 4169,
+            "generated_tokens": 0
+          }
+        }
+      ],
+      "next_reservation": {
+        "training_tokens": 4067,
+        "generated_tokens": 0
+      },
+      "scope": "effective unpadded training tokens (gradient plus no-grad) and generated tokens; excludes generation prefill, loading, export and failed work; not FLOPs"
+    },
+    "result_sha256": "11f623c18596490c38a74cecaed75aa5416fca98dc41896b8aa59deb32f99575",
+    "resume_sha256": "5d0b6dd6290452ef6d669f879b63fc5bb12e9812962f079250a1901f967501f9",
+    "scope": "real one-update SFT hard-cap stop; not RL or efficacy validation"
+  },
+  "scope": "real six-view SFT update and hard-budget stop; no algorithm efficacy or RL stop claim"
+}
