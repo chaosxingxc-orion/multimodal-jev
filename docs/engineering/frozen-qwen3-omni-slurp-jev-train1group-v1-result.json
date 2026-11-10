@@ -1,0 +1,82 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-jev-train1group-v1",
+  "container": {
+    "container_id": "a8d975834d1223e6a63adc80e2a35077be8c4bc2837fed231520d5b377db305c",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-10T09:04:19.77948791Z",
+      "FinishedAt": "2026-11-10T09:20:35.93131321Z"
+    }
+  },
+  "result": {
+    "status": "passed",
+    "requests": 336,
+    "predictions": 336,
+    "audio_condition": "actual",
+    "format_valid": 46,
+    "schema_valid": 46,
+    "length_limited": 0,
+    "predictions_sha256": "6e69ca1bde5f6f0af658b03b19486b8069152ecbddb1bbd5867a0ecb76e5c3ca",
+    "weight_updates": 0,
+    "model_files_unchanged": true,
+    "elapsed_seconds": 970.9539791599964,
+    "scope": "direct frozen audio-to-task vLLM NPU registered TRAIN population; no TEST or HF parity claim"
+  },
+  "counts": {
+    "decisions": 336,
+    "format_valid": 46,
+    "schema_valid": 46,
+    "recordings": 2,
+    "intent_native_correct": 1,
+    "intent_permutation_correct": 2,
+    "intent_rebind_correct": 2,
+    "intent_permutation_both_correct": 1,
+    "intent_rebind_both_correct": 1,
+    "intent_all_three_correct": 1,
+    "presence_pairs": 110,
+    "presence_both_correct": 4,
+    "absent_type_pairs": 106,
+    "absent_type_both_correct": 4,
+    "slot_queries": 110,
+    "slot_list_exact": 0,
+    "present_type_pairs": 4,
+    "present_type_both_correct": 0,
+    "nonempty_slot_queries": 4,
+    "nonempty_slot_list_exact": 0,
+    "native_reconstruction_valid": 0,
+    "all_decisions_correct": 0
+  },
+  "rates": {
+    "intent_native_accuracy": 0.5,
+    "intent_permutation_accuracy": 1.0,
+    "intent_rebind_accuracy": 1.0,
+    "intent_permutation_both_correct_rate": 0.5,
+    "intent_rebind_both_correct_rate": 0.5,
+    "intent_all_three_correct_rate": 0.5,
+    "all_decisions_correct_rate": 0.0,
+    "native_reconstruction_valid_rate": 0.0,
+    "presence_both_correct_rate": 0.03636363636363636,
+    "present_type_both_correct_rate": 0.0,
+    "absent_type_both_correct_rate": 0.03773584905660377,
+    "slot_list_exact_rate": 0.0,
+    "nonempty_slot_list_exact_rate": 0.0,
+    "multiple_slot_list_exact_rate": null
+  },
+  "score_sha256": "45fc5ce8e8cfe760f9a1728afc23d8cf9eee8077be17f4a73db1833634c29a19",
+  "independent_score_sha256": "42515b5124857704ea452759db3f7adcc87d6cbfd144b08f19c32cf1600d370f",
+  "independent_metrics_exact": true,
+  "normalized_predictions_exact": true,
+  "invalid_output_diagnostics": {
+    "count": 290,
+    "starts_markdown_fence": 290
+  },
+  "scope": "One TRAIN semantic group, two recordings, all168 tasks each; not full TEST or prompt transfer efficacy"
+}

@@ -26,7 +26,9 @@ def wait(root,cid,image,deadline):
 def run(root):
     plan=json.loads((root/'intent.json').read_text());deadline=time.monotonic()+7200
     observation_seconds=plan.get('observation_seconds',3900)
-    if type(observation_seconds) is not int or not 3900 <= observation_seconds <= 7500:
+    cfg=json.loads((root/'config.json').read_text())
+    maximum = 86700 if cfg.get('evaluation_phase') == 'test' else 7500
+    if type(observation_seconds) is not int or not 3900 <= observation_seconds <= maximum:
         raise ValueError('bounded observation deadline required')
     for dep in plan['wait_for']:
         state=wait(root,dep['container_id'],dep['image'],deadline)
@@ -64,7 +66,7 @@ def run(root):
             env={**os.environ,'PYTHONPATH':str(root/'source/src')},check=True)
         return
     subprocess.run([sys.executable,str(root/'source/tools/jev/score_frozen_requests.py'),'--run',str(root/'run'),
-        '--targets',str(Path(cfg['requests']).with_name('train.targets.jsonl')),'--six-views','--output',str(root/'score.json')],check=True)
+        '--targets',str(Path(cfg['requests']).with_name(cfg['split']+'.targets.jsonl')),'--six-views','--output',str(root/'score.json')],check=True)
 
 
 if __name__=='__main__':

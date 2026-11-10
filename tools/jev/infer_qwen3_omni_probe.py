@@ -13,6 +13,7 @@ from multimodal_jev.consumption import canonical
 from multimodal_jev.end_to_end import require_audio_task_route
 from multimodal_jev.frozen_contract import FrozenContract
 from multimodal_jev.omni_probe_contract import select_learning
+from multimodal_jev.omni_test_contract import select_test
 from multimodal_jev.omni_slurp_contract import validate_runtime
 from multimodal_jev.waveform_control import condition_audio
 
@@ -32,9 +33,10 @@ def verify_assets(cfg):
 def run(cfg,out,*,population_selector=select_learning):
     require_audio_task_route(cfg)
     validate_runtime(cfg)
-    if (cfg['parameters_frozen'] is not True or cfg['split']!='train'
+    allowed_split = 'test' if population_selector is select_test else 'train'
+    if (cfg['parameters_frozen'] is not True or cfg['split']!=allowed_split
             or cfg.get('adapter') is not None):
-        raise ValueError('fixed TRAIN learning groups, frozen official base only')
+        raise ValueError('registered population and frozen official base only')
     start=time.monotonic();atomic_json(out/'progress.json',dict(phase='verifying_model',heartbeat_unix=time.time()))
     audit=verify_assets(cfg)
     contract=FrozenContract(cfg)
@@ -44,7 +46,7 @@ def run(cfg,out,*,population_selector=select_learning):
     identity=dict(config=cfg,requests_sha256=file_hash(cfg['requests']),instruction_sha256=file_hash(cfg['instruction']),
         asset_audit_sha256=file_hash(cfg['asset_audit']),model_files=audit['files'],runner_sha256=file_hash(__file__),
         source_sha256={n:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/n) for n in
-                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','waveform_control.py','omni_slurp_contract.py','slurp_native.py']},
+                      ['frozen_contract.py','consumption.py','task_schema.py','answers.py','audio_policy.py','end_to_end.py','omni_probe_contract.py','omni_test_contract.py','waveform_control.py','omni_slurp_contract.py','slurp_native.py']},
         versions={p:importlib.metadata.version(p) for p in ['torch','torch-npu','transformers','vllm','vllm-ascend']})
     if population_selector is not select_learning:
         import inspect
@@ -53,6 +55,11 @@ def run(cfg,out,*,population_selector=select_learning):
             identity['selection_protocol_sha256']=cfg['selection_protocol_sha256']
     if contract.taxonomy_sha256 is not None:
         identity['taxonomy_sha256']=contract.taxonomy_sha256
+    if population_selector is select_test:
+        protocol = json.loads(Path(cfg['test_protocol']).read_text())
+        if any(identity[k] != v for k,v in protocol['actor_identity'].items()):
+            raise ValueError('TEST actor differs from completed selection')
+        identity['test_protocol_sha256'] = cfg['test_protocol_sha256']
     atomic_json(out/'identity.json',identity)
     atomic_json(out/'selection.json',{'ids':[r['id'] for r in rows]})
     from transformers import Qwen3OmniMoeProcessor
@@ -79,7 +86,7 @@ def run(cfg,out,*,population_selector=select_learning):
         response=llm.generate([{'prompt':prompt,'multi_modal_data':{'audio':(wave,16000)}}],params,use_tqdm=False)
         if len(response)!=1 or len(response[0].outputs)!=1:raise ValueError('single output required')
         answer=response[0].outputs[0];record=contract.prediction(row,answer.text)
-        record.update(replicate=0,source_group=row['source_group'],split='train',audio_condition=condition,
+        record.update(replicate=0,source_group=row['source_group'],split=cfg['split'],audio_condition=condition,
             request_sha256=hashlib.sha256(canonical(row)).hexdigest(),prompt_sha256=hashlib.sha256(prompt.encode()).hexdigest(),
             input_tokens=len(response[0].prompt_token_ids),token_ids=list(answer.token_ids),
             finish_reason=answer.finish_reason,length_limited=answer.finish_reason=='length',seconds=time.monotonic()-t)
@@ -94,7 +101,7 @@ def run(cfg,out,*,population_selector=select_learning):
         format_valid=sum(r['format_valid'] for r in records),schema_valid=sum(r['schema_valid'] for r in records),
         length_limited=sum(r['length_limited'] for r in records),predictions_sha256=file_hash(path),weight_updates=0,
         model_files_unchanged=True,elapsed_seconds=time.monotonic()-start,
-        scope='direct frozen audio-to-task vLLM NPU registered TRAIN population; no TEST or HF parity claim'))
+        scope='direct frozen audio-to-task vLLM NPU registered '+cfg['split']+' population; no HF parity claim'))
 
 
 if __name__=='__main__':
