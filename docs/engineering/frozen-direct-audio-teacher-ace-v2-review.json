@@ -1,0 +1,31 @@
+{
+  "schema": "jev-direct-teacher-semantic-review-v1",
+  "reviewer": "codex-primary",
+  "reviewed_unix": 1794293043.9560907,
+  "parent_prompt_sha256": "b853a7948d0cf13238cdc16811adcb7e37b1ae21a4a3557e56bf44340cdb2de7",
+  "proposal_sha256": "b171e39599e8f913c1b0f5aa0a64ba4125f3a0240198bd110b27180732e97386",
+  "source_response_sha256": "4af11724da5a4ad54554c29fa51ca822d0d08646f3691da7c61198de78469fed",
+  "evaluation_eligible": [],
+  "prompt_selected": false,
+  "selection_or_test_items_read_for_review": false,
+  "candidates": [
+    {
+      "id": "p1",
+      "instruction_sha256": "6ee124ff2388d6844c9bc2231dbdb5cd3a0ad6586c9b5b0a9802cdde39b51f94",
+      "decision": "rejected",
+      "reason": "Conflicting output contract: asks for Unknown/true/false although fixed readout requires the supplied single label. Introduces fixed none=unspecified semantics not authorized by dynamic task definition. Cannot change actor readout or silently edit teacher instruction to repair.",
+      "local_edit": false
+    },
+    {
+      "id": "p2",
+      "instruction_sha256": "f5a515749d5efaa46f6ae8740f97295b2fdab12a221a5257e87e62783125890b",
+      "decision": "rejected",
+      "reason": "Conflicting output contract: asks for Unknown/true/false although fixed readout requires the supplied single label. Introduces fixed none=unspecified semantics not authorized by dynamic task definition. Cannot change actor readout or silently edit teacher instruction to repair.",
+      "local_edit": false
+    }
+  ],
+  "diagnosis_corrections": [
+    "Teacher says actual noul.False true63/64; recorded predictions are true62/64, false1/64, null1/64. Treat teacher counts as fallible, preserve original proposal.",
+    "Observed waveform sensitivity and output preferences do not establish causal audio-presence-only mechanism."
+  ]
+}
