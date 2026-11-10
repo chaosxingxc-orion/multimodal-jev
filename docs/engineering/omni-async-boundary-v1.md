@@ -39,3 +39,26 @@ SamplingParams 明确 n=K、logprobs=0、temperature=1、无分布截断/惩罚�
 同步/异步引擎输出身份和概率，保留全部 78×K 决策及失败成本；不能用模拟引擎
 测试替代真实生成。原生 verl 接入还需 manager/server 传递音频、agent-loop
 后处理的音频特征与位置编码、完整 prompt 分组、policy identity 和导出刷新。
+
+## 完整学习探针执行器
+
+`tools/jev/sample_sfc_omni_async.py` 已实现完整六条学习回合、78 个决策、每题 K2
+采样程序。复用同步程序的真实 processor/分区验证与引擎参数，保留两段波形顺序、
+原始模型哈希检查及 4096 上下文/1024 输出预算。请求前独占创建并 fsync intent，
+每次流结束或失败均保存最后原始输出；失败另保存异常，不跳过或重放。
+全部 156 个响应齐全才生成汇总，退出时显式调用 AsyncLLM.shutdown(timeout=30)。
+真实生成尚未派发，不修改现有同步采样队列。
+
+三个 runner 测试用替身验证全量 78 次请求/156 个响应、先登记后派发、部分输出
+保存、音频校验失败不派发和关闭引擎。本地相关测试为 36 通过、1 跳过；跳过的是
+实际 vLLM 包测试，其固定镜像结果已在上一节单独验证，不能算本地通过。
+
+真实 CPU 预检查 v1 已完成六回合/78 决策 processor 与 SamplingParams 校验，
+随后构造 AsyncEngineArgs 时退出 1：默认 Ascend general plugin 导入 Triton 算子并
+调用 get_arch，而容器没有 NPU 设备。该失败保留在
+`omni-async-train78-preflight-v1`。v2 明确设置 `VLLM_PLUGINS=`，只检查实际参数
+对象的构造，不挂载 NPU；因此即使通过，也不构成 Ascend 插件或引擎兼容性证据。
+两次均使用相同源码快照 `f8bd33c`、固定镜像、2 CPU/12 GiB/600 秒，不加载模型。
+v2 已退出 0，全部 78 个决策通过，实际 AsyncEngineArgs 构造完成，总耗时 45.33 秒。
+两次精确容器、原始成功/失败终态和预检查结果见
+[完整记录](omni-async-train78-preflight-v1-v2.json)。真实 NPU 异步生成与同步概率比较仍未执行。

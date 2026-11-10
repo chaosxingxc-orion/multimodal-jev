@@ -1,0 +1,137 @@
+{
+  "runs": [
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-async-train78-preflight-v1",
+      "launch": {
+        "container_id": "5535a5bd13c0c565a5d99b2072ffe05a9b468870a27a1ee90c270a1ad6446b9e",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "source_commit": "f8bd33c646d9dc79ba23611dc37e65b023dda8d5",
+        "intent_sha256": "8dd3192cade4e34f1b79db82d70c9b40d2cec96c0de847004a2d61f4c396e181"
+      },
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 1,
+        "Error": "",
+        "StartedAt": "2026-11-10T15:34:51.60420405Z",
+        "FinishedAt": "2026-11-10T15:35:45.77691928Z"
+      },
+      "cpu_plugins_disabled": false,
+      "run/terminal.json": {
+        "exit_code": 1,
+        "error": "SystemError('<built-in function get_arch> returned NULL without setting an exception')",
+        "finished_unix": 1794324943.4615798
+      },
+      "run/preflight/result.json": {
+        "status": "passed",
+        "bundles": 6,
+        "decisions": 78,
+        "sampling": {
+          "n": 2,
+          "seed": 17,
+          "temperature": 1.0,
+          "top_p": 1.0,
+          "top_k": 0,
+          "min_p": 0.0,
+          "presence_penalty": 0.0,
+          "frequency_penalty": 0.0,
+          "repetition_penalty": 1.0,
+          "max_tokens": 1024,
+          "min_tokens": 0,
+          "logprobs": 0,
+          "prompt_logprobs": null,
+          "stop": [],
+          "stop_token_ids": [],
+          "ignore_eos": false,
+          "skip_special_tokens": true,
+          "spaces_between_special_tokens": false,
+          "include_stop_str_in_output": false,
+          "detokenize": true,
+          "watermarking": false
+        },
+        "model_loaded": false,
+        "weight_updates": 0,
+        "elapsed_seconds": 32.18615231994772,
+        "identity_sha256": "0d8307e0b35452f91d9569360feda1439d709d40d0f0b608970bf720680c6d84",
+        "scope": "Real processor and SamplingParams only; no model/engine generation or probabilities"
+      }
+    },
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-async-train78-preflight-v2",
+      "launch": {
+        "container_id": "b5ce221eaea74fee09aec762584ce2fa51b1f4a266181afbce89e63a479f0c04",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "source_commit": "f8bd33c646d9dc79ba23611dc37e65b023dda8d5",
+        "intent_sha256": "dada2d4e508e2793c0d99c166c40eeac5495805f0165b652ef7aaf8260eacd08"
+      },
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-10T15:36:24.93192952Z",
+        "FinishedAt": "2026-11-10T15:37:13.11058559Z"
+      },
+      "cpu_plugins_disabled": true,
+      "run/result.json": {
+        "status": "passed",
+        "preflight_only": true,
+        "bundles": 6,
+        "decisions": 78,
+        "async_engine_args_constructed": true,
+        "model_loaded": false,
+        "weight_updates": 0,
+        "identity_sha256": "530fc6c70ed12f169299fae677d3723dfc593eebf56c1e499462364a84e4b237",
+        "elapsed_seconds": 45.33183004998136,
+        "scope": "Real processor, learning input validation, SamplingParams and AsyncEngineArgs only; no engine or model"
+      },
+      "run/terminal.json": {
+        "exit_code": 0,
+        "finished_unix": 1794325031.0869336
+      },
+      "run/preflight/result.json": {
+        "status": "passed",
+        "bundles": 6,
+        "decisions": 78,
+        "sampling": {
+          "n": 2,
+          "seed": 17,
+          "temperature": 1.0,
+          "top_p": 1.0,
+          "top_k": 0,
+          "min_p": 0.0,
+          "presence_penalty": 0.0,
+          "frequency_penalty": 0.0,
+          "repetition_penalty": 1.0,
+          "max_tokens": 1024,
+          "min_tokens": 0,
+          "logprobs": 0,
+          "prompt_logprobs": null,
+          "stop": [],
+          "stop_token_ids": [],
+          "ignore_eos": false,
+          "skip_special_tokens": true,
+          "spaces_between_special_tokens": false,
+          "include_stop_str_in_output": false,
+          "detokenize": true,
+          "watermarking": false
+        },
+        "model_loaded": false,
+        "weight_updates": 0,
+        "elapsed_seconds": 30.933470060001127,
+        "identity_sha256": "0d8307e0b35452f91d9569360feda1439d709d40d0f0b608970bf720680c6d84",
+        "scope": "Real processor and SamplingParams only; no model/engine generation or probabilities"
+      }
+    }
+  ]
+}
