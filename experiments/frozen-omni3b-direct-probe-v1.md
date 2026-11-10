@@ -1,5 +1,8 @@
 # Independent frozen Omni 3B direct task probe
 
+**CANCELLED by user before actor dispatch. Reuse existing Qwen3-Omni instead.**
+Download and waiting supervisor stopped; no inference result exists.
+
 Motivation: frozen Qwen3-ASR direct JSON has failed on FSC and SLURP TRAIN
 probes; finite-label readout also lacks paired discrimination. Preserve all
 ASR results. Add the original official Qwen2.5-Omni-3B as a separate frozen

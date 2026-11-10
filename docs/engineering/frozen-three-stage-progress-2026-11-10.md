@@ -123,3 +123,15 @@ SLURP-Jev 完整消费包已完成导出与全量原生标签比对，覆盖全�
 无自动重试。首轮仍是TRAIN接口探针，不能据一条录音宣称性能提升。它与正在
 卡5/6运行的ASR完整TEST分开，不复用ASR教师提示，不启动训练或新增教师请求。
 见[独立探针协议](../../experiments/frozen-omni3b-direct-probe-v1.md)。
+
+## 用户纠正：复用本地 Qwen3-Omni
+
+用户明确不需要新增Qwen2.5-Omni-3B，改为复用已有Qwen3-Omni。已停止下载
+PID2608957及待启动探针监督器PID2609714，并复核两进程消失；探针尚未派发
+容器，不存在该模型任务成绩。中止原因及下载成本保留，停止写入后清理未完成
+.part文件。旧探针协议/实现仅保留为已取消的历史准备，不再排队。
+
+已核本地共享models下存在qwen3-omni-30b-a3b-instruct（15分片）和
+qwen3-omni-30b-a3b-thinking（16分片），配置均为qwen3_omni_moe。
+下一步优先核验Instruct权重与直接音频任务推理，使用授权卡4–7；
+现有Qwen3-ASR完整TEST继续运行，不占用Omni工程的0–3卡服务。
