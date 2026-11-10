@@ -1,0 +1,64 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-engine-preflight-v1",
+  "launch": {
+    "container_id": "228aa79e9b7accc09b34488d1d1f04bc6eed72882b39f11d80005b355ec12914",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "db9db7a1b4fc7a171cef034b026edb0397f5c49f",
+    "intent_sha256": "bcbe7cfecb4cfe9026a023a892ac06f2c8eb17c9a680d93e5c0cfa4b616fb104"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T17:45:09.57336927Z",
+    "FinishedAt": "2026-11-10T17:45:27.28804978Z"
+  },
+  "result": {
+    "status": "passed",
+    "records": [
+      {
+        "selection": "dialogue_last_user",
+        "id": "audio2tool:tier7:release:2030",
+        "input_tokens": 17253,
+        "audio_count": 5,
+        "input_matches_processor": true
+      },
+      {
+        "selection": "foreground_mixture",
+        "id": "audio2tool:tier8:release:314",
+        "input_tokens": 7035,
+        "audio_count": 1,
+        "input_matches_processor": true
+      },
+      {
+        "selection": "maximum_audio_count",
+        "id": "audio2tool:tier7:release:1118",
+        "input_tokens": 8330,
+        "audio_count": 7,
+        "input_matches_processor": true
+      },
+      {
+        "selection": "single_audio",
+        "id": "audio2tool:tier1:release:3943",
+        "input_tokens": 15322,
+        "audio_count": 1,
+        "input_matches_processor": true
+      }
+    ],
+    "identity_sha256": "9156e0d9b6f6ffc96d00e6ed0ef4db8efacb8941978d5a59bd30bfaa72bdb4d2",
+    "elapsed_seconds": 5.4797504500020295,
+    "model_loaded": false,
+    "weight_updates": 0,
+    "annotations_read": false,
+    "scope": "CPU input preflight only: all four requests exactly match prior accepted processor inputs; no weights loaded."
+  },
+  "result_sha256": "1ea6e4e0330e5cd2f0d05caf65b108ab271fdd094100aa72b796d352c98e2bf8",
+  "inspection_sha256": "3a898142683530ff1c6ef5bfbfc77cdf0715a6543cb8af9197a9fc910ac0d842",
+  "source_resources_terminal_and_records_verified": true
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "audio2tool-engine-capacity-preparation-v1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "db9db7a1b4fc7a171cef034b026edb0397f5c49f",
+  "source_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-engine-preflight-v1/source",
+  "preflight_container_id": "228aa79e9b7accc09b34488d1d1f04bc6eed72882b39f11d80005b355ec12914",
+  "preflight_result_sha256": "1ea6e4e0330e5cd2f0d05caf65b108ab271fdd094100aa72b796d352c98e2bf8",
+  "processor_container_id": "17889805612e4b2ccca53fac6422f75f4e75c49732c1c1efec2c2b589b193fcb",
+  "physical_devices": [
+    6,
+    7
+  ],
+  "wall_seconds": 3600,
+  "automatic_retry": false,
+  "dispatched": false,
+  "dependency_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-sampling-train78-v1",
+  "dispatch_requirements": [
+    "Reinspect successful CPU preflight and processor containers and all pinned source files",
+    "Wait for successful existing native-SFC and sampling queue acceptance; inspect exact sampling container",
+    "Acquire shared NPU6/7 resource lock; verify no live container maps either device",
+    "Record create intent then exact container ID before docker start; no replay"
+  ],
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-engine-capacity-v1",
+  "preparation_sha256": "c626a456f3a82e394321eb933fa2fc3347330c7eb855e5b1c7d01cc9142da068"
+}
