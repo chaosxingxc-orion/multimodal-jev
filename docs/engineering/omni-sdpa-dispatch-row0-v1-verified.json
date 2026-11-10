@@ -1,0 +1,251 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-sdpa-dispatch-row0-v1",
+  "launch": {
+    "container_id": "3bd94c1051be75f8edb8dea8289470653960c6ec4c5b39fa60d1d6eea401338f",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "b85f2bf97d3a46ec7a6b4e12ea08399df45fe83a",
+    "intent_sha256": "4d6e2140068c11ec56cd45b88b83b2b1cbd2abc636cdad4be31485c1ea22bb05"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T19:26:56.66737361Z",
+    "FinishedAt": "2026-11-10T19:27:05.51249805Z"
+  },
+  "result_sha256": "c2f8ee2b2e50c58f36094b0fff11bc881f10e54f6912668de4ced9ac3ba2394b",
+  "result": {
+    "status": "diagnostic_complete",
+    "reference_unpadded_exact": true,
+    "cases": [
+      {
+        "case": "default-implicit-gqa",
+        "operators": [
+          "aten::_scaled_dot_product_flash_attention_for_cpu",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "e6151d1a5890d84c453d683d701d7e2167b54b46d9def70250df359a308040ec",
+        "reference_unpadded": {
+          "equal": true,
+          "differing_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 161709,
+          "max_abs_error": 0.000244140625,
+          "mean_abs_error": 1.1254058307486048e-07
+        }
+      },
+      {
+        "case": "default-implicit-repeat",
+        "operators": [
+          "aten::_scaled_dot_product_flash_attention_for_cpu",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "fd3027e0dd76df83644c8b756a4043000e437a25d2010ee0049f97e186cc606b",
+        "reference_unpadded": {
+          "equal": true,
+          "differing_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 161709,
+          "max_abs_error": 0.000244140625,
+          "mean_abs_error": 1.1254058307486048e-07
+        }
+      },
+      {
+        "case": "default-explicit-gqa",
+        "operators": [
+          "aten::_scaled_dot_product_flash_attention_for_cpu",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "b218f25d53bea2a93e7008f2eb211fe50db7a2d49ec3c58fa5f11cea0092f2f7",
+        "reference_unpadded": {
+          "equal": true,
+          "differing_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 161709,
+          "max_abs_error": 0.000244140625,
+          "mean_abs_error": 1.1254058307486048e-07
+        }
+      },
+      {
+        "case": "default-explicit-repeat",
+        "operators": [
+          "aten::_scaled_dot_product_flash_attention_for_cpu",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "19798ff6a187262c76620161d164b4592929263d2a4c1056b519234720fa1ba8",
+        "reference_unpadded": {
+          "equal": true,
+          "differing_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 161709,
+          "max_abs_error": 0.000244140625,
+          "mean_abs_error": 1.1254058307486048e-07
+        }
+      },
+      {
+        "case": "math-implicit-gqa",
+        "operators": [
+          "aten::_scaled_dot_product_attention_math",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "50186d6d616b11733f47faddc235a4a3540f9ad72774d1ad6f56a594783e9a50",
+        "reference_unpadded": {
+          "equal": false,
+          "differing_elements": 773739,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.305308369926934e-07
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 772664,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.282199814857449e-07
+        }
+      },
+      {
+        "case": "math-implicit-repeat",
+        "operators": [
+          "aten::_scaled_dot_product_attention_math",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "ceeee701f03d28ee24d16f0cb05b742fc9d634cd15916f5a65f5e039487d257c",
+        "reference_unpadded": {
+          "equal": false,
+          "differing_elements": 773739,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.305308369926934e-07
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 772664,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.282199814857449e-07
+        }
+      },
+      {
+        "case": "math-explicit-gqa",
+        "operators": [
+          "aten::_scaled_dot_product_attention_math",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "c39944ab4842ba38b77d6aa90963c046d97f91bd1f227ed0f734458bb827a007",
+        "reference_unpadded": {
+          "equal": false,
+          "differing_elements": 773739,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.305308369926934e-07
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 772664,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.282199814857449e-07
+        }
+      },
+      {
+        "case": "math-explicit-repeat",
+        "operators": [
+          "aten::_scaled_dot_product_attention_math",
+          "aten::scaled_dot_product_attention"
+        ],
+        "sha256": "a82bd5a6d6cc466d6d743bbaa04819a032b3d7bc9ff9c9215f4b2651272ced2d",
+        "reference_unpadded": {
+          "equal": false,
+          "differing_elements": 773739,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.305308369926934e-07
+        },
+        "reference_padded": {
+          "equal": false,
+          "differing_elements": 772664,
+          "max_abs_error": 0.00048828125,
+          "mean_abs_error": 8.282199814857449e-07
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "left": "default-implicit-gqa",
+        "right": "default-implicit-repeat",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "left": "default-implicit-repeat",
+        "right": "default-explicit-repeat",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "left": "default-implicit-gqa",
+        "right": "default-explicit-gqa",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "left": "math-implicit-gqa",
+        "right": "math-implicit-repeat",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "left": "math-implicit-gqa",
+        "right": "math-explicit-gqa",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      },
+      {
+        "left": "math-implicit-repeat",
+        "right": "math-explicit-repeat",
+        "equal": true,
+        "differing_elements": 0,
+        "max_abs_error": 0.0,
+        "mean_abs_error": 0.0
+      }
+    ],
+    "source_sha256": "26f65397fb177426917f45f92be0703a8d05850b08d60fd254543b4642705183",
+    "torch_version": "2.10.0+cpu",
+    "elapsed_seconds": 5.417024299968034,
+    "weight_updates": 0,
+    "model_loaded": false,
+    "targets_read": false,
+    "scope": "Eight same-shape CPU BF16 SDPA controls with identical captured valid Q/K/V. No padded positions, model inference or task replay. Interpret only if original unpadded endpoint is exact; no NPU or full model fix claim."
+  },
+  "paired_comparisons_independently_verified": true,
+  "saved_outputs_verified": 8,
+  "source_files_verified": 113,
+  "conclusion": "At identical valid sequence length, mask form and GQA/repeat give exactly equal outputs within each backend. All default cases use CPU flash attention and equal original unpadded endpoint. Thus these branch choices alone do not reproduce the original padding divergence. Math differs from both original endpoints; changing backend is not established as a fix.",
+  "limitation": "One CPU TRAIN row, no padded shape intervention, NPU/verl validation or full model fix. Operator names are profiler observations from immutable source, not an independent rerun."
+}

@@ -151,3 +151,18 @@ o-proj后188166个元素不同，最大差0.00390625。无padding端点精确复
 无padding端点精确复现，再解释变化；不重建padding、不加载模型、不重放任务。
 预算同一固定镜像16 CPU/8 GiB、300秒加10秒、无网络设备；只读原实验与源码，
 实际容器ID在start前落盘，失败不重试。本算子诊断不能直接证明完整模型修复。
+
+## 同形状 SDPA 对照：mask/GQA 分支不足以解释差异
+
+容器`3bd94c1051be75f8edb8dea8289470653960c6ec4c5b39fa60d1d6eea401338f`已退出0，
+固定源码`b85f2bf`，8次算子对照耗时5.42秒。独立审计重新加载8份输出并复算全部
+对照，见[SDPA验收](omni-sdpa-dispatch-row0-v1-verified.json)。默认后端四种组合
+均调用`aten::_scaled_dot_product_flash_attention_for_cpu`，输出逐元素相同且都
+精确复现原无padding端点。math四种组合也彼此相同，但与两种原始端点均不同。
+
+所以在该row、相同有效长度和Q/K/V下，mask表达和GQA/repeat选择本身不能复现
+padding差异，也不能将其归因于默认路径从flash退回math。尚需检验加入被mask
+排除的位置后，序列形状、存储布局及计算分块对舍入的影响；当前未修改模型默认
+attention实现，也不把math替换宣称为修复。完整六条trace仍运行，row1运行报告
+同样首先在layer0 attention出现差异，两条件最终logits精确复现原诊断；该行完整
+中间张量尚待独立审计。
