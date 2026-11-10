@@ -54,10 +54,12 @@ nga 原语是 choice/noul/score；本协议的 `typed_call_list` 是本项目扩
 
 ## 模型消费和评分约定
 
-本次交付是数据转换；现有原生 SFC 推理队列仍用原生格式。
-后续 adapter 须将一个决策单独渲染给 Omni：保留官方输入函数定义、环境、
-有序音频和已提供历史，明确说明当前回答采用该决策的输出契约，覆盖原文的
-call-string 输出格式要求。不能原样拼接两个互相冲突的输出指令后认定模板已验证。
+数据转换已发布；现有原生 SFC 推理队列仍用原生格式。
+`sfc_jev_runtime.py` 已将一个决策单独渲染给 Omni：原样保留输入函数定义、环境、
+有序音频和已提供历史，仅替换 TRAIN 中已人工核验并固定 SHA256 的十种首轮前缀，
+以及固定的第二轮输出指令；未知指令直接报错，不静默删除。
+当前决策只要求一个 JSON 布尔值或参数对象数组，不引入 tools/XML 输出协议。
+全量 136722 个决策通过静态映射审计；尚未完成实际 processor/vLLM 的验证。
 完整 context 保留候选菜单，因此本版本不能宣称候选隔离或 IIA 已成立。
 
 Noul 先用 JSON 布尔输出测量；只有实际验证 logit 读出后才能称为原生 typed 推理。
@@ -65,11 +67,18 @@ Noul 先用 JSON 布尔输出测量；只有实际验证 logit 读出后才能�
 typed_call_list 先测格式、参数 schema 和完整调用 multiset 准确率，
 再序列化回官方 call-string 格式，以官方评分与严格评分并列横向比较。
 不得把格式修复后的成绩冒充原始生成成绩。
-当前 `reconstruct_calls` 检查有限 JSON 类型及分支一致性，并非完整 JSON Schema 校验器；
-推理评分接入前还须实现参数 membership、required、递归类型和 enum 的预测校验。
+数据层 `reconstruct_calls` 检查有限 JSON 类型及分支一致性，并非完整 JSON Schema 校验器。
+运行评分由 `sfc_jev_score.py` 检查参数 membership、required、递归类型和 enum；
+布尔值不当整数，非有限数、重复 JSON 键、Markdown 包裹和尾随文字均拒绝。
+schema 只支持明确列出的关键字，遇到未支持的 schema 报工程错误，不算模型错误。
+JSON 参数对象采用闭合参数集合；顶层参数可用 NAN，但数组元素不因此放开类型约束。
+评分分开记录格式/类型/正确性、正反 Noul 互补性和 Noul/calls 一致性。
+所有 calls 分支都独立推理，合并时不根据 Noul 预测过滤。
+任意 calls 分支无效则整个原生预测标记无效，不悄悄改成空调用。
 
 全量 gold 顶层参数审计只用于转换正确性，不能用于选择提示词或输出策略。
-现有审计未递归验证数组元素 schema，不将其描述为完整 JSON Schema 合规证明。
+初版定义审计仅验证顶层；新增 runtime 审计已递归核对全部 gold 与受支持的 schema。
+这不是对任意 JSON Schema 方言的完整实现。
 实际参数类型是 string/list/int；bool/object/null 只在合成边界测试覆盖，不能宣称数据已包含。
 
 ## 不变性、区分性和训练接口的后续工作
@@ -84,3 +93,16 @@ v1 发布完整基础任务，不把尚未实现的扩展写成已交付。
 配对一致性和定义改变后的区分能力。常量 true/false 和恒空调用作为退化基线。
 一致性奖励不能替代正确性；不得奖励“全输出 []”获得高表面一致性。
 当前冻结基线与教师提示优化优先，尚不启动权重训练。
+
+## 已完成的评分接入验证
+
+`evaluate_sfc_jev.py` 要求所给发布划分中的全部决策预测，按 request SHA256 绑定输入，
+输出逐决策分数、合并后的原生调用，再调用原始 SFC 评分程序和严格评分。
+每个预测字段为 example_id、decision_id、request_sha256、raw_text。
+后处理仅做确定性结构序列化，不补答案或修复非法原文。
+
+四个完整 TRAIN 会话的六轮、78 个决策使用 gold 作为模拟输出，已通过该桥接及官方评分。
+记录见 `sfc-jev-native-bridge-train6-fixture-v1.json`；这是评分器 fixture，不能作为模型成绩。
+全量静态映射/递归 schema 证据见 `sfc-jev-runtime-static-audit-v1.json`。
+下一步在冻结镜像上运行真实波形 processor 校验，再接入受控 TRAIN 推理；
+全量任务上下文长度仍须实际测量，字符长度不能替代 token/audio 特征预算。
