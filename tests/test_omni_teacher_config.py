@@ -11,7 +11,8 @@ spec = importlib.util.spec_from_file_location('omni_teacher_config',
 module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
 
 
-def test_bounded_configuration_no_dispatch_or_duplicate_attempt(tmp_path, monkeypatch):
+@pytest.mark.parametrize('thinking,max_tokens',[('enabled',32768),('disabled',8192)])
+def test_bounded_configuration_no_dispatch_or_duplicate_attempt(tmp_path, monkeypatch,thinking,max_tokens):
     context = dict(schema='jev-generative-audio-ace-feedback-v1', split='train',
         selection_or_test_feedback=False, weight_updates=0, zeros_semantic_gold_available=False,
         actor_model='Qwen/Qwen3-Omni-30B-A3B-Instruct')
@@ -35,7 +36,9 @@ def test_bounded_configuration_no_dispatch_or_duplicate_attempt(tmp_path, monkey
     assert not (tmp_path/'executor-config.private.json').exists()
     prepared['selection_or_test_feedback_used'] = False
     (tmp_path/'prepared.json').write_text(json.dumps(prepared))
-    receipt = module.configure(tmp_path, reference, executor)
+    receipt = module.configure(tmp_path, reference, executor,thinking=thinking,max_tokens=max_tokens)
+    configured=json.loads((tmp_path/'executor-config.private.json').read_text())
+    assert configured['thinking']=={'type':thinking} and configured['max_tokens']==max_tokens
     assert receipt['API_sent'] is False and receipt['max_new_requests'] == 1
     assert receipt['credential_available'] is False
     assert not (tmp_path/'response').exists()

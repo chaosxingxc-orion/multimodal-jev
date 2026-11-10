@@ -1,0 +1,37 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-teacher-ace-v3",
+  "result": {
+    "candidate_accepted": false,
+    "elapsed_seconds": 534.9499306497164,
+    "finish_reasons": [
+      "length"
+    ],
+    "http_status": 200,
+    "model": "glm-5.3-flash",
+    "request_id": null,
+    "response_sha256": "fe4b69444444c25e54871da9af7154ca28847fe0f73c609d397a8f0c6f4e2792",
+    "semantic_validation": "pending",
+    "state": "response_received",
+    "usage": {
+      "completion_tokens": 32768,
+      "completion_tokens_details": {
+        "reasoning_tokens": 32764
+      },
+      "prompt_tokens": 41629,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 74397
+    }
+  },
+  "terminal": {
+    "exit_code": 1,
+    "error": "ValueError('complete nontruncated teacher response required')",
+    "finished_unix": 1794302710.402433,
+    "automatic_retry": false
+  },
+  "cumulative_omni_teacher_tokens": 191480,
+  "candidate_evaluated": false,
+  "selection_or_test_feedback_used": false,
+  "scope": "Truncated teacher response rejected; explicit same-message thinking-disabled revision follows; no partial output repaired"
+}

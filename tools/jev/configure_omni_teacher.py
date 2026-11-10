@@ -11,7 +11,9 @@ from multimodal_jev.consumption import canonical
 EXECUTOR_SHA = 'c9f9bbd333f038955945db82d946cb2757bafbc340b1a8ca476f52f3ab406bd4'
 
 
-def configure(root, reference, executor):
+def configure(root, reference, executor, *, thinking='enabled', max_tokens=32768):
+    if (thinking, max_tokens) not in (('enabled',32768),('disabled',8192)):
+        raise ValueError('registered teacher mode and output budget required')
     prepared = json.loads((root/'prepared.json').read_text())
     messages = root/'messages.private.json'
     if (file_hash(messages) != prepared['messages_sha256']
@@ -34,8 +36,8 @@ def configure(root, reference, executor):
     cfg = {k:prior[k] for k in ('endpoint','model','api_key_env')}
     cfg.update(schema='saea-external-learner-v1',
         messages=dict(path=str(messages.resolve()), sha256=file_hash(messages)),
-        max_tokens=32768, timeout_seconds=180, total_timeout_seconds=900,
-        stream=True, thinking={'type':'enabled'}, output_root=str((root/'response').resolve()))
+        max_tokens=max_tokens, timeout_seconds=180, total_timeout_seconds=900,
+        stream=True, thinking={'type':thinking}, output_root=str((root/'response').resolve()))
     if (root/'response').exists() or (root/'teacher-call-intent.json').exists():
         raise FileExistsError('preserve prior teacher attempt; no automatic retry')
     destination = root/'executor-config.private.json'
@@ -45,7 +47,7 @@ def configure(root, reference, executor):
     receipt = dict(schema='jev-omni-teacher-call-intent-v1', API_sent=False,
         executor_sha256=EXECUTOR_SHA, config_sha256=file_hash(destination),
         messages_sha256=file_hash(messages), teacher_model=cfg['model'],
-        max_new_requests=1, automatic_retry=False, max_tokens=32768,
+        max_new_requests=1, automatic_retry=False, max_tokens=max_tokens, thinking=thinking,
         timeout_seconds=180, total_timeout_seconds=900,
         max_candidates=2, max_instruction_characters=1500,
         credential_available=bool(os.environ.get(cfg['api_key_env'])),
