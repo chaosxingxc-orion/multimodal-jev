@@ -78,6 +78,11 @@ vLLM. The paper's final GRPO uses FP16 and 32 generations; checked-in scripts
 default to BF16 and 8. Our verl/vLLM port must explicitly document such differences.
 No published SFC checkpoint has been loaded or inferred here. The current
 Qwen3-ASR GRPO path handles one audio per example. A separate chronological
-[multi-audio inference adapter](sfc-audio-adapter.md) is implemented; real vLLM
-engine validation, schema-to-call composition, official-model runs and actual
-transfer scores remain.
+[multi-audio inference adapter](sfc-audio-adapter.md) is implemented. The
+[CPU engine check](../docs/engineering/sfc-vllm-cpu-engine-v3-result.json)
+completed one registered two-audio TRAIN request, but the base ASR emitted
+transcription rather than valid tool calls. It establishes request acceptance,
+not that both audio clips causally influenced the output. Schema-to-call
+composition, official-model runs and actual transfer scores remain. Stateful
+tool execution is a separate [τ² integration](tau2-environment-bridge.md),
+not an alternative scoring path for this offline SFC benchmark.

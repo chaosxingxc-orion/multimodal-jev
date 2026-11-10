@@ -1,0 +1,110 @@
+{
+  "status": "passed",
+  "domain": "retail",
+  "task_id": "0",
+  "split": "train",
+  "actions": 5,
+  "initial_hashes": {
+    "agent": "b25c9cb211f5efcaee5dd646054a73c4a9f43f4f5acc32c10713cd9f9ac20e9c",
+    "user": null
+  },
+  "final_hashes": {
+    "agent": "a109be174767fde0ebb50fe3be37cdb2f1ce017fefd7bd29ea3e4d38bd3ac25a",
+    "user": null
+  },
+  "oracle_environment_score": {
+    "reward": 1.0,
+    "db_check": {
+      "db_match": true,
+      "db_reward": 1.0
+    },
+    "env_assertions": [],
+    "action_checks": null,
+    "nl_assertions": null,
+    "communicate_checks": null,
+    "reward_basis": [
+      "DB",
+      "NL_ASSERTION"
+    ],
+    "reward_breakdown": {
+      "DB": 1.0
+    },
+    "info": null
+  },
+  "omitted_write_environment_score": {
+    "reward": 0.0,
+    "db_check": {
+      "db_match": false,
+      "db_reward": 0.0
+    },
+    "env_assertions": [],
+    "action_checks": null,
+    "nl_assertions": null,
+    "communicate_checks": null,
+    "reward_basis": [
+      "DB",
+      "NL_ASSERTION"
+    ],
+    "reward_breakdown": {
+      "DB": 0.0
+    },
+    "info": null
+  },
+  "strict_replay_corruption_rejection": {
+    "type": "ValueError",
+    "rejected": true,
+    "detail": "preserved only in shared run/result.json"
+  },
+  "private_criteria_observation_invariance": true,
+  "duplicate_call_rejected": true,
+  "data_sha256": {
+    "tasks.json": "8e03ebce7901bd6218e7a7dc3105faa9324091a68058f7fe61c65262868812e8",
+    "split_tasks.json": "ed0580ec52575b63fbf76568af42490da6ee7783ecb4aa81af46961291358f20",
+    "db.json": "413a65160adbdb5fde0ffc0015c49b6d70250b10c18128de169b597af7766765",
+    "policy.md": "2c9652afbce57d6e087768d37cda64d31c53d50b3e3225cfdb791bac66466467"
+  },
+  "scope": "oracle TRAIN environment interface validation only; environment component, not NL assertions, model predictions, speech interaction, policy compliance or academic reproduction",
+  "upstream_revision": "033bf082f48e4a3c6a1256208e93cf2ce9c3bb6f",
+  "upstream_license": "MIT",
+  "container_id": "fc2752071a846ca52b6e529d1a738833911a42ead8f7375970131d47b88406e1",
+  "image_id": "sha256:d91725d249e7e7c8a941d5110827d2807be93767d3a42453ea2bdea3ca5e49db",
+  "docker_state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T01:15:29.3947146Z",
+    "FinishedAt": "2026-11-10T01:15:36.0668605Z"
+  },
+  "network_mode": "none",
+  "evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/tau2-environment-probe-v2",
+  "build_evidence_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/tau2-runtime-build-v2",
+  "result_sha256": "2040fe5ad3024239f52c109b3751f63f943dde10204be919d416c7667b9d6825",
+  "source_hashes_sha256": "cb56f0187e22bb1828b75b3b2b5ad4d4878d50a2b5a38a4f936ab0125e6cf0c8",
+  "build_artifact_hashes_sha256": "bfa8d9f087b2e9799bf6c9fdd45ded02d23b11e1dc71be384311282ad0308a22",
+  "requirements_sha256": "020090b9d2f6a36f7c6e6c421dda43fa62f3d7096a1bbd93bc25e3c83f2a694f",
+  "failures_retained": [
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/tau2-runtime-build-v1",
+      "reason": "direct network installation unavailable; deliberately stopped with exit137 after independent connectivity diagnosis"
+    },
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/tau2-runtime-build-v2",
+      "container_id": "b304548dd382508531e96ef8b6b63bd3e13979232c89ad66271d9721195d7024",
+      "reason": "image built successfully; first probe failed on incomplete project source snapshot; complete package snapshot used for v2"
+    }
+  ],
+  "independent_artifact_audit": {
+    "all_build_hashes_verified": 565,
+    "copied_upstream_files_match_shared_source": true,
+    "oracle_messages": 10,
+    "omitted_write_messages": 8,
+    "final_status": "exchange requested",
+    "exchange_price_difference": -16.63
+  }
+}
