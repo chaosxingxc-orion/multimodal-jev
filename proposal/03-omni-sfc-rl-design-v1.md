@@ -99,6 +99,12 @@ learning 中无整 bundle 空调用标签，整任务拒识仍有覆盖缺口。
 
 ## 必须包含的对照与消融
 
+新增 [类别权重归一化数值核查](../docs/engineering/sfc-reward-balance-numerical-v1.md)：
+逆频率权重作为同 prompt 的正标量，在标准化 GRPO 中基本抵消（实测最大差异
+7.15e-7）。因此不能把奖励先乘 active/inactive 权重后照常标准化作为有效平衡方案。
+后续平衡消融须明确采用仅中心化，或标准化后对 policy-gradient 项加权，并分别
+规定 token/response/bundle 分母及正则项。该发现只改变设计约束，未修改当前奖励。
+
 | 条件 | 用途 |
 | --- | --- |
 | 冻结 parent / 冻结教师候选 | 将提示收益与权重收益分开 |

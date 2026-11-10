@@ -1,0 +1,210 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-reward-balance-numerical-v1",
+  "container_id": "5f8ef641e7d2e56680ca68ae1709f054fc6814aad5dc01b5f30caebfa6c2e68b",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T15:02:30.35219823Z",
+    "FinishedAt": "2026-11-10T15:02:45.19944899Z"
+  },
+  "source_commit": "bea3290bb7a5bcaa2518b3ad34bf2dca9f5f23e9",
+  "result_sha256": "86f82e86ad1a1f358249a212f1700e3c23f5f381580d80c6cf988fd752a3c46a",
+  "log_sha256": "7fc33a0334cee41edbe0ae6e19a045127589d1291ebe31880d254f8e02eb3f4f",
+  "result": {
+    "schema": "sfc-jev-grpo-reward-balance-diagnostic-v1",
+    "audit_sha256": "65475f49ff795714ab978c25e5e39826b737eb89b0a93ab398c1564925ddc1ba",
+    "learning_counts": {
+      "active_functions": 6085,
+      "bundles": 4428,
+      "decisions": 69210,
+      "functions": 23070,
+      "inactive_functions": 16985,
+      "no_call_bundles": 0
+    },
+    "class_weights": {
+      "active": 1.8956450287592441,
+      "inactive": 0.6791286429202237
+    },
+    "synthetic_empty_raw_reward_fraction": 0.736237537928045,
+    "synthetic_empty_weighted_reward_fraction": 0.5,
+    "reports": {
+      "centered": {
+        "base_first_token": [
+          [
+            0.75,
+            -0.25,
+            -1.25,
+            0.75
+          ],
+          [
+            0.75,
+            -0.25,
+            -1.25,
+            0.75
+          ],
+          [
+            0.925000011920929,
+            0.7249999642372131,
+            -0.3750000298023224,
+            -1.2750000953674316
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "pre_normalization_weighted_first_token": [
+          [
+            1.4217337369918823,
+            -0.47391125559806824,
+            -2.369556188583374,
+            1.4217337369918823
+          ],
+          [
+            0.5093464851379395,
+            -0.16978216171264648,
+            -0.8489108085632324,
+            0.5093464851379395
+          ],
+          [
+            1.7534716129302979,
+            1.3743425607681274,
+            -0.7108669877052307,
+            -2.416947364807129
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "post_normalization_weighted_first_token": [
+          [
+            1.4217337369918823,
+            -0.47391125559806824,
+            -2.369556188583374,
+            1.4217337369918823
+          ],
+          [
+            0.5093464851379395,
+            -0.16978216171264648,
+            -0.8489108085632324,
+            0.5093464851379395
+          ],
+          [
+            1.7534716129302979,
+            1.3743425607681274,
+            -0.7108669281005859,
+            -2.416947603225708
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "pre_weight_max_difference_from_base": 1.1419472694396973,
+        "pre_vs_post_max_difference": 2.384185791015625e-07
+      },
+      "standardized": {
+        "base_first_token": [
+          [
+            0.7833486199378967,
+            -0.2611162066459656,
+            -1.3055810928344727,
+            0.7833486199378967
+          ],
+          [
+            0.7833486199378967,
+            -0.2611162066459656,
+            -1.3055810928344727,
+            0.7833486199378967
+          ],
+          [
+            0.9030651450157166,
+            0.7078077793121338,
+            -0.3661075234413147,
+            -1.2447655200958252
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "pre_normalization_weighted_first_token": [
+          [
+            0.7833490371704102,
+            -0.2611163556575775,
+            -1.3055816888809204,
+            0.7833490371704102
+          ],
+          [
+            0.7833482623100281,
+            -0.261116087436676,
+            -1.3055803775787354,
+            0.7833482623100281
+          ],
+          [
+            0.9030655026435852,
+            0.7078080773353577,
+            -0.366107702255249,
+            -1.2447659969329834
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "post_normalization_weighted_first_token": [
+          [
+            1.4849509000778198,
+            -0.49498364329338074,
+            -2.4749183654785156,
+            1.4849509000778198
+          ],
+          [
+            0.5319944620132446,
+            -0.17733149230480194,
+            -0.8866575360298157,
+            0.5319944620132446
+          ],
+          [
+            1.7118909358978271,
+            1.341752290725708,
+            -0.6940099000930786,
+            -2.359633445739746
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "pre_weight_max_difference_from_base": 7.152557373046875e-07,
+        "pre_vs_post_max_difference": 1.1693366765975952
+      }
+    },
+    "core_source_sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+    "model_loaded": false,
+    "weight_updates": 0,
+    "scope": "Fixed learning-label counts plus synthetic K=4 reward groups evaluated with real verl. Reward rescaling before same-prompt standardization cancels; post-standardization weights or centering change numerical advantages. No actor gradients, efficacy or reward-policy change."
+  },
+  "verified_unix": 1794323063.3614116
+}
