@@ -12,6 +12,21 @@ from multimodal_jev.six_view_score import score_six_views
 from compare_direct_readout_controls import load_run
 
 
+def mcnemar_p(fixed, regressed):
+    """Two-sided exact binomial tail without huge integer-to-float overflow."""
+    n = fixed + regressed
+    if not n:
+        return 1.
+    k = min(fixed, regressed)
+    term = math.exp(math.lgamma(n + 1) - math.lgamma(k + 1)
+                    - math.lgamma(n - k + 1) - n * math.log(2))
+    tail = term
+    for i in range(k, 0, -1):
+        term *= i / (n - i + 1)
+        tail += term
+    return min(1., 2 * tail)
+
+
 def paired_outcomes(requests, targets, parent, candidate):
     """Paired error transitions; views are correlated, not pooled samples."""
     gold={r['id']:r for r in targets};views={};groups={}
@@ -29,8 +44,7 @@ def paired_outcomes(requests, targets, parent, candidate):
         a,b=all(x for x,y in outcomes),all(y for x,y in outcomes)
         whole['both_correct' if a and b else 'both_wrong' if not a and not b else 'fixed' if b else 'regressed']+=1
     for cell in [*views.values(),whole]:
-        n=cell['fixed']+cell['regressed'];k=min(cell['fixed'],cell['regressed'])
-        cell['mcnemar_exact_two_sided_p']=min(1.,2*sum(math.comb(n,i) for i in range(k+1))/(2**n)) if n else 1.
+        cell['mcnemar_exact_two_sided_p']=mcnemar_p(cell['fixed'],cell['regressed'])
     return {'by_view':views,'all_six_by_source_group':whole,
             'scope':'descriptive paired selection diagnostics; no multiplicity correction or held-out test significance claim'}
 

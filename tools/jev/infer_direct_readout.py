@@ -11,14 +11,15 @@ from multimodal_jev.consumption import canonical,validate_request
 from multimodal_jev.direct_readout import prompt,label_tokens,decision,audio_messages,ASR_TASK_PREFIX
 from multimodal_jev.end_to_end import require_audio_task_route
 from multimodal_jev.policy_identity import checkpoint_identity
+from multimodal_jev.direct_test_lock import validate_population
 
 
 def run(cfg,output):
     require_audio_task_route(cfg)
     if cfg.get('parameters_frozen') is not True or cfg.get('adapter') is not None:
         raise ValueError('frozen official checkpoint required')
-    if cfg['split']!='train' or cfg['audio_condition'] not in ('actual','zeros'):
-        raise ValueError('registered TRAIN actual/zero-waveform probe required')
+    if cfg['split'] not in ('train','test') or cfg['audio_condition'] not in ('actual','zeros'):
+        raise ValueError('registered TRAIN probe or locked TEST required')
     if cfg.get('output_prefix','') not in ('',ASR_TASK_PREFIX):
         raise ValueError('only fixed ASR header or empty prefix permitted')
     import torch
@@ -30,16 +31,15 @@ def run(cfg,output):
         raise ValueError('task-trained checkpoint excluded')
     policy,files=checkpoint_identity(checkpoint)
     with Path(cfg['requests']).open() as handle:rows=[validate_request(json.loads(line)) for line in handle]
-    groups=set(cfg['source_groups'])
-    if len(groups)!=len(cfg['source_groups']) or not groups<={r['source_group'] for r in rows}:
-        raise ValueError('invalid source groups')
-    rows=[r for r in rows if r['source_group'] in groups]
-    if not rows or len({r['id'] for r in rows})!=len(rows) or any(r['split']!=cfg['split'] for r in rows):
-        raise ValueError('unique TRAIN population required')
+    rows=validate_population(cfg,rows)
     identity={'config':cfg,'requests_sha256':file_hash(cfg['requests']),
               'instruction_sha256':file_hash(cfg['instruction']),'models':{'audio_model':{'policy_id':policy,'files':files}},
               'runner_sha256':file_hash(__file__),'source_sha256':{name:file_hash(Path(__file__).parents[2]/'src/multimodal_jev'/name)
-                for name in ('direct_readout.py','end_to_end.py','audio_policy.py','asr.py','consumption.py','task_schema.py')}}
+                for name in ('direct_readout.py','end_to_end.py','audio_policy.py','asr.py','consumption.py','task_schema.py','direct_test_lock.py')}}
+    if cfg['split']=='test':
+        lock=json.loads(Path(cfg['heldout_lock']).read_text())
+        if identity['models']!=lock['models']:raise ValueError('locked model identity changed')
+        identity['heldout_lock_sha256']=file_hash(cfg['heldout_lock'])
     if (output/'identity.json').exists() and json.loads((output/'identity.json').read_text())!=identity:
         raise ValueError('resume identity changed')
     atomic_json(output/'identity.json',identity);atomic_json(output/'selection.json',{'ids':[r['id'] for r in rows]})

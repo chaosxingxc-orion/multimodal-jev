@@ -5,9 +5,22 @@ spec = importlib.util.spec_from_file_location('direct_select',
     Path(__file__).parents[1]/'tools/jev/select_direct_prompt.py')
 # CLI sibling module is intentionally imported as a normal script dependency.
 import sys
+import math
+from fractions import Fraction
+import pytest
 sys.path.insert(0, str(Path(__file__).parents[1]/'tools/jev'))
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
+
+
+def test_exact_tail_handles_full_test_discordance_without_overflow():
+    for fixed, regressed in [(0,0),(1,5),(20,31),(100,101)]:
+        n=fixed+regressed;k=min(fixed,regressed)
+        expected=min(1.,2*sum(math.comb(n,i) for i in range(k+1))/2**n)
+        assert module.mcnemar_p(fixed,regressed)==pytest.approx(expected)
+    expected=float(Fraction(2*sum(math.comb(3793,i) for i in range(1894)),2**3793))
+    assert module.mcnemar_p(1900,1893)==pytest.approx(expected,abs=1e-10)
+    assert module.mcnemar_p(3793,0)==0.
 
 
 def row(name, all_six, pairs, total, length=100):
