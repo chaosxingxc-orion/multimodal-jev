@@ -95,3 +95,19 @@ actor helper SHA。使用原始无padding前向的prompt长度和固定顺序重
 修订启动器允许正常附带完成时间，仍要求退出码为整数0且没有error，并保留实际
 Docker成功终态、预检查结果SHA、源码身份以及全六条候选logits门禁。修订版本
 单独固定快照后手动派发，旧协调者不重启，不覆盖原失败记录。
+
+### 修订后完整 actor 已派发
+
+修订启动器源码固定为`929368a`，单独保存在`omni-compact-verl-dispatch-fix-v1`。
+确认旧协调者已停止、目标目录和容器都不存在后执行一次，重新验收全部候选依赖，
+随后创建并启动容器
+`1e3972f736ae4b3aadc1cf71a21610cbc6c17ab87235bec9b730d35bb651144b`。
+actor源码仍为已通过真实预检查的`dd1e447`，intent SHA为
+`e2f92f58e2ece2c190047b3142c2026b05926424b48c3659b753ad37643cc7e1`。
+
+外部协调者重新inspect，核对实际命令、挂载、环境、16 CPU/160 GiB/2 GiB shm、
+无网络设备及342份源码与Git身份，状态为running。见
+[派发身份](omni-compact-verl-train6-v1-launched.json)和
+[派发独立核验](omni-compact-verl-train6-v1-dispatch-verified.json)。
+修订派发成功不代表实际actor比较通过；microbatch=1/2的12条前向、原0.1门槛及
+外部完整验收仍待该精确容器完成。不得重启旧协调者或手动重复创建本实验。
