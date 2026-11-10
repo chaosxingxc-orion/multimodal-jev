@@ -1,0 +1,68 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-compact-verl-train6-v1",
+  "container_id": "1e3972f736ae4b3aadc1cf71a21610cbc6c17ab87235bec9b730d35bb651144b",
+  "state_at_audit": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1372409,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T20:25:09.4475027Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "source_commit": "dd1e4475c8c3b27befbed27d498c0c7e54150830",
+  "intent_sha256": "e2f92f58e2ece2c190047b3142c2026b05926424b48c3659b753ad37643cc7e1",
+  "source_files_verified": 342,
+  "identity_sha256": "35cfdf92ddc144f1245f9416590d4c162a072abfe138f0c645ddd793ed96ecf1",
+  "microbatch": 1,
+  "examples": 6,
+  "response_tokens_per_example": 2,
+  "actual_attention_calls_verified": 288,
+  "raw_log_probs": [
+    [
+      -0.9526049494743347,
+      -4.887569048150908e-06
+    ],
+    [
+      -4.411566734313965,
+      -3.480850500636734e-05
+    ],
+    [
+      -5.267108917236328,
+      -0.0001134808044298552
+    ],
+    [
+      -4.540982723236084,
+      -1.3351351299206726e-05
+    ],
+    [
+      -4.938191890716553,
+      -1.9788545614574105e-05
+    ],
+    [
+      -3.5611798763275146,
+      -1.168244216387393e-05
+    ]
+  ],
+  "recomputed_reference_errors": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "max_error_from_unpadded": 0.0,
+  "threshold": 0.1,
+  "elapsed_seconds": 2069.9932203899953,
+  "microbatch_record_sha256": "7cfa98b3d005191433c8b5a757652c6d5a6e9a466f5a1a3f203c5a0f7e308402",
+  "original_result_sha256": "2b08275c98794fe49ba4189151dbb793b3d9cfdd315d24267c5c1c5b1c9152ec",
+  "candidate_acceptance_sha256": "59a238f8e9f7f8388c0884343556af2abae9d930b80808971d103feac2d957f6",
+  "full_comparison_accepted": false,
+  "inference_replayed": false,
+  "limitation": "Partial actual CPU verl actor result. Saved response log probabilities independently compared to original accepted unpadded forward; no actor logits were persisted. Microbatch=2 and successful terminal still pending; no NPU/vLLM parity, optimizer or task quality claim."
+}

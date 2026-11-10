@@ -127,3 +127,17 @@ actor源码仍为已通过真实预检查的`dd1e447`，intent SHA为
 响应概率、逐层调用、原始输入身份和0.1门槛。结果写入独立`acceptance.json`。
 观察器未包含Docker create/start或训练/推理派发，成功也不自动启动后续权重学习。
 当前只确认观察器存活；actor结果及完整最终验收仍待运行完成。
+
+### 第一种实际 verl microbatch 条件已独立核验
+
+原精确actor已完成microbatch=1的全部六条，耗时2069.99秒，并进入microbatch=2。
+外部协调者再次inspect，核对实际资源/命令/挂载/环境、342份源码与Git、原始
+输入/模型身份、已验收候选helper，以及6×48=288条实际attention调用记录。
+逐条读取保存的两个响应token概率并与原无text-padding前向比较，误差为
+`[0,0,0,0,0,0]`。见[第一条件独立核验](omni-compact-verl-train6-v1-microbatch1-audit.json)。
+
+旧未修复actor的microbatch=1参考最大误差为0.9680581093；本条件在保持原0.1
+门槛下恢复参考概率。此处审计对象是实际actor保存的log probabilities，actor未
+额外保存logits，不能称为再次独立计算完整词表概率。固定响应仍为false+EOS，
+old_log_probs仍明确为synthetic占位；没有优化器、权重更新或任务质量提升结论。
+microbatch=2、两条件互比和成功终态仍待完成，整体CPU actor一致性尚未验收。
