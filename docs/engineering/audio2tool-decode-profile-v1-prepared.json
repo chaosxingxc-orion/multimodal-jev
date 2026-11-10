@@ -1,0 +1,31 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-decode-profile-v1",
+  "preparation_sha256": "10d876c333114956f8a952e062511f720ba7755c55a206ab4a78cb048b48c6f6",
+  "schema": "audio2tool-decode-profile-preparation-v1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "2dee70708a368544ac22d121bad16ab9fd34d497",
+  "source_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-decode-preflight-v1/source",
+  "preflight_container_id": "fdf7a9a736b0be8b40951908b886f1121c98898d199c7d9527fb8e421511aee1",
+  "preflight_intent_sha256": "e6c8839e63fd766641f41f06ec5c3337aa6f6516067a126128a8bcd79126ea6b",
+  "preflight_result_sha256": "01d64292294d6912a47cd46bf3abc3ad4e679320625c3bf6a13cddd926cba50f",
+  "physical_devices": [
+    6,
+    7
+  ],
+  "wall_seconds": 7200,
+  "weight_updates": 0,
+  "automatic_retry": false,
+  "dispatched": false,
+  "created_unix": 1794342886.0594623,
+  "dependency_roots": [
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-engine-capacity-v1",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-jev-engine-capacity-v1"
+  ],
+  "dispatch_requirements": [
+    "Both exact capacity containers must succeed and pass independent acceptance",
+    "Capture fresh capacity inspections and append --capacity-evidence and its SHA before immutable intent",
+    "Acquire npu67-sampling-resource.lock and verify Docker plus driver-visible device availability",
+    "Create once, persist exact container ID before start; never replay ambiguous create/start",
+    "Successful execution is not final independent output/tokenizer acceptance or population throughput"
+  ]
+}

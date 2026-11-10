@@ -67,3 +67,27 @@ tokenizer来源，不能把一套可编辑文件或fixture作为NPU执行证据�
 输入/attempt错配、输出token或截断不一致、独立解码差异、伪造汇总/计时、cache
 缺失、预检查冒充执行、缺容量及误读目标。合法截断和非法JSON原样保留也有正例。
 当前尚无实际NPU完整解码结果，这些测试不代表真实耗时或任务得分。
+
+## 顺序队列和完整解码派发配置
+
+`watch_audio2tool_decode.py`等待原Jev容量协调者成功，等待期间核对真实进程ID和
+启动时间；完成后重新验收原生容量和Jev容量的精确Docker容器及保存结果。
+随后取得共享`npu67-sampling-resource.lock`，同时检查Docker和驱动可见进程，
+再捕获两种容量的实际inspection文件与SHA，追加到固定profile命令。
+未知或非空驱动输出仍按忙碌处理，不自行绕过设备检查。
+
+profile沿用原真实CPU预检查源码`2dee707`共117份文件，保持完整4个native和12个
+Jev案例、greedy/seed17/max_tokens1024、自然EOS。已登记16 CPU/128 GiB/8 GiB shm、
+NPU6/7、7200秒加30秒；HCCL端口63900。只读模型、数据和原源码；独立输出目录。
+preparation SHA为`10d876c333114956f8a952e062511f720ba7755c55a206ab4a78cb048b48c6f6`，
+见[派发准备](audio2tool-decode-profile-v1-prepared.json)。这份记录不代表已创建NPU容器。
+
+协调者依赖等待上限350000秒，容器观察上限7500秒。SSH超时仅重试同一容器观察；
+create/start歧义、已存在部分inspection或intent均保留并禁止自动重放。成功执行
+后只写`execution-complete.json`且`accepted=false`，需要独立tokenizer/完整记录
+验收；不会自动触发全量生成、读取目标或将边界耗时外推为全量吞吐。
+
+新增22项协调者测试，与解码artifact/profile及既有Jev容量队列测试合计67项通过。
+覆盖真实进程身份核查逻辑、两种依赖重新验收、固定预检查命令/源码、准备文件
+变化、观察超时及创建/启动歧义不重放。完成执行分支使用合成fixture，实际NPU
+完整解码仍待前置容量成功后执行。
