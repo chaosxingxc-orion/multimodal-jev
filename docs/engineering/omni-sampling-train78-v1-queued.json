@@ -1,0 +1,38 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-sampling-train78-v1",
+  "launch": {
+    "pid": 2796574,
+    "process_start": "289607698",
+    "source_commit": "e87bd06abee26b14030999c20defef29aa00cc0d",
+    "argv": [
+      "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+      "-B",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-sampling-train78-v1/source/tools/jev/watch_omni_sampling.py",
+      "--root",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-sampling-train78-v1",
+      "--plan-hash",
+      "0fa10c9a99d8ee97d60e5a48675b6eef5b4e798c79a00df2db1dd140e4d34b79"
+    ],
+    "queue_plan_sha256": "0fa10c9a99d8ee97d60e5a48675b6eef5b4e798c79a00df2db1dd140e4d34b79",
+    "started_unix": 1794319421.1512446,
+    "automatic_retry": false
+  },
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [
+    6,
+    7
+  ],
+  "sampling_requests": 78,
+  "responses": 156,
+  "weight_updates": 0,
+  "dependency_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-native-qwen3-omni-full-test-v1",
+  "progress": {
+    "phase": "waiting_native_full_test",
+    "ready": false,
+    "heartbeat_unix": 1794319481.396117
+  },
+  "preparation_sha256": "178b69ed1e3bc972369721cd181ce50818b2ebed6e155f72ba114e90859d9ce0",
+  "verified_unix": 1794319483.2330537,
+  "tests": "64 queue/acceptance/sampling tests; final command gate retested in 37 queue/acceptance tests; actual preparation pins checked",
+  "scope": "Live supervisor waiting exact full native SFC ID/OOD queue. No sampling container dispatched yet."
+}
