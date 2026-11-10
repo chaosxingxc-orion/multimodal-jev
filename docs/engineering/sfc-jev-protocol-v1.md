@@ -148,8 +148,8 @@ Qwen3-Omni、BF16、TP2、seed17、4096 上下文、1024 输出、greedy 和关�
 
 ## 教师提示优化的数据边界
 
-固定划分 `/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-prompt-partition-v2.json`，
-SHA256 `b17f1f9b5e1e2ad26fb3df62dd6eed36e4d9191643f2efa68b503dde4b7bfaf2`。
+当前固定划分 `/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-prompt-partition-v3.json`，
+SHA256 `84df8dc98723a50baa7352be11049cd8c692fb2e2da94ff5de650392abe09330`。
 学习区3600会话/4428记录/69210决策；选择区899会话/1106记录/17469决策。
 这是完整 TRAIN 的数据边界，尚不是已派发的实验预算或教师请求。
 划分按输入 level 分层，以seed17和完整会话成员的SHA256排序，目标约20%会话用于选择。
@@ -158,8 +158,19 @@ SHA256 `b17f1f9b5e1e2ad26fb3df62dd6eed36e4d9191643f2efa68b503dde4b7bfaf2`。
 全量输入/类型/上下文审计不使用模型成绩，不能据此挑选更容易的选择样本。
 
 独立重读验证所有4499个TRAIN会话均恰好归属一区、无跨区音频哈希、全部已知生成暴露样本
-处于学习区；记录见 `sfc-jev-prompt-partition-v2.json`。未采用最初v1划分做任何推理或教师请求，
-v2补齐了id_100暴露来源，保留v1作审计记录。后续 teacher只能消费学习区反馈；
+处于学习区；当前记录见 `sfc-jev-prompt-partition-v3.json`。未采用v1/v2划分做任何推理或教师请求，
+v2补齐了id_100暴露来源，v3修正暴露报告路径变量覆盖造成的TRAIN输入哈希记录错误。
+v2/v3的所有分组和统计完全一致；旧版本保留作审计记录。后续 teacher只能消费学习区反馈；
 候选名单冻结后才运行选择区，官方test_id/test_ood不参与优化。
 划分未使用意图/参数gold分层，不保证标签平衡，也不是跨说话人或新工具泛化划分。
 待78决策工程验收后，再预登记教师预算、候选规则和学习运行范围，不能把当前分区直接视为训练授权。
+
+本地反馈准备工具 `tools/jev/prepare_sfc_jev_teacher_feedback.py` 已实现：要求指定分区SHA256，
+完整探针容器/应用验收、评分结果绑定，并从完整TRAIN输入复现分区。只接受学习区完整会话及
+全部决策输出，重新运行严格评分；代表例按类型与错误类别确定性选择，每桶最多两例。
+所有决策保留简明汇总，代表例保留未经修复的输出、动态定义和离线gold。
+反馈不含音频路径、转写或原始target provenance，教师被明确告知没有听过音频。
+私有消息文件限制150000字节，超额报错，不静默截断；输出最多两个1500字符通用指令候选。
+仅通用INSTRUCTION可候选化，动态定义/输出契约/参数类型/音频顺序不能修改。
+这是ACE式确定性失败反思准备，没有采样组内优势或音频因果对照，不能声称TF-GRPO或RL提升。
+当前仅实现并测试工具，78决策真实推理尚待完成，因此未准备真实反馈、未配置教师预算、未调用API。

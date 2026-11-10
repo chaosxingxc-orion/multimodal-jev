@@ -101,11 +101,11 @@ def build(release, preflight, exposure_reports=()):
     if len(rows)!=manifest['splits']['train_id']['bundles']:
         raise ValueError('complete TRAIN input population required')
     exposed=set(identity['selected_ids']);evidence={}
-    for path in exposure_reports:
-        value=json.loads(path.read_text())
+    for exposure_path in exposure_reports:
+        value=json.loads(exposure_path.read_text())
         uid=value.get('example_id')
         if not isinstance(uid,str):raise ValueError('exposure report must name its example_id')
-        exposed.add(uid);evidence[str(path.resolve())]=file_hash(path)
+        exposed.add(uid);evidence[str(exposure_path.resolve())]=file_hash(exposure_path)
     report=partition(rows,exposed)
     if sum(v['source_groups'] for v in report['summary'].values())!=manifest['splits']['train_id']['source_groups']:
         raise ValueError('complete source-group coverage required')
