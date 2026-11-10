@@ -1,11 +1,12 @@
 # 原生 verl worker 接入差异
 
-从固定 NGA 子镜像的已停止容器只读提取六份源文件，未改镜像或运行中的工程。
+从固定 NGA 子镜像的已停止容器只读提取八份源文件，未改镜像或运行中的工程。
 镜像为 `sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c`，
 已记录 verl 版本为 0.8.0.dev0、上游提交为
 `e9405d70b77d56a23e72bb2e40a17b906856e913`。镜像内实际文件哈希见
 [源码记录](verl-worker-source-audit-v1.json)；判断以这些实际文件为准，不能假定
-镜像内容与上游提交完全一致。上游文件标明 Apache-2.0；本次仅阅读，不把源码复制进 Git。
+镜像内容与上游提交完全一致。主要 worker 文件标明 Apache-2.0，`utils/device.py`
+另有 BSD 风格许可说明；本次仅阅读，不把源码复制进 Git。
 
 | 固定源码位置 | 观察到的行为 | 对接要求 |
 | --- | --- | --- |
@@ -18,6 +19,12 @@
 | `experimental/agent_loop/agent_loop.py:95` | server manager 同样只转发 image/video | manager/server/loop 要同时扩展，传递采样身份与音频特征 |
 | 同文件 `:642` 及单轮 loop | 默认多模态处理面向图像/视频 | Qwen ASR 需音频 processor 路径、attention-mask 累计 position IDs；不得走视觉位置编码 |
 | `workers/fsdp_workers.py:155`、`:242` | 建立进程组、设备网格并按并行度调整 batch | 多 rank 下必须先组成完整配对奖励/GRPO 组，再验证分片 loss 缩放和全局 token 计数 |
+| `utils/device.py:114` | `get_device_id` 调设备模块的 `current_device()` | CPU 分支不能假定支持此调用；不得通过挂载忙碌 NPU 绕过 CPU 验证问题 |
+
+`ActorConfig.global_batch_info` 还提供全局 token/样本数量字段，因此微批缩放审计
+必须同时检查实际传入的全局计数与 loss 实现，不能仅凭局部缩放表达式断言所有
+原生配置均错误。当前自定义 actor 使用空 global_batch_info 并显式按 token 加权；
+迁移时不得同时启用两种归一化而重复缩放。
 
 以上是源码发现，不是原生 worker 的运行结果。目前 `rl_update.update_actor`
 已保留真实 rollout log-prob、更新前概率校验、全 batch GRPO 分组、按有效响应
