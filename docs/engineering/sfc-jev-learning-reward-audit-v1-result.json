@@ -1,0 +1,160 @@
+{
+  "result": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-learning-reward-audit-v1.json",
+  "result_sha256": "65475f49ff795714ab978c25e5e39826b737eb89b0a93ab398c1564925ddc1ba",
+  "counts": {
+    "active_functions": 6085,
+    "bundles": 4428,
+    "decisions": 69210,
+    "functions": 23070,
+    "inactive_functions": 16985,
+    "no_call_bundles": 0
+  },
+  "source_groups": 3600,
+  "by_level": {
+    "level_1": {
+      "active_functions": 2118,
+      "bundles": 2118,
+      "decisions": 38124,
+      "functions": 12708,
+      "inactive_functions": 10590,
+      "no_call_bundles": 0
+    },
+    "level_2": {
+      "active_functions": 1319,
+      "bundles": 654,
+      "decisions": 11202,
+      "functions": 3734,
+      "inactive_functions": 2415,
+      "no_call_bundles": 0
+    },
+    "level_3_1": {
+      "active_functions": 716,
+      "bundles": 716,
+      "decisions": 7908,
+      "functions": 2636,
+      "inactive_functions": 1920,
+      "no_call_bundles": 0
+    },
+    "level_3_2": {
+      "active_functions": 1932,
+      "bundles": 940,
+      "decisions": 11976,
+      "functions": 3992,
+      "inactive_functions": 2060,
+      "no_call_bundles": 0
+    }
+  },
+  "synthetic_controls": {
+    "consistent_empty": {
+      "activity": {
+        "active": {
+          "correct": 0,
+          "decisions": 18255,
+          "format_valid": 18255,
+          "schema_valid": 18255
+        },
+        "inactive": {
+          "correct": 50955,
+          "decisions": 50955,
+          "format_valid": 50955,
+          "schema_valid": 50955
+        }
+      },
+      "all_decisions_correct": 0,
+      "bundle_macro_mean_reward": 0.8434146341463414,
+      "consistent_function_triples": 23070,
+      "correct_function_triples": 16985,
+      "decision_mean_reward": 0.8834850455136541,
+      "native_calls_exact": 0,
+      "reward_fraction_of_oracle": 0.736237537928045,
+      "total_reward": 61146.0
+    },
+    "constant_false": {
+      "activity": {
+        "active": {
+          "correct": 6085,
+          "decisions": 18255,
+          "format_valid": 12170,
+          "schema_valid": 12170
+        },
+        "inactive": {
+          "correct": 16985,
+          "decisions": 50955,
+          "format_valid": 33970,
+          "schema_valid": 33970
+        }
+      },
+      "all_decisions_correct": 0,
+      "bundle_macro_mean_reward": 0.0,
+      "consistent_function_triples": 0,
+      "correct_function_triples": 0,
+      "decision_mean_reward": 0.0,
+      "native_calls_exact": 0,
+      "reward_fraction_of_oracle": 0.0,
+      "total_reward": 0.0
+    },
+    "malformed": {
+      "activity": {
+        "active": {
+          "correct": 0,
+          "decisions": 18255,
+          "format_valid": 0,
+          "schema_valid": 0
+        },
+        "inactive": {
+          "correct": 0,
+          "decisions": 50955,
+          "format_valid": 0,
+          "schema_valid": 0
+        }
+      },
+      "all_decisions_correct": 0,
+      "bundle_macro_mean_reward": -1.0,
+      "consistent_function_triples": 0,
+      "correct_function_triples": 0,
+      "decision_mean_reward": -1.0,
+      "native_calls_exact": 0,
+      "reward_fraction_of_oracle": -0.8333333333333334,
+      "total_reward": -69210.0
+    },
+    "oracle": {
+      "activity": {
+        "active": {
+          "correct": 18255,
+          "decisions": 18255,
+          "format_valid": 18255,
+          "schema_valid": 18255
+        },
+        "inactive": {
+          "correct": 50955,
+          "decisions": 50955,
+          "format_valid": 50955,
+          "schema_valid": 50955
+        }
+      },
+      "all_decisions_correct": 4428,
+      "bundle_macro_mean_reward": 1.2,
+      "consistent_function_triples": 23070,
+      "correct_function_triples": 23070,
+      "decision_mean_reward": 1.2,
+      "native_calls_exact": 4428,
+      "reward_fraction_of_oracle": 1.0,
+      "total_reward": 83052.0
+    }
+  },
+  "plan_sha256": "8b50f59fd232705f8fbdc0b665c434ce7cbc7109113f95d8698a041a278af471",
+  "partition": {
+    "part": "learning",
+    "path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-jev-prompt-partition-v3.json",
+    "sha256": "84df8dc98723a50baa7352be11049cd8c692fb2e2da94ff5de650392abe09330"
+  },
+  "source_files": {
+    "src/multimodal_jev/sfc_jev_reward.py": "2db68ef679f89771a642a0f55fcc5d34b087c66048fb0cb4b9f218229823772d",
+    "src/multimodal_jev/sfc_jev_score.py": "ac5f84b5f7fb1904e98619db8a2ae3a4adc9e3c1544815615b3961981668a059",
+    "tools/jev/audit_sfc_learning_rewards.py": "eb15dafc703e5ec0f2ad2b7020ccf317061694488c6d606f514c6c4dc5652541"
+  },
+  "model_called": false,
+  "weight_updates": 0,
+  "scope": "Complete registered learning population only. Whole TRAIN target bytes hashed; selection lines skipped without parsing/scoring. No TEST files read. Fixed synthetic outputs, not model performance or RL benefit. No reward changes or weighting chosen from selection/TEST.",
+  "tests": "50 learning audit/reward/merge/feedback tests passed"
+}
