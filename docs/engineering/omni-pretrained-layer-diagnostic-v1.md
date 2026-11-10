@@ -68,3 +68,15 @@ autocast、FP32 features和audio_padding相邻条件完整logits相同。原始�
 text_padding（左padding519）响应logp相邻最大差为0.12417721748352051，完整logits
 最大差为1.4375，仍超过原0.1响应概率门槛。第六条reference已保存，余下条件仍
 运行中。只复算原保存logits，未重跑模型、放宽阈值或启动逐层模型诊断。
+
+## 完整逐层执行预算
+
+在原精确30条件容器成功退出且外部协调者核验全部保存logits后，下一诊断使用
+固定镜像、16 CPU/160 GiB、无网络/设备、14400秒加30秒终止宽限。保持全部6条、
+每条audio_padding/text_padding两次冻结前向；参考tensor payload上限48 GiB，
+源数据/模型与原实验只读。2026-11-11派发准备时宿主可用内存约1834 GiB，共享盘
+可用约1.6 TiB，预算可容纳该诊断；这是准备时观测，不保证后续资源不变化。
+协调者先捕获原容器实际成功终态，再校验image/Cmd/环境/挂载/CPU/内存、源码与
+Git快照、identity及全部30份logits；运行入口再次执行既有complete_dependency。
+create成功后持久记录精确ID再start，失败/歧义不重试。后续实际身份单独记录，
+本预算登记不表示已经派发或已经找到数值差异根因。

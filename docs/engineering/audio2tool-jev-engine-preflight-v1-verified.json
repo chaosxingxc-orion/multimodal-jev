@@ -1,0 +1,133 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-jev-engine-preflight-v1",
+  "launch": {
+    "container_id": "27e52b3cdd4d24920e7ddb9e2007f5ab9d1335e587a20c67f06587242bc14ef1",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_commit": "22e0157da6ae629cdef832b54391134ef89e5d19",
+    "intent_sha256": "f5a3c9d312dea0c6a893af70c9074727d2f7ebcfb01c9bb2ab7a1b6b36022727"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-10T18:51:13.63439539Z",
+    "FinishedAt": "2026-11-10T18:51:33.9161113Z"
+  },
+  "result": {
+    "status": "passed",
+    "records": [
+      {
+        "case": "dialogue_last_user:noul",
+        "id": "audio2tool:tier7:release:2030",
+        "decision_id": "tool.24.present",
+        "input_tokens": 17326,
+        "audio_count": 5,
+        "input_matches_processor": true
+      },
+      {
+        "case": "dialogue_last_user:typed_call_list",
+        "id": "audio2tool:tier7:release:2030",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 17378,
+        "audio_count": 5,
+        "input_matches_processor": true
+      },
+      {
+        "case": "dialogue_last_user:typed_tool_sequence",
+        "id": "audio2tool:tier7:release:2030",
+        "decision_id": "tools.sequence",
+        "input_tokens": 18168,
+        "audio_count": 5,
+        "input_matches_processor": true
+      },
+      {
+        "case": "foreground_mixture:noul",
+        "id": "audio2tool:tier8:release:314",
+        "decision_id": "tool.24.present",
+        "input_tokens": 7117,
+        "audio_count": 1,
+        "input_matches_processor": true
+      },
+      {
+        "case": "foreground_mixture:typed_call_list",
+        "id": "audio2tool:tier8:release:314",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 7169,
+        "audio_count": 1,
+        "input_matches_processor": true
+      },
+      {
+        "case": "foreground_mixture:typed_tool_sequence",
+        "id": "audio2tool:tier8:release:314",
+        "decision_id": "tools.sequence",
+        "input_tokens": 7959,
+        "audio_count": 1,
+        "input_matches_processor": true
+      },
+      {
+        "case": "seven_audio:noul",
+        "id": "audio2tool:tier7:release:1118",
+        "decision_id": "tool.24.present",
+        "input_tokens": 8403,
+        "audio_count": 7,
+        "input_matches_processor": true
+      },
+      {
+        "case": "seven_audio:typed_call_list",
+        "id": "audio2tool:tier7:release:1118",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 8455,
+        "audio_count": 7,
+        "input_matches_processor": true
+      },
+      {
+        "case": "seven_audio:typed_tool_sequence",
+        "id": "audio2tool:tier7:release:1118",
+        "decision_id": "tools.sequence",
+        "input_tokens": 9245,
+        "audio_count": 7,
+        "input_matches_processor": true
+      },
+      {
+        "case": "single_audio:noul",
+        "id": "audio2tool:tier1:release:3943",
+        "decision_id": "tool.24.present",
+        "input_tokens": 15392,
+        "audio_count": 1,
+        "input_matches_processor": true
+      },
+      {
+        "case": "single_audio:typed_call_list",
+        "id": "audio2tool:tier1:release:3943",
+        "decision_id": "tool.24.calls",
+        "input_tokens": 15444,
+        "audio_count": 1,
+        "input_matches_processor": true
+      },
+      {
+        "case": "single_audio:typed_tool_sequence",
+        "id": "audio2tool:tier1:release:3943",
+        "decision_id": "tools.sequence",
+        "input_tokens": 16234,
+        "audio_count": 1,
+        "input_matches_processor": true
+      }
+    ],
+    "identity_sha256": "0af74b0066c1a0790bc10f53ffb8bbd9fa6caa9b843f7acb5e7d14454f00b06d",
+    "elapsed_seconds": 7.964892859978136,
+    "model_loaded": false,
+    "targets_read": false,
+    "weight_updates": 0,
+    "scope": "CPU engine-input preflight: twelve authenticated Jev waveform requests and prompts match prior real HF/vLLM processor cases. No weights or inference."
+  },
+  "result_sha256": "50444df7d93a7fe21ba5b1a0ae625de6170de9e1d637487d72f06673d7546c5d",
+  "identity_sha256": "0af74b0066c1a0790bc10f53ffb8bbd9fa6caa9b843f7acb5e7d14454f00b06d",
+  "source_files_verified": 110,
+  "scope": "Live exact-container CPU input-preflight acceptance: fixed command, image, resources, bindings, environment, complete snapshot against Git, twelve unchanged accepted boundary identities. Actual source validates waveform and prompt against prior receipts. No new feature-processor computation, weights, NPU engine, task score or training."
+}

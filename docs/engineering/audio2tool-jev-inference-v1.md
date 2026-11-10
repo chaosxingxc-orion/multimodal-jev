@@ -52,3 +52,13 @@ context/attempt/terminal顺序、输入绑定、输出合同与最终计数。�
 账本、重哈希但改变决策顺序、上下文绑定、错误计数、未结束不能完成、原始文本和
 真实/probe错误分类。`/proc/self/fd`检查确认每次轮转后仅一个分片写句柄；终态fsync
 故障反例确认不允许重试同一结果。测试数据明确为fixture，不是完整模型推理证据。
+
+## 首次真实CPU引擎输入预检查已验收
+
+容器`27e52b3cdd4d24920e7ddb9e2007f5ab9d1335e587a20c67f06587242bc14ef1`
+使用源码`22e0157da6ae629cdef832b54391134ef89e5d19`、固定镜像及上述CPU预算，退出0。
+主体7.96秒，12项请求的prompt与完整音频收据均匹配此前实际processor边界。
+独立验收重新inspect精确容器，核对命令、挂载/环境、资源、源码快照与Git一致性、
+输入依赖、identity、12份独立结果与应用终态。见
+[输入预检查验收](audio2tool-jev-engine-preflight-v1-verified.json)。
+模型未加载、NPU未使用；全量生成runner及独立actor验收仍待完成。
