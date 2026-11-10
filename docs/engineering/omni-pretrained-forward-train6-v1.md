@@ -57,3 +57,16 @@ v2 是故障原因确认后的新显式尝试，不是自动重放；精确容�
 验收端须使用固定 tokenizer，命令要求 launch/intent 的已登记 SHA256。
 16 项单元测试验证记录缺失、错绑、非有限概率及加载报告序列化；
 这些测试不替代实际运行结果，真实验收待 v2 完成后执行。
+
+## 后台独立验收观察
+
+`watch_omni_forward_acceptance.py` 已固定为独立脚本并后台运行，
+精确 PID/start ticks、脚本与 plan 哈希见 v2-observer-launched.json。
+它只观察 v2 原容器，最长 15000 秒；瞬时 SSH 错误继续查询同一 ID。
+原容器失败则记录终态，不派发验收，更不重新加载/推理。
+成功后捕获 Docker inspection 并绑定哈希，按先前 prepare 的不可变源码和
+argv 创建一次 CPU verifier，写入 fsync intent 与精确 ID 后仅启动一次。
+验收后重新检查原容器终态，保存 acceptance 哈希和 observer 终态。
+观察超时或派发状态不明均保留现场供核对，不做自动重试。
+本轮 37 项 observer/forward-acceptance 测试通过，包含上述失败分支；
+真实模型和验收结果仍以后台运行终态为准。
