@@ -1,0 +1,20 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/audio2tool-full-population-preflight-v1",
+  "result": {
+    "status": "population_preflight_passed",
+    "records": 30733,
+    "unique_inputs": 30731,
+    "inputs_sha256": "f7e4ebe4e7cf2cf411f3f26a8714bbdd0a493c0c7aeb98dd4199112d197e1a35",
+    "budgets_sha256": "87e750243a3dcc56ca006e9f661dcaa2ac130cc27fd7312d6e986892aa1ef223",
+    "maximum_input_tokens": 17253,
+    "model_loaded": false,
+    "scope": "Complete pinned release roster and budgets only. No waveform decoding, capacity acceptance or inference."
+  },
+  "result_sha256": "f030b18afe80d037059f099214fc03a6ba0659969458d4d5a6431a1da9ed1e23",
+  "source_files": {
+    "tools/jev/infer_audio2tool_native.py": "1764f7cdd910475e77cbe983b205252ba446d6e5dcfd37f7cdcbd51c38ce2030",
+    "src/multimodal_jev/audio2tool_inference.py": "e917f0809d16f214c7eeb8c7b1e081de50f5abcd1de3548b8bf8300d7615504b"
+  },
+  "execution": "Local project .venv Python; no container, model, waveform decoding or vLLM execution",
+  "tests": "32 passing tests for ledger, full-generation response contract, capacity envelope and existing one-token engine response contract; capacity envelope fixtures mock fixed plan hash and prior processor records, not real NPU acceptance"
+}
