@@ -86,3 +86,29 @@ not that both audio clips causally influenced the output. Schema-to-call
 composition, official-model runs and actual transfer scores remain. Stateful
 tool execution is a separate [τ² integration](tau2-environment-bridge.md),
 not an alternative scoring path for this offline SFC benchmark.
+
+## Local Qwen3-Omni input mapping
+
+`src/multimodal_jev/sfc_omni.py` now maps the input-only record into native
+Omni messages. It follows the pinned official `eval/infer.py` role assignment:
+first user text becomes system text, each audio is attached to its chronological
+user turn, later user text and supplied assistant history remain unchanged.
+The literal `<audio>` marker inside official text is preserved exactly as in
+that client; it is distinct from the model's actual multimodal placeholder.
+No `tools=` argument is supplied: that would inject the model's XML tool-call
+protocol and change the benchmark's required JSON list of call strings.
+
+Full static rendering with the local Qwen3-Omni template passed on all
+5534/2590/771 TRAIN/ID/OOD inputs, including 1035/604/178 two-audio turns.
+See `docs/engineering/sfc-qwen3-omni-static-input-audit-v1.json` for input and
+template hashes. Twelve adapter tests check chronology, history/schema changes,
+audio reordering, single-turn retention and rejection of extra supervision.
+The audit does not use gold answers to adjust prompts and produces no scores.
+
+This is a Qwen3-Omni adaptation, not a reproduction of the paper's
+Qwen2.5-Omni-7B model. Before dispatch, use TRAIN-only engineering inputs to
+validate actual processor features, multi-audio vLLM limits and complete context
+lengths. Preserve all levels and both turns; never drop an oversized example
+or silently truncate it. No new model download or SFC inference has been
+launched by this adapter work. Native SFC output remains the official call-list
+format; typed SFC-Jev decomposition is a separate future dataset protocol.
