@@ -1,0 +1,44 @@
+{
+  "schema": "jev-direct-heldout-lock-v1",
+  "test_feedback_used": false,
+  "source_selection_split": "train",
+  "selection_sha256": "2c89cb68d320f25bd7fa01a42525daf5b3692615f41d8b32ce48b15ab2df3c51",
+  "requests_sha256": "796ee08f908eaecd7b5e92686171a85e1b0f9c36ad35941858860492715f04fd",
+  "targets_sha256": "66125831109ffe3471042ff43596b7e42fd5410874d74c47e489be25e0a3e875",
+  "requests": 22758,
+  "source_groups": 3793,
+  "models": {
+    "audio_model": {
+      "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458",
+      "files": {
+        "VERIFICATION.json": "eca00bed2a95e84a79b09bf0a10498cd70554d776029ebd94e561d5c7de6d9f7",
+        "chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+        "config.json": "9eecf6f1b383e343889c2e6010e632590fa57d4bc678e151c7d6a160a0dfb04a",
+        "generation_config.json": "9939fc9388b79bd70757f938b87381e817173d6a6158f5af6506c0b73e775c3c",
+        "model.safetensors": "d3f212dd20abecd315d830bc54ae3865e56ebfc3276484e57b771288ba27fd35",
+        "processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+        "tokenizer.json": "fe1fad59be22a41ee293363fcf95fdedbc7c93f3b49270b1d2e18bd1399a7a05",
+        "tokenizer_config.json": "945e980986de2ca7768f3326bfdbb4fbea3406f972b8ae0be233089f2b253c11"
+      }
+    }
+  },
+  "parent_prompt_sha256": "b853a7948d0cf13238cdc16811adcb7e37b1ae21a4a3557e56bf44340cdb2de7",
+  "selected_prompt_sha256": "b3bb2b921d6073aec6eb2e7c1714ecf3f7aa7435518f3f627c9b05a79bfcdd84",
+  "actor_config": {
+    "route": "audio-direct",
+    "parameters_frozen": true,
+    "audio_model": "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf",
+    "device": "npu:0",
+    "dtype": "bfloat16",
+    "seed": 17,
+    "max_context_tokens": 4096,
+    "max_new_tokens": 128,
+    "asr_max_new_tokens": 128,
+    "sampling": {
+      "temperature": 0.0,
+      "n": 1
+    },
+    "audio_condition": "actual",
+    "output_prefix": "language English<asr_text>"
+  }
+}
