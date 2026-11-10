@@ -129,3 +129,22 @@ expanded context lengths, audio duration limits and every overflow instead of
 dropping or truncating samples. Its launch is recorded in
 `docs/engineering/sfc-qwen3-omni-full-context-v1-launch.json`; complete results
 are still pending. Native vLLM multi-audio generation remains unverified.
+
+The six-turn vLLM TRAIN probe is now prepared at
+`/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-qwen3-omni-train6-v1`,
+with frozen source `556b8eb`, original model, BF16/TP2/seed17, context4096,
+greedy1024 output tokens, max_num_seqs1, prefix cache disabled and audio limit2.
+Selection and messages match the CPU preflight exactly. The inference entry
+compares each actual vLLM expanded prompt-token sequence against HF processing
+of the same waveforms; a mismatch fails the engineering gate and preserves the
+attempt. It hashes model files before/after and keeps raw output and truncation.
+Prompt-token equality alone does not prove feature equality or causal use of audio.
+
+The prepared command and mounts target NPU6/7 after the native SLURP TEST and
+its queued transfer TRAIN validation. It has not been dispatched; current
+device reservations take precedence. Receipt:
+`docs/engineering/sfc-qwen3-omni-train6-v1-prepared.json`.
+Twenty-two input/runtime tests pass; actual engine generation is still pending.
+After successful execution, score precisely these six TRAIN turns using the
+existing SFC official-plus-strict scorer, separately from full ID/OOD results.
+Do not use the generic FSC/SLURP watcher, which selects a different scorer.
