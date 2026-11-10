@@ -1,0 +1,48 @@
+{
+  "schema": "sfc-jev-reward-real-input-synthetic-output-v1",
+  "release": "/mnt/cephfs/xingchao/datasets/sfc-jev/fa68f460c415195962a4c986ca9a6ed0a397e9d814751b7a71b46fb711efbcb0",
+  "manifest_sha256": "805445af367f69012d8c942e0550da57cbe5a7adfa187ba31b46962f832ca3a9",
+  "partition_sha256": "84df8dc98723a50baa7352be11049cd8c692fb2e2da94ff5de650392abe09330",
+  "inputs_sha256": "f4acf9bca491c99f9e97acb97abd465c1c482f7f1c1dae48d5dd598da2ef2d3f",
+  "source_groups": 4,
+  "reports": {
+    "oracle": {
+      "bundles": 6,
+      "decisions": 78,
+      "function_triples": 26,
+      "correct_function_triples": 26,
+      "consistent_function_triples": 26,
+      "native_calls_exact": 6,
+      "all_decisions_correct": 6,
+      "total_reward": 93.60000000000014
+    },
+    "consistent_empty": {
+      "bundles": 6,
+      "decisions": 78,
+      "function_triples": 26,
+      "correct_function_triples": 17,
+      "consistent_function_triples": 26,
+      "native_calls_exact": 0,
+      "all_decisions_correct": 0,
+      "total_reward": 61.20000000000006
+    },
+    "malformed": {
+      "bundles": 6,
+      "decisions": 78,
+      "function_triples": 26,
+      "correct_function_triples": 0,
+      "consistent_function_triples": 0,
+      "native_calls_exact": 0,
+      "all_decisions_correct": 0,
+      "total_reward": -78.0
+    }
+  },
+  "source_files": {
+    "src/multimodal_jev/sfc_jev_reward.py": "2db68ef679f89771a642a0f55fcc5d34b087c66048fb0cb4b9f218229823772d",
+    "src/multimodal_jev/sfc_jev_score.py": "ac5f84b5f7fb1904e98619db8a2ae3a4adc9e3c1544815615b3961981668a059"
+  },
+  "verified_unix": 1794316001.7227218,
+  "model_called": false,
+  "weight_updates": 0,
+  "scope": "Exact six registered TRAIN learning turns, 78 decisions, four groups. Oracle and degenerate outputs constructed from labels for reward verification only. Not actor predictions, RL results or generalization evidence; no TEST labels read."
+}
