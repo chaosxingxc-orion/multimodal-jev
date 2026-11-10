@@ -95,18 +95,22 @@ def export(source,destination):
                         audio_splits[digest]=split
                     requests.write(canonical(request));targets.write(canonical(target));count+=1
                     two_audio+=len(request['input']['audios'])==2
+            first_text_differences=0
             for group,stages in groups.items():
                 expected={1,2} if group.startswith('level_3') else {1}
                 if set(stages)!=expected:raise ValueError('missing complete conversation stage')
                 if 2 in stages:
                     a,b=stages[1],stages[2]
                     if (a['input']['audios']!=b['input']['audios'][:1]
-                            or a['audio_sha256']!=b['audio_sha256'][:1]
-                            or a['input']['messages']!=b['input']['messages'][:1]):
-                        raise ValueError('two-turn history prefix differs')
+                            or a['audio_sha256']!=b['audio_sha256'][:1]):
+                        raise ValueError('two-turn audio prefix differs')
+                    # Published stage-specific function ordering can differ.
+                    # Preserve each input verbatim; never normalize it to stage 1.
+                    first_text_differences+=a['input']['messages']!=b['input']['messages'][:1]
             pin=manifest['splits'][split]
             if count!=pin['records'] or len(groups)!=pin['source_groups']:raise ValueError('whole official split required')
             reports[split]=dict(requests=count,source_groups=len(groups),two_audio_requests=two_audio,
+                stage_specific_first_message_differences=first_text_differences,
                 requests_sha256=file_hash(stage/(split+'.requests.jsonl')),targets_sha256=file_hash(stage/(split+'.targets.jsonl')))
         report=dict(release_id=release,identity=identity,splits=reports,
             audio_hashes='Inherited from verified source; cross-split isolation checked, waveform files not rehashed in this export.',

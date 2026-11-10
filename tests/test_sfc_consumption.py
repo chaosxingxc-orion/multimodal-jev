@@ -51,11 +51,11 @@ def test_full_split_export_and_immutable_release(tmp_path):
     with pytest.raises(FileExistsError):export(root,tmp_path/'out')
 
 
-@pytest.mark.parametrize('change',['missing_stage','prefix','audio_order','split_leak','target'])
+@pytest.mark.parametrize('change',['missing_stage','audio_prefix','audio_order','split_leak','target'])
 def test_loss_or_custody_errors_rejected(tmp_path,change):
     root=source(tmp_path);path=root/'train_id.jsonl';rows=list(map(json.loads,path.read_text().splitlines()))
     if change=='missing_stage':rows.pop()
-    if change=='prefix':rows[1]['input']['messages'][0]['content']='changed functions <audio>'
+    if change=='audio_prefix':rows[1]['metadata']['audio_sha256'][0]='a'*64
     if change=='audio_order':rows[1]['metadata']['relative_audios'].reverse()
     if change=='split_leak':rows[0]['metadata']['audio_sha256'][0]=record('test_id',1)['metadata']['audio_sha256'][0];rows[1]['metadata']['audio_sha256'][0]=rows[0]['metadata']['audio_sha256'][0]
     if change=='target':rows[0]['supervision']['calls']=[]
@@ -64,3 +64,15 @@ def test_loss_or_custody_errors_rejected(tmp_path,change):
     (root/'MANIFEST.json').write_bytes(canonical(manifest))
     with pytest.raises(ValueError):export(root,tmp_path/'out')
     assert not list((tmp_path/'out').glob('.sfc-native-*'))
+
+
+def test_stage_specific_function_order_is_preserved_not_rewritten(tmp_path):
+    root=source(tmp_path);path=root/'train_id.jsonl';rows=list(map(json.loads,path.read_text().splitlines()))
+    rows[1]['input']['messages'][0]['content']='functions in different order <audio>'
+    path.write_bytes(b''.join(map(canonical,rows)))
+    manifest=json.loads((root/'MANIFEST.json').read_text());manifest['splits']['train_id']['sha256']=file_hash(path)
+    (root/'MANIFEST.json').write_bytes(canonical(manifest))
+    release,receipt=export(root,tmp_path/'out')
+    requests=list(map(json.loads,(release/'train_id.requests.jsonl').read_text().splitlines()))
+    assert requests[1]['input']==rows[1]['input']
+    assert receipt['splits']['train_id']['stage_specific_first_message_differences']==1
