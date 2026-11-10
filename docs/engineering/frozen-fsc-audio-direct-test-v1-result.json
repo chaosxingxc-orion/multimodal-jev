@@ -1,0 +1,47 @@
+{
+  "scope": "complete official FSC TEST using frozen Qwen3-ASR-0.6B-hf audio-direct JSON decision prompting; not ASR transcription quality",
+  "result": {
+    "status": "passed",
+    "requests": 3793,
+    "predictions": 3793,
+    "format_valid": 0,
+    "schema_valid": 0,
+    "length_limited": 0,
+    "route": "audio-direct",
+    "predictions_sha256": "420d1925f49ed837cc4705fa974fe6de274884b183ecf494d371e99a51229ef9",
+    "weight_updates": 0,
+    "model_files_unchanged": true,
+    "elapsed_seconds": 2884.660875879985,
+    "scope": "frozen HF reference inference; separate scoring required; no vLLM parity or training claim"
+  },
+  "score": {
+    "replicates": [
+      {
+        "replicate": 0,
+        "examples": 3793,
+        "correct": 0,
+        "accuracy": 0.0,
+        "format_valid": 0,
+        "fsc_native_component_accuracy": {
+          "action": 0.0,
+          "object": 0.0,
+          "location": 0.0
+        }
+      }
+    ],
+    "predictions": 3793,
+    "coverage": 1.0,
+    "scope": "complete selected request population; TRAIN probe is not official test performance",
+    "split": "test",
+    "purpose": "locked-native-baseline",
+    "run": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-fsc-audio-direct-test-v1/run",
+    "targets_sha256": "0f892313a293cec2bf142001c57108b64ab824885d37631da2203ba2762de66e",
+    "result_sha256": "442569da363473f67010f77fb08405885505ae99f77d845e866293eaf88e10c9"
+  },
+  "terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794281850.2720313
+  },
+  "container_id": "b837637e0906196b96709bdc99fee6abeac43471060512ff96134429aecb03d2",
+  "result_sha256": "442569da363473f67010f77fb08405885505ae99f77d845e866293eaf88e10c9"
+}
