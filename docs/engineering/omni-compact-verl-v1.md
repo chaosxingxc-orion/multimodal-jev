@@ -111,3 +111,19 @@ actor源码仍为已通过真实预检查的`dd1e447`，intent SHA为
 [派发独立核验](omni-compact-verl-train6-v1-dispatch-verified.json)。
 修订派发成功不代表实际actor比较通过；microbatch=1/2的12条前向、原0.1门槛及
 外部完整验收仍待该精确容器完成。不得重启旧协调者或手动重复创建本实验。
+
+### 当前 actor 的只读终态验收观察器
+
+已从当前验收代码`1ca0f87`固定117份源码（实际清单以observer-plan为准），并将
+专用观察脚本和其SHA固定在`omni-compact-verl-train6-v1-acceptance`。观察器PID
+`2962227`、process start `292025489`已通过`/proc`核对真实命令和启动身份；
+计划SHA `f48f6d39eb4e7f7792c302aa1f69308ddeb0699d028ed9e595c0b15ffdb51187`，
+见[观察器身份](omni-compact-verl-train6-v1-acceptance-queued.json)。当前观察原actor
+`1e3972f736ae4b3aadc1cf71a21610cbc6c17ab87235bec9b730d35bb651144b`，不启动新模型。
+
+观察上限15000秒；SSH临时失败只观察同一ID。原actor失败/OOM则记录失败终态，
+保留原始comparison，不重放。成功退出后重新核对actor源码与Git、实际候选Docker
+及全部六条候选logits，再调用已测试的完整verl验收函数，核对两种microbatch的
+响应概率、逐层调用、原始输入身份和0.1门槛。结果写入独立`acceptance.json`。
+观察器未包含Docker create/start或训练/推理派发，成功也不自动启动后续权重学习。
+当前只确认观察器存活；actor结果及完整最终验收仍待运行完成。
