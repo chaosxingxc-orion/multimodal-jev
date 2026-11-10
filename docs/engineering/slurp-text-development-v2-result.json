@@ -1,0 +1,702 @@
+{
+  "observed_unix": 1794269551.5531604,
+  "comparison_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/text-evidence-comparison-v2/run/slurp/comparison.json",
+  "comparison_sha256": "12b35f11dc57390c4d099c66b7355d3166c7bdc1a0abf6ca2bce693e8733f16e",
+  "recomputed_common_comparison_equal": true,
+  "containers": {
+    "base": {
+      "container_id": "6299f566b55f1bed3f43557f64fee2ab02a0c0bff129125ec3a8dc1e515d15a7",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:23:16.64683098Z",
+        "FinishedAt": "2026-11-10T00:04:07.40424449Z"
+      }
+    },
+    "candidate": {
+      "container_id": "1e8c42ef5c306ac6aa3a70ca0998999f2d519bb45504d8c4f50d25840fb7ed3c",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-09T23:23:58.31846513Z",
+        "FinishedAt": "2026-11-10T00:07:11.36762094Z"
+      }
+    }
+  },
+  "summaries": {
+    "base": {
+      "input_mode": "asr-text",
+      "total": 168,
+      "format_valid": 168,
+      "schema_valid": 116,
+      "nonnull_correct": 11,
+      "nonnull_targets": 81,
+      "correct_null": 0,
+      "null_targets": 87,
+      "by_variant": {
+        "native": {
+          "count": 24,
+          "correct": 4,
+          "valid": 7,
+          "refusals": 0
+        },
+        "permutation": {
+          "count": 24,
+          "correct": 3,
+          "valid": 6,
+          "refusals": 0
+        },
+        "rebind": {
+          "count": 24,
+          "correct": 4,
+          "valid": 7,
+          "refusals": 0
+        },
+        "slot.date": {
+          "count": 24,
+          "correct": 0,
+          "valid": 24,
+          "refusals": 0
+        },
+        "slot.time": {
+          "count": 24,
+          "correct": 0,
+          "valid": 24,
+          "refusals": 0
+        },
+        "slot.person": {
+          "count": 24,
+          "correct": 0,
+          "valid": 24,
+          "refusals": 0
+        },
+        "slot.place_name": {
+          "count": 24,
+          "correct": 0,
+          "valid": 24,
+          "refusals": 0
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 24,
+          "both_correct": 1,
+          "both_correct_rate": 0.041666666666666664,
+          "semantic_equal": 2
+        },
+        "rebind": {
+          "groups": 24,
+          "both_correct": 4,
+          "both_correct_rate": 0.16666666666666666,
+          "semantic_equal": 4
+        },
+        "missing_candidate": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null,
+          "semantic_equal": null
+        },
+        "noul": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null
+        }
+      },
+      "null_target_output_types": {
+        "str": 87
+      },
+      "length_limit_count": 0,
+      "generated_tokens": 1273,
+      "generation_seconds": 2403.971136359847
+    },
+    "candidate": {
+      "input_mode": "reference-text",
+      "total": 168,
+      "format_valid": 168,
+      "schema_valid": 123,
+      "nonnull_correct": 15,
+      "nonnull_targets": 81,
+      "correct_null": 0,
+      "null_targets": 87,
+      "by_variant": {
+        "native": {
+          "count": 24,
+          "correct": 4,
+          "valid": 8,
+          "refusals": 0
+        },
+        "permutation": {
+          "count": 24,
+          "correct": 5,
+          "valid": 9,
+          "refusals": 0
+        },
+        "rebind": {
+          "count": 24,
+          "correct": 5,
+          "valid": 10,
+          "refusals": 0
+        },
+        "slot.date": {
+          "count": 24,
+          "correct": 0,
+          "valid": 24,
+          "refusals": 0
+        },
+        "slot.time": {
+          "count": 24,
+          "correct": 1,
+          "valid": 24,
+          "refusals": 0
+        },
+        "slot.person": {
+          "count": 24,
+          "correct": 0,
+          "valid": 24,
+          "refusals": 0
+        },
+        "slot.place_name": {
+          "count": 24,
+          "correct": 0,
+          "valid": 24,
+          "refusals": 0
+        }
+      },
+      "pairs": {
+        "permutation": {
+          "groups": 24,
+          "both_correct": 1,
+          "both_correct_rate": 0.041666666666666664,
+          "semantic_equal": 2
+        },
+        "rebind": {
+          "groups": 24,
+          "both_correct": 4,
+          "both_correct_rate": 0.16666666666666666,
+          "semantic_equal": 5
+        },
+        "missing_candidate": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null,
+          "semantic_equal": null
+        },
+        "noul": {
+          "groups": 0,
+          "both_correct": 0,
+          "both_correct_rate": null
+        }
+      },
+      "null_target_output_types": {
+        "str": 87
+      },
+      "length_limit_count": 0,
+      "generated_tokens": 1244,
+      "generation_seconds": 2550.49364767957
+    }
+  },
+  "speaker_bootstrap": {
+    "heldout-valid/format": {
+      "count": 42,
+      "clusters": 6,
+      "base_rate": 1.0,
+      "candidate_rate": 1.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/native": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.3333333333333333,
+      "candidate_rate": 0.16666666666666666,
+      "delta": -0.16666666666666666,
+      "delta_ci95": [
+        -0.5,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/native/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.3333333333333333,
+      "candidate_rate": 0.16666666666666666,
+      "delta": -0.16666666666666666,
+      "delta_ci95": [
+        -0.5,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/pair.permutation": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.16666666666666666,
+      "candidate_rate": 0.0,
+      "delta": -0.16666666666666666,
+      "delta_ci95": [
+        -0.5,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/pair.rebind": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.3333333333333333,
+      "candidate_rate": 0.16666666666666666,
+      "delta": -0.16666666666666666,
+      "delta_ci95": [
+        -0.5,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/permutation": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.16666666666666666,
+      "candidate_rate": 0.16666666666666666,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/permutation/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.16666666666666666,
+      "candidate_rate": 0.16666666666666666,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/rebind": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.3333333333333333,
+      "candidate_rate": 0.16666666666666666,
+      "delta": -0.16666666666666666,
+      "delta_ci95": [
+        -0.5,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/rebind/present": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.3333333333333333,
+      "candidate_rate": 0.16666666666666666,
+      "delta": -0.16666666666666666,
+      "delta_ci95": [
+        -0.5,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.date/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.person": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.person/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.person/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.place_name": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.place_name/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.place_name/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "heldout-valid/slot.time": {
+      "count": 6,
+      "clusters": 6,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.time/null": {
+      "count": 5,
+      "clusters": 5,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "heldout-valid/slot.time/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/format": {
+      "count": 126,
+      "clusters": 16,
+      "base_rate": 1.0,
+      "candidate_rate": 1.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.1111111111111111,
+      "candidate_rate": 0.16666666666666666,
+      "delta": 0.05555555555555555,
+      "delta_ci95": [
+        0.0,
+        0.17647058823529413
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/native/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.1111111111111111,
+      "candidate_rate": 0.16666666666666666,
+      "delta": 0.05555555555555555,
+      "delta_ci95": [
+        0.0,
+        0.17647058823529413
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.permutation": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.05555555555555555,
+      "delta": 0.05555555555555555,
+      "delta_ci95": [
+        0.0,
+        0.17647058823529413
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/pair.rebind": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.1111111111111111,
+      "candidate_rate": 0.16666666666666666,
+      "delta": 0.05555555555555555,
+      "delta_ci95": [
+        0.0,
+        0.17647058823529413
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.1111111111111111,
+      "candidate_rate": 0.2222222222222222,
+      "delta": 0.1111111111111111,
+      "delta_ci95": [
+        0.0,
+        0.2631578947368421
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/permutation/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.1111111111111111,
+      "candidate_rate": 0.2222222222222222,
+      "delta": 0.1111111111111111,
+      "delta_ci95": [
+        0.0,
+        0.2631578947368421
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.1111111111111111,
+      "candidate_rate": 0.2222222222222222,
+      "delta": 0.1111111111111111,
+      "delta_ci95": [
+        0.0,
+        0.25
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/rebind/present": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.1111111111111111,
+      "candidate_rate": 0.2222222222222222,
+      "delta": 0.1111111111111111,
+      "delta_ci95": [
+        0.0,
+        0.25
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date/null": {
+      "count": 17,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.date/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/slot.person": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.person/null": {
+      "count": 17,
+      "clusters": 15,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.person/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    },
+    "valid/slot.place_name": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.place_name/null": {
+      "count": 16,
+      "clusters": 14,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.place_name/present": {
+      "count": 2,
+      "clusters": 2,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time": {
+      "count": 18,
+      "clusters": 16,
+      "base_rate": 0.0,
+      "candidate_rate": 0.05555555555555555,
+      "delta": 0.05555555555555555,
+      "delta_ci95": [
+        0.0,
+        0.17647058823529413
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time/null": {
+      "count": 17,
+      "clusters": 15,
+      "base_rate": 0.0,
+      "candidate_rate": 0.0,
+      "delta": 0.0,
+      "delta_ci95": [
+        0.0,
+        0.0
+      ],
+      "bootstrap_draws": 2000
+    },
+    "valid/slot.time/present": {
+      "count": 1,
+      "clusters": 1,
+      "base_rate": 0.0,
+      "candidate_rate": 1.0,
+      "delta": 1.0,
+      "delta_ci95": null,
+      "bootstrap_draws": 0
+    }
+  },
+  "prediction_sha256": {
+    "base": "ec93c0b7c5ae588bd674c0d307d5e93f6f9cc323841ed3473234b1f81a96b863",
+    "candidate": "c1125846bca7aefd8158ef9a0a9c92833de604f85b67d32ad28e3373dfffd168"
+  },
+  "scope": "exploratory TRAIN-format-gated v2 transcript controls; no repair of literal strings; no final prompt superiority, RL efficacy or acoustic upper-bound claim"
+}

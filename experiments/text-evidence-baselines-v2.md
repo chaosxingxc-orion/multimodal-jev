@@ -31,3 +31,29 @@ The final SLURP reference launch returned an SSH observation timeout; the same
 named container was subsequently inspected running with the expected image and
 job mount, and was not relaunched. The detached finalizer observes the recorded
 IDs and performs no inference or restarts.
+
+## Completed SLURP v2 controls
+
+Both exact SLURP containers exited0 with168 complete predictions. The current
+common scorer reproduces the saved2,000-draw speaker-bootstrap comparison and
+checks identical model/source/prompt version and decoding. See
+[receipt](../docs/engineering/slurp-text-development-v2-result.json).
+
+| Measure | ASR transcript | Reference transcript |
+| --- | ---: | ---: |
+| Strict format valid |168/168|168/168|
+| Schema valid |116/168|123/168|
+| Native intent correct |4/24|4/24|
+| Permutation correct |3/24|5/24|
+| Rebind correct |4/24|5/24|
+| Present-slot correct |0/9|1/9|
+| Correct absent-slot null |0/87|0/87|
+
+Every absent-slot output is a string rather than JSON null; all remain scored
+as generated, including the literal string `NULL`. Answers contain extracted
+words, copied text and occasional instruction text rather than reliable slot
+decisions. JSON formatting success is therefore insufficient. Reference text
+does not solve schema adherence or abstention, and is not an acoustic upper
+bound. Preserve these results without post-hoc answer repair or another prompt
+selection on the same development set. The original fenced-output v1 protocol
+remains separately reported. FSC v1/v2 controls continue independently.
