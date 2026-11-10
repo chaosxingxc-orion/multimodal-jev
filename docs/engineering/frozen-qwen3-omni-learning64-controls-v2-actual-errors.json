@@ -1,0 +1,45 @@
+{
+  "schema": "jev-omni-learning-error-taxonomy-v1",
+  "requests": 384,
+  "predictions_sha256": "521f3d8dd880becc800b47eb1f5360515befd61f357c71a82012f0ae1bb1b3d6",
+  "by_view": {
+    "native": {
+      "invalid_with_markdown_fence": 32,
+      "correct": 29,
+      "semantic_wrong": 3
+    },
+    "permutation": {
+      "correct": 33,
+      "invalid_with_markdown_fence": 29,
+      "semantic_wrong": 2
+    },
+    "rebind": {
+      "invalid_with_markdown_fence": 23,
+      "correct": 38,
+      "semantic_wrong": 3
+    },
+    "missing_candidate": {
+      "invalid_with_markdown_fence": 33,
+      "semantic_wrong": 25,
+      "valid_json_nonnull": 31,
+      "schema_invalid": 6
+    },
+    "noul.True": {
+      "correct": 52,
+      "invalid_with_markdown_fence": 10,
+      "semantic_wrong": 2
+    },
+    "noul.False": {
+      "correct": 33,
+      "invalid_with_markdown_fence": 13,
+      "semantic_wrong": 18
+    }
+  },
+  "total": {
+    "invalid_with_markdown_fence": 140,
+    "correct": 185,
+    "semantic_wrong": 53,
+    "schema_invalid": 6
+  },
+  "scope": "complete fixed64 TRAIN diagnostic; no fence repair or rescoring; no TEST feedback"
+}

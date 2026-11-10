@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Prepare or run an immutable sequential parent/candidate Omni selection queue."""
 import argparse
+import fcntl
 import json
 import shutil
 import subprocess
@@ -123,9 +124,13 @@ if __name__ == '__main__':
             raise ValueError('duplicate prompt ID')
         print(json.dumps(prepare(a.root,a.controls,a.protocol,instructions,a.source_commit),indent=2))
     else:
-        try:
-            run(a.root)
-        except BaseException as exc:
-            atomic_json(a.root/'evaluation-terminal.json',dict(exit_code=1,error=repr(exc),finished_unix=time.time(),automatic_retry=False))
-            raise
-        atomic_json(a.root/'evaluation-terminal.json',dict(exit_code=0,finished_unix=time.time()))
+        with (a.root/'queue.lock').open('a') as lock:
+            fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            if (a.root/'evaluation-terminal.json').exists():
+                raise FileExistsError('existing queue terminal; preserve prior attempt')
+            try:
+                run(a.root)
+            except BaseException as exc:
+                atomic_json(a.root/'evaluation-terminal.json',dict(exit_code=1,error=repr(exc),finished_unix=time.time(),automatic_retry=False))
+                raise
+            atomic_json(a.root/'evaluation-terminal.json',dict(exit_code=0,finished_unix=time.time()))
