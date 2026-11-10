@@ -12,6 +12,11 @@
 尚未完成学界基线复现、NPU 训练或 RL 效果验证。详细结论见 [研究报告](docs/research/README.md)，下载与整理状态见 [本地资源](docs/research/06-local-assets.md)。
 研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
 
+当前执行顺序已调整为：**冻结基座推理 → 远程教师 TFRL 提示词优化 → xx-jev 数据及同类优化**。
+后续权重训练队列暂不派发，既有实验保留；本阶段不更新模型参数。
+模型锁定、隔离规则及验收要求见 [当前实施协议](proposal/02-frozen-baselines-tfrl-jev.md)。
+以下旧实验记录用于追溯，不代表仍按原队列推进。
+
 ## 目录
 
 | 路径 | 用途 |
