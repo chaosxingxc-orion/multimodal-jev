@@ -69,3 +69,7 @@ v4映射列表第一项使用alias实际类名，与第三项同为AutoModelForI
 单独保留并验收非持久化 buffer，不能仅以参数哈希和 108 单元计数验收。
 该探针仅使用 meta 参数、真实 buffer 和 rotary-only CPU 调用，未验证
 NPU/FSDP 通信、完整模型加载或任务影响。
+
+[完整CPU加载预检](omni-fsdp-loading-v1.md)随后通过：BF16参数meta构造保留
+FP32 buffer；实际加载19,743个原始Thinker张量全部元素精确匹配，四个buffer
+与认证参考一致。峰值主机RSS118.326GiB；这仍不证明FSDP/HCCL初始化或NPU前向。
