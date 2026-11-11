@@ -94,3 +94,53 @@ def test_unequal_schedule_and_changed_plan_rejected_before_forward():
         recompute_shard(actor, batch, records, name='micro1', rank=0, plan=plan,
                         plan_sha256=digest(plan), pad_token_id=0)
     assert calls == []
+
+
+@pytest.mark.parametrize('size', [1, 2])
+@pytest.mark.parametrize('real', [False, True])
+def test_observed_rank_assignment_merges_both_runs_without_second_forward(monkeypatch, size, real):
+    from multimodal_jev import omni_probability_capture as capture_module
+    from multimodal_jev.omni_probability_shards import recompute_observed_shard
+    if real:
+        pytest.importorskip('verl')
+    records, batch = setup(real)
+    old = batch.batch['old_log_probs'].clone(); meta = deepcopy(batch.meta_info)
+    calls = []
+    def observed(actor, local, local_records, *, name, micro_batch_size, pad_token_id):
+        calls.append([r['replicate'] for r in local_records])
+        assert micro_batch_size == size and pad_token_id == 0
+        values = -local.batch['responses'].double()/8
+        return dict(native=capture_module.capture(local, values, local_records, name=name),
+                    reference=capture_module.capture(local, values-.01, local_records,
+                                                    name=name+'-same-logits-fp32'),
+                    synthetic_observer=True)
+    monkeypatch.setattr(capture_module, 'recompute_native_observed', observed)
+    plan = shard_plan(records, world_size=2, micro_batch_size=size)
+    outputs = [recompute_observed_shard(object(), batch[[2,0,3,1]], records,
+        name='native', rank=rank, plan=plan, plan_sha256=digest(plan), pad_token_id=0)
+        for rank in (1,0)]
+    assert len(calls) == 2
+    for field, name in [('native','native'),('reference','native-same-logits-fp32')]:
+        merged = merge_shards(records, [o[field] for o in outputs], name=name,
+                              plan=plan, plan_sha256=digest(plan))
+        assert [r['token_ids'] for r in merged['responses']] == [r['token_ids'] for r in records]
+        for original, response in zip(records, merged['responses']):
+            expected = [-t/8 - (0 if field=='native' else .01) for t in original['token_ids']]
+            assert response['log_probs'] == expected
+        with pytest.raises(ValueError, match='complete rank roster'):
+            merge_shards(records, [outputs[0][field]], name=name,
+                         plan=plan, plan_sha256=digest(plan))
+    assert torch.equal(old, batch.batch['old_log_probs']) and batch.meta_info == meta
+
+
+def test_observed_shard_rejects_changed_schedule_before_observing(monkeypatch):
+    from multimodal_jev import omni_probability_capture as capture_module
+    from multimodal_jev.omni_probability_shards import recompute_observed_shard
+    records, batch = setup(); calls=[]
+    monkeypatch.setattr(capture_module, 'recompute_native_observed', lambda *a, **kw: calls.append(1))
+    plan = shard_plan(records, world_size=2, micro_batch_size=1)
+    plan['rank_indices'].reverse()
+    with pytest.raises(ValueError, match='unchanged'):
+        recompute_observed_shard(object(), batch, records, name='native', rank=0,
+            plan=plan, plan_sha256=digest(plan), pad_token_id=0)
+    assert calls == []

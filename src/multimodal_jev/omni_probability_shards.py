@@ -37,13 +37,7 @@ def _validate_plan(records, plan, plan_sha256):
         raise ValueError('unchanged registered shard plan required')
 
 
-def recompute_shard(actor, data, records, *, name, rank, plan, plan_sha256, pad_token_id):
-    """Validate the full input on each rank, then execute its exact local roster.
-
-    Retains globally padded shapes and audio features. A full DataProto reorder
-    is allowed; assignment follows original record identity, not current row.
-    The returned envelope is partial evidence, never a complete numerical run.
-    """
+def _local_batch(data, records, *, rank, plan, plan_sha256):
     _validate_plan(records, plan, plan_sha256)
     if type(rank) is not int or not 0 <= rank < plan['world_size']:
         raise ValueError('registered rank required')
@@ -52,10 +46,44 @@ def recompute_shard(actor, data, records, *, name, rank, plan, plan_sha256, pad_
     local_records = [records[i] for i in plan['rank_indices'][rank]]
     local = data[[positions[_key(record)] for record in local_records]]
     local.meta_info = dict(local.meta_info, records_sha256=digest(local_records))
+    return local, local_records
+
+
+def recompute_shard(actor, data, records, *, name, rank, plan, plan_sha256, pad_token_id):
+    """Validate the full input on each rank, then execute its exact local roster.
+
+    Retains globally padded shapes and audio features. A full DataProto reorder
+    is allowed; assignment follows original record identity, not current row.
+    The returned envelope is partial evidence, never a complete numerical run.
+    """
+    local, local_records = _local_batch(data, records, rank=rank, plan=plan,
+                                       plan_sha256=plan_sha256)
     run = recompute(actor, local, local_records, name=name,
                     micro_batch_size=plan['micro_batch_size'], pad_token_id=pad_token_id)
     return dict(schema='omni-probability-shard-output-v1', rank=rank,
                 plan_sha256=plan_sha256, records_sha256=digest(records), run=run)
+
+
+def recompute_observed_shard(actor, data, records, *, name, rank, plan,
+                             plan_sha256, pad_token_id):
+    """One native observed forward on the exact rank assignment, with no retry.
+
+    Each probability envelope must be merged with ``merge_shards`` over all
+    ranks, using its own run name. Observation evidence is retained separately;
+    merging probabilities does not independently authenticate raw observations
+    or prove NPU numeric acceptance. Execute each rank in an isolated process.
+    """
+    from .omni_probability_capture import recompute_native_observed
+
+    local, local_records = _local_batch(data, records, rank=rank, plan=plan,
+                                       plan_sha256=plan_sha256)
+    observation = recompute_native_observed(actor, local, local_records, name=name,
+        micro_batch_size=plan['micro_batch_size'], pad_token_id=pad_token_id)
+    def envelope(run):
+        return dict(schema='omni-probability-shard-output-v1', rank=rank,
+                    plan_sha256=plan_sha256, records_sha256=digest(records), run=run)
+    return dict(native=envelope(observation['native']),
+                reference=envelope(observation['reference']), observation=observation)
 
 
 def merge_shards(records, shards, *, name, plan, plan_sha256):

@@ -86,3 +86,9 @@ CPU合成张量，没有执行NPU cross entropy、音频或模型前向。逐文
 零跳过，含真实 verl 包绑定和 DataProto 检查。核验134份源码与JUnit、容器
 退出0且无OOM；见[验收记录](omni-observation-binding-tests-v1-verified.json)。
 微批绑定测试仍使用合成概率，尚未执行真实 Omni NPU 观测。
+
+`omni_probability_shards.recompute_observed_shard` 复用原有完整名单与 rank 分配
+校验，每 rank 仅调用一次 observed recomputation，返回原生和 FP32 参考两份
+分片 envelope，以及原始观测证据。两份概率各自用 `merge_shards` 要求全部
+rank/响应后恢复完整顺序。合并不认证原始 observer 内容，真实运行身份和
+隔离进程仍由 runner 负责。此接口不启动分布式进程、不重采样，也不设置阈值。
