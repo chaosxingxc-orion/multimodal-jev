@@ -14,6 +14,7 @@ import time
 
 from multimodal_jev.baseline import atomic_json, file_hash
 from multimodal_jev.omni_actor_batch import prepare, evidence
+from multimodal_jev.omni_processor_parity import compare_prepared
 from multimodal_jev.sfc_audio import load_sfc_audio
 from multimodal_jev.sfc_jev_runtime import messages
 from sample_sfc_omni_learning import load_inputs
@@ -85,7 +86,8 @@ def run(args):
                 record=dict(example_id=row['id'],decision_id=decision['id'],audio_count=len(waves),
                     original_samples=list(map(len,waves)),hop_padded_samples=list(map(len,padded)),
                     vllm_frames=frame_lengths,expected_frames=expected,
-                    vllm_input_tokens=len(processed['prompt_token_ids']),comparisons=comparisons)
+                    vllm_input_tokens=len(processed['prompt_token_ids']),comparisons=comparisons,
+                    shared_preflight_comparison=compare_prepared(aligned,processed))
                 handle.write(json.dumps(record)+'\n');handle.flush();records.append(record)
                 atomic_json(args.output/'progress.json',dict(done=len(records),total=78,heartbeat_unix=time.time()))
     if len(rows)!=6 or len(records)!=78:raise ValueError('complete registered roster required')
