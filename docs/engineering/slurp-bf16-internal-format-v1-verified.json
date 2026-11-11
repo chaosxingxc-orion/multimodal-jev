@@ -1,0 +1,49 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-internal-format-v1",
+  "parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.10105395317077637,
+    "p95_logprob_error": 0.09740197658538818,
+    "joint_log_ratio_min": -0.1347401738166809,
+    "joint_log_ratio_max": 0.11525982618331909,
+    "joint_ratio_min": 0.8739429554533537,
+    "joint_ratio_max": 1.1221649675373087,
+    "candidate_kl_actor_to_behavior": 0.0048390548773816055,
+    "argmax_changed_spans": [],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "exact_trace_points": [
+    "audio.conv2d1",
+    "audio.conv2d2",
+    "audio.conv2d3",
+    "audio.conv_out",
+    "audio.layer.0.input_norm",
+    "audio.layer.0.q_proj",
+    "audio.layer.0.k_proj",
+    "audio.layer.0.v_proj"
+  ],
+  "audio_attention": {
+    "shape": [
+      32,
+      896
+    ],
+    "dtype": "torch.bfloat16",
+    "maximum": 0.015625,
+    "mean": 0.00043239237857051194,
+    "unequal_fraction": 0.5371442437171936,
+    "rms": 0.0007411405094899237
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-internal-format-v1/run/result.json": "15070feeaf916189a6d59963d26dbfc46ef5eb8b620a8e0e74763194f6477709",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-internal-format-v1/run/terminal.json": "f140cb8c1639794191f80f56dbc52ba57dee8185380ee90c25af8b9f1f77f38a",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-internal-format-v1/run/trace-comparison.json": "66f651d5e81470758cd73720d5fda070bca345974adf7f44ec78b5e7679204d4"
+  },
+  "scope": "Three conv layers through first audio Q/K/V exact; audio attention and end-to-end parity not yet aligned."
+}

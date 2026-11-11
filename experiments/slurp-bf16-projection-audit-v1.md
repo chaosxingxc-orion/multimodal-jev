@@ -23,3 +23,7 @@ MLP探针终态0：max logp差0.109080，完整动作比率[0.866957,1.130725]�
 projection-audit-v3在前述GEMM对照之后补充首卷积同进程对照，使用两个trace中逐位一致的真实input/weight/bias。显式交叉输入stride（HF/vLLM）、ALLOW_INTERNAL_FORMAT（disable/enable）以及偏置融合/分离。全部重复计算误差0。融合偏置时，disable逐位复现HF、enable逐位复现vLLM，与stride无关；两者只差8个元素，max0.0009765625。分离偏置明显不同，不作为修复。源码核查发现vllm-ascend model_runner_v1在模块导入时显式开启allow_internal_format，而独立HF进程默认disable；这是有因果复算支持的具体运行时差异。
 
 internal-format-v1在MLP+QKV+norm配置上，仅在worker加载完成后显式关闭内部格式，保留原生LoRA、attention、rotary；将验证首卷积、完整音频塔和完整动作gate。不能把首卷积对齐等同整模型已一致。
+
+internal-format-v1终态0：三层conv、conv_out、首层音频input_norm以及Q/K/V全部逐位一致。首个剩余音频差异出现在首层attention输出（max0.015625、RMS0.00074114）。audio_projected RMS0.000218393；最终max logp差0.101054、联合比率[0.873943,1.122165]，gate仍失败。已锁定并消除此前最早音频前端差异，不能宣称全音频塔或整模型完成对齐。
+
+audio-attention-v1以此配置为基础，仅将音频非因果attention改为HF eager顺序、按cu_seqlens逐窗计算；保留原生audio QKV和输出投影。CPU独立逐head参考、跨窗口隔离及非因果语义测试通过，NPU整体结果待验。
