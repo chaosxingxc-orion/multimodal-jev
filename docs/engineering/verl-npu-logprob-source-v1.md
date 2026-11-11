@@ -81,3 +81,8 @@ CPU合成张量，没有执行NPU cross entropy、音频或模型前向。逐文
 隔离的同一次 forward。完整 NPU runner、真实采样与多 rank 集成仍待验证。
 本地 CPU 合成测试覆盖不同微批大小、缺失/额外调用、错序、错 token、错 mask、
 返回概率不一致与绑定恢复顺序；不能用这些测试宣称原生 NPU 数值已经通过。
+
+随后在固定镜像、无设备/无网络的 2 CPU/8 GiB 容器执行相关测试：64 项通过、
+零跳过，含真实 verl 包绑定和 DataProto 检查。核验134份源码与JUnit、容器
+退出0且无OOM；见[验收记录](omni-observation-binding-tests-v1-verified.json)。
+微批绑定测试仍使用合成概率，尚未执行真实 Omni NPU 观测。
