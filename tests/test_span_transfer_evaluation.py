@@ -58,3 +58,17 @@ def test_cell_comparison_requires_complete_four_way_population(tmp_path,fault):
         for cell in study['evaluation_cells'].values():
             if uid in cell['request_ids']:cell['request_ids'].remove(uid)
     with pytest.raises(ValueError):cell_metrics(study,rows,a,b)
+
+
+@pytest.mark.parametrize('fault',['overlapping_cells','swapped_roles','wrong_count','wrong_rule_group'])
+def test_reject_semantically_wrong_cells_even_with_complete_prediction_ids(tmp_path,fault):
+    study,learning,selection,_=fixture(tmp_path);rows=learning+selection
+    a=[dict(id=r['id'],predictions=r['targets']) for r in rows]
+    cells=study['evaluation_cells']
+    if fault=='overlapping_cells':
+        cells['learning_source:trained_rule_group']['request_ids'].append(cells['learning_source:heldout_rule_group']['request_ids'][0])
+    elif fault=='swapped_roles':
+        cells['learning_source:trained_rule_group'],cells['reserved_source:trained_rule_group']=cells['reserved_source:trained_rule_group'],cells['learning_source:trained_rule_group']
+    elif fault=='wrong_count':cells['learning_source:trained_rule_group']['requests']+=1
+    else:study['heldout_semantic_group']='bool2:0001'
+    with pytest.raises(ValueError):cell_metrics(study,rows,a,a)

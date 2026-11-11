@@ -41,3 +41,41 @@ def paired_source_interval(rows,before,after,*,replicates=2000,seed=17):
     return dict(arms=result,replicates=replicates,seed=seed,
         unit='source_group; all correlated rules and complements sampled together',
         scope='Paired descriptive percentile intervals for this fixed policy pair and sampled population. Not multi-seed uncertainty, speaker isolation, natural-distribution or causal-gain evidence; no multiple-comparison correction.')
+
+
+def paired_rule_ba_interval(rows,before,after,*,replicates=2000,seed=17):
+    """Source-cluster bootstrap for the prespecified macro-rule BA metric.
+
+    A replicate lacking either label for any rule has undefined full macro BA.
+    Report that count and exclude it only from the descriptive percentile
+    interval, never average over a smaller, easier set of rules.
+    """
+    import numpy as np
+    # Reuse strict complete/Boolean validation, without another full bootstrap.
+    paired_source_interval(rows,before,after,replicates=100,seed=seed)
+    if type(replicates) is not int or replicates<100:raise ValueError('explicit bootstrap budget required')
+    a={r['id']:r for r in before};b={r['id']:r for r in after};result={}
+    for arm in sorted({r['arm'] for r in rows}):
+        selected=[r for r in rows if r['arm']==arm]
+        sources=sorted({r['provenance']['source_group'] for r in selected})
+        rules=sorted({r['provenance']['rule_id'] for r in selected})
+        si={s:i for i,s in enumerate(sources)};ri={r:i for i,r in enumerate(rules)}
+        counts=np.zeros((len(sources),len(rules),2,3),dtype=np.int64)
+        for row in selected:
+            uid=row['id'];g=row['targets'][-1];p=row['provenance']
+            counts[si[p['source_group']],ri[p['rule_id']],int(g)]+=[1,int(a[uid]['predictions'][-1]==g),int(b[uid]['predictions'][-1]==g)]
+        full=counts.sum(0)
+        if np.any(full[:,:,0]==0):raise ValueError('all prespecified rules require both gold labels')
+        old=float((full[:,:,1]/full[:,:,0]).mean());new=float((full[:,:,2]/full[:,:,0]).mean())
+        rng=random.Random(seed);deltas=[]
+        for _ in range(replicates):
+            sampled=counts[[rng.randrange(len(sources)) for _ in sources]].sum(0)
+            if np.any(sampled[:,:,0]==0):continue
+            deltas.append(float(((sampled[:,:,2]-sampled[:,:,1])/sampled[:,:,0]).mean()))
+        result[arm]=dict(source_groups=len(sources),rules=len(rules),before_macro_rule_ba=old,
+            after_macro_rule_ba=new,delta_macro_rule_ba=new-old,valid_replicates=len(deltas),
+            undefined_replicates=replicates-len(deltas),
+            delta_ci95=None if len(deltas)<100 else np.quantile(deltas,[.025,.975]).tolist())
+    return dict(arms=result,replicates=replicates,seed=seed,
+        unit='source_group; complete rule and label roster retained in every valid replicate',
+        scope='Descriptive source-bootstrap macro-rule BA difference; interval conditional on full label coverage. No seed uncertainty, multiplicity correction or causal claim.')

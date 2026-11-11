@@ -56,7 +56,8 @@ if __name__=='__main__':
     args=p.parse_args();args.output.mkdir(parents=True,exist_ok=False)
     try:
         config=json.loads(args.config.read_text())
-        if config.get('physical_devices')!=[5]:raise ValueError('rule diagnostic reserved to physical NPU5')
+        from multimodal_jev.span_runtime_topology import runtime_topology
+        if runtime_topology(config)['size']!=1:raise ValueError('rule runtime requires TP1')
         suite=prepare(config,args.output)
         result=run(suite,args.output)
         atomic_json(args.output/'result.json',result)

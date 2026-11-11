@@ -13,7 +13,9 @@ from multimodal_jev.span_rule_population import configured_rule_rows
 def verify(root):
     read=lambda p:json.loads(p.read_text())
     config=read(root/'config.json');launch=read(root/'launch.json');run=root/'run'
-    if (launch['physical_devices']!=[5] or launch['config_sha256']!=file_hash(root/'config.json')
+    from multimodal_jev.span_runtime_topology import runtime_topology
+    devices=config.get('physical_devices',[5])
+    if (runtime_topology({**config,'physical_devices':devices})['size']!=1 or launch['physical_devices']!=devices or launch['config_sha256']!=file_hash(root/'config.json')
             or launch['source_manifest_sha256']!=file_hash(root/'source-manifest.json')
             or read(run/'terminal.json')['exit_code']!=0):raise ValueError('launch or terminal differs')
     for path,digest in config['pins'].items():
@@ -51,7 +53,7 @@ def verify(root):
         passed_requests=sum(a['passed'] for a in audits),maximum_logprob_error=max(a['maximum_logprob_error'] for a in audits),
         joint_ratio_range=[min(a['joint_ratio_min'] for a in audits),max(a['joint_ratio_max'] for a in audits)],
         argmax_changed_spans=sum(len(a['argmax_changed_spans']) for a in audits),
-        physical_devices=[5],training_admitted=False,
+        physical_devices=devices,training_admitted=False,
         files={str(p):file_hash(p) for p in [root/'config.json',run/'result.json',run/'identity.json',run/'worker.json',run/'terminal.json']},
         scope='Declared learning runtime coverage on one immutable policy; no automatic training admission')
 

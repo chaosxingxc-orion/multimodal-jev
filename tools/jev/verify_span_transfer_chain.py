@@ -13,7 +13,10 @@ from verify_span_transfer_step import verify as verify_step
 
 def verify(root):
     read=lambda p:json.loads(p.read_text());c=read(root/'config.json');launch=read(root/'launch.json');run=root/'run'
-    if (launch['launch_exit_code']!=0 or launch['physical_devices']!=[5]
+    from multimodal_jev.span_runtime_topology import runtime_topology
+    devices=c.get('physical_devices',[5])
+    if (runtime_topology({**c,'physical_devices':devices})['size']!=1
+            or launch['launch_exit_code']!=0 or launch['physical_devices']!=devices
             or read(run/'terminal.json')['exit_code']!=0
             or launch['config_sha256']!=file_hash(root/'config.json')
             or launch['source_manifest_sha256']!=file_hash(root/'source-manifest.json')

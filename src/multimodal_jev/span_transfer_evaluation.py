@@ -3,7 +3,8 @@ import json
 from pathlib import Path
 from .baseline import file_hash
 from .span_rule_metrics import score_rules
-from .span_source_statistics import paired_source_interval
+from .span_source_statistics import paired_source_interval,paired_rule_ba_interval
+from .span_rule_transfer import semantic_rule_group
 
 POPULATION='transfer-full-evaluation-v1'
 
@@ -41,14 +42,25 @@ def evaluation_rows(config):
 def cell_metrics(study,rows,before,after):
     by_id={r['id']:r for r in rows};a={r['id']:r for r in before};b={r['id']:r for r in after}
     roster=[uid for c in study['evaluation_cells'].values() for uid in c['request_ids']]
-    if (len(by_id)!=len(rows) or len(a)!=len(before) or len(b)!=len(after)
-            or set(roster)!=by_id.keys() or by_id.keys()!=a.keys() or a.keys()!=b.keys()):
+    required={s+':'+t for s in ('learning_source','reserved_source')
+              for t in ('trained_rule_group','heldout_rule_group')}
+    if (set(study['evaluation_cells'])!=required or len(by_id)!=len(rows) or len(a)!=len(before) or len(b)!=len(after)
+            or len(roster)!=len(set(roster)) or set(roster)!=by_id.keys() or by_id.keys()!=a.keys() or a.keys()!=b.keys()):
         raise ValueError('all four complete paired cells required')
     result={}
     for name,cell in study['evaluation_cells'].items():
         selected=[by_id[k] for k in cell['request_ids']];old=[a[r['id']] for r in selected];new=[b[r['id']] for r in selected]
+        expected_role='learning' if name.startswith('learning_source:') else 'selection'
+        if (len(selected)!=cell['requests']
+                or len({r['provenance']['recording_id'] for r in selected})!=cell['recordings']
+                or len({r['provenance']['source_group'] for r in selected})!=cell['source_groups']
+                or any(r['split']!=expected_role
+                       or (semantic_rule_group(r['provenance']['rule'])==study['heldout_semantic_group'])
+                       !=name.endswith(':heldout_rule_group') for r in selected)):
+            raise ValueError('source/task cell membership or denominator differs')
         result[name]=dict(before=score_rules(selected,old),after=score_rules(selected,new),
-            paired_source_intervals=paired_source_interval(selected,old,new))
+            paired_source_intervals=paired_source_interval(selected,old,new),
+            paired_macro_rule_ba=paired_rule_ba_interval(selected,old,new))
         for version in ('before','after'):
             result[name][version]['scope']='Prespecified transfer cell; reserved-source role is development selection, not official TEST or cross-dataset evidence'
     return result

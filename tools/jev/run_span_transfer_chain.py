@@ -21,7 +21,10 @@ def run(config,output):
         raise ValueError('bounded trajectory within protocol required')
     tools=Path(__file__).parent;source=tools.parents[1]
     read=lambda path:json.loads(path.read_text())
-    common={**config,'population':POPULATION,'physical_devices':[5]}
+    from multimodal_jev.span_runtime_topology import runtime_topology
+    devices=config.get('physical_devices',[5])
+    if runtime_topology({**config,'physical_devices':devices})['size']!=1:raise ValueError('transfer chain requires TP1')
+    common={**config,'population':POPULATION,'physical_devices':devices}
     common['pins']=dict(config['pins']);common['base_id']=checkpoint_identity(config['model'])[0]
     if common['base_id']!=p['initializer']['base_id']:raise ValueError('wrong base')
     if start==0:
@@ -51,7 +54,7 @@ def run(config,output):
         c['request_ids']=ids;version_rows(c)
         child('infer_span_rule_baseline.py',c,stage)
         atomic_json(stage/'source-manifest.json',manifest)
-        receipt=dict(root=str(stage),image=launch['image'],physical_devices=[5],execution='stage in pinned transfer controller',
+        receipt=dict(root=str(stage),image=launch['image'],physical_devices=devices,execution='stage in pinned transfer controller',
             config_sha256=file_hash(stage/'config.json'),source_manifest_sha256=file_hash(stage/'source-manifest.json'),controller_sha256=file_hash(Path(__file__)))
         atomic_json(stage/'launch.json',receipt)
         runtime=stage/'runtime';rc={**c,'hf_run':str(stage),'pins':dict(c['pins'])}

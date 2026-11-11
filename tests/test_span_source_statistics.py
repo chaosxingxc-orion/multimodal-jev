@@ -46,3 +46,31 @@ def test_bad_pair_rejected(fault):
         for row in rows:row['provenance']['source_group']='one'
     else:rows[0]['supervised']=[False]
     with pytest.raises(ValueError):paired_source_interval(rows,a,b)
+
+
+def test_macro_rule_ba_distinguishes_imbalance_from_accuracy():
+    from multimodal_jev.span_source_statistics import paired_rule_ba_interval
+    rows=[];a=[];b=[]
+    for source in range(4):
+        for k,gold in enumerate([False,False,False,True]):
+            uid=f'{source}:{k}'
+            rows.append(dict(id=uid,arm='structured',targets=[gold],supervised=[True],provenance=dict(source_group=str(source),rule_id='rule')))
+            a.append(dict(id=uid,predictions=[False]));b.append(dict(id=uid,predictions=[gold]))
+    report=paired_rule_ba_interval(rows,a,b)['arms']['structured']
+    assert report['before_macro_rule_ba']==.5
+    assert report['after_macro_rule_ba']==1.
+    assert report['delta_ci95']==[.5,.5]
+    assert paired_source_interval(rows,a,b)['arms']['structured']['request_weighted_delta']==.25
+
+
+def test_macro_rule_ba_reports_missing_label_replicates():
+    from multimodal_jev.span_source_statistics import paired_rule_ba_interval
+    rows=[];a=[]
+    for s in range(2):
+        rows.append(dict(id=str(s),arm='structured',targets=[bool(s)],supervised=[True],provenance=dict(source_group=str(s),rule_id='r')))
+        a.append(dict(id=str(s),predictions=[bool(s)]))
+    r=paired_rule_ba_interval(rows,a,a)['arms']['structured']
+    assert r['undefined_replicates']>0 and r['valid_replicates']+r['undefined_replicates']==2000
+    assert r['delta_ci95']==[0.,0.]
+    rows[1]['targets']=[False]
+    with pytest.raises(ValueError,match='both gold labels'):paired_rule_ba_interval(rows,a,a)

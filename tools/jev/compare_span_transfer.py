@@ -14,7 +14,10 @@ def compare(root):
     read=lambda p:json.loads(p.read_text());protocol=read(root/'evaluation-protocol.json');study=read(root/'study.json')
     if read(root/'terminal.json')['exit_code']!=0:raise ValueError('complete evaluation required')
     chain=verify_chain(Path(protocol['training_root']))
-    if chain['completed_updates']!=study['updates_per_branch']:raise ValueError('fixed final update required')
+    if (chain['completed_updates']!=study['updates_per_branch']
+            or protocol['terminal_update']!=study['updates_per_branch']
+            or chain['protocol_sha256']!=file_hash(root/'study.json')):
+        raise ValueError('fixed final update and same training study required')
     rows=[];old=[];new=[];audits={}
     for role in ('learning','selection'):
         records={}
@@ -22,7 +25,8 @@ def compare(root):
             stage=root/(policy+'-'+role);audits[stage.name]=verify_hf(stage)
             c=read(stage/'config.json')
             expected=study['initializer']['adapter_id'] if policy=='initial' else chain['versions'][-1]['adapter_id']
-            if (c['adapter_id']!=expected or c['evaluation_role']!=role
+            if (c['adapter_id']!=expected or c['base_id']!=study['initializer']['base_id']
+                    or c['evaluation_role']!=role
                     or file_hash(Path(c['evaluation_protocol']))!=file_hash(root/'evaluation-protocol.json')
                     or file_hash(Path(c['transfer_protocol']))!=file_hash(root/'study.json')):
                 raise ValueError('evaluation stage identity differs')

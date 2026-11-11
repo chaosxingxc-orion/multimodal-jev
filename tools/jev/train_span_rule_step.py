@@ -31,8 +31,10 @@ def run(config, output):
     from infer_span_rule_baseline import select_rows
     from verify_span_rule_runtime import verify
 
-    if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != ['davinci5']:
-        raise ValueError('isolated physical NPU5 required')
+    from multimodal_jev.span_runtime_topology import runtime_topology
+    topology=runtime_topology({**config,'physical_devices':config.get('physical_devices',[5])})
+    if topology['size']!=1 or sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != topology['devices']:
+        raise ValueError('one isolated authorized physical NPU required')
     transfer = config.get('population') == 'transfer-version-gate-v1'
     if not transfer:
         if (config['method'] not in ('sft', 'rl', 'conditional') or config['optimizer_start'] != 'fresh'
