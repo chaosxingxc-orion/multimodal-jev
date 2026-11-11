@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-single-pass-spans-smoke-v2",
+  "files": {
+    "launch.json": "e29ea9859ca08c7a1b2a6240a6542673a9c3b5a1ceecb5eac54694dfdfaad4f6",
+    "config.json": "f268d87260230348d4b397d880e0265104f8635904c7642f9c22839a35ca3c3f",
+    "source-manifest.json": "8510aa96e6acc0869bbc6263d3ee6887ecbfd28e917f60b1619b11f5182a5f52",
+    "run/encoding.json": "402947b4a8f3d05dbebcd069f271b9b95ec53bbba9f31c90a445c91849c61fae",
+    "run/result.json": "8203beba722f7b0da114cf5c1d441b09d3f04b8aca634c9983d266da796d8e1b",
+    "run/terminal.json": "c5584479bd9214e3a80090597a483be2c84463fb48c6e2fc19b60efae3120373"
+  },
+  "checks": [
+    "terminal success",
+    "one recorded backbone hook call",
+    "encoding hash and position agreement",
+    "candidate probability normalization",
+    "no optimizer updates"
+  ],
+  "scope": "Real single-audio forward wiring; no accuracy, gradient, backend parity or CoT claim."
+}
