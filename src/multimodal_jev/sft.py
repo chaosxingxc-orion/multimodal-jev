@@ -5,6 +5,7 @@ from pathlib import Path
 from .baseline import atomic_json,file_hash,select_examples
 from .training_budget import batch_budget,sum_budgets
 from .budget_control import load_budget_controller
+from .slurp_training import validate_admission
 
 
 def initialization_identity(config):
@@ -51,6 +52,7 @@ def select_training(config):
         variants=[ex.metadata['variant'] for ex in rows if ex.metadata['source_group']==group]
         if set(variants)!=expected or len(variants)!=len(expected):raise ValueError('incomplete SFT source group')
     if any(ex.split!='train' for ex in rows):raise ValueError('SFT admits train only')
+    for ex in rows:validate_admission(ex)
     random.Random(config['seed']).shuffle(rows)
     return rows
 
@@ -79,6 +81,7 @@ def training_batches(config):
             if uid in selected:raise ValueError('duplicate manifest ID')
             ex=JevExample.from_record(row)
             if ex.split!='train':raise ValueError('SFT admits train only')
+            validate_admission(ex)
             selected[uid]=ex
     if set(selected)!=wanted:raise ValueError('SFT selection missing from manifest')
     # Reuse across different updates is intentional and retained in the ledger.
@@ -98,7 +101,7 @@ def train(config,output):
     controller=load_budget_controller(config,sft=True)
     identity={'config':config,'manifest_sha256':file_hash(config['train_manifest']),
               'weights_sha256':file_hash(Path(config['model_path'])/'model.safetensors'),
-              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','task_schema.py','thinking.py','asr.py','baseline.py','training_budget.py','budget_control.py','policy_identity.py')},
+              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','slurp_training.py','consumption.py','audio_policy.py','task_schema.py','thinking.py','asr.py','baseline.py','training_budget.py','budget_control.py','policy_identity.py')},
               'example_ids':[ex.example_id for ex in rows],
               'batch_example_ids':[[ex.example_id for ex in batch] for batch in batches]}
     if initialization is not None:

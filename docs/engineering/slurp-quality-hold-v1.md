@@ -57,3 +57,7 @@ selection可用9673录音；另1条冲突录音标记conflict，不参与监督�
 
 这一划分不是说话人隔离，不覆盖语义近重复；未读取TEST。规则族/表达模板
 划分与可训练release仍待完成，不能仅凭source80名单解除训练数据准入限制。
+
+训练适配后续：[逐决策审核适配](slurp-reviewed-training-adapter-v1.md)已接入现有
+SFT/RL 训练入口，旧 SLURP 或无审核样本拒绝优化。真实 learning 全量空审核
+预检输出 0 条训练样本。此实现不解除语义审核与可训练 release 的质量限制。

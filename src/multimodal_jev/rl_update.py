@@ -36,6 +36,8 @@ def update_actor(model,processor,optimizer,examples,audios,records,policy_id,gro
                  max_logprob_error=0.02,max_grad_norm=1.0,reward_mode='grpo',pair_bonus_weight=0.2,
                  micro_batch_size=None,reference_model=None,kl_coefficient=0.,kl_estimator='k3',progress=None,
                  response_logits_only=False,norm_adv_by_std=True,training_reservation=None):
+    from .slurp_training import validate_admission
+    for example in examples:validate_admission(example)
     import torch
     from verl.utils.model import extract_multi_modal_inputs
     from .audio_policy import response_log_probs

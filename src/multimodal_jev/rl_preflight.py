@@ -11,6 +11,7 @@ from .pair_reward import paired_rewards
 from .policy_identity import checkpoint_identity,validate_adapter_export
 from .rollout import validate_sampling
 from .task_schema import JevExample
+from .slurp_training import validate_admission
 
 
 def validate_schedule(config):
@@ -63,6 +64,7 @@ def validate_schedule(config):
             if uid in selected:raise ValueError(f'duplicate manifest example: {uid}')
             example=JevExample.from_record(row)
             if example.split!='train':raise ValueError('schedule admits TRAIN only')
+            validate_admission(example)
             selected[uid]=example
     if selected.keys()!=wanted:raise ValueError('schedule selection missing from manifest')
     audio_hashes={}
