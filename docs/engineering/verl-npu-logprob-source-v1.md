@@ -92,3 +92,6 @@ CPU合成张量，没有执行NPU cross entropy、音频或模型前向。逐文
 分片 envelope，以及原始观测证据。两份概率各自用 `merge_shards` 要求全部
 rank/响应后恢复完整顺序。合并不认证原始 observer 内容，真实运行身份和
 隔离进程仍由 runner 负责。此接口不启动分布式进程、不重采样，也不设置阈值。
+固定镜像相关86项测试通过、零跳过，含真实DataProto重排后分配与两份概率
+合并；[验收记录](omni-observed-shards-tests-v1-verified.json)保留容器和源码身份。
+此处 observed forward 是合成替身，不是双 rank NPU 运行证据。
