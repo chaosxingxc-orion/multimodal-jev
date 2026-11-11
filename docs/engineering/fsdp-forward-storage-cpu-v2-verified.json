@@ -1,0 +1,23 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-forward-storage-cpu-v2",
+  "container_id": "cd4fa161b7fe8fea9df3793c791d0041f1080c69fedfb7d2048c3c7a45dadcf3",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "1e1402cdd66ecd082feefca655f623e198547615",
+  "source_files_verified": 127,
+  "intent_sha256": "b61167c3474145e3f92670325573163f7f288f2ea7ef90eddc84752790d3ace8",
+  "ranks": [
+    {
+      "rank": 0,
+      "result_sha256": "3f24ea0204c23f59ef9c3027fb5bc5b375fc1beaa1466742df4867b1131cebb0",
+      "adapter_probabilities_exact": true,
+      "root_full_storage_after_adapter": 0
+    },
+    {
+      "rank": 1,
+      "result_sha256": "7bf6306e7290a3dfaf1cb56b9ca40a4abec5ed567a54eeaa5a3d4c3dd663dacd",
+      "adapter_probabilities_exact": true,
+      "root_full_storage_after_adapter": 0
+    }
+  ],
+  "scope": "Actual two-rank CPU/Gloo FSDP forward through project compute_log_probs adapter with synthetic actor/model. Root storage released and probabilities unchanged. No real verl actor, Omni weights, NPU/HCCL or training."
+}
