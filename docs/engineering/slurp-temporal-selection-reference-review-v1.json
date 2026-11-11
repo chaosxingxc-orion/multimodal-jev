@@ -1,0 +1,24 @@
+{
+  "schema": "jev-selection-reference-review-v1",
+  "packet_sha256": "cb6d6ae00e9eca156da1cf88ab2367d7de4504c1cc21e3c78be052fec6d9a415",
+  "tasks_sha256": "02186406c8e8c9686113de2e56b02ae977e028316ac71749919bd65addc359ab",
+  "reviewed_decisions": 130,
+  "conflict_decisions": 2,
+  "training_admitted": false,
+  "evaluation_admitted": false,
+  "scope": "Offline review of supplied reference semantics and task definitions; not human listening or a claim that audio matches reference. Selection-only; no label corrections, no model input or reward.",
+  "root": "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/temporal-selection-review-v1",
+  "semantic_review_sha256": "3eae3f7542c75d2e48e2f6eb88fd80d7d4e09785db03aaf1b07aaa4ffea1bba7",
+  "masked": [
+    {
+      "id": "slurp:audio-1498569637-headset.flac",
+      "task": "date",
+      "reason": "Today in the list name explicitly supplies a calendar reference under the whole-request definition; native date absence conflicts. Mask date, not false."
+    },
+    {
+      "id": "slurp:audio-1502894756.flac",
+      "task": "time",
+      "reason": "Today supplies date, and seven days from today also supplies a quantified temporal offset under the time definition. Native time absence conflicts; mask time."
+    }
+  ]
+}
