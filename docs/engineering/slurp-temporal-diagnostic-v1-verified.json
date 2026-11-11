@@ -1,0 +1,57 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-temporal-npu-diagnostic-v1",
+  "container_id": "5d62a1e807a50b4f928de2a3cf4064d96e14c62efebe216d7e2aaf83dcfddd72",
+  "exit_code": 0,
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [
+    4
+  ],
+  "scope": "Training-population diagnostic, HF eager generation; silence is an input perturbation, not a complete causal audio-grounding test. No held-out or RL claim.",
+  "independent_metrics": {
+    "base": {
+      "correct": 0,
+      "total": 142,
+      "valid_boolean": 0,
+      "complete_bundle_correct": 0,
+      "complete_bundle_total": 46,
+      "length_limited": 0,
+      "distinct_texts": 61
+    },
+    "sft": {
+      "correct": 80,
+      "total": 142,
+      "valid_boolean": 142,
+      "complete_bundle_correct": 5,
+      "complete_bundle_total": 46,
+      "length_limited": 0,
+      "distinct_texts": 2
+    },
+    "sft_silence": {
+      "correct": 70,
+      "total": 142,
+      "valid_boolean": 142,
+      "complete_bundle_correct": 5,
+      "complete_bundle_total": 46,
+      "length_limited": 0,
+      "distinct_texts": 1
+    }
+  },
+  "sft_vs_silence_changed_decisions": 86,
+  "all_true_correct": 72,
+  "all_false_correct": 70,
+  "elapsed_seconds": 329.6709125699708,
+  "verified_files": {
+    "launch.json": "ac97789fc036aadd3826650067701c8f5f69b34164389b01cb40a123540241c8",
+    "config.json": "d49acd335c85187c260f0b3d46e827e9a80be6d87ac6172e659f8a0e49d42a9c",
+    "source-manifest.json": "77ae6910ee355b1a771792e0c56c1510c6f0467471fbbdbfbda6ba534c80f9bb",
+    "container-final.json": "8b328eb807b5c7269160020db2fc9fe818cfd9e35b7dbd44740e02e222213b80",
+    "run/result.json": "5ad45a4a420fb0b6754979e5e95bfb9d9f9a7ed3558d87b4345827f15709b264",
+    "run/terminal.json": "0261fb622f4c4693a04445325c8583cbbf82e64a44e06c20c18f766889e636cf"
+  },
+  "prediction_sha256": {
+    "base": "227b5509d28d1f1f5cfa7e03b1ee39ac47aa29a6ac134977e1465e8c8a2912a2",
+    "sft": "6603bf0c26f61e4015003f8a7d3e2c47bde425b5e5f78d8defd7ab0572baf5a8",
+    "sft_silence": "aa3ede0660f1a24a3502c3406dcb8c67d8f2d53b24372f83893c9d6c9194a260"
+  },
+  "interpretation": "Format acquisition is clear; training-set semantic quality remains weak and complete-bundle accuracy equals silence. No RL/configurable-thinking or held-out gain established."
+}

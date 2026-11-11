@@ -24,3 +24,21 @@ HF eager BF16，greedy，无采样，最多 32 个新 token。分别完整保存
 并行 CPU 合并导出位于 `slurp-temporal-export-v1`，在相同固定镜像内比较 adapter、合并及重新加载后的响应概率，容差沿用 atol=3e-4、rtol=1e-5。新版导出工具接受显式父运行 terminal 路径以适配本次嵌套 SFT 输出，并记录 terminal/result 哈希；不修改历史运行结果。
 
 历史 NPU vLLM 采样成功与概率一致性失败要分开：`npu-vllm-audio-v2-result.json` 证明旧 checkpoint 的 12 条采样及退出；`npu-vllm-audio-sideaudit-v1-result.json` 的 BF16 max logprob error 为 0.1862，FP16 审计为 0.06158，均未通过 0.02 阈值。当前 adapter 尚未在 vLLM 验证；CPU 合并成功也不能解除 NPU RL 概率门槛。
+
+## 已完成结果
+
+三臂全部完成，容器退出 0、无 OOM，实际只挂载物理 4 号卡。完整训练人口上的结果如下，百分比不是独立测试成绩：
+
+| 臂 | 合法布尔输出 | 判断正确 | 完整三类型全对 |
+| --- | --- | --- | --- |
+| base | 0/142 | 0/142 | 0/46 |
+| sft | 142/142 | 80/142（56.34%） | 5/46（10.87%） |
+| sft_silence | 142/142 | 70/142（49.30%） | 5/46（10.87%） |
+
+SFT 逐类型：date 24/48，time 30/46，timeofday 26/48。真实音频下 86 项预测 true；静音全部预测 false。真实音频相较静音多正确 10 项，但相较全 true 常数基线只多正确 8 项，联合正确数与静音相同。基础模型得零来自未产生合法布尔答案，不能解读为它没有语音语义信息。
+
+这说明当前首轮 SFT 已学会输出格式，语义判决仍很弱；不能以训练 loss 下降或合法率 100% 声称 Jev 推理有效。实际音频改变了输出，也不能仅凭此证明变化来自正确语义证据。下一步需要未见来源及真实音频替换对照，区分格式学习、音频敏感性与角色理解，再决定扩充 SFT 监督或学习复核策略。暂不重复增加这批数据的训练轮数。
+
+已独立重新解析所有预测、复算原子和完整 bundle 指标并验证输入、代码及预测文件哈希，见[诊断验收](../docs/engineering/slurp-temporal-diagnostic-v1-verified.json)。31 项相关测试通过，验证了严格布尔、完整覆盖、部分 bundle 分母及既有音频/训练接口。
+
+CPU 导出成功：两个固定训练判断上的合并与重新加载 max logprob error 均为 2.6643e-5，低于既定容差；七个导出文件已重算哈希。见[导出验收](../docs/engineering/slurp-temporal-export-v1-verified.json)。这只证明 CPU FP32 导出一致性，尚未证明 BF16 adapter/merged 或 vLLM 一致性。
