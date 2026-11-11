@@ -1,0 +1,38 @@
+{
+  "schema": "slurp-temporal-npu-sft-v1-verified",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-temporal-npu-sft-v1",
+  "container_id": "e6400a96462370bbe69a3596b2bf7f1d3c2c246deb9bdb7e5361b59a9c0b9807",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [
+    4
+  ],
+  "exit_code": 0,
+  "oom_killed": false,
+  "updates": 24,
+  "decisions": 142,
+  "source_groups": 48,
+  "training_loop_seconds": 44.107771300012246,
+  "first_batch_loss": 10.171600023905436,
+  "last_batch_loss": 0.16897187381982803,
+  "adapter_files": {
+    "README.md": "1d289bf3b80177083b94fbc45ff7bd33963fc82ea9d46698dfe9d4a4a363aae9",
+    "adapter_config.json": "712071c0fcf3899f3bad78105ca106e6224aec69d8245bb1ac8943ed8ba4f6d7",
+    "adapter_model.safetensors": "bd824abbd821441045cdce6f6367e2687ab44839e7e6632643a0660d59e11990"
+  },
+  "verified_files": {
+    "launch.json": "d0ad934a8fda90d880ae9d939e30133988a24b80ea40b66725f03684af665e10",
+    "config.json": "d3c6a88b400abbd4825e69e2b8b036b169552075b154c4a043afe6d8ac0122cb",
+    "source-manifest.json": "7dcf7e98c17a080b8de4b6070ee846ae1098c331cccd0b080344773cd89d21e0",
+    "container-final.json": "4b6fb0449cc4e9a86eb3d6573675fc724cabc758744bc7272e0fefcb214be851",
+    "run/admission.json": "3f2e8a48b42ed4e4efb1d85423f152305c82d7082afbd33352343d2751b81e5c",
+    "run/terminal.json": "80ac0633987f13e32c757c3391c4b09e84724538957c8412980bd5735b9bee47",
+    "run/sft/result.json": "c305d87da8d18e3b0e1c652f5ba066d1c361a159dde915d5b51f2a892c18ce49",
+    "run/sft/identity.json": "7b91ff0ac738bccce1c17e11c01e5698b8f65b2b68ccbe6f5f7940d22559e3c1"
+  },
+  "checks": [
+    "Container final state, image and device mounts independently inspected.",
+    "Snapshot and actual SFT code hashes verified.",
+    "Adapter files independently rehashed; finite losses and gradient norms, unique full schedule verified."
+  ],
+  "scope": "First reviewed clean-SLURP temporal audio SFT engineering run; no inference accuracy, native academic baseline reproduction, vLLM export, RL gains or cross-task generalization claim."
+}
