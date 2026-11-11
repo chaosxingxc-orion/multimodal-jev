@@ -40,4 +40,10 @@ PYTHONPATH=src python tools/jev/check_span_policy_version.py --config /path/conf
 
 ## 尚未完成
 
-48条顺序验收已全部通过，max logp差1.1920929e-07，完整动作概率比范围[0.9999999851,1.0000001788]；所有384种动作比率已独立枚举复核。真实语音RL更新及新版本准入正在验收；批量/多卡、完整Ray/verl trainer与跨任务效果仍待验证。当前时间类三问属于并列分类，平均正确性奖励不被称为依赖式CoT过程奖励。学术结论仍需要更大的清洗发布、独立划分及等预算SFT/RL对照。
+48条顺序验收已全部通过，max logp差1.1920929e-07，完整动作概率比范围[0.9999999851,1.0000001788]；所有384种动作比率已独立枚举复核。step-v3完成一次真实verl更新，但更新后重载失败，新版本未准入；step-v4正在重验。批量/多卡、完整Ray/verl trainer与跨任务效果仍待验证。当前时间类三问属于并列分类，平均正确性奖励不被称为依赖式CoT过程奖励。学术结论仍需要更大的清洗发布、独立划分及等预算SFT/RL对照。
+
+## verl 导入副作用隔离
+
+固定镜像的 `/opt/verl/verl/__init__.py` 在检测到NPU时导入 `models.transformers.npu_patch`，后者全局替换HF Qwen3 RMSNorm.forward、MLP.forward与apply_rotary_pos_emb。若在首次loss计算时才导入，更新前actor与更新后的前向会使用不同实现；这会破坏保存重载检查，甚至改变后续rollout政策。
+
+Span更新进程在构建模型前调用 `initialize_verl_preserving_qwen3()`：保留三个原始HF函数对象，导入真实verl core，再恢复这些对象。遇到已被verl替换的进程或未知来源的替换即拒绝；不修改共享镜像文件。loss继续调用固定verl实现。记录 `verl-runtime-initialization.json`，并依靠更新前gate、独立重载与新版本gate验收实际效果。step-v3的失败checkpoint不用于后续训练。
