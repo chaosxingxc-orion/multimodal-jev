@@ -45,3 +45,16 @@ SLURP内组合迁移不能替代原生SLURP学术复现和跨数据集泛化目�
 
 若训练时延无独立单调时钟计量，只能从初始gate配置文件mtime到terminal
 作带标签的近似墙钟统计，不能作为可信的纯训练速度或计算量匹配证据。
+
+可复用启动器 `tools/jev/launch_span_transfer_evaluation.py` 先重算完整训练链，
+再从study固定初始与末次adapter、全量learning/selection请求和源码快照；
+`--launch`启动隔离的HF评测容器，否则只生成可审查的启动配置。四阶段由
+`run_span_transfer_evaluation.py`顺序执行，各阶段推理后必须独立核验。
+
+SFT与GRPO已分别挂接 `span-transfer-sft-s17-a2-evaluation-queue-v1` 和
+`span-transfer-grpo-s17-a2-evaluation-queue-v1`。队列等待当前确切container ID，
+不重启训练；退出0后校验已固定的本地源码，再调用完整审计与评测启动器，
+在训练原卡5/6上运行。源码变化、等待失败、训练非零退出或审计失败均终止
+队列并保留终态，不擅自另开训练。`dispatched.json`只表示评测已启动，不能
+当作评测完成。后续改动src/tools前须注意已有队列的源码pin，不能静默改变
+其执行内容。控制器/队列10项测试通过，实际全量评测结果仍待完成。
