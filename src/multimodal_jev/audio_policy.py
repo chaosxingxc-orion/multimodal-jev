@@ -6,6 +6,7 @@ Never pass expanded HF audio token IDs back to a processor that expands them.
 from __future__ import annotations
 import json
 from .task_schema import render_schema
+from .thinking import direct_suffix
 
 
 INSTRUCTION = ('Use the audio evidence and the decision definition below. '
@@ -16,7 +17,7 @@ INSTRUCTION = ('Use the audio evidence and the decision definition below. '
 
 
 def system_text(example):
-    return 'English\n' + INSTRUCTION + render_schema(example.schema)
+    return 'English\n' + INSTRUCTION + render_schema(example.schema) + direct_suffix(example.thinking)
 
 
 def messages(example, audio):

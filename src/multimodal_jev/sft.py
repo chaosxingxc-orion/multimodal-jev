@@ -98,7 +98,7 @@ def train(config,output):
     controller=load_budget_controller(config,sft=True)
     identity={'config':config,'manifest_sha256':file_hash(config['train_manifest']),
               'weights_sha256':file_hash(Path(config['model_path'])/'model.safetensors'),
-              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','asr.py','baseline.py','training_budget.py','budget_control.py','policy_identity.py')},
+              'code_sha256':{n:file_hash(Path(__file__).with_name(n)) for n in ('sft.py','audio_policy.py','task_schema.py','thinking.py','asr.py','baseline.py','training_budget.py','budget_control.py','policy_identity.py')},
               'example_ids':[ex.example_id for ex in rows],
               'batch_example_ids':[[ex.example_id for ex in batch] for batch in batches]}
     if initialization is not None:

@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from typing import Any
 import math
+from .thinking import ThinkingSpec
 
 
 @dataclass(frozen=True)
@@ -76,22 +77,36 @@ class JevExample:
     schema: DecisionSchema
     target: Any
     metadata: dict[str, Any] = field(default_factory=dict)
+    thinking: ThinkingSpec | None = None
 
     def __post_init__(self):
+        if self.thinking is not None and not isinstance(self.thinking, ThinkingSpec):
+            raise ValueError("thinking must be a validated ThinkingSpec")
         if not self.schema.accepts(self.target):
             raise ValueError(f'invalid target for {self.schema.id}: {self.target!r}')
         if not self.example_id or not self.audio or self.split not in {'train', 'valid', 'test'}:
             raise ValueError('example id, audio, and official split are required')
 
     def to_record(self):
-        return asdict(self)
+        record = asdict(self)
+        if self.thinking is None:
+            record.pop("thinking")
+        else:
+            record["thinking"] = self.thinking.to_dict()
+        return record
 
     @classmethod
     def from_record(cls, record):
-        return cls(**{**record, 'schema': DecisionSchema.from_dict(record['schema'])})
+        value = {**record, 'schema': DecisionSchema.from_dict(record['schema'])}
+        if 'thinking' in value:
+            value['thinking'] = ThinkingSpec.from_dict(value['thinking'])
+        return cls(**value)
 
     def model_input(self):
-        return {'audio': self.audio, 'schema': asdict(self.schema)}
+        value = {'audio': self.audio, 'schema': asdict(self.schema)}
+        if self.thinking is not None:
+            value['thinking'] = self.thinking.to_dict()
+        return value
 
 
 def render_schema(schema):

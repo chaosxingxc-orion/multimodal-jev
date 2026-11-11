@@ -1,5 +1,7 @@
 # 学术横向比较冻结方案 v1
 
+> 2026-11-11 执行方向更新：已转向 clean SLURP / Qwen3-ASR 训练准备，FSC 为简单控制，停止扩展 Omni 验证。以下学术来源/历史协议保留；旧文中的长期冻结、FSC 优先及“p1 仍在运行”等状态已被后续记录取代。当前数据角色、质量限制与指标指南见[工作基线](../docs/research/08-dataset-metrics-working-guide.md)；这不表示新训练已派发。
+
 日期：2026-11-10 Asia/Shanghai。关联 [学术报告](../docs/research/07-academic-baseline-lock.md) 与 [机器登记](../docs/research/academic-baseline-lock.json)。此文件锁定后续比较规则和必需对照；**不启动任何实验，不改动既有协议、运行状态、容器或 CPU 后台任务**。`locked` 指当前即可执行的研究约束，不表示某运行已经完成；`proposed` 指仍须生成具体配置、资源预算与启动凭证的实验。
 
 ## 1. 版本、假设与判定对象（locked）

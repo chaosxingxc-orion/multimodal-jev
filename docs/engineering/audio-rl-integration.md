@@ -2,6 +2,8 @@
 
 ## 当前状态（以此节及链接结果为准）
 
+2026-11-11 收尾：Omni 原始单层 NPU 探针九次前向已完成并独立核验，见[审计](omni-npu-layer-final-audit-v1.json)。物理卡4，零权重更新；micro1/micro2 有效位置最大绝对差0.0078125，未预设数值通过阈值，不判为概率等价。分配器峰值约1.71GB不代表完整模型容量。停止扩展Omni验证，后续优先clean SLURP/Qwen3-ASR；此探针不证明完整actor/FSDP/verl链路。
+
 下文保留早期接入审计，部分“尚未实测”描述代表当时状态。当前已经完成真实
 CPU vLLM 采样、HF actor 的 verl DataProto/GRPO/PPO 更新、模型导出及第二轮
 重新采样与优化器继续更新，见[两轮结果](vllm-two-step-chain-v3-result.json)。

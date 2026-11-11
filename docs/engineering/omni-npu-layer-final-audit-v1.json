@@ -1,0 +1,205 @@
+{
+  "schema": "omni-npu-layer-diagnostic-audit-v1",
+  "container_id": "8deccddc76a19ae113362748c36e24a0b83fa26ea4a9303758607bd6b6623d1d",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "dbb9c0fdb922e6ae519ddb26ad00f56990b9c4a9",
+  "source_files_verified": 122,
+  "result_sha256": "9a76ebc4a8a5f3da5928049989c50080d5a92138b36ef8de952c98ebee77734e",
+  "identity_sha256": "2f5622821bfb82308047b8094602508d63acb22292e7ef96ff92997461fc8283",
+  "queue_plan_sha256": "fe95d22789e7bb91a56866712b032856af644d342abe97acd6bf0d7ff0cf3df6",
+  "physical_devices": [
+    4
+  ],
+  "calls": [
+    {
+      "size": 1,
+      "offset": 0,
+      "input_sha256": "604baa51eb43ad34ef40775d8a66a305ced0dc3de4c4d25f3312e2427ba4ff4e",
+      "output_sha256": "b17010da3ad91882029184e6257135cc0908f77d3203c33f849173309059ec73"
+    },
+    {
+      "size": 1,
+      "offset": 1,
+      "input_sha256": "0f9bb7775144ebcfc60029ce816f3711d4a5051d754f87489d0ff6555ed1c635",
+      "output_sha256": "238ca25fda4135845d575a5815dc9c310a4610c2866e04bd14329c3f0156d23b"
+    },
+    {
+      "size": 1,
+      "offset": 2,
+      "input_sha256": "ea6b129bc1dacffcd89bec98f98da42c34699a0a1a158b3e88fba4471f9242d5",
+      "output_sha256": "6ecdc204355f415bc7b867909d18c59af793bdcb28ab4521b2da61a5401acd5a"
+    },
+    {
+      "size": 1,
+      "offset": 3,
+      "input_sha256": "6632eb6bf0ee53d4ee11993cf9991834a368424ad8758f5cd3b0cdcae1bdebbc",
+      "output_sha256": "9b82f439b6e0f5ba3297a779a030228c7a72916f734daf30365c004c39b78a2b"
+    },
+    {
+      "size": 1,
+      "offset": 4,
+      "input_sha256": "3cc9aa003b4623964fa6339151d8e83790641114e6acaada04e2d842063f5b9c",
+      "output_sha256": "3a7d1dba565f95836c3292c2620215c17b1840e00cc5ca2ae800881251368a14"
+    },
+    {
+      "size": 1,
+      "offset": 5,
+      "input_sha256": "3cf6e13967a0afbc10939fc83dc2a546ecf04f4e880b46673218b4a978c80111",
+      "output_sha256": "e34eabdb58f7928a6e1285199e83b87cac191711de72dde416da3c8e417db723"
+    },
+    {
+      "size": 2,
+      "offset": 0,
+      "input_sha256": "674d9bd966976f333e101efc55e47a4af626d2162884fe3d00f9c8ac5ad1e358",
+      "output_sha256": "23a10b53674f649428f7976528f5b689b1c86f8ca5ca8612d07463af2a590497"
+    },
+    {
+      "size": 2,
+      "offset": 2,
+      "input_sha256": "09f62db9afabb6509bf44ff1e4c8206b538da58ddb6bd40435d9b249c0bd7f0f",
+      "output_sha256": "8fc7b91e7c476c7b599c5407d3f1cc70a723cac2c838fdeca2c3dab9238c2970"
+    },
+    {
+      "size": 2,
+      "offset": 4,
+      "input_sha256": "166539d7903fcc2c5cf89af56cac360ec3305d6dc908243402e70bb7d30f14e5",
+      "output_sha256": "c69580d86a8c09a9fbc1c898bb9bff97889e14271850709380350f98a4349016"
+    }
+  ],
+  "capacity": {
+    "peak_allocated_bytes": 1706504704,
+    "peak_reserved_bytes": 1923088384,
+    "forward_and_save_seconds": 2.3676084799226373,
+    "scope": "PyTorch cumulative allocator peaks; not total device HBM or full-model capacity."
+  },
+  "micro1_micro2_comparisons": [
+    {
+      "row": 2,
+      "offset": 0,
+      "valid_tokens": 1230,
+      "valid": {
+        "equal": false,
+        "elements": 2519040,
+        "differing_elements": 186067,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 4.507770016032263e-06,
+        "rms_error": 3.274660119611656e-05
+      },
+      "full_padded": {
+        "equal": false,
+        "elements": 2519040,
+        "differing_elements": 186067,
+        "max_abs_error": 0.0078125,
+        "mean_abs_error": 4.507770016032263e-06,
+        "rms_error": 3.274660119611656e-05
+      }
+    },
+    {
+      "row": 0,
+      "offset": 1,
+      "valid_tokens": 1076,
+      "valid": {
+        "equal": false,
+        "elements": 2203648,
+        "differing_elements": 187852,
+        "max_abs_error": 0.0074462890625,
+        "mean_abs_error": 5.6513980269902925e-06,
+        "rms_error": 4.4825338280688704e-05
+      },
+      "full_padded": {
+        "equal": false,
+        "elements": 2519040,
+        "differing_elements": 187852,
+        "max_abs_error": 0.0074462890625,
+        "mean_abs_error": 4.9438246154809386e-06,
+        "rms_error": 4.1925394290882336e-05
+      }
+    },
+    {
+      "row": 5,
+      "offset": 2,
+      "valid_tokens": 828,
+      "valid": {
+        "equal": false,
+        "elements": 1695744,
+        "differing_elements": 65938,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 1.992219128277027e-06,
+        "rms_error": 1.5234967465362195e-05
+      },
+      "full_padded": {
+        "equal": false,
+        "elements": 2519040,
+        "differing_elements": 66742,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 1.3654542863520422e-06,
+        "rms_error": 1.2600491953076845e-05
+      }
+    },
+    {
+      "row": 1,
+      "offset": 3,
+      "valid_tokens": 978,
+      "valid": {
+        "equal": false,
+        "elements": 2002944,
+        "differing_elements": 127009,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 3.5132705303030908e-06,
+        "rms_error": 2.1288141983534755e-05
+      },
+      "full_padded": {
+        "equal": false,
+        "elements": 2519040,
+        "differing_elements": 127513,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 2.808743123366399e-06,
+        "rms_error": 1.902422625376339e-05
+      }
+    },
+    {
+      "row": 3,
+      "offset": 4,
+      "valid_tokens": 979,
+      "valid": {
+        "equal": false,
+        "elements": 2004992,
+        "differing_elements": 116398,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 2.995799904436147e-06,
+        "rms_error": 1.8294746384126557e-05
+      },
+      "full_padded": {
+        "equal": false,
+        "elements": 2519040,
+        "differing_elements": 116936,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 2.394117343019906e-06,
+        "rms_error": 1.6340821635810796e-05
+      }
+    },
+    {
+      "row": 4,
+      "offset": 5,
+      "valid_tokens": 711,
+      "valid": {
+        "equal": false,
+        "elements": 1456128,
+        "differing_elements": 30912,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 1.1219189347733342e-06,
+        "rms_error": 1.1617300047399586e-05
+      },
+      "full_padded": {
+        "equal": false,
+        "elements": 2519040,
+        "differing_elements": 32258,
+        "max_abs_error": 0.00390625,
+        "mean_abs_error": 6.751036668968636e-07,
+        "rms_error": 8.939618725259743e-06
+      }
+    }
+  ],
+  "weight_updates": 0,
+  "scope": "All nine saved original first-layer NPU outputs and six paired microbatch comparisons. Differences are descriptive, with no numerical acceptance threshold. No CPU/NPU equivalence, full-actor probability, FSDP, gradient or training claim."
+}

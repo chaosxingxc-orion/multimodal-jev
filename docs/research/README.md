@@ -2,7 +2,9 @@
 
 调研日期：2026-11-09（America/Los_Angeles）。范围：模型、SLU / Agentic Speech 数据集、直接音频决策研究和可复用工程方案。
 
-**当前主线使用本地 Qwen3-Omni，直接输入音频与任务定义，输出原生任务或 Jev 决策。先完成冻结推理基线，再进行离线远程教师提示优化和原生/Jev 比较；随后在工程验证与训练协议就绪后研究 verl + vLLM 强化学习及跨任务迁移。** 权重训练当前不派发，不新增模型下载。Qwen3-ASR 保留为专用 ASR 参考和潜在适配对象；ASR→独立文本模型仅作历史文献参考，不进入当前执行路线。
+**当前主线已转为清理后的 SLURP 与本地 Qwen3-ASR 端到端训练准备。** actor 直接消费音频与任务定义；FSC 保留为简单控制，已有 Omni 冻结基线及教师提示优化结果保留，停止扩展 Omni 验证。SLURP clean-v7 元数据和 TRAIN 来源划分已经完成，但语义角色定义、规则族划分与可训练 release 尚未验收，不将受影响标签用于训练/奖励/模型选择。ASR→独立文本模型不进入执行路线，不新增模型下载。
+
+2026-11-11 工作基线：[16 项数据集与指标指南](08-dataset-metrics-working-guide.md)；[单问、多问与推理学习策略](09-query-decision-learning-guide.md)。前者统一任务边界、指标与横比条件，后者分析原子决策与联合判决。用户最新要求已固定为[可配置思考与非文本判决](10-configurable-thinking-decision-contract.md)，取代文本 CoT 实验路线。意图/类型作为 Jev 主范围及具体学习策略仍是建议，不冒充用户已确认或工程已实现。
 
 2026-11-10 更新：已审阅并锁定 [16 项资源的 58 条学术基线登记](07-academic-baseline-lock.md)；后续按 [横比协议](../../experiments/academic-baseline-comparison-v1.md) 分开报告原生任务、派生 Jev 与真实交互。历史综述的资源状态以较新的工程凭证为准。
 
@@ -11,6 +13,9 @@
 | 文档 | 内容 |
 | --- | --- |
 | [模型与接口](01-models.md) | Qwen ASR 的最新公开版本、内部结构、适配点、替代模型与运行限制 |
+| [数据集与指标工作基线](08-dataset-metrics-working-guide.md) | 16 项资源的角色、Jev 边界、主指标、质量限制与执行顺序 |
+| [可配置思考与决策契约](10-configurable-thinking-decision-contract.md) | 思考要求、触发/停止策略、非文本判决复核及 RL 对照 |
+| [单问、多问与推理策略](09-query-decision-learning-guide.md) | 原子监督、联合决策、依赖状态、CoT 消融与成本评价 |
 | [数据集与任务](02-datasets.md) | SLU、语音函数调用、完整交互、声学与语义诊断；语音来源、划分、指标、许可 |
 | [学术研究与已有方案](03-related-work.md) | AudioJev、Qwen-Audio-Jev、SFC、Jarvis 等直接相关工作，以及可迁移的方法 |
 | [方案比较与研究切入点](04-recommendations.md) | 研究问题、候选架构、必要对照、分阶段验证和否定条件 |

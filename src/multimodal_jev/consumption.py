@@ -7,6 +7,7 @@ import tempfile
 
 from .baseline import file_hash
 from .task_schema import JevExample, DecisionSchema
+from .thinking import ThinkingSpec
 
 
 def canonical(value):
@@ -22,8 +23,10 @@ def request_from_example(example):
 def validate_request(row):
     if set(row) != {'id', 'split', 'source_group', 'input', 'audio_sha256'}:
         raise ValueError('unexpected request fields; gold/provenance must remain separate')
-    if set(row['input']) != {'audio', 'schema'}:
-        raise ValueError('only audio and decision schema belong in runtime input')
+    if set(row['input']) not in ({'audio', 'schema'}, {'audio', 'schema', 'thinking'}):
+        raise ValueError('only audio, decision schema and thinking requirements belong in runtime input')
+    if 'thinking' in row['input']:
+        ThinkingSpec.from_dict(row['input']['thinking'])
     if row['split'] not in {'train', 'valid', 'test'} or not row['id'] or not row['source_group']:
         raise ValueError('request identity required')
     schema = row['input']['schema']
@@ -40,7 +43,8 @@ def export_release(manifests, destination, dataset_name, native_only=False):
     destination = Path(destination)
     identity = {'dataset': dataset_name, 'native_only': native_only,
                 'source_manifests': {s: {'path': str(p), 'sha256': file_hash(p)} for s,p in manifests.items()},
-                'builder_sha256': file_hash(__file__), 'schema_sha256': file_hash(Path(__file__).with_name('task_schema.py'))}
+                'builder_sha256': file_hash(__file__), 'schema_sha256': file_hash(Path(__file__).with_name('task_schema.py')),
+                'thinking_sha256': file_hash(Path(__file__).with_name('thinking.py'))}
     release = hashlib.sha256(canonical(identity)).hexdigest()
     output = destination/release
     if output.exists(): raise FileExistsError('immutable release already exists')
@@ -78,6 +82,8 @@ def export_release(manifests, destination, dataset_name, native_only=False):
 
 def inference_messages(request, evidence, instruction):
     validate_request(request)
+    if 'thinking' in request['input']:
+        raise ValueError('configured thinking requires an audio-direct runtime, not transcript evidence')
     if not isinstance(instruction, str) or not instruction.strip(): raise ValueError('instruction required')
     return [{'role':'system', 'content': instruction+'\nDecision definition:\n'+
              json.dumps(request['input']['schema'], sort_keys=True, ensure_ascii=False)},

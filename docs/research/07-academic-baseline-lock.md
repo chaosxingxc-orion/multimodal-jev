@@ -1,5 +1,7 @@
 # 学术基线锁定 v1
 
+> 2026-11-11 执行方向更新：已转向 clean SLURP / Qwen3-ASR 训练准备，FSC 为简单控制，停止扩展 Omni 验证。以下学术来源/历史协议保留；旧文中的长期冻结、FSC 优先及“p1 仍在运行”等状态已被后续记录取代。当前数据角色、质量限制与指标指南见[工作基线](08-dataset-metrics-working-guide.md)；这不表示新训练已派发。
+
 调研日期：2026-11-10（Asia/Shanghai；来源访问时间保留 UTC）。本次锁定的是**比较对象、证据口径和复现路径**，调研子进程没有运行训练、模型评测或设备验证；主进程同期运行验证在下文另引工程凭证。不是穷尽最新 SOTA 的排行榜。机器登记见 [academic-baseline-lock.json](academic-baseline-lock.json)，来源和失败记录见 [academic-baseline-sources-v1.json](academic-baseline-sources-v1.json)，执行门槛见 [横比方案](../../experiments/academic-baseline-comparison-v1.md)。
 
 ## 1. 锁定结论与边界

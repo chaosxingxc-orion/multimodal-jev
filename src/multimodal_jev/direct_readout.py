@@ -2,6 +2,7 @@
 import json
 import math
 from .consumption import validate_request
+from .thinking import direct_suffix
 
 LABELS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 ASR_TASK_PREFIX = 'language English<asr_text>'
@@ -44,7 +45,7 @@ def prompt(request, instruction):
     definition = {'question': request['input']['schema']['question'],
                   'decision_type': request['input']['schema']['decision_type'],
                   'alternatives': options}
-    return instruction + '\nTask definition:\n' + json.dumps(definition, ensure_ascii=False, sort_keys=True), options
+    return instruction + '\nTask definition:\n' + json.dumps(definition, ensure_ascii=False, sort_keys=True) + direct_suffix(request['input'].get('thinking')), options
 
 
 def label_tokens(tokenizer, options):

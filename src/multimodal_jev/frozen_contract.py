@@ -6,6 +6,7 @@ from .consumption import canonical, validate_request, inference_messages
 from .policy_evaluation import prediction_record
 from .task_schema import DecisionSchema
 from . import slurp_native
+from .thinking import direct_suffix
 
 
 class FrozenContract:
@@ -41,7 +42,7 @@ class FrozenContract:
     def audio_instruction(self, row, instruction):
         self.validate(row)
         if self.kind == 'jev':
-            return instruction+'\nDecision definition:\n'+json.dumps(row['input']['schema'],sort_keys=True)
+            return instruction+'\nDecision definition:\n'+json.dumps(row['input']['schema'],sort_keys=True)+direct_suffix(row['input'].get('thinking'))
         return instruction+'\nTask definition:\n'+canonical(self.taxonomy).decode()
 
     def prediction(self, row, raw):
