@@ -122,3 +122,9 @@ PYTHONPATH=src python tools/jev/preflight_omni_sampled_probability.py \
 原始概率、合并记录、输入名单和终态变化的拒绝。尚未验证新CLI的真实
 processor/DataProto运行。预检成功也不等于vLLM特征比较、NPU数值通过或
 正式容差登记；真实概率运行器仍须接入这些步骤及完整FSDP加载与前向。
+
+随后在固定镜像、2 CPU/8 GiB、无网络/设备容器内完成40项测试，零跳过，
+并成功执行新CLI的 `--help` 导入与参数入口。外部核验390份源码与Git
+`9304490`、实际命令/挂载/资源、JUnit及退出0无OOM，见
+[固定镜像记录](omni-accepted-sampling-tests-v1-verified.json)。本次仍是合成
+采样产物测试和CLI入口检查，未调用真实processor或构造实际采样DataProto。
