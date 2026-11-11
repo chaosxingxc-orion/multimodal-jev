@@ -84,6 +84,31 @@ def verify(root, branch, hf_root=None):
         torch.testing.assert_close(joint_logprobs(behavior['candidate_logprobs'],behavior['actions']),behavior['old_joint_logprobs'],atol=0,rtol=0)
         expected=rule_sample_rewards(behavior['actions'],targets,masks,weight)
         for key,value in expected.items():torch.testing.assert_close(value,behavior['rewards'][key],atol=0,rtol=0)
+    elif config['method']=='conditional':
+        from multimodal_jev.span_conditional_credit import conditional_credit, reference_conditional_loss
+        if (protocol['schema']!='jev-span-rule-conditional-pilot-v1'
+                or protocol['algorithm']!='exact-conditional-marginal-ppo-v1'
+                or report['algorithm']!=protocol['algorithm'] or protocol['clip_ratio']!=.2
+                or protocol['advantage_standardization']!='none'
+                or report['advantage_standardization']!='none'
+                or report['sampled_actions_used_for_loss']!=0
+                or report['exact_candidates_per_request']!=2*targets.shape[-1]):
+            raise ValueError('conditional algorithm contract differs')
+        behavior=torch.load(run/'conditional-credit.pt',map_location='cpu',weights_only=True)
+        if behavior['request_ids']!=before['request_ids'] or behavior['policy_id']!=initial:
+            raise ValueError('conditional behavior identity differs')
+        expected_behavior=tuple(torch.tensor([accepted[r['id']]['candidate_logprobs'][j] for r in selected])
+                                for j in range(targets.shape[-1]))
+        for actual,expected in zip(behavior['candidate_logprobs'],expected_behavior,strict=True):
+            torch.testing.assert_close(actual,expected,atol=0,rtol=0)
+        torch.testing.assert_close(behavior['targets'],targets,atol=0,rtol=0)
+        torch.testing.assert_close(behavior['supervised'],masks,atol=0,rtol=0)
+        advantage,probability=conditional_credit(expected_behavior,targets,masks,weight)
+        torch.testing.assert_close(behavior['advantages'],advantage,atol=0,rtol=0)
+        torch.testing.assert_close(behavior['probabilities'],probability,atol=0,rtol=0)
+        loss=reference_conditional_loss(expected_behavior,tuple(torch.tensor(p) for p in before['candidate_logprobs']),targets,masks,weight)
+        if abs(float(loss)-report['loss'])>1e-6:
+            raise ValueError('conditional exact-support loss differs')
     reload_error=None
     if hf_root is not None:
         from verify_span_rule_baseline import verify as verify_hf

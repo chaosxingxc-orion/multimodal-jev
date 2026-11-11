@@ -33,7 +33,7 @@ def run(config, output):
 
     if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != ['davinci5']:
         raise ValueError('isolated physical NPU5 required')
-    if (config['method'] not in ('sft', 'rl') or config['optimizer_start'] != 'fresh'
+    if (config['method'] not in ('sft', 'rl', 'conditional') or config['optimizer_start'] != 'fresh'
             or config['num_updates'] != 1 or config['seed'] != 17):
         raise ValueError('fixed one-update matched pilot required')
     for path, digest in config['pins'].items():
@@ -57,7 +57,9 @@ def run(config, output):
     protocol = json.loads(Path(config['protocol']).read_text())
     if config['pins'].get(config['protocol']) != file_hash(config['protocol']):
         raise ValueError('pinned scoped pilot protocol required')
-    if (protocol['schema'] != 'jev-span-rule-matched-pilot-v1'
+    protocol_schema = ('jev-span-rule-conditional-pilot-v1' if config['method'] == 'conditional'
+                       else 'jev-span-rule-matched-pilot-v1')
+    if (protocol['schema'] != protocol_schema
             or protocol['release_manifest_sha256'] != file_hash(release/'MANIFEST.json')
             or protocol['initial_adapter_id'] != adapter_id
             or protocol['request_ids'] != config['request_ids']
@@ -70,6 +72,11 @@ def run(config, output):
         raise ValueError('run differs from matched protocol')
     if protocol['data_audit']['passed'] is not True:
         raise ValueError('reviewed rule provenance audit required')
+    if config['method'] == 'conditional':
+        if (protocol.get('algorithm') != 'exact-conditional-marginal-ppo-v1'
+                or protocol.get('clip_ratio') != 0.2
+                or protocol.get('advantage_standardization') != 'none'):
+            raise ValueError('explicit conditional-credit algorithm contract required')
     rows = {r['id']:r for r in select_rows(release)}
     batch = json.loads((release/'schedule.json').read_text())['batches'][0]
     if config['request_ids'] != batch['arms'][config['arm']]:
@@ -146,6 +153,25 @@ def run(config, output):
             request_ids=ids, policy_id=policy_id), output/'behavior.pt')
         update = update_span_actor(rollout, forward, optimizer, params, rewards['total'], policy_id, ids)
         update['nonconstant_reward_groups'] = int((rewards['total'].std(-1) > 0).sum())
+    elif config['method'] == 'conditional':
+        from multimodal_jev.span_conditional_credit import conditional_credit, verl_conditional_loss
+        advantages, probabilities = conditional_credit(behavior, targets.cpu(), masks.cpu(), weight)
+        torch.save(dict(candidate_logprobs=behavior, advantages=advantages, probabilities=probabilities,
+            request_ids=ids, policy_id=policy_id, targets=targets.cpu(), supervised=masks.cpu()),
+            output/'conditional-credit.pt')
+        optimizer.zero_grad(set_to_none=True); losses = []; metrics = []
+        for i in range(len(prepared)):
+            old = tuple(p[i:i+1].to('npu:0') for p in behavior)
+            loss, info = verl_conditional_loss(old, forward_one(i), targets[i:i+1], masks[i:i+1], weight)
+            loss = loss / len(prepared)
+            loss.backward(); losses.append(float(loss.detach()))
+            metrics.append({k:float(v) for k,v in info.items()})
+        norm = torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
+        optimizer.step()
+        update = dict(loss=sum(losses), gradient_norm=float(norm), optimizer_updates=1,
+            algorithm='exact-conditional-marginal-ppo-v1', advantage_standardization='none',
+            sampled_actions_used_for_loss=0, exact_candidates_per_request=2*width,
+            per_request_verl_metrics=metrics)
     else:
         optimizer.zero_grad(set_to_none=True); losses = []
         for i in range(len(prepared)):

@@ -62,5 +62,7 @@ optimizer 重跑。四分支均退出0，实际112个 Adam state 的 step 均为
 
 RL 的记录 loss 接近0是组内中心化 advantage 在初始 ratio≈1 时的数值，
 不是零梯度；实际梯度非零且 Adam step 已推进。不能比较 SFT CE 与该数值的大小。
-四个新版本的独立 HF 重载和216请求 HF/vLLM 评测已派发到
-`span-rule-matched-evaluation-v1`，完成之前保持 pending。
+四个新版本在 `span-rule-matched-evaluation-v1` 完成独立 HF 重载和216请求
+HF/vLLM 评测，均 READY；最大候选 logp 误差 1.1920928955078125e-7。
+完整对照见 `docs/engineering/span-rule-matched-comparison-v1.md`：未观察到稳定
+RL 优势，不能把工程 READY 等同学术收益或下一批训练授权。
