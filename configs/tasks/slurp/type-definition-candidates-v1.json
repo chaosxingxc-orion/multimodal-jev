@@ -1,0 +1,1451 @@
+{
+  "schema": "slurp-type-definition-candidates-v1",
+  "evidence_sha256": "ae92ed2af7ddcf85ac33528aa8ec93efea38a5c489fcf26802bafdea2927d11d",
+  "evidence_release": "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/learning-definition-evidence-v1",
+  "authoring_scope": "Agent review of 316 learning-only text/annotation examples; no audio adjudication, no official exhaustive ontology claim.",
+  "types": [
+    {
+      "entity_type": "alarm_type",
+      "definition": "A stated kind, purpose or identifying category of an alarm.",
+      "thinking_requirements": [
+        "Distinguish an alarm category from its scheduled time and from an event merely used as its label.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "event_name",
+        "time"
+      ],
+      "boundary_review": "Purpose labels and event names overlap; six learning utterances cannot establish exhaustive precedence.",
+      "evidence_source_ids": [
+        "4016",
+        "5173",
+        "5504",
+        "3462",
+        "5102",
+        "839"
+      ],
+      "learning_source_support": 6,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "app_name",
+      "definition": "A named application or software service used to access or perform an activity.",
+      "thinking_requirements": [
+        "Separate the application providing access from the station, creator, business or content being accessed.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "radio_name",
+        "business_name",
+        "media_type",
+        "transport_agency"
+      ],
+      "boundary_review": "Service brands may be annotated by function; app versus media/provider precedence needs review.",
+      "evidence_source_ids": [
+        "9421",
+        "9231",
+        "11165",
+        "4358",
+        "9860",
+        "2587"
+      ],
+      "learning_source_support": 42,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "artist_name",
+      "definition": "A named performer or music creator referred to as such in the utterance.",
+      "thinking_requirements": [
+        "Use the expressed creator or performer role; celebrity identity alone does not settle the annotation category.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "person",
+        "audiobook_author"
+      ],
+      "boundary_review": "Learning annotations include factoid and general requests; person/artist precedence remains unresolved.",
+      "evidence_source_ids": [
+        "3634",
+        "14376",
+        "1837",
+        "3699",
+        "9826",
+        "14607"
+      ],
+      "learning_source_support": 177,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "audiobook_author",
+      "definition": "A named author of the book or audiobook referred to in the request.",
+      "thinking_requirements": [
+        "Separate the author from the work title, performer and playback application.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "artist_name",
+        "person",
+        "audiobook_name"
+      ],
+      "boundary_review": "Only four learning utterances; narrator versus author and ordinary person-name precedence need evidence.",
+      "evidence_source_ids": [
+        "9702",
+        "9870",
+        "9667",
+        "9695"
+      ],
+      "learning_source_support": 4,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "audiobook_name",
+      "definition": "An identifying name or title of the book or audiobook requested or discussed.",
+      "thinking_requirements": [
+        "Infer the work role from the whole request rather than assigning a type from the title words alone.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "song_name",
+        "movie_name",
+        "media_type"
+      ],
+      "boundary_review": "Generic and deictic book references need an explicit naming convention.",
+      "evidence_source_ids": [
+        "9832",
+        "9802",
+        "9823",
+        "9764",
+        "9884",
+        "9747"
+      ],
+      "learning_source_support": 60,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "business_name",
+      "definition": "An identifying name of a company, organization or commercial establishment.",
+      "thinking_requirements": [
+        "Distinguish the named organization from its category and from the place where an activity occurs.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "business_type",
+        "place_name",
+        "app_name"
+      ],
+      "boundary_review": "Named venues and platforms can receive other types; precedence is not established by these examples.",
+      "evidence_source_ids": [
+        "2988",
+        "15377",
+        "13882",
+        "10482",
+        "1461",
+        "12568"
+      ],
+      "learning_source_support": 298,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "business_type",
+      "definition": "A category of commercial establishment or service, rather than an individual business name.",
+      "thinking_requirements": [
+        "Identify whether the expression denotes a class of establishment or a particular named entity.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "business_name",
+        "place_name"
+      ],
+      "boundary_review": "A generic venue can also be a location; role precedence needs review.",
+      "evidence_source_ids": [
+        "8713",
+        "12075",
+        "695",
+        "3363",
+        "11803",
+        "2415"
+      ],
+      "learning_source_support": 156,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "change_amount",
+      "definition": "An expressed magnitude of a control adjustment or the desired target level.",
+      "thinking_requirements": [
+        "Distinguish relative change from absolute level; both are within this proposed type, and neither should be inferred when unspoken.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "time",
+        "date"
+      ],
+      "boundary_review": "Examples support percentages and scalar levels; other quantities must not be included merely because they are numeric.",
+      "evidence_source_ids": [
+        "313",
+        "20",
+        "5046",
+        "1707",
+        "2342",
+        "2324"
+      ],
+      "learning_source_support": 38,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "coffee_type",
+      "definition": "A specified coffee variety, preparation style or coffee-specific requested characteristic.",
+      "thinking_requirements": [
+        "Identify what modifies the coffee rather than the appliance or timing of preparation.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "drink_type",
+        "cooking_type"
+      ],
+      "boundary_review": "The observed temperature attribute broadens the category beyond named coffee varieties; boundary needs review.",
+      "evidence_source_ids": [
+        "5850",
+        "2290",
+        "1813",
+        "1168",
+        "5848",
+        "2291"
+      ],
+      "learning_source_support": 11,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "color_type",
+      "definition": "A color or color-qualified appearance explicitly specified for an object.",
+      "thinking_requirements": [
+        "Use the color role in context; a performer or title with the same word is not a color solely by spelling.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "artist_name"
+      ],
+      "boundary_review": "Examples mainly concern lighting; do not impose a hard lighting-intent restriction.",
+      "evidence_source_ids": [
+        "498",
+        "1355",
+        "3053",
+        "1644",
+        "2864",
+        "454"
+      ],
+      "learning_source_support": 75,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "cooking_type",
+      "definition": "An expressed method or operation of preparing food.",
+      "thinking_requirements": [
+        "Separate the preparation operation from the food, ingredient and requested cooking duration.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "food_type",
+        "ingredient",
+        "time"
+      ],
+      "boundary_review": "Generic cooking verbs are annotated in examples; completeness of verb annotation needs review.",
+      "evidence_source_ids": [
+        "9960",
+        "10029",
+        "10000",
+        "9915",
+        "9925",
+        "9938"
+      ],
+      "learning_source_support": 13,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "currency_name",
+      "definition": "A named currency or an expression identifying a monetary denomination.",
+      "thinking_requirements": [
+        "Separate currency identity from monetary quantity and from a geographic reference.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "place_name"
+      ],
+      "boundary_review": "An abbreviated geographic expression is annotated as currency in one example; do not generalize without review.",
+      "evidence_source_ids": [
+        "14424",
+        "14302",
+        "12523",
+        "14058",
+        "14006",
+        "14671"
+      ],
+      "learning_source_support": 92,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "date",
+      "definition": "An expressed calendar date, day, calendar period or calendar-relative reference.",
+      "thinking_requirements": [
+        "Check whether it locates an occurrence or describes referenced content; do not restrict it to the time of executing the command.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "time",
+        "timeofday",
+        "general_frequency"
+      ],
+      "boundary_review": "Relative expressions and recurring periods overlap neighboring labels; precedence requires explicit conventions.",
+      "evidence_source_ids": [
+        "8155",
+        "7032",
+        "16211",
+        "5748",
+        "8713",
+        "16019"
+      ],
+      "learning_source_support": 1432,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "definition_word",
+      "definition": "The word, phrase or concept whose meaning or definition is requested.",
+      "thinking_requirements": [
+        "Identify the object of the definition request rather than classifying it solely by its real-world entity kind.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "person",
+        "place_name",
+        "food_type"
+      ],
+      "boundary_review": "Role can override entity ontology; overlap and completeness must be reviewed.",
+      "evidence_source_ids": [
+        "13431",
+        "14843",
+        "14689",
+        "14372",
+        "13811",
+        "14013"
+      ],
+      "learning_source_support": 183,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "device_type",
+      "definition": "A named kind of physical device or appliance involved in the request.",
+      "thinking_requirements": [
+        "Separate hardware from applications and from places or content mentioned alongside the device.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "app_name",
+        "transport_type"
+      ],
+      "boundary_review": "Observed device mentions include background entities; necessary-parameter filtering is inappropriate.",
+      "evidence_source_ids": [
+        "4109",
+        "5767",
+        "1889",
+        "9654",
+        "3325",
+        "2513"
+      ],
+      "learning_source_support": 189,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "drink_type",
+      "definition": "A specified beverage or beverage category.",
+      "thinking_requirements": [
+        "Determine beverage meaning from context, including references inside lists or recipes.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "coffee_type",
+        "food_type",
+        "ingredient"
+      ],
+      "boundary_review": "Coffee and recipe ingredients overlap other categories; precedence is unresolved.",
+      "evidence_source_ids": [
+        "3081",
+        "11818",
+        "10184",
+        "11195",
+        "10161",
+        "10939"
+      ],
+      "learning_source_support": 7,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "email_address",
+      "definition": "An expression identifying an email address.",
+      "thinking_requirements": [
+        "Use the spoken address reference as evidence without requiring a syntactically normalized address or inventing missing characters.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "personal_info",
+        "person"
+      ],
+      "boundary_review": "Some references are incomplete addresses; spelling normalization is outside this existence task.",
+      "evidence_source_ids": [
+        "17109",
+        "16246",
+        "16023",
+        "16667",
+        "15943",
+        "16807"
+      ],
+      "learning_source_support": 23,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "email_folder",
+      "definition": "A mailbox folder or mail-storage category named in the request.",
+      "thinking_requirements": [
+        "Separate the folder from message content, contact identities and a generic request to inspect email.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "list_name"
+      ],
+      "boundary_review": "Only 21 learning sources; completeness beyond observed inbox/spam references needs review.",
+      "evidence_source_ids": [
+        "16485",
+        "15874",
+        "16973",
+        "17057",
+        "17010",
+        "16304"
+      ],
+      "learning_source_support": 21,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "event_name",
+      "definition": "An event, appointment, activity or its identifying label referred to in the utterance.",
+      "thinking_requirements": [
+        "Distinguish an event from its participants, location, time and meal or sport category; an event may occur in message content.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "person",
+        "meal_type",
+        "sport_type",
+        "alarm_type"
+      ],
+      "boundary_review": "Generic events and named labels both occur; overlaps need a dataset-specific precedence policy.",
+      "evidence_source_ids": [
+        "8155",
+        "7032",
+        "8105",
+        "14558",
+        "7793",
+        "6855"
+      ],
+      "learning_source_support": 779,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "food_type",
+      "definition": "A food, dish or food category referred to in the utterance.",
+      "thinking_requirements": [
+        "Use the food role in the complete context; do not infer ingredient status solely because a substance can be used in cooking.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "ingredient",
+        "drink_type",
+        "meal_type"
+      ],
+      "boundary_review": "Food/ingredient labels overlap in apparently similar recipe contexts; negative labels require review.",
+      "evidence_source_ids": [
+        "11776",
+        "4225",
+        "670",
+        "10188",
+        "13488",
+        "9998"
+      ],
+      "learning_source_support": 231,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "game_name",
+      "definition": "An identifying name or title of a game referred to in the request.",
+      "thinking_requirements": [
+        "Distinguish a particular game from a genre, medium, creator or publisher.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "game_type",
+        "business_name"
+      ],
+      "boundary_review": "One reviewed example may name a publisher as the game; annotation adjudication is pending.",
+      "evidence_source_ids": [
+        "10309",
+        "10283",
+        "10316",
+        "10408",
+        "10372",
+        "10389"
+      ],
+      "learning_source_support": 77,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "game_type",
+      "definition": "A category or medium of games rather than the title of a particular game.",
+      "thinking_requirements": [
+        "Distinguish category expressions from names using the complete request.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "game_name"
+      ],
+      "boundary_review": "Only one learning source supports this draft; no broad category boundary is established.",
+      "evidence_source_ids": [
+        "14210"
+      ],
+      "learning_source_support": 1,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "general_frequency",
+      "definition": "An expressed recurrence, repetition schedule or rate of occurrence.",
+      "thinking_requirements": [
+        "Separate recurrence from a one-time calendar range or an offset to a particular event.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "date",
+        "time"
+      ],
+      "boundary_review": "Recurring content descriptions are included in examples; date/frequency precedence needs review.",
+      "evidence_source_ids": [
+        "7124",
+        "15206",
+        "95",
+        "16109",
+        "3057",
+        "13311"
+      ],
+      "learning_source_support": 68,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "house_place",
+      "definition": "A domestic room, area or household surface referred to as a place of activity.",
+      "thinking_requirements": [
+        "Identify the domestic-location role rather than treating every location expression as house_place.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "place_name"
+      ],
+      "boundary_review": "Surfaces such as carpets are included; domestic/general-location boundary needs review.",
+      "evidence_source_ids": [
+        "3279",
+        "2188",
+        "32",
+        "5317",
+        "1644",
+        "2817"
+      ],
+      "learning_source_support": 165,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "ingredient",
+      "definition": "A substance referred to as an ingredient, component or substitute in food preparation.",
+      "thinking_requirements": [
+        "Use preparation and component relationships, not a fixed vocabulary of foods.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "food_type",
+        "drink_type"
+      ],
+      "boundary_review": "Some preparation objects are food_type in similar contexts; current annotation precedence is unresolved.",
+      "evidence_source_ids": [
+        "9960",
+        "10029",
+        "10028",
+        "9985",
+        "9974",
+        "10000"
+      ],
+      "learning_source_support": 16,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "joke_type",
+      "definition": "A requested style, topic or descriptive characteristic of a joke.",
+      "thinking_requirements": [
+        "Distinguish the description of the joke from a person or object merely mentioned elsewhere.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "news_topic",
+        "person"
+      ],
+      "boundary_review": "Qualitative words and topics both occur; whether all modifiers are annotated remains unverified.",
+      "evidence_source_ids": [
+        "4159",
+        "2686",
+        "543",
+        "4947",
+        "4366",
+        "526"
+      ],
+      "learning_source_support": 26,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "list_name",
+      "definition": "An identifying name, description or reference to a list or task collection.",
+      "thinking_requirements": [
+        "Distinguish the list from its entries and from a playlist whose role may have a dedicated label.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "playlist_name",
+        "email_folder"
+      ],
+      "boundary_review": "Generic task collections and contact lists are included; overlap convention needs review.",
+      "evidence_source_ids": [
+        "10935",
+        "11031",
+        "11069",
+        "16820",
+        "10574",
+        "8970"
+      ],
+      "learning_source_support": 151,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "meal_type",
+      "definition": "A meal occasion or category such as breakfast, lunch or dinner.",
+      "thinking_requirements": [
+        "Separate a meal occasion from the food served and from its possible event role.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "event_name",
+        "food_type"
+      ],
+      "boundary_review": "Meal/event overlap cannot be resolved by assuming mutually exclusive semantic categories.",
+      "evidence_source_ids": [
+        "8713",
+        "16278",
+        "11885",
+        "10011",
+        "6308",
+        "11620"
+      ],
+      "learning_source_support": 48,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "media_type",
+      "definition": "A kind, format, channel or source of media/content referenced in the request.",
+      "thinking_requirements": [
+        "Separate media category/source from a particular work title and from the application used to access it.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "app_name",
+        "radio_name",
+        "playlist_name"
+      ],
+      "boundary_review": "Learning labels mix content kinds and named social/news sources; scope remains broad and under review.",
+      "evidence_source_ids": [
+        "9745",
+        "15679",
+        "3452",
+        "9808",
+        "15465",
+        "10483"
+      ],
+      "learning_source_support": 390,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "movie_name",
+      "definition": "An identifying name or title of a movie referred to in the utterance.",
+      "thinking_requirements": [
+        "Use the work role rather than assuming all titles refer to films.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "music_album",
+        "song_name",
+        "event_name"
+      ],
+      "boundary_review": "Two reviewed music-context examples are labeled movie_name; do not use them as movie semantics without adjudication.",
+      "evidence_source_ids": [
+        "2911",
+        "11735",
+        "11737",
+        "6552",
+        "2912",
+        "12105"
+      ],
+      "learning_source_support": 13,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "movie_type",
+      "definition": "A genre or descriptive selection criterion for a movie.",
+      "thinking_requirements": [
+        "Distinguish category or selection properties from the identity of an individual movie.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "movie_name"
+      ],
+      "boundary_review": "Observed rating criteria broaden this beyond genre; exact convention needs review.",
+      "evidence_source_ids": [
+        "11723",
+        "12112",
+        "11931",
+        "11609",
+        "11637",
+        "11791"
+      ],
+      "learning_source_support": 8,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "music_album",
+      "definition": "An identifying name or title of a music album.",
+      "thinking_requirements": [
+        "Distinguish an album from a song, performer, playlist or other work.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "song_name",
+        "movie_name",
+        "playlist_name"
+      ],
+      "boundary_review": "The only learning source is a theme-song reference; it does not establish a trustworthy album boundary.",
+      "evidence_source_ids": [
+        "5056"
+      ],
+      "learning_source_support": 1,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "music_descriptor",
+      "definition": "A descriptive property, context or selection criterion for music.",
+      "thinking_requirements": [
+        "Separate a music property from a conventional genre, named playlist and playback control.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "music_genre",
+        "playlist_name",
+        "player_setting"
+      ],
+      "boundary_review": "The examples include library/context expressions; category scope and annotation completeness are unresolved.",
+      "evidence_source_ids": [
+        "4756",
+        "4777",
+        "11135",
+        "1712",
+        "949",
+        "9639"
+      ],
+      "learning_source_support": 41,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "music_genre",
+      "definition": "A genre or stylistic category of music referred to in the request.",
+      "thinking_requirements": [
+        "Distinguish music category from work title, performer and context-dependent descriptors.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "music_descriptor",
+        "playlist_name"
+      ],
+      "boundary_review": "Genre used inside a playlist description may overlap its name; no hard exclusivity assumed.",
+      "evidence_source_ids": [
+        "1667",
+        "2162",
+        "4281",
+        "9643",
+        "10942",
+        "1559"
+      ],
+      "learning_source_support": 144,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "news_topic",
+      "definition": "The subject matter of news or information being requested or discussed.",
+      "thinking_requirements": [
+        "Identify the topic relation while distinguishing the topic from a geographic source or person role.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "person",
+        "place_name",
+        "event_name"
+      ],
+      "boundary_review": "Topics can also be people or places; dataset output precedence needs review rather than ontology-based negatives.",
+      "evidence_source_ids": [
+        "6413",
+        "4727",
+        "15716",
+        "3126",
+        "2295",
+        "5563"
+      ],
+      "learning_source_support": 145,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "order_type",
+      "definition": "A fulfillment or ordering mode, such as delivery, collection or takeaway.",
+      "thinking_requirements": [
+        "Separate fulfillment mode from the item ordered, vendor and a generic command to perform an action.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "food_type",
+        "business_type"
+      ],
+      "boundary_review": "Background delivery references are included; do not restrict to takeaway intents.",
+      "evidence_source_ids": [
+        "2988",
+        "1461",
+        "3157",
+        "695",
+        "4124",
+        "351"
+      ],
+      "learning_source_support": 83,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "person",
+      "definition": "An identifying name or reference to a person in the utterance.",
+      "thinking_requirements": [
+        "Track participant, contact and subject roles; distinguish people from event labels and specialized creator roles.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "artist_name",
+        "audiobook_author",
+        "event_name",
+        "news_topic",
+        "relation"
+      ],
+      "boundary_review": "Person/creator/topic precedence is unresolved; a semantic person is not automatically the dataset person label.",
+      "evidence_source_ids": [
+        "8155",
+        "16268",
+        "6876",
+        "16860",
+        "14558",
+        "2686"
+      ],
+      "learning_source_support": 673,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "personal_info",
+      "definition": "A personal/contact information attribute, field or description referred to in the request.",
+      "thinking_requirements": [
+        "Separate an information field from a concrete email address and from the identity of its owner.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "email_address",
+        "person",
+        "relation"
+      ],
+      "boundary_review": "Examples include workplace department and requested field names; value-versus-field coverage needs review.",
+      "evidence_source_ids": [
+        "6876",
+        "17038",
+        "15336",
+        "16199",
+        "15745",
+        "17158"
+      ],
+      "learning_source_support": 63,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "place_name",
+      "definition": "An identifying reference to a geographic location, venue or destination.",
+      "thinking_requirements": [
+        "Use the expressed location role, distinguishing domestic areas, businesses and news subjects.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "house_place",
+        "business_name",
+        "news_topic"
+      ],
+      "boundary_review": "Named venues and generic places overlap adjacent types; negative labels need convention review.",
+      "evidence_source_ids": [
+        "911",
+        "4863",
+        "5380",
+        "11811",
+        "13512",
+        "12434"
+      ],
+      "learning_source_support": 804,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "player_setting",
+      "definition": "A playback operation, mode or control setting referred to in the request.",
+      "thinking_requirements": [
+        "Distinguish playback control from content identity and content selection descriptors.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "podcast_descriptor",
+        "music_descriptor"
+      ],
+      "boundary_review": "A lighting shuffle example uses this label; cross-domain scope cannot be inferred as official semantics.",
+      "evidence_source_ids": [
+        "9757",
+        "4777",
+        "9730",
+        "11367",
+        "403",
+        "1699"
+      ],
+      "learning_source_support": 126,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "playlist_name",
+      "definition": "An identifying name or description of a music playlist.",
+      "thinking_requirements": [
+        "Separate the playlist as a collection from its genre, individual tracks and generic non-music lists.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "list_name",
+        "music_genre",
+        "music_descriptor"
+      ],
+      "boundary_review": "Descriptive and deictic collection references occur; name/descriptor precedence needs review.",
+      "evidence_source_ids": [
+        "4937",
+        "1712",
+        "9421",
+        "2938",
+        "6095",
+        "4548"
+      ],
+      "learning_source_support": 53,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "podcast_descriptor",
+      "definition": "An episode-selection property or descriptive criterion of a podcast.",
+      "thinking_requirements": [
+        "Separate episode selection and content attributes from program identity and playback operations.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "podcast_name",
+        "player_setting"
+      ],
+      "boundary_review": "Some examples use generic playlist expressions; scope and name/descriptor precedence are unresolved.",
+      "evidence_source_ids": [
+        "11334",
+        "11344",
+        "11312",
+        "11439",
+        "11485",
+        "11411"
+      ],
+      "learning_source_support": 54,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "podcast_name",
+      "definition": "An identifying name or reference to a podcast program.",
+      "thinking_requirements": [
+        "Distinguish program identity from its topic, provider and generic quality descriptors.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "podcast_descriptor",
+        "business_name"
+      ],
+      "boundary_review": "A quality word is labeled as a name in one example; program/topic/provider conventions need review.",
+      "evidence_source_ids": [
+        "11344",
+        "11297",
+        "11290",
+        "11307",
+        "11287",
+        "11471"
+      ],
+      "learning_source_support": 49,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "radio_name",
+      "definition": "An identifying station name, channel or tuning reference for radio.",
+      "thinking_requirements": [
+        "Separate the station being selected from the application carrying it and from its music genre.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "app_name",
+        "music_genre",
+        "media_type"
+      ],
+      "boundary_review": "Generic descriptive stations and numeric tuning references both occur; do not require a proper name.",
+      "evidence_source_ids": [
+        "9511",
+        "9603",
+        "9243",
+        "9378",
+        "9248",
+        "9537"
+      ],
+      "learning_source_support": 99,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "relation",
+      "definition": "A kinship, social, occupational or relational designation of a person or group.",
+      "thinking_requirements": [
+        "Distinguish a relational designation from a personal name and from a contact-information field.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "person",
+        "personal_info"
+      ],
+      "boundary_review": "Occupational titles occur; the category is broader than family relationships.",
+      "evidence_source_ids": [
+        "16211",
+        "16539",
+        "6814",
+        "7379",
+        "3363",
+        "16581"
+      ],
+      "learning_source_support": 198,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "song_name",
+      "definition": "An identifying title or reference to a song.",
+      "thinking_requirements": [
+        "Use the track role, distinguishing performer, album, playlist and generic media category.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "artist_name",
+        "music_album",
+        "playlist_name",
+        "media_type"
+      ],
+      "boundary_review": "Deictic references such as a previous track occur; proper-title-only rules would be too narrow.",
+      "evidence_source_ids": [
+        "3634",
+        "1178",
+        "10524",
+        "547",
+        "1711",
+        "5067"
+      ],
+      "learning_source_support": 102,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "sport_type",
+      "definition": "A sport category or identifying sports-event/team-related reference.",
+      "thinking_requirements": [
+        "Distinguish a sport reference from a generic event and from a named person or organization.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "event_name",
+        "business_name"
+      ],
+      "boundary_review": "Four learning sources mix sports, games and team references; boundary is low-support and unresolved.",
+      "evidence_source_ids": [
+        "8393",
+        "8298",
+        "8246",
+        "8299"
+      ],
+      "learning_source_support": 4,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "time",
+      "definition": "A clock time, duration, temporal offset or time relation expressed in the request.",
+      "thinking_requirements": [
+        "Use explicit temporal evidence and distinguish it from calendar periods, day parts and recurrence.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "date",
+        "timeofday",
+        "general_frequency"
+      ],
+      "boundary_review": "Offsets as well as clock times are annotated; normalization and reference-time resolution are separate tasks.",
+      "evidence_source_ids": [
+        "8155",
+        "6814",
+        "3153",
+        "5756",
+        "3180",
+        "5120"
+      ],
+      "learning_source_support": 611,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "time_zone",
+      "definition": "A named or identifying reference to a time zone or time standard.",
+      "thinking_requirements": [
+        "Distinguish the time standard from a place and from a clock reading.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "place_name",
+        "time"
+      ],
+      "boundary_review": "Some descriptive regional or deictic references occur; do not require a standard abbreviation.",
+      "evidence_source_ids": [
+        "4182",
+        "4213",
+        "3959",
+        "3722",
+        "620",
+        "4771"
+      ],
+      "learning_source_support": 37,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "timeofday",
+      "definition": "A part of the day or day-part-relative expression.",
+      "thinking_requirements": [
+        "Separate a day part from the date it modifies and a precise time within it.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "date",
+        "time"
+      ],
+      "boundary_review": "Tonight-like expressions overlap calendar-relative labels; precedence needs review.",
+      "evidence_source_ids": [
+        "7032",
+        "16268",
+        "917",
+        "8489",
+        "5637",
+        "12531"
+      ],
+      "learning_source_support": 179,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "transport_agency",
+      "definition": "A named organization or service providing transportation.",
+      "thinking_requirements": [
+        "Distinguish the provider from a vehicle mode, a named route/service and an access application.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "transport_name",
+        "transport_type",
+        "app_name",
+        "business_name"
+      ],
+      "boundary_review": "Reviewed examples are dominated by one provider; broader provider/name scope needs evidence.",
+      "evidence_source_ids": [
+        "12180",
+        "12850",
+        "12494",
+        "12382",
+        "12918",
+        "12867"
+      ],
+      "learning_source_support": 23,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "transport_descriptor",
+      "definition": "A trip, ticket or transport-service property or qualifier.",
+      "thinking_requirements": [
+        "Distinguish trip characteristics from transport mode, service identity and place references.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "transport_type",
+        "transport_name",
+        "place_name"
+      ],
+      "boundary_review": "Examples include departure and route clauses; scope is heterogeneous and needs review.",
+      "evidence_source_ids": [
+        "12192",
+        "12683",
+        "12341",
+        "12351",
+        "12131",
+        "12193"
+      ],
+      "learning_source_support": 6,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "transport_name",
+      "definition": "An identifying name or number of a transport service, route or vehicle journey.",
+      "thinking_requirements": [
+        "Separate a particular service identity from its provider, mode and destination.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "transport_agency",
+        "transport_type"
+      ],
+      "boundary_review": "Named rail services and flight/train numbers occur; provider/service precedence needs review.",
+      "evidence_source_ids": [
+        "12151",
+        "12313",
+        "12657",
+        "12342",
+        "12314",
+        "12890"
+      ],
+      "learning_source_support": 8,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "transport_type",
+      "definition": "A transport mode or vehicle category referred to in the utterance.",
+      "thinking_requirements": [
+        "Identify mode or vehicle class without requiring that transportation is the main intent.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "device_type",
+        "transport_name",
+        "transport_agency"
+      ],
+      "boundary_review": "Background vehicle references are possible; task-intent filtering would lose annotated evidence.",
+      "evidence_source_ids": [
+        "12296",
+        "12434",
+        "12790",
+        "4590",
+        "11350",
+        "12880"
+      ],
+      "learning_source_support": 254,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    },
+    {
+      "entity_type": "weather_descriptor",
+      "definition": "A weather condition, property or an explicit weather-related practical criterion.",
+      "thinking_requirements": [
+        "Use the weather relation of the phrase, including practical clothing/equipment questions, without guessing unspoken weather.",
+        "Inspect the full utterance, including content and modifiers, rather than only required action parameters.",
+        "Do not treat a commonly associated type as present without audio evidence."
+      ],
+      "confusable_types": [
+        "device_type"
+      ],
+      "boundary_review": "Examples include clothing/equipment terms; literal-weather-only definitions would miss the release convention.",
+      "evidence_source_ids": [
+        "567",
+        "6128",
+        "1780",
+        "591",
+        "4437",
+        "1052"
+      ],
+      "learning_source_support": 243,
+      "definition_status": "authored_draft",
+      "negative_supervision_policy": "requires_reviewed_absence_and_annotation_precedence",
+      "optimization_allowed": false
+    }
+  ],
+  "reviewed_example_count": 316,
+  "all_definitions_approved": false,
+  "scope": "Input definition candidates and configurable thinking requirements, not a gold correction or training release."
+}
