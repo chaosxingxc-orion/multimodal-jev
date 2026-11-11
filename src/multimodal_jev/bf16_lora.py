@@ -59,6 +59,9 @@ class BF16MasterAdamW:
                     optimizer_tensor_dtypes=sorted({str(v.dtype) for state in self.optimizer.state.values()
                                                    for v in state.values() if torch.is_tensor(v)}),
                     parameters=len(self.parameters),
+                    optimizer_state_parameters=len(self.optimizer.state),
+                    optimizer_steps=sorted({int(state['step'].item()) for state in self.optimizer.state.values()
+                                            if 'step' in state}),
                     scope='Local pilot; FP32 master/AdamW state, BF16 execution/export; ordered-parameter resume.')
 
     def state_dict(self):

@@ -1,5 +1,7 @@
 """Learning-only exact joint-label balancing for finite Span debug batches."""
 from collections import defaultdict
+import hashlib
+import json
 import random
 
 
@@ -45,3 +47,16 @@ def balanced_binary_batches(bundles, seed):
         batch_recording_ids=[[bundles[i]['id'] for i in batch] for batch in batches],
         scope='Learning-only balanced debug arm; official and evaluation distributions unchanged.')
     return batches,report
+
+
+def select_balanced_step(bundles, seed, batch_index=0):
+    """Explicit finite epoch cursor; never silently wrap or repeat pair zero."""
+    batches, report = balanced_binary_batches(bundles, seed)
+    if type(batch_index) is not int or not 0 <= batch_index < len(batches):
+        raise ValueError('batch index outside fixed balanced epoch')
+    schedule = report['batch_recording_ids']
+    signature = hashlib.sha256(json.dumps(schedule,separators=(',',':')).encode()).hexdigest()
+    state = dict(schema='jev-span-balanced-cursor-v1', seed=seed, schedule_sha256=signature,
+                 batch_index=batch_index, next_batch_index=batch_index+1,
+                 epoch_batches=len(batches), recording_ids=schedule[batch_index])
+    return [bundles[i] for i in batches[batch_index]], report, state

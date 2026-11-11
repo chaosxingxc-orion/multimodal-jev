@@ -20,17 +20,19 @@ def prepare_actor(config, output, adapter):
     from multimodal_jev.asr import load_runtime
     from multimodal_jev.sft import initialize_adapter
     from multimodal_jev.span_training import load_reviewed_bundles
-    from multimodal_jev.span_balance import balanced_binary_batches
+    from multimodal_jev.span_balance import select_balanced_step
     from multimodal_jev.audio_policy import load_audio
     from multimodal_jev.span_contract import encode_span_request, span_labels
     from multimodal_jev.span_request_identity import bind_span_request
     from multimodal_jev.span_model import NativeAudioSpanModel
     from multimodal_jev.policy_identity import checkpoint_identity
     bundles, manifest = load_reviewed_bundles(config['release'], config['manifest_sha256'], config['question_order'])
-    batches, balance = balanced_binary_batches(bundles, config['seed'])
     # One complementary pair; every task has one positive and one negative.
-    selected = [bundles[i] for i in batches[0]]
+    selected, balance, selection = select_balanced_step(bundles, config['seed'], config.get('batch_index',0))
+    selection['manifest_sha256'] = config['manifest_sha256']
+    selection['question_order'] = config['question_order']
     atomic_json(output / 'balance.json', balance)
+    atomic_json(output / 'selection.json', selection)
     base_id = checkpoint_identity(config['model_path'])[0]
     policy_id = base_id + ':' + checkpoint_identity(adapter)[0]
     processor, base = load_runtime(config['model_path'], 'npu:0', 'bfloat16')
@@ -107,11 +109,20 @@ def actor_phase(config, output, phase):
         optimizer = BF16MasterAdamW(params, lr=config['lr'])
         previous_updates = 0
         if config.get('initial_optimizer_checkpoint'):
-            previous_updates = restore_span_optimizer(config['initial_optimizer_checkpoint'], model,
-                                                       optimizer, base_id)['completed_updates']
+            checkpoint = Path(config['initial_optimizer_checkpoint'])
+            if (checkpoint/'adapter').resolve() != adapter.resolve():
+                raise ValueError('resume optimizer must belong to the loaded adapter directory')
+            restored = restore_span_optimizer(checkpoint, model, optimizer, base_id)
+            previous_updates = restored['completed_updates']
+            validate_resume_cursor(restored, json.loads((output/'selection.json').read_text()), config)
+            atomic_json(output/'optimizer-resume.json',dict(checkpoint=str(checkpoint),
+                previous_updates=previous_updates, optimizer=optimizer.receipt(),
+                optimizer_sha256=restored['optimizer_sha256'],
+                training_state=restored.get('training_state')))
         receipt = update_span_actor(rollout, forward, optimizer, params, rewards, policy_id, ids)
         atomic_json(output/'update.json', receipt)
-        next_id = save_span_checkpoint(output/'policy-1', adapted, model, optimizer, base_id, previous_updates+1)
+        next_id = save_span_checkpoint(output/'policy-1', adapted, model, optimizer, base_id, previous_updates+1,
+                                      json.loads((output/'selection.json').read_text()))
         atomic_json(output/'export.json', dict(previous_policy_id=policy_id, next_policy_id=next_id,
             reward='mean correctness of three parallel reviewed temporal decisions', optimizer=optimizer.receipt()))
         with torch.no_grad():
@@ -129,6 +140,25 @@ def actor_phase(config, output, phase):
     for i, p in enumerate(prepared):
         atomic_json(output/f'reference-{phase}-{i}.json', dict(input_request=p['bundle']['request'].model_input(),
             candidate_logprobs=[prob[i:i+1].cpu().tolist() for prob in logp]))
+
+
+def validate_resume_cursor(restored, selection, config):
+    previous = restored.get('training_state')
+    if previous is None:
+        # The first accepted pilot predates checkpointed cursors. Migration
+        # requires its pinned selection evidence; it is not inferred from loss.
+        path = config.get('legacy_selection_evidence')
+        if not path or config.get('pins',{}).get(path) != file_hash(path):
+            raise ValueError('legacy checkpoint requires pinned selection evidence')
+        legacy = json.loads(Path(path).read_text())
+        if legacy.get('schema')!='jev-span-legacy-selection-v1' or legacy.get('checkpoint_optimizer_sha256')!=restored['optimizer_sha256']:
+            raise ValueError('legacy cursor evidence checkpoint mismatch')
+        previous = legacy['training_state']
+    for key in ('schema','seed','schedule_sha256','epoch_batches','manifest_sha256','question_order'):
+        if previous.get(key)!=selection.get(key):
+            raise ValueError('resume data or balanced schedule changed')
+    if previous['next_batch_index']!=selection['batch_index']:
+        raise ValueError('resume must consume the next balanced pair')
 
 
 def orchestrate(config, output, config_path):

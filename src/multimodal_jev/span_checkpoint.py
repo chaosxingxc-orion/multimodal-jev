@@ -8,7 +8,7 @@ from .baseline import atomic_json, file_hash
 from .policy_identity import checkpoint_identity
 
 
-def save_span_checkpoint(destination, adapted, model, optimizer, base_id, updates):
+def save_span_checkpoint(destination, adapted, model, optimizer, base_id, updates, training_state=None):
     destination = Path(destination)
     pending = destination.with_name(destination.name + '.pending')
     if destination.exists() or pending.exists():
@@ -23,10 +23,11 @@ def save_span_checkpoint(destination, adapted, model, optimizer, base_id, update
     adapted.save_pretrained(pending / 'adapter')
     adapter_id, adapter_files = checkpoint_identity(pending / 'adapter')
     torch.save(dict(optimizer=optimizer.state_dict(), ordered_parameter_names=[n for n, _ in named],
-                    base_id=base_id, adapter_id=adapter_id, completed_updates=updates), pending / 'optimizer.pt')
+                    base_id=base_id, adapter_id=adapter_id, completed_updates=updates,
+                    training_state=training_state), pending / 'optimizer.pt')
     atomic_json(pending / 'CHECKPOINT.json', dict(schema='jev-span-checkpoint-v1', base_id=base_id,
         adapter_id=adapter_id, adapter_files=adapter_files, completed_updates=updates,
-        optimizer_sha256=file_hash(pending / 'optimizer.pt')))
+        optimizer_sha256=file_hash(pending / 'optimizer.pt'), training_state=training_state))
     # safetensors may create mode 0600 even when the shared directory is open.
     # Publish this checkpoint's artifacts readable across host/container UIDs.
     # User requested shared directories 0777; do not change unrelated assets.
@@ -52,6 +53,7 @@ def restore_span_optimizer(checkpoint, model, optimizer, base_id):
     params = [p for p in model.parameters() if p.requires_grad]
     if (state['ordered_parameter_names'] != names or state['base_id'] != base_id
             or state['adapter_id'] != adapter_id or state['completed_updates'] != receipt['completed_updates']
+            or state.get('training_state') != receipt.get('training_state')
             or len(params) != len(optimizer.parameters)
             or any(p is not q for p, q in zip(params, optimizer.parameters))):
         raise ValueError('checkpoint parameter order or lineage mismatch')

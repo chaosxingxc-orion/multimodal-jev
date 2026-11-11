@@ -34,6 +34,11 @@ def test_checkpoint_roundtrip_authentication_and_version_exclusion(tmp_path):
     restored = BF16MasterAdamW(model.parameters(), lr=.1)
     receipt = restore_span_optimizer(target, model, restored, 'base-hash')
     assert receipt['completed_updates'] == 1
+    assert restored.receipt()['optimizer_state_parameters'] == 2
+    assert restored.receipt()['optimizer_steps'] == [1]
+    for saved, loaded in zip(optimizer.optimizer.state.values(), restored.optimizer.state.values(), strict=True):
+        assert saved.keys() == loaded.keys()
+        assert all(torch.equal(saved[k], loaded[k]) for k in saved)
     assert all(torch.equal(a,b) for a,b in zip(optimizer.masters, restored.masters))
     with pytest.raises(ValueError, match='already exists'):
         save_span_checkpoint(target, model, model, optimizer, 'base-hash', 1)
@@ -57,3 +62,16 @@ def test_reject_optimizer_tampering_before_mutation(tmp_path):
     with pytest.raises(ValueError, match='identity mismatch'):
         restore_span_optimizer(target, model, optimizer, 'base')
     assert all(torch.equal(a,b) for a,b in zip(before, optimizer.masters))
+
+
+def test_cursor_is_bound_to_optimizer_checkpoint(tmp_path):
+    model=FixtureAdapter();optimizer=BF16MasterAdamW(model.parameters(),lr=.001)
+    target=tmp_path/'policy'
+    state=dict(batch_index=0,next_batch_index=1,schedule_sha256='schedule')
+    save_span_checkpoint(target,model,model,optimizer,'base',1,training_state=state)
+    assert restore_span_optimizer(target,model,optimizer,'base')['training_state']==state
+    receipt=json.loads((target/'CHECKPOINT.json').read_text())
+    receipt['training_state']['next_batch_index']=4
+    (target/'CHECKPOINT.json').write_text(json.dumps(receipt))
+    with pytest.raises(ValueError,match='lineage mismatch'):
+        restore_span_optimizer(target,model,optimizer,'base')

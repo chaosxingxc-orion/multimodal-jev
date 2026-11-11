@@ -9,6 +9,38 @@ runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
 
 
+def test_resume_cursor_rejects_repeat_skip_and_changed_data():
+    state=dict(schema='jev-span-balanced-cursor-v1',seed=17,schedule_sha256='schedule',
+               epoch_batches=20,manifest_sha256='data',question_order=['a','b','c'],
+               batch_index=0,next_batch_index=1)
+    current={**state,'batch_index':1,'next_batch_index':2}
+    runner.validate_resume_cursor({'training_state':state},current,{})
+    for index in (0,2):
+        with pytest.raises(ValueError,match='next balanced pair'):
+            runner.validate_resume_cursor({'training_state':state},{**current,'batch_index':index},{})
+    with pytest.raises(ValueError,match='schedule changed'):
+        runner.validate_resume_cursor({'training_state':state},{**current,'manifest_sha256':'other'}, {})
+    with pytest.raises(ValueError,match='pinned selection evidence'):
+        runner.validate_resume_cursor({},current,{})
+
+
+def test_legacy_cursor_requires_matching_checkpoint_and_file_pin(tmp_path):
+    state=dict(schema='jev-span-balanced-cursor-v1',seed=17,schedule_sha256='schedule',
+               epoch_batches=20,manifest_sha256='data',question_order=['a','b','c'],
+               batch_index=0,next_batch_index=1)
+    current={**state,'batch_index':1,'next_batch_index':2}
+    path=tmp_path/'legacy.json'
+    path.write_text(json.dumps(dict(schema='jev-span-legacy-selection-v1',
+        checkpoint_optimizer_sha256='optimizer',training_state=state)))
+    config=dict(legacy_selection_evidence=str(path),pins={str(path):runner.file_hash(path)})
+    runner.validate_resume_cursor({'optimizer_sha256':'optimizer'},current,config)
+    with pytest.raises(ValueError,match='checkpoint mismatch'):
+        runner.validate_resume_cursor({'optimizer_sha256':'other'},current,config)
+    path.write_text('{}')
+    with pytest.raises(ValueError,match='pinned selection evidence'):
+        runner.validate_resume_cursor({'optimizer_sha256':'optimizer'},current,config)
+
+
 @pytest.mark.parametrize('fail_phase', ['before', 'after', None])
 def test_lifecycle_gates_update_and_ready(tmp_path, monkeypatch, fail_phase):
     adapter = tmp_path/'initial'
