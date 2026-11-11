@@ -1,0 +1,49 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-forward-storage-cpu-v1",
+  "container_id": "5dfd51b2900e47bc1668dd6a7345c5d445aa39dc81b4078eadc95d3d845dea57",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "f251029e3633e87d176a36e75ad8174a15cbc4e2",
+  "source_files_verified": 127,
+  "intent_sha256": "3eb0bafd9ea0bae108c12362029cc1955fc8b04aadccca12778a5c74582e5f6a",
+  "inspection_sha256": "678be9db278e6af0db733c1ee425a3a65a351098335f71a2c7c25c74150c3651",
+  "ranks": [
+    {
+      "rank": 0,
+      "result_sha256": "addc494637b33c4decc71e17df01b862128a408a5ba172901b06e3f5e5a7d56b",
+      "reference": [
+        [
+          -0.05322265625,
+          -0.1142578125,
+          0.01953125
+        ],
+        [
+          -0.041015625,
+          -0.17578125,
+          0.0390625
+        ]
+      ],
+      "root_full_storage_after_forward": 36,
+      "root_full_storage_after_reshard": 0
+    },
+    {
+      "rank": 1,
+      "result_sha256": "464356baed4b50bee4a8a555430c5353082224a68c049a9864cf8cacdb30b35d",
+      "reference": [
+        [
+          -0.052001953125,
+          -0.1201171875,
+          0.021484375
+        ],
+        [
+          -0.039794921875,
+          -0.181640625,
+          0.041015625
+        ]
+      ],
+      "root_full_storage_after_forward": 36,
+      "root_full_storage_after_reshard": 0
+    }
+  ],
+  "wall_seconds": 6.627911,
+  "scope": "Actual two-rank CPU/Gloo synthetic frozen forward; root retains full buffer until explicit reshard. Different rank inputs, two exact repeated forwards each. No Omni/NPU/HCCL/verl actor or training proof."
+}
