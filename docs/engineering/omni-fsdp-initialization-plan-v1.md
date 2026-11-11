@@ -64,6 +64,24 @@ NPU 内存测量结果；不执行前向、优化器、采样或训练。
 准备按16 CPU/256GiB总容器容量验证，最终启动前核查实际服务器可用资源。
 HCCL通信所需IPC、网络和设备映射须单独核查，不能照搬无设备CPU容器配置。
 
+已生成具体准备清单：
+`/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-fsdp-initialization-v1/preparation.json`，
+SHA256 `24ee2d400d01058931aa49e2e70da408d7a4ea1756d71b0261a0ff5383c6fceb`。
+126份Python源码已逐文件与Git `98d751c0cb64c21d546a4212f9d98119cfb7054e`
+核对。完整CPU加载验收SHA及原单层探针的准备/队列SHA均已绑定。
+
+具体命令使用`docker create`后核查再单独start，保留镜像默认entrypoint；
+NPU4/5加三个管理设备，host网络、private IPC/8GiB共享内存，16CPU、
+256GiB内存及同值memory-swap上限。torchrun单机双进程、static rendezvous
+`127.0.0.1:29581`、`max-restarts=0`，HCCL/Gloo使用bond0，HCCL起始端口
+64400；总期限3600秒、TERM后30秒宽限、外部观察3900秒。
+运行前必须获得同一`npu45-diagnostic-resource.lock`，重新检查设备实际进程、
+至少320GiB主机可用内存、端口及排队任务，核验create后的实际Docker配置。
+
+当前只读核查发现主机可用内存约1.85TiB，bond0地址及候选端口符合准备条件；
+这不预留资源，也不能证明双rank HCCL通信成功。尚未创建容器或启动监督队列。
+见[准备清单核验](omni-fsdp-initialization-prepared-v1.json)。
+
 即便初始化通过，也只证明分片和同步完整；真实音频前向、完整采样概率、
 参数更新、导出/恢复及任务提升/跨任务泛化仍是独立验证项。当前权重训练
 仍遵循冻结基线→教师提示优化→native/Jev比较的执行优先级。
