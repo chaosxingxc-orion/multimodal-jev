@@ -1,6 +1,6 @@
 # 原始 Omni 首层 NPU 兼容性探针
 
-CPU加载预检已通过；NPU前向尚未派发。工具
+CPU加载预检已通过；2026-11-11修复队列空闲识别后，NPU探针已派发，结果待验收。工具
 `tools/jev/probe_omni_npu_layer.py`使用已保存的实际TRAIN6 actor首层入口，
 保留原顺序[2,0,5,1,3,4]和六次micro1、三次micro2，共九次调用。
 无音频重放、生成、标签读取、优化器或权重更新。
@@ -95,3 +95,20 @@ PYTHONPATH=src /usr/bin/python3 tools/jev/audit_omni_npu_layer.py \
 
 该工具不加载模型权重、不执行前向、不读取任务标签、不派发容器，已有审计
 文件不会覆盖。跨CPU/NPU保真及完整actor概率验证仍须独立完成。
+
+## 2026-11-11 队列修复及实际派发
+
+FSC完整队列成功后，原监督进程停留在waiting_npu45_free。驱动对两卡返回
+`No process in device.`，旧判断仅接受空字符串，因此误判忙碌。修复只接受
+空字符串或该完整明确消息；包含PID、额外文字或错误的输出仍拒绝。相关16项
+测试通过，新增原依赖截止时间已过则禁止派发的检查。
+
+在核对原PID/start/argv、尚无容器派发意图后，以SIGTERM停止旧监督进程；
+原文件、源码和记录全部保留。新协调器快照44cf24f写在queue-recovery-v1，
+没有修改原preparation、queue-plan或探针运行源码。新进程继续使用原资源锁，
+依赖等待截止限制为原started_unix+350000秒，不延长等待，也不自动重试。
+
+实际容器`8deccddc76a19ae113362748c36e24a0b83fa26ea4a9303758607bd6b6623d1d`
+已创建并启动，独立检查原镜像、命令、挂载、资源与物理NPU4映射通过。
+见[交接与启动记录](omni-npu-layer-queue-recovery-v1.json)。这只证明已派发；
+九次前向、数值差异和容量仍须终态后独立审计，完整双卡初始化尚未派发。
