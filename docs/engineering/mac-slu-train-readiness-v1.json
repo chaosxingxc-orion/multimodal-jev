@@ -1,0 +1,80 @@
+{
+  "records": 18000,
+  "annotation_instance_histogram": {
+    "0": 1663,
+    "1": 13604,
+    "2": 2232,
+    "3": 387,
+    "5": 27,
+    "4": 85,
+    "6": 1,
+    "7": 1
+  },
+  "explicit_intent_histogram": {
+    "0": 5306,
+    "1": 10018,
+    "2": 2183,
+    "3": 379,
+    "5": 27,
+    "4": 85,
+    "6": 1,
+    "7": 1
+  },
+  "domain_intent_types": 67,
+  "bound_slot_role_types": 489,
+  "flag_record_counts": {
+    "empty_intent_instance_unresolved": 3701,
+    "empty_semantics_unresolved": 1663,
+    "repeated_domain_intent_instances": 1831,
+    "split_sentence_instance_count_differs": 2179
+  },
+  "exact_query_duplicate_groups": [],
+  "records_without_empty_containers": 12636,
+  "scope": "Structural TRAIN annotation audit, not semantic/listening review or training admission. Empty containers unresolved. Reference text used only for duplicate grouping, never model input.",
+  "audio": {
+    "audio_members": 17999,
+    "total_uncompressed_bytes": 2457425682,
+    "missing_audio_ids": [
+      "4207"
+    ],
+    "unlabelled_audio_ids": [],
+    "exact_id_coverage": false,
+    "scope": "Full gzip/tar stream and member metadata read; no waveform decode or listening review."
+  },
+  "sources": {
+    "/mnt/cephfs/xingchao/datasets/mac-slu/label/train_set.jsonl": "d1e9a63fa61ef2d5eec4ef543356fb53d653070916c5ceaf72962047f9aef681",
+    "/mnt/cephfs/xingchao/datasets/mac-slu/audio_train.tar.gz": "c8355349555f4c3f2faf2f5024b1f0817b4e66f9766ea22769402c896a69f0da",
+    "/mnt/cephfs/xingchao/datasets/mac-slu/README.md": "424029c3606363a5011d6b564b7e442c3e9d857639567b9d2e4ac5e3584c178a"
+  },
+  "code": {
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/audit_mac_slu_train.py": "e1061c88de0ee9d38588e94920ac485d5db9c9bd9a8dc901b9c7dea5161382e2",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/mac_slu_audit.py": "23862d1dc761ac026dd8c05d232fe25821890c5ea4aefdcbdd97c73183159102"
+  },
+  "split": "train",
+  "test_labels_opened": false,
+  "full_audit_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-train-structural-audit-v1.json",
+  "full_audit_sha256": "7722403a2affeebd6be8743bfa504eb4019faa663265f9781e79f4aa600ee5ed",
+  "official_code_revision": "d54453f63e0dc57b17d3cb2cfea35fb7da6a4489",
+  "official_prompt_source_sha256": "150dd06b3268efb13391ae28cbf7e42aabe55029a977b31b5243eebfcb2b517b",
+  "official_declared_domain_intents": 84,
+  "official_declared_domain_roles": 193,
+  "train_intents_missing_from_official_prompt": [
+    {
+      "domain": "\u5730\u56fe",
+      "intent": "\u67e5\u8be2\u9014\u7ecf\u70b9",
+      "instances": 1
+    },
+    {
+      "domain": "\u6536\u97f3\u673a",
+      "intent": "\u64ad\u653e\u5217\u8868",
+      "instances": 1
+    },
+    {
+      "domain": "\u6536\u97f3\u673a",
+      "intent": "\u64ad\u653e\u5386\u53f2",
+      "instances": 2
+    }
+  ],
+  "train_bound_roles_missing_from_official_prompt": [],
+  "official_prompt_scope": "AST-read literal constants only; no upstream inference script import or execution."
+}

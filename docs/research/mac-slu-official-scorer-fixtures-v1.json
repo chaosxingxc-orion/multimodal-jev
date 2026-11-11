@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "revision": "d54453f63e0dc57b17d3cb2cfea35fb7da6a4489",
+  "source_url": "https://github.com/Gatsby-web/MAC_SLU/blob/d54453f63e0dc57b17d3cb2cfea35fb7da6a4489/metrics.py",
+  "scorer_sha256": "821b6389b618e474a915cf6f63f61defc868e2fec8d3df545e5ed77dc5b0f149",
+  "fixtures": [
+    {
+      "name": "raw_mapping_silently_becomes_empty",
+      "observed": {
+        "total_count": 1,
+        "overall_match_count": 1,
+        "overall_accuracy": 1.0,
+        "intent_match_count": 1,
+        "intent_accuracy": 1.0,
+        "slot_tp": 0,
+        "slot_fp": 0,
+        "slot_fn": 0,
+        "slot_precision": 1.0,
+        "slot_recall": 1.0,
+        "slot_f1": 1.0
+      },
+      "expected": {
+        "overall_accuracy": 1.0,
+        "intent_accuracy": 1.0,
+        "slot_f1": 1.0
+      },
+      "passed": true
+    },
+    {
+      "name": "frame_order_changes_overall",
+      "observed": {
+        "total_count": 1,
+        "overall_match_count": 0,
+        "overall_accuracy": 0.0,
+        "intent_match_count": 1,
+        "intent_accuracy": 1.0,
+        "slot_tp": 2,
+        "slot_fp": 0,
+        "slot_fn": 0,
+        "slot_precision": 1.0,
+        "slot_recall": 1.0,
+        "slot_f1": 1.0
+      },
+      "expected": {
+        "overall_accuracy": 0.0,
+        "intent_accuracy": 1.0,
+        "slot_f1": 1.0
+      },
+      "passed": true
+    },
+    {
+      "name": "slot_binding_swap_not_seen_by_slot_f1",
+      "observed": {
+        "total_count": 1,
+        "overall_match_count": 0,
+        "overall_accuracy": 0.0,
+        "intent_match_count": 1,
+        "intent_accuracy": 1.0,
+        "slot_tp": 2,
+        "slot_fp": 0,
+        "slot_fn": 0,
+        "slot_precision": 1.0,
+        "slot_recall": 1.0,
+        "slot_f1": 1.0
+      },
+      "expected": {
+        "overall_accuracy": 0.0,
+        "intent_accuracy": 1.0,
+        "slot_f1": 1.0
+      },
+      "passed": true
+    },
+    {
+      "name": "record_ids_are_not_matched",
+      "observed": {
+        "total_count": 1,
+        "overall_match_count": 1,
+        "overall_accuracy": 1.0,
+        "intent_match_count": 1,
+        "intent_accuracy": 1.0,
+        "slot_tp": 2,
+        "slot_fp": 0,
+        "slot_fn": 0,
+        "slot_precision": 1.0,
+        "slot_recall": 1.0,
+        "slot_f1": 1.0
+      },
+      "expected": {
+        "overall_accuracy": 1.0,
+        "intent_accuracy": 1.0,
+        "slot_f1": 1.0
+      },
+      "passed": true
+    }
+  ],
+  "scope": "Synthetic fixture execution of upstream code; no model evaluation or test labels. Raw mapping labels require explicit conversion before this list-only scorer."
+}
