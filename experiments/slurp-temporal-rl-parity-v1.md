@@ -34,3 +34,5 @@
 独立读取各臂全部 `response-*.json`，逐条核对 example_id、replicate、token_ids、保存的 vLLM 概率与采样原记录一致；检查概率有限及长度匹配，重新计算 72 个 token 的误差，均与结果文件一致。采样文件 SHA256 为 `05423064aecaee8d4d264d0ab564a0fafd25b88a09dc6c5de744a584da0f503f`。
 
 运行快照的 adapter_full `scope` 沿用旧的 same-merged 文案；实际 `base`、`adapter` 字段和命令为原基座加 LoRA，该文案已在后续源码修正，不改写历史结果。此次没有优化器更新。缓存前向与原适配器前向均未使误差通过门槛，尚不能定位为音频塔或某一算子的根因；当前不准入 RL 更新。工程概率问题与数据/语义质量问题分别处理，修复任一项不自动证明另一项通过。
+
+已另行核验容器退出码、无 OOM、固定镜像和只挂载物理 4 号卡，并重新认证配置 pins；逐 token 重算与文件哈希见[独立核验凭证](../docs/engineering/slurp-temporal-rl-parity-v1-verified.json)。后续[音频中间状态探针](slurp-temporal-audio-stages-v1.md)已派发，尚不据此认定根因。
