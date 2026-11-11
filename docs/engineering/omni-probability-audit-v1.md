@@ -135,3 +135,33 @@ JUnit 耗时 12.430 秒，容器退出 0、无 OOM。源码固定为
 [固定镜像独立核验记录](omni-probability-capture-tests-v1-verified.json)。
 没有真实音频/权重加载、NPU forward 或优化器更新；actor 输出在本测试中
 是合成值，验证的是接口对齐与数值审计流程。
+
+## 双rank概率分片与完整合并
+
+`omni_probability_shards`补齐完整记录集合与分布式actor局部批次之间的接口。
+`shard_plan`按原始记录顺序固定连续等长分片，要求记录数整除
+world_size×microbatch，不重复、丢弃或合成响应来补齐。156条真实响应在
+两rank、microbatch1/2下分别对应每rank78/39次调用；这是计划计算，真实
+响应仍待采样完成。计划与数值协议均须在运行前固定。
+
+`recompute_shard`先认证完整DataProto和原始记录，再按身份定位本rank行，
+保持全局padding及音频特征；支持完整DataProto重排。局部metadata独立，
+不改原old logprob。输出明确为部分结果，包含原始完整集合及分片计划哈希。
+`merge_shards`要求所有rank、每rank精确分配的完整响应、原token和record哈希
+一致，检查概率有限且非正，再恢复原始记录顺序供既有数值审计消费。
+缺rank、跨rank换样本、重复/缺失响应或变更计划均拒绝。模块本身不执行
+通信，实际rank身份、相同计划及FSDP调用顺序由运行器负责；哈希不证明
+硬件身份或真实forward来源。真实NPU运行仍需要专门的认证与启动入口。
+
+固定镜像测试131通过、0跳过，12.856秒；宿主相关测试52通过、2项因缺verl
+跳过。另以实际verl actor、DataProto、两rank CPU/Gloo FSDP执行完整集成：
+8条合成响应、18个有效token，输入重排、rank输出逆序合并，microbatch1/2
+均与未分片BF16参考+独立FP32 log-softmax/gather逐元素一致。每rank六次
+前向，音频替代特征顺序正确，原概率/metadata不变，root完整参数存储释放。
+两个rank合并结果一致；两容器均退出0、无OOM、无NPU/外部网络。
+
+实际集成使用显式CPU设备与logprob适配；参考记录和特征均为合成fixture，
+不是实际采样或音频。该零误差门槛不作为NPU验收阈值。源码150cd81，
+容器及源码逐文件核对见
+[双rank集成](verl-fsdp-probability-shards-cpu-v1-verified.json)与
+[固定镜像测试](omni-probability-shards-tests-v1-verified.json)。

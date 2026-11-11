@@ -1,0 +1,26 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/verl-fsdp-probability-shards-cpu-v1",
+  "container_id": "6b27d1464ce6563be493c46317b6cf8cdddf218d28c8e3785fcf94a4dea80231",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "150cd81ec57d6330d99c233b97e7969a4513b337",
+  "intent_sha256": "998f87dc3441daf659a7e89f93dfb97d699e68a0ab37cc5d00a3613479265360",
+  "source_files_verified": 128,
+  "ranks": 2,
+  "responses": 8,
+  "valid_tokens": 18,
+  "micro_batches": [
+    1,
+    2
+  ],
+  "reference_exact": true,
+  "rank_result_sha256": [
+    "a4949b350ac6eb9252b0725d91dabc6e5fb4385907ef201e650fc7adcf2576a5",
+    "3778bda9de877c8664d9361117a904935bcc536c0c7fdba5d114246d75a349c9"
+  ],
+  "audit_sha256": [
+    "5a8e7310744a2809c32b965338ddd339fc8de6ee7709b3c53a8eaa7e494f33ec",
+    "5a8e7310744a2809c32b965338ddd339fc8de6ee7709b3c53a8eaa7e494f33ec"
+  ],
+  "inspection_sha256": "d5ce6cee7336804cbffa2889676d3920fbdf7fe0e106c14deec0003928c1bb96",
+  "scope": "Synthetic CPU probability contracts; real verl DataProto and, in integration run, actual two-rank CPU/Gloo FSDP actor with explicit CPU device/logprob adapters. No real audio, Omni weights, NPU/HCCL, sampled rollout or training claim."
+}
