@@ -1,0 +1,274 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-unit-gather-cpu-v3",
+  "container_id": "4b908b84b3a8a332e3dfaa426a8b0414a8bfc8abea901071116ced6a19e65741",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "5e5411760a2f04b555f7e6c9f4efe3c3e7f8971b",
+  "intent_sha256": "b413ba5f19c391cfc6285873937d1d09eafec11ca3f605cbc18168fa54f81355",
+  "source_files_verified": 126,
+  "inspection_sha256": "b6cd968fe8ffd5446ed9be8963e3b94284b0be5a2d03d33cf7504d2714d8968d",
+  "ranks": [
+    {
+      "result_sha256": "d505b2ba34163c0c110fcd34a53dcf474ac362832ae4883e11aa6859c5247bca",
+      "terminal_sha256": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2",
+      "result": {
+        "status": "passed",
+        "rank": 0,
+        "world_size": 2,
+        "backend": "gloo",
+        "unit_counts": {
+          "<root>": 21,
+          "blocks.0": 39,
+          "blocks.1": 39
+        },
+        "parameters": {
+          "head.weight": {
+            "shape": [
+              3,
+              7
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "139cf589a63c784dd293830ccd17c150f834a734f233ce3e024684fcf36c3f4b"
+          },
+          "blocks.0.first.weight": {
+            "shape": [
+              3,
+              5
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "e1c096eaa788c70ef76414d64e962a4240a7572440accba91de17b8fb32cc7e6"
+          },
+          "blocks.0.first.bias": {
+            "shape": [
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "c70c970f41fcdaa752c32a2ea168e94f6b1cc8acea770bfc34530db0682a2779"
+          },
+          "blocks.0.second.weight": {
+            "shape": [
+              7,
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "76e0892d0077eefecac9c1b968a9447b47f258ff66c97fd21fa54207ad701e13"
+          },
+          "blocks.1.first.weight": {
+            "shape": [
+              3,
+              5
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "2d4100d62964ee011328413775191cb2c6fe74107ef2e16204d109560a3f5279"
+          },
+          "blocks.1.first.bias": {
+            "shape": [
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "0cf4846f018636f3fb5a455e60202b1184ecc3dd64b544f4cfaedf3284c42623"
+          },
+          "blocks.1.second.weight": {
+            "shape": [
+              7,
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "e236a3be19ec3fc8946b9655d38a93329aad4427ab44a6ea53add227c62bd091"
+          }
+        },
+        "buffers": {
+          "frequency": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.float32",
+            "sha256": "1a286a4b287727f4b447c45c12c0261d0c35f153cd93a8b13e959ca288fad59c"
+          },
+          "blocks.0.position": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.float32",
+            "sha256": "acba6c3536d75216228c121ea89f89b9690eb05bb49618e15a6653cbecabc3ac"
+          },
+          "blocks.1.position": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.float32",
+            "sha256": "acba6c3536d75216228c121ea89f89b9690eb05bb49618e15a6653cbecabc3ac"
+          }
+        },
+        "local_shards": {
+          "<root>": {
+            "shape": [
+              11
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "b8e1b6ff1ed5b6b36a7659350a8155c0c57a1b61d9903307d7818de88befaec9"
+          },
+          "blocks.0": {
+            "shape": [
+              20
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "f8c66aba45d9c1c02454923661e61391a647f56925d752d5a5d46ef126b865e6"
+          },
+          "blocks.1": {
+            "shape": [
+              20
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "a7c923b3e6e7434b3790dc839ee7dfba9e8147be0524d015b623a8e0facbf9a3"
+          }
+        },
+        "shards_unchanged": true,
+        "cross_rank_exact": true,
+        "mutation_detected": true,
+        "forward_calls": 0,
+        "weight_updates": 0,
+        "seconds": 0.1573324100463651,
+        "torch_version": "2.10.0+cpu",
+        "source_sha256": {
+          "runner": "eb17afca5b985983ea61f89f87dd737deede8ed80bcc916705170e46e6ca67fa",
+          "shared_traversal": "0e01e2a065f76182592e2574570b273f02ed6b16d3b91d30762e67e2aa676f4e",
+          "fsdp": "105598da3e55bc0b6dcaa554f333a6863a8d1f68aca7457ec0d347cc6ffaa34b"
+        },
+        "scope": "Actual two-rank CPU/Gloo FSDP FULL_SHARD, synthetic BF16 parameters, nested unit gathering and FP32 buffer preservation. Both ranks start materialized; sync_module_states=False. No Omni weights, meta-rank broadcast, NPU/HCCL, forward or training."
+      }
+    },
+    {
+      "result_sha256": "b38fe0895b7efdaab9015b302115dec50eef3efdab189afae902c971115a534f",
+      "terminal_sha256": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2",
+      "result": {
+        "status": "passed",
+        "rank": 1,
+        "world_size": 2,
+        "backend": "gloo",
+        "unit_counts": {
+          "<root>": 21,
+          "blocks.0": 39,
+          "blocks.1": 39
+        },
+        "parameters": {
+          "head.weight": {
+            "shape": [
+              3,
+              7
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "139cf589a63c784dd293830ccd17c150f834a734f233ce3e024684fcf36c3f4b"
+          },
+          "blocks.0.first.weight": {
+            "shape": [
+              3,
+              5
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "e1c096eaa788c70ef76414d64e962a4240a7572440accba91de17b8fb32cc7e6"
+          },
+          "blocks.0.first.bias": {
+            "shape": [
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "c70c970f41fcdaa752c32a2ea168e94f6b1cc8acea770bfc34530db0682a2779"
+          },
+          "blocks.0.second.weight": {
+            "shape": [
+              7,
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "76e0892d0077eefecac9c1b968a9447b47f258ff66c97fd21fa54207ad701e13"
+          },
+          "blocks.1.first.weight": {
+            "shape": [
+              3,
+              5
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "2d4100d62964ee011328413775191cb2c6fe74107ef2e16204d109560a3f5279"
+          },
+          "blocks.1.first.bias": {
+            "shape": [
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "0cf4846f018636f3fb5a455e60202b1184ecc3dd64b544f4cfaedf3284c42623"
+          },
+          "blocks.1.second.weight": {
+            "shape": [
+              7,
+              3
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "e236a3be19ec3fc8946b9655d38a93329aad4427ab44a6ea53add227c62bd091"
+          }
+        },
+        "buffers": {
+          "frequency": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.float32",
+            "sha256": "1a286a4b287727f4b447c45c12c0261d0c35f153cd93a8b13e959ca288fad59c"
+          },
+          "blocks.0.position": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.float32",
+            "sha256": "acba6c3536d75216228c121ea89f89b9690eb05bb49618e15a6653cbecabc3ac"
+          },
+          "blocks.1.position": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.float32",
+            "sha256": "acba6c3536d75216228c121ea89f89b9690eb05bb49618e15a6653cbecabc3ac"
+          }
+        },
+        "local_shards": {
+          "<root>": {
+            "shape": [
+              11
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "95f3212d39ab53a0ae788ed8e3013ec104f25a75fd3df214fafa37c50fff2460"
+          },
+          "blocks.0": {
+            "shape": [
+              20
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "0a072831af349725023d895ca771e19000dfd0b9273c4bbfd7c62336aa9a12a0"
+          },
+          "blocks.1": {
+            "shape": [
+              20
+            ],
+            "dtype": "torch.bfloat16",
+            "sha256": "d0dbcecc809139e65d8e08238c598ea4d97ba2dbdb97637edf54095dfaac1323"
+          }
+        },
+        "shards_unchanged": true,
+        "cross_rank_exact": true,
+        "mutation_detected": true,
+        "forward_calls": 0,
+        "weight_updates": 0,
+        "seconds": 0.03404986998066306,
+        "torch_version": "2.10.0+cpu",
+        "source_sha256": {
+          "runner": "eb17afca5b985983ea61f89f87dd737deede8ed80bcc916705170e46e6ca67fa",
+          "shared_traversal": "0e01e2a065f76182592e2574570b273f02ed6b16d3b91d30762e67e2aa676f4e",
+          "fsdp": "105598da3e55bc0b6dcaa554f333a6863a8d1f68aca7457ec0d347cc6ffaa34b"
+        },
+        "scope": "Actual two-rank CPU/Gloo FSDP FULL_SHARD, synthetic BF16 parameters, nested unit gathering and FP32 buffer preservation. Both ranks start materialized; sync_module_states=False. No Omni weights, meta-rank broadcast, NPU/HCCL, forward or training."
+      }
+    }
+  ],
+  "independent_parameter_and_buffer_values": true,
+  "independent_both_rank_padded_shard_values": true,
+  "scope": "External actual two-rank CPU/Gloo container/source audit, independently reconstructed all seven deterministic BF16 parameters, three FP32 buffers and each rank padded flat shard. Not Omni model/NPU/HCCL/meta-sync/forward/training acceptance."
+}

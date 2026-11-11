@@ -67,3 +67,37 @@ HCCL通信所需IPC、网络和设备映射须单独核查，不能照搬无设�
 即便初始化通过，也只证明分片和同步完整；真实音频前向、完整采样概率、
 参数更新、导出/恢复及任务提升/跨任务泛化仍是独立验证项。当前权重训练
 仍遵循冻结基线→教师提示优化→native/Jev比较的执行优先级。
+
+## 实际双rank CPU/Gloo逐单元恢复验证
+
+已新增 `probe_fsdp_unit_gather.py`，在固定镜像执行真实两进程 FSDP1
+FULL_SHARD，使用三单元、99个确定性BF16参数、三个FP32非持久化buffer。
+各单元参数数目21/39/39均为奇数，因此两rank的本地分片包含padding。
+两边从实际CPU参数构造，明确 `sync_module_states=False`；这条CPU路径
+不能验证NPU/HCCL、meta-rank广播或原始Omni模型。
+
+使用与完整Omni探针完全相同的 `owned_parameters`、`logical_path` 和
+`tensor_identity`，实际逐单元执行 `summon_full_params(recurse=False)`。
+全部参数恢复后哈希与原值相同，退出上下文后本地分片不变；跨rank比较
+一致，FP32 buffer不变。外部独立重建所有7个参数张量和3个buffer，以及
+两rank各自的三份padding分片，全部哈希匹配。
+
+成功运行v3容器 `4b908b84b3a8a332e3dfaa426a8b0414a8bfc8abea901071116ced6a19e65741`，
+源码 `5e5411760a2f04b555f7e6c9f4efe3c3e7f8971b`，固定镜像4CPU/8GiB，
+无网络/设备，退出0、无OOM。rank0/1探针耗时约0.157/0.034秒，不含
+torchrun及导入启动时间。见[外部核验](fsdp-unit-gather-cpu-v3-verified.json)。
+
+两次失败原样保留，分别修正后才启动新版本，无自动重试：
+
+- [v1](fsdp-unit-gather-cpu-v1-failed.json)：`--standalone`在无网络容器中
+  公布无法解析的容器hostname，只有launcher、没有rank worker。核实进程
+  后手动停止，退出143。v2改显式static rendezvous `127.0.0.1:29571`，
+  `GLOO_SOCKET_IFNAME=lo`，不开放外部网络。
+- [v2](fsdp-unit-gather-cpu-v2-failed.json)：两个rank真实执行FSDP后，
+  在恢复分片时失败，报storage不可resize。原hash函数的`.cpu().contiguous()`
+  在CPU上可能仍指向FSDP原storage；`.numpy()`使原storage变成不可resize。
+  修复为先独立CPU复制再转换NumPy，不改FSDP实现或参数数值。新增回归测试
+  检查hash后原storage仍可resize，宿主相关测试现为22项通过。
+
+后续完整NPU探针也采用修正后的hash函数。CPU双rank通过不允许跳过原
+单层NPU探针及其外部核验，也没有新NPU运行入队。
