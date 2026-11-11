@@ -66,3 +66,32 @@ waveform探针不能直接作为vllm_hop协议下的on-policy证据；最终acto
 启动后独立核对协调器PID/start/argv、122份队列源码和122份运行源码的Git
 身份，确认phase=waiting_fsc_test_queue、尚无probe launch.json。真实NPU
 兼容性与容量结论仍待实际执行和独立审计。
+
+## 完成后的独立输出审计
+
+`tools/jev/audit_omni_npu_layer.py`已准备；仅在原监督与应用成功终止后读取
+输出，重新核对固定队列、CPU预检、原容器、启动配置和Git运行源码。
+NPU identity须与已验收CPU预检完全一致，仅允许`preflight_only`从true变false。
+逐一认证全部九份输入/输出文件哈希、旁路报告、BF16形状、有限值和原始mask。
+
+按原顺序配对六条样本的micro1和micro2结果，分别报告有效token和完整padded
+张量的相等性、不同元素数、最大/平均绝对差及RMS差；不隐藏padding差异。
+容量汇总要求九次累计allocated/reserved峰值单调、allocated不超过reserved，
+并保留前向加保存耗时。PyTorch allocator峰值不是整卡HBM占用，不能据此
+推断完整模型可容纳。没有设置数值通过阈值，也不自动批准双卡派发。
+
+宿主32项相关测试通过（2.91秒），包括真实形状九组合成张量的完整审计编排、
+padding区别、文件损坏、遗漏/重复/错序、非有限值、mask漂移及累计峰值异常。
+Docker/Git依赖在编排测试中显式模拟；这不是实际NPU执行或数值保真结果。
+
+原单层任务完成后，在工程根目录使用有torch和SSH访问权限的宿主Python：
+
+```bash
+PYTHONPATH=src /usr/bin/python3 tools/jev/audit_omni_npu_layer.py \
+  --root /mnt/cephfs/xingchao/experiments/multimodal-jev/omni-npu-layer-v1 \
+  --prefix /mnt/cephfs/xingchao/experiments/multimodal-jev/omni-actor-prefix-train6-v1/run \
+  --output /mnt/cephfs/xingchao/experiments/multimodal-jev/omni-npu-layer-v1/diagnostic-audit.json
+```
+
+该工具不加载模型权重、不执行前向、不读取任务标签、不派发容器，已有审计
+文件不会覆盖。跨CPU/NPU保真及完整actor概率验证仍须独立完成。
