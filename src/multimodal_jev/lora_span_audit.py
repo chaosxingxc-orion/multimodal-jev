@@ -11,6 +11,18 @@ class SpanAuditWorkerExtension:
         from .span_norm_alignment import install_hf_order_language_norm
         return install_hf_order_language_norm(self.get_model())
 
+    def align_jev_conv_layout(self):
+        from .span_conv_alignment import install_hf_conv_layout
+        return install_hf_conv_layout(self.get_model())
+
+    def align_jev_language_attention(self):
+        from .span_attention_alignment import install_eager_span_attention
+        return install_eager_span_attention(self.get_model())
+
+    def align_jev_language_rotary(self):
+        from .span_rotary_alignment import install_hf_order_rotary
+        return install_hf_order_rotary(self.get_model())
+
     def begin_jev_span_trace(self):
         from .span_trace import attach_vllm_trace
         if getattr(self,'_jev_span_trace',None) is not None:

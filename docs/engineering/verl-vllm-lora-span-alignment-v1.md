@@ -4,7 +4,9 @@
 
 **最新用户精度决定：BF16 训练/推理。** 基座、LoRA 执行/导出、LM head 投影均 BF16；FP32 保留在候选归一化、损失及优化器 master/state。显式关闭 PEFT adapter 自动升精度，vLLM 指定 lora_dtype=bfloat16、head_dtype=model；两侧使用完全相同的未合并 adapter。已有 FP32 adapter 探针仅作历史诊断，不作为 BF16 的验收证据。新增本地 FP32 master AdamW 桥接支持 BF16 SFT，尚非分布式 verl optimizer 集成。见 `experiments/slurp-native-spans-bf16-v1.md`。
 
-最新进度：FP32 q/v LoRA v3已能运行，logprob误差0.025758、完整动作比率[0.96493,1.03550]仍失败；v4在worker审计序列化失败，v5按用户BF16决定停止。已定位pooling默认FP32投影与HF BF16的配置差异，但修正后的概率尚未验证。BF16新训练启动，须重做reload及跨后端gate，不能沿用旧FP32 reference。
+最新进度：BF16 candidate-CE LoRA 20步训练与独立保存重载已完成；48条学习录音重载候选概率最大误差为0。原生vLLM BF16概率gate失败，max logp差0.140574、完整动作比率[0.811465,1.199267]。语言RMSNorm顺序对齐后max差0.101054，仍未过gate。卷积布局对齐无效；再对齐语言attention/rotary也未过gate。这些干预只保留为诊断，不并入正式训练默认配置。
+
+工程新增：单rank `span_actor_update` 使用实际verl GRPO与clipped PPO完整动作损失；BF16 optimizer已支持master/state恢复。`tools/jev/train_span_rl_step.py`连接真实音频HF参考、vLLM候选rollout、训练前gate、一次更新、新版本导出、独立actor重载和vLLM复核；后端顺序退出，避免NPU显存并存。当前该入口首次NPU验收已在真实语音更新前正确阻断（max logp差0.0652434，0次更新），不是分布式Ray/verl trainer已完成，不声称真实语音RL成功。详见 `experiments/span-actor-update-v1.md`。
 
 下文保留设计和历史诊断；其中“LoRA未验证”“当前SFT为全词表CE”属于初始阶段描述。候选CE对照已完成，最新主线使用candidate CE、BF16执行策略。
 

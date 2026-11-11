@@ -4,7 +4,7 @@
 
 新实验 `slurp-native-spans-bf16-v1`：固定镜像、本地 Qwen3-ASR-0.6B、物理 NPU4；同一 reviewed SLURP 发布、40 条均衡录音、20 次更新、rank4/alpha8、q/v、dropout0、lr1e-4、candidate CE、raw 音频。完整 48 条/142 标签只作学习诊断，包含训练样本，不能作泛化结果。
 
-精度政策：基座、LoRA A/B 执行参数、LM head 投影均 BF16；PEFT autocast_adapter_dtype=False 并校验/转换 adapter 参数。候选 log-softmax 与损失 FP32。AdamW 在独立 FP32 master 上累积更新，每步将 master 舍入到 BF16 执行参数；导出的 adapter 正是该 BF16 副本。当前 master bridge 仅为本地单卡 pilot，不是已经完成的分布式 verl 集成，不提供续训恢复。正式续训必须同时保存 master 和 optimizer state。
+精度政策：基座、LoRA A/B 执行参数、LM head 投影均 BF16；PEFT autocast_adapter_dtype=False 并校验/转换 adapter 参数。候选 log-softmax 与损失 FP32。AdamW 在独立 FP32 master 上累积更新，每步将 master 舍入到 BF16 执行参数；导出的 adapter 正是该 BF16 副本。当前 master bridge 仅为本地单卡 pilot，不是已经完成的分布式 verl 集成，该历史运行未保存优化器，不能声称可精确续训。当前代码已新增 master/state 保存与恢复及参数顺序/模型身份校验；仅适用于后续保存完整checkpoint的新运行。
 
 vLLM 使用同一未合并 BF16 adapter，显式 lora_dtype=bfloat16、head_dtype=model、语言 qkv 精确目标路径；拒绝 checkpoint dtype 不匹配的静默转换。初期 TP1/eager、禁用 prefix cache/chunked prefill。worker 审计实际投影 dtype、包装模块与 adapter ID。
 

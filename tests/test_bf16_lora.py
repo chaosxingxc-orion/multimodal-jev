@@ -63,3 +63,24 @@ def test_peft_reload_explicitly_disables_adapter_upcast(monkeypatch):
     assert actual is model
     assert calls == [{'is_trainable':True, 'autocast_adapter_dtype':False}]
     assert model.lora_A.weight.dtype == torch.bfloat16
+
+
+def test_resume_preserves_sub_bf16_updates_and_adam_moments():
+    p=torch.nn.Parameter(torch.ones(2,dtype=torch.bfloat16))
+    optimizer=BF16MasterAdamW([p],lr=1e-4)
+    for step in range(17):
+        optimizer.zero_grad();p.grad=torch.tensor([1.,-.5],dtype=p.dtype);optimizer.step()
+    saved=optimizer.state_dict()
+    q=torch.nn.Parameter(p.detach().clone())
+    restored=BF16MasterAdamW([q],lr=.1)
+    restored.load_state_dict(saved)
+    assert restored.optimizer.param_groups[0]['lr']==1e-4
+    for step in range(30):
+        grad=torch.tensor([1.+step/30.,-.5],dtype=p.dtype)
+        optimizer.zero_grad();p.grad=grad.clone();optimizer.step()
+        restored.zero_grad();q.grad=grad.clone();restored.step()
+        assert torch.equal(p,q)
+        assert torch.equal(optimizer.masters[0],restored.masters[0])
+    bad=BF16MasterAdamW([torch.nn.Parameter(torch.zeros_like(p))],lr=1e-4)
+    with pytest.raises(ValueError,match='differs'):
+        bad.load_state_dict(saved)

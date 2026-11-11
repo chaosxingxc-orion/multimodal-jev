@@ -1,0 +1,35 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-conv-layout-v1",
+  "terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794400782.1625023
+  },
+  "independently_recomputed_parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.10105395317077637,
+    "p95_logprob_error": 0.09740197658538818,
+    "joint_log_ratio_min": -0.16939431428909302,
+    "joint_log_ratio_max": 0.14310568571090698,
+    "joint_ratio_min": 0.8441759671032436,
+    "joint_ratio_max": 1.153851740863796,
+    "candidate_kl_actor_to_behavior": 0.005320945740497338,
+    "argmax_changed_spans": [],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "candidate_logits_equal_conv_trace": true,
+  "optimizer_updates": 0,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-conv-layout-v1/run/result.json": "adf563e83c865f4b38f60ed392a287dfa464f5d4f20e01452cbb839d12d013ce",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-conv-layout-v1/run/terminal.json": "a8aba2caedc620576b42360a16e6556d13b127d2a8fd76ff3bf43bb38da03f3d",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-conv-layout-v1/run/trace-comparison.json": "30e30feb8b9a09ab7c5f32785e0499785d13a9fed81c8892145e34776ce9085f",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-conv-layout-v1/config.json": "3316243c30828365b32f05ebaa06afdc6af198d9449b29e68f5dfaf57c98d9a3"
+  },
+  "scope": "Independent probability recomputation from persisted outputs; no RL admission."
+}

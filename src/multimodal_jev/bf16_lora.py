@@ -4,6 +4,7 @@ This local optimizer bridge is not a distributed verl optimizer integration.
 Exported/served parameters are exactly the BF16 execution copy.
 """
 import torch
+import copy
 
 
 def cast_lora_bf16(model):
@@ -58,4 +59,27 @@ class BF16MasterAdamW:
                     optimizer_tensor_dtypes=sorted({str(v.dtype) for state in self.optimizer.state.values()
                                                    for v in state.values() if torch.is_tensor(v)}),
                     parameters=len(self.parameters),
-                    scope='Local pilot; FP32 master/AdamW state, BF16 execution/export; no resume support.')
+                    scope='Local pilot; FP32 master/AdamW state, BF16 execution/export; ordered-parameter resume.')
+
+    def state_dict(self):
+        return {'schema':'bf16-master-adamw-v1',
+                'masters':[p.detach().cpu().clone() for p in self.masters],
+                'optimizer':copy.deepcopy(self.optimizer.state_dict())}
+
+    def load_state_dict(self, state):
+        """Restore only after loading the matching BF16 execution checkpoint.
+
+Caller must bind ordered parameter names and model identity in its checkpoint
+manifest. Shape checks alone cannot authenticate two same-shaped parameters.
+"""
+        if state.get('schema')!='bf16-master-adamw-v1' or len(state['masters'])!=len(self.parameters):
+            raise ValueError('incompatible master checkpoint')
+        for p,master in zip(self.parameters,state['masters'],strict=True):
+            if (master.dtype!=torch.float32 or master.shape!=p.shape or not torch.isfinite(master).all()
+                    or not torch.equal(master.to(device=p.device,dtype=p.dtype),p.detach())):
+                raise ValueError('master checkpoint differs from loaded BF16 execution parameters')
+        with torch.no_grad():
+            for master,saved in zip(self.masters,state['masters'],strict=True):
+                master.copy_(saved)
+        self.optimizer.load_state_dict(copy.deepcopy(state['optimizer']))
+        self.zero_grad()

@@ -198,6 +198,9 @@ def train(config, output):
         atomic_json(output / 'history.json', history)
     if bf16_lora:
         atomic_json(output / 'precision.json',optimizer.receipt())
+        torch.save({'optimizer':optimizer.state_dict(),
+                    'ordered_parameter_names':[n for n,p in model.named_parameters() if p.requires_grad],
+                    'completed_updates':len(history)},output/'final-optimizer.pt')
     adapted.save_pretrained(output / 'adapter')
     processor.save_pretrained(output / 'processor')
     for folder in ('adapter', 'processor'):

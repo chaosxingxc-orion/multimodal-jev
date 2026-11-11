@@ -1,0 +1,50 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-actor-update-cpu-v1",
+  "result": {
+    "status": "passed",
+    "update": {
+      "loss": -2.421438694000244e-08,
+      "gradient_norm": 0.69140625,
+      "admission": [
+        {
+          "passed": true,
+          "per_span_passed": true,
+          "joint_ratio_passed": true,
+          "maximum_logprob_error": 0.0,
+          "p95_logprob_error": 0.0,
+          "joint_log_ratio_min": 0.0,
+          "joint_log_ratio_max": 0.0,
+          "joint_ratio_min": 1.0,
+          "joint_ratio_max": 1.0,
+          "candidate_kl_actor_to_behavior": 0.0,
+          "argmax_changed_spans": [],
+          "per_span_tolerance": 0.02,
+          "joint_ratio_bounds": [
+            0.98,
+            1.02
+          ],
+          "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+        }
+      ],
+      "optimizer_updates": 1,
+      "behavior_policy_id": "synthetic-v1",
+      "next_action": "export new BF16 policy identity; reload and verify worker before next rollout",
+      "scope": "Single-rank native verl joint loss/optimizer adapter; caller owns lifecycle and provenance."
+    },
+    "precision": {
+      "execution_parameter_dtypes": [
+        "torch.bfloat16"
+      ],
+      "master_parameter_dtypes": [
+        "torch.float32"
+      ],
+      "optimizer_tensor_dtypes": [
+        "torch.float32"
+      ],
+      "parameters": 1,
+      "scope": "Local pilot; FP32 master/AdamW state, BF16 execution/export; no resume support."
+    },
+    "scope": "Synthetic CPU BF16 optimizer bridge using installed verl. No vLLM rollout or speech RL claim."
+  },
+  "receipt_sha256": "cf944a3a1d69e38333477c35f3d6f3a87509c4936ea6ad5aff1497143c360a74"
+}

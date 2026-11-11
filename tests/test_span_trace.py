@@ -45,3 +45,11 @@ def test_hf_order_norm_residual_and_weight_rounding():
     assert torch.equal(actual,expected) and torch.equal(saved_residual,summed)
     assert torch.equal(hf_order_rms_norm(module,summed),expected)
     assert not torch.equal(actual,(weight.float()*normalized).to(torch.bfloat16))
+
+
+def test_hf_chunk_layout_preserves_values_and_matches_actual_hf_strides():
+    from multimodal_jev.span_conv_alignment import hf_chunk_layout
+    x=torch.arange(3*128*100).reshape(3,100,128).transpose(1,2).unsqueeze(1)
+    actual=hf_chunk_layout(x)
+    assert torch.equal(actual,x)
+    assert actual.stride()==(100,38400,300,1)

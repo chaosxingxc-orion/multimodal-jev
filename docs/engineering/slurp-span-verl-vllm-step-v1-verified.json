@@ -1,0 +1,32 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v1",
+  "status": "blocked_before_optimizer_by_numeric_parity",
+  "independently_recomputed_parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.06524336338043213,
+    "p95_logprob_error": 0.062642902135849,
+    "joint_log_ratio_min": -0.12008488178253174,
+    "joint_log_ratio_max": 0.03616523742675781,
+    "joint_ratio_min": 0.8868451565245288,
+    "joint_ratio_max": 1.0368271549883292,
+    "candidate_kl_actor_to_behavior": 0.0011323768033271427,
+    "argmax_changed_spans": [],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "optimizer_updates": 0,
+  "checkpoint_published": false,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v1/run/terminal.json": "bf20b7b64f77380326a38bc82f7afe9f11bb45181c1442e96102926d0ea57e62",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v1/run/admission-failure.json": "9d0312c19b871eb1398f9f518eedf97532f4139329582b8a723968fa81048821",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v1/run/rollout-before-0/result.json": "8dd1a145b5fea23105e147cb5efa0508264fef4624e8c26a1ed386f2292e2e6f",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v1/config.json": "e618065b77204e289b505d808147083411ddce326606c5391a7c24ff16fcee02"
+  },
+  "scope": "Real audio NPU native vLLM/HF gate executed by new lifecycle; no RL update."
+}

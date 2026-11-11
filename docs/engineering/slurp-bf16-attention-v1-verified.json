@@ -1,0 +1,37 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-attention-v1",
+  "terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794401207.6475897
+  },
+  "independently_recomputed_parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.15868628025054932,
+    "p95_logprob_error": 0.15746814012527466,
+    "joint_log_ratio_min": -0.33138561248779297,
+    "joint_log_ratio_max": 0.34048938751220703,
+    "joint_ratio_min": 0.7179282735492015,
+    "joint_ratio_max": 1.4056353226397398,
+    "candidate_kl_actor_to_behavior": 0.02012906849193797,
+    "argmax_changed_spans": [
+      2
+    ],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "candidate_logits_equal_conv_trace": false,
+  "optimizer_updates": 0,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-attention-v1/run/result.json": "4903b12432f6db96017052e3c241e03805532120eeee4495355574e63b19a37c",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-attention-v1/run/terminal.json": "d56e68c651ec03fcddb3281744ad41732cf0d9d24559f258508cdf63aa05ff8f",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-attention-v1/run/trace-comparison.json": "700f7df6ccb079737c8bd671ff351a78cc5a622b4b069f45c6ff77aad4284eaa",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-attention-v1/config.json": "7bbee72d97c424fc38f17fa84401ded7d2105d1c946d81321e4e432609bac96d"
+  },
+  "scope": "Independent probability recomputation from persisted outputs; no RL admission."
+}
