@@ -1,0 +1,10 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-bf16-projection-audit-v2",
+  "identical_input_rows": 568,
+  "separate_projection_exact_hf": true,
+  "packed_projection_exact_vllm_on_identical_inputs": true,
+  "all_repeats_exact": true,
+  "variants": 12,
+  "result_sha256": "c645054f07f73ec97ce88cb33722607ba80f5187516e26fc43e77bae465ba23e",
+  "scope": "Same-process replay of actual captured input and original checkpoint weights; establishes packed base GEMM as source of first-layer projection drift, not complete-model parity."
+}

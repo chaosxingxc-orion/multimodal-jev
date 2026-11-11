@@ -23,6 +23,14 @@ class SpanAuditWorkerExtension:
         from .span_rotary_alignment import install_hf_order_rotary
         return install_hf_order_rotary(self.get_model())
 
+    def align_jev_language_qkv(self):
+        from .span_projection_alignment import install_separate_qkv
+        return install_separate_qkv(self.get_model())
+
+    def align_jev_language_mlp(self):
+        from .span_projection_alignment import install_separate_mlp
+        return install_separate_mlp(self.get_model())
+
     def begin_jev_span_trace(self):
         from .span_trace import attach_vllm_trace
         if getattr(self,'_jev_span_trace',None) is not None:

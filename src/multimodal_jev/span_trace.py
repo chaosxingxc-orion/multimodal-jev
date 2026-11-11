@@ -53,6 +53,7 @@ def attach_hf_trace(base):
         trace.watch(layer.post_attention_layernorm, f'layer.{i}.post_attention_norm')
     for key in ('q_proj','k_proj','v_proj'):
         trace.watch(getattr(language.layers[0].self_attn,key), 'layer.0.'+key)
+    trace.watch(language.layers[0].mlp,'layer.0.mlp')
     trace.watch(language.norm, 'final_norm')
     return trace
 
@@ -69,6 +70,7 @@ def attach_vllm_trace(model):
         trace.watch(layer.input_layernorm, f'layer.{i}.input_norm')
         trace.watch(layer.post_attention_layernorm, f'layer.{i}.post_attention_norm')
     trace.watch(language.layers[0].self_attn.qkv_proj, 'layer.0.qkv_proj')
+    trace.watch(language.layers[0].mlp,'layer.0.mlp')
     trace.watch(language.norm, 'final_norm')
     return trace
 

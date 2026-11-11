@@ -1,0 +1,33 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-qkv-v1",
+  "parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.14057421684265137,
+    "p95_logprob_error": 0.13669335842132568,
+    "joint_log_ratio_min": -0.1752282977104187,
+    "joint_log_ratio_max": 0.1528967022895813,
+    "joint_ratio_min": 0.8392653965278909,
+    "joint_ratio_max": 1.165204609757557,
+    "candidate_kl_actor_to_behavior": 0.009235867220881655,
+    "argmax_changed_spans": [
+      0
+    ],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "identical_input_rows": 568,
+  "first_layer_qkv_exact_on_identical_inputs": true,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-qkv-v1/run/result.json": "4ce01ddbf5f578c2dafeeedf21b1f27cf4700f4d4ed6e1aa614cc815bbbe32d3",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-qkv-v1/run/terminal.json": "7ea1374d55b5e35287802b799d840dc2b8f9cd5f9aa8a716afef82ff46fe1b3c",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-qkv-v1/run/hf-trace.pt": "fc9f50c03db270ea6196e2f61c5cf9fb6e196e775a6e43ff02b763ad608b9120",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-qkv-v1/run/vllm-trace.pt": "a29a269a32a97bd6c8c555070736623de38a8131bebd2b46e48ce031bd21be1c"
+  },
+  "scope": "Projection fix verified locally, complete model parity still fails."
+}

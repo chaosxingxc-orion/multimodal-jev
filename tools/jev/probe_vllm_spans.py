@@ -94,6 +94,12 @@ def run(config, output):
         'span_positions':positions[0].tolist(),'candidate_ids':[m['token_ids'] for m in mapping],
         'expected_input_ids':ids})
     try:
+        if config.get('align_language_mlp',False):
+            atomic_json(output/'mlp-intervention.json',
+                        engine.llm_engine.collective_rpc('align_jev_language_mlp'))
+        if config.get('align_language_qkv',False):
+            atomic_json(output/'qkv-intervention.json',
+                        engine.llm_engine.collective_rpc('align_jev_language_qkv'))
         if config.get('align_language_rotary',False):
             atomic_json(output/'rotary-intervention.json',
                         engine.llm_engine.collective_rpc('align_jev_language_rotary'))
