@@ -117,3 +117,51 @@ def merge_shards(records, shards, *, name, plan, plan_sha256):
         if seen != set(expected):
             raise ValueError('rank response coverage incomplete')
     return dict(name=name, responses=[responses[_key(record)] for record in records])
+
+
+def audit_observed_shards(data, records, outputs, *, name, plan, plan_sha256):
+    """Rebind saved observations to independently rebuilt authenticated inputs.
+
+    No model/actor call. The caller must authenticate the saved files, original
+    sampling, runtime and this freshly rebuilt DataProto. This checks evidence
+    consistency, not whether the claimed NPU actually produced the logits.
+    """
+    import torch
+    from .omni_logprob_observer import bind_observations
+
+    if type(outputs) is not list:
+        raise ValueError('complete observed rank output array required')
+    # Check full coverage and identity before trusting rank-local payloads.
+    native = merge_shards(records, [o['native'] for o in outputs], name=name,
+                          plan=plan, plan_sha256=plan_sha256)
+    reference = merge_shards(records, [o['reference'] for o in outputs],
+        name=name+'-same-logits-fp32', plan=plan, plan_sha256=plan_sha256)
+    for output in outputs:
+        rank = output['native']['rank']
+        if output['reference']['rank'] != rank:
+            raise ValueError('native and reference must belong to the same rank')
+        local, local_records = _local_batch(data, records, rank=rank, plan=plan,
+                                           plan_sha256=plan_sha256)
+        observation = output['observation']
+        if any(call.get('logits_device') != f'npu:{rank}'
+               or call.get('output_device') != f'npu:{rank}'
+               for call in observation['observer']['calls']):
+            raise ValueError('saved normalization device must match its local rank')
+        # Rebuild only the returned probability tensor, not claimed bindings or
+        # FP32 references. Those are derived again from original input masks and
+        # saved normalization calls by bind_observations below.
+        indexed = {_key(r): r for r in output['native']['run']['responses']}
+        values = torch.zeros(local.batch['responses'].shape, dtype=torch.float64)
+        for i, record in enumerate(local_records):
+            probs = indexed[_key(record)]['log_probs']
+            values[i, :len(probs)] = torch.tensor(probs, dtype=torch.float64)
+        rebound = bind_observations(local, values, local_records, observation['observer'],
+            name=name, micro_batch_size=plan['micro_batch_size'])
+        if (digest(rebound) != digest(observation)
+                or digest(rebound['native']) != digest(output['native']['run'])
+                or digest(rebound['reference']) != digest(output['reference']['run'])):
+            raise ValueError('saved observations, input bindings and exported runs differ')
+    return dict(native=native, reference=reference,
+        observed_ranks=len(outputs), normalization_calls=sum(
+            len(o['observation']['observer']['calls']) for o in outputs),
+        scope='Complete saved observation/input/export consistency only; no runtime attestation.')
