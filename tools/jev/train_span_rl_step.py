@@ -15,7 +15,7 @@ import time
 from multimodal_jev.baseline import atomic_json, file_hash
 
 
-def prepare_actor(config, output, adapter):
+def prepare_actor(config, output, adapter, device='npu:0'):
     import torch
     from multimodal_jev.asr import load_runtime
     from multimodal_jev.sft import initialize_adapter
@@ -35,7 +35,7 @@ def prepare_actor(config, output, adapter):
     atomic_json(output / 'selection.json', selection)
     base_id = checkpoint_identity(config['model_path'])[0]
     policy_id = base_id + ':' + checkpoint_identity(adapter)[0]
-    processor, base = load_runtime(config['model_path'], 'npu:0', 'bfloat16')
+    processor, base = load_runtime(config['model_path'], device, 'bfloat16')
     adapted = initialize_adapter(base, {**config, 'initial_adapter':str(adapter), 'lora_execution_dtype':'bfloat16'}).eval()
     model = NativeAudioSpanModel(adapted.get_base_model()).eval()
     prepared = []
@@ -57,9 +57,9 @@ def prepare_actor(config, output, adapter):
     def forward():
         rows = []
         for p in prepared:
-            inputs = {k:v.to(device='npu:0', dtype=torch.bfloat16 if v.is_floating_point() else v.dtype)
+            inputs = {k:v.to(device=device, dtype=torch.bfloat16 if v.is_floating_point() else v.dtype)
                       for k,v in p['inputs'].items()}
-            rows.append(model(inputs, p['positions'].to('npu:0'), p['candidates'])[1])
+            rows.append(model(inputs, p['positions'].to(device), p['candidates'])[1])
         return tuple(torch.cat([row[j] for row in rows], 0) for j in range(len(rows[0])))
     return adapted, model, base_id, policy_id, prepared, forward
 

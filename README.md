@@ -22,7 +22,9 @@ BF16 candidate-CE 已完成 20 次均衡更新；48 条学习录音在独立 HF 
 真实 NPU 优化器恢复和第二次均衡更新也已通过：112 个 Adam 状态 step 从 1 到 2，独立 HF 重载误差 0；
 第二次更新后全部 48 条跨后端检查通过，最大候选 log-prob 误差仍为 1.19×10⁻⁷。
 恢复配置与限制见 [断点续训接口](docs/engineering/span-resume-v1.md)。
-分布式训练和跨任务泛化尚未验收。
+真实四卡 FSDP 已完成一次 8 条语音的 verl LoRA 更新；导出重载误差 0，48 条 TP1 vLLM 验收通过。
+详见 [四卡语音验证](docs/engineering/span-fsdp-audio-npu4-v1.md)。
+完整 Ray/verl trainer、TP4 rollout、Omni 30B 训练和跨任务泛化尚未验收。
 运行配置和准入门槛见 [BF16 训推一致性](docs/engineering/verl-vllm-lora-span-alignment-v1.md)，
 生命周期入口见 [单步训练验收](experiments/span-actor-update-v1.md)。
 早期[冻结基线与 TFRL 协议](proposal/02-frozen-baselines-tfrl-jev.md)及下文旧实验用于追溯，不代表当前训练安排。

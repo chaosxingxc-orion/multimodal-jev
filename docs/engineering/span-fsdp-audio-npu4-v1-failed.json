@@ -1,0 +1,24 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-fsdp-audio-npu4-v1",
+  "container_exit_code": 1,
+  "optimizer_updates": 0,
+  "reason": "Shared embedding/LM head split across FSDP units; embedding observed local flattened shard",
+  "failures": {
+    "rank-3": {
+      "exit_code": 1,
+      "error": "RuntimeError(\"embedding_symint:../third_party/op-plugin/op_plugin/ops/opapi/EmbeddingKernelNpuOpApi.cpp:47 NPU function error: call aclnnEmbedding failed, error code is 561103\\n[ERROR] 2026-11-11-15:02:33 (PID:79, Device:3, RankID:3) ERR00100 PTA call acl api failed.\\n[PID: 79] 2026-11-11-15:02:33.536.932 AclNN_Parameter_Error(EZ1001): Input tensor's shape [1, 622] should be same with output's shape [1, 622, 38895616].\\nTraceBack (most recent call last):\\n        Params check failed.\\n\")"
+    },
+    "rank-1": {
+      "exit_code": 1,
+      "error": "RuntimeError(\"embedding_symint:../third_party/op-plugin/op_plugin/ops/opapi/EmbeddingKernelNpuOpApi.cpp:47 NPU function error: call aclnnEmbedding failed, error code is 561103\\n[ERROR] 2026-11-11-15:02:33 (PID:77, Device:1, RankID:1) ERR00100 PTA call acl api failed.\\n[PID: 77] 2026-11-11-15:02:33.659.753 AclNN_Parameter_Error(EZ1001): Input tensor's shape [1, 665] should be same with output's shape [1, 665, 38895616].\\nTraceBack (most recent call last):\\n        Params check failed.\\n\")"
+    },
+    "rank-0": {
+      "exit_code": 1,
+      "error": "RuntimeError(\"embedding_symint:../third_party/op-plugin/op_plugin/ops/opapi/EmbeddingKernelNpuOpApi.cpp:47 NPU function error: call aclnnEmbedding failed, error code is 561103\\n[ERROR] 2026-11-11-15:02:33 (PID:76, Device:0, RankID:0) ERR00100 PTA call acl api failed.\\n[PID: 76] 2026-11-11-15:02:33.525.130 AclNN_Parameter_Error(EZ1001): Input tensor's shape [1, 622] should be same with output's shape [1, 622, 38895616].\\nTraceBack (most recent call last):\\n        Params check failed.\\n\")"
+    },
+    "rank-2": {
+      "exit_code": 1,
+      "error": "RuntimeError(\"embedding_symint:../third_party/op-plugin/op_plugin/ops/opapi/EmbeddingKernelNpuOpApi.cpp:47 NPU function error: call aclnnEmbedding failed, error code is 561103\\n[ERROR] 2026-11-11-15:02:33 (PID:78, Device:2, RankID:2) ERR00100 PTA call acl api failed.\\n[PID: 78] 2026-11-11-15:02:33.431.769 AclNN_Parameter_Error(EZ1001): Input tensor's shape [1, 606] should be same with output's shape [1, 606, 38895616].\\nTraceBack (most recent call last):\\n        Params check failed.\\n\")"
+    }
+  }
+}

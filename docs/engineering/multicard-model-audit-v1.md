@@ -74,3 +74,10 @@ BF16 实际 LoRA 计算、FP32 主参数/Adam、固定拓扑恢复等价与跨 r
 发现并修复了嵌套 FSDP 未转换 PEFT 输入的问题，需显式 `cast_forward_inputs=True`。
 该结果不改变上述实际训练模型，也不证明 Omni 30B 或 vLLM TP4 准入。
 详见 `fsdp-lora-npu4-v1.md`。
+
+
+后续 `span-fsdp-audio-npu4-v2` 已将相同四卡路径推进到真实 ASR 0.6B：
+八条真实语音的一次 FSDP/verl LoRA 更新通过，修复共享 embedding/head 的分片归属；
+独立 HF 重载与八条训练输出误差0，48条TP1 vLLM验收最大误差1.1920929e-07。
+这是 ASR 四卡训练/导出/TP1推理证据，不代表 Omni 30B、TP4 rollout 或任务收益。
+详见 `span-fsdp-audio-npu4-v1.md`。
