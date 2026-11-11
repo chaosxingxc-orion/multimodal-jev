@@ -36,3 +36,13 @@
 omni 官方审计另发现 synthetic 与 devel/TEST 存在来源及同文重叠。因此不能
 将完整 synthetic 合入训练后宣称独立泛化，需另做来源与同文隔离。
 原始数据及 gold 不覆盖、不删除；当前没有 SLURP 权重训练派发。
+
+2026-11-11 后续对齐已完成：四份原始metadata SHA与clean-v7发布一致，
+新metadata在`/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f`
+独立重建，逐行与原始记录减固定排除清单的结果一致。
+见[metadata及原生请求对齐](slurp-clean-v7-alignment-v1.json)和
+[Jev整录音排除映射](slurp-clean-v7-jev-exclusion-map-v1.json)。
+TRAIN排除240个bundle/40320决策，TEST排除87个bundle/14616决策。
+这只是映射，尚未发布可训练的clean Jev版本或验收learning/selection。
+TRAIN剩余50388条录音引用对应50387个文件，既有重复文件的冲突标签仍存在。
+因此质量限制没有解除，也没有产生清洗后的性能分数。
