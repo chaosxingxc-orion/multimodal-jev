@@ -146,8 +146,11 @@ def verify(root, launch_record, native_probe, output):
     output.mkdir(parents=True,exist_ok=False)
     atomic_json(output/'intent.json',dict(root=str(root.resolve()),launch_record_sha256=file_hash(launch_record),
         identity_sha256=file_hash(run/'identity.json'),predictions_sha256=result['predictions_sha256']))
-    rescored=score_run(run,Path(cfg['requests']).with_name('test.targets.jsonl'),
+    score_run(run,Path(cfg['requests']).with_name('test.targets.jsonl'),
         Path(launch['scorer_repository']),output/'score')
+    # Official metrics contain tuples in memory, serialized as JSON arrays.
+    # Compare persisted artifacts on both sides, keeping numeric types strict.
+    rescored=json.loads((output/'score/result.json').read_text())
     original=json.loads((root/'score/result.json').read_text())
     differences=compare_values(original,rescored)
     if file_hash(root/'score/official-predictions.jsonl')!=file_hash(output/'score/official-predictions.jsonl'):

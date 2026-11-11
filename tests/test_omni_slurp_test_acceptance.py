@@ -148,7 +148,8 @@ def test_acceptance_orchestration_with_mocked_docker_and_scorer(tmp_path,monkeyp
     write(record,{'jobs':[dict(launch,root=str(root),supervisor={'source_commit':commit})]})
     monkeypatch.setattr(module,'inspect_container',lambda cid:item)
     monkeypatch.setattr(module,'select_native_test',lambda c,r:r)
-    report=dict(examples=13078,full_official_split=True,format_valid=0,schema_valid=0,metrics={'f1':0.})
+    report=dict(examples=13078,full_official_split=True,format_valid=0,schema_valid=0,
+                metrics={'f1':0.,'action':{'invalid':(0.,0.,0.,0,3,0)}})
     (root/'score').mkdir();write(root/'score/result.json',report)
     (root/'score/official-predictions.jsonl').write_text('synthetic normalization\n')
     def score(*args):
