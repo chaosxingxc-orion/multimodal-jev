@@ -12,6 +12,66 @@ BUFFER_NAMES = {
     'model.rotary_emb.original_inv_freq',
 }
 
+WRAP_CLASSES = ['Qwen3OmniMoeThinkerTextDecoderLayer',
+                'Qwen3OmniMoeAudioEncoderLayer', 'Qwen3OmniMoeVisionBlock']
+
+
+class MetaParameterMaterializer:
+    """Nonrecursive FSDP callback preserving real buffers and parameter aliases.
+
+    Allocations have no checkpoint values until FSDP sync_module_states copies
+    rank0. Never call a forward on the materialized model before that sync.
+    Keep this object alive for one FSDP constructor; do not reuse across models.
+    """
+
+    def __init__(self, device):
+        import torch
+        self.device = torch.device(device)
+        if self.device.type == 'meta':
+            raise ValueError('real materialization device required')
+        self.parameters = {}
+        self.buffers = {}
+        self.events = []
+
+    def __call__(self, module):
+        import torch
+        import weakref
+        # Validate the complete local state before changing it. Existing real
+        # parameters must already be on the requested device; never empty them.
+        for param in module.parameters(recurse=False):
+            if param.dtype != torch.bfloat16 or param.requires_grad or param.grad is not None:
+                raise ValueError('only frozen BF16 parameters may be materialized')
+            if not param.is_meta and param.device != self.device:
+                raise ValueError('unexpected materialized parameter device')
+        for value in module.buffers(recurse=False):
+            if value.is_meta or value.dtype != torch.float32 or not torch.isfinite(value).all():
+                raise ValueError('real finite FP32 buffers required before materialization')
+        allocated = 0
+        for name, param in list(module._parameters.items()):
+            if param is None or not param.is_meta:
+                continue
+            key = id(param)
+            if key not in self.parameters:
+                replacement = torch.nn.Parameter(torch.empty_like(param, device=self.device), requires_grad=False)
+                # Retain original objects so Python cannot recycle their ids.
+                # FSDP may replace this allocation with a flat shard. Retaining
+                # it strongly would keep full unsharded weights alive per unit.
+                self.parameters[key] = (param, weakref.ref(replacement))
+                allocated += replacement.numel()
+            replacement = self.parameters[key][1]()
+            if replacement is None:
+                raise ValueError('parameter alias crossed a released FSDP unit')
+            module._parameters[name] = replacement
+        for name, value in list(module._buffers.items()):
+            if value is None:
+                continue
+            key = id(value)
+            if key not in self.buffers:
+                self.buffers[key] = (value, value.to(device=self.device))
+            module._buffers[name] = self.buffers[key][1]
+        self.events.append(dict(module_class=type(module).__name__, allocated_parameters=allocated,
+                                local_buffers=len(list(module.buffers(recurse=False)))))
+
 
 def buffer_manifest(model):
     import torch
