@@ -81,3 +81,7 @@ BF16 实际 LoRA 计算、FP32 主参数/Adam、固定拓扑恢复等价与跨 r
 独立 HF 重载与八条训练输出误差0，48条TP1 vLLM验收最大误差1.1920929e-07。
 这是 ASR 四卡训练/导出/TP1推理证据，不代表 Omni 30B、TP4 rollout 或任务收益。
 详见 `span-fsdp-audio-npu4-v1.md`。
+
+后续原生 vLLM TP4 48条诊断已完成：仅1条通过原定概率gate，最大logp误差0.2460，
+8个Span首选候选变化，不能准入RL。这一原生profile尚未使用TP1的HF-order算子对齐，
+不能把全部差异归因于TP归约。详见 `span-tp4-native-suite-v1.md`。

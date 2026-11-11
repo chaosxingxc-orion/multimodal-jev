@@ -29,9 +29,11 @@ def run(config, output):
     from multimodal_jev.span_parity import compare_span_policies
     from multimodal_jev.policy_identity import checkpoint_identity
     from multimodal_jev.span_request_identity import bind_span_request
+    from multimodal_jev.span_runtime_topology import runtime_topology, install_diagnostic_profile
 
-    if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != ['davinci4']:
-        raise ValueError('physical NPU 4 isolation required')
+    topology = runtime_topology(config)
+    if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != topology['devices']:
+        raise ValueError('physical NPU isolation differs from runtime topology')
     for path, digest in config['pins'].items():
         if file_hash(path) != digest:
             raise ValueError('pinned input changed: '+path)
@@ -58,17 +60,18 @@ def run(config, output):
     processor = Qwen3ASRProcessor.from_pretrained(config['model'], local_files_only=True)
     enable_feature_passthrough()
     engine = LLM(model=config['model'], tokenizer=config['model'], runner='pooling',
-        hf_overrides={'architectures':['Qwen3ASRForSpanDecisions'], 'head_dtype':'model'},
+        hf_overrides={'architectures':[topology['architecture']], 'head_dtype':'model'},
         pooler_config={'task':'token_classify','tok_pooling_type':'ALL','use_activation':False},
         dtype='bfloat16', max_model_len=1024, gpu_memory_utilization=0.3,
-        tensor_parallel_size=1, enforce_eager=True, max_num_seqs=1, seed=17,
+        tensor_parallel_size=topology['size'], enforce_eager=True, max_num_seqs=1, seed=17,
         worker_extension_cls='multimodal_jev.lora_span_audit.SpanAuditWorkerExtension',
         enable_chunked_prefill=False, enable_prefix_caching=False, enable_mm_embeds=True,
         limit_mm_per_prompt={'audio':1}, enable_lora=True, max_loras=1, max_lora_rank=8,
         lora_dtype=torch.bfloat16, lora_target_modules=packed)
     records = []
     try:
-        atomic_json(output/'runtime-profile.json', install_rollout_profile(engine, config['runtime_profile']))
+        install = install_diagnostic_profile if topology['diagnostic_only'] else install_rollout_profile
+        atomic_json(output/'runtime-profile.json', install(engine, config['runtime_profile']))
         lora = LoRARequest('jev-suite-'+adapter_id, 1, str(adapter))
         for index, item in enumerate(identity['bundles']):
             raw = item['request']
@@ -116,11 +119,15 @@ def run(config, output):
                 hf_candidate_logprobs=hf.tolist(), parity=audit))
             atomic_json(output/'progress.json', dict(completed=index+1, total=len(identity['bundles']),
                 passed=sum(r['parity']['passed'] for r in records), heartbeat_unix=time.time()))
-        atomic_json(output/'worker.json', engine.llm_engine.collective_rpc('inspect_jev_span_lora'))
+        workers = engine.llm_engine.collective_rpc('inspect_jev_span_lora')
+        if len(workers) != topology['size']:
+            raise ValueError('worker receipt count differs from topology')
+        atomic_json(output/'worker.json', workers)
         return dict(passed=bool(records) and all(r['parity']['passed'] for r in records), records=records,
+            tensor_parallel_size=topology['size'], diagnostic_only=topology['diagnostic_only'],
             runtime_profile=config['runtime_profile'], base_id=base_id, adapter_id=adapter_id,
             optimizer_updates=0, generated_tokens=0,
-            scope='Sequential single-request BF16 parity against independently saved HF; learning diagnostics, not held-out performance or batched/distributed acceptance.')
+            scope='Sequential single-request BF16 parity against independently saved HF; learning diagnostics, not held-out performance or automatic training admission.')
     finally:
         engine.llm_engine.engine_core.shutdown(timeout=30.)
 

@@ -81,3 +81,26 @@ def register_span_model():
     from vllm import ModelRegistry
     ModelRegistry.register_model('Qwen3ASRForSpanDecisions',
                                  'multimodal_jev.vllm_spans:Qwen3ASRForSpanDecisions')
+    ModelRegistry.register_model('Qwen3ASRForSpanDecisionsTP4Diagnostic',
+                                 'multimodal_jev.vllm_spans:Qwen3ASRForSpanDecisionsTP4Diagnostic')
+
+
+@MULTIMODAL_REGISTRY.register_processor(
+    Qwen3ASRMultiModalProcessor, info=Qwen3ASRProcessingInfo,
+    dummy_inputs=Qwen3ASRDummyInputsBuilder,
+)
+class Qwen3ASRForSpanDecisionsTP4Diagnostic(Qwen3ASRForConditionalGeneration):
+    """Native distributed measurement only; not the accepted RL profile."""
+    is_pooling_model = True
+
+    def __init__(self, *, vllm_config, prefix=''):
+        if (vllm_config.parallel_config.tensor_parallel_size != 4 or
+                vllm_config.parallel_config.pipeline_parallel_size != 1 or
+                vllm_config.scheduler_config.enable_chunked_prefill or
+                vllm_config.cache_config.enable_prefix_caching):
+            raise ValueError('TP4 diagnostic requires PP1, unchunked and uncached prefill')
+        super().__init__(vllm_config=vllm_config, prefix=prefix)
+        # Pooling runs on all workers. Native gather may return None outside
+        # rank zero; all-gather supplies actual vocabulary logits everywhere.
+        self.language_model.logits_processor.use_all_gather = True
+        self.pooler = NativeSpanPooler(self.compute_logits)
