@@ -11,6 +11,7 @@ import itertools
 from .baseline import file_hash
 
 PINNED_SOURCE = '8ac62195a800ba784d1cddf03ee0bc7627f20236cc11e135fdba20e8d4a01f14'
+PINNED_ACTOR_SOURCE = '207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce'
 
 
 def reference_logprobs(logits, labels, *, rows_per_chunk=16):
@@ -98,6 +99,7 @@ def bind_observations(data, log_probs, records, report, *, name, micro_batch_siz
         raise ValueError('positive static microbatch size required')
     native_run = capture(data, log_probs, records, name=name)
     if (report.get('source_sha256') != PINNED_SOURCE
+            or report.get('actor_source_sha256') != PINNED_ACTOR_SOURCE
             or report.get('flash_available') is not False
             or report.get('npu_available') is not True):
         raise ValueError('pinned native Ascend observer report required')
@@ -164,6 +166,8 @@ def observe_native_logprobs(*, expected_source_sha256=PINNED_SOURCE, rows_per_ch
     from verl.utils import torch_functional
 
     original = dp_actor.logprobs_from_logits
+    if file_hash(dp_actor.__file__) != PINNED_ACTOR_SOURCE:
+        raise ValueError('pinned static microbatch actor source required')
     if (original is not torch_functional.logprobs_from_logits
             or file_hash(inspect.getfile(original)) != expected_source_sha256):
         raise ValueError('unchanged pinned native probability dispatcher required')
@@ -173,7 +177,7 @@ def observe_native_logprobs(*, expected_source_sha256=PINNED_SOURCE, rows_per_ch
     npu = torch_functional.NPU_CROSS_ENTROPY_LOSS_AVAILABLE
     if flash or not npu:
         raise ValueError('native Ascend cross entropy dispatch required')
-    report = dict(source_sha256=expected_source_sha256,
+    report = dict(source_sha256=expected_source_sha256, actor_source_sha256=PINNED_ACTOR_SOURCE,
         dispatcher=original.__module__+'.'+original.__qualname__,
         flash_available=bool(flash), npu_available=bool(npu), calls=[])
 

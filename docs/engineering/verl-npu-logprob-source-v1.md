@@ -95,3 +95,12 @@ rank/响应后恢复完整顺序。合并不认证原始 observer 内容，真�
 固定镜像相关86项测试通过、零跳过，含真实DataProto重排后分配与两份概率
 合并；[验收记录](omni-observed-shards-tests-v1-verified.json)保留容器和源码身份。
 此处 observed forward 是合成替身，不是双 rank NPU 运行证据。
+
+观测器同时固定 `dp_actor.py` SHA256
+`207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce`，
+在替换函数绑定前核验，并将其写入报告、在微批绑定时复核。该版本静态路径
+使用 `data.split(micro_batch_size)`，依次调用 `_forward_micro_batch` 后按行
+concat；padded/unfused 分支每批调用一次 `logprobs_from_logits`。
+源码变化必须重新核查顺序假设，不能仅因归一化函数未变就接受升级后的 actor。
+磁盘哈希并不认证任意运行时 monkey patch；隔离进程与实际 actor 身份仍由
+完整 runner 认证。NPU完整前向还依赖单层和FSDP初始化实际验收以及采样完成。

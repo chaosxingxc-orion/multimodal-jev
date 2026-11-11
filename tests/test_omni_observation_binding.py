@@ -3,7 +3,7 @@ from copy import deepcopy
 import pytest
 import torch
 
-from multimodal_jev.omni_logprob_observer import PINNED_SOURCE, bind_observations
+from multimodal_jev.omni_logprob_observer import PINNED_SOURCE, PINNED_ACTOR_SOURCE, bind_observations
 from test_omni_probability_capture import batch_fixture
 
 
@@ -11,7 +11,7 @@ def fixture(size=2):
     args, batch = batch_fixture()
     tokens = batch.batch['responses']
     native = -tokens.double() / 8 - .125
-    report = dict(source_sha256=PINNED_SOURCE, flash_available=False,
+    report = dict(source_sha256=PINNED_SOURCE, actor_source_sha256=PINNED_ACTOR_SOURCE, flash_available=False,
                   npu_available=True, calls=[])
     for index, start in enumerate(range(0, len(tokens), size)):
         labels = tokens[start:start+size]
@@ -44,7 +44,7 @@ def test_binding_preserves_identity_masks_and_valid_native_values(size):
 
 
 @pytest.mark.parametrize('kind', ['missing', 'extra', 'order', 'labels', 'bool_label',
-    'shape', 'native', 'reference_nan', 'device', 'source', 'mask'])
+    'shape', 'native', 'reference_nan', 'device', 'source', 'actor_source', 'mask'])
 def test_rejects_incomplete_or_mismatched_call_evidence(kind):
     args, batch, native, report = fixture()
     c = report['calls'][0]
@@ -58,6 +58,7 @@ def test_rejects_incomplete_or_mismatched_call_evidence(kind):
     if kind == 'reference_nan': c['reference_log_probs'][0][0] = float('nan')
     if kind == 'device': c['logits_device'] = 'cpu'
     if kind == 'source': report['source_sha256'] = 'wrong'
+    if kind == 'actor_source': report['actor_source_sha256'] = 'wrong'
     if kind == 'mask': batch.batch['response_mask'][0][0] = 0
     with pytest.raises(ValueError):
         bind_observations(batch, native, args['records'], report,

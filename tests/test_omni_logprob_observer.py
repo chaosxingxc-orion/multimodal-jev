@@ -70,12 +70,13 @@ def test_invalid_inputs_or_outputs_rejected(kind):
 
 def modules(monkeypatch):
     def original(*args,**kwargs):raise AssertionError('not called')
-    actor=SimpleNamespace(logprobs_from_logits=original)
+    actor=SimpleNamespace(logprobs_from_logits=original,__file__='synthetic-dp-actor.py')
     functional=SimpleNamespace(logprobs_from_logits=original,
         FLAH_ATTN_CROSS_ENTROPY_LOSS_AVAILABLE=False,NPU_CROSS_ENTROPY_LOSS_AVAILABLE=True)
     monkeypatch.setitem(sys.modules,'verl.workers.actor',SimpleNamespace(dp_actor=actor))
     monkeypatch.setitem(sys.modules,'verl.utils',SimpleNamespace(torch_functional=functional))
-    monkeypatch.setattr(observer,'file_hash',lambda path:observer.PINNED_SOURCE)
+    monkeypatch.setattr(observer,'file_hash',lambda path:
+        observer.PINNED_ACTOR_SOURCE if path==actor.__file__ else observer.PINNED_SOURCE)
     return actor,functional,original
 
 
@@ -90,10 +91,13 @@ def test_context_restores_after_error_and_rejects_nesting(monkeypatch):
     assert actor.logprobs_from_logits is original
 
 
-@pytest.mark.parametrize('kind',['source','replacement','flash','no_npu','chunk'])
+@pytest.mark.parametrize('kind',['source','actor_source','replacement','flash','no_npu','chunk'])
 def test_context_rejects_wrong_dispatch_before_mutation(monkeypatch,kind):
     actor,functional,original=modules(monkeypatch)
-    if kind=='source':monkeypatch.setattr(observer,'file_hash',lambda path:'b'*64)
+    if kind=='source':monkeypatch.setattr(observer,'file_hash',lambda path:
+        observer.PINNED_ACTOR_SOURCE if path==actor.__file__ else 'b'*64)
+    if kind=='actor_source':monkeypatch.setattr(observer,'file_hash',lambda path:
+        'b'*64 if path==actor.__file__ else observer.PINNED_SOURCE)
     if kind=='replacement':actor.logprobs_from_logits=lambda *a:None
     if kind=='flash':functional.FLAH_ATTN_CROSS_ENTROPY_LOSS_AVAILABLE=True
     if kind=='no_npu':functional.NPU_CROSS_ENTROPY_LOSS_AVAILABLE=False
@@ -112,6 +116,7 @@ def test_fixed_image_native_binding_rejects_cpu_before_kernel_and_restores():
     # Actual package globals and source SHA, no simulated dispatcher or flags.
     with observer.observe_native_logprobs() as report:
         assert report['source_sha256'] == observer.PINNED_SOURCE
+        assert report['actor_source_sha256'] == observer.PINNED_ACTOR_SOURCE
         assert report['npu_available'] and not report['flash_available']
         with torch.no_grad(), pytest.raises(ValueError, match='expected probability device'):
             dp_actor.logprobs_from_logits(torch.zeros(2, 3), torch.zeros(2, dtype=torch.long))
