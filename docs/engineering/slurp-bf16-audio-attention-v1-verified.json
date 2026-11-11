@@ -1,0 +1,91 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-audio-attention-v1",
+  "parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.10105395317077637,
+    "p95_logprob_error": 0.09740197658538818,
+    "joint_log_ratio_min": -0.1616247296333313,
+    "joint_log_ratio_max": 0.1508752703666687,
+    "joint_ratio_min": 0.8507604098132848,
+    "joint_ratio_max": 1.1628516069813655,
+    "candidate_kl_actor_to_behavior": 0.0053184677853791735,
+    "argmax_changed_spans": [],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "exact_audio_trace_points": [
+    "audio.conv2d1.input",
+    "audio.conv2d1.weight",
+    "audio.conv2d1.bias",
+    "audio.conv2d1",
+    "audio.conv2d2",
+    "audio.conv2d3",
+    "audio.conv_out",
+    "audio.layer.0.input_norm",
+    "audio.layer.0.q_proj",
+    "audio.layer.0.k_proj",
+    "audio.layer.0.v_proj",
+    "audio.layer.0.attention",
+    "audio.layer.0.post_attention_norm",
+    "audio.layer.0.fc1",
+    "audio.layer.0.fc2",
+    "audio.layer.0.output",
+    "audio.layer.1.output",
+    "audio.layer.2.output",
+    "audio.layer.3.output",
+    "audio.layer.4.output",
+    "audio.layer.5.output",
+    "audio.layer.6.output",
+    "audio.layer.7.output",
+    "audio.layer.8.output",
+    "audio.layer.9.output",
+    "audio.layer.10.output",
+    "audio.layer.11.output",
+    "audio.layer.12.output",
+    "audio.layer.13.output",
+    "audio.layer.14.output",
+    "audio.layer.15.output",
+    "audio.layer.16.output",
+    "audio.layer.17.output",
+    "audio.ln_post",
+    "audio.proj1",
+    "audio.proj2",
+    "audio_projected"
+  ],
+  "audio_trace_count": 37,
+  "exact_language_frontend": [
+    "layer.0.pre_norm",
+    "layer.0.input_norm",
+    "layer.0.q_proj",
+    "layer.0.k_proj",
+    "layer.0.v_proj"
+  ],
+  "first_remaining_trace_difference": {
+    "name": "layer.0.post_attention_norm",
+    "shape": [
+      600,
+      1024
+    ],
+    "dtype": "torch.bfloat16",
+    "maximum": 0.125,
+    "mean": 0.002780756913125515,
+    "unequal_fraction": 0.7341813445091248,
+    "rms": 0.00425407150760293
+  },
+  "independent_all_action_actor_over_behavior_ratio_range": [
+    0.8507604098132848,
+    1.1628516069813655
+  ],
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-audio-attention-v1/run/result.json": "2e80646ac85d61e285a1728397265c87d9dd7b132db6c0b0331fdf065884b859",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-audio-attention-v1/run/terminal.json": "78740dad7ba402b924c71dec3b1fda7de74f1f4d01bf1d766cbf312f6ef0047a",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-audio-attention-v1/run/trace-comparison.json": "7e608334faadbe73b4000173ac98b5e9c09e3ed1985404dd4884e97a47bb97d1"
+  },
+  "scope": "Single 600-token real-audio BF16 nonzero-LoRA probe; entire audio tower exact. End-to-end parity fails; zero RL updates."
+}

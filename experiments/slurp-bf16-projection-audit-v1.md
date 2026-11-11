@@ -27,3 +27,7 @@ internal-format-v1在MLP+QKV+norm配置上，仅在worker加载完成后显式�
 internal-format-v1终态0：三层conv、conv_out、首层音频input_norm以及Q/K/V全部逐位一致。首个剩余音频差异出现在首层attention输出（max0.015625、RMS0.00074114）。audio_projected RMS0.000218393；最终max logp差0.101054、联合比率[0.873943,1.122165]，gate仍失败。已锁定并消除此前最早音频前端差异，不能宣称全音频塔或整模型完成对齐。
 
 audio-attention-v1以此配置为基础，仅将音频非因果attention改为HF eager顺序、按cu_seqlens逐窗计算；保留原生audio QKV和输出投影。CPU独立逐head参考、跨窗口隔离及非因果语义测试通过，NPU整体结果待验。
+
+音频 attention 探针终态0：全部37个非stride音频trace点（18层音频encoder及projector）逐位一致；600个语言输入位置及首层Q/K/V亦全部一致。首个剩余trace差异在语言首层post_attention_norm。最终max logp差0.101054、完整动作actor/behavior比率[0.850760,1.162852]，仍未过gate、0次RL更新；已独立枚举8种动作复核。下一步在同配置上逐项加入语言eager attention与HF-order rotary。凭证见 `docs/engineering/slurp-bf16-audio-attention-v1-verified.json`。
+
+language-attention-v2在全部已验证局部修复上，新增语言HF-order eager attention，保留原生rotary。终态0：max logp差0.0431666、完整动作比率[0.957752,1.035577]，argmax无变化但gate仍失败。音频projector保持逐位一致，语言首层post_attention_norm仍有差异。后续language-rotary-v2仅增加HF-order位置编码；不得因本样本误差缩小提前准入RL。

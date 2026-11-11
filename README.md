@@ -8,16 +8,19 @@
 的类型化决策读出、语义一致性评估方法，以及 [omni](https://github.com/chaosxingxc-orion/omni)
 的多模态证据处理与可复现实验组织方式。
 
-当前主线使用本地 **Qwen3-Omni-30B-A3B-Instruct**，直接消费音频与任务定义，输出任务结果。
-已准备固定NGA/verl/vLLM镜像，正在执行冻结基线、原生/Jev比较与接口验证；学界基线
-完整复现、真实Omni权重训练收益和跨任务泛化尚未完成。Qwen3-ASR保留为专用ASR参考
-及未来适配对象。详细结论见 [研究报告](docs/research/README.md)，本地资产见 [本地资源](docs/research/06-local-assets.md)。
+当前主线使用本地 **Qwen3-ASR-0.6B-hf**，直接消费音频和完整问题模板，
+一次前向填充多个 typed Span，不进行自回归文本解码。优先使用清理并审核的 SLURP 学习数据，
+已确认错误标签不进入训练、奖励或模型选择。Omni 冻结基线保留为历史证据。
+详细结论见 [研究报告](docs/research/README.md)，本地资产见 [本地资源](docs/research/06-local-assets.md)。
 研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
 
-当前执行顺序已调整为：**冻结基座推理 → 远程教师 TFRL 提示词优化 → xx-jev 数据及同类优化**。
-后续权重训练队列暂不派发，既有实验保留；本阶段不更新模型参数。
-模型锁定、隔离规则及验收要求见 [当前实施协议](proposal/02-frozen-baselines-tfrl-jev.md)。
-以下旧实验记录用于追溯，不代表仍按原队列推进。
+当前工程优先级：**BF16 LoRA 训练与重载 → actor/vLLM 概率一致性 → verl 单步更新与新版本复核**。
+BF16 candidate-CE 已完成 20 次均衡更新；48 条学习录音在独立 HF 重载后候选概率误差为零。
+跨后端完整动作概率检查尚未通过，真实语音 RL 更新仍为零，分布式训练和跨任务泛化尚未验收。
+音频编码器已在一条真实录音的分层探针中逐位对齐，语言路径继续定位。
+运行配置和准入门槛见 [BF16 训推一致性](docs/engineering/verl-vllm-lora-span-alignment-v1.md)，
+生命周期入口见 [单步训练验收](experiments/span-actor-update-v1.md)。
+早期[冻结基线与 TFRL 协议](proposal/02-frozen-baselines-tfrl-jev.md)及下文旧实验用于追溯，不代表当前训练安排。
 
 ## 目录
 

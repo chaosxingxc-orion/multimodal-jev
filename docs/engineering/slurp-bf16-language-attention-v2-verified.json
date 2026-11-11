@@ -1,0 +1,67 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-language-attention-v2",
+  "parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.04316657781600952,
+    "p95_logprob_error": 0.04111453890800476,
+    "joint_log_ratio_min": -0.043166518211364746,
+    "joint_log_ratio_max": 0.034958481788635254,
+    "joint_ratio_min": 0.9577518936556079,
+    "joint_ratio_max": 1.0355767126142283,
+    "candidate_kl_actor_to_behavior": 0.0007535209675072223,
+    "argmax_changed_spans": [],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "trace": {
+    "audio_projected": {
+      "shape": [
+        32,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.0,
+      "mean": 0.0,
+      "unequal_fraction": 0.0,
+      "rms": 0.0
+    },
+    "layer.0.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.125,
+      "mean": 0.0018024630844593048,
+      "unequal_fraction": 0.5767073631286621,
+      "rms": 0.0033934058155864477
+    },
+    "final_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 6.75,
+      "mean": 0.09846347570419312,
+      "unequal_fraction": 0.9358691573143005,
+      "rms": 0.1551893949508667
+    }
+  },
+  "independent_all_action_actor_over_behavior_ratio_range": [
+    0.9577518936556079,
+    1.0355767126142283
+  ],
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-language-attention-v2/run/result.json": "5ec396d040ad3b4793c3b30aa7cb04c55c5b32e7900b99df909140f9c4a6cfbd",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-language-attention-v2/run/terminal.json": "3d02741909e0fda6bad8d9aae9956b7552ca836a78339d00b7193d14b8e8ffe8",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-language-attention-v2/run/trace-comparison.json": "9e40daf573515c6a0ecac01e10ae7cc75ae7332a7a06d5cb338765625c264e6a"
+  },
+  "scope": "Single real-audio BF16 diagnostic; native rotary retained. Gate fails; zero RL updates."
+}
