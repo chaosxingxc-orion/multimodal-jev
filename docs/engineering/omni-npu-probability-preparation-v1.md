@@ -128,3 +128,18 @@ processor/DataProto运行。预检成功也不等于vLLM特征比较、NPU数值
 `9304490`、实际命令/挂载/资源、JUnit及退出0无OOM，见
 [固定镜像记录](omni-accepted-sampling-tests-v1-verified.json)。本次仍是合成
 采样产物测试和CLI入口检查，未调用真实processor或构造实际采样DataProto。
+
+### 补入实际 vLLM processor 比较（尚未运行真实数据）
+
+上述入口现已接入实际 vLLM processor：在认证完整采样后，从原始音频和
+相同提示重新准备 vLLM 输入，与本次 `prepare(vllm_hop)` 结果逐决策比较。
+检查完整 token、每段音频的有效帧数与顺序，以及 HF 有效帧拼接后转为
+BF16 的特征；沿用既有 TRAIN78 特征比较的 `atol=rtol=1e-5`，不将其
+作为概率容差。结果保存为 `processor-parity.json`，其哈希和两侧实际
+processor 源码哈希写入预检结果。不会加载模型或派发 NPU 工作。
+
+比较函数位于 `omni_processor_parity.py`。9 项宿主测试通过，覆盖双音频
+不同帧长、忽略 padding、BF16 舍入，以及 token、帧顺序、特征顺序、截断、
+dtype、非有限值和非法 mask/boundary 的拒绝；CLI 编译及差异检查通过。
+这批测试使用合成张量。此前固定镜像的40项测试不覆盖此次新增入口；
+本修订尚未执行固定镜像测试或真实采样预检，不新增实际特征通过结论。

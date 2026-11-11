@@ -5,7 +5,9 @@ Run after the frozen sampling snapshot's independent verifier. The externally
 supplied acceptance SHA is a trust boundary, not proof of Docker authenticity.
 """
 import argparse
+import hashlib
 import importlib.metadata
+import inspect
 from pathlib import Path
 import time
 
@@ -15,7 +17,10 @@ from multimodal_jev.omni_actor_batch import prepare
 from multimodal_jev.omni_probability_batch import make_probability_batch
 from multimodal_jev.omni_probability_capture import _aligned
 from multimodal_jev.omni_probability_shards import shard_plan
+from multimodal_jev.omni_processor_parity import compare_prepared
 from multimodal_jev.omni_sampling_acceptance import read_json
+from multimodal_jev.sfc_audio import load_sfc_audio
+from multimodal_jev.sfc_jev_runtime import messages
 from multimodal_jev.sfc_reward_batch import digest
 from sample_sfc_omni_learning import load_inputs
 from probe_omni_fsdp_initialization import tensor_identity
@@ -24,6 +29,10 @@ from probe_omni_fsdp_initialization import tensor_identity
 def run(args):
     import torch
     from transformers import Qwen3OmniMoeProcessor
+    from vllm.config import ModelConfig
+    from vllm.multimodal import MULTIMODAL_REGISTRY
+    from vllm.multimodal.processing.inputs import ProcessorInputs
+    from vllm.multimodal.processing.context import TimingContext
 
     begin = time.monotonic()
     torch.set_num_threads(2)
@@ -38,6 +47,31 @@ def run(args):
     records, identity = load_accepted_records(args.root, args.acceptance,
         args.acceptance_hash, rows, checks, processor.tokenizer)
     prepared = prepare(processor, rows, waveform_boundary='vllm_hop')
+    model_config = ModelConfig(model=base['audio_model'], tokenizer=base['audio_model'],
+        dtype='bfloat16', max_model_len=4096, enforce_eager=True,
+        limit_mm_per_prompt={'audio': 2, 'image': 0, 'video': 0})
+    vllm_processor = MULTIMODAL_REGISTRY.create_processor(model_config, tokenizer=processor.tokenizer)
+    parity = []
+    for row in rows:
+        waves = []
+        for path, pin in zip(row['input']['context']['audios'], row['audio_sha256'], strict=True):
+            if file_hash(path) != pin:
+                raise ValueError('source audio changed before vLLM processor comparison')
+            waves.append(load_sfc_audio(path)[0])
+        for decision in row['input']['decisions']:
+            key = row['id'], decision['id']
+            prompt = processor.apply_chat_template(messages(row, decision['id'], waves),
+                tokenize=False, add_generation_prompt=True)
+            if hashlib.sha256(prompt.encode()).hexdigest() != prepared[key]['prompt_sha256']:
+                raise ValueError('vLLM comparison prompt changed')
+            parsed = vllm_processor.info.get_data_parser().parse_mm_data(
+                {'audio': [(wave, 16000) for wave in waves]})
+            processed = vllm_processor.apply(ProcessorInputs(
+                prompt=processor.tokenizer.encode(prompt, add_special_tokens=False),
+                mm_data_items=parsed), TimingContext(enabled=False))
+            parity.append(dict(example_id=key[0], decision_id=key[1],
+                               **compare_prepared(prepared[key], processed)))
+    atomic_json(args.output/'processor-parity.json', parity)
     batch = make_probability_batch(processor, rows, prepared, records,
         policy_sha256=identity['policy_sha256'],
         instruction_sha256=identity['instruction_sha256'], group_size=2, context_limit=4096)
@@ -58,9 +92,13 @@ def run(args):
         tensors={k: tensor_identity(v) for k, v in batch.batch.items()},
         prepared_inputs_sha256=file_hash(args.output/'prepared-inputs.json'),
         shard_plans_sha256=file_hash(args.output/'shard-plans.json'),
+        processor_parity_sha256=file_hash(args.output/'processor-parity.json'),
+        vllm_processor_sha256=file_hash(inspect.getfile(type(vllm_processor))),
+        hf_processor_sha256=file_hash(inspect.getfile(type(processor))),
         elapsed_seconds=time.monotonic()-begin, model_loaded=False, targets_read=False,
         weight_updates=0, scope='Accepted raw samples and real hop-aligned CPU processor/DataProto '
-        'only. No vLLM feature comparison, NPU forward, numerical tolerance registration or RL efficacy.'))
+        'with actual vLLM prompt/ordered BF16 audio-feature comparison. '
+        'No NPU forward, probability tolerance registration or RL efficacy.'))
 
 
 if __name__ == '__main__':
