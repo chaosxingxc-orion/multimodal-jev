@@ -31,3 +31,5 @@ audio-attention-v1以此配置为基础，仅将音频非因果attention改为HF
 音频 attention 探针终态0：全部37个非stride音频trace点（18层音频encoder及projector）逐位一致；600个语言输入位置及首层Q/K/V亦全部一致。首个剩余trace差异在语言首层post_attention_norm。最终max logp差0.101054、完整动作actor/behavior比率[0.850760,1.162852]，仍未过gate、0次RL更新；已独立枚举8种动作复核。下一步在同配置上逐项加入语言eager attention与HF-order rotary。凭证见 `docs/engineering/slurp-bf16-audio-attention-v1-verified.json`。
 
 language-attention-v2在全部已验证局部修复上，新增语言HF-order eager attention，保留原生rotary。终态0：max logp差0.0431666、完整动作比率[0.957752,1.035577]，argmax无变化但gate仍失败。音频projector保持逐位一致，语言首层post_attention_norm仍有差异。后续language-rotary-v2仅增加HF-order位置编码；不得因本样本误差缩小提前准入RL。
+
+language-rotary-v2终态0且首次通过完整动作gate：全部100个非stride trace点逐位相等，含最终语言norm；max logp差5.9604645e-08、actor/behavior完整动作比率[1.0000001192,1.0000001192]。这是单条600-token真实语音、非零BF16 LoRA、无生成的证据，不代表批量/多卡/新adapter已验收。后续使用命名profile `qwen3-asr-bf16-hf-order-v1` 在同一engine顺序执行48条学习录音。

@@ -72,6 +72,9 @@ def actor_phase(config, output, phase):
     torch.npu.set_device(0)
     torch.manual_seed(config['seed'])
     torch.npu.manual_seed_all(config['seed'])
+    if config.get('runtime_profile'):
+        from multimodal_jev.span_runtime_profile import configure_actor_profile
+        atomic_json(output/f'actor-runtime-{phase}.json', configure_actor_profile(config['runtime_profile']))
     adapter = output/'policy-1/adapter' if phase == 'after' else Path(config['initial_adapter'])
     adapted, model, base_id, policy_id, prepared, forward = prepare_actor(config, output, adapter)
     ids = tuple(p['request_id'] for p in prepared)
@@ -127,6 +130,9 @@ def actor_phase(config, output, phase):
 
 
 def orchestrate(config, output, config_path):
+    if config.get('runtime_profile'):
+        from multimodal_jev.span_runtime_profile import verify_suite_admission
+        atomic_json(output/'runtime-admission.json', verify_suite_admission(config))
     def actor(phase):
         subprocess.run([sys.executable, __file__, '--config', str(config_path), '--output', str(output),
                         '--phase', phase], check=True)
@@ -141,8 +147,10 @@ def orchestrate(config, output, config_path):
             probe = dict(model=config['model_path'], adapter=str(adapter), reference=str(reference),
                          lora_execution_dtype='bfloat16', audio_preprocessing=config.get('audio_preprocessing'),
                          pins=pins, trace_layers=False)
-            # No diagnostic norm/attention/rotary intervention enters this
-            # training path until its own acceptance protocol passes.
+            # A named profile requires a pinned multi-input acceptance above;
+            # every current and newly exported policy is still gated below.
+            if config.get('runtime_profile'):
+                probe['runtime_profile'] = config['runtime_profile']
             path = output/f'rollout-{phase}-{i}-config.json'
             atomic_json(path, probe)
             subprocess.run([sys.executable, str(Path(__file__).with_name('probe_vllm_spans.py')),

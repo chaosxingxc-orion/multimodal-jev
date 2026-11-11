@@ -23,6 +23,11 @@ def run(config, output):
     from vllm import LLM,PoolingParams
     if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != ['davinci4']:
         raise ValueError('physical NPU 4 isolation required')
+    if config.get('runtime_profile'):
+        if any(value for key,value in config.items() if key.startswith('align_')):
+            raise ValueError('named runtime profile cannot mix with diagnostic overrides')
+        from multimodal_jev.span_runtime_profile import configure_actor_profile
+        atomic_json(output/'actor-runtime-profile.json', configure_actor_profile(config['runtime_profile']))
     for path,digest in config['pins'].items():
         if file_hash(path)!=digest:raise ValueError('input changed: '+path)
     reference=json.loads(Path(config['reference']).read_text())
@@ -94,6 +99,9 @@ def run(config, output):
         'span_positions':positions[0].tolist(),'candidate_ids':[m['token_ids'] for m in mapping],
         'expected_input_ids':ids})
     try:
+        if config.get('runtime_profile'):
+            from multimodal_jev.span_runtime_profile import install_rollout_profile
+            atomic_json(output/'runtime-profile.json', install_rollout_profile(engine, config['runtime_profile']))
         if config.get('align_audio_attention',False):
             atomic_json(output/'audio-attention-intervention.json',
                         engine.llm_engine.collective_rpc('align_jev_audio_attention'))

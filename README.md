@@ -16,8 +16,8 @@
 
 当前工程优先级：**BF16 LoRA 训练与重载 → actor/vLLM 概率一致性 → verl 单步更新与新版本复核**。
 BF16 candidate-CE 已完成 20 次均衡更新；48 条学习录音在独立 HF 重载后候选概率误差为零。
-跨后端完整动作概率检查尚未通过，真实语音 RL 更新仍为零，分布式训练和跨任务泛化尚未验收。
-音频编码器已在一条真实录音的分层探针中逐位对齐，语言路径继续定位。
+跨后端检查已在一条真实录音通过，100 个分层激活点逐位一致；48 条顺序请求也全部通过，最大候选 log-prob 误差 1.19×10⁻⁷。
+真实语音 RL 更新仍为零，分布式训练和跨任务泛化尚未验收。
 运行配置和准入门槛见 [BF16 训推一致性](docs/engineering/verl-vllm-lora-span-alignment-v1.md)，
 生命周期入口见 [单步训练验收](experiments/span-actor-update-v1.md)。
 早期[冻结基线与 TFRL 协议](proposal/02-frozen-baselines-tfrl-jev.md)及下文旧实验用于追溯，不代表当前训练安排。
