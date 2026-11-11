@@ -25,6 +25,8 @@ BF16候选CE实验已完成20次均衡更新，学习诊断93/142，静音80/142
 
 BF16跨后端探针最新结果：实际28个LoRA wrapper缓冲和LM head投影均BF16，但同checkpoint单音频最大logprob差0.140574，完整动作比率[0.811465,1.199267]，一项argmax改变。adapter加载与返回base隔离通过；概率gate失败，不准入RL。下一步分层定位首次偏差，不能把“统一dtype”报告成“训推一致已完成”。过程奖励与精度修复独立，当前不调整奖励补偿后端误差。
 
+分层定位与norm干预完成：原始61点trace不改变logits。音频投影有小差异，第一层文本norm亦存在独立差异；将113个语言RMSNorm按HF顺序计算后，第一层文本embedding/norm逐位一致，候选logprob最大误差降至0.101054、argmax全同，但联合概率比[0.844176,1.153852]仍失败。保留独立诊断配置，不将干预当作默认已验收服务后端。剩余音频塔、packed QKV及attention差异需继续定位；见 `experiments/slurp-bf16-layer-trace-v1.md`。
+
 采用 LoRA 更新语言骨干，actor 与 rollout 共享基座及适配器身份；不将“同 checkpoint”当作概率一致证明。现有真实 HF Span 前向、LoRA SFT、保存重载已验证；vLLM pooling 无生成多 Span 前向已验证，但单样本候选 logprob 最大误差 0.063258 超过 0.02 门槛。尚未验证 pooling + 原生 LoRA 请求、热更新或端到端 verl Span actor 更新。普通生成 actor 的 responses 拼接逻辑不能直接复用。
 
 均衡调试已固定八种标签组合各五条、每次更新三项任务各正负一例；单 epoch 仍全部预测 false。不能把类别平衡、前处理或 RL 中任何一项单独当作已解决方案。

@@ -1,0 +1,968 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-norm-v1",
+  "result": {
+    "status": "diagnostic_complete",
+    "input_tokens": 600,
+    "span_positions": [
+      [
+        286,
+        447,
+        589
+      ]
+    ],
+    "candidate_logits": [
+      [
+        3.96875,
+        3.90625
+      ],
+      [
+        13.375,
+        13.5625
+      ],
+      [
+        12.0625,
+        12.1875
+      ]
+    ],
+    "candidate_logprobs": [
+      [
+        -0.6623854041099548,
+        -0.7248854041099548
+      ],
+      [
+        -0.7912852764129639,
+        -0.6037852764129639
+      ],
+      [
+        -0.7575989961624146,
+        -0.6325989961624146
+      ]
+    ],
+    "hf_candidate_logprobs": [
+      [
+        -0.5759393572807312,
+        -0.8259393572807312
+      ],
+      [
+        -0.8259393572807312,
+        -0.5759393572807312
+      ],
+      [
+        -0.7912852764129639,
+        -0.6037852764129639
+      ]
+    ],
+    "maximum_logprob_error": 0.10105395317077637,
+    "parity_threshold": 0.02,
+    "parity_passed": false,
+    "complete_action_parity": {
+      "passed": false,
+      "per_span_passed": false,
+      "joint_ratio_passed": false,
+      "maximum_logprob_error": 0.10105395317077637,
+      "p95_logprob_error": 0.09740197658538818,
+      "joint_log_ratio_min": -0.16939431428909302,
+      "joint_log_ratio_max": 0.14310568571090698,
+      "joint_ratio_min": 0.8441759671032436,
+      "joint_ratio_max": 1.153851740863796,
+      "candidate_kl_actor_to_behavior": 0.005320945740497338,
+      "argmax_changed_spans": [],
+      "per_span_tolerance": 0.02,
+      "joint_ratio_bounds": [
+        0.98,
+        1.02
+      ],
+      "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+    },
+    "rl_admitted": false,
+    "adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-v1/run/adapter",
+    "adapter_dtype": "bfloat16",
+    "request_id": "a3ea3180d874e5287a6aa08d6b3791e7905f33c4a2538c96d1b2f05c9d9b73c7",
+    "lora_target_modules": [
+      "language_model.model.layers.0.self_attn.qkv_proj",
+      "language_model.model.layers.1.self_attn.qkv_proj",
+      "language_model.model.layers.10.self_attn.qkv_proj",
+      "language_model.model.layers.11.self_attn.qkv_proj",
+      "language_model.model.layers.12.self_attn.qkv_proj",
+      "language_model.model.layers.13.self_attn.qkv_proj",
+      "language_model.model.layers.14.self_attn.qkv_proj",
+      "language_model.model.layers.15.self_attn.qkv_proj",
+      "language_model.model.layers.16.self_attn.qkv_proj",
+      "language_model.model.layers.17.self_attn.qkv_proj",
+      "language_model.model.layers.18.self_attn.qkv_proj",
+      "language_model.model.layers.19.self_attn.qkv_proj",
+      "language_model.model.layers.2.self_attn.qkv_proj",
+      "language_model.model.layers.20.self_attn.qkv_proj",
+      "language_model.model.layers.21.self_attn.qkv_proj",
+      "language_model.model.layers.22.self_attn.qkv_proj",
+      "language_model.model.layers.23.self_attn.qkv_proj",
+      "language_model.model.layers.24.self_attn.qkv_proj",
+      "language_model.model.layers.25.self_attn.qkv_proj",
+      "language_model.model.layers.26.self_attn.qkv_proj",
+      "language_model.model.layers.27.self_attn.qkv_proj",
+      "language_model.model.layers.3.self_attn.qkv_proj",
+      "language_model.model.layers.4.self_attn.qkv_proj",
+      "language_model.model.layers.5.self_attn.qkv_proj",
+      "language_model.model.layers.6.self_attn.qkv_proj",
+      "language_model.model.layers.7.self_attn.qkv_proj",
+      "language_model.model.layers.8.self_attn.qkv_proj",
+      "language_model.model.layers.9.self_attn.qkv_proj"
+    ],
+    "adapter_logit_effect": 2.5625,
+    "return_to_base_error": 0.0,
+    "runner": "pooling",
+    "generated_tokens": 0,
+    "optimizer_updates": 0,
+    "scope": "Single real-audio native pooling adapter; HF parity diagnostic, no task or RL gain."
+  },
+  "text_positions": {
+    "layer.0.pre_norm": {
+      "max": 0.0,
+      "rms": 0.0,
+      "unequal_fraction": 0.0
+    },
+    "layer.0.input_norm": {
+      "max": 0.0,
+      "rms": 0.0,
+      "unequal_fraction": 0.0
+    },
+    "layer.0.q_proj": {
+      "max": 0.00048828125,
+      "rms": 2.139451453331276e-06,
+      "unequal_fraction": 7.822815678082407e-05
+    },
+    "layer.0.k_proj": {
+      "max": 0.001953125,
+      "rms": 2.9508944408007665e-06,
+      "unequal_fraction": 4.298250496503897e-05
+    },
+    "layer.0.v_proj": {
+      "max": 0.001953125,
+      "rms": 4.259218258084729e-06,
+      "unequal_fraction": 4.642110434360802e-05
+    }
+  },
+  "trace_comparison": {
+    "audio_projected": {
+      "shape": [
+        32,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.001953125,
+      "mean": 0.00017563406436238438,
+      "unequal_fraction": 0.853759765625,
+      "rms": 0.0002353075542487204
+    },
+    "layer.0.pre_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.001953125,
+      "mean": 9.367149687022902e-06,
+      "unequal_fraction": 0.04553385451436043,
+      "rms": 5.434195190900937e-05
+    },
+    "layer.0.norm_weight": {
+      "shape": [
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.0,
+      "mean": 0.0,
+      "unequal_fraction": 0.0,
+      "rms": 0.0
+    },
+    "layer.0.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.03125,
+      "mean": 8.84351902641356e-05,
+      "unequal_fraction": 0.044186197221279144,
+      "rms": 0.0005260957404971123
+    },
+    "layer.0.q_proj": {
+      "shape": [
+        600,
+        2048
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.03125,
+      "mean": 7.77906461735256e-05,
+      "unequal_fraction": 0.04230305925011635,
+      "rms": 0.000494620471727103
+    },
+    "layer.0.k_proj": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.015625,
+      "mean": 7.321266457438469e-05,
+      "unequal_fraction": 0.04057128727436066,
+      "rms": 0.0004658156249206513
+    },
+    "layer.0.v_proj": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.007568359375,
+      "mean": 6.162546924315393e-05,
+      "unequal_fraction": 0.04685709625482559,
+      "rms": 0.0003480637678876519
+    },
+    "layer.0.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.125,
+      "mean": 0.002916086930781603,
+      "unequal_fraction": 0.7438688278198242,
+      "rms": 0.004410486668348312
+    },
+    "layer.1.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.0390625,
+      "mean": 0.0009611313580535352,
+      "unequal_fraction": 0.7958414554595947,
+      "rms": 0.0014552634675055742
+    },
+    "layer.1.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.5,
+      "mean": 0.008082547225058079,
+      "unequal_fraction": 0.8369401097297668,
+      "rms": 0.012125629931688309
+    },
+    "layer.2.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.041015625,
+      "mean": 0.0015764829004183412,
+      "unequal_fraction": 0.8376041650772095,
+      "rms": 0.002278237836435437
+    },
+    "layer.2.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.00783019419759512,
+      "unequal_fraction": 0.8560644388198853,
+      "rms": 0.011117018759250641
+    },
+    "layer.3.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.125,
+      "mean": 0.004752577748149633,
+      "unequal_fraction": 0.8612125515937805,
+      "rms": 0.00671524740755558
+    },
+    "layer.3.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.010274114087224007,
+      "unequal_fraction": 0.881456732749939,
+      "rms": 0.014386162161827087
+    },
+    "layer.4.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.25,
+      "mean": 0.005122675560414791,
+      "unequal_fraction": 0.8773421049118042,
+      "rms": 0.007221718784421682
+    },
+    "layer.4.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.011102786287665367,
+      "unequal_fraction": 0.8917285203933716,
+      "rms": 0.015231605619192123
+    },
+    "layer.5.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.25,
+      "mean": 0.00656926492229104,
+      "unequal_fraction": 0.8760888576507568,
+      "rms": 0.009309801273047924
+    },
+    "layer.5.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.01000567339360714,
+      "unequal_fraction": 0.8953792452812195,
+      "rms": 0.01354931853711605
+    },
+    "layer.6.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.1875,
+      "mean": 0.005749726668000221,
+      "unequal_fraction": 0.8915755152702332,
+      "rms": 0.008154112845659256
+    },
+    "layer.6.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.012383891269564629,
+      "unequal_fraction": 0.9002734422683716,
+      "rms": 0.016746174544095993
+    },
+    "layer.7.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.3984375,
+      "mean": 0.009812568314373493,
+      "unequal_fraction": 0.8999658226966858,
+      "rms": 0.014006366953253746
+    },
+    "layer.7.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.5625,
+      "mean": 0.014480913057923317,
+      "unequal_fraction": 0.9067073464393616,
+      "rms": 0.019975950941443443
+    },
+    "layer.8.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.1875,
+      "mean": 0.011633679270744324,
+      "unequal_fraction": 0.9095214605331421,
+      "rms": 0.018701327964663506
+    },
+    "layer.8.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.25,
+      "mean": 0.015968719497323036,
+      "unequal_fraction": 0.9125894904136658,
+      "rms": 0.024065887555480003
+    },
+    "layer.9.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.75,
+      "mean": 0.016038071364164352,
+      "unequal_fraction": 0.9143489599227905,
+      "rms": 0.025610091164708138
+    },
+    "layer.9.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5625,
+      "mean": 0.016379840672016144,
+      "unequal_fraction": 0.9151839017868042,
+      "rms": 0.02454831451177597
+    },
+    "layer.10.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.25,
+      "mean": 0.015481799840927124,
+      "unequal_fraction": 0.9177359938621521,
+      "rms": 0.024870896711945534
+    },
+    "layer.10.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.75,
+      "mean": 0.016330435872077942,
+      "unequal_fraction": 0.9161198139190674,
+      "rms": 0.024772774428129196
+    },
+    "layer.11.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.5,
+      "mean": 0.018720535561442375,
+      "unequal_fraction": 0.9163655638694763,
+      "rms": 0.030086694285273552
+    },
+    "layer.11.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.375,
+      "mean": 0.016676103696227074,
+      "unequal_fraction": 0.9230126738548279,
+      "rms": 0.024731645360589027
+    },
+    "layer.12.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.1875,
+      "mean": 0.021957550197839737,
+      "unequal_fraction": 0.9239680767059326,
+      "rms": 0.035642530769109726
+    },
+    "layer.12.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.9375,
+      "mean": 0.01712932623922825,
+      "unequal_fraction": 0.9275829792022705,
+      "rms": 0.025758132338523865
+    },
+    "layer.13.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.375,
+      "mean": 0.024352548643946648,
+      "unequal_fraction": 0.9273697733879089,
+      "rms": 0.04066454619169235
+    },
+    "layer.13.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.9375,
+      "mean": 0.020085731521248817,
+      "unequal_fraction": 0.9311930537223816,
+      "rms": 0.03038766235113144
+    },
+    "layer.14.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.75,
+      "mean": 0.03074006363749504,
+      "unequal_fraction": 0.9312093257904053,
+      "rms": 0.05073791369795799
+    },
+    "layer.14.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.01953125,
+      "mean": 0.02159074693918228,
+      "unequal_fraction": 0.9334163665771484,
+      "rms": 0.031057003885507584
+    },
+    "layer.15.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 3.25,
+      "mean": 0.04049048200249672,
+      "unequal_fraction": 0.9326676726341248,
+      "rms": 0.06152848154306412
+    },
+    "layer.15.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.125,
+      "mean": 0.02249664068222046,
+      "unequal_fraction": 0.9332438111305237,
+      "rms": 0.03231680765748024
+    },
+    "layer.16.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 3.25,
+      "mean": 0.042862288653850555,
+      "unequal_fraction": 0.9342187643051147,
+      "rms": 0.06591209024190903
+    },
+    "layer.16.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5,
+      "mean": 0.023977743461728096,
+      "unequal_fraction": 0.9335302710533142,
+      "rms": 0.03414104878902435
+    },
+    "layer.17.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 8.5,
+      "mean": 0.07179302722215652,
+      "unequal_fraction": 0.9339436888694763,
+      "rms": 0.10903475433588028
+    },
+    "layer.17.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.6875,
+      "mean": 0.028591327369213104,
+      "unequal_fraction": 0.9341373443603516,
+      "rms": 0.04064605012536049
+    },
+    "layer.18.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 7.25,
+      "mean": 0.06850222498178482,
+      "unequal_fraction": 0.9339452981948853,
+      "rms": 0.10442980378866196
+    },
+    "layer.18.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.296875,
+      "mean": 0.03136932849884033,
+      "unequal_fraction": 0.9341731667518616,
+      "rms": 0.04409252479672432
+    },
+    "layer.19.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 4.25,
+      "mean": 0.08676643669605255,
+      "unequal_fraction": 0.9313623309135437,
+      "rms": 0.12889429926872253
+    },
+    "layer.19.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.53125,
+      "mean": 0.03273623064160347,
+      "unequal_fraction": 0.9325993061065674,
+      "rms": 0.04596082866191864
+    },
+    "layer.20.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 5.75,
+      "mean": 0.0914878249168396,
+      "unequal_fraction": 0.929516613483429,
+      "rms": 0.13896769285202026
+    },
+    "layer.20.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.171875,
+      "mean": 0.03354906663298607,
+      "unequal_fraction": 0.9319807887077332,
+      "rms": 0.04739334061741829
+    },
+    "layer.21.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 4.6875,
+      "mean": 0.11462805420160294,
+      "unequal_fraction": 0.9247802495956421,
+      "rms": 0.17298926413059235
+    },
+    "layer.21.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.0703125,
+      "mean": 0.03480665385723114,
+      "unequal_fraction": 0.9309700727462769,
+      "rms": 0.049231089651584625
+    },
+    "layer.22.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 5.984375,
+      "mean": 0.1233762577176094,
+      "unequal_fraction": 0.9220393896102905,
+      "rms": 0.1924501359462738
+    },
+    "layer.22.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.13671875,
+      "mean": 0.03620177134871483,
+      "unequal_fraction": 0.9315983057022095,
+      "rms": 0.05174911022186279
+    },
+    "layer.23.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 7.75,
+      "mean": 0.13591407239437103,
+      "unequal_fraction": 0.9250960350036621,
+      "rms": 0.21250814199447632
+    },
+    "layer.23.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.375,
+      "mean": 0.03959788754582405,
+      "unequal_fraction": 0.9316911101341248,
+      "rms": 0.05808859318494797
+    },
+    "layer.24.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 9.0,
+      "mean": 0.17971354722976685,
+      "unequal_fraction": 0.9338590502738953,
+      "rms": 0.2890903055667877
+    },
+    "layer.24.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5,
+      "mean": 0.04054271802306175,
+      "unequal_fraction": 0.9337955713272095,
+      "rms": 0.059934984892606735
+    },
+    "layer.25.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 10.875,
+      "mean": 0.21024322509765625,
+      "unequal_fraction": 0.9332796335220337,
+      "rms": 0.34545043110847473
+    },
+    "layer.25.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.6875,
+      "mean": 0.042892180383205414,
+      "unequal_fraction": 0.9344368577003479,
+      "rms": 0.06481168419122696
+    },
+    "layer.26.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 13.5625,
+      "mean": 0.23523539304733276,
+      "unequal_fraction": 0.9350048899650574,
+      "rms": 0.3894297778606415
+    },
+    "layer.26.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.75,
+      "mean": 0.046876873821020126,
+      "unequal_fraction": 0.9363476634025574,
+      "rms": 0.07404720038175583
+    },
+    "layer.27.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 9.5,
+      "mean": 0.23494575917720795,
+      "unequal_fraction": 0.9356673359870911,
+      "rms": 0.3691851496696472
+    },
+    "layer.27.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 7.5,
+      "mean": 0.05921383574604988,
+      "unequal_fraction": 0.9357633590698242,
+      "rms": 0.10454007983207703
+    },
+    "final_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 5.0,
+      "mean": 0.09358269721269608,
+      "unequal_fraction": 0.9318701028823853,
+      "rms": 0.15179868042469025
+    }
+  },
+  "intervention": [
+    {
+      "modules": [
+        "layers.0.self_attn.q_norm",
+        "layers.0.self_attn.k_norm",
+        "layers.0.input_layernorm",
+        "layers.0.post_attention_layernorm",
+        "layers.1.self_attn.q_norm",
+        "layers.1.self_attn.k_norm",
+        "layers.1.input_layernorm",
+        "layers.1.post_attention_layernorm",
+        "layers.2.self_attn.q_norm",
+        "layers.2.self_attn.k_norm",
+        "layers.2.input_layernorm",
+        "layers.2.post_attention_layernorm",
+        "layers.3.self_attn.q_norm",
+        "layers.3.self_attn.k_norm",
+        "layers.3.input_layernorm",
+        "layers.3.post_attention_layernorm",
+        "layers.4.self_attn.q_norm",
+        "layers.4.self_attn.k_norm",
+        "layers.4.input_layernorm",
+        "layers.4.post_attention_layernorm",
+        "layers.5.self_attn.q_norm",
+        "layers.5.self_attn.k_norm",
+        "layers.5.input_layernorm",
+        "layers.5.post_attention_layernorm",
+        "layers.6.self_attn.q_norm",
+        "layers.6.self_attn.k_norm",
+        "layers.6.input_layernorm",
+        "layers.6.post_attention_layernorm",
+        "layers.7.self_attn.q_norm",
+        "layers.7.self_attn.k_norm",
+        "layers.7.input_layernorm",
+        "layers.7.post_attention_layernorm",
+        "layers.8.self_attn.q_norm",
+        "layers.8.self_attn.k_norm",
+        "layers.8.input_layernorm",
+        "layers.8.post_attention_layernorm",
+        "layers.9.self_attn.q_norm",
+        "layers.9.self_attn.k_norm",
+        "layers.9.input_layernorm",
+        "layers.9.post_attention_layernorm",
+        "layers.10.self_attn.q_norm",
+        "layers.10.self_attn.k_norm",
+        "layers.10.input_layernorm",
+        "layers.10.post_attention_layernorm",
+        "layers.11.self_attn.q_norm",
+        "layers.11.self_attn.k_norm",
+        "layers.11.input_layernorm",
+        "layers.11.post_attention_layernorm",
+        "layers.12.self_attn.q_norm",
+        "layers.12.self_attn.k_norm",
+        "layers.12.input_layernorm",
+        "layers.12.post_attention_layernorm",
+        "layers.13.self_attn.q_norm",
+        "layers.13.self_attn.k_norm",
+        "layers.13.input_layernorm",
+        "layers.13.post_attention_layernorm",
+        "layers.14.self_attn.q_norm",
+        "layers.14.self_attn.k_norm",
+        "layers.14.input_layernorm",
+        "layers.14.post_attention_layernorm",
+        "layers.15.self_attn.q_norm",
+        "layers.15.self_attn.k_norm",
+        "layers.15.input_layernorm",
+        "layers.15.post_attention_layernorm",
+        "layers.16.self_attn.q_norm",
+        "layers.16.self_attn.k_norm",
+        "layers.16.input_layernorm",
+        "layers.16.post_attention_layernorm",
+        "layers.17.self_attn.q_norm",
+        "layers.17.self_attn.k_norm",
+        "layers.17.input_layernorm",
+        "layers.17.post_attention_layernorm",
+        "layers.18.self_attn.q_norm",
+        "layers.18.self_attn.k_norm",
+        "layers.18.input_layernorm",
+        "layers.18.post_attention_layernorm",
+        "layers.19.self_attn.q_norm",
+        "layers.19.self_attn.k_norm",
+        "layers.19.input_layernorm",
+        "layers.19.post_attention_layernorm",
+        "layers.20.self_attn.q_norm",
+        "layers.20.self_attn.k_norm",
+        "layers.20.input_layernorm",
+        "layers.20.post_attention_layernorm",
+        "layers.21.self_attn.q_norm",
+        "layers.21.self_attn.k_norm",
+        "layers.21.input_layernorm",
+        "layers.21.post_attention_layernorm",
+        "layers.22.self_attn.q_norm",
+        "layers.22.self_attn.k_norm",
+        "layers.22.input_layernorm",
+        "layers.22.post_attention_layernorm",
+        "layers.23.self_attn.q_norm",
+        "layers.23.self_attn.k_norm",
+        "layers.23.input_layernorm",
+        "layers.23.post_attention_layernorm",
+        "layers.24.self_attn.q_norm",
+        "layers.24.self_attn.k_norm",
+        "layers.24.input_layernorm",
+        "layers.24.post_attention_layernorm",
+        "layers.25.self_attn.q_norm",
+        "layers.25.self_attn.k_norm",
+        "layers.25.input_layernorm",
+        "layers.25.post_attention_layernorm",
+        "layers.26.self_attn.q_norm",
+        "layers.26.self_attn.k_norm",
+        "layers.26.input_layernorm",
+        "layers.26.post_attention_layernorm",
+        "layers.27.self_attn.q_norm",
+        "layers.27.self_attn.k_norm",
+        "layers.27.input_layernorm",
+        "layers.27.post_attention_layernorm",
+        "norm"
+      ],
+      "implementation": "HF Qwen3 RMSNorm operation order; BF16 residual addition",
+      "scope": "diagnostic intervention, not validated production backend"
+    }
+  ],
+  "files": {
+    "run/result.json": "adf563e83c865f4b38f60ed392a287dfa464f5d4f20e01452cbb839d12d013ce",
+    "run/terminal.json": "0ca6e58546e27f6548c854f9c8990f2168c1509ba1260fceb94da929ac39ef9b",
+    "run/hf-trace.pt": "bec8bca6fcdd8058b10022f7d2adc31497d48a51715b057bc66e770821974d5d",
+    "run/vllm-trace.pt": "865b668511429c4e4b582a78623fb913d937f9b447bc58ce2d0aa2e341a2b1a7",
+    "run/norm-intervention.json": "53923e001411610057be0dee42cd86e49b1420f9f6423a0e484210601f37297f"
+  },
+  "scope": "Single-audio causal implementation intervention; gate still fails, no RL."
+}

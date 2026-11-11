@@ -15,3 +15,11 @@ hook不修改输入或返回值，不注入HF中间特征，不生成token。ada
 关键切片：第一层input norm中，音频之前104个text token的max0.03125、RMS0.000611011、约25.6%元素不相等；这些位置尚未进入本层attention，不能由当前音频条件引起。因此存在语言输入/归一化独立差异，而非仅音频误差传播。尚未比较原始embedding/weight，不能单凭这点断言norm是唯一根因。
 
 后续独立干预 `slurp-vllm-spans-bf16-norm-v1`：额外记录第一层norm之前embedding与norm weight；将语言所有RMSNorm（包括Q/K norm）替换为HF显式运算顺序，BF16执行/残差相加、FP32方差计算、归一化后先舍入BF16再乘weight。保持原生音频塔/attention/LoRA/LM head，不替换特征、不改概率门槛。此为机制诊断，只有实际概率gate和覆盖通过后才能讨论作为正式对齐方案。
+
+norm-v1终态0：实际替换113个语言RMSNorm；第一层norm权重完全相同，568个文本token的pre-norm embedding及干预后input norm与HF均逐位相等（max=0）。对比未干预文本norm的max0.03125，这确认了归一化运算实现是一个独立差异来源。文本第一层Q/K/V仍分别有max0.00048828125/0.001953125/0.001953125，不能视为完全相同；K无LoRA，因此不把全部投影残差归因于LoRA。
+
+候选logprob最大误差由0.140574降至0.101054，argmax改变从1项降至0项；完整动作比率[0.844176,1.153852]仍不通过[0.98,1.02]。音频投影max仍0.001953125、RMS0.000235308；final norm RMS从0.161725降至0.151799。单条机制对照，不代表全局收益，不准入RL，不改变默认服务路径。两次任务均已结束，当前没有本轮残留NPU作业。
+
+下一步按剩余证据推进：在当前已对齐的文本norm输入上核对packed QKV/分支运算；在音频塔增加conv及逐层输出定位，区分卷积padding/矩阵打包/attention实现。隔离attention本身需同一Q/K/V输入的诊断，并保留与真实端到端路径的区别。只有全部候选gate通过后再验证多样本与版本同步，最后接入verl更新。不能以argmax一致替代PPO行为概率一致。
+
+本轮代码测试64项通过；分层统计与完整动作gate从本地原始张量独立重算。证据见 `docs/engineering/slurp-bf16-layer-trace-v1-verified.json` 和 `docs/engineering/slurp-bf16-norm-v1-verified.json`。原始trace仍仅在共享实验目录，未提交仓库。
