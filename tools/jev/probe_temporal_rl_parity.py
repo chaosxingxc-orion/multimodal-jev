@@ -22,7 +22,8 @@ def main():
         for path,digest in config['pins'].items():
             if file_hash(path)!=digest:raise ValueError('changed input: '+path)
         here=Path(__file__).parent
-        commands=[('sampling',[sys.executable,'-B',str(here/'sample_audio_policy.py'),
+        sampler = 'sample_hf_audio_probe.py' if config.get('hf_audio_diagnostic') else 'sample_audio_policy.py'
+        commands=[('sampling',[sys.executable,'-B',str(here/sampler),
             '--config',config['sampling_config'],'--output',str(args.output/'sampling')])]
         for mode in ('merged_full','merged_cached','adapter_full'):
             argv=[sys.executable,'-B',str(here/'audit_rollout_logprobs.py'),

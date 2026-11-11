@@ -58,3 +58,17 @@ def test_invalid_response_logprob_rejected():
     records=[Rollout('ex',i,'policy',(1,),(-1.,),'text','stop') for i in range(2)]
     records[0]=Rollout('ex',0,'policy',(1,),(float('nan'),),'text','stop')
     with pytest.raises(ValueError,match='logprobs'):validate_rollouts([NS(example_id='ex')],records,'policy',2)
+
+
+def test_diagnostic_rollout_cannot_train(tmp_path):
+    from multimodal_jev.rl_run import train
+    run, _ = fixture(tmp_path)
+    identity = json.loads((run/'identity.json').read_text())
+    identity['config']['diagnostic_only'] = True
+    (run/'identity.json').write_text(json.dumps(identity))
+    with pytest.raises(ValueError, match='diagnostic-only'):
+        load_rollout_run(run)
+    assert len(load_rollout_run(run, allow_diagnostic=True)[2]) == 2
+    with pytest.raises(ValueError, match='diagnostic-only'):
+        train({'rollout_run':str(run)}, tmp_path/'must-not-create')
+    assert not (tmp_path/'must-not-create').exists()

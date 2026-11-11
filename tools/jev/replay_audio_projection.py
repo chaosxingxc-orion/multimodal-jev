@@ -24,7 +24,7 @@ def run(config, output):
     for path, digest in config['pins'].items():
         if file_hash(path) != digest:
             raise ValueError('changed input: ' + path)
-    identity, examples, records = load_rollout_run(config['rollout'])
+    identity, examples, records = load_rollout_run(config['rollout'], allow_diagnostic=True)
     capture = Path(config['capture'])
     capture_id = json.loads((capture/'identity.json').read_text())
     capture_result = json.loads((capture/'result.json').read_text())

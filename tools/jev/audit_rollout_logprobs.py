@@ -39,7 +39,7 @@ def run(args):
     import torch
     from multimodal_jev.asr import load_runtime
     from multimodal_jev.audio_policy import hf_prompt,load_audio,response_log_probs
-    identity,examples,records=load_rollout_run(args.rollout)
+    identity,examples,records=load_rollout_run(args.rollout, allow_diagnostic=True)
     torch.set_num_threads(4);torch.manual_seed(17)
     device=getattr(args,'device','cpu');dtype=getattr(args,'dtype','float32')
     adapter=getattr(args,'adapter',None);base=getattr(args,'base',None)

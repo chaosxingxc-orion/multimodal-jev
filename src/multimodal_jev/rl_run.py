@@ -15,7 +15,7 @@ from .task_schema import JevExample
 from .slurp_training import validate_admission
 
 
-def load_rollout_run(run):
+def load_rollout_run(run, *, allow_diagnostic=False):
     run=Path(run)
     terminal=json.loads((run/'terminal.json').read_text())
     result=json.loads((run/'result.json').read_text())
@@ -23,6 +23,8 @@ def load_rollout_run(run):
     if terminal['exit_code']!=0 or result['status']!='passed':
         raise ValueError('completed successful rollout required')
     config=identity['config'];validate_sampling(config['sampling'])
+    if config.get('diagnostic_only') and not allow_diagnostic:
+        raise ValueError('diagnostic-only rollout requires an explicit read-only audit')
     policy,files=checkpoint_identity(config['checkpoint'])
     if identity['policy_id']!=policy or result['policy_id']!=policy or identity['checkpoint_files']!=files:
         raise ValueError('rollout checkpoint identity changed')
@@ -50,6 +52,9 @@ def load_rollout_run(run):
 
 
 def train(config,output):
+    rollout_config = json.loads((Path(config['rollout_run'])/'identity.json').read_text())['config']
+    if rollout_config.get('diagnostic_only'):
+        raise ValueError('diagnostic-only rollout cannot enter actor training')
     import torch
     from peft import LoraConfig, get_peft_model, PeftModel
     from .asr import load_runtime
