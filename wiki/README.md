@@ -6,3 +6,4 @@
 完成后依据实际产物补充结果、成本和结论。修正采用带日期的说明，保留原始证据。
 
 - [2026-11-10：开发集基线、SFT 与文本对照运行状态](2026-11-10-development-baselines.md)
+- [2026-11-11：FSC 冻结 Omni 完整 TEST 提示词对照](../experiments/fsc-omni-official-test-v2-comparison.md)：父提示及p1完整结果、逐录音配对和独立验收。

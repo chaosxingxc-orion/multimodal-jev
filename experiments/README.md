@@ -8,6 +8,7 @@
 
 当前协议入口：
 
+- [FSC 冻结 Omni 完整 TEST 提示词对照](fsc-omni-official-test-v2-comparison.md)：2026-11-11独立验收，native提升、未知判断仍不可靠。
 - [FSC 冻结声学基线](fsc-frozen-audio-full.md)
 - [音频 SFT 初始化](fsc-audio-sft-init.md)与 [FSC 开发评测](fsc-schema-evaluation.md)
 - [SLURP 迁移评测](slurp-transfer-evaluation.md)

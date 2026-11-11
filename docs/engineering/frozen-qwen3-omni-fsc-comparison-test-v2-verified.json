@@ -1,0 +1,274 @@
+{
+  "schema": "fsc-independent-test-comparison-audit-v1",
+  "protocol_sha256": "55b0e6def7b629dfe5e8912450f00d2218930000291b0866e48b64d5c779a3bf",
+  "comparison_sha256": "4b87bec84f5de2d08fad2c9d4f2ca7cee61ce48b0a2b01102a2ed02ff0c6b9eb",
+  "reports": [
+    {
+      "id": "p1",
+      "container_id": "6f6fe878a1cbf6906cc679a5f2abcdb6403075cffc23b692f90bb7dbb03d957a",
+      "predictions_sha256": "5ed3413a425c00c54e0d89955f123b3acf12e311de95267d83caf8c5bf859f0f",
+      "metrics": {
+        "replicate": 0,
+        "by_variant": {
+          "native": {
+            "examples": 3793,
+            "correct": 3481,
+            "format_valid": 3793,
+            "schema_valid": 3793,
+            "accuracy": 0.9177432111784867
+          },
+          "permutation": {
+            "examples": 3793,
+            "correct": 3511,
+            "format_valid": 3793,
+            "schema_valid": 3793,
+            "accuracy": 0.9256525177959399
+          },
+          "rebind": {
+            "examples": 3793,
+            "correct": 3497,
+            "format_valid": 3793,
+            "schema_valid": 3793,
+            "accuracy": 0.9219615080411284
+          },
+          "missing_candidate": {
+            "examples": 3793,
+            "correct": 37,
+            "format_valid": 3793,
+            "schema_valid": 3107,
+            "accuracy": 0.009754811494858951
+          },
+          "noul.True": {
+            "examples": 3793,
+            "correct": 3495,
+            "format_valid": 3793,
+            "schema_valid": 3793,
+            "accuracy": 0.9214342209332982
+          },
+          "noul.False": {
+            "examples": 3793,
+            "correct": 3666,
+            "format_valid": 3793,
+            "schema_valid": 3793,
+            "accuracy": 0.9665172686527814
+          }
+        },
+        "pairs": {
+          "permutation": {
+            "groups": 3793,
+            "both_correct": 3379,
+            "both_correct_rate": 0.8908515686791458
+          },
+          "rebind": {
+            "groups": 3793,
+            "both_correct": 3449,
+            "both_correct_rate": 0.9093066174532033
+          },
+          "missing_candidate": {
+            "groups": 3793,
+            "both_correct": 25,
+            "both_correct_rate": 0.006591088847877669
+          },
+          "noul": {
+            "groups": 3793,
+            "both_correct": 3372,
+            "both_correct_rate": 0.8890060638017401
+          }
+        },
+        "all_six_correct": 24,
+        "all_six_correct_rate": 0.006327445293962563
+      },
+      "paired_to_parent": {
+        "by_view": {
+          "native": {
+            "both_correct": 1742,
+            "both_wrong": 302,
+            "fixed": 1739,
+            "regressed": 10,
+            "mcnemar_exact_two_sided_p": 0.0
+          },
+          "permutation": {
+            "both_correct": 2016,
+            "both_wrong": 261,
+            "fixed": 1495,
+            "regressed": 21,
+            "mcnemar_exact_two_sided_p": 0.0
+          },
+          "rebind": {
+            "both_correct": 1762,
+            "both_wrong": 290,
+            "fixed": 1735,
+            "regressed": 6,
+            "mcnemar_exact_two_sided_p": 0.0
+          },
+          "missing_candidate": {
+            "both_correct": 11,
+            "both_wrong": 3731,
+            "fixed": 26,
+            "regressed": 25,
+            "mcnemar_exact_two_sided_p": 1.0
+          },
+          "noul.True": {
+            "both_correct": 2512,
+            "both_wrong": 249,
+            "fixed": 983,
+            "regressed": 49,
+            "mcnemar_exact_two_sided_p": 1.1056022883183287e-226
+          },
+          "noul.False": {
+            "both_correct": 2290,
+            "both_wrong": 126,
+            "fixed": 1376,
+            "regressed": 1,
+            "mcnemar_exact_two_sided_p": 0.0
+          }
+        },
+        "all_six_by_source_group": {
+          "both_correct": 4,
+          "both_wrong": 3764,
+          "fixed": 20,
+          "regressed": 5,
+          "mcnemar_exact_two_sided_p": 0.004077315330505371
+        }
+      }
+    },
+    {
+      "id": "parent",
+      "container_id": "ae16d2e146ecab6207ac5779b6b561336a6d8ef941a83e4e279c9fde4526ebb0",
+      "predictions_sha256": "340b02cc4b20dd6bc721bf71bcc4c9e4f00df4e45029a3181071a1ee60b2834a",
+      "metrics": {
+        "replicate": 0,
+        "by_variant": {
+          "native": {
+            "examples": 3793,
+            "correct": 1752,
+            "format_valid": 1922,
+            "schema_valid": 1922,
+            "accuracy": 0.4619035064592671
+          },
+          "permutation": {
+            "examples": 3793,
+            "correct": 2037,
+            "format_valid": 2176,
+            "schema_valid": 2176,
+            "accuracy": 0.5370419193250725
+          },
+          "rebind": {
+            "examples": 3793,
+            "correct": 1768,
+            "format_valid": 1981,
+            "schema_valid": 1981,
+            "accuracy": 0.4661218033219088
+          },
+          "missing_candidate": {
+            "examples": 3793,
+            "correct": 36,
+            "format_valid": 1802,
+            "schema_valid": 1501,
+            "accuracy": 0.009491167940943844
+          },
+          "noul.True": {
+            "examples": 3793,
+            "correct": 2561,
+            "format_valid": 2825,
+            "schema_valid": 2825,
+            "accuracy": 0.6751911415765884
+          },
+          "noul.False": {
+            "examples": 3793,
+            "correct": 2291,
+            "format_valid": 3117,
+            "schema_valid": 3117,
+            "accuracy": 0.6040073820195097
+          }
+        },
+        "pairs": {
+          "permutation": {
+            "groups": 3793,
+            "both_correct": 1382,
+            "both_correct_rate": 0.3643553915106776
+          },
+          "rebind": {
+            "groups": 3793,
+            "both_correct": 1410,
+            "both_correct_rate": 0.37173741102030056
+          },
+          "missing_candidate": {
+            "groups": 3793,
+            "both_correct": 19,
+            "both_correct_rate": 0.005009227524387028
+          },
+          "noul": {
+            "groups": 3793,
+            "both_correct": 1729,
+            "both_correct_rate": 0.45583970471921964
+          }
+        },
+        "all_six_correct": 9,
+        "all_six_correct_rate": 0.002372791985235961
+      },
+      "paired_to_parent": {
+        "by_view": {
+          "native": {
+            "both_correct": 1752,
+            "both_wrong": 2041,
+            "fixed": 0,
+            "regressed": 0,
+            "mcnemar_exact_two_sided_p": 1.0
+          },
+          "permutation": {
+            "both_correct": 2037,
+            "both_wrong": 1756,
+            "fixed": 0,
+            "regressed": 0,
+            "mcnemar_exact_two_sided_p": 1.0
+          },
+          "rebind": {
+            "both_correct": 1768,
+            "both_wrong": 2025,
+            "fixed": 0,
+            "regressed": 0,
+            "mcnemar_exact_two_sided_p": 1.0
+          },
+          "missing_candidate": {
+            "both_correct": 36,
+            "both_wrong": 3757,
+            "fixed": 0,
+            "regressed": 0,
+            "mcnemar_exact_two_sided_p": 1.0
+          },
+          "noul.True": {
+            "both_correct": 2561,
+            "both_wrong": 1232,
+            "fixed": 0,
+            "regressed": 0,
+            "mcnemar_exact_two_sided_p": 1.0
+          },
+          "noul.False": {
+            "both_correct": 2291,
+            "both_wrong": 1502,
+            "fixed": 0,
+            "regressed": 0,
+            "mcnemar_exact_two_sided_p": 1.0
+          }
+        },
+        "all_six_by_source_group": {
+          "both_correct": 9,
+          "both_wrong": 3784,
+          "fixed": 0,
+          "regressed": 0,
+          "mcnemar_exact_two_sided_p": 1.0
+        }
+      }
+    }
+  ],
+  "source_groups": 3793,
+  "requests_per_prompt": 22758,
+  "scope": "Completed queue admission, actual container state and independent raw JSON/count/pair audit. No inference, output repair, new metric or TEST-driven prompt change. Frozen source snapshot authentication remains a separate check.",
+  "full_audit_path": "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-official-test-v2/independent-comparison-audit.json",
+  "full_audit_sha256": "006dcd74a365b82f6ecfc87709bc36164fa758c7ff521bedf5cd28e2697afedd",
+  "source_authentication": [
+    "frozen-qwen3-omni-fsc-parent-test-v2-verified.json",
+    "frozen-qwen3-omni-fsc-p1-test-v2-verified.json"
+  ]
+}
