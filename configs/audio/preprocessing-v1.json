@@ -1,0 +1,13 @@
+{
+  "version": "jev-waveform-ablation-v1",
+  "default": "raw",
+  "profiles": {
+    "raw": {},
+    "rms_minus20": {"target_rms_dbfs": -20, "max_gain_db": 12, "peak_limit": 0.99},
+    "edge_trim_minus45": {"trim_threshold_dbfs": -45, "trim_margin_ms": 100},
+    "preemph_097": {"preemphasis": 0.97},
+    "speed_090": {"speed_factor": 0.9},
+    "speed_110": {"speed_factor": 1.1}
+  },
+  "scope": "Candidate single-factor profiles, not selected settings. Speed perturbation changes pitch. No random training augmentation or validation/test optimization enabled."
+}

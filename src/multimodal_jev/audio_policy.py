@@ -34,12 +34,16 @@ def encode_prompt(processor, example, audio):
     return text
 
 
-def load_audio(path):
+def load_audio(path, preprocessing=None, *, return_receipt=False):
     import numpy as np
     import soundfile as sf
     audio,rate=sf.read(path,dtype='float32')
     if rate!=16000 or audio.ndim!=1 or not len(audio) or not np.isfinite(audio).all():
         raise ValueError('audio must be finite nonempty mono 16 kHz')
+    if preprocessing is not None or return_receipt:
+        from .audio_preprocess import preprocess_audio
+        audio, receipt = preprocess_audio(audio, preprocessing)
+        return (audio, receipt) if return_receipt else audio
     return audio
 
 

@@ -83,6 +83,19 @@ def train(config, output):
     from .span_model import NativeAudioSpanModel, span_supervised_loss
     output = Path(output)
     bundles, manifest = load_reviewed_bundles(config['release'], config['manifest_sha256'], config['question_order'])
+    if config.get('sampling_mode') == 'joint_uniform_complement_pairs_v1':
+        if config['recordings_per_update'] != 2:
+            raise ValueError('complement pairs require two recordings per update')
+        from .span_balance import balanced_binary_batches
+        schedule, balance = balanced_binary_batches(bundles,config['seed'])
+        atomic_json(output / 'balance.json',balance)
+    elif config.get('sampling_mode', 'shuffle') == 'shuffle':
+        order = list(range(len(bundles)))
+        random.Random(config['seed']).shuffle(order)
+        size = config['recordings_per_update']
+        schedule = [order[i:i+size] for i in range(0,len(order),size)]
+    else:
+        raise ValueError('unsupported sampling mode')
     torch.set_num_threads(4)
     torch.manual_seed(config['seed'])
     torch.npu.manual_seed_all(config['seed'])
@@ -93,17 +106,20 @@ def train(config, output):
     if not parameters:
         raise ValueError('no trainable adapter parameters')
     prepared = []
+    audio_receipts = []
     for bundle in bundles:
-        inputs, positions = encode_span_request(processor, bundle['request'], load_audio(bundle['request'].audio))
+        audio, receipt = load_audio(bundle['request'].audio, config.get('audio_preprocessing'), return_receipt=True)
+        audio_receipts.append(receipt)
+        inputs, positions = encode_span_request(processor, bundle['request'], audio)
         mappings = span_labels(processor.tokenizer, bundle['request'].questions)
         prepared.append((inputs, positions, mappings, target_tokens(bundle, mappings)))
     atomic_json(output / 'identity.json', dict(config=config, review_scope=manifest['review_scope'],
         model_weights_sha256=file_hash(Path(config['model_path']) / 'model.safetensors'),
         source_sha256={name:file_hash(Path(__file__).with_name(name)) for name in
-            ('span_training.py','span_contract.py','span_model.py','sft.py','asr.py')},
+            ('span_training.py','span_contract.py','span_model.py','span_balance.py','sft.py','asr.py','audio_policy.py','audio_preprocess.py')},
         bundles=[dict(id=b['id'], source_group=b['source_group'], audio_sha256=b['audio_sha256'],
                       decision_ids=b['decision_ids'], supervised=b['supervised'],
-                      targets=b['targets'], request=b['request'].model_input(),
+                      targets=b['targets'], request=b['request'].model_input(), audio_processing=audio_receipts[i],
                       positions=prepared[i][1].tolist(), input_ids=prepared[i][0]['input_ids'].tolist())
                  for i,b in enumerate(bundles)]))
 
@@ -112,7 +128,7 @@ def train(config, output):
         if silence:
             import numpy as np
             inputs, positions = encode_span_request(processor, bundles[index]['request'],
-                np.zeros_like(load_audio(bundles[index]['request'].audio)))
+                np.zeros(audio_receipts[index]['output_samples'],dtype=np.float32))
         inputs = {k:v.to(device='npu:0', dtype=model.lm_head.weight.dtype if v.is_floating_point() else v.dtype)
                   for k,v in inputs.items()}
         vocab, logp = model(inputs, positions.to('npu:0'), [m['token_ids'] for m in mappings])
@@ -132,7 +148,16 @@ def train(config, output):
             records.append(dict(id=b['id'], predictions=predictions, correct=correct,
                                 candidate_logprobs=[p.cpu().tolist() for p in logp]))
             atomic_json(output / 'progress.json', dict(phase=name, completed=i+1,total=len(bundles), heartbeat_unix=time.time()))
-        result = dict(records=records, decisions=sum(sum(b['supervised']) for b in bundles),
+        per_span = {}
+        for j,task_name in enumerate(config['question_order']):
+            confusion = [[0,0],[0,0]]
+            for b,r in zip(bundles,records):
+                if b['supervised'][j]:
+                    confusion[int(b['targets'][j])][int(r['predictions'][j])] += 1
+            recalls = [confusion[k][k]/sum(confusion[k]) if sum(confusion[k]) else None for k in (0,1)]
+            per_span[task_name] = dict(confusion_gold_by_prediction=confusion,recall_false=recalls[0],
+                                 recall_true=recalls[1],balanced_accuracy=sum(recalls)/2 if None not in recalls else None)
+        result = dict(records=records, per_span=per_span, decisions=sum(sum(b['supervised']) for b in bundles),
                       correct=sum(c is True for r in records for c in r['correct']),
                       complete_recordings=sum(all(b['supervised']) for b in bundles),
                       complete_correct=sum(all(c is True for c in r['correct']) for r in records),
@@ -142,11 +167,8 @@ def train(config, output):
 
     before = evaluate('before')
     optimizer = torch.optim.AdamW(parameters, lr=config['lr'], weight_decay=0., foreach=False, fused=False)
-    order = list(range(len(bundles)))
-    random.Random(config['seed']).shuffle(order)
     history = []
-    for start in range(0,len(order),config['recordings_per_update']):
-        batch = order[start:start+config['recordings_per_update']]
+    for batch in schedule:
         denominator = sum(sum(bundles[i]['supervised']) for i in batch)
         optimizer.zero_grad(set_to_none=True)
         losses = []
@@ -174,7 +196,9 @@ def train(config, output):
     after = evaluate('after')
     silence = evaluate('after-silence', silence=True)
     return dict(status='passed', updates=len(history), recordings=len(bundles),
-                supervised_spans=manifest['decisions'], head='pretrained_native_lm_head',
+                training_recordings=len({i for batch in schedule for i in batch}),
+                supervised_spans=sum(sum(bundles[i]['supervised']) for batch in schedule for i in batch),
+                diagnostic_spans=manifest['decisions'], head='pretrained_native_lm_head',
                 objective='masked full-vocabulary CE, one audio backbone forward per recording',
                 before=before, after=after, after_silence=silence,
                 adapter_files={p.name:file_hash(p) for p in (output/'adapter').iterdir() if p.is_file()},

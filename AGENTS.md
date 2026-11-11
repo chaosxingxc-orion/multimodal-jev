@@ -12,6 +12,8 @@
 
 ## 开发
 
+用户新增输入与调试要求：允许可配置 preemphasis、首尾静音处理、音量处理和语速增强。保留 raw 对照，记录处理后音频身份，actor/rollout 使用同一波形或特征；速度与保音高 tempo 不混称。调试训练要求分类均衡：检查单标签及联合标签分布，并保证当前三任务每个 batch 正负均衡；不修改原始发布、不补造缺失监督、不改变测试分布。见 docs/engineering/audio-preprocessing-v1.md 和 experiments/slurp-native-spans-balanced-v1.md。
+
 最新用户纠正（优先于下文历史策略）：主任务是一次填充的 Jev 决策 CoT：输入音频及 `Q1,<SPAN1>,Q2,<SPAN2>,Final Q,<SPAN3>` 完整问题模板，由同一模型一次性输出各 Span 的 typed value/state。研究结构化 CoT 或模型内部隐式思维链，不采用 ReAct、外部循环触发/复核/停止控制器，不以自回归文本解码作为新任务的实现目标。所有前置问题在输入时给定，最终答案由模型读出。既有单问 JSON 生成实验仅为历史工程证据，不能冒称已实现 Span 一次填充。当前契约见 docs/research/12-single-pass-span-cot-contract.md；其内容取代 09/10/11 中把有界复核和学习停止当主线的安排。
 
 2026-11-11 用户明确：所有Jev模型应接受可配置的思考要求，通过推理时的触发和决策提升能力，不将触发文本推理作为研究路线。配置化思考是共同模型契约；单问/多问是独立任务组织维度。优先研究要求条件化决策、结构状态和有界复核，具体机制及收益待验证，禁止把文本CoT消融当作当前主线。见 docs/research/10-configurable-thinking-decision-contract.md。

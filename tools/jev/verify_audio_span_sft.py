@@ -30,8 +30,14 @@ def verify(config, output):
         if file_hash(root/'run/adapter'/name) != digest:raise ValueError('adapter changed')
     bundles,_ = load_reviewed_bundles(train_config['release'],train_config['manifest_sha256'],train_config['question_order'])
     histories = json.loads((root/'run/history.json').read_text())
-    assert len(histories)==24 and sum(x['supervised_spans'] for x in histories)==142
-    assert sorted(uid for h in histories for uid in h['recordings'])==sorted(b['id'] for b in bundles)
+    assert len(histories)==result['updates'] and sum(x['supervised_spans'] for x in histories)==result['supervised_spans']
+    if train_config.get('sampling_mode')=='joint_uniform_complement_pairs_v1':
+        from multimodal_jev.span_balance import balanced_binary_batches
+        _,balance=balanced_binary_batches(bundles,train_config['seed'])
+        assert balance==json.loads((root/'run/balance.json').read_text())
+        assert [h['recordings'] for h in histories]==balance['batch_recording_ids']
+    else:
+        assert sorted(uid for h in histories for uid in h['recordings'])==sorted(b['id'] for b in bundles)
     assert all(math.isfinite(h['gradient_norm']) and h['gradient_norm']>0 for h in histories)
     assert all(math.isfinite(v) for h in histories for v in h['per_recording_losses'])
     identities = json.loads((root/'run/identity.json').read_text())
@@ -56,7 +62,10 @@ def verify(config, output):
     maximum=0.
     with torch.inference_mode():
         for i,b in enumerate(bundles):
-            batch,positions=encode_span_request(processor,b['request'],load_audio(b['request'].audio))
+            audio,receipt=load_audio(b['request'].audio,train_config.get('audio_preprocessing'),return_receipt=True)
+            if 'audio_processing' in identities['bundles'][i]:
+                assert receipt==identities['bundles'][i]['audio_processing']
+            batch,positions=encode_span_request(processor,b['request'],audio)
             assert batch['input_ids'].tolist()==identities['bundles'][i]['input_ids']
             assert positions.tolist()==identities['bundles'][i]['positions']
             mapping=span_labels(processor.tokenizer,b['request'].questions)
