@@ -1,0 +1,44 @@
+{
+  "schema": "verl-npu-logprob-source-audit-v1",
+  "container_id": "6b27d1464ce6563be493c46317b6cf8cdddf218d28c8e3785fcf94a4dea80231",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "files": [
+    {
+      "path": "/opt/verl/verl/utils/torch_functional.py",
+      "local": ".local/research/verl-npu-logprob-v1/torch_functional.py",
+      "sha256": "8ac62195a800ba784d1cddf03ee0bc7627f20236cc11e135fdba20e8d4a01f14"
+    },
+    {
+      "path": "/opt/verl/verl/utils/device.py",
+      "local": ".local/research/verl-npu-logprob-v1/device.py",
+      "sha256": "c4b8b71a4efad64415451e11ac159698a57cb2d04adc5f4519f8af6b7d6da2db"
+    }
+  ],
+  "scope": "Fixed-image verl source and dispatch audit only; original copied files retained in local research cache.",
+  "dispatcher_ast_cases": [
+    {
+      "flash_available": false,
+      "npu_available": true,
+      "selected": "torch_npu"
+    },
+    {
+      "flash_available": true,
+      "npu_available": true,
+      "selected": "flash_attn"
+    },
+    {
+      "flash_available": false,
+      "npu_available": false,
+      "selected": "fallback_v2"
+    }
+  ],
+  "method": "Unchanged dispatcher AST with synthetic shape-only sentinel objects and recording leaf functions; no numeric kernels executed.",
+  "findings": [
+    "Dispatcher prioritizes flash-attn availability, then torch_npu operator availability; no per-tensor device check.",
+    "NPU wrapper flattens logits and labels, calls npu_cross_entropy_loss(reduction=none), returns negative loss reshaped to original batch dimensions.",
+    "NPU wrapper performs no explicit FP32 cast; actual autocast/operator accumulation and returned dtype require runtime observation.",
+    "Pinned padded actor slices response positions after full model logits and calls dispatcher inside device autocast.",
+    "Prior ASR CE diagnostic compares model loss with project response_log_probs; it does not directly invoke the verl NPU dispatcher."
+  ],
+  "limits": "Static source and dispatch control flow only. No new NPU process, numerical equivalence, gradient, throughput or Omni accuracy claim."
+}

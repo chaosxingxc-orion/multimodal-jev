@@ -89,3 +89,8 @@ prefix证据与未舍入RoPE精确一致；FSDP再转FP32不能修复已发生�
 [完整CPU加载与meta准备](omni-fsdp-loading-v1.md)已执行并独立核验，全部
 checkpoint值和四个buffer精确一致。下一缺口是两rank实际FSDP初始化、
 buffer同步后验收及NPU前向，不能将CPU预检结果作为分布式概率通过证据。
+
+固定verl的[Ascend概率分派核查](verl-npu-logprob-source-v1.md)进一步确认：
+原生路径调用NPU cross entropy，CPU集成使用的显式FP32适配不能代替其
+数值验证。真实运行须记录实际分派/输入输出dtype，并用同份logits的FP32
+参考区分概率归一化误差与模型前向差异；当前仅完成源码及哨兵分派验证。
