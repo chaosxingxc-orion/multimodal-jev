@@ -17,18 +17,21 @@ def split_base_native_lora_apply(module, x, bias=None):
     return module._apply_lora_to_output(x,output)
 
 
-def install_separate_qkv(model):
+def install_separate_qkv(model, *, expected_tp=1):
     from types import MethodType
     from vllm.lora.layers.column_parallel_linear import MergedQKVParallelLinearWithLoRA
     layers=model.language_model.model.layers
     modules=[layer.self_attn.qkv_proj for layer in layers]
     for module in modules:
-        if (not isinstance(module,MergedQKVParallelLinearWithLoRA) or module.tp_size!=1
-                or module.base_layer.weight.dtype!=torch.bfloat16 or len(module.output_slices)!=3):
-            raise ValueError('TP1 BF16 native merged QKV LoRA wrappers required')
+        if (expected_tp not in (1,4) or not isinstance(module,MergedQKVParallelLinearWithLoRA)
+                or module.tp_size!=expected_tp or module.base_layer.weight.dtype!=torch.bfloat16
+                or len(module.output_slices)!=3
+                or sum(module.output_slices)!=module.base_layer.weight.shape[0]):
+            raise ValueError('matching TP BF16 native merged QKV LoRA wrappers required')
     for module in modules:
         module.apply=MethodType(split_base_native_lora_apply,module)
-    return dict(layers=len(layers),implementation='three separate base F.linear calls; original native LoRA add',
+    return dict(layers=len(layers),tensor_parallel_size=expected_tp,
+                implementation='three separate local base F.linear calls; original native LoRA add',
                 scope='Diagnostic language QKV only; no adapter merging or activation substitution')
 
 
@@ -41,16 +44,17 @@ def separate_mlp_forward(module,x):
     return module.down_proj(intermediate)[0]
 
 
-def install_separate_mlp(model):
+def install_separate_mlp(model, *, expected_tp=1):
     from types import MethodType
     layers=model.language_model.model.layers
     for layer in layers:
         module=layer.mlp
-        if (module.gate_up_proj.tp_size!=1 or module.gate_up_proj.bias is not None
+        if (expected_tp not in (1,4) or module.gate_up_proj.tp_size!=expected_tp or module.gate_up_proj.bias is not None
                 or module.gate_up_proj.weight.dtype!=torch.bfloat16
                 or hasattr(module.gate_up_proj,'lora_a_stacked')):
-            raise ValueError('unadapted TP1 BF16 gate/up base required')
+            raise ValueError('unadapted matching TP BF16 gate/up base required')
     for layer in layers:
         layer.mlp.forward=MethodType(separate_mlp_forward,layer.mlp)
-    return dict(layers=len(layers),implementation='separate gate/up F.linear and BF16 SiLU then multiply',
+    return dict(layers=len(layers),tensor_parallel_size=expected_tp,
+                implementation='separate local gate/up F.linear and BF16 SiLU then multiply',
                 scope='Diagnostic unadapted language MLP; native down projection retained')

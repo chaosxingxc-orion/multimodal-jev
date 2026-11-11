@@ -25,14 +25,17 @@ def aligned_audio_attention_forward(module,hidden_states,cu_seqlens,max_seqlen=N
     return module.out_proj(attended)[0]
 
 
-def install_eager_audio_attention(model):
+def install_eager_audio_attention(model, *, allowed_tp=(1,)):
     from types import MethodType
     layers=model.audio_tower.layers
     for layer in layers:
         module=layer.self_attn
-        if module.num_local_heads!=module.num_heads:
-            raise ValueError('TP1 audio attention required')
+        if (module.num_local_heads<1 or module.num_heads%module.num_local_heads
+                or module.num_heads//module.num_local_heads not in allowed_tp):
+            raise ValueError('matching audio attention head partition required')
     for layer in layers:
         layer.self_attn.forward=MethodType(aligned_audio_attention_forward,layer.self_attn)
-    return dict(layers=len(layers),implementation='windowed HF eager noncausal audio attention',
+    return dict(layers=len(layers),head_partitions=sorted({
+                layer.self_attn.num_heads//layer.self_attn.num_local_heads for layer in layers}),
+                implementation='windowed HF eager noncausal audio attention',
                 scope='Native audio QKV/output projections retained; no cross-window attention')

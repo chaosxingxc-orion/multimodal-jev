@@ -21,3 +21,12 @@ def test_decode_and_packed_requests_rejected_before_projection():
     for positions in (torch.tensor([5]),torch.tensor([0,1,0,1])):
         with pytest.raises(ValueError,match='single complete'):
             aligned_attention_forward(object(),positions,torch.ones(len(positions),8))
+
+
+def test_four_local_grouped_head_partitions_preserve_attention():
+    torch.manual_seed(39)
+    q=torch.randn(7,16,8); k=torch.randn(7,8,8); v=torch.randn_like(k)
+    full=eager_causal_attention(q,k,v,8**-.5)
+    local=torch.cat([eager_causal_attention(a,b,c,8**-.5) for a,b,c in
+                     zip(q.chunk(4,1),k.chunk(4,1),v.chunk(4,1))],1)
+    torch.testing.assert_close(local,full,rtol=0,atol=0)

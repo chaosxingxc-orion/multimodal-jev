@@ -4,7 +4,7 @@ import pytest
 
 from multimodal_jev.span_runtime_profile import PROFILE, verify_suite_admission
 from multimodal_jev.span_runtime_topology import (
-    TP4_DIAGNOSTIC, install_diagnostic_profile, runtime_topology,
+    TP4_DIAGNOSTIC, TP4_HF_ORDER, install_diagnostic_profile, runtime_topology,
 )
 
 
@@ -15,8 +15,9 @@ def test_incompatible_topology_is_rejected(size, profile):
         runtime_topology(dict(tensor_parallel_size=size, runtime_profile=profile))
 
 
-def test_tp4_diagnostic_cannot_enter_training_even_if_reported_passed():
-    config = dict(tensor_parallel_size=4, runtime_profile=TP4_DIAGNOSTIC, passed=True)
+@pytest.mark.parametrize('profile', [TP4_DIAGNOSTIC, TP4_HF_ORDER])
+def test_tp4_diagnostic_cannot_enter_training_even_if_reported_passed(profile):
+    config = dict(tensor_parallel_size=4, runtime_profile=profile, passed=True)
     assert runtime_topology(config)['diagnostic_only']
     with pytest.raises(ValueError, match='unsupported Span runtime profile'):
         verify_suite_admission(config)
@@ -29,3 +30,16 @@ def test_all_workers_must_confirm_configuration(receipts):
     engine = SimpleNamespace(llm_engine=SimpleNamespace(collective_rpc=lambda rpc: receipts))
     with pytest.raises(ValueError, match='four internal-format receipts required'):
         install_diagnostic_profile(engine, TP4_DIAGNOSTIC)
+
+
+def test_tp4_alignment_requires_all_workers_and_runs_after_format():
+    calls = []
+    def rpc(name):
+        calls.append(name)
+        if name == 'align_jev_internal_format':
+            return [{'after': 'disable'}] * 4
+        return [{'tensor_parallel_size': 4, 'diagnostic_only': True}] * 3
+    engine = SimpleNamespace(llm_engine=SimpleNamespace(collective_rpc=rpc))
+    with pytest.raises(ValueError, match='four TP4 alignment receipts'):
+        install_diagnostic_profile(engine, TP4_HF_ORDER)
+    assert calls == ['align_jev_internal_format', 'align_jev_tp4_hf_order']

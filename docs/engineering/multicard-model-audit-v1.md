@@ -85,3 +85,8 @@ BF16 实际 LoRA 计算、FP32 主参数/Adam、固定拓扑恢复等价与跨 r
 后续原生 vLLM TP4 48条诊断已完成：仅1条通过原定概率gate，最大logp误差0.2460，
 8个Span首选候选变化，不能准入RL。这一原生profile尚未使用TP1的HF-order算子对齐，
 不能把全部差异归因于TP归约。详见 `span-tp4-native-suite-v1.md`。
+
+局部HF-order TP4后续48条诊断也已完成：3条通过，最大logp误差0.3011，
+5个Span首选候选变化，仍不能准入RL。局部运算顺序移植不足以解决一致性，
+需逐层定位最早偏差，不把部分汇总量改善称为整体对齐改善。
+详见 `span-tp4-hf-order-suite-v1.md`。

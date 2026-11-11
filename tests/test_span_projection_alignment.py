@@ -45,3 +45,17 @@ def test_mlp_uses_bf16_activation_materialization():
     assert torch.equal(actual,expected)
     fused=(torch.nn.functional.silu(gate.float())*up.float()).to(torch.bfloat16)
     assert not torch.equal(actual,fused)
+
+
+def test_qkv_partition_must_slice_each_projection_before_packing():
+    torch.manual_seed(29)
+    x=torch.randn(5,8); w=torch.randn(32,8); b=torch.randn(32)
+    widths=(16,8,8)
+    reference=split_qkv_base(x,w,widths,b).split(widths,-1)
+    local=[]
+    for rank in range(4):
+        shard=torch.cat([v.chunk(4,0)[rank] for v in w.split(widths,0)],0)
+        bias=torch.cat([v.chunk(4,0)[rank] for v in b.split(widths,0)],0)
+        local.append(split_qkv_base(x,shard,(4,2,2),bias).split((4,2,2),-1))
+    for i,expected in enumerate(reference):
+        torch.testing.assert_close(torch.cat([s[i] for s in local],-1),expected)

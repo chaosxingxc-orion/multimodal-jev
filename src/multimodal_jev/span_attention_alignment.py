@@ -1,6 +1,6 @@
 """Diagnostic complete-prefill attention with HF operation order in vLLM.
 
-Only one uncached full request, TP1, no decoding. Native projections, LoRA,
+Only one uncached full request, explicit TP1 or TP4, no decoding. Native projections, LoRA,
 rotary and output projection remain in use. No prerecorded hidden states.
 """
 import torch
@@ -42,10 +42,14 @@ def aligned_attention_forward(module,positions,hidden_states):
     return output
 
 
-def install_eager_span_attention(model):
+def install_eager_span_attention(model, *, expected_tp=1):
     from types import MethodType
     layers=model.language_model.model.layers
     for layer in layers:
+        if expected_tp not in (1,4) or layer.self_attn.qkv_proj.tp_size!=expected_tp:
+            raise ValueError('matching attention tensor parallel size required')
+    for layer in layers:
         layer.self_attn.forward=MethodType(aligned_attention_forward,layer.self_attn)
-    return {'layers':len(layers),'implementation':'HF-order causal eager attention; native QKV/LoRA/rotary',
-            'scope':'TP1 single full uncached prefill only; no cache writes or decode support'}
+    return {'layers':len(layers),'tensor_parallel_size':expected_tp,
+            'implementation':'HF-order causal eager attention; native QKV/LoRA/rotary',
+            'scope':'Single full uncached prefill only; native output projection/reduction; no decode support'}

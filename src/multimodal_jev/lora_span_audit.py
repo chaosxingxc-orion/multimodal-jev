@@ -7,6 +7,25 @@ class SpanAuditWorkerExtension:
     def inspect_jev_span_lora(self):
         return inspect_span_lora(self.get_model())
 
+    def align_jev_tp4_hf_order(self):
+        from vllm.distributed import get_tensor_model_parallel_world_size
+        from .span_projection_alignment import install_separate_qkv, install_separate_mlp
+        from .span_audio_attention_alignment import install_eager_audio_attention
+        from .span_norm_alignment import install_hf_order_language_norm
+        from .span_rotary_alignment import install_hf_order_rotary
+        from .span_attention_alignment import install_eager_span_attention
+        model = self.get_model()
+        if (get_tensor_model_parallel_world_size()!=4 or
+                type(model).__name__!='Qwen3ASRForSpanDecisionsTP4Diagnostic'):
+            raise ValueError('isolated TP4 diagnostic architecture required')
+        return dict(tensor_parallel_size=4, diagnostic_only=True,
+                    audio=install_eager_audio_attention(model, allowed_tp=(1,4)),
+                    norms=install_hf_order_language_norm(model),
+                    qkv=install_separate_qkv(model, expected_tp=4),
+                    mlp=install_separate_mlp(model, expected_tp=4),
+                    rotary=install_hf_order_rotary(model),
+                    attention=install_eager_span_attention(model, expected_tp=4))
+
     def align_jev_language_norms(self):
         from .span_norm_alignment import install_hf_order_language_norm
         return install_hf_order_language_norm(self.get_model())

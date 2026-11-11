@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Recompute native TP4 candidate parity; never issue training READY."""
+"""Recompute experimental TP4 candidate parity; never issue training READY."""
 import argparse
 import json
 from pathlib import Path
@@ -7,7 +7,7 @@ from pathlib import Path
 from multimodal_jev.baseline import atomic_json, file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.span_parity import compare_span_policies
-from multimodal_jev.span_runtime_topology import TP4_DIAGNOSTIC, runtime_topology
+from multimodal_jev.span_runtime_topology import TP4_HF_ORDER, runtime_topology
 
 
 def summarize(root):
@@ -22,7 +22,7 @@ def summarize(root):
     terminal = json.loads((root / 'run/terminal.json').read_text())
     assert terminal['exit_code'] == 0
     result = json.loads((root / 'run/result.json').read_text())
-    assert result['runtime_profile'] == TP4_DIAGNOSTIC
+    assert result['runtime_profile'] == config['runtime_profile']
     assert result['diagnostic_only'] is True and result['tensor_parallel_size'] == 4
     assert result['base_id'] == checkpoint_identity(config['model'])[0]
     assert result['adapter_id'] == checkpoint_identity(config['adapter'])[0]
@@ -48,9 +48,16 @@ def summarize(root):
     assert result['passed'] == all(g['passed'] for g in gates)
     workers = json.loads((root / 'run/worker.json').read_text())
     profile = json.loads((root / 'run/runtime-profile.json').read_text())
-    assert profile['profile'] == TP4_DIAGNOSTIC and profile['diagnostic_only'] is True
+    assert profile['profile'] == config['runtime_profile'] and profile['diagnostic_only'] is True
     receipts = profile['operations']['align_jev_internal_format']
     assert len(receipts) == 4 and all(r['after'] == 'disable' for r in receipts)
+    if config['runtime_profile'] == TP4_HF_ORDER:
+        aligned = profile['operations']['align_jev_tp4_hf_order']
+        assert len(aligned) == 4
+        for receipt in aligned:
+            assert receipt['tensor_parallel_size'] == 4 and receipt['diagnostic_only'] is True
+            for name in ('qkv', 'mlp', 'attention'):
+                assert receipt[name]['tensor_parallel_size'] == 4 and receipt[name]['layers'] == 28
     assert len(workers) == 4
     for worker in workers:
         assert worker['model_class'] == 'Qwen3ASRForSpanDecisionsTP4Diagnostic'
@@ -59,7 +66,7 @@ def summarize(root):
         assert len(worker['wrapper_modules']) == 28
         assert all(v == ['torch.bfloat16'] for v in worker['actual_lora_buffer_dtypes'].values())
     return dict(root=str(root), diagnostic_only=True, training_admitted=False,
-                runtime_profile=TP4_DIAGNOSTIC, adapter_id=result['adapter_id'],
+                runtime_profile=config['runtime_profile'], adapter_id=result['adapter_id'],
                 records=len(gates), passed_records=sum(g['passed'] for g in gates),
                 maximum_logprob_error=max(g['maximum_logprob_error'] for g in gates),
                 joint_ratio_range=[min(g['joint_ratio_min'] for g in gates),
@@ -68,7 +75,7 @@ def summarize(root):
                 files={str(p): file_hash(p) for p in [root/'run/result.json', root/'run/worker.json',
                        root/'run/terminal.json', root/'run/runtime-profile.json',
                        root/'config.json', root/'source-manifest.json']},
-                scope='Independent native TP4 diagnostic; no RL admission or task improvement claim')
+                scope='Independent TP4 diagnostic; no RL admission or task improvement claim')
 
 
 if __name__ == '__main__':

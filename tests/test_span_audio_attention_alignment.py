@@ -26,3 +26,24 @@ def test_reject_incomplete_or_overlapping_window_description(limits):
     x=torch.zeros(9,2,4)
     with pytest.raises(ValueError,match='complete increasing'):
         windowed_audio_attention(x,x,x,torch.tensor(limits),.5)
+
+
+def test_audio_head_partition_preserves_windowed_attention():
+    torch.manual_seed(41)
+    q,k,v=[torch.randn(9,8,4) for _ in range(3)]
+    boundaries=torch.tensor([0,4,9])
+    full=windowed_audio_attention(q,k,v,boundaries,.5)
+    shards=[windowed_audio_attention(a,b,c,boundaries,.5) for a,b,c in
+            zip(q.chunk(4,1),k.chunk(4,1),v.chunk(4,1))]
+    torch.testing.assert_close(torch.cat(shards,-1),full,rtol=0,atol=0)
+
+
+def test_default_audio_installer_still_rejects_sharded_heads():
+    from types import SimpleNamespace
+    from multimodal_jev.span_audio_attention_alignment import install_eager_audio_attention
+    attention=SimpleNamespace(num_heads=8,num_local_heads=2)
+    model=SimpleNamespace(audio_tower=SimpleNamespace(layers=[SimpleNamespace(self_attn=attention)]))
+    with pytest.raises(ValueError,match='head partition'):
+        install_eager_audio_attention(model)
+    receipt=install_eager_audio_attention(model,allowed_tp=(1,4))
+    assert receipt['head_partitions']==[4]
