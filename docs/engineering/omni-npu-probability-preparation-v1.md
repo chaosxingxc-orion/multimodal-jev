@@ -149,3 +149,11 @@ CLI `--help` 成功；独立核对392份源码、实际命令/挂载及2 CPU/8 G
 无网络/设备配置，容器退出0、无OOM或重启。见
 [固定镜像核验](omni-processor-parity-tests-v1-verified.json)。
 此次仍未执行真实processor/采样数据分支，实际预检须等待完整采样验收。
+
+再以既有实际processor审计入口调用共享比较函数，对完整TRAIN6/78进行
+固定镜像CPU验证。78/78的token、顺序帧数和BF16特征比较通过，最大误差0；
+剔除新增比较字段后，全部逐决策记录与既有v2完全相同。实际容器退出0、
+无OOM或重启，2 CPU/16 GiB、无网络/设备；388份源码与 `13f39ba` 逐份核对。
+见[真实processor共享比较核验](sfc-omni-processor-parity-train78-v3-verified.json)。
+这验证共享比较函数接受实际HF/vLLM数据类型与布局，但尚未执行完整采样
+验收→processor→DataProto的新CLI路径，也不构成NPU概率或训练通过证据。

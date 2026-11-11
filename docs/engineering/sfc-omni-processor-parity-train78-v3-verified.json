@@ -1,0 +1,44 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/sfc-omni-processor-parity-train78-v3",
+  "launch": {
+    "container_id": "f6142c408eccabd6803894b5117c0d4fb86eb00fc19e03f0f23222e15387360a",
+    "source_commit": "13f39baecfd5cbf4223e3d32b9c480a430f4a17e",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c"
+  },
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-11T05:36:41.26190171Z",
+    "FinishedAt": "2026-11-11T05:37:56.97368655Z"
+  },
+  "source_files_verified": 388,
+  "result": {
+    "status": "passed",
+    "rows": 6,
+    "decisions": 78,
+    "raw_actor_token_mismatches": 0,
+    "raw_actor_feature_mismatches": 78,
+    "aligned_actor_token_mismatches": 0,
+    "aligned_actor_feature_mismatches": 0,
+    "max_aligned_feature_error": 0,
+    "comparisons_sha256": "98a5d598ce15deef1094e009462191d305f94efb1f5467600ab19fecfff191ff",
+    "elapsed_seconds": 58.32561329001328,
+    "model_loaded": false,
+    "targets_read": false,
+    "scope": "Actual complete TRAIN6/78 CPU HF and vLLM processors at model dtype. Raw existing actor and explicit hop-aligned diagnostic separately reported; no weights, logits, sampling, policy updates or input mutation."
+  },
+  "shared_comparator_decisions": 78,
+  "shared_comparator_max_error": 0,
+  "prior_v2_records_exact": true,
+  "identity_sha256": "d32efe5f908688ed190bcd378e6597e8ab9dcaadd41a56c4f76e716fa998b024",
+  "inspection_sha256": "e6dd84f1f56542d7b14d3aacea41d416666b98751a56abf4e46668ef24f5b9d4",
+  "logs_sha256": "744eb81c6d4761e7053760b9626b3cd3adb8f9a0d5545dfc81675bc1115865bd",
+  "scope": "Actual complete TRAIN6/78 CPU HF and vLLM outputs accepted by shared probability-preflight comparator. No sampled-record acceptance, DataProto pipeline execution, model probabilities, NPU or training claim."
+}
