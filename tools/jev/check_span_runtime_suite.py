@@ -53,6 +53,8 @@ def run(config, output):
             raise ValueError('BF16 adapter storage required')
     base_id = checkpoint_identity(config['model'])[0]
     adapter_id = checkpoint_identity(adapter)[0]
+    if 'base_id' in reference and (reference['base_id']!=base_id or reference['adapter_id']!=adapter_id):
+        raise ValueError('HF reference checkpoint differs')
     processor = Qwen3ASRProcessor.from_pretrained(config['model'], local_files_only=True)
     enable_feature_passthrough()
     engine = LLM(model=config['model'], tokenizer=config['model'], runner='pooling',
@@ -84,6 +86,9 @@ def run(config, output):
                 raise ValueError('HF reference expanded input/positions differ')
             request_id, payload = bind_span_request(request, receipt, batch, positions,
                 [m['token_ids'] for m in mapping], base_id+':'+adapter_id)
+            hf_row = rows[item['id']]
+            if 'request_id' in hf_row and (hf_row['request_id']!=request_id or hf_row['request_identity']!=payload):
+                raise ValueError('HF reference exact request identity differs')
             audio_id = processor.tokenizer.convert_tokens_to_ids('<|audio_pad|>')
             at = [i for i,t in enumerate(ids) if t==audio_id]
             if not at or at!=list(range(at[0],at[-1]+1)):
@@ -103,7 +108,7 @@ def run(config, output):
                 raise ValueError('worker prompt expansion differs')
             logits = result.outputs.data.float().cpu()
             logp = torch.log_softmax(logits,-1)
-            hf = torch.tensor(rows[item['id']]['candidate_logprobs']).squeeze(1)
+            hf = torch.tensor(hf_row['candidate_logprobs']).squeeze(1)
             audit = compare_span_policies(hf.tolist(),logp.tolist())
             records.append(dict(id=item['id'], request_id=request_id, request_identity=payload,
                 input_tokens=len(ids), audio_seconds=len(audio)/16000, labels=item['targets'],

@@ -28,6 +28,14 @@
 
 `tools/jev/train_span_rl_step.py` 的 `runtime_profile` 参数必须同时提供 `runtime_acceptance` 并将其加入 `pins`。入口核验验收文件hash、基座与初始adapter身份、48条不同请求、八种完整监督组合，并从保存概率重新计算gate。之后每个更新前请求仍单独过gate；一次真实verl完整动作PPO/GRPO更新后，导出不可变adapter/optimizer快照，独立HF重载和新vLLM版本检查通过才写READY。任意失败都不会伪造READY；更新后失败则保留新版本供诊断，不继续采样。
 
+任意新adapter的48条独立验收入口是 `tools/jev/check_span_policy_version.py`，顺序调用 `build_span_hf_reference.py` 与 `check_span_runtime_suite.py`，两后端不同时驻留NPU。配置包含 `model`、`adapter`、`identity`（已锁定的输入manifest）、`runtime_profile` 和 `pins`；source/模型/输入来自固定镜像与只读挂载，不允许下载。输出目录必须全新。
+
+```bash
+PYTHONPATH=src python tools/jev/check_span_policy_version.py --config /path/config.json --output /path/new-run
+```
+
+命令必须在指定NPU镜像和物理4卡隔离环境内执行。`READY.json`记录新adapter身份和全量结果hash；失败仅保存终态，不进入后续政策版本。
+
 固定门槛：每个候选max |Δlogp|≤0.02，所有完整动作的actor/behavior概率比∈[0.98,1.02]。不以argmax相同、单一准确率或profile名称代替检查。保存重载目标为HF候选概率完全一致。
 
 ## 尚未完成
