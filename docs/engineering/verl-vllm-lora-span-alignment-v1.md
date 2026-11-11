@@ -6,7 +6,7 @@
 
 最新进度：BF16 candidate-CE LoRA 20步训练与独立保存重载已完成；48条学习录音重载候选概率最大误差为0。原生vLLM BF16概率gate失败，max logp差0.140574、完整动作比率[0.811465,1.199267]。分层及同进程复算依次确认语言RMSNorm、基础QKV打包、音频卷积internal-format与attention/rotary运算顺序的差异。最终组合探针 `language-rotary-v2` 在一条600-token真实录音上全部100个非stride激活trace点逐位一致，max logp差5.9604645e-08、完整动作比率1.0000001192，通过固定gate；保留vLLM原生LoRA add、未合并adapter和BF16执行。此前的单项干预未单独通过，不作为独立修复保证。证据见 `slurp-bf16-language-rotary-v2-verified.json` 和 `experiments/slurp-bf16-projection-audit-v1.md`。
 
-已将组合对齐封装为命名profile `qwen3-asr-bf16-hf-order-v1`，限定TP1、单条完整序列、无cache/解码/量化。48条顺序请求suite已全部通过，max logp差1.1920929e-07，完整动作概率比范围[0.9999999851,1.0000001788]，覆盖全部八种Boolean监督组合，原始音频约1.7–8.4秒。训练入口必须验证suite结果文件hash、基座/adapter身份并独立重算每条完整动作gate；仍逐次验证更新前和新adapter，不能仅凭profile名称放行。step-v3已完成一次真实语音RL更新，但更新后HF重载失败，新版本未准入。源码确认verl导入时全局替换Qwen3 norm/MLP/rotary；step-v4提前导入verl并恢复原HF算子后重验。批量、分布式及跨任务效果未验收。
+已将组合对齐封装为命名profile `qwen3-asr-bf16-hf-order-v1`，限定TP1、单条完整序列、无cache/解码/量化。48条顺序请求suite已全部通过，max logp差1.1920929e-07，完整动作概率比范围[0.9999999851,1.0000001788]，覆盖全部八种Boolean监督组合，原始音频约1.7–8.4秒。训练入口必须验证suite结果文件hash、基座/adapter身份并独立重算每条完整动作gate；仍逐次验证更新前和新adapter，不能仅凭profile名称放行。step-v3已完成一次真实语音RL更新，但更新后HF重载失败，新版本未准入。源码确认verl导入时全局替换Qwen3 norm/MLP/rotary；step-v4提前导入verl并恢复原HF算子后完整通过：独立HF重载误差0、两条更新后vLLM max误差≤5.9604645e-08，已生成READY；新adapter全48条独立复核进行中。批量、分布式及跨任务效果未验收。
 
 工程新增：单rank `span_actor_update` 使用实际verl GRPO与clipped PPO完整动作损失；BF16 optimizer已支持master/state恢复。`tools/jev/train_span_rl_step.py`连接真实音频HF参考、vLLM候选rollout、训练前gate、一次更新、新版本导出、独立actor重载和vLLM复核；后端顺序退出，避免NPU显存并存。当前该入口首次NPU验收已在真实语音更新前正确阻断（max logp差0.0652434，0次更新），不是分布式Ray/verl trainer已完成，不声称真实语音RL成功。详见 `experiments/span-actor-update-v1.md`。
 

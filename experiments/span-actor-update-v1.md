@@ -23,3 +23,5 @@ CPU验证共30项通过，覆盖数学/奖励/输入身份/概率gate、断点�
 命名profile与48条验收后启动step-v2：两条更新前rollout全部通过（max误差均≤1.1920929e-07）。进入actor时，request/policy哈希逐条完全相同，但持久化JSON list与内存dataclass tuple直接比较触发身份拒绝；尚未生成behavior/update/checkpoint，0次更新。已把bind_span_request返回内容统一为同一JSON规范表示，哈希算法不变；新增round-trip测试仍验证真实字段变化被拒绝。新目录step-v3重新执行全流程，不复用已claim目录。
 
 step-v3更新前两条概率及actor重算完全一致，完成1次真实verl更新，gradient norm=3.984375；保存BF16 adapter及FP32 master/Adam成功。但独立HF重载max logp差0.15266055，被门禁拦截，无READY、未运行新版本rollout。源码发现verl首次导入会通过npu_patch全局替换Qwen3 RMSNorm/MLP/rotary；此前在loss内部延迟导入，使更新前后计算图实现不一致。step-v4提前导入真实verl并恢复三个原始HF函数对象，保持已验收的运行配置，从同一初始adapter重新执行，v3 checkpoint仅作失败证据。
+
+step-v4完整终态0/READY：提前初始化verl并恢复三个HF算子后，两条更新前概率误差0；真实更新gradient norm=3.984375；独立HF重载误差0；两条更新后vLLM max误差1.4901161e-08与5.9604645e-08。导出112个BF16执行参数，master/Adam状态FP32；checkpoint hash与optimizer完整性复核通过。这验证单步训练/导出/重载/rollout生命周期，不构成任务收益。新adapter另行全48条独立HF/vLLM复核。

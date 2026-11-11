@@ -16,6 +16,7 @@ class FixtureAdapter(torch.nn.Module):
         destination.mkdir()
         # Storage is opaque to the manifest; runtime PEFT owns actual encoding.
         (destination/'adapter_model.safetensors').write_bytes(b'fixture-opaque-weights')
+        (destination/'adapter_model.safetensors').chmod(0o600)
         (destination/'adapter_config.json').write_text('{}')
 
 
@@ -28,6 +29,8 @@ def test_checkpoint_roundtrip_authentication_and_version_exclusion(tmp_path):
     target = tmp_path/'policy-1'
     policy = save_span_checkpoint(target, model, model, optimizer, 'base-hash', 1)
     assert policy.startswith('base-hash:') and not (tmp_path/'policy-1.pending').exists()
+    assert (target/'adapter/adapter_model.safetensors').stat().st_mode & 0o777 == 0o644
+    assert (target/'adapter').stat().st_mode & 0o777 == 0o777
     restored = BF16MasterAdamW(model.parameters(), lr=.1)
     receipt = restore_span_optimizer(target, model, restored, 'base-hash')
     assert receipt['completed_updates'] == 1

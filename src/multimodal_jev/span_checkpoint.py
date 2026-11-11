@@ -27,6 +27,13 @@ def save_span_checkpoint(destination, adapted, model, optimizer, base_id, update
     atomic_json(pending / 'CHECKPOINT.json', dict(schema='jev-span-checkpoint-v1', base_id=base_id,
         adapter_id=adapter_id, adapter_files=adapter_files, completed_updates=updates,
         optimizer_sha256=file_hash(pending / 'optimizer.pt')))
+    # safetensors may create mode 0600 even when the shared directory is open.
+    # Publish this checkpoint's artifacts readable across host/container UIDs.
+    # User requested shared directories 0777; do not change unrelated assets.
+    for path in (pending, *pending.rglob('*')):
+        if path.is_symlink():
+            raise ValueError('checkpoint publication cannot contain symlinks')
+        path.chmod(0o777 if path.is_dir() else 0o644)
     os.rename(pending, destination)
     return base_id + ':' + adapter_id
 
