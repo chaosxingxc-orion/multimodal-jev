@@ -7,7 +7,7 @@ from pathlib import Path
 from multimodal_jev.baseline import atomic_json, file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.span_parity import compare_span_policies
-from multimodal_jev.span_runtime_topology import TP4_HF_ORDER, TP4_COMPLETE_K, runtime_topology
+from multimodal_jev.span_runtime_topology import TP4_HF_ORDER, TP4_COMPLETE_K, TP4_FULL_WIDTH, runtime_topology
 
 
 def summarize(root):
@@ -51,7 +51,7 @@ def summarize(root):
     assert profile['profile'] == config['runtime_profile'] and profile['diagnostic_only'] is True
     receipts = profile['operations']['align_jev_internal_format']
     assert len(receipts) == 4 and all(r['after'] == 'disable' for r in receipts)
-    if config['runtime_profile'] in (TP4_HF_ORDER, TP4_COMPLETE_K):
+    if config['runtime_profile'] in (TP4_HF_ORDER, TP4_COMPLETE_K, TP4_FULL_WIDTH):
         aligned = profile['operations']['align_jev_tp4_hf_order']
         assert len(aligned) == 4
         for receipt in aligned:
@@ -59,7 +59,7 @@ def summarize(root):
             for name in ('qkv', 'mlp', 'attention'):
                 assert receipt[name]['tensor_parallel_size'] == 4 and receipt[name]['layers'] == 28
     projection_cost=None
-    if config['runtime_profile'] == TP4_COMPLETE_K:
+    if config['runtime_profile'] in (TP4_COMPLETE_K, TP4_FULL_WIDTH):
         receipts=profile['operations']['align_jev_tp4_complete_k']
         assert sorted(r['rank'] for r in receipts)==list(range(4))
         for receipt in receipts:
@@ -78,6 +78,14 @@ def summarize(root):
             maximum_single_gathered_input_bytes=max(m['maximum_gathered_input_bytes'] for w in workers for m in w['complete_k_projections'].values()),
             maximum_single_gathered_output_bytes=max(m['maximum_gathered_output_bytes'] for w in workers for m in w['complete_k_projections'].values()),
             scope='Tensor payload/storage accounting only; not wire traffic, measured peak HBM or communication latency')
+    if config['runtime_profile']==TP4_FULL_WIDTH:
+        receipts=profile['operations']['align_jev_tp4_full_width']
+        assert sorted(r['rank'] for r in receipts)==list(range(4))
+        assert all(r['layers']==28 and r['diagnostic_only'] for r in receipts)
+        for worker in workers:
+            assert len(worker['full_width_projections'])==56
+            assert all(c>=48 for c in worker['full_width_projections'].values())
+        projection_cost['maximum_single_padded_weight_bytes']=max(r['maximum_single_padded_weight_bytes'] for r in receipts)
     assert len(workers) == 4
     for worker in workers:
         assert worker['model_class'] == 'Qwen3ASRForSpanDecisionsTP4Diagnostic'

@@ -1,0 +1,147 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1",
+  "request_id": "a91d8cc4b513d794dc3a49390ca1581bb30b8826350a9edbbf8fe709bafa9dc9",
+  "comparison": {
+    "all_logits_exact": true,
+    "pairs": [
+      {
+        "left": "plain-before-1",
+        "right": "plain-before-2",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "plain-before-1",
+        "right": "trace",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "plain-before-1",
+        "right": "plain-after-1",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "plain-before-1",
+        "right": "plain-after-2",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "plain-before-2",
+        "right": "trace",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "plain-before-2",
+        "right": "plain-after-1",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "plain-before-2",
+        "right": "plain-after-2",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "trace",
+        "right": "plain-after-1",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "trace",
+        "right": "plain-after-2",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      },
+      {
+        "left": "plain-after-1",
+        "right": "plain-after-2",
+        "logits_exact": true,
+        "maximum_logit_difference": 0.0,
+        "maximum_logprob_difference": 0.0
+      }
+    ],
+    "scope": "One request in one engine; does not prove cross-engine determinism or HF parity"
+  },
+  "collective_environment": [
+    {
+      "HCCL_DETERMINISTIC": "strict",
+      "LCCL_DETERMINISTIC": "1"
+    },
+    {
+      "HCCL_DETERMINISTIC": "strict",
+      "LCCL_DETERMINISTIC": "1"
+    },
+    {
+      "HCCL_DETERMINISTIC": "strict",
+      "LCCL_DETERMINISTIC": "1"
+    },
+    {
+      "HCCL_DETERMINISTIC": "strict",
+      "LCCL_DETERMINISTIC": "1"
+    }
+  ],
+  "sixth_plain_request_exact": true,
+  "sixth_plain_maximum_logit_difference": 0.0,
+  "full_suite": {
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1",
+    "diagnostic_only": true,
+    "training_admitted": false,
+    "projection_cost": {
+      "modules_per_rank": 56,
+      "local_weight_bytes_per_rank": [
+        73400320,
+        73400320,
+        73400320,
+        73400320
+      ],
+      "maximum_single_full_weight_bytes": 6291456,
+      "calls_per_module": [
+        53
+      ],
+      "maximum_single_gathered_input_bytes": 4165632,
+      "maximum_single_gathered_output_bytes": 1388544,
+      "scope": "Tensor payload/storage accounting only; not wire traffic, measured peak HBM or communication latency",
+      "maximum_single_padded_weight_bytes": 6291456
+    },
+    "runtime_profile": "qwen3-asr-bf16-full-width-tp4-diagnostic-v1",
+    "adapter_id": "6df66622568c868b2ab06efffdfd56fcfb3e512727a764953865ce0b68a1e986",
+    "records": 48,
+    "passed_records": 4,
+    "maximum_logprob_error": 0.1886674165725708,
+    "joint_ratio_range": [
+      0.749916063573651,
+      1.3773793625087245
+    ],
+    "argmax_changed_spans": 7,
+    "files": {
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/run/result.json": "c702b922102be0e1d770133975d4a9257a1b0edb4bf5836d679cd8431c3846bb",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/run/worker.json": "bce6b45835f1d69df2b578ab5bd95d4abda1383216122dba29c6121f41c9d598",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/run/terminal.json": "8ed79b4b552b59dee5fa064fe7c6ecba5c98f4401df067f0ad7e2aa0aa0b5a18",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/run/runtime-profile.json": "1cf3223ef9dc5657d093a9b1a9ca82fd778d68ba803235879f7920e93c4ce27d",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/config.json": "7d8e44358fdef339a942842b94d19648c3d033ac84ac149a082812d9fe559f68",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/source-manifest.json": "d674f2c8892c36d1387cae2a0f713035ac3eeb9318cfb890c0c1991bce19aa5f"
+    },
+    "scope": "Independent TP4 diagnostic; no RL admission or task improvement claim"
+  },
+  "training_admitted": false,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/run/repeatability.json": "cec3abe5df87f42dafac67ce6b1f2a3110935f0602b01987e0af194ff7741b07",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-full-width-v1/run/repeat-trace-files.json": "0f481ecf29d9d275f6ab83c3fea977419ad1b6920d5e0fabcf3e19ee0274356a"
+  },
+  "scope": "One fixed request, five controlled repeats plus suite sixth call; one engine only, no cross-engine or HF equivalence claim"
+}

@@ -11,6 +11,10 @@ class SpanAuditWorkerExtension:
         from .span_row_projection import install_complete_k_projections
         return install_complete_k_projections(self.get_model())
 
+    def align_jev_tp4_full_width(self):
+        from .span_projection_shape import install_full_width_projections
+        return install_full_width_projections(self.get_model())
+
     def align_jev_tp4_hf_order(self):
         from vllm.distributed import get_tensor_model_parallel_world_size
         from .span_projection_alignment import install_separate_qkv, install_separate_mlp
@@ -106,6 +110,7 @@ class SpanAuditWorkerExtension:
 def inspect_span_lora(model):
     import os
     from .span_row_projection import inspect_complete_k_projections
+    from .span_projection_shape import inspect_full_width_projections
     from vllm.lora.layers import BaseLayerWithLoRA
     manager=getattr(model,'lora_manager',None)
     if manager is None:
@@ -127,6 +132,7 @@ def inspect_span_lora(model):
         storage[name] = sorted({str(t.dtype) for t in tensors})
     return dict(model_class=type(model).__name__,wrapper_modules=wrapped,
                 complete_k_projections=inspect_complete_k_projections(model),
+                full_width_projections=inspect_full_width_projections(model),
                 collective_environment={key:os.environ.get(key) for key in
                     ('HCCL_DETERMINISTIC','LCCL_DETERMINISTIC')},
                 actual_lora_buffer_dtypes=storage,

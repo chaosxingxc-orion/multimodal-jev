@@ -19,7 +19,11 @@ def complete_k_forward(module, x):
     if x.dtype!=torch.bfloat16 or x.shape[-1]*4!=module.weight.shape[-1]:
         raise ValueError('BF16 local input shard required')
     gathered=tensor_model_parallel_all_gather(x,dim=-1)
-    local=torch.nn.functional.linear(gathered,module.weight)
+    if hasattr(module,'_jev_full_width_rank'):
+        from .span_projection_shape import full_width_local_linear
+        local=full_width_local_linear(gathered,module.weight,module._jev_full_width_rank)
+    else:
+        local=torch.nn.functional.linear(gathered,module.weight)
     output=tensor_model_parallel_all_gather(local,dim=-1)
     module._jev_complete_k_calls+=1
     module._jev_complete_k_max_input_bytes=max(module._jev_complete_k_max_input_bytes,
