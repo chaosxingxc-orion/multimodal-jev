@@ -101,3 +101,23 @@ def test_context_rejects_wrong_dispatch_before_mutation(monkeypatch,kind):
     with pytest.raises(ValueError):
         with observer.observe_native_logprobs(rows_per_chunk=0 if kind=='chunk' else 16):pass
     assert actor.logprobs_from_logits is before
+
+
+def test_fixed_image_native_binding_rejects_cpu_before_kernel_and_restores():
+    pytest.importorskip('verl')
+    from verl.workers.actor import dp_actor
+    from verl.utils import torch_functional
+    original = dp_actor.logprobs_from_logits
+    assert original is torch_functional.logprobs_from_logits
+    # Actual package globals and source SHA, no simulated dispatcher or flags.
+    with observer.observe_native_logprobs() as report:
+        assert report['source_sha256'] == observer.PINNED_SOURCE
+        assert report['npu_available'] and not report['flash_available']
+        with torch.no_grad(), pytest.raises(ValueError, match='expected probability device'):
+            dp_actor.logprobs_from_logits(torch.zeros(2, 3), torch.zeros(2, dtype=torch.long))
+        assert report['calls'] == []
+    assert dp_actor.logprobs_from_logits is original
+    with pytest.raises(RuntimeError, match='scope exit'):
+        with observer.observe_native_logprobs():
+            raise RuntimeError('scope exit')
+    assert dp_actor.logprobs_from_logits is original
