@@ -1,0 +1,186 @@
+{
+  "status": "passed",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1",
+  "verified_updates": 20,
+  "training_recordings": 40,
+  "supervised_spans": 120,
+  "every_batch_each_task_positive_negative": [
+    1,
+    1
+  ],
+  "metrics": {
+    "before": {
+      "per_span": {
+        "date": {
+          "confusion_gold_by_prediction": [
+            [
+              24,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          "recall_false": 1.0,
+          "recall_true": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "time": {
+          "confusion_gold_by_prediction": [
+            [
+              22,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          "recall_false": 1.0,
+          "recall_true": 0.0,
+          "balanced_accuracy": 0.5
+        },
+        "timeofday": {
+          "confusion_gold_by_prediction": [
+            [
+              24,
+              0
+            ],
+            [
+              24,
+              0
+            ]
+          ],
+          "recall_false": 1.0,
+          "recall_true": 0.0,
+          "balanced_accuracy": 0.5
+        }
+      },
+      "decisions": 142,
+      "correct": 70,
+      "complete_recordings": 46,
+      "complete_correct": 5,
+      "scope": "Learning-population diagnostic only; no held-out accuracy or CoT benefit claim."
+    },
+    "after": {
+      "per_span": {
+        "date": {
+          "confusion_gold_by_prediction": [
+            [
+              9,
+              15
+            ],
+            [
+              8,
+              16
+            ]
+          ],
+          "recall_false": 0.375,
+          "recall_true": 0.6666666666666666,
+          "balanced_accuracy": 0.5208333333333333
+        },
+        "time": {
+          "confusion_gold_by_prediction": [
+            [
+              15,
+              7
+            ],
+            [
+              4,
+              20
+            ]
+          ],
+          "recall_false": 0.6818181818181818,
+          "recall_true": 0.8333333333333334,
+          "balanced_accuracy": 0.7575757575757576
+        },
+        "timeofday": {
+          "confusion_gold_by_prediction": [
+            [
+              15,
+              9
+            ],
+            [
+              7,
+              17
+            ]
+          ],
+          "recall_false": 0.625,
+          "recall_true": 0.7083333333333334,
+          "balanced_accuracy": 0.6666666666666667
+        }
+      },
+      "decisions": 142,
+      "correct": 92,
+      "complete_recordings": 46,
+      "complete_correct": 10,
+      "scope": "Learning-population diagnostic only; no held-out accuracy or CoT benefit claim."
+    },
+    "after-silence": {
+      "per_span": {
+        "date": {
+          "confusion_gold_by_prediction": [
+            [
+              4,
+              20
+            ],
+            [
+              4,
+              20
+            ]
+          ],
+          "recall_false": 0.16666666666666666,
+          "recall_true": 0.8333333333333334,
+          "balanced_accuracy": 0.5
+        },
+        "time": {
+          "confusion_gold_by_prediction": [
+            [
+              21,
+              1
+            ],
+            [
+              13,
+              11
+            ]
+          ],
+          "recall_false": 0.9545454545454546,
+          "recall_true": 0.4583333333333333,
+          "balanced_accuracy": 0.7064393939393939
+        },
+        "timeofday": {
+          "confusion_gold_by_prediction": [
+            [
+              7,
+              17
+            ],
+            [
+              7,
+              17
+            ]
+          ],
+          "recall_false": 0.2916666666666667,
+          "recall_true": 0.7083333333333334,
+          "balanced_accuracy": 0.5
+        }
+      },
+      "decisions": 142,
+      "correct": 80,
+      "complete_recordings": 46,
+      "complete_correct": 10,
+      "scope": "Learning-population diagnostic only; no held-out accuracy or CoT benefit claim."
+    }
+  },
+  "files": {
+    "config.json": "93c96f49a0dc1af2daec5beb37bf6c4c9f90cc1e08778970e15488184cafd35d",
+    "run/result.json": "e6252fa3be8bce8cbdb8a5bbb435d54906de28b3ec04247cfede48a389ea50ce",
+    "run/history.json": "53a56dcc695066143083a2273e826b89e95ce3817c18554d8ed36931db2d8cf3",
+    "run/balance.json": "1f488d0f4c1e3667b2c83f1dcb2c53ec1fa5cc7e0360bcda71190809c75e84c1",
+    "run/before.json": "f2a796d9bbdd915f15b2e457bb000300f13df5a35941fa3c3664182ca7e87458",
+    "run/after.json": "8051db7312f6c77de6fc3a9b0dc5c06a68ac799a7adc8e8d78c8858ba143ee3f",
+    "run/after-silence.json": "24c349026b9e846b969cd7a00bccd218001c970936b62746bc4a5d1fa9fefd1c",
+    "run/terminal.json": "88614cd4edfb12b3037f26803e3264953fa0e5d119e4d9d5bd391829e580cc4c"
+  },
+  "scope": "Schedule and per-recording metrics independently recomputed; no reload/held-out claim."
+}

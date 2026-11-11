@@ -1,0 +1,74 @@
+# verl / vLLM / LoRA 多 Span 一致性与奖励方案
+
+## 当前证据与结论
+
+采用 LoRA 更新语言骨干，actor 与 rollout 共享基座及适配器身份；不将“同 checkpoint”当作概率一致证明。现有真实 HF Span 前向、LoRA SFT、保存重载已验证；vLLM pooling 无生成多 Span 前向已验证，但单样本候选 logprob 最大误差 0.063258 超过 0.02 门槛。尚未验证 pooling + 原生 LoRA 请求、热更新或端到端 verl Span actor 更新。普通生成 actor 的 responses 拼接逻辑不能直接复用。
+
+均衡调试已固定八种标签组合各五条、每次更新三项任务各正负一例；单 epoch 仍全部预测 false。不能把类别平衡、前处理或 RL 中任何一项单独当作已解决方案。
+
+## 配置与数值路径
+
+1. 模型：锁定本地 Qwen3-ASR-0.6B-hf revision/权重哈希；语言 q/v LoRA 首先延用 rank4/alpha8、dropout0、bias none。音频塔、projector、原生 LM head 冻结；验证 adapter 参数和实际梯度覆盖。是否提高 rank 单独对照。
+2. actor：HF/PEFT 梯度路径，eval 禁用 dropout 但允许 autograd；BF16 主计算、FP32 候选 log-softmax/联合概率/损失及梯度统计。优化器状态实际 dtype 要记录，不能假定 LoRA 全部 FP32。
+3. rollout：vLLM pooling runner，保留 native LM head、同一 p−1 位置、同一候选映射。TP1、eager、无 prefix cache/chunked prefill、无量化先行。解码生成接口不承担 Span 采样。
+4. 首选双方 base+unmerged LoRA，逐项验证 target mapping、qkv 打包位置、scaling、dtype。vLLM 当前 pooling 适配器的 LoRA 未验证，不能因父类 SupportsLoRA 就宣称支持。若未支持，可用每轮合并快照执行 rollout，但它和未合并 actor 数值不同，必须过概率门槛；也可实现一次真正等价的 actor 合并前向且保留 LoRA 梯度，不能用 detach 合并绕过训练。
+5. 不在一侧启用 LoRA merge、量化或不同 attention 实现后只比较 argmax。BF16 分离矩阵乘与先合并权重存在舍入差异，不能承诺逐位一致。
+
+## 输入身份与音频处理
+
+原始音频哈希 + 前处理配置/算法版本 + 实际处理后 float32 波形哈希 + 特征张量/长度/掩码身份共同绑定请求。训练增强先固定实例，再复制给同组 G 个动作；随机增强不能在 actor 重算时重新抽取。不同增强实例为不同 request_id。静音仅诊断，不伪造训练负例。
+
+当前 raw、首尾能量裁剪、RMS 增益、preemphasis、speed/pitch 扰动分别做单因素对照，HF 与 vLLM 使用同一处理后的波形/特征。预处理不同无法靠重要性权重修正。固定 processor、模板、音频 token 展开、position IDs、Span p−1、符号候选顺序、mask 和 temperature。初始 temperature=1，不加 top-k/top-p、重复惩罚等分布变换。
+
+已发现旧生成路线的音频塔/worker 数值问题；新 pooling 上尚未定位。诊断顺序为输入特征 → 音频投影 → 语言层隐藏表示 → LM head → 候选归一化。共享实时 HF 音频塔在旧 worker 内并未修复误差，不重复宣称已解决。若音频塔冻结，可研究在服务内部统一实时音频编码或按音频/前处理/encoder 版本缓存投影，但必须另验协议和数值；模型仍直接消费原始音频，不经过转写或文本模型。
+
+## 每次政策更新的同步
+
+同步阶段初始采用全局 barrier：
+
+1. 冻结 rollout adapter 版本 v，分发基座/适配器/模板/前处理签名；worker 回报实际加载身份。
+2. vLLM 一次 pooling 得到全部候选分布，显式 categorical sampler 抽取完整 Span 元组；保存原始候选 logits、采样变换、逐 Span/联合行为 logprob、随机种子和 request identity。
+3. actor 在任何 optimizer step 前重算同一动作概率，与行为政策逐项比较。不用 actor 重算值覆盖实际 rollout old_log_probs。
+4. 通过 gate 后才训练 LoRA；KL reference 为固定 SFT 初始化，old policy 为本轮 v，两者不是同一概念。
+5. 结束更新后将 v+1 适配器导入新引擎/新不可变 LoRA ID，核验加载后的探针。确认在途 v 请求全部结束后再切换，不复用旧 ID 隐藏替换，也不静默消费陈旧队列。
+
+初期可以重建引擎，正确性稳定后再验收 hot swap 与多卡。单机四卡授权不代表必须立即分布式。
+
+## 概率门槛
+
+最初保留 max per-span |Δlogp|≤0.02 诊断门槛，并增加完整动作的联合比率检查：r=exp(ΣΔlogp)。每项 0.02 对 3 Span 最坏为 exp(0.06)≈1.062，因此单项门槛不足。初始建议未更新 actor/rollout 的联合比率在 [0.98,1.02] 内；现已在 span_parity.py 实现全候选精确检查（利用独立分布的极值求和，不只抽样）；并未通过真实 gate。基座实测联合比率范围为 [0.879938,1.076945]，argmax 均相同仍不能通过。记录 max/p95、候选 KL、近边界样本 argmax 及所有候选概率，不能只测已采样答案或高置信样本。
+
+探针覆盖多音频长度、正负组合、单问/多问、不同候选数、预处理、基础/非零 LoRA、保存重载、更新前后和批量变化。先保留原始误差，不能靠放宽阈值、每后端单独温度校准或奖励改写隐藏差异。后续若研究 off-policy correction，需独立定义行为/目标概率和截断偏差，不能当作基础一致性验收替代。
+
+## 分类目标与过程奖励
+
+当前 SFT 用全词表 CE，但部署使用候选内归一化。建议在完全相同 40 条均衡数据、初始化与更新预算上对照候选 CE：L=−Σ supervised log p_candidate(gold)。全词表 CE 的降低可能主要体现输出符号学习；候选 CE 与实际有限分类政策对齐，但收益仍需测量。可靠中间标签的辅助 CE 是明确且低方差的监督来源。
+
+三项 temporal 标签是并列分类，目前没有真实 Final 依赖链，应分别计分，不能给前两项冠以过程奖励并宣称推理收益。对未来具有独立 Final 的任务，分开记录：
+
+- R_final：Final 判决正确性或正式任务效用，优化及模型选择的主要目标。
+- R_aux：有审核标签的前置 Span 平均正确性，缺标屏蔽、unknown 视合法类；归一化按可用监督数，避免增加问题数量就增奖。
+- R_consistency：仅对已验证依赖规则的逻辑矛盾给小惩罚。全错但自洽不应得正奖；没有规则或缺标则不启用。
+
+首个复合候选可为 R=R_final+λR_aux−μC，0≤μ<λ<1 是有界 binary Final 场景的设计起点，具体系数只在学习/选择数据决定，不能声称这是证明过的最优值。若要求所有“Final 正确”的奖励都高于“Final 错误”，应明确约束 λ+μ<1（R_aux,C∈[0,1]），而不只是各项分别小于1。并且这一逐样本优先级不保证期望 Final 准确率最优，模型选择仍以 Final 和独立约束为准。提供 Final-only 与 auxiliary-CE 对照，不默认所有标签都转 RL。
+
+关键限制：当前 sampled auxiliary answers 不反馈给 Final。对于固定输入、只依赖 Final 的奖励，中间动作 score-function 项的期望直接梯度为零；共享骨干依然收到 Final 梯度。这使“全元组联合 logprob × Final reward”包含不必要的采样方差。增加辅助奖励会训练前置判决，但不能据此证明它们对 Final 产生因果推理作用。
+
+因此后续建议比较两种有明确语义的更新，而不混称：
+
+A. 完整元组 joint PPO/GRPO，现有数学接口，作为基线，适用于非可分整体效用；联合概率比一次 clip。
+B. 可分奖励的逐 Span 信用分配：Final 奖励仅对应 Final score 项，可靠中间奖励/CE 对应自己的 Span；共享骨干仍联合更新。on-policy 可分奖励下可去除交叉项方差，但逐 Span PPO clipping 与 joint clipping 是不同算法，有限更新下不可声称严格等价。非可分一致性奖励需另做 joint 项或有证明的条件期望估计。
+
+有限小分类空间还有更强对照：当前三个 Boolean Span 仅 8 种动作，可枚举准确期望 reward/梯度，无需估计过程状态。任何 RL 创新都需与候选 CE 和可枚举期望目标比较；将分类正确率换名为 RL 奖励本身不构成学术贡献。跨任务、组合规则与非可分业务效用是更有意义的研究场景。
+
+不要奖励输出长度、JSON 格式、额外问题数量、无参考的自信或“思考已触发”；这些与本接口性能目标无关。校准用独立 NLL/Brier/ECE 评价或显式 proper-scoring 辅助目标，不拿自信分数当正确性。
+
+## 均衡、GRPO 归一化与执行顺序
+
+均衡来自学习集采样及 batch 分层。若同一 request 的正类权重为常数，把它乘到组内 reward 后再按组标准差归一化，权重会近似抵消（epsilon 除外）。需要类权重时用归一化后的明确任务/样本损失权重，或不做 std 标准化；不要重复加权。保留真实评估分布，报告 macro/balanced accuracy、每类 recall、混淆矩阵、Final、全 Span 及静音对照。
+
+顺序：固定均衡数据做候选 CE 对照 → 定位 base/非零 LoRA 的 pooling 概率差 → 实现并验证同步与完整请求身份 → 最小 verl Span actor 更新 → 等预算 SFT/Final-only/可靠辅助奖励对照 → 独立来源及规则/任务留出的泛化评估。预处理改进并行作为单因素实验，不以其收益替代 RL 方法收益。当前所有性能仍为学习诊断，完整学术复现和泛化目标尚未完成。
+
+后续执行证据：相同40条、相同20次更新的候选CE对照完成，原48条学习人口 after=92/142 vs 全词表70/142；静音80/142，完整三问全对仍与静音均10/46。仅支持继续研究分类目标，不证明泛化。原生FP32 LoRA pooling诊断仍在验证，v1因dtype字符串不被API接受而失败，v2改为torch.float32。
+
+实现进度补记：已增加候选CE、全动作联合概率gate及有审核mask的辅助奖励函数，51项相关测试通过。奖励接口未接入参数更新；vLLM LoRA kernel实际精度与actor匹配仍待本轮探针结果。候选CE从相同初始化出发的改善不能作为同精度后端一致性的替代。

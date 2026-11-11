@@ -87,3 +87,25 @@ def test_marker_predecessors_after_audio_expansion_and_template_loss():
     assert (batch['input_ids'][0,:pos[0,0]]==999).sum()==7
     p.drop=True
     with pytest.raises(ValueError,match='dropped task'):encode_span_request(p,request,[0.])
+
+
+def test_candidate_ce_matches_manual_masked_nll_and_ignores_non_candidates():
+    from multimodal_jev.span_model import span_candidate_loss
+    logits=torch.tensor([[[.2,99.,.7,-.1],[.3,-.4,88.,.2]],
+                         [[.8,77.,-.1,.3],[.2,.5,66.,-.7]]],requires_grad=True)
+    options=[[0,2],[1,3]]
+    logp=[logits[:,j,ids].log_softmax(-1) for j,ids in enumerate(options)]
+    targets=torch.tensor([[2,-100],[0,3]])
+    mask=torch.tensor([[True,False],[True,True]])
+    loss=span_candidate_loss(logp,targets,mask,options)
+    expected=(-logp[0][0,1]-logp[0][1,0]-logp[1][1,1])/3
+    torch.testing.assert_close(loss,expected)
+    loss.backward()
+    assert logits.grad[0,1].abs().sum()==0
+    assert logits.grad[:,0,1].abs().sum()==0
+    assert logits.grad[:,1,2].abs().sum()==0
+    assert logits.grad[:,0,[0,2]].abs().sum()>0
+    with pytest.raises(ValueError,match='absent'):
+        span_candidate_loss(logp,torch.tensor([[1,-100],[0,3]]),mask,options)
+    with pytest.raises(ValueError,match='normalized'):
+        span_candidate_loss([p+1 for p in logp],targets,mask,options)

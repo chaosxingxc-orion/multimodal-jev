@@ -80,8 +80,11 @@ def train(config, output):
     from .asr import load_runtime
     from .audio_policy import load_audio
     from .sft import initialize_adapter
-    from .span_model import NativeAudioSpanModel, span_supervised_loss
+    from .span_model import NativeAudioSpanModel, span_supervised_loss, span_candidate_loss
     output = Path(output)
+    objective = config.get('objective','full_vocabulary_ce')
+    if objective not in {'full_vocabulary_ce','candidate_ce'}:
+        raise ValueError('unsupported Span training objective')
     bundles, manifest = load_reviewed_bundles(config['release'], config['manifest_sha256'], config['question_order'])
     if config.get('sampling_mode') == 'joint_uniform_complement_pairs_v1':
         if config['recordings_per_update'] != 2:
@@ -173,8 +176,9 @@ def train(config, output):
         optimizer.zero_grad(set_to_none=True)
         losses = []
         for i in batch:
-            vocab, _, labels, mask = forward(i)
-            loss = span_supervised_loss(vocab, labels, mask)
+            vocab, logp, labels, mask = forward(i)
+            loss = (span_supervised_loss(vocab, labels, mask) if objective == 'full_vocabulary_ce' else
+                    span_candidate_loss(logp, labels, mask, [m['token_ids'] for m in prepared[i][2]]))
             if not torch.isfinite(loss):
                 raise ValueError('nonfinite span loss')
             (loss * (int(mask.sum()) / denominator)).backward()
@@ -199,7 +203,7 @@ def train(config, output):
                 training_recordings=len({i for batch in schedule for i in batch}),
                 supervised_spans=sum(sum(bundles[i]['supervised']) for batch in schedule for i in batch),
                 diagnostic_spans=manifest['decisions'], head='pretrained_native_lm_head',
-                objective='masked full-vocabulary CE, one audio backbone forward per recording',
+                objective=objective, forward_contract='one audio backbone forward per recording',
                 before=before, after=after, after_silence=silence,
                 adapter_files={p.name:file_hash(p) for p in (output/'adapter').iterdir() if p.is_file()},
                 scope='One epoch multi-span SFT wiring and learning diagnostics. Parallel roles; not CoT, RL, held-out gains or academic reproduction.')

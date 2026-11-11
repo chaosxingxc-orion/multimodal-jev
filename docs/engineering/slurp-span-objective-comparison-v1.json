@@ -1,0 +1,144 @@
+{
+  "status": "passed",
+  "baseline": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2",
+  "candidate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1",
+  "checks": [
+    "same hyperparameters except objective",
+    "identical input token/positions/audio receipt and targets",
+    "same base weight hash",
+    "same 40 recordings and 20 update schedule",
+    "identical before probabilities",
+    "paired correctness recomputed"
+  ],
+  "results": {
+    "after": {
+      "baseline_correct": 70,
+      "candidate_correct": 92,
+      "wrong_to_right": 53,
+      "right_to_wrong": 31,
+      "denominator": 142,
+      "baseline_complete": 5,
+      "candidate_complete": 10,
+      "candidate_per_span": {
+        "date": {
+          "confusion_gold_by_prediction": [
+            [
+              9,
+              15
+            ],
+            [
+              8,
+              16
+            ]
+          ],
+          "recall_false": 0.375,
+          "recall_true": 0.6666666666666666,
+          "balanced_accuracy": 0.5208333333333333
+        },
+        "time": {
+          "confusion_gold_by_prediction": [
+            [
+              15,
+              7
+            ],
+            [
+              4,
+              20
+            ]
+          ],
+          "recall_false": 0.6818181818181818,
+          "recall_true": 0.8333333333333334,
+          "balanced_accuracy": 0.7575757575757576
+        },
+        "timeofday": {
+          "confusion_gold_by_prediction": [
+            [
+              15,
+              9
+            ],
+            [
+              7,
+              17
+            ]
+          ],
+          "recall_false": 0.625,
+          "recall_true": 0.7083333333333334,
+          "balanced_accuracy": 0.6666666666666667
+        }
+      }
+    },
+    "after-silence": {
+      "baseline_correct": 70,
+      "candidate_correct": 80,
+      "wrong_to_right": 48,
+      "right_to_wrong": 38,
+      "denominator": 142,
+      "baseline_complete": 5,
+      "candidate_complete": 10,
+      "candidate_per_span": {
+        "date": {
+          "confusion_gold_by_prediction": [
+            [
+              4,
+              20
+            ],
+            [
+              4,
+              20
+            ]
+          ],
+          "recall_false": 0.16666666666666666,
+          "recall_true": 0.8333333333333334,
+          "balanced_accuracy": 0.5
+        },
+        "time": {
+          "confusion_gold_by_prediction": [
+            [
+              21,
+              1
+            ],
+            [
+              13,
+              11
+            ]
+          ],
+          "recall_false": 0.9545454545454546,
+          "recall_true": 0.4583333333333333,
+          "balanced_accuracy": 0.7064393939393939
+        },
+        "timeofday": {
+          "confusion_gold_by_prediction": [
+            [
+              7,
+              17
+            ],
+            [
+              7,
+              17
+            ]
+          ],
+          "recall_false": 0.2916666666666667,
+          "recall_true": 0.7083333333333334,
+          "balanced_accuracy": 0.5
+        }
+      }
+    }
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/config.json": "d6f613493393336a30ee3ecf4f07948c1e31ae32dd0f8fac3796bc0bf45e65d1",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/run/result.json": "e96381f11fc1ce799e87eee5b4256c3e06e98c889a2babc4e7ad2d342a50ae25",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/run/history.json": "ead1af7d27455a5bbd01062ec9337ec5c2f6162da622141bd611489c18c24720",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/run/identity.json": "7fb3b4426445c2e7bec92c36d7816751817c7eb2e64596c5c949a45665cd9201",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/run/before.json": "f2a796d9bbdd915f15b2e457bb000300f13df5a35941fa3c3664182ca7e87458",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/run/after.json": "33a7d2fb176062cf6369a68afd8bd144c4b49ce02fa453bdc331f8260ff77469",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/run/after-silence.json": "eccf88f7732b80ca7fb8b94c24d15f532fd590db9de34663e6be2fe822f3cba0",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1/config.json": "93c96f49a0dc1af2daec5beb37bf6c4c9f90cc1e08778970e15488184cafd35d",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1/run/result.json": "e6252fa3be8bce8cbdb8a5bbb435d54906de28b3ec04247cfede48a389ea50ce",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1/run/history.json": "53a56dcc695066143083a2273e826b89e95ce3817c18554d8ed36931db2d8cf3",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1/run/identity.json": "3d75402ae4d41c97adc078f1893350472853ac78a08d847c086d24a086353577",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1/run/before.json": "f2a796d9bbdd915f15b2e457bb000300f13df5a35941fa3c3664182ca7e87458",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1/run/after.json": "8051db7312f6c77de6fc3a9b0dc5c06a68ac799a7adc8e8d78c8858ba143ee3f",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-candidate-ce-v1/run/after-silence.json": "24c349026b9e846b969cd7a00bccd218001c970936b62746bc4a5d1fa9fefd1c"
+  },
+  "scope": "Fixed-seed learning-population objective comparison, not held-out or CoT/RL improvement."
+}

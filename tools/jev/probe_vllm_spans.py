@@ -26,6 +26,13 @@ def run(config, output):
     for path,digest in config['pins'].items():
         if file_hash(path)!=digest:raise ValueError('input changed: '+path)
     reference=json.loads(Path(config['reference']).read_text())
+    adapter=config.get('adapter')
+    lora_request=None
+    lora_options={}
+    if adapter:
+        from vllm.lora.request import LoRARequest
+        lora_request=LoRARequest('jev-span-pinned-v1',1,adapter)
+        lora_options=dict(enable_lora=True,max_loras=1,max_lora_rank=8,lora_dtype=torch.float32)
     raw=reference['input_request']
     request=SpanRequest(raw['audio'],tuple(SpanQuestion(q['id'],DecisionSchema.from_dict(q['schema'])) for q in raw['questions']),raw['final_id'],tuple(raw['requirements']))
     processor=Qwen3ASRProcessor.from_pretrained(config['model'],local_files_only=True)
@@ -50,23 +57,40 @@ def run(config, output):
         dtype='bfloat16',max_model_len=1024,gpu_memory_utilization=0.3,
         tensor_parallel_size=1,enforce_eager=True,max_num_seqs=1,seed=17,
         enable_chunked_prefill=False,enable_prefix_caching=False,
-        enable_mm_embeds=True,limit_mm_per_prompt={'audio':1})
+        enable_mm_embeds=True,limit_mm_per_prompt={'audio':1},**lora_options)
     params=PoolingParams(use_activation=False,extra_kwargs={
         'span_positions':positions[0].tolist(),'candidate_ids':[m['token_ids'] for m in mapping],
         'expected_input_ids':ids})
     try:
         atomic_json(output/'progress.json',dict(phase='pooling',heartbeat_unix=time.time()))
-        outputs=engine.encode([{'prompt_token_ids':compact,'multi_modal_data':{'audio':data}}],
-                              pooling_params=params,pooling_task='token_classify',use_tqdm=False)
+        prompt={'prompt_token_ids':compact,'multi_modal_data':{'audio':data}}
+        base_logits=None
+        if adapter:
+            base_output=engine.encode([prompt],pooling_params=params,pooling_task='token_classify',use_tqdm=False)
+            base_logits=base_output[0].outputs.data.float().cpu()
+        outputs=engine.encode([prompt],pooling_params=params,pooling_task='token_classify',use_tqdm=False,
+                              lora_request=lora_request)
         assert len(outputs)==1 and outputs[0].prompt_token_ids==ids
         logits=outputs[0].outputs.data.float().cpu()
         assert logits.shape==(3,2) and torch.isfinite(logits).all()
         logp=torch.log_softmax(logits,-1)
         hf=torch.tensor(reference['candidate_logprobs']).squeeze(1)
         error=float((logp-hf).abs().max())
+        from multimodal_jev.span_parity import compare_span_policies
+        joint_parity=compare_span_policies(hf.tolist(),logp.tolist())
+        recovery_error=None
+        if adapter:
+            recovered=engine.encode([prompt],pooling_params=params,pooling_task='token_classify',use_tqdm=False)
+            recovery_error=float((recovered[0].outputs.data.float().cpu()-base_logits).abs().max())
+            if recovery_error>1e-5 or torch.equal(logits,base_logits):
+                raise ValueError('adapter effect or return-to-base isolation failed')
         return dict(status='diagnostic_complete',input_tokens=len(ids),span_positions=positions.tolist(),
             candidate_logits=logits.tolist(),candidate_logprobs=logp.tolist(),hf_candidate_logprobs=hf.tolist(),
             maximum_logprob_error=error,parity_threshold=0.02,parity_passed=error<=0.02,
+            complete_action_parity=joint_parity,rl_admitted=False,
+            adapter=adapter,adapter_dtype='float32' if adapter else None,
+            adapter_logit_effect=float((logits-base_logits).abs().max()) if adapter else None,
+            return_to_base_error=recovery_error,
             runner='pooling',generated_tokens=0,optimizer_updates=0,
             scope='Single real-audio native pooling adapter; HF parity diagnostic, no task or RL gain.')
     finally:

@@ -90,3 +90,33 @@ def span_supervised_loss(logits, targets, supervised):
     if not torch.isfinite(active.gather(1,selected[:,None])).all():
         raise ValueError('supervised target is a masked class')
     return nn.functional.cross_entropy(active, selected)
+
+
+def span_candidate_loss(candidate_logprobs, token_targets, supervised, candidate_ids):
+    """Mean NLL over supervised finite decisions, with vocabulary-ID targets.
+
+    Missing labels never enter the reduction; legal unknown remains a class.
+    The distributions must use the exact deployment candidate normalization.
+    """
+    if (token_targets.ndim != 2 or token_targets.dtype != torch.long or
+            supervised.dtype != torch.bool or supervised.shape != token_targets.shape or
+            len(candidate_logprobs) != token_targets.shape[1] or
+            len(candidate_ids) != token_targets.shape[1] or not supervised.any()):
+        raise ValueError('aligned nonempty supervised candidate decisions required')
+    selected = []
+    for j, (logp, options) in enumerate(zip(candidate_logprobs, candidate_ids)):
+        if (len(options) < 2 or len(set(options)) != len(options) or
+                any(type(t) is not int or t < 0 for t in options) or
+                logp.shape != (token_targets.shape[0], len(options)) or not torch.isfinite(logp).all()):
+            raise ValueError('finite distinct candidate support required')
+        if not torch.allclose(logp.logsumexp(-1), torch.zeros_like(logp[:,0]), atol=1e-6, rtol=0):
+            raise ValueError('candidate-normalized log probabilities required')
+        mask = supervised[:,j]
+        if not mask.any():
+            continue
+        matches = token_targets[mask,j,None] == torch.tensor(options,device=token_targets.device)[None,:]
+        if not (matches.sum(-1) == 1).all():
+            raise ValueError('supervised target absent from candidate support')
+        indices = matches.long().argmax(-1)
+        selected.append(-logp[mask].gather(1,indices[:,None]).flatten())
+    return torch.cat(selected).mean()
