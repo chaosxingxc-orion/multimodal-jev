@@ -94,3 +94,31 @@ buffer同步后验收及NPU前向，不能将CPU预检结果作为分布式概�
 原生路径调用NPU cross entropy，CPU集成使用的显式FP32适配不能代替其
 数值验证。真实运行须记录实际分派/输入输出dtype，并用同份logits的FP32
 参考区分概率归一化误差与模型前向差异；当前仅完成源码及哨兵分派验证。
+
+## 完整采样完成后的真实输入预检入口
+
+`tools/jev/preflight_omni_sampled_probability.py` 接收采样 root、独立验收文件及其
+外部固定 SHA。先使用既有学习分区和 processor 资产检查，再通过
+`omni_accepted_sampling.load_accepted_records` 重新核对验收与容器/源码标识、
+配置、identity/result、全部156条记录及每次请求的 intent/raw/result。
+该读取接口依赖协调者固定的独立验收，不能自行证明 Docker 状态或源码真实性；
+原采样快照的独立验收器仍须先完成。
+
+随后用实际本地 processor 以 `vllm_hop` 准备全部音频，构建真实 verl DataProto，
+检查完整响应 mask、token 和 old logprob；保存原始/补齐音频长度、特征张量哈希、
+构批张量哈希及两rank微批1/2的完整分片计划。输出目录必须全新。
+不加载权重、不读取 targets、不启动模型前向或通信，不补造未完成采样。
+
+```bash
+PYTHONPATH=src python tools/jev/preflight_omni_sampled_probability.py \
+  --root "$SAMPLING_ROOT" \
+  --acceptance "$SAMPLING_ACCEPTANCE" \
+  --acceptance-hash "$SAMPLING_ACCEPTANCE_SHA256" \
+  --output "$PROBABILITY_PREFLIGHT_OUTPUT"
+```
+
+此命令须在固定镜像运行，当前尚未执行真实数据路径；既有采样尚待完成。
+新增读取接口与原始验收器的40项合成测试通过，覆盖验收、配置、模型策略身份、
+原始概率、合并记录、输入名单和终态变化的拒绝。尚未验证新CLI的真实
+processor/DataProto运行。预检成功也不等于vLLM特征比较、NPU数值通过或
+正式容差登记；真实概率运行器仍须接入这些步骤及完整FSDP加载与前向。
