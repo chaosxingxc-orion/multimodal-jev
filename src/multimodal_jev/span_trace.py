@@ -28,6 +28,10 @@ class SpanTrace:
         self.handles.append(module.register_forward_hook(
             lambda _module, _inputs, output: self.capture(name, output)))
 
+    def watch_input(self, module, name):
+        self.handles.append(module.register_forward_pre_hook(
+            lambda _module, args: self.capture(name, args[0])))
+
     def watch_norm_input(self, module):
         def record(_module, args):
             self.capture('layer.0.pre_norm',args[0])
@@ -53,6 +57,7 @@ def attach_hf_trace(base):
         trace.watch(layer.post_attention_layernorm, f'layer.{i}.post_attention_norm')
     for key in ('q_proj','k_proj','v_proj'):
         trace.watch(getattr(language.layers[0].self_attn,key), 'layer.0.'+key)
+    attach_language_projection_trace(trace, language.layers[0])
     trace.watch(language.layers[0].mlp,'layer.0.mlp')
     trace.watch(language.norm, 'final_norm')
     return trace
@@ -70,9 +75,54 @@ def attach_vllm_trace(model):
         trace.watch(layer.input_layernorm, f'layer.{i}.input_norm')
         trace.watch(layer.post_attention_layernorm, f'layer.{i}.post_attention_norm')
     trace.watch(language.layers[0].self_attn.qkv_proj, 'layer.0.qkv_proj')
+    attach_language_projection_trace(trace, language.layers[0])
     trace.watch(language.layers[0].mlp,'layer.0.mlp')
     trace.watch(language.norm, 'final_norm')
     return trace
+
+
+def attach_language_projection_trace(trace, layer):
+    for module, name in ((layer.self_attn.o_proj, 'o_proj'), (layer.mlp.down_proj, 'down_proj')):
+        trace.watch_input(module, 'layer.0.'+name+'.input')
+        trace.watch(module, 'layer.0.'+name+'.output')
+
+
+def rank_trace_path(path, rank, world_size):
+    from pathlib import Path
+    if type(rank) is not int or type(world_size) is not int or not 0 <= rank < world_size:
+        raise ValueError('valid rank and world size required')
+    path = Path(path)
+    return path.with_name(path.stem+f'.rank-{rank}-of-{world_size}'+path.suffix)
+
+
+def compare_tp4_traces(actor, ranks):
+    """Compare replicas separately and reassemble only known column shards.
+
+    This ASR diagnostic requires four unique KV shards; replicated KV heads
+    are intentionally rejected. All tensor manipulation is offline reporting.
+    """
+    if len(ranks)!=4 or any(set(r)!=set(ranks[0]) for r in ranks):
+        raise ValueError('four aligned trace dictionaries required')
+    split_names=('layer.0.o_proj.input','layer.0.down_proj.input')
+    rebuilt=dict(ranks[0])
+    for name in split_names:
+        if any(r[name].shape[-1]*4!=actor[name].shape[-1] for r in ranks):
+            raise ValueError('four column shards required: '+name)
+        rebuilt[name]=torch.cat([r[name] for r in ranks],-1)
+    widths=[actor['layer.0.'+key].shape[-1] for key in ('q_proj','k_proj','v_proj')]
+    if any(w%4 for w in widths):
+        raise ValueError('four unique QKV head shards required')
+    pieces=[r['layer.0.qkv_proj'].split([w//4 for w in widths],-1) for r in ranks]
+    rebuilt['layer.0.qkv_proj']=torch.cat([torch.cat([p[i] for p in pieces],-1) for i in range(3)],-1)
+    replicas={}
+    for rank,r in enumerate(ranks):
+        replica_view=dict(rebuilt)
+        for name in r:
+            if name not in (*split_names,'layer.0.qkv_proj'):
+                replica_view[name]=r[name]
+        replicas[str(rank)]=compare_traces(actor,replica_view)
+    return dict(reconstructed=compare_traces(actor,rebuilt),replicas=replicas,
+                scope='Offline comparison only; QKV and input-column shards reconstructed; replicas checked separately')
 
 
 def attach_audio_trace(trace,tower):

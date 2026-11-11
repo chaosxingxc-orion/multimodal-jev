@@ -74,12 +74,29 @@ class SpanAuditWorkerExtension:
 
     def finish_jev_span_trace(self, path):
         import torch
+        from vllm.distributed import get_tensor_model_parallel_world_size
+        if get_tensor_model_parallel_world_size()!=1:
+            raise ValueError('distributed trace requires rank-specific output paths')
         trace = self._jev_span_trace
         trace.close()
         # Path is supplied only by the trusted local diagnostic launcher.
         torch.save(trace.tensors,path)
         self._jev_span_trace = None
         return {'trace_points':list(trace.tensors),'path':path}
+
+    def finish_jev_span_trace_ranked(self, path):
+        import torch
+        from vllm.distributed import get_tensor_model_parallel_world_size, get_tensor_model_parallel_rank
+        from .span_trace import rank_trace_path
+        rank=get_tensor_model_parallel_rank()
+        size=get_tensor_model_parallel_world_size()
+        target=rank_trace_path(path,rank,size)
+        trace=self._jev_span_trace
+        trace.close()
+        with target.open('xb') as handle:
+            torch.save(trace.tensors,handle)
+        self._jev_span_trace=None
+        return dict(rank=rank,world_size=size,path=str(target),trace_points=list(trace.tensors))
 
 
 def inspect_span_lora(model):

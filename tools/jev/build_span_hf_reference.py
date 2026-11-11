@@ -62,7 +62,20 @@ def run(config, output):
             request_id,payload=bind_span_request(request,receipt,batch,positions,candidates,base_id+':'+adapter_id)
             inputs={k:v.to('npu:0',dtype=torch.bfloat16 if v.is_floating_point() else v.dtype)
                     for k,v in batch.items()}
-            _,logp=model(inputs,positions.to('npu:0'),candidates)
+            trace=None
+            if config.get('trace_first_request',False) and index==0:
+                from multimodal_jev.span_trace import attach_hf_trace
+                trace=attach_hf_trace(base)
+            try:
+                _,logp=model(inputs,positions.to('npu:0'),candidates)
+            finally:
+                if trace is not None:
+                    trace.close()
+            if trace is not None:
+                with (output/'hf-trace.pt').open('xb') as handle:
+                    torch.save(trace.tensors,handle)
+                atomic_json(output/'trace-request.json',dict(id=item['id'],request_id=request_id,
+                    path=str(output/'hf-trace.pt'),sha256=file_hash(output/'hf-trace.pt')))
             records.append(dict(id=item['id'],request_id=request_id,request_identity=payload,
                                 candidate_logprobs=[p.cpu().tolist() for p in logp]))
             atomic_json(output/'progress.json',dict(completed=index+1,total=len(items),heartbeat_unix=time.time()))

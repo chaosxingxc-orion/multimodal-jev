@@ -105,8 +105,18 @@ def run(config, output):
                 'candidate_ids':[m['token_ids'] for m in mapping], 'expected_input_ids':ids})
             prompt = {'prompt_token_ids':compact, 'multi_modal_data':{'audio':data},
                       'multi_modal_uuids':{'audio':[request_id]}}
+            tracing = config.get('trace_first_request',False) and index==0
+            if tracing:
+                engine.llm_engine.collective_rpc('begin_jev_span_trace')
             result = engine.encode([prompt], pooling_params=params, pooling_task='token_classify',
                                    use_tqdm=False, lora_request=lora)[0]
+            if tracing:
+                receipts=engine.llm_engine.collective_rpc('finish_jev_span_trace_ranked',
+                    args=(str(output/'vllm-trace.pt'),))
+                if sorted(r['rank'] for r in receipts)!=list(range(topology['size'])):
+                    raise ValueError('trace rank coverage differs')
+                atomic_json(output/'trace-request.json',dict(id=item['id'],request_id=request_id,
+                    workers=receipts,files={r['path']:file_hash(r['path']) for r in receipts}))
             if result.prompt_token_ids != ids:
                 raise ValueError('worker prompt expansion differs')
             logits = result.outputs.data.float().cpu()
