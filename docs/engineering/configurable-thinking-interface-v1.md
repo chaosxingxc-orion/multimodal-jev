@@ -32,3 +32,16 @@ SFT/RL 源码身份新增 task_schema/thinking 哈希。新逻辑不应套用于
 
 后续：审查 clean SLURP 的任务与思考要求定义，按规则族/要求族构造受控变化，完成有质量门槛的SFT适配；再在固定镜像中验证真实processor输入、直接判决及逐步的复核控制器/策略学习。
 研究契约见 [配置化思考方案](../research/10-configurable-thinking-decision-contract.md)。
+
+## 固定镜像真实 processor 补充验证
+
+已用一条clean TRAIN learning音频在固定镜像CPU运行官方Qwen3ASRProcessor，无权重、NPU设备或网络。
+无配置、否定范围要求、修饰关系要求分别产生149/214/213个输入token；三种配置的音频特征及236个有效帧逐项相同。
+要求在模板及tokenize/decode后完整保留，目标改变不影响prompt，teacher-forcing仅对6个合成响应token计loss。
+该布尔响应只是输入管线夹具，绝非该录音的真实监督；没有打开目标文件。
+vLLM request渲染与HF输入源一致，但未运行vLLM engine或检验实际模型概率/决策。
+
+v1因源码快照缺少包初始化依赖而在import阶段退出1，失败证据保留。
+v2补齐依赖并先做隔离import检查后，以新目录/容器执行，退出0，主体12.74秒。
+独立核对实际容器身份、固定镜像、命令、2 CPU/8 GiB、无设备/网络、源文件/processor/结果SHA和终态。
+见[验收记录](thinking-processor-v2-verified.json)。这推进了真实输入接口证据，尚不能证明模型遵循思考要求。

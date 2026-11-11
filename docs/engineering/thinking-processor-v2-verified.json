@@ -1,0 +1,125 @@
+{
+  "container_id": "f769d21ee5f859659e36a0c9366bde00c840ef25e3449d62e27272ca0e77f9ae",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/thinking-processor-v2",
+  "container_exit_code": 0,
+  "cpu_limit": 2,
+  "memory_gib": 8,
+  "physical_devices": [],
+  "network": "none",
+  "source_and_processor_hashes_verified": true,
+  "config_and_command_verified": true,
+  "result": {
+    "status": "passed",
+    "example_id": "slurp:audio--1504190171-headset.flac",
+    "audio_sha256": "0b3e21a3df7d8c7e77e2d6cc338f048e0ad34bdf1fee7744532b3002802411f2",
+    "source_requests_sha256": "c8ed0a87af36b5e42c4923522076eb8b76a641fecd694bdb845a09d7d2db97c2",
+    "processor_hashes": {
+      "tokenizer.json": "fe1fad59be22a41ee293363fcf95fdedbc7c93f3b49270b1d2e18bd1399a7a05",
+      "config.json": "9eecf6f1b383e343889c2e6010e632590fa57d4bc678e151c7d6a160a0dfb04a",
+      "generation_config.json": "9939fc9388b79bd70757f938b87381e817173d6a6158f5af6506c0b73e775c3c",
+      "tokenizer_config.json": "945e980986de2ca7768f3326bfdbb4fbea3406f972b8ae0be233089f2b253c11",
+      "processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+      "chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2"
+    },
+    "source_hashes": {
+      "src/multimodal_jev/task_schema.py": "d2f9906a63ad19f66d99055a6de9ad9e155d55ade2c4f20c94ac475cb930925b",
+      "src/multimodal_jev/__init__.py": "4683e26acaa4f4d35a43ac2dda24ec87a306b819a44cc2f52ff91dec867446d3",
+      "src/multimodal_jev/audio_policy.py": "77180643be9fdafdd5f95a93497c57a11790b884858bb75954273d612c93b2c5",
+      "src/multimodal_jev/baseline.py": "cf9e1ca0e901d0d0c694e920f7db6623e46151d767d11ea657cce9fc2f729927",
+      "src/multimodal_jev/consumption.py": "bdfc71422990fa1ace9c21541e8b2e7b1f3e77245f91661a7d52415b11d04f45",
+      "src/multimodal_jev/thinking.py": "4a37551ee591a439d9747232ee1a41c93121d5341899c4883995b785ae8ba742",
+      "src/multimodal_jev/reward.py": "2b033c8ebc1e46f6f5c4f32c368197b2aa286d9e0dfeaff31c896d5797889059",
+      "src/multimodal_jev/answers.py": "25473a9b3d1e267c70e656a625fca827db4a77dc8e1ed33967dc9fdfdf60d54a",
+      "tools/jev/probe_thinking_processor.py": "154519125b2773b99ad84dc3b0c0b5393e37e65c512e6086729756c5542eb271"
+    },
+    "profiles": [
+      {
+        "thinking": null,
+        "prompt_sha256": "d85210a1fea4f3b90a64b15c0de74af07951e9eca561d9f42c391ee120615bb5",
+        "request_sha256": "0611e3eb655cdb3a3fb26fffe770ec17b624487601a0fb7a39c2ed42ce383f0c",
+        "input_ids_sha256": "11a8260bb4767970277d71509730b8fcf12fec73f2db24a831e1d28b583727ce",
+        "prompt_tokens": 149,
+        "response_tokens": 6,
+        "audio_frames": 236,
+        "feature_shape": [
+          1,
+          128,
+          300
+        ]
+      },
+      {
+        "thinking": {
+          "version": "evidence-v1",
+          "requirements": [
+            "Check negation scope using the complete audio."
+          ],
+          "mode": "direct",
+          "max_rounds": 1,
+          "output": "decision_only"
+        },
+        "prompt_sha256": "a08022b45ff704e95dc3c8d3fbe89a7cf2d062e04c46741dcaf4bfc3ab167d41",
+        "request_sha256": "e9d2e4e43fa4060a19138727700c094e141817d61536454a2232766939c03df2",
+        "input_ids_sha256": "eb0a6b71bd54a17aa1f0fe9d78350cacfaac03baff25421e8290af3bb9378afc",
+        "prompt_tokens": 214,
+        "response_tokens": 6,
+        "audio_frames": 236,
+        "feature_shape": [
+          1,
+          128,
+          300
+        ]
+      },
+      {
+        "thinking": {
+          "version": "evidence-v2",
+          "requirements": [
+            "Check modifier attachment using the complete audio."
+          ],
+          "mode": "direct",
+          "max_rounds": 1,
+          "output": "decision_only"
+        },
+        "prompt_sha256": "a6113d321dba8692381595a823c45ab8f5ecb11ef49317f089df2abb212f6ba7",
+        "request_sha256": "96d2d32f3f8360c7888e10615aeed46cea15b5721985e92f61d6fb4a6acaa6bf",
+        "input_ids_sha256": "93a14ba442b68dfeeefe90fb24d6d0ab887ee7f2b9084178c7ae45aaa0a98b6b",
+        "prompt_tokens": 213,
+        "response_tokens": 6,
+        "audio_frames": 236,
+        "feature_shape": [
+          1,
+          128,
+          300
+        ]
+      }
+    ],
+    "features_exact_across_specs": true,
+    "prompt_requirements_survive_tokenization": true,
+    "teacher_forcing_prompt_mask_verified": true,
+    "vllm_request_render_verified": true,
+    "vllm_engine_executed": false,
+    "model_loaded": false,
+    "target_files_opened": false,
+    "weight_updates": 0,
+    "packages": {
+      "torch": "2.10.0+cpu",
+      "transformers": "5.14.1"
+    },
+    "scope": "Real CPU processor/tokenizer and synthetic response-label plumbing on one clean TRAIN learning waveform; no annotation claim, model reasoning, vLLM engine, NPU or RL validation.",
+    "elapsed_seconds": 12.737716100004036,
+    "config_sha256": "8414330da482c09d6c349092a208e89f25bc8f19978ab6e1cf2eb762e04102a4"
+  },
+  "evidence_sha256": {
+    "config.json": "8414330da482c09d6c349092a208e89f25bc8f19978ab6e1cf2eb762e04102a4",
+    "intent.json": "5933283878d6ee5bd9315bf5b50e3d97a192caa77701be80eefb52e3e4e8f84a",
+    "launch.json": "04d2d1a8bc339717583cb52fe550d304f782aafeea11dac38ba839e49edbe29c",
+    "container-final.json": "789cbb2e21fe67d7cdafdf727a134056d180eab5522379a7543667ab87388a5e",
+    "run/result.json": "a652e4198d7fbb434caef658f4c8c912db3346ae0f7367dc389eed5b1fd8b9c8",
+    "run/terminal.json": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2"
+  },
+  "prior_failure": {
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/thinking-processor-v1",
+    "reason": "Incomplete source snapshot omitted package-init dependencies reward.py and answers.py; import failure before processor/audio. Retained, not overwritten."
+  },
+  "scope": "Runtime identity and file hashes independently checked; processor assertions are producer-executed, no second processor execution or model evaluation."
+}
