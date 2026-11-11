@@ -1,0 +1,25 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v1",
+  "container_exit_code": 1,
+  "completed_updates": 0,
+  "hccl_reduction_passed_all_ranks": true,
+  "failures": {
+    "rank-3": {
+      "exit_code": 1,
+      "error": "ValueError('LoRA execution not BF16')"
+    },
+    "rank-1": {
+      "exit_code": 1,
+      "error": "ValueError('LoRA execution not BF16')"
+    },
+    "rank-0": {
+      "exit_code": 1,
+      "error": "ValueError('LoRA execution not BF16')"
+    },
+    "rank-2": {
+      "exit_code": 1,
+      "error": "ValueError('LoRA execution not BF16')"
+    }
+  },
+  "scope": "HCCL succeeded. Nested FSDP/PEFT compute dtype assertion failed before optimizer update; no training acceptance."
+}

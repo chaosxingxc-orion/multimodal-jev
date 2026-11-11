@@ -1,0 +1,182 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2",
+  "passed": true,
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "source_manifest_sha256": "bc416671b4ca021351685571a709cffeb4b56b3089b309c48c7868594e1ce015",
+  "ranks": [
+    {
+      "status": "passed",
+      "rank": 0,
+      "world_size": 4,
+      "backend": "hccl",
+      "updates": 3,
+      "restored_at_update": 2,
+      "exact_resume_output": true,
+      "exact_resume_masters": true,
+      "exact_resume_adam": true,
+      "frozen_base_unchanged": true,
+      "global_changed_shards": 8,
+      "execution_dtypes": [
+        [
+          "torch.bfloat16",
+          "torch.bfloat16"
+        ]
+      ],
+      "local_parameter_counts": {
+        "_fsdp_wrapped_module.base_model.model.projection.base_layer._fsdp_wrapped_module.weight": 24,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_A.default._fsdp_wrapped_module.weight": 16,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_B.default._fsdp_wrapped_module.weight": 6
+      },
+      "adapter_export_hashes": {
+        "base_model.model.projection.lora_A.default.weight": "cca89aae9049033cf6c289b8eece15f8dc56723d5f59af1cfe0a682629f0ddd1",
+        "base_model.model.projection.lora_B.default.weight": "9ff66dc956bc3c313b4e6d2de62d0ec749fe945e4b8b8a0309b2147e814addae"
+      },
+      "cross_rank_export_exact": true,
+      "peak_allocated_bytes": 33576960,
+      "losses": [
+        -7.450580596923828e-09,
+        2.9802322387695312e-08,
+        -6.146728992462158e-08
+      ],
+      "seconds": 3.2068492399994284,
+      "checkpoint_sha256": "30b057850c0dc88b258d0794c97605c23b9d5b27d7441b42cc9e92821c91ff19",
+      "scope": "Synthetic four-rank NPU HCCL/FSDP PEFT BF16 compute, native FP32 masters/Adam and real verl loss. Fixed-topology local-shard resume only; no speech, Omni weights, vLLM TP4 or task-gain acceptance."
+    },
+    {
+      "status": "passed",
+      "rank": 1,
+      "world_size": 4,
+      "backend": "hccl",
+      "updates": 3,
+      "restored_at_update": 2,
+      "exact_resume_output": true,
+      "exact_resume_masters": true,
+      "exact_resume_adam": true,
+      "frozen_base_unchanged": true,
+      "global_changed_shards": 8,
+      "execution_dtypes": [
+        [
+          "torch.bfloat16",
+          "torch.bfloat16"
+        ]
+      ],
+      "local_parameter_counts": {
+        "_fsdp_wrapped_module.base_model.model.projection.base_layer._fsdp_wrapped_module.weight": 24,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_A.default._fsdp_wrapped_module.weight": 16,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_B.default._fsdp_wrapped_module.weight": 6
+      },
+      "adapter_export_hashes": {
+        "base_model.model.projection.lora_A.default.weight": "cca89aae9049033cf6c289b8eece15f8dc56723d5f59af1cfe0a682629f0ddd1",
+        "base_model.model.projection.lora_B.default.weight": "9ff66dc956bc3c313b4e6d2de62d0ec749fe945e4b8b8a0309b2147e814addae"
+      },
+      "cross_rank_export_exact": true,
+      "peak_allocated_bytes": 33576960,
+      "losses": [
+        2.514570951461792e-08,
+        9.313225746154785e-09,
+        4.284083843231201e-08
+      ],
+      "seconds": 3.179881909978576,
+      "checkpoint_sha256": "571c349b3067b2265389cd4139772d8319e15ca7aeff82b8c102f808e22c834e",
+      "scope": "Synthetic four-rank NPU HCCL/FSDP PEFT BF16 compute, native FP32 masters/Adam and real verl loss. Fixed-topology local-shard resume only; no speech, Omni weights, vLLM TP4 or task-gain acceptance."
+    },
+    {
+      "status": "passed",
+      "rank": 2,
+      "world_size": 4,
+      "backend": "hccl",
+      "updates": 3,
+      "restored_at_update": 2,
+      "exact_resume_output": true,
+      "exact_resume_masters": true,
+      "exact_resume_adam": true,
+      "frozen_base_unchanged": true,
+      "global_changed_shards": 8,
+      "execution_dtypes": [
+        [
+          "torch.bfloat16",
+          "torch.bfloat16"
+        ]
+      ],
+      "local_parameter_counts": {
+        "_fsdp_wrapped_module.base_model.model.projection.base_layer._fsdp_wrapped_module.weight": 24,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_A.default._fsdp_wrapped_module.weight": 16,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_B.default._fsdp_wrapped_module.weight": 6
+      },
+      "adapter_export_hashes": {
+        "base_model.model.projection.lora_A.default.weight": "cca89aae9049033cf6c289b8eece15f8dc56723d5f59af1cfe0a682629f0ddd1",
+        "base_model.model.projection.lora_B.default.weight": "9ff66dc956bc3c313b4e6d2de62d0ec749fe945e4b8b8a0309b2147e814addae"
+      },
+      "cross_rank_export_exact": true,
+      "peak_allocated_bytes": 33576960,
+      "losses": [
+        1.2293457984924316e-07,
+        3.725290298461914e-09,
+        2.9802322387695312e-08
+      ],
+      "seconds": 3.192423769971356,
+      "checkpoint_sha256": "e02459a8bd8970764363f616affe7fe9f29346647898e80ef46f866f8570e1b3",
+      "scope": "Synthetic four-rank NPU HCCL/FSDP PEFT BF16 compute, native FP32 masters/Adam and real verl loss. Fixed-topology local-shard resume only; no speech, Omni weights, vLLM TP4 or task-gain acceptance."
+    },
+    {
+      "status": "passed",
+      "rank": 3,
+      "world_size": 4,
+      "backend": "hccl",
+      "updates": 3,
+      "restored_at_update": 2,
+      "exact_resume_output": true,
+      "exact_resume_masters": true,
+      "exact_resume_adam": true,
+      "frozen_base_unchanged": true,
+      "global_changed_shards": 8,
+      "execution_dtypes": [
+        [
+          "torch.bfloat16",
+          "torch.bfloat16"
+        ]
+      ],
+      "local_parameter_counts": {
+        "_fsdp_wrapped_module.base_model.model.projection.base_layer._fsdp_wrapped_module.weight": 24,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_A.default._fsdp_wrapped_module.weight": 16,
+        "_fsdp_wrapped_module.base_model.model.projection.lora_B.default._fsdp_wrapped_module.weight": 6
+      },
+      "adapter_export_hashes": {
+        "base_model.model.projection.lora_A.default.weight": "cca89aae9049033cf6c289b8eece15f8dc56723d5f59af1cfe0a682629f0ddd1",
+        "base_model.model.projection.lora_B.default.weight": "9ff66dc956bc3c313b4e6d2de62d0ec749fe945e4b8b8a0309b2147e814addae"
+      },
+      "cross_rank_export_exact": true,
+      "peak_allocated_bytes": 33576960,
+      "losses": [
+        1.4901161193847656e-08,
+        3.725290298461914e-08,
+        -7.450580596923828e-09
+      ],
+      "seconds": 3.1762913599959575,
+      "checkpoint_sha256": "6cf506ceb909c30eb25e5cf710c5733447ee0632a66501acd2c460b549aa2775",
+      "scope": "Synthetic four-rank NPU HCCL/FSDP PEFT BF16 compute, native FP32 masters/Adam and real verl loss. Fixed-topology local-shard resume only; no speech, Omni weights, vLLM TP4 or task-gain acceptance."
+    }
+  ],
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-0/result.json": "c8b0bd5c94bd4f4efc12d23c0d704e543e7c99325527b3e6cee3774f7bbd3471",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-0/terminal.json": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-0/local-checkpoint.pt": "30b057850c0dc88b258d0794c97605c23b9d5b27d7441b42cc9e92821c91ff19",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-1/result.json": "922eca7c7bf7cad70532a84efd7f5acb51535ac9c3180b2b8627a12a20fdcfdd",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-1/terminal.json": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-1/local-checkpoint.pt": "571c349b3067b2265389cd4139772d8319e15ca7aeff82b8c102f808e22c834e",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-2/result.json": "4c0ebff0bd17de084f315eb01bbb16d6b8a25e171988a356f23c96745d4f866e",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-2/terminal.json": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-2/local-checkpoint.pt": "e02459a8bd8970764363f616affe7fe9f29346647898e80ef46f866f8570e1b3",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-3/result.json": "c1cc74f5857ab26e1f3f63972caa917a75d51b6a092b41fba3004bc7a33574d2",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-3/terminal.json": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-3/local-checkpoint.pt": "6cf506ceb909c30eb25e5cf710c5733447ee0632a66501acd2c460b549aa2775",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-lora-npu4-v2/run/rank-0/bf16-adapter.pt": "2b214effca8b896cae7a99956aec756187da17925625962c754a7a1560845a4a"
+  },
+  "scope": "Persisted source, four-rank results, real local optimizer shards and BF16 tensor export audited. Exact resumed-versus-uninterrupted checks executed within the reviewed NPU probe; not a speech/Omni/vLLM/distributed-verl-trainer acceptance."
+}

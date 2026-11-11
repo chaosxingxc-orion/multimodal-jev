@@ -65,3 +65,12 @@ A3B 是激活参数规模，不是全部驻留权重大小。
 
 先完成模型版本选择，再派发对应多卡模型任务。当前推荐 Instruct 为主、ASR 0.6B 保留工程对照；
 本次仅提出建议，未将历史 ASR 结果重新标记为 Omni，也未启动 30B 权重更新。
+
+
+## 后续四卡基础验证
+
+`fsdp-lora-npu4-v2` 已在物理4–7完成合成四卡 HCCL/FSDP/PEFT/verl 损失三步更新，
+BF16 实际 LoRA 计算、FP32 主参数/Adam、固定拓扑恢复等价与跨 rank BF16 导出全部通过。
+发现并修复了嵌套 FSDP 未转换 PEFT 输入的问题，需显式 `cast_forward_inputs=True`。
+该结果不改变上述实际训练模型，也不证明 Omni 30B 或 vLLM TP4 准入。
+详见 `fsdp-lora-npu4-v1.md`。
