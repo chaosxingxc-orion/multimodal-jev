@@ -100,3 +100,8 @@ BF16 实际 LoRA 计算、FP32 主参数/Adam、固定拓扑恢复等价与跨 r
 HCCL_DETERMINISTIC=strict、LCCL_DETERMINISTIC=1后，固定请求六次logits完全一致，
 包含trace调用；但完整48条对HF仍0条通过，尚未准入RL，也未证明跨引擎确定性。
 详见 `span-tp4-repeatability-v1.md`。
+
+完整输入维度投影对照已完成：56个输出投影改为聚合输入、按输出分片BF16计算、
+拼接输出，保留每rank四分之一常驻权重及native q/v LoRA。重复调用精确一致，
+48条最大logp误差降至0.1957，但仅1条通过，仍不准入RL。
+首层Q/K/V初始偏差仍存在。详见 `span-tp4-complete-k-v1.md`。

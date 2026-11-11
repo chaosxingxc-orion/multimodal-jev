@@ -7,7 +7,7 @@ from pathlib import Path
 from multimodal_jev.baseline import atomic_json, file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.span_parity import compare_span_policies
-from multimodal_jev.span_runtime_topology import TP4_HF_ORDER, runtime_topology
+from multimodal_jev.span_runtime_topology import TP4_HF_ORDER, TP4_COMPLETE_K, runtime_topology
 
 
 def summarize(root):
@@ -51,13 +51,33 @@ def summarize(root):
     assert profile['profile'] == config['runtime_profile'] and profile['diagnostic_only'] is True
     receipts = profile['operations']['align_jev_internal_format']
     assert len(receipts) == 4 and all(r['after'] == 'disable' for r in receipts)
-    if config['runtime_profile'] == TP4_HF_ORDER:
+    if config['runtime_profile'] in (TP4_HF_ORDER, TP4_COMPLETE_K):
         aligned = profile['operations']['align_jev_tp4_hf_order']
         assert len(aligned) == 4
         for receipt in aligned:
             assert receipt['tensor_parallel_size'] == 4 and receipt['diagnostic_only'] is True
             for name in ('qkv', 'mlp', 'attention'):
                 assert receipt[name]['tensor_parallel_size'] == 4 and receipt[name]['layers'] == 28
+    projection_cost=None
+    if config['runtime_profile'] == TP4_COMPLETE_K:
+        receipts=profile['operations']['align_jev_tp4_complete_k']
+        assert sorted(r['rank'] for r in receipts)==list(range(4))
+        for receipt in receipts:
+            assert len(receipt['modules'])==56
+            for module in receipt['modules']:
+                old,new=module['old_shape'],module['new_shape']
+                assert new==[old[0]//4,old[1]*4]
+        for worker in workers:
+            assert len(worker['complete_k_projections'])==56
+            assert all(m['calls']>=48 for m in worker['complete_k_projections'].values())
+        projection_cost=dict(
+            modules_per_rank=56,
+            local_weight_bytes_per_rank=[sum(m['local_weight_bytes'] for m in r['modules']) for r in receipts],
+            maximum_single_full_weight_bytes=max(m['transient_full_weight_bytes'] for r in receipts for m in r['modules']),
+            calls_per_module=sorted({m['calls'] for w in workers for m in w['complete_k_projections'].values()}),
+            maximum_single_gathered_input_bytes=max(m['maximum_gathered_input_bytes'] for w in workers for m in w['complete_k_projections'].values()),
+            maximum_single_gathered_output_bytes=max(m['maximum_gathered_output_bytes'] for w in workers for m in w['complete_k_projections'].values()),
+            scope='Tensor payload/storage accounting only; not wire traffic, measured peak HBM or communication latency')
     assert len(workers) == 4
     for worker in workers:
         assert worker['model_class'] == 'Qwen3ASRForSpanDecisionsTP4Diagnostic'
@@ -66,6 +86,7 @@ def summarize(root):
         assert len(worker['wrapper_modules']) == 28
         assert all(v == ['torch.bfloat16'] for v in worker['actual_lora_buffer_dtypes'].values())
     return dict(root=str(root), diagnostic_only=True, training_admitted=False,
+                projection_cost=projection_cost,
                 runtime_profile=config['runtime_profile'], adapter_id=result['adapter_id'],
                 records=len(gates), passed_records=sum(g['passed'] for g in gates),
                 maximum_logprob_error=max(g['maximum_logprob_error'] for g in gates),

@@ -4,7 +4,7 @@ import pytest
 
 from multimodal_jev.span_runtime_profile import PROFILE, verify_suite_admission
 from multimodal_jev.span_runtime_topology import (
-    TP4_DIAGNOSTIC, TP4_HF_ORDER, install_diagnostic_profile, runtime_topology,
+    TP4_DIAGNOSTIC, TP4_HF_ORDER, TP4_COMPLETE_K, install_diagnostic_profile, runtime_topology,
 )
 
 
@@ -15,7 +15,7 @@ def test_incompatible_topology_is_rejected(size, profile):
         runtime_topology(dict(tensor_parallel_size=size, runtime_profile=profile))
 
 
-@pytest.mark.parametrize('profile', [TP4_DIAGNOSTIC, TP4_HF_ORDER])
+@pytest.mark.parametrize('profile', [TP4_DIAGNOSTIC, TP4_HF_ORDER, TP4_COMPLETE_K])
 def test_tp4_diagnostic_cannot_enter_training_even_if_reported_passed(profile):
     config = dict(tensor_parallel_size=4, runtime_profile=profile, passed=True)
     assert runtime_topology(config)['diagnostic_only']
