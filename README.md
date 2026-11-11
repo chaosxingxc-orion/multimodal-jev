@@ -18,7 +18,7 @@
 BF16 candidate-CE 已完成 20 次均衡更新；48 条学习录音在独立 HF 重载后候选概率误差为零。
 跨后端检查已在一条真实录音通过，100 个分层激活点逐位一致；48 条顺序请求也全部通过，最大候选 log-prob 误差 1.19×10⁻⁷。
 一次真实语音 verl GRPO/PPO LoRA 更新已完整通过：独立HF重载误差0，更新后两条vLLM概率检查通过。
-新adapter的48条全量复核进行中。
+新adapter的48条全量复核也全部通过，最大候选log-prob误差1.19×10⁻⁷。
 分布式训练和跨任务泛化尚未验收。
 运行配置和准入门槛见 [BF16 训推一致性](docs/engineering/verl-vllm-lora-span-alignment-v1.md)，
 生命周期入口见 [单步训练验收](experiments/span-actor-update-v1.md)。
