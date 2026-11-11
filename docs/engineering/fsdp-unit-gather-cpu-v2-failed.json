@@ -1,0 +1,31 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsdp-unit-gather-cpu-v2",
+  "container_id": "f5edb6abf3b8e92d6f0e1f06a55122760ede2b29ab43041aac47d9a695a2e8d3",
+  "source_commit": "c4b89907221e9920e33539103fbe2fb23f26b336",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-11T00:15:36.87762215Z",
+    "FinishedAt": "2026-11-11T00:15:43.86502367Z"
+  },
+  "rank_terminals": {
+    "0": {
+      "exit_code": 1,
+      "error": "RuntimeError('Trying to resize storage that is not resizable')"
+    },
+    "1": {
+      "exit_code": 1,
+      "error": "RuntimeError('Trying to resize storage that is not resizable')"
+    }
+  },
+  "automatic_retry": false,
+  "diagnosis": "CPU tensor_identity numpy view aliases FSDP flat storage and disables resize; fix requires an independent CPU copy before numpy.",
+  "log_sha256": "3b04ace3700bdee5248a87aa20d63702fa516787d4b5ee21fe208e918b461129"
+}

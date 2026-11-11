@@ -39,3 +39,13 @@ def test_raw_parameter_identity_detects_values_shape_and_dtype():
     assert probe.tensor_identity(value)!=initial
     with pytest.raises(ValueError):probe.tensor_identity(torch.empty(2,device='meta'))
     with pytest.raises(ValueError):probe.tensor_identity(torch.tensor([float('nan')]))
+
+
+def test_hash_does_not_make_fsdp_backing_storage_nonresizable():
+    value=torch.arange(24,dtype=torch.bfloat16)
+    original=value.clone()
+    for view in [value,value[3:9],value.reshape(4,6).t()]:
+        probe.tensor_identity(view)
+    assert torch.equal(value,original)
+    value.untyped_storage().resize_(0)
+    assert value.untyped_storage().nbytes()==0

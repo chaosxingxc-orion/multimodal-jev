@@ -26,7 +26,9 @@ def tensor_identity(value):
     import torch
     if value.is_meta or not torch.isfinite(value).all():
         raise ValueError('materialized finite state required')
-    cpu = value.detach().cpu().contiguous()
+    # numpy() marks its backing storage non-resizable. On CPU, .cpu() and
+    # .contiguous() may alias FSDP's original flat storage; always copy first.
+    cpu = value.detach().to(device='cpu', copy=True).contiguous()
     return dict(shape=list(cpu.shape), dtype=str(cpu.dtype),
                 sha256=hashlib.sha256(cpu.view(torch.uint8).numpy().tobytes()).hexdigest())
 
