@@ -42,6 +42,9 @@ class SpanTrace:
 
 def attach_hf_trace(base):
     trace = SpanTrace()
+    attach_audio_trace(trace,base.model.audio_tower)
+    trace.watch(base.model.multi_modal_projector.linear_1,'audio.proj1')
+    trace.watch(base.model.multi_modal_projector.linear_2,'audio.proj2')
     trace.watch(base.model.multi_modal_projector, 'audio_projected')
     language = base.model.language_model
     trace.watch_norm_input(language.layers[0].input_layernorm)
@@ -56,6 +59,9 @@ def attach_hf_trace(base):
 
 def attach_vllm_trace(model):
     trace = SpanTrace()
+    attach_audio_trace(trace,model.audio_tower)
+    trace.watch(model.audio_tower.proj1,'audio.proj1')
+    trace.watch(model.audio_tower.proj2,'audio.proj2')
     trace.watch(model.audio_tower, 'audio_projected')
     language = model.language_model.model
     trace.watch_norm_input(language.layers[0].input_layernorm)
@@ -67,12 +73,38 @@ def attach_vllm_trace(model):
     return trace
 
 
+def attach_audio_trace(trace,tower):
+    def conv_input(module,args):
+        value=args[0]
+        trace.capture('audio.conv2d1.input',value)
+        trace.capture('audio.conv2d1.input_stride',torch.tensor(value.stride()))
+        trace.capture('audio.conv2d1.weight',module.weight)
+        trace.capture('audio.conv2d1.weight_stride',torch.tensor(module.weight.stride()))
+        trace.capture('audio.conv2d1.bias',module.bias)
+    trace.handles.append(tower.conv2d1.register_forward_pre_hook(conv_input))
+    for name in ('conv2d1','conv2d2','conv2d3','conv_out','ln_post'):
+        trace.watch(getattr(tower,name),'audio.'+name)
+    for i,layer in enumerate(tower.layers):
+        trace.watch(layer,f'audio.layer.{i}.output')
+    first=tower.layers[0]
+    trace.watch(first.self_attn_layer_norm,'audio.layer.0.input_norm')
+    trace.watch(first.self_attn,'audio.layer.0.attention')
+    trace.watch(first.final_layer_norm,'audio.layer.0.post_attention_norm')
+    for key in ('fc1','fc2'):
+        trace.watch(getattr(first,key),'audio.layer.0.'+key)
+    attn=first.self_attn
+    keys=('qkv_proj',) if hasattr(attn,'qkv_proj') else ('q_proj','k_proj','v_proj')
+    for key in keys:
+        trace.watch(getattr(attn,key),'audio.layer.0.'+key)
+
+
 def compare_traces(actor, rollout):
     rollout = dict(rollout)
-    if 'layer.0.qkv_proj' in rollout:
-        names = ['layer.0.'+key for key in ('q_proj','k_proj','v_proj')]
-        parts = rollout.pop('layer.0.qkv_proj').split([actor[k].shape[-1] for k in names], -1)
-        rollout.update(zip(names,parts))
+    for prefix in ('layer.0.','audio.layer.0.'):
+        if prefix+'qkv_proj' in rollout:
+            names = [prefix+key for key in ('q_proj','k_proj','v_proj')]
+            parts = rollout.pop(prefix+'qkv_proj').split([actor[k].shape[-1] for k in names], -1)
+            rollout.update(zip(names,parts))
     if set(actor) != set(rollout):
         raise ValueError('trace points differ')
     report = {}

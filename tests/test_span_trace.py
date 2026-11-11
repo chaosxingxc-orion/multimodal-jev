@@ -14,16 +14,18 @@ def test_trace_copies_values_and_unwraps_residual_tuple():
         trace.capture('norm',x)
 
 
-def test_packed_qkv_compares_matching_sections_and_detects_drift():
+@pytest.mark.parametrize('prefix',['layer.0.','audio.layer.0.'])
+def test_packed_qkv_compares_matching_sections_and_detects_drift(prefix):
     actor = {'layer.0.q_proj':torch.ones(3,4,dtype=torch.bfloat16),
              'layer.0.k_proj':torch.ones(3,2,dtype=torch.bfloat16)*2,
              'layer.0.v_proj':torch.ones(3,2,dtype=torch.bfloat16)*3}
+    actor = {name.replace('layer.0.',prefix):value for name,value in actor.items()}
     packed = torch.cat(list(actor.values()),-1)
-    assert all(r['maximum']==0 for r in compare_traces(actor,{'layer.0.qkv_proj':packed}).values())
+    assert all(r['maximum']==0 for r in compare_traces(actor,{prefix+'qkv_proj':packed}).values())
     packed[1,5] += 1
-    results = compare_traces(actor,{'layer.0.qkv_proj':packed})
-    assert results['layer.0.k_proj']['maximum'] == 1
-    assert results['layer.0.q_proj']['maximum'] == 0
+    results = compare_traces(actor,{prefix+'qkv_proj':packed})
+    assert results[prefix+'k_proj']['maximum'] == 1
+    assert results[prefix+'q_proj']['maximum'] == 0
     with pytest.raises(ValueError,match='points differ'):
         compare_traces(actor,{})
 
