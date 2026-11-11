@@ -119,3 +119,33 @@ torchrun及导入启动时间。见[外部核验](fsdp-unit-gather-cpu-v3-verifi
 
 后续完整NPU探针也采用修正后的hash函数。CPU双rank通过不允许跳过原
 单层NPU探针及其外部核验，也没有新NPU运行入队。
+
+## 初始化完成后的独立验收入口
+
+`tools/jev/audit_omni_fsdp_initialization.py`已准备，不派发任务。它要求固定
+preparation、实际成功退出且未重启/OOM的原容器、两个rank成功终态；核对
+NPU4/5及管理设备、16CPU/256GiB/8GiB shm、host网络/private IPC、默认
+entrypoint、命令、挂载与显式环境，以及全部快照文件与Git来源。
+
+输出检查绑定已接受的CPU preflight和布局，核对1407份原始参数身份、两rank
+全部参数哈希及四个FP32 buffer；从完整参数名称的最长模块前缀独立推导
+108单元的归属和参数量，拒绝漏项、重复单元及总数相同但归属错误的报告。
+同时检查零forward/零更新、初始和峰值allocator计数。保存哈希相等仍依赖
+已认证运行器的测量，不是独立重新加载权重或真实前向验证；派发前置条件
+审查也不由此结果代替。
+
+宿主46项相关测试通过（1.90秒），含34项新验收测试；合成rank结果覆盖
+缺rank、权重/buffer变化、错误单元归属、设备越界、额外设备、资源/命令
+变化等拒绝路径。另读取实际CPU结构与布局验证108单元/1407张量/31719205488
+参数的归属；该检查的rank哈希及内存数值为合成值，不是NPU执行。
+
+实际任务成功完成后使用：
+
+```bash
+PYTHONPATH=src .venv/bin/python tools/jev/audit_omni_fsdp_initialization.py \
+  --root /mnt/cephfs/xingchao/experiments/multimodal-jev/omni-fsdp-initialization-v1 \
+  --layout /mnt/cephfs/xingchao/experiments/multimodal-jev/omni-fsdp-layout-v4/run/result.json \
+  --output /mnt/cephfs/xingchao/experiments/multimodal-jev/omni-fsdp-initialization-v1/diagnostic-audit.json
+```
+
+目前完整初始化尚未创建容器，以上CLI尚未用于真实NPU验收。
