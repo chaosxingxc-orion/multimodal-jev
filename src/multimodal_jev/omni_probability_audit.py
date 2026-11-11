@@ -57,19 +57,17 @@ def _distribution(values):
                 maximum=ordered[-1], p99_nearest_rank=ordered[math.ceil(.99*len(ordered))-1])
 
 
-def compare(records, runs, *, protocol, protocol_sha256):
-    """Audit every supplied run and every pair without changing old logprobs.
+def validate_protocol(records, *, protocol, protocol_sha256):
+    """Validate a complete original roster and explicit limits before forward.
 
-    Protocol and its hash must be registered before actual actor execution.
-    Numeric limits are explicit: no reuse of the historical CPU 0.1 threshold.
-    Each run has name and responses; each response binds the exact original
-    record digest, token IDs and complete valid-token log_probs (no padding).
+    This emits no numerical evidence and does not establish registration time.
+    Return the keyed original records for the downstream complete comparison.
     """
     required = {'schema', 'records_sha256', 'policy_sha256', 'instruction_sha256',
                 'run_names', 'max_abs_logprob_error', 'token_ratio_lower',
                 'token_ratio_upper', 'max_between_run_logprob_error'}
-    if type(records) is not list or type(runs) is not list or type(protocol) is not dict:
-        raise ValueError('record/run arrays and a protocol object required')
+    if type(records) is not list or type(protocol) is not dict:
+        raise ValueError('record array and a protocol object required')
     if (set(protocol) != required or protocol['schema'] != 'omni-probability-comparison-v1'
             or not valid_hash(protocol_sha256) or digest(protocol) != protocol_sha256
             or not valid_hash(protocol['policy_sha256'])
@@ -86,7 +84,6 @@ def compare(records, runs, *, protocol, protocol_sha256):
     lower, upper = protocol['token_ratio_lower'], protocol['token_ratio_upper']
     if not _finite(lower) or not _finite(upper) or not 0 < lower <= 1 <= upper:
         raise ValueError('finite positive token-ratio bounds containing one required')
-    loglower, logupper = math.log(lower), math.log(upper)
     old = {}
     for record in records:
         key = _key(record)
@@ -98,7 +95,22 @@ def compare(records, runs, *, protocol, protocol_sha256):
             raise ValueError('original policy, instruction or finish reason differs')
         _probabilities(record['token_ids'], record['log_probs'])
         old[key] = record
-    if not old or len(runs) != len(names):
+    if not old:
+        raise ValueError('nonempty complete original records required')
+    return old
+
+
+def compare(records, runs, *, protocol, protocol_sha256):
+    """Audit every supplied run and every pair without changing old logprobs.
+
+    Protocol and its hash must be registered before actual actor execution.
+    Numeric limits are explicit: no reuse of the historical CPU 0.1 threshold.
+    Each run binds original record digests, tokens and all valid probabilities.
+    """
+    old = validate_protocol(records, protocol=protocol, protocol_sha256=protocol_sha256)
+    names = protocol['run_names']
+    loglower, logupper = math.log(protocol['token_ratio_lower']), math.log(protocol['token_ratio_upper'])
+    if type(runs) is not list or len(runs) != len(names):
         raise ValueError('nonempty complete original records and run roster required')
     rebuilt = {}
     for run in runs:

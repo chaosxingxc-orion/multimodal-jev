@@ -2,7 +2,9 @@
 """Two-rank, frozen full Thinker FSDP1 initialization and state integrity probe.
 
 Run via torchrun only after separately verified NPU/device/resource readiness.
-No forward, optimizer, rollout, checkpoint export or automatic retries.
+The standalone CLI has no forward, optimizer, rollout, export or retries.
+An in-process continuation may execute a separately scoped frozen diagnostic
+after full initialization verification and before communication teardown.
 """
 import argparse
 from datetime import timedelta
@@ -46,7 +48,7 @@ def logical_path(path):
     return '.'.join(p for p in path.split('.') if p != '_fsdp_wrapped_module')
 
 
-def run(args, rank, local_rank, out):
+def run(args, rank, local_rank, out, *, after_verification=None):
     import torch
     import torch_npu
     import torch.distributed as dist
@@ -158,6 +160,11 @@ def run(args, rank, local_rank, out):
             preflight_sha256=args.preflight_hash,weight_updates=0,forward_calls=0,
             scope='Two-rank frozen FSDP1 initialization and every unit weight/buffer integrity only; no forward, sampled probabilities, optimizer or task-quality acceptance.'))
         dist.barrier()
+        # The standalone initialization CLI never supplies this continuation.
+        # A separately authenticated diagnostic runner may consume this exact
+        # fully verified model before the process group is destroyed.
+        if after_verification is not None:
+            after_verification(wrapped)
     finally:
         dist.destroy_process_group()
 

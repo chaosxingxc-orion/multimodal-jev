@@ -99,6 +99,9 @@ def run(args):
         weight_updates=0, scope='Accepted raw samples and real hop-aligned CPU processor/DataProto '
         'with actual vLLM prompt/ordered BF16 audio-feature comparison. '
         'No NPU forward, probability tolerance registration or RL efficacy.'))
+    # In-process consumers use these exact validated tensors; no pickle or
+    # second, potentially different processor invocation at the model boundary.
+    return processor, records, batch, base
 
 
 if __name__ == '__main__':
