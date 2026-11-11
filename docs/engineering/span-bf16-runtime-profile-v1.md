@@ -48,4 +48,9 @@ PYTHONPATH=src python tools/jev/check_span_policy_version.py --config /path/conf
 
 Span更新进程在构建模型前调用 `initialize_verl_preserving_qwen3()`：保留三个原始HF函数对象，导入真实verl core，再恢复这些对象。遇到已被verl替换的进程或未知来源的替换即拒绝；不修改共享镜像文件。loss继续调用固定verl实现。记录 `verl-runtime-initialization.json`，并依靠更新前gate、独立重载与新版本gate验收实际效果。step-v3的失败checkpoint不用于后续训练。
 
-最终凭证：`slurp-span-verl-vllm-step-v4-verified.json`（真实单步）、`slurp-bf16-postupdate-suite-v2-verified.json`（新版本48条）。完成的是单卡顺序请求生命周期；尚无分布式Ray/FSDP trainer、批量吞吐、真实NPU优化器续训、多步稳定性或held-out收益结论。
+最终凭证：`slurp-span-verl-vllm-step-v4-verified.json`（真实单步）、`slurp-bf16-postupdate-suite-v2-verified.json`（新版本48条）。完成的是单卡顺序请求生命周期；尚无分布式Ray/FSDP trainer、批量吞吐、多步稳定性或held-out收益结论。
+
+真实 NPU 恢复已在 `slurp-span-verl-vllm-resume-v1` 通过：完整 optimizer 恢复后消费第二对均衡录音，
+累计更新 1→2，112 个 Adam 状态步数均为 2；独立 HF 重载误差 0，前后 vLLM 最大 logp 差 8.9406967e-08。
+新 adapter 的独立 48 条复核 `slurp-bf16-resume-suite-v1` 全部通过，最大候选 logp 差 1.1920929e-07，
+384 种完整动作概率比 [0.9999998808,1.0000001788]。恢复接口和限制见 `span-resume-v1.md`。

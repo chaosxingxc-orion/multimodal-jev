@@ -40,5 +40,8 @@ step-v4完整终态0/READY：提前初始化verl并恢复三个HF算子后，两
 `slurp-span-verl-vllm-resume-v1` 在隔离 NPU4 上从已通过 48 条验收的 step-v4 恢复，
 消费第二对互补录音，仍用 raw 音频、BF16 LoRA、32 次完整动作采样及三项平行正确率奖励。
 其验收包括更新前概率 gate、真实 verl 更新、独立重载精确一致及更新后 vLLM gate。
-运行结果待归档；成功后仍须对新版本进行全 48 条独立 HF/vLLM 验收。
+恢复实验终态 0/READY：累计更新 1→2，112 个参数 Adam step 均从 1→2，FP32 master/state 恢复成功；
+第二对录音与首对无重叠，gradient norm=6.625，独立 HF 重载误差 0，前后 vLLM 最大 logp 差 8.9406967e-08。
+凭证 `slurp-span-verl-vllm-resume-v1-verified.json`。新版本全 48 条独立 HF/vLLM 验收 `slurp-bf16-resume-suite-v1` 也已终态 0/READY：
+最大候选 logp 差 1.1920929e-07，384 种完整动作比率 [0.9999998808,1.0000001788]，全部通过。
 单次恢复不等于 NPU 不间断训练等价性或分布式训练稳定性。
