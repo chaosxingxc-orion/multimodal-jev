@@ -42,7 +42,16 @@ def run(args):
     identity,examples,records=load_rollout_run(args.rollout)
     torch.set_num_threads(4);torch.manual_seed(17)
     device=getattr(args,'device','cpu');dtype=getattr(args,'dtype','float32')
-    processor,model=load_runtime(identity['config']['checkpoint'],device,dtype)
+    adapter=getattr(args,'adapter',None);base=getattr(args,'base',None)
+    if bool(adapter)!=bool(base):raise ValueError('base and adapter must be supplied together')
+    if adapter:
+        from multimodal_jev.policy_identity import validate_adapter_export
+        from peft import PeftModel
+        validate_adapter_export(base,identity['config']['checkpoint'],adapter)
+        processor,model=load_runtime(base,device,dtype)
+        model=PeftModel.from_pretrained(model,adapter,is_trainable=False).eval()
+    else:
+        processor,model=load_runtime(identity['config']['checkpoint'],device,dtype)
     by_id={ex.example_id:ex for ex in examples};results=[]
     for index,record in enumerate(records):
         atomic_json(args.output/'progress.json',{'phase':'forward','done':index,'total':len(records),'heartbeat_unix':time.time()})
@@ -70,8 +79,10 @@ def run(args):
     return {'status':'passed' if passed else 'failed','max_logprob_error':max_error,'threshold':0.02,
             'responses':len(results),'policy_id':identity['policy_id'],'device':device,'dtype':dtype,
             'cached_decode':getattr(args,'cached_decode',False),
+            'base':str(base) if base else None,'adapter':str(adapter) if adapter else None,
             'rollout_sha256':file_hash(args.rollout/'rollouts.jsonl'),
-            'scope':'same merged weights HF single-response probability diagnosis; no optimizer or full-batch parity proof'}
+            'scope':('original base plus LoRA versus merged vLLM single-response diagnosis; no optimizer or full-batch parity proof'
+                     if adapter else 'same merged weights HF single-response probability diagnosis; no optimizer or full-batch parity proof')}
 
 
 if __name__=='__main__':
@@ -80,6 +91,8 @@ if __name__=='__main__':
     p.add_argument('--device',default='cpu')
     p.add_argument('--dtype',choices=['float32','bfloat16','float16'],default='float32')
     p.add_argument('--cached-decode',action='store_true')
+    p.add_argument('--base',type=Path)
+    p.add_argument('--adapter',type=Path)
     args=p.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     try:
