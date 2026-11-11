@@ -72,3 +72,5 @@ B. 可分奖励的逐 Span 信用分配：Final 奖励仅对应 Final score 项�
 后续执行证据：相同40条、相同20次更新的候选CE对照完成，原48条学习人口 after=92/142 vs 全词表70/142；静音80/142，完整三问全对仍与静音均10/46。仅支持继续研究分类目标，不证明泛化。原生FP32 LoRA pooling诊断仍在验证，v1因dtype字符串不被API接受而失败，v2改为torch.float32。
 
 实现进度补记：已增加候选CE、全动作联合概率gate及有审核mask的辅助奖励函数，51项相关测试通过。奖励接口未接入参数更新；vLLM LoRA kernel实际精度与actor匹配仍待本轮探针结果。候选CE从相同初始化出发的改善不能作为同精度后端一致性的替代。
+
+LoRA探针v2已失败：pooling warmup的自动LM-head LoRA wrapper触发Ascend FP32 bgmv_expand限制（只支持half/bf16）。真实adapter仅q/v，下一步限制包装范围后验证q/v路径；未准入RL。此证据不等于所有FP32 LoRA运算都不支持。
