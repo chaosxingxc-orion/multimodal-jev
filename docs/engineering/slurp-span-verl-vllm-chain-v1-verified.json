@@ -1,0 +1,59 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-chain-v1",
+  "passed": true,
+  "initial_completed_updates": 2,
+  "completed_updates": 4,
+  "versions": [
+    {
+      "completed_updates": 3,
+      "selection": {
+        "schema": "jev-span-balanced-cursor-v1",
+        "seed": 17,
+        "schedule_sha256": "dfd3909992381a0bfe6e14631c7a416f9c341c736a5225c56c56d016152d6276",
+        "batch_index": 2,
+        "next_batch_index": 3,
+        "epoch_batches": 20,
+        "recording_ids": [
+          "slurp:audio-1490204775-headset.flac",
+          "slurp:audio-1488991336.flac"
+        ],
+        "manifest_sha256": "a776f92f17ebd391bd07114eba21d5716d16089f68f694aca90f362c30ac0feb",
+        "question_order": [
+          "date",
+          "time",
+          "timeofday"
+        ]
+      },
+      "adapter_id": "f50f2b3c3b7d82f286f535f8b6d02c213c338d21452880f188ee99a7e8c838c6",
+      "recordings": 48,
+      "maximum_logprob_error": 1.1920928955078125e-07,
+      "gradient_norm": 3.90625
+    },
+    {
+      "completed_updates": 4,
+      "selection": {
+        "schema": "jev-span-balanced-cursor-v1",
+        "seed": 17,
+        "schedule_sha256": "dfd3909992381a0bfe6e14631c7a416f9c341c736a5225c56c56d016152d6276",
+        "batch_index": 3,
+        "next_batch_index": 4,
+        "epoch_batches": 20,
+        "recording_ids": [
+          "slurp:audio-1492779679-headset.flac",
+          "slurp:audio-1501778810-headset.flac"
+        ],
+        "manifest_sha256": "a776f92f17ebd391bd07114eba21d5716d16089f68f694aca90f362c30ac0feb",
+        "question_order": [
+          "date",
+          "time",
+          "timeofday"
+        ]
+      },
+      "adapter_id": "b86f4b9e6633231a50dd2d7852eb19bf401f6ac031d036e8bdb07fa5a567ee1e",
+      "recordings": 48,
+      "maximum_logprob_error": 1.1920928955078125e-07,
+      "gradient_norm": 6.8125
+    }
+  ],
+  "scope": "Bounded single-rank real verl-loss/vLLM updates with restored Adam and full policy gates; not distributed Ray training or held-out gains"
+}

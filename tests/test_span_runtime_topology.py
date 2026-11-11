@@ -15,6 +15,18 @@ def test_incompatible_topology_is_rejected(size, profile):
         runtime_topology(dict(tensor_parallel_size=size, runtime_profile=profile))
 
 
+@pytest.mark.parametrize('devices', [[0],[3],[8],[True],[4,5],[],[4,4],(5,)])
+def test_single_card_requires_one_authorized_physical_device(devices):
+    with pytest.raises(ValueError):runtime_topology(dict(runtime_profile=PROFILE,physical_devices=devices))
+
+
+def test_single_card_can_use_authorized_idle_card_without_changing_architecture():
+    original=runtime_topology(dict(runtime_profile=PROFILE))
+    idle=runtime_topology(dict(runtime_profile=PROFILE,physical_devices=[5]))
+    assert original['devices']==['davinci4'] and idle['devices']==['davinci5']
+    assert {k:v for k,v in original.items() if k!='devices'}=={k:v for k,v in idle.items() if k!='devices'}
+
+
 @pytest.mark.parametrize('profile', [TP4_DIAGNOSTIC, TP4_HF_ORDER, TP4_COMPLETE_K, TP4_FULL_WIDTH])
 def test_tp4_diagnostic_cannot_enter_training_even_if_reported_passed(profile):
     config = dict(tensor_parallel_size=4, runtime_profile=profile, passed=True)

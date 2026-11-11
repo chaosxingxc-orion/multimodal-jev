@@ -12,10 +12,15 @@ def runtime_topology(config):
     profile = config.get('runtime_profile')
     if type(size) is not int:
         raise ValueError('integer tensor parallel size required')
+    devices=config.get('physical_devices',[4] if size==1 else [4,5,6,7])
+    if (type(devices) is not list or any(type(d) is not int or d not in (4,5,6,7) for d in devices)
+            or len(devices)!=size or len(set(devices))!=size):
+        raise ValueError('distinct authorized physical devices required')
     if size == 1 and profile == PROFILE:
-        return dict(size=1, devices=['davinci4'], architecture='Qwen3ASRForSpanDecisions',
+        return dict(size=1, devices=[f'davinci{devices[0]}'], architecture='Qwen3ASRForSpanDecisions',
                     diagnostic_only=False)
     if size == 4 and profile in (TP4_DIAGNOSTIC, TP4_HF_ORDER, TP4_COMPLETE_K, TP4_FULL_WIDTH):
+        if devices!=[4,5,6,7]:raise ValueError('fixed TP4 rank order required')
         return dict(size=4, devices=['davinci4', 'davinci5', 'davinci6', 'davinci7'],
                     architecture='Qwen3ASRForSpanDecisionsTP4Diagnostic', diagnostic_only=True)
     raise ValueError('unsupported Span topology/profile pair')
