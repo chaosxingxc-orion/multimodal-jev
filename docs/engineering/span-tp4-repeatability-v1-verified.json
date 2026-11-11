@@ -1,0 +1,112 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1",
+  "request_id": "a91d8cc4b513d794dc3a49390ca1581bb30b8826350a9edbbf8fe709bafa9dc9",
+  "comparison": {
+    "all_logits_exact": false,
+    "pairs": [
+      {
+        "left": "plain-before-1",
+        "right": "plain-before-2",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.75,
+        "maximum_logprob_difference": 0.15266060829162598
+      },
+      {
+        "left": "plain-before-1",
+        "right": "trace",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.5625,
+        "maximum_logprob_difference": 0.06639987230300903
+      },
+      {
+        "left": "plain-before-1",
+        "right": "plain-after-1",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.5625,
+        "maximum_logprob_difference": 0.0654265284538269
+      },
+      {
+        "left": "plain-before-1",
+        "right": "plain-after-2",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.28125,
+        "maximum_logprob_difference": 0.033686280250549316
+      },
+      {
+        "left": "plain-before-2",
+        "right": "trace",
+        "logits_exact": false,
+        "maximum_logit_difference": 1.15625,
+        "maximum_logprob_difference": 0.1732378602027893
+      },
+      {
+        "left": "plain-before-2",
+        "right": "plain-after-1",
+        "logits_exact": false,
+        "maximum_logit_difference": 1.09375,
+        "maximum_logprob_difference": 0.08723407983779907
+      },
+      {
+        "left": "plain-before-2",
+        "right": "plain-after-2",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.53125,
+        "maximum_logprob_difference": 0.18391060829162598
+      },
+      {
+        "left": "trace",
+        "right": "plain-after-1",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.25,
+        "maximum_logprob_difference": 0.10105401277542114
+      },
+      {
+        "left": "trace",
+        "right": "plain-after-2",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.8125,
+        "maximum_logprob_difference": 0.0966765284538269
+      },
+      {
+        "left": "plain-after-1",
+        "right": "plain-after-2",
+        "logits_exact": false,
+        "maximum_logit_difference": 0.75,
+        "maximum_logprob_difference": 0.0966765284538269
+      }
+    ],
+    "scope": "One request in one engine; does not prove cross-engine determinism or HF parity"
+  },
+  "sixth_plain_request_exact": false,
+  "sixth_plain_maximum_logit_difference": 0.5,
+  "full_suite": {
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1",
+    "diagnostic_only": true,
+    "training_admitted": false,
+    "runtime_profile": "qwen3-asr-bf16-hf-order-tp4-diagnostic-v1",
+    "adapter_id": "6df66622568c868b2ab06efffdfd56fcfb3e512727a764953865ce0b68a1e986",
+    "records": 48,
+    "passed_records": 1,
+    "maximum_logprob_error": 0.307354211807251,
+    "joint_ratio_range": [
+      0.581111664240404,
+      1.5048396382338984
+    ],
+    "argmax_changed_spans": 5,
+    "files": {
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/run/result.json": "88847422e26b5bf7ce63926d353c27f3a68e71ff3c1a2994db4f90846490eea9",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/run/worker.json": "a02e1f3a1981f1745998131baece31cc6329e482a4810ecd977d569500368703",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/run/terminal.json": "9169bde2c1277ea852b480651ad6a7b071fc80edf108319e2f3eb721d463249b",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/run/runtime-profile.json": "7fb7f7d5b666be961864f92f8edd97e3169c105052882cca628bf0cd9e597594",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/config.json": "2132ccfbc293d756fbfb05369978d3a9432f62da414a93d47a44e871869e7df7",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/source-manifest.json": "1d762727d3699226285e0e37a4a621d42863ced8fc552158b07ce6748207bc9a"
+    },
+    "scope": "Independent TP4 diagnostic; no RL admission or task improvement claim"
+  },
+  "training_admitted": false,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/run/repeatability.json": "a90fff9cc08fadabee910d104ebb57dcf87960de60f0b0f448c68a97ed2ef66d",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-tp4-repeatability-v1/run/repeat-trace-files.json": "90b7d00f99d4688d81b8438ce76eb5cc88701d75fa44ca213e478050e6aff8a7"
+  },
+  "scope": "One fixed request, five controlled repeats plus suite sixth call; one engine only, no cross-engine or HF equivalence claim"
+}

@@ -32,6 +32,9 @@ def run(config, output):
     from multimodal_jev.span_runtime_topology import runtime_topology, install_diagnostic_profile
 
     topology = runtime_topology(config)
+    repeat_probe=config.get('trace_repeatability_probe',False)
+    if repeat_probe and (not topology['diagnostic_only'] or config.get('trace_first_request',False)):
+        raise ValueError('repeatability probe requires isolated TP4 diagnostic without separate trace')
     if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != topology['devices']:
         raise ValueError('physical NPU isolation differs from runtime topology')
     for path, digest in config['pins'].items():
@@ -59,6 +62,7 @@ def run(config, output):
         raise ValueError('HF reference checkpoint differs')
     processor = Qwen3ASRProcessor.from_pretrained(config['model'], local_files_only=True)
     enable_feature_passthrough()
+    engine_options={'mm_processor_cache_gb':0} if repeat_probe else {}
     engine = LLM(model=config['model'], tokenizer=config['model'], runner='pooling',
         hf_overrides={'architectures':[topology['architecture']], 'head_dtype':'model'},
         pooler_config={'task':'token_classify','tok_pooling_type':'ALL','use_activation':False},
@@ -67,7 +71,7 @@ def run(config, output):
         worker_extension_cls='multimodal_jev.lora_span_audit.SpanAuditWorkerExtension',
         enable_chunked_prefill=False, enable_prefix_caching=False, enable_mm_embeds=True,
         limit_mm_per_prompt={'audio':1}, enable_lora=True, max_loras=1, max_lora_rank=8,
-        lora_dtype=torch.bfloat16, lora_target_modules=packed)
+        lora_dtype=torch.bfloat16, lora_target_modules=packed, **engine_options)
     records = []
     try:
         install = install_diagnostic_profile if topology['diagnostic_only'] else install_rollout_profile
@@ -105,6 +109,21 @@ def run(config, output):
                 'candidate_ids':[m['token_ids'] for m in mapping], 'expected_input_ids':ids})
             prompt = {'prompt_token_ids':compact, 'multi_modal_data':{'audio':data},
                       'multi_modal_uuids':{'audio':[request_id]}}
+            if repeat_probe and index==0:
+                from multimodal_jev.span_repeatability import run_repeat_probe
+                repeat_index=0
+                def encode_repeat():
+                    nonlocal repeat_index
+                    repeat_index+=1
+                    repeated_prompt={**prompt,'multi_modal_uuids':{'audio':[request_id+f'-repeat-{repeat_index}']}}
+                    repeated=engine.encode([repeated_prompt],pooling_params=params,pooling_task='token_classify',
+                        use_tqdm=False,lora_request=lora)[0]
+                    if repeated.prompt_token_ids!=ids:
+                        raise ValueError('repeat prompt identity changed')
+                    return repeated.outputs.data.float().cpu()
+                probe=run_repeat_probe(engine,encode_repeat,output)
+                atomic_json(output/'repeatability.json',dict(id=item['id'],request_id=request_id,
+                    request_identity=payload,mm_processor_cache_gb=0,unique_audio_cache_keys=True,**probe))
             tracing = config.get('trace_first_request',False) and index==0
             if tracing:
                 engine.llm_engine.collective_rpc('begin_jev_span_trace')

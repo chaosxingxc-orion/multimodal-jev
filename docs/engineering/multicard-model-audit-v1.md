@@ -95,3 +95,8 @@ BF16 实际 LoRA 计算、FP32 主参数/Adam、固定拓扑恢复等价与跨 r
 少量差异，o_proj输出后差异元素比例明显扩大。但本轮TP4完整48条输出与上轮均有差异，
 尚未通过trace无扰动检查，不能据此直接认定根因。下一步先测同引擎重复性和记录影响。
 详见 `span-tp4-layer-trace-v1.md`。
+
+同引擎重复对照确认trace之前两次无记录推理已经不同。仅设置
+HCCL_DETERMINISTIC=strict、LCCL_DETERMINISTIC=1后，固定请求六次logits完全一致，
+包含trace调用；但完整48条对HF仍0条通过，尚未准入RL，也未证明跨引擎确定性。
+详见 `span-tp4-repeatability-v1.md`。

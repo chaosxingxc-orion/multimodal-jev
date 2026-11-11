@@ -100,6 +100,7 @@ class SpanAuditWorkerExtension:
 
 
 def inspect_span_lora(model):
+    import os
     from vllm.lora.layers import BaseLayerWithLoRA
     manager=getattr(model,'lora_manager',None)
     if manager is None:
@@ -120,6 +121,8 @@ def inspect_span_lora(model):
             raise ValueError('actual worker LoRA buffers differ from configured dtype')
         storage[name] = sorted({str(t.dtype) for t in tensors})
     return dict(model_class=type(model).__name__,wrapper_modules=wrapped,
+                collective_environment={key:os.environ.get(key) for key in
+                    ('HCCL_DETERMINISTIC','LCCL_DETERMINISTIC')},
                 actual_lora_buffer_dtypes=storage,
                 lora_dtype=str(manager.lora_config.lora_dtype),max_rank=manager.lora_config.max_lora_rank,
                 lm_head_class=type(model.language_model.lm_head).__name__,
