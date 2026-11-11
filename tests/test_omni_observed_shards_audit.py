@@ -14,8 +14,8 @@ from multimodal_jev.sfc_reward_batch import digest
 from test_omni_probability_shards import setup
 
 
-def fixture(size):
-    records, data = setup()
+def fixture(size, real=False):
+    records, data = setup(real)
     plan = shard_plan(records, world_size=2, micro_batch_size=size)
     outputs = []
     for rank in (0, 1):
@@ -41,8 +41,11 @@ def fixture(size):
 
 
 @pytest.mark.parametrize('size', [1, 2])
-def test_rechecks_all_calls_against_original_inputs_and_both_exports(size):
-    data, records, outputs, kwargs = fixture(size)
+@pytest.mark.parametrize('real', [False, True])
+def test_rechecks_all_calls_against_original_inputs_and_both_exports(size, real):
+    if real:
+        pytest.importorskip('verl')
+    data, records, outputs, kwargs = fixture(size, real)
     before = deepcopy(outputs)
     result = audit_observed_shards(data[[2, 0, 3, 1]], records, list(reversed(outputs)), **kwargs)
     assert outputs == before
