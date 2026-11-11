@@ -6,7 +6,7 @@
 
 固定镜像CPU合成测试已通过：一次真实verl损失及BF16 optimizer更新，gradient norm=0.69140625；目标动作概率增加，behavior old logprobs保持不变，master/state均FP32。合成policy的准入误差0；它没有vLLM采样，没有语音输入，不能作为真实语音RL结果。凭证 `docs/engineering/span-actor-update-cpu-v1-verified.json`。
 
-真实语音HF/vLLM目前仍失败，不能调用此接口绕过gate。下一里程碑为：真实候选分布通过多样本gate → 固定BF16初始化的一次verl更新 → 保存新adapter与优化器状态 → worker新版本加载及概率复核 → 等预算SFT/RL/辅助奖励对照。当前无真实语音RL参数更新。
+此前真实语音HF/vLLM失败；当前命名BF16运行profile已在48条真实语音全部通过gate，不能绕过每版本检查。下一里程碑为：真实候选分布通过多样本gate → 固定BF16初始化的一次verl更新 → 保存新adapter与优化器状态 → worker新版本加载及概率复核 → 等预算SFT/RL/辅助奖励对照。当前无真实语音RL参数更新。
 
 ## 单步生命周期入口
 
@@ -19,3 +19,5 @@
 CPU验证共30项通过，覆盖数学/奖励/输入身份/概率gate、断点续训等价性、篡改检测、乱序参数拒绝、更新前失败阻断和更新后失败不发布READY。生命周期测试的后端是fake，仅证明调度控制；真实固定镜像NPU入口已在 `slurp-span-verl-vllm-step-v1` 完成首次验收：参考actor成功，第一条vLLM rollout完成，max logp差0.0652434、联合比率[0.886845,1.036827]，argmax无变化但gate失败。入口按预期在更新前退出，update.json/policy-1/READY均未生成，optimizer_updates=0。第二条rollout和更新后路径因前置gate失败未执行。当前未完成分布式verl worker/Ray调度，未获得真实语音RL收益证据。
 
 固定镜像真实PEFT/safetensors checkpoint测试另通过：合成CPU线性模型LoRA训练7步后保存，独立重载并继续9步，每一步BF16输出与FP32 master均与不中断训练逐位相同。凭证 `docs/engineering/span-checkpoint-cpu-v1-verified.json`。这是存储/恢复验证，不是语音/NPU更新成功。
+
+命名profile与48条验收后启动step-v2：两条更新前rollout全部通过（max误差均≤1.1920929e-07）。进入actor时，request/policy哈希逐条完全相同，但持久化JSON list与内存dataclass tuple直接比较触发身份拒绝；尚未生成behavior/update/checkpoint，0次更新。已把bind_span_request返回内容统一为同一JSON规范表示，哈希算法不变；新增round-trip测试仍验证真实字段变化被拒绝。新目录step-v3重新执行全流程，不复用已claim目录。

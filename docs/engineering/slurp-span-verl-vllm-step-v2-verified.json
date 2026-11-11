@@ -1,0 +1,52 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v2",
+  "optimizer_updates": 0,
+  "ready": false,
+  "failure": "JSON list versus in-memory dataclass tuple equality; request/policy hashes identical",
+  "before_gates": [
+    {
+      "passed": true,
+      "per_span_passed": true,
+      "joint_ratio_passed": true,
+      "maximum_logprob_error": 0.0,
+      "p95_logprob_error": 0.0,
+      "joint_log_ratio_min": 0.0,
+      "joint_log_ratio_max": 0.0,
+      "joint_ratio_min": 1.0,
+      "joint_ratio_max": 1.0,
+      "candidate_kl_actor_to_behavior": 0.0,
+      "argmax_changed_spans": [],
+      "per_span_tolerance": 0.02,
+      "joint_ratio_bounds": [
+        0.98,
+        1.02
+      ],
+      "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+    },
+    {
+      "passed": true,
+      "per_span_passed": true,
+      "joint_ratio_passed": true,
+      "maximum_logprob_error": 0.0,
+      "p95_logprob_error": 0.0,
+      "joint_log_ratio_min": 0.0,
+      "joint_log_ratio_max": 0.0,
+      "joint_ratio_min": 1.0,
+      "joint_ratio_max": 1.0,
+      "candidate_kl_actor_to_behavior": 0.0,
+      "argmax_changed_spans": [],
+      "per_span_tolerance": 0.02,
+      "joint_ratio_bounds": [
+        0.98,
+        1.02
+      ],
+      "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+    }
+  ],
+  "fix": "bind_span_request returns canonical JSON payload without changing hash serialization; JSON round-trip regression added",
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v2/run/terminal.json": "e1c3216558ce12b977bf3a2dd48444459d2bd899445319a3aab76e2623bee498",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v2/run/update-failure.json": "c0e8001a6accd6f65c81454c8150fc4e3507d2fec08594d32b775001b5471c51",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v2/run/update-claimed.json": "de5b0e284e2785b603700f771adcd277124c77d04b617b2ff575fc737e182edd"
+  }
+}

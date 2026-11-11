@@ -32,3 +32,18 @@ def test_exact_request_identity_changes_with_evidence_question_candidates_or_pol
 def test_teacher_labels_and_unknown_fields_rejected():
     x=list(fixture());x[2]['labels']=torch.tensor([[1]])
     with pytest.raises(ValueError,match='label-free'):bind_span_request(*x)
+
+
+def test_identity_payload_survives_cross_process_json_roundtrip_without_type_drift():
+    import hashlib
+    import json
+    uid,payload=bind_span_request(*fixture())
+    encoded=json.dumps(payload,sort_keys=True,separators=(',',':'),allow_nan=False)
+    reloaded=json.loads(encoded)
+    assert reloaded==payload
+    assert hashlib.sha256(encoded.encode()).hexdigest()==uid
+    assert isinstance(payload['request']['questions'],list)
+    assert isinstance(payload['request']['requirements'],list)
+    # A real difference still fails the exact-content comparison.
+    reloaded['request']['requirements'][0]='changed'
+    assert reloaded!=payload

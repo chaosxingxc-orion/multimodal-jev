@@ -41,4 +41,7 @@ def bind_span_request(request, audio_receipt, encoded_inputs, positions, candida
                  positions=positions.tolist(),candidate_ids=candidate_ids,policy_id=policy_id,
                  sampling=dict(temperature=temperature,policy='independent_finite_categorical'))
     serialized=json.dumps(payload,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
-    return hashlib.sha256(serialized).hexdigest(),payload
+    # dataclasses.asdict preserves nested tuples, while JSON artifacts reload
+    # them as lists. Return the canonical wire representation too, so exact
+    # content checks across actor/worker processes agree with the same hash.
+    return hashlib.sha256(serialized).hexdigest(),json.loads(serialized)
