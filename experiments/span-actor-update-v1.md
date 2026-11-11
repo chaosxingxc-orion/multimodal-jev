@@ -21,3 +21,5 @@ CPU验证共30项通过，覆盖数学/奖励/输入身份/概率gate、断点�
 固定镜像真实PEFT/safetensors checkpoint测试另通过：合成CPU线性模型LoRA训练7步后保存，独立重载并继续9步，每一步BF16输出与FP32 master均与不中断训练逐位相同。凭证 `docs/engineering/span-checkpoint-cpu-v1-verified.json`。这是存储/恢复验证，不是语音/NPU更新成功。
 
 命名profile与48条验收后启动step-v2：两条更新前rollout全部通过（max误差均≤1.1920929e-07）。进入actor时，request/policy哈希逐条完全相同，但持久化JSON list与内存dataclass tuple直接比较触发身份拒绝；尚未生成behavior/update/checkpoint，0次更新。已把bind_span_request返回内容统一为同一JSON规范表示，哈希算法不变；新增round-trip测试仍验证真实字段变化被拒绝。新目录step-v3重新执行全流程，不复用已claim目录。
+
+step-v3更新前两条概率及actor重算完全一致，完成1次真实verl更新，gradient norm=3.984375；保存BF16 adapter及FP32 master/Adam成功。但独立HF重载max logp差0.15266055，被门禁拦截，无READY、未运行新版本rollout。源码发现verl首次导入会通过npu_patch全局替换Qwen3 RMSNorm/MLP/rotary；此前在loss内部延迟导入，使更新前后计算图实现不一致。step-v4提前导入真实verl并恢复三个原始HF函数对象，保持已验收的运行配置，从同一初始adapter重新执行，v3 checkpoint仅作失败证据。

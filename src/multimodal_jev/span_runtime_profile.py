@@ -17,6 +17,41 @@ RPCS = (
 )
 
 
+def initialize_verl_preserving_qwen3():
+    """Import verl before model construction and undo its three NPU patches.
+
+    The pinned verl package changes HF Qwen3 class methods on first import.
+    Restoring the exact original objects keeps the accepted actor equations;
+    all other verl initialization and its real loss functions remain active.
+    Reject an already patched process instead of guessing original functions.
+    """
+    import importlib
+    from transformers.models.qwen3 import modeling_qwen3 as qwen3
+    targets=((qwen3.Qwen3RMSNorm,'forward'),(qwen3.Qwen3MLP,'forward'),
+             (qwen3,'apply_rotary_pos_emb'))
+    return preserve_qwen3_import(targets, lambda:importlib.import_module('verl.trainer.ppo.core_algos'))
+
+
+def preserve_qwen3_import(targets, importer):
+    originals=[getattr(owner,name) for owner,name in targets]
+    if any(getattr(fn,'__module__','').startswith('verl.') for fn in originals):
+        raise ValueError('initialize Span verl before importing patched Qwen3 runtime')
+    changed=[]
+    try:
+        importer()
+        for (owner,name),before in zip(targets,originals,strict=True):
+            after=getattr(owner,name)
+            if after is not before:
+                if getattr(after,'__module__','')!='verl.models.transformers.npu_patch':
+                    raise ValueError('unexpected Qwen3 runtime mutation during verl import')
+                changed.append(dict(owner=getattr(owner,'__name__',type(owner).__name__),attribute=name,
+                                    replacement_module=after.__module__))
+    finally:
+        for (owner,name),before in zip(targets,originals,strict=True):
+            setattr(owner,name,before)
+    return dict(restored=changed,scope='Original HF Qwen3 norm/MLP/rotary retained; real verl loss imported before forward')
+
+
 def install_rollout_profile(engine, name):
     if name != PROFILE:
         raise ValueError('unsupported Span runtime profile')

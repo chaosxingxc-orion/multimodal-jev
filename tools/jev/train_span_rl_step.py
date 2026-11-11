@@ -73,7 +73,9 @@ def actor_phase(config, output, phase):
     torch.manual_seed(config['seed'])
     torch.npu.manual_seed_all(config['seed'])
     if config.get('runtime_profile'):
-        from multimodal_jev.span_runtime_profile import configure_actor_profile
+        from multimodal_jev.span_runtime_profile import configure_actor_profile, initialize_verl_preserving_qwen3
+        if phase == 'update':
+            atomic_json(output/'verl-runtime-initialization.json', initialize_verl_preserving_qwen3())
         atomic_json(output/f'actor-runtime-{phase}.json', configure_actor_profile(config['runtime_profile']))
     adapter = output/'policy-1/adapter' if phase == 'after' else Path(config['initial_adapter'])
     adapted, model, base_id, policy_id, prepared, forward = prepare_actor(config, output, adapter)

@@ -28,6 +28,29 @@ def test_profile_receipt_preserves_worker_results():
     assert all(receipt['operations'][name]==[{'rpc':name}] for name in RPCS)
 
 
+@pytest.mark.parametrize('replacement_module',['verl.models.transformers.npu_patch','unexpected.patch'])
+def test_verl_import_restores_exact_original_functions_even_on_rejection(replacement_module):
+    from multimodal_jev.span_runtime_profile import preserve_qwen3_import
+    def original():
+        return 'HF'
+    def replacement():
+        return 'fused'
+    replacement.__module__=replacement_module
+    owner=SimpleNamespace(forward=original)
+    def importer():
+        owner.forward=replacement
+    if replacement_module=='unexpected.patch':
+        with pytest.raises(ValueError,match='unexpected Qwen3'):
+            preserve_qwen3_import(((owner,'forward'),),importer)
+    else:
+        receipt=preserve_qwen3_import(((owner,'forward'),),importer)
+        assert len(receipt['restored'])==1
+    assert owner.forward is original
+    owner.forward=replacement;replacement.__module__='verl.models.transformers.npu_patch'
+    with pytest.raises(ValueError,match='before importing'):
+        preserve_qwen3_import(((owner,'forward'),),lambda:None)
+
+
 def test_suite_admission_recomputes_probabilities_and_authenticates_policy(tmp_path):
     import itertools
     import json

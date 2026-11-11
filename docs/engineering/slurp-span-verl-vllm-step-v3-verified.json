@@ -1,0 +1,65 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v3",
+  "optimizer_updates": 1,
+  "ready": false,
+  "update": {
+    "loss": 6.891787052154541e-08,
+    "gradient_norm": 3.984375,
+    "admission": [
+      {
+        "passed": true,
+        "per_span_passed": true,
+        "joint_ratio_passed": true,
+        "maximum_logprob_error": 0.0,
+        "p95_logprob_error": 0.0,
+        "joint_log_ratio_min": 0.0,
+        "joint_log_ratio_max": 0.0,
+        "joint_ratio_min": 1.0,
+        "joint_ratio_max": 1.0,
+        "candidate_kl_actor_to_behavior": 0.0,
+        "argmax_changed_spans": [],
+        "per_span_tolerance": 0.02,
+        "joint_ratio_bounds": [
+          0.98,
+          1.02
+        ],
+        "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+      },
+      {
+        "passed": true,
+        "per_span_passed": true,
+        "joint_ratio_passed": true,
+        "maximum_logprob_error": 0.0,
+        "p95_logprob_error": 0.0,
+        "joint_log_ratio_min": 0.0,
+        "joint_log_ratio_max": 0.0,
+        "joint_ratio_min": 1.0,
+        "joint_ratio_max": 1.0,
+        "candidate_kl_actor_to_behavior": 0.0,
+        "argmax_changed_spans": [],
+        "per_span_tolerance": 0.02,
+        "joint_ratio_bounds": [
+          0.98,
+          1.02
+        ],
+        "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+      }
+    ],
+    "optimizer_updates": 1,
+    "behavior_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:7341430053a9b4f36f5d5b8fe80616889af1857c71187d22b4895b062f557140",
+    "next_action": "export new BF16 policy identity; reload and verify worker before next rollout",
+    "scope": "Single-rank native verl joint loss/optimizer adapter; caller owns lifecycle and provenance."
+  },
+  "reload": {
+    "maximum_logprob_error": 0.1526605486869812,
+    "passed": false
+  },
+  "finding": "Pinned verl imports models.transformers.npu_patch on NPU and globally replaces Qwen3 RMSNorm.forward, MLP.forward, apply_rotary_pos_emb; lazy import occurred after actor forward and before post-update evaluation. Numerical causal confirmation pending v4.",
+  "next": "Import real verl core before actor construction; restore exact original HF callables; rerun from initial adapter in a new root. v3 checkpoint quarantined from further training.",
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v3/run/terminal.json": "fa4fd38dd9f3dbbdd641a7e26a52c5cc8416a16bfd3527b7c3aa5baefa4fa5c7",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v3/run/update.json": "0cebde23b23f5d64724675a3ff5ce61fe3f3d510a3539cbc43f6d509cb1dfb95",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v3/run/actor-reload.json": "e2e97ed0e8445be11b7739d3683ef28c9440d4d8c21d376a27d4c6db32664236",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-span-verl-vllm-step-v3/run/policy-1/CHECKPOINT.json": "10d36bb436d9b43d7d5362a2eec1de6d6e0a34689cc1f88078b8a63b8a5a6461"
+  }
+}
