@@ -31,6 +31,11 @@ def verify(root):
     if file_hash(run/'records.jsonl')!=result['records_sha256']:raise ValueError('predictions changed')
     population=config.get('population',LEARNING_PROBE)
     rows=configured_rule_rows(config)
+    if population=='transfer-full-evaluation-v1':
+        from verify_span_rule_transfer import verify as verify_transfer
+        if (read(run/'transfer-data-audit.json')!=verify_transfer(Path(config['transfer_protocol']))
+                or result.get('population')!=population or result.get('optimizer_updates')!=0):
+            raise ValueError('transfer inference audit differs')
     if population==SELECTION_FULL:
         validate_selection_protocol(config,rows)
         from verify_span_selection_rules import verify as verify_data
@@ -70,6 +75,8 @@ def verify(root):
         metrics=score_rules(rows,records)
     if population==SELECTION_FULL:
         metrics['scope']='Stratified reserved-source selection diagnostics; correlated rule requests, not official-test distribution or speaker/task generalization proof'
+    if population=='transfer-full-evaluation-v1':
+        metrics['scope']='Full prespecified transfer evaluation role; task-group cells must be reported separately; no automatic gain claim'
     return dict(root=str(root),passed=True,base_id=result['base_id'],adapter=adapter_id,
         requests=len(records),recordings=result['recordings'],metrics=metrics,
         files={str(p):file_hash(p) for p in [root/'config.json',run/'result.json',run/'records.jsonl',run/'terminal.json']},

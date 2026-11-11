@@ -8,6 +8,9 @@ SELECTION_FULL = 'selection-full-v1'
 
 
 def configured_rule_rows(config):
+    if config.get('population')=='transfer-full-evaluation-v1':
+        from .span_transfer_evaluation import evaluation_rows
+        return evaluation_rows(config)
     if config.get('population')=='transfer-version-gate-v1':
         from .span_transfer_runtime import version_rows
         return version_rows(config)

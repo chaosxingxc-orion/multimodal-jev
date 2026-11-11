@@ -33,6 +33,9 @@ def run(config,output):
         if file_hash(path)!=digest:raise ValueError('pinned asset changed: '+path)
     population=config.get('population',LEARNING_PROBE)
     rows=configured_rule_rows(config)
+    if population=='transfer-full-evaluation-v1':
+        from verify_span_rule_transfer import verify
+        atomic_json(output/'transfer-data-audit.json',verify(Path(config['transfer_protocol'])))
     if population==SELECTION_FULL:
         validate_selection_protocol(config,rows)
         from verify_span_selection_rules import verify
