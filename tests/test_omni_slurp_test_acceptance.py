@@ -14,6 +14,50 @@ sys.path.insert(0,str(Path(__file__).parents[1]/'tools/jev'))
 import verify_omni_slurp_test as module
 
 
+def runtime_fixture():
+    launch=dict(image='image',argv=['docker','run','-v','/source:/source:ro',
+        '-e','HF_HUB_OFFLINE=1','image','timeout','86400s','python3','/source/run.py'])
+    state=dict(Status='exited',ExitCode=0,OOMKilled=False,Dead=False,Error='')
+    paths=['/dev/davinci6','/dev/davinci7','/dev/davinci_manager','/dev/devmm_svm','/dev/hisi_hdc']
+    item=dict(Id='cid',Image='image',State=state,RestartCount=0,
+        Config=dict(Cmd=launch['argv'][launch['argv'].index('image')+1:],Env=['HF_HUB_OFFLINE=1']),
+        HostConfig=dict(Privileged=False,NetworkMode='host',NanoCpus=16*10**9,
+            Memory=128*1024**3,ShmSize=8*1024**3,RestartPolicy={'Name':'no'},
+            Binds=['/source:/source:ro'],Devices=[dict(PathOnHost=p,PathInContainer=p,
+                CgroupPermissions='rwm') for p in paths]))
+    return item,launch
+
+
+@pytest.mark.parametrize('change',['oom','dead','error','privileged','network','cpu','memory',
+    'shm','restart_policy','restarted','device','device_target','extra_device','device_request',
+    'device_rule','mount','extra_mount','command','env','duplicate_env'])
+def test_runtime_rejects_execution_drift(change):
+    item,launch=runtime_fixture()
+    module.validate_runtime(item,launch)
+    host=item['HostConfig']
+    if change=='oom':item['State']['OOMKilled']=True
+    if change=='dead':item['State']['Dead']=True
+    if change=='error':item['State']['Error']='runtime failure'
+    if change=='privileged':host['Privileged']=True
+    if change=='network':host['NetworkMode']='none'
+    if change=='cpu':host['NanoCpus']=8*10**9
+    if change=='memory':host['Memory']=0
+    if change=='shm':host['ShmSize']=64*1024**2
+    if change=='restart_policy':host['RestartPolicy']['Name']='always'
+    if change=='restarted':item['RestartCount']=1
+    if change=='device':host['Devices'][0]['PathOnHost']='/dev/davinci4'
+    if change=='device_target':host['Devices'][0]['PathInContainer']='/dev/davinci4'
+    if change=='extra_device':host['Devices'].append(dict(host['Devices'][0]))
+    if change=='device_request':host['DeviceRequests']=[{'Count':-1}]
+    if change=='device_rule':host['DeviceCgroupRules']=['c *:* rwm']
+    if change=='mount':host['Binds']=['/source:/source:rw']
+    if change=='extra_mount':host['Binds'].append('/other:/other:ro')
+    if change=='command':item['Config']['Cmd']=['true']
+    if change=='env':item['Config']['Env']=['HF_HUB_OFFLINE=0']
+    if change=='duplicate_env':item['Config']['Env'].append('HF_HUB_OFFLINE=0')
+    with pytest.raises(ValueError):module.validate_runtime(item,launch)
+
+
 def fixture():
     rows=[dict(id=str(i),split='test',source_group=str(i%2974)) for i in range(13078)]
     predictions=[dict(example_id=r['id'],source_group=r['source_group'],split='test',replicate=0,
@@ -97,11 +141,12 @@ def test_acceptance_orchestration_with_mocked_docker_and_scorer(tmp_path,monkeyp
     write(run/'result.json',result);write(run/'selection.json',{'ids':[r['id'] for r in rows]})
     launch=dict(container_id='cid',image='image',physical_devices=[6,7],source_commit=commit,
         config_sha256=file_hash(root/'config.json'),scorer_repository='/scorer')
+    item,runtime_launch=runtime_fixture();launch['argv']=runtime_launch['argv']
     write(root/'launch.json',launch)
-    write(root/'docker-terminal.json',dict(container_id='cid',state={'Status':'exited','ExitCode':0}))
+    write(root/'docker-terminal.json',dict(container_id='cid',state=item['State']))
     record=tmp_path/'launch-record.json'
     write(record,{'jobs':[dict(launch,root=str(root),supervisor={'source_commit':commit})]})
-    monkeypatch.setattr(module,'inspect_container',lambda cid:dict(Id='cid',Image='image',State={'Status':'exited','ExitCode':0}))
+    monkeypatch.setattr(module,'inspect_container',lambda cid:item)
     monkeypatch.setattr(module,'select_native_test',lambda c,r:r)
     report=dict(examples=13078,full_official_split=True,format_valid=0,schema_valid=0,metrics={'f1':0.})
     (root/'score').mkdir();write(root/'score/result.json',report)

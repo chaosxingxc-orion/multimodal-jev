@@ -25,6 +25,9 @@ FSC选择队列使用4/5，通信端口分开。单次容器最长86400秒，观
 它核对登记时的精确容器、镜像、配置和Git推理快照，验证与TRAIN16探针的
 权重清单、运行版本、提示和解码参数一致；要求全部13078条录音/2974组，
 无重复、无遗漏、请求绑定正确，并核对上下文预算和截断计数。
+实际Docker配置还必须符合NPU6/7及三个管理设备的精确映射、16CPU、128GiB
+内存、8GiB共享内存和host网络；禁止特权模式、额外设备请求、重启或OOM。
+容器命令、全部bind挂载和显式环境变量须与保留的launch一致。
 语义或格式失败不阻止工程验收，也不被修复。
 
 验收在已有官方评分环境中重新评分，归一化预测必须逐字节相同，整数计数
@@ -42,6 +45,10 @@ PYTHONPATH=src /mnt/cephfs/xingchao/experiments/multimodal-jev/environments/slur
   --output /mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-native-test-v1-independent-acceptance
 ```
 
-当前只完成验收代码测试，尚未对全量TEST执行验收。24项相关测试覆盖完整
+当前尚未对全量TEST执行验收。44项相关测试覆盖完整
 数量的合成记录、遗漏/重复/错绑/预算异常、浮点复算与运行前拒绝读取。
+其中20项运行配置反例覆盖OOM、错误设备/映射/权限范围、资源漂移、
+重启、挂载、命令和环境变量变化。原始运行容器已通过这些配置的只读预检，
+证据见[运行预检](slurp-runtime-preacceptance-v1.json)；运行中通过配置核对
+不代表推理完成或全量成绩验收通过。
 编排测试显式模拟Docker和官方评分器，不代表真实模型或完整测试集成绩。

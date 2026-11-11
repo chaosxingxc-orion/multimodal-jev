@@ -60,6 +60,35 @@ def validate_records(rows, predictions, result, cfg):
         raise ValueError('truncation accounting differs')
 
 
+def validate_runtime(item, launch):
+    """Check actual Docker execution against the retained launch, without scoring."""
+    state=item['State'];host=item['HostConfig'];argv=launch['argv']
+    if (state['OOMKilled'] or state['Dead'] or state['Error']
+            or host['Privileged'] or host['NetworkMode']!='host'
+            or host['NanoCpus']!=16*10**9 or host['Memory']!=128*1024**3
+            or host['ShmSize']!=8*1024**3 or host['RestartPolicy']['Name']!='no'
+            or item['RestartCount']!=0):
+        raise ValueError('native TEST runtime resources or state differ')
+    expected_devices={(f'/dev/davinci{i}',f'/dev/davinci{i}','rwm') for i in (6,7)}
+    expected_devices|={(p,p,'rwm') for p in ('/dev/davinci_manager','/dev/devmm_svm','/dev/hisi_hdc')}
+    devices=host['Devices'] or []
+    if (len(devices)!=len(expected_devices) or
+            {(d['PathOnHost'],d['PathInContainer'],d['CgroupPermissions']) for d in devices}!=expected_devices
+            or host.get('DeviceRequests') or host.get('DeviceCgroupRules')):
+        raise ValueError('native TEST actual device mappings differ')
+    binds=[argv[i+1] for i,value in enumerate(argv) if value=='-v']
+    actual_binds=host['Binds'] or []
+    if len(actual_binds)!=len(binds) or set(actual_binds)!=set(binds):
+        raise ValueError('native TEST actual mounts differ')
+    if item['Config']['Cmd']!=argv[argv.index(launch['image'])+1:]:
+        raise ValueError('native TEST actual command differs')
+    env=item['Config']['Env'] or []
+    for expected in (argv[i+1] for i,value in enumerate(argv) if value=='-e'):
+        key=expected.split('=',1)[0]
+        if [v for v in env if v.split('=',1)[0]==key]!=[expected]:
+            raise ValueError('native TEST actual environment differs: '+key)
+
+
 def verify(root, launch_record, native_probe, output):
     if output.exists():raise FileExistsError('preserve prior independent acceptance')
     # Fail before reading TEST predictions unless both application and supervisor ended.
@@ -81,6 +110,9 @@ def verify(root, launch_record, native_probe, output):
             or terminal['container_id']!=item['Id'] or terminal['state']['Status']!='exited'
             or terminal['state']['ExitCode']!=0):
         raise ValueError('exact successful native TEST container required')
+    validate_runtime(item,launch)
+    if terminal['state']['OOMKilled'] or terminal['state']['Dead'] or terminal['state']['Error']:
+        raise ValueError('unsuccessful recorded native TEST container state')
     run=root/'run';identity=json.loads((run/'identity.json').read_text());cfg=identity['config']
     result=json.loads((run/'result.json').read_text())
     if (result['status']!='passed' or result['weight_updates']!=0
