@@ -5,25 +5,12 @@ import json
 from pathlib import Path
 import time
 from multimodal_jev.baseline import atomic_json,file_hash
+from multimodal_jev.span_rule_population import select_rule_rows, validate_selection_protocol, LEARNING_PROBE, SELECTION_FULL
 
 
 def select_rows(release):
-    manifest=json.loads((release/'MANIFEST.json').read_text())
-    if manifest['schema']!='jev-span-balanced-rule-controls-v1':raise ValueError('balanced rule controls required')
-    for name,digest in manifest['files'].items():
-        if file_hash(release/name)!=digest:raise ValueError('dataset changed')
-    rows={r['id']:r for r in map(json.loads,(release/'learning.jsonl').read_text().splitlines())}
-    schedule=json.loads((release/'schedule.json').read_text())
-    selected=[];seen=set()
-    # Predeclared coverage probe: first scheduled batch per rule pair, every arm.
-    for batch in schedule['batches']:
-        if batch['rule_pair_id'] in seen:continue
-        seen.add(batch['rule_pair_id'])
-        for arm in ('final_only','structured','reordered'):
-            selected.extend(rows[k] for k in batch['arms'][arm])
-    if len(seen)!=9 or len(selected)!=216 or len({r['id'] for r in selected})!=216:
-        raise ValueError('nine rule pairs and 216 matched requests required')
-    return selected
+    # Historical callers remain restricted to the original learning probe.
+    return select_rule_rows(release,LEARNING_PROBE)
 
 
 def run(config,output):
@@ -37,11 +24,19 @@ def run(config,output):
     from multimodal_jev.span_runtime_profile import configure_actor_profile
     from multimodal_jev.span_request_identity import bind_span_request
     from multimodal_jev.policy_identity import checkpoint_identity
-    if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=['davinci5']:
-        raise ValueError('isolated physical NPU5 required')
+    from multimodal_jev.span_runtime_topology import runtime_topology
+    devices=config.get('physical_devices',[5])
+    topology=runtime_topology({**config,'physical_devices':devices})
+    if topology['size']!=1 or sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=topology['devices']:
+        raise ValueError('one isolated authorized physical NPU required')
     for path,digest in config['pins'].items():
         if file_hash(path)!=digest:raise ValueError('pinned asset changed: '+path)
-    rows=select_rows(Path(config['release']))
+    population=config.get('population',LEARNING_PROBE)
+    rows=select_rule_rows(Path(config['release']),population)
+    if population==SELECTION_FULL:
+        validate_selection_protocol(config,rows)
+        from verify_span_selection_rules import verify
+        atomic_json(output/'selection-data-audit.json',verify(Path(config['release'])))
     if [r['id'] for r in rows]!=config['request_ids']:raise ValueError('fixed selection changed')
     torch.set_num_threads(4);torch.npu.set_device(0);torch.manual_seed(17)
     atomic_json(output/'runtime-profile.json',configure_actor_profile(config['runtime_profile']))
@@ -83,7 +78,8 @@ def run(config,output):
             atomic_json(output/'progress.json',dict(completed=index+1,total=len(rows),updated_unix=time.time()))
     atomic_json(output/'result.json',dict(base_id=base_id,adapter=adapter_id,recordings=len({r['provenance']['recording_id'] for r in rows}),
         requests=len(records),records_sha256=file_hash(output/'records.jsonl'),
-        scope='Immutable HF BF16 direct-audio Span probe; learning-only, no vLLM admission or independent generalization score'))
+        population=population,optimizer_updates=0,
+        scope='Immutable HF BF16 direct-audio Span inference on the declared population; no vLLM admission or automatic generalization claim'))
 
 
 if __name__=='__main__':

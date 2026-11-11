@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "reports": [
+    {
+      "branch": "rl-aux0",
+      "auxiliary_weight": 0.0,
+      "behavior_sha256": "5c76914fae5da0ed3d33b8603b7be90efb6533b7d713fb244feacfe9e433564f",
+      "initial_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:7341430053a9b4f36f5d5b8fe80616889af1857c71187d22b4895b062f557140",
+      "requests": 8,
+      "exact_auxiliary_logit_gradient_norm": 0.0,
+      "exact_final_logit_gradient_norm": 0.33748334646224976,
+      "estimates": [
+        {
+          "samples": 8,
+          "repeats": 256,
+          "score_gradient_mse": 0.0052926064790881355,
+          "mean_auxiliary_logit_gradient_norm": 0.1525689996778965,
+          "mean_final_logit_gradient_norm": 0.33827350998762995,
+          "grpo_standardized_auxiliary_logit_gradient_norm": 0.29042431263951585
+        },
+        {
+          "samples": 32,
+          "repeats": 256,
+          "score_gradient_mse": 0.0012355061109019516,
+          "mean_auxiliary_logit_gradient_norm": 0.07332134654279798,
+          "mean_final_logit_gradient_norm": 0.3369483599672094,
+          "grpo_standardized_auxiliary_logit_gradient_norm": 0.14796704857144505
+        },
+        {
+          "samples": 128,
+          "repeats": 256,
+          "score_gradient_mse": 0.0003186512550428233,
+          "mean_auxiliary_logit_gradient_norm": 0.03723226187139517,
+          "mean_final_logit_gradient_norm": 0.33781033335253596,
+          "grpo_standardized_auxiliary_logit_gradient_norm": 0.07603585836477578
+        }
+      ]
+    },
+    {
+      "branch": "rl-aux2",
+      "auxiliary_weight": 0.2,
+      "behavior_sha256": "e67725a44d46ce50f74e3e634a6cfe9d3c00f8d0543ee52ae7884a7f0c4baafe",
+      "initial_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:7341430053a9b4f36f5d5b8fe80616889af1857c71187d22b4895b062f557140",
+      "requests": 8,
+      "exact_auxiliary_logit_gradient_norm": 0.047668956220149994,
+      "exact_final_logit_gradient_norm": 0.33748334646224976,
+      "estimates": [
+        {
+          "samples": 8,
+          "repeats": 256,
+          "score_gradient_mse": 0.005418610527613055,
+          "mean_auxiliary_logit_gradient_norm": 0.15930705616483465,
+          "mean_final_logit_gradient_norm": 0.33817166730295867,
+          "grpo_standardized_auxiliary_logit_gradient_norm": 0.3079545124201104
+        },
+        {
+          "samples": 32,
+          "repeats": 256,
+          "score_gradient_mse": 0.001255256117474346,
+          "mean_auxiliary_logit_gradient_norm": 0.08447370957583189,
+          "mean_final_logit_gradient_norm": 0.33678269456140697,
+          "grpo_standardized_auxiliary_logit_gradient_norm": 0.16690898820525035
+        },
+        {
+          "samples": 128,
+          "repeats": 256,
+          "score_gradient_mse": 0.00032366191646815423,
+          "mean_auxiliary_logit_gradient_norm": 0.05838555017544422,
+          "mean_final_logit_gradient_norm": 0.33785288606304675,
+          "grpo_standardized_auxiliary_logit_gradient_norm": 0.11716605044784956
+        }
+      ]
+    }
+  ],
+  "optimizer_updates": 0,
+  "scope": "CPU finite-policy gradient diagnostic from verified learning behavior. Logit-coordinate credit, not shared-parameter gradient or task gains. Exact expected-reward oracle differs from finite-sample standardized GRPO; no new training objective admitted."
+}

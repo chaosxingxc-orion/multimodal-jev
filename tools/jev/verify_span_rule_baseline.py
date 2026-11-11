@@ -9,12 +9,16 @@ from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.span_rule_metrics import score_rules
 from infer_span_rule_baseline import select_rows
+from multimodal_jev.span_rule_population import select_rule_rows, validate_selection_protocol, LEARNING_PROBE, SELECTION_FULL
 
 
 def verify(root):
     read=lambda p:json.loads(p.read_text())
     config=read(root/'config.json');launch=read(root/'launch.json');run=root/'run'
-    if (launch['physical_devices']!=[5] or launch['config_sha256']!=file_hash(root/'config.json')
+    devices=config.get('physical_devices',[5])
+    from multimodal_jev.span_runtime_topology import runtime_topology
+    topology=runtime_topology({**config,'physical_devices':devices})
+    if (topology['size']!=1 or launch['physical_devices']!=devices or launch['config_sha256']!=file_hash(root/'config.json')
             or launch['source_manifest_sha256']!=file_hash(root/'source-manifest.json')
             or read(run/'terminal.json')['exit_code']!=0):raise ValueError('launch or terminal differs')
     for p,d in config['pins'].items():
@@ -25,7 +29,15 @@ def verify(root):
             or result['adapter']!=adapter_id or config.get('adapter_id')!=adapter_id):
         raise ValueError('immutable policy differs')
     if file_hash(run/'records.jsonl')!=result['records_sha256']:raise ValueError('predictions changed')
-    rows=select_rows(Path(config['release']))
+    population=config.get('population',LEARNING_PROBE)
+    rows=select_rule_rows(Path(config['release']),population)
+    if population==SELECTION_FULL:
+        validate_selection_protocol(config,rows)
+        from verify_span_selection_rules import verify as verify_data
+        if read(run/'selection-data-audit.json')!=verify_data(Path(config['release'])):
+            raise ValueError('selection source audit differs')
+        if result.get('population')!=population or result.get('optimizer_updates')!=0:
+            raise ValueError('selection run contract differs')
     records=[json.loads(s) for s in (run/'records.jsonl').read_text().splitlines()]
     if [r['id'] for r in rows]!=config['request_ids'] or [r['id'] for r in records]!=config['request_ids']:
         raise ValueError('request coverage differs')
@@ -45,11 +57,16 @@ def verify(root):
             raise ValueError('recorded input or policy differs')
         if file_hash(row['request']['audio'])!=row['provenance']['audio_sha256']:
             raise ValueError('source audio changed')
+    if result['requests']!=len(records) or result['recordings']!=len({r['provenance']['recording_id'] for r in rows}):
+        raise ValueError('reported population denominator differs')
     metrics=score_rules(rows,records)
+    if population==SELECTION_FULL:
+        metrics['scope']='Stratified reserved-source selection diagnostics; correlated rule requests, not official-test distribution or speaker/task generalization proof'
     return dict(root=str(root),passed=True,base_id=result['base_id'],adapter=adapter_id,
         requests=len(records),recordings=result['recordings'],metrics=metrics,
         files={str(p):file_hash(p) for p in [root/'config.json',run/'result.json',run/'records.jsonl',run/'terminal.json']},
-        training_admitted=False,scope='Frozen HF audio Span learning-only baseline; no cross-backend, task-generalization or RL-gain claim')
+        population=population,training_admitted=False,
+        scope='Frozen HF audio Span evaluation on declared population; no cross-backend, task-generalization or RL-gain claim')
 
 
 if __name__=='__main__':
