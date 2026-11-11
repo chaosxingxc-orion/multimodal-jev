@@ -104,3 +104,6 @@ concat；padded/unfused 分支每批调用一次 `logprobs_from_logits`。
 源码变化必须重新核查顺序假设，不能仅因归一化函数未变就接受升级后的 actor。
 磁盘哈希并不认证任意运行时 monkey patch；隔离进程与实际 actor 身份仍由
 完整 runner 认证。NPU完整前向还依赖单层和FSDP初始化实际验收以及采样完成。
+新增actor源码约束后，固定镜像88项相关测试通过、零跳过，实际包的两个源码
+哈希均核验；见[v2验收](omni-observed-shards-tests-v2-verified.json)。没有运行
+Omni或NPU算子，原有v1证据保留。
