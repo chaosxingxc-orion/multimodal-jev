@@ -1,0 +1,67 @@
+{
+  "root": "/mnt/cephfs/xingchao/datasets/slurp-jev-rule-controls-v1",
+  "passed": true,
+  "manifest_sha256": "231b9a7a80bff8e1ecac74040e07498ccd8f010052df58864cd2f14daeacd422",
+  "recordings": 48,
+  "derived_rows": 1260,
+  "matched_triplets": 420,
+  "distributions": [
+    {
+      "rule_id": "date:time:both",
+      "false": 34,
+      "true": 12,
+      "majority_accuracy": 0.7391304347826086
+    },
+    {
+      "rule_id": "date:time:either",
+      "false": 10,
+      "true": 36,
+      "majority_accuracy": 0.782608695652174
+    },
+    {
+      "rule_id": "date:time:first_without_second",
+      "false": 34,
+      "true": 12,
+      "majority_accuracy": 0.7391304347826086
+    },
+    {
+      "rule_id": "date:timeofday:both",
+      "false": 36,
+      "true": 12,
+      "majority_accuracy": 0.75
+    },
+    {
+      "rule_id": "date:timeofday:either",
+      "false": 12,
+      "true": 36,
+      "majority_accuracy": 0.75
+    },
+    {
+      "rule_id": "date:timeofday:first_without_second",
+      "false": 36,
+      "true": 12,
+      "majority_accuracy": 0.75
+    },
+    {
+      "rule_id": "time:timeofday:both",
+      "false": 34,
+      "true": 12,
+      "majority_accuracy": 0.7391304347826086
+    },
+    {
+      "rule_id": "time:timeofday:either",
+      "false": 11,
+      "true": 35,
+      "majority_accuracy": 0.7608695652173914
+    },
+    {
+      "rule_id": "time:timeofday:first_without_second",
+      "false": 34,
+      "true": 12,
+      "majority_accuracy": 0.7391304347826086
+    }
+  ],
+  "training_admitted": false,
+  "evaluation_admitted": false,
+  "scope": "Independent truth/provenance/arm audit of learning-only controls; no model score or generalization evidence"
+}
