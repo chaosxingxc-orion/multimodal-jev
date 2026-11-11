@@ -1,0 +1,257 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-v1",
+  "result": {
+    "status": "diagnostic_complete",
+    "input_tokens": 600,
+    "span_positions": [
+      [
+        286,
+        447,
+        589
+      ]
+    ],
+    "candidate_logits": [
+      [
+        3.984375,
+        4.0
+      ],
+      [
+        13.375,
+        13.5625
+      ],
+      [
+        12.375,
+        12.5
+      ]
+    ],
+    "candidate_logprobs": [
+      [
+        -0.7009901404380798,
+        -0.6853651404380798
+      ],
+      [
+        -0.7912852764129639,
+        -0.6037852764129639
+      ],
+      [
+        -0.7575989961624146,
+        -0.6325989961624146
+      ]
+    ],
+    "hf_candidate_logprobs": [
+      [
+        -0.5759393572807312,
+        -0.8259393572807312
+      ],
+      [
+        -0.8259393572807312,
+        -0.5759393572807312
+      ],
+      [
+        -0.7912852764129639,
+        -0.6037852764129639
+      ]
+    ],
+    "maximum_logprob_error": 0.14057421684265137,
+    "parity_threshold": 0.02,
+    "parity_passed": false,
+    "complete_action_parity": {
+      "passed": false,
+      "per_span_passed": false,
+      "joint_ratio_passed": false,
+      "maximum_logprob_error": 0.14057421684265137,
+      "p95_logprob_error": 0.13669335842132568,
+      "joint_log_ratio_min": -0.20891457796096802,
+      "joint_log_ratio_max": 0.18171042203903198,
+      "joint_ratio_min": 0.8114645496393302,
+      "joint_ratio_max": 1.199266862339863,
+      "candidate_kl_actor_to_behavior": 0.009720721475742967,
+      "argmax_changed_spans": [
+        0
+      ],
+      "per_span_tolerance": 0.02,
+      "joint_ratio_bounds": [
+        0.98,
+        1.02
+      ],
+      "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+    },
+    "rl_admitted": false,
+    "adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-v1/run/adapter",
+    "adapter_dtype": "bfloat16",
+    "request_id": "a3ea3180d874e5287a6aa08d6b3791e7905f33c4a2538c96d1b2f05c9d9b73c7",
+    "lora_target_modules": [
+      "language_model.model.layers.0.self_attn.qkv_proj",
+      "language_model.model.layers.1.self_attn.qkv_proj",
+      "language_model.model.layers.10.self_attn.qkv_proj",
+      "language_model.model.layers.11.self_attn.qkv_proj",
+      "language_model.model.layers.12.self_attn.qkv_proj",
+      "language_model.model.layers.13.self_attn.qkv_proj",
+      "language_model.model.layers.14.self_attn.qkv_proj",
+      "language_model.model.layers.15.self_attn.qkv_proj",
+      "language_model.model.layers.16.self_attn.qkv_proj",
+      "language_model.model.layers.17.self_attn.qkv_proj",
+      "language_model.model.layers.18.self_attn.qkv_proj",
+      "language_model.model.layers.19.self_attn.qkv_proj",
+      "language_model.model.layers.2.self_attn.qkv_proj",
+      "language_model.model.layers.20.self_attn.qkv_proj",
+      "language_model.model.layers.21.self_attn.qkv_proj",
+      "language_model.model.layers.22.self_attn.qkv_proj",
+      "language_model.model.layers.23.self_attn.qkv_proj",
+      "language_model.model.layers.24.self_attn.qkv_proj",
+      "language_model.model.layers.25.self_attn.qkv_proj",
+      "language_model.model.layers.26.self_attn.qkv_proj",
+      "language_model.model.layers.27.self_attn.qkv_proj",
+      "language_model.model.layers.3.self_attn.qkv_proj",
+      "language_model.model.layers.4.self_attn.qkv_proj",
+      "language_model.model.layers.5.self_attn.qkv_proj",
+      "language_model.model.layers.6.self_attn.qkv_proj",
+      "language_model.model.layers.7.self_attn.qkv_proj",
+      "language_model.model.layers.8.self_attn.qkv_proj",
+      "language_model.model.layers.9.self_attn.qkv_proj"
+    ],
+    "adapter_logit_effect": 2.5625,
+    "return_to_base_error": 0.0,
+    "runner": "pooling",
+    "generated_tokens": 0,
+    "optimizer_updates": 0,
+    "scope": "Single real-audio native pooling adapter; HF parity diagnostic, no task or RL gain."
+  },
+  "worker_loaded": {
+    "model_class": "Qwen3ASRForSpanDecisions",
+    "wrapper_modules": {
+      "language_model.model.layers.0.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.1.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.2.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.3.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.4.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.5.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.6.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.7.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.8.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.9.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.10.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.11.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.12.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.13.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.14.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.15.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.16.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.17.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.18.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.19.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.20.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.21.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.22.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.23.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.24.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.25.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.26.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA",
+      "language_model.model.layers.27.self_attn.qkv_proj": "AscendMergedQKVParallelLinearWithLoRA"
+    },
+    "actual_lora_buffer_dtypes": {
+      "language_model.model.layers.0.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.1.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.2.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.3.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.4.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.5.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.6.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.7.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.8.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.9.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.10.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.11.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.12.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.13.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.14.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.15.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.16.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.17.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.18.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.19.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.20.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.21.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.22.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.23.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.24.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.25.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.26.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ],
+      "language_model.model.layers.27.self_attn.qkv_proj": [
+        "torch.bfloat16"
+      ]
+    },
+    "lora_dtype": "torch.bfloat16",
+    "max_rank": 8,
+    "lm_head_class": "AscendParallelLMHead",
+    "logits_processor_class": "AscendLogitsProcessor",
+    "head_projection_dtype": "torch.bfloat16",
+    "registered_adapter_ids": [
+      1
+    ],
+    "scope": "Worker module coverage/configuration; file pin and output effect checked separately."
+  },
+  "files": {
+    "config.json": "25ca04aa81da1df5b48a0da64d970e60d45386c028ea95b448f55c90d3ec9597",
+    "run/result.json": "6eb6fc42007f2162f273804a17756fc539a2e43254a5fbbff64457ee1970395c",
+    "run/terminal.json": "e7f41b0935f296bbfa7f976623be9165c4e8718f8afd91627873f63e3294f9af",
+    "run/request-identity.json": "7b67e5ae9eea672c48df0e39ae8631b5a846d261453fefb7002e220b7ccc990f",
+    "run/worker-lora-before.json": "cb640d691de919acdf9a64b08ec3382d215ea40ca99305e011cd176ebe1af2df",
+    "run/worker-lora-loaded.json": "f91af7a8491bbe08012c453c723b311788ad9bba8713925c6939ef7d9fe8d840"
+  },
+  "scope": "Single-audio BF16 adapter/backend audit; probability gate failed; no RL updates."
+}

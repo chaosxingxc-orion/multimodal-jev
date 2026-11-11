@@ -2,6 +2,29 @@
 
 ## 当前证据与结论
 
+**最新用户精度决定：BF16 训练/推理。** 基座、LoRA 执行/导出、LM head 投影均 BF16；FP32 保留在候选归一化、损失及优化器 master/state。显式关闭 PEFT adapter 自动升精度，vLLM 指定 lora_dtype=bfloat16、head_dtype=model；两侧使用完全相同的未合并 adapter。已有 FP32 adapter 探针仅作历史诊断，不作为 BF16 的验收证据。新增本地 FP32 master AdamW 桥接支持 BF16 SFT，尚非分布式 verl optimizer 集成。见 `experiments/slurp-native-spans-bf16-v1.md`。
+
+最新进度：FP32 q/v LoRA v3已能运行，logprob误差0.025758、完整动作比率[0.96493,1.03550]仍失败；v4在worker审计序列化失败，v5按用户BF16决定停止。已定位pooling默认FP32投影与HF BF16的配置差异，但修正后的概率尚未验证。BF16新训练启动，须重做reload及跨后端gate，不能沿用旧FP32 reference。
+
+下文保留设计和历史诊断；其中“LoRA未验证”“当前SFT为全词表CE”属于初始阶段描述。候选CE对照已完成，最新主线使用candidate CE、BF16执行策略。
+
+### BF16 落地与 verl 接入要求
+
+| 环节 | 锁定行为 | 验收依据 |
+|---|---|---|
+| 基座/音频编码/语言前向 | BF16，冻结基座 | 实际参数/输入 dtype 与共享特征身份 |
+| LoRA | q/v，rank4/alpha8，dropout0，执行及服务快照 BF16 | 禁止只在 rollout 转换 FP32 checkpoint；检查 A/B、打包切片及缩放 |
+| 输出投影 | 两侧 BF16；vLLM head_dtype=model | worker logits_processor 的实际 dtype |
+| 概率/损失 | FP32 candidate log-softmax、joint logprob、KL/PPO | 同候选、同温度、同 mask；不能混用全词表 logprob |
+| 优化器 | FP32 master/moments，按步舍入为 BF16 执行副本 | 恢复时另存 master/state；服务只消费执行快照 |
+| 同步 | barrier 后完整 adapter 版本切换 | 新 LoRA ID + hash + worker 回执 + 更新前概率 gate |
+
+固定镜像源码核验：`/opt/verl/verl/workers/fsdp_workers.py` 及 `workers/engine/fsdp/transformer_impl.py` 的 get_peft_model/from_pretrained 没有指定 autocast_adapter_dtype；FSDP另设param_dtype（BF16）、reduce_dtype（默认FP32）、buffer_dtype（默认FP32）。因此，静态LoRA FP32参数不必然说明FSDP前向为FP32，也不能反过来仅凭param_dtype就认定所有LoRA实际路径正确。需在所选FSDP包装/混合精度配置下核验实际A/B计算及同步快照；不要把本地master bridge直接叠加到已有FSDP master管理造成双份更新。小规模单卡桥接已验证，正式verl Span actor仍需单独接入与梯度/版本验收。
+
+BF16候选CE实验已完成20次均衡更新，学习诊断93/142，静音80/142；112个导出张量BF16。独立重载48条所有候选logprob误差0。尚不能由此推出vLLM一致，后端矩阵乘/attention/scaling累积顺序仍可能不同。
+
+BF16跨后端探针最新结果：实际28个LoRA wrapper缓冲和LM head投影均BF16，但同checkpoint单音频最大logprob差0.140574，完整动作比率[0.811465,1.199267]，一项argmax改变。adapter加载与返回base隔离通过；概率gate失败，不准入RL。下一步分层定位首次偏差，不能把“统一dtype”报告成“训推一致已完成”。过程奖励与精度修复独立，当前不调整奖励补偿后端误差。
+
 采用 LoRA 更新语言骨干，actor 与 rollout 共享基座及适配器身份；不将“同 checkpoint”当作概率一致证明。现有真实 HF Span 前向、LoRA SFT、保存重载已验证；vLLM pooling 无生成多 Span 前向已验证，但单样本候选 logprob 最大误差 0.063258 超过 0.02 门槛。尚未验证 pooling + 原生 LoRA 请求、热更新或端到端 verl Span actor 更新。普通生成 actor 的 responses 拼接逻辑不能直接复用。
 
 均衡调试已固定八种标签组合各五条、每次更新三项任务各正负一例；单 epoch 仍全部预测 false。不能把类别平衡、前处理或 RL 中任何一项单独当作已解决方案。

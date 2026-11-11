@@ -1,0 +1,725 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-bf16-trace-v1",
+  "trace_comparison": {
+    "audio_projected": {
+      "shape": [
+        32,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.001953125,
+      "mean": 0.00017563406436238438,
+      "unequal_fraction": 0.853759765625,
+      "rms": 0.0002353075542487204
+    },
+    "layer.0.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.03125,
+      "mean": 0.0002850636374205351,
+      "unequal_fraction": 0.29239094257354736,
+      "rms": 0.0007800598978064954
+    },
+    "layer.0.q_proj": {
+      "shape": [
+        600,
+        2048
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.0625,
+      "mean": 0.0004312203382141888,
+      "unequal_fraction": 0.5207885503768921,
+      "rms": 0.0009627105318941176
+    },
+    "layer.0.k_proj": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.03125,
+      "mean": 0.0004429272667039186,
+      "unequal_fraction": 0.4971109926700592,
+      "rms": 0.0009994140127673745
+    },
+    "layer.0.v_proj": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.0078125,
+      "mean": 0.0003392430080566555,
+      "unequal_fraction": 0.6289941668510437,
+      "rms": 0.0005645197234116495
+    },
+    "layer.0.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.125,
+      "mean": 0.003314970526844263,
+      "unequal_fraction": 0.7817887663841248,
+      "rms": 0.0048270877450704575
+    },
+    "layer.1.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.046875,
+      "mean": 0.001043815049342811,
+      "unequal_fraction": 0.8179849982261658,
+      "rms": 0.0015460214344784617
+    },
+    "layer.1.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.008544632233679295,
+      "unequal_fraction": 0.8491275906562805,
+      "rms": 0.012629557400941849
+    },
+    "layer.2.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.0625,
+      "mean": 0.001656348118558526,
+      "unequal_fraction": 0.8458007574081421,
+      "rms": 0.0023883895482867956
+    },
+    "layer.2.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.008203061297535896,
+      "unequal_fraction": 0.8638004660606384,
+      "rms": 0.01158461719751358
+    },
+    "layer.3.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.125,
+      "mean": 0.004954816773533821,
+      "unequal_fraction": 0.8673860430717468,
+      "rms": 0.006978566758334637
+    },
+    "layer.3.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.010747079737484455,
+      "unequal_fraction": 0.886474609375,
+      "rms": 0.014951483346521854
+    },
+    "layer.4.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.25,
+      "mean": 0.005311922170221806,
+      "unequal_fraction": 0.8806608319282532,
+      "rms": 0.007475723046809435
+    },
+    "layer.4.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.011599005199968815,
+      "unequal_fraction": 0.896691083908081,
+      "rms": 0.015861444175243378
+    },
+    "layer.5.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.1875,
+      "mean": 0.0068392627872526646,
+      "unequal_fraction": 0.8809879422187805,
+      "rms": 0.009623383171856403
+    },
+    "layer.5.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.25,
+      "mean": 0.01043673325330019,
+      "unequal_fraction": 0.8987353444099426,
+      "rms": 0.014098168350756168
+    },
+    "layer.6.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.125,
+      "mean": 0.005984932649880648,
+      "unequal_fraction": 0.8962337374687195,
+      "rms": 0.008475247770547867
+    },
+    "layer.6.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.375,
+      "mean": 0.01282751839607954,
+      "unequal_fraction": 0.904161810874939,
+      "rms": 0.01732701063156128
+    },
+    "layer.7.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.5,
+      "mean": 0.010121687315404415,
+      "unequal_fraction": 0.9031429290771484,
+      "rms": 0.014646383933722973
+    },
+    "layer.7.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.6875,
+      "mean": 0.014927232638001442,
+      "unequal_fraction": 0.9097102880477905,
+      "rms": 0.020780641585588455
+    },
+    "layer.8.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.375,
+      "mean": 0.012033895589411259,
+      "unequal_fraction": 0.9120507836341858,
+      "rms": 0.019434383139014244
+    },
+    "layer.8.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.4375,
+      "mean": 0.016684886068105698,
+      "unequal_fraction": 0.916883111000061,
+      "rms": 0.024936093017458916
+    },
+    "layer.9.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.875,
+      "mean": 0.016756869852542877,
+      "unequal_fraction": 0.9189371466636658,
+      "rms": 0.026503968983888626
+    },
+    "layer.9.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5,
+      "mean": 0.017074324190616608,
+      "unequal_fraction": 0.9191308617591858,
+      "rms": 0.02532554790377617
+    },
+    "layer.10.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.25,
+      "mean": 0.01602897234261036,
+      "unequal_fraction": 0.9204248189926147,
+      "rms": 0.025158783420920372
+    },
+    "layer.10.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.8125,
+      "mean": 0.01707395724952221,
+      "unequal_fraction": 0.920971691608429,
+      "rms": 0.02535894513130188
+    },
+    "layer.11.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.5,
+      "mean": 0.019663609564304352,
+      "unequal_fraction": 0.9204540848731995,
+      "rms": 0.031098587438464165
+    },
+    "layer.11.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.4375,
+      "mean": 0.0175210889428854,
+      "unequal_fraction": 0.9280061721801758,
+      "rms": 0.025689346715807915
+    },
+    "layer.12.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.1875,
+      "mean": 0.022993197664618492,
+      "unequal_fraction": 0.9279687404632568,
+      "rms": 0.03616335242986679
+    },
+    "layer.12.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.9375,
+      "mean": 0.017980242148041725,
+      "unequal_fraction": 0.9317643046379089,
+      "rms": 0.026359768584370613
+    },
+    "layer.13.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.375,
+      "mean": 0.025491582229733467,
+      "unequal_fraction": 0.9313769340515137,
+      "rms": 0.04105759039521217
+    },
+    "layer.13.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 0.9375,
+      "mean": 0.021101025864481926,
+      "unequal_fraction": 0.9352685809135437,
+      "rms": 0.031181881204247475
+    },
+    "layer.14.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.375,
+      "mean": 0.03222491219639778,
+      "unequal_fraction": 0.9354589581489563,
+      "rms": 0.05159959942102432
+    },
+    "layer.14.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.01953125,
+      "mean": 0.02275487221777439,
+      "unequal_fraction": 0.9376497268676758,
+      "rms": 0.03234430029988289
+    },
+    "layer.15.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 3.625,
+      "mean": 0.04264251887798309,
+      "unequal_fraction": 0.9363932013511658,
+      "rms": 0.06416022777557373
+    },
+    "layer.15.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.125,
+      "mean": 0.023583780974149704,
+      "unequal_fraction": 0.9356689453125,
+      "rms": 0.03359279781579971
+    },
+    "layer.16.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 3.5,
+      "mean": 0.04494072124361992,
+      "unequal_fraction": 0.9366406202316284,
+      "rms": 0.06873466074466705
+    },
+    "layer.16.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5,
+      "mean": 0.02501481957733631,
+      "unequal_fraction": 0.9363313913345337,
+      "rms": 0.03549185022711754
+    },
+    "layer.17.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 9.5,
+      "mean": 0.07526504248380661,
+      "unequal_fraction": 0.937903642654419,
+      "rms": 0.11430267244577408
+    },
+    "layer.17.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.0,
+      "mean": 0.030261341482400894,
+      "unequal_fraction": 0.9386799931526184,
+      "rms": 0.04278692230582237
+    },
+    "layer.18.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 7.75,
+      "mean": 0.07254121452569962,
+      "unequal_fraction": 0.93802410364151,
+      "rms": 0.11041989177465439
+    },
+    "layer.18.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.3125,
+      "mean": 0.033094778656959534,
+      "unequal_fraction": 0.9379671216011047,
+      "rms": 0.046536967158317566
+    },
+    "layer.19.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 5.5,
+      "mean": 0.09168586879968643,
+      "unequal_fraction": 0.9355452656745911,
+      "rms": 0.1365501880645752
+    },
+    "layer.19.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5625,
+      "mean": 0.034435342997312546,
+      "unequal_fraction": 0.9360367655754089,
+      "rms": 0.04847858101129532
+    },
+    "layer.20.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 6.5,
+      "mean": 0.09674160182476044,
+      "unequal_fraction": 0.933678388595581,
+      "rms": 0.1477871686220169
+    },
+    "layer.20.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.125,
+      "mean": 0.03557494655251503,
+      "unequal_fraction": 0.936767578125,
+      "rms": 0.0505283884704113
+    },
+    "layer.21.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 5.53125,
+      "mean": 0.12149614840745926,
+      "unequal_fraction": 0.9295475482940674,
+      "rms": 0.18535029888153076
+    },
+    "layer.21.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.25,
+      "mean": 0.03685200959444046,
+      "unequal_fraction": 0.9359424114227295,
+      "rms": 0.052588947117328644
+    },
+    "layer.22.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 5.75,
+      "mean": 0.13102953135967255,
+      "unequal_fraction": 0.9270638227462769,
+      "rms": 0.20638631284236908
+    },
+    "layer.22.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.125,
+      "mean": 0.03885005787014961,
+      "unequal_fraction": 0.9359130859375,
+      "rms": 0.05587363988161087
+    },
+    "layer.23.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 7.296875,
+      "mean": 0.14583706855773926,
+      "unequal_fraction": 0.9299283623695374,
+      "rms": 0.22946558892726898
+    },
+    "layer.23.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5625,
+      "mean": 0.042436499148607254,
+      "unequal_fraction": 0.9365673661231995,
+      "rms": 0.06252817064523697
+    },
+    "layer.24.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 9.5546875,
+      "mean": 0.1928422600030899,
+      "unequal_fraction": 0.9388265013694763,
+      "rms": 0.312043160200119
+    },
+    "layer.24.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 1.5625,
+      "mean": 0.043350353837013245,
+      "unequal_fraction": 0.9381689429283142,
+      "rms": 0.06424243003129959
+    },
+    "layer.25.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 11.125,
+      "mean": 0.22590172290802002,
+      "unequal_fraction": 0.9386962652206421,
+      "rms": 0.37338393926620483
+    },
+    "layer.25.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 2.0,
+      "mean": 0.04573177173733711,
+      "unequal_fraction": 0.9391666650772095,
+      "rms": 0.06904660910367966
+    },
+    "layer.26.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 13.625,
+      "mean": 0.2511032521724701,
+      "unequal_fraction": 0.9404312968254089,
+      "rms": 0.41603362560272217
+    },
+    "layer.26.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 3.0,
+      "mean": 0.04994503781199455,
+      "unequal_fraction": 0.9411067962646484,
+      "rms": 0.07870898395776749
+    },
+    "layer.27.input_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 11.0,
+      "mean": 0.25048592686653137,
+      "unequal_fraction": 0.9406965970993042,
+      "rms": 0.3912741541862488
+    },
+    "layer.27.post_attention_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 7.572265625,
+      "mean": 0.06321965903043747,
+      "unequal_fraction": 0.9405517578125,
+      "rms": 0.11000095307826996
+    },
+    "final_norm": {
+      "shape": [
+        600,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "maximum": 5.375,
+      "mean": 0.10015665739774704,
+      "unequal_fraction": 0.9361067414283752,
+      "rms": 0.16172488033771515
+    }
+  },
+  "layer0_norm_slices": {
+    "audio": {
+      "tokens": 32,
+      "max": 0.0234375,
+      "rms": 0.002269345335662365,
+      "unequal_fraction": 0.85552978515625
+    },
+    "text": {
+      "tokens": 568,
+      "max": 0.03125,
+      "rms": 0.0005938332760706544,
+      "unequal_fraction": 0.26066482067108154
+    },
+    "prefix_before_audio": {
+      "tokens": 104,
+      "max": 0.03125,
+      "rms": 0.0006110112881287932,
+      "unequal_fraction": 0.2559438943862915
+    }
+  },
+  "hook_output_equals_uninstrumented": true,
+  "complete_action_parity": {
+    "passed": false,
+    "per_span_passed": false,
+    "joint_ratio_passed": false,
+    "maximum_logprob_error": 0.14057421684265137,
+    "p95_logprob_error": 0.13669335842132568,
+    "joint_log_ratio_min": -0.20891457796096802,
+    "joint_log_ratio_max": 0.18171042203903198,
+    "joint_ratio_min": 0.8114645496393302,
+    "joint_ratio_max": 1.199266862339863,
+    "candidate_kl_actor_to_behavior": 0.009720721475742967,
+    "argmax_changed_spans": [
+      0
+    ],
+    "per_span_tolerance": 0.02,
+    "joint_ratio_bounds": [
+      0.98,
+      1.02
+    ],
+    "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+  },
+  "files": {
+    "run/hf-trace.pt": "2ea830b771f1eaa65aa192beeceec048219f7f25fee0ce5568a1613959651c9f",
+    "run/vllm-trace.pt": "c6bd3975e82ea895bdb99d1e491fc93e8828ceb7d30ce7ee0163cb49629ba418",
+    "run/trace-comparison.json": "27fb3882f10d87620913ab03a80123af421043425fee271e7d0fc1f1999e6832",
+    "run/result.json": "6eb6fc42007f2162f273804a17756fc539a2e43254a5fbbff64457ee1970395c",
+    "run/terminal.json": "2b828b681e5ca032561b9d858a46dd4468e43a1a957e0b3d2bfc8c7cf052fab2"
+  }
+}

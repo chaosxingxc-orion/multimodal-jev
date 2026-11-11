@@ -1,0 +1,32 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-reload-v1",
+  "result": {
+    "status": "passed",
+    "recordings_reloaded": 48,
+    "maximum_logprob_error": 0.0,
+    "tolerance": 1e-05,
+    "recomputed_metrics": {
+      "before": {
+        "correct": 70,
+        "complete_correct": 5
+      },
+      "after": {
+        "correct": 93,
+        "complete_correct": 10
+      },
+      "after-silence": {
+        "correct": 80,
+        "complete_correct": 7
+      }
+    },
+    "updates": 20,
+    "first_update_mean_loss": 0.8822486996650696,
+    "last_update_mean_loss": 0.5917390882968903,
+    "scope": "Saved adapter output reproducibility and learning metric arithmetic, not held-out performance or CoT gains."
+  },
+  "files": {
+    "config.json": "f828de810529fffbb4acaa724381f9573cbcc0717e43180edb33101a1f50944c",
+    "run/result.json": "375f13b3317812b654be37e123464c0faa21c7e8493013fcc00b5dd68111f363",
+    "run/terminal.json": "0e747a94870f492c9f1941394d8df6ea7e2c848bd4ff1f89436bafef7f15500b"
+  }
+}

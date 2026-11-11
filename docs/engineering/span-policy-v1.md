@@ -17,3 +17,5 @@ verl 接口将完整元组作为长度 1 的 response action：对同一完整�
 实现补充：`span_rewards.py` 提供 Final 正确性 + 有界辅助正确性的分项回执；Final 必须有可靠监督，中间缺标严格屏蔽，按有效中间项数取均值。当前未启用逻辑一致性项，也未对并列 temporal 任务伪造过程奖励。该函数接受候选索引，合法候选范围仍由采样/契约层检查。
 
 `span_parity.py` 对所有合法候选计算误差，并通过各位置极值求和精确得到所有完整动作的联合概率比范围。基座实测 [0.879938,1.076945]，超过新增 [0.98,1.02] 要求；即使 argmax 全同也不能视为 PPO old-policy 一致。该门槛及历史单项门槛均保留失败证据。
+
+请求绑定已实现为 `span_request_identity.py`：完整问题与thinking、原始及处理后波形hash、前处理配置、输入特征/掩码/token tensor的dtype/shape/hash、Span位置、候选顺序、base+adapter政策身份共同确定request_id。测试验证改变音频特征、问题要求、候选顺序或政策都会改变ID，labels等额外字段拒绝。它在后续probe中接入；已启动的历史快照不回写新凭证。worker仍须独立核验展开token及实际加载adapter，不以客户端hash代替执行证据。

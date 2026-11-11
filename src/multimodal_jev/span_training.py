@@ -119,7 +119,7 @@ def train(config, output):
     atomic_json(output / 'identity.json', dict(config=config, review_scope=manifest['review_scope'],
         model_weights_sha256=file_hash(Path(config['model_path']) / 'model.safetensors'),
         source_sha256={name:file_hash(Path(__file__).with_name(name)) for name in
-            ('span_training.py','span_contract.py','span_model.py','span_balance.py','sft.py','asr.py','audio_policy.py','audio_preprocess.py')},
+            ('span_training.py','span_contract.py','span_model.py','span_balance.py','sft.py','bf16_lora.py','asr.py','audio_policy.py','audio_preprocess.py')},
         bundles=[dict(id=b['id'], source_group=b['source_group'], audio_sha256=b['audio_sha256'],
                       decision_ids=b['decision_ids'], supervised=b['supervised'],
                       targets=b['targets'], request=b['request'].model_input(), audio_processing=audio_receipts[i],
@@ -169,7 +169,12 @@ def train(config, output):
         return {k:v for k,v in result.items() if k != 'records'}
 
     before = evaluate('before')
-    optimizer = torch.optim.AdamW(parameters, lr=config['lr'], weight_decay=0., foreach=False, fused=False)
+    bf16_lora = config.get('lora_execution_dtype') == 'bfloat16'
+    if bf16_lora:
+        from .bf16_lora import BF16MasterAdamW
+        optimizer = BF16MasterAdamW(parameters, lr=config['lr'])
+    else:
+        optimizer = torch.optim.AdamW(parameters, lr=config['lr'], weight_decay=0., foreach=False, fused=False)
     history = []
     for batch in schedule:
         denominator = sum(sum(bundles[i]['supervised']) for i in batch)
@@ -191,6 +196,8 @@ def train(config, output):
                             supervised_spans=denominator, per_recording_losses=losses, gradient_norm=float(norm)))
         atomic_json(output / 'progress.json', dict(phase='train', updates=len(history), heartbeat_unix=time.time()))
         atomic_json(output / 'history.json', history)
+    if bf16_lora:
+        atomic_json(output / 'precision.json',optimizer.receipt())
     adapted.save_pretrained(output / 'adapter')
     processor.save_pretrained(output / 'processor')
     for folder in ('adapter', 'processor'):

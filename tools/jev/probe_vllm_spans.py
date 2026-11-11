@@ -31,13 +31,44 @@ def run(config, output):
     lora_options={}
     if adapter:
         from vllm.lora.request import LoRARequest
+        adapter_config=json.loads((Path(adapter)/'adapter_config.json').read_text())
+        targets=adapter_config['target_modules']
+        if not isinstance(targets,list) or not targets or any(
+                not name.startswith('model.language_model.layers.') or
+                name.rsplit('.',1)[-1] not in {'q_proj','v_proj'} for name in targets):
+            raise ValueError('only explicitly named language q/v adapters admitted')
+        packed_targets=sorted({name.replace('model.language_model.','language_model.model.',1)
+                               .rsplit('.',1)[0]+'.qkv_proj' for name in targets})
         lora_request=LoRARequest('jev-span-pinned-v1',1,adapter)
-        lora_options=dict(enable_lora=True,max_loras=1,max_lora_rank=8,lora_dtype=torch.float32)
+        lora_dtype = config.get('lora_execution_dtype','bfloat16')
+        if lora_dtype not in {'bfloat16','float32'}:
+            raise ValueError('unsupported LoRA dtype')
+        from safetensors import safe_open
+        with safe_open(str(Path(adapter)/'adapter_model.safetensors'),framework='pt',device='cpu') as saved:
+            if any(saved.get_tensor(k).dtype != getattr(torch,lora_dtype) for k in saved.keys()):
+                raise ValueError('adapter storage must match declared execution dtype; no silent conversion')
+        lora_options=dict(enable_lora=True,max_loras=1,max_lora_rank=8,lora_dtype=getattr(torch,lora_dtype),
+                          lora_target_modules=packed_targets)
     raw=reference['input_request']
     request=SpanRequest(raw['audio'],tuple(SpanQuestion(q['id'],DecisionSchema.from_dict(q['schema'])) for q in raw['questions']),raw['final_id'],tuple(raw['requirements']))
     processor=Qwen3ASRProcessor.from_pretrained(config['model'],local_files_only=True)
-    batch,positions=encode_span_request(processor,request,load_audio(request.audio))
+    audio,audio_receipt=load_audio(request.audio,config.get('audio_preprocessing'),return_receipt=True)
+    batch,positions=encode_span_request(processor,request,audio)
     mapping=span_labels(processor.tokenizer,request.questions)
+    trace_layers = config.get('trace_layers',False)
+    if trace_layers:
+        from multimodal_jev.span_trace import run_hf_trace
+        actual = run_hf_trace(config,batch,positions,mapping,output)
+        torch.testing.assert_close(torch.tensor(actual),torch.tensor(reference['candidate_logprobs']),
+                                   atol=1e-5,rtol=0)
+    from multimodal_jev.policy_identity import checkpoint_identity
+    from multimodal_jev.span_request_identity import bind_span_request
+    base_id,base_files=checkpoint_identity(config['model'])
+    adapter_id=checkpoint_identity(adapter)[0] if adapter else None
+    request_id,request_identity=bind_span_request(request,audio_receipt,batch,positions,
+        [m['token_ids'] for m in mapping],base_id+(':'+adapter_id if adapter_id else ''))
+    atomic_json(output/'request-identity.json',dict(request_id=request_id,payload=request_identity,
+                                                 base_files=base_files,adapter_id=adapter_id))
     # Collapse only the contiguous audio placeholders; engine owns re-expansion.
     ids=batch['input_ids'][0].tolist()
     audio_id=processor.tokenizer.convert_tokens_to_ids('<|audio_pad|>')
@@ -52,24 +83,42 @@ def run(config, output):
     register_span_model();enable_feature_passthrough()
     atomic_json(output/'progress.json',dict(phase='engine_load',heartbeat_unix=time.time()))
     engine=LLM(model=config['model'],tokenizer=config['model'],runner='pooling',
-        hf_overrides={'architectures':['Qwen3ASRForSpanDecisions']},
+        hf_overrides={'architectures':['Qwen3ASRForSpanDecisions'],'head_dtype':'model'},
         pooler_config={'task':'token_classify','tok_pooling_type':'ALL','use_activation':False},
         dtype='bfloat16',max_model_len=1024,gpu_memory_utilization=0.3,
         tensor_parallel_size=1,enforce_eager=True,max_num_seqs=1,seed=17,
+        worker_extension_cls='multimodal_jev.lora_span_audit.SpanAuditWorkerExtension',
         enable_chunked_prefill=False,enable_prefix_caching=False,
         enable_mm_embeds=True,limit_mm_per_prompt={'audio':1},**lora_options)
     params=PoolingParams(use_activation=False,extra_kwargs={
         'span_positions':positions[0].tolist(),'candidate_ids':[m['token_ids'] for m in mapping],
         'expected_input_ids':ids})
     try:
+        if config.get('align_language_norms',False):
+            atomic_json(output/'norm-intervention.json',
+                        engine.llm_engine.collective_rpc('align_jev_language_norms'))
+        if adapter:
+            atomic_json(output/'worker-lora-before.json',
+                        engine.llm_engine.collective_rpc('inspect_jev_span_lora'))
         atomic_json(output/'progress.json',dict(phase='pooling',heartbeat_unix=time.time()))
         prompt={'prompt_token_ids':compact,'multi_modal_data':{'audio':data}}
         base_logits=None
         if adapter:
             base_output=engine.encode([prompt],pooling_params=params,pooling_task='token_classify',use_tqdm=False)
             base_logits=base_output[0].outputs.data.float().cpu()
+        if trace_layers:
+            engine.llm_engine.collective_rpc('begin_jev_span_trace')
+            # Separate multimodal request identity forces a real audio tower
+            # call, avoiding reuse of the preceding base request embedding.
+            prompt={**prompt,'multi_modal_uuids':{'audio':['jev-trace-adapter']}}
         outputs=engine.encode([prompt],pooling_params=params,pooling_task='token_classify',use_tqdm=False,
                               lora_request=lora_request)
+        if trace_layers:
+            engine.llm_engine.collective_rpc('finish_jev_span_trace',args=(str(output/'vllm-trace.pt'),))
+            from multimodal_jev.span_trace import compare_traces
+            atomic_json(output/'trace-comparison.json',compare_traces(
+                torch.load(output/'hf-trace.pt',weights_only=True),
+                torch.load(output/'vllm-trace.pt',weights_only=True)))
         assert len(outputs)==1 and outputs[0].prompt_token_ids==ids
         logits=outputs[0].outputs.data.float().cpu()
         assert logits.shape==(3,2) and torch.isfinite(logits).all()
@@ -80,6 +129,8 @@ def run(config, output):
         joint_parity=compare_span_policies(hf.tolist(),logp.tolist())
         recovery_error=None
         if adapter:
+            atomic_json(output/'worker-lora-loaded.json',
+                        engine.llm_engine.collective_rpc('inspect_jev_span_lora'))
             recovered=engine.encode([prompt],pooling_params=params,pooling_task='token_classify',use_tqdm=False)
             recovery_error=float((recovered[0].outputs.data.float().cpu()-base_logits).abs().max())
             if recovery_error>1e-5 or torch.equal(logits,base_logits):
@@ -88,7 +139,9 @@ def run(config, output):
             candidate_logits=logits.tolist(),candidate_logprobs=logp.tolist(),hf_candidate_logprobs=hf.tolist(),
             maximum_logprob_error=error,parity_threshold=0.02,parity_passed=error<=0.02,
             complete_action_parity=joint_parity,rl_admitted=False,
-            adapter=adapter,adapter_dtype='float32' if adapter else None,
+            adapter=adapter,adapter_dtype=lora_dtype if adapter else None,
+            request_id=request_id,
+            lora_target_modules=packed_targets if adapter else None,
             adapter_logit_effect=float((logits-base_logits).abs().max()) if adapter else None,
             return_to_base_error=recovery_error,
             runner='pooling',generated_tokens=0,optimizer_updates=0,

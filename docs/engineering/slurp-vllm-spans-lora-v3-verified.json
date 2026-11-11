@@ -1,0 +1,123 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-vllm-spans-lora-v3",
+  "result": {
+    "status": "diagnostic_complete",
+    "input_tokens": 600,
+    "span_positions": [
+      [
+        286,
+        447,
+        589
+      ]
+    ],
+    "candidate_logits": [
+      [
+        27.273740768432617,
+        26.383556365966797
+      ],
+      [
+        27.501632690429688,
+        26.789793014526367
+      ],
+      [
+        27.850732803344727,
+        27.08349609375
+      ]
+    ],
+    "candidate_logprobs": [
+      [
+        -0.34400099515914917,
+        -1.2341854572296143
+      ],
+      [
+        -0.39927300810813904,
+        -1.1111127138137817
+      ],
+      [
+        -0.38137343525886536,
+        -1.1486101150512695
+      ]
+    ],
+    "hf_candidate_logprobs": [
+      [
+        -0.3484445810317993,
+        -1.2234445810317993
+      ],
+      [
+        -0.38687101006507874,
+        -1.1368709802627563
+      ],
+      [
+        -0.38687101006507874,
+        -1.1368709802627563
+      ]
+    ],
+    "maximum_logprob_error": 0.02575826644897461,
+    "parity_threshold": 0.02,
+    "parity_passed": false,
+    "complete_action_parity": {
+      "passed": false,
+      "per_span_passed": false,
+      "joint_ratio_passed": false,
+      "maximum_logprob_error": 0.02575826644897461,
+      "p95_logprob_error": 0.022419199347496033,
+      "joint_log_ratio_min": -0.035699427127838135,
+      "joint_log_ratio_max": 0.03488200902938843,
+      "joint_ratio_min": 0.9649302817658606,
+      "joint_ratio_max": 1.035497522233595,
+      "candidate_kl_actor_to_behavior": 0.0002156112147411876,
+      "argmax_changed_spans": [],
+      "per_span_tolerance": 0.02,
+      "joint_ratio_bounds": [
+        0.98,
+        1.02
+      ],
+      "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+    },
+    "rl_admitted": false,
+    "adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-balanced-v2/run/adapter",
+    "adapter_dtype": "float32",
+    "lora_target_modules": [
+      "language_model.model.layers.0.self_attn.qkv_proj",
+      "language_model.model.layers.1.self_attn.qkv_proj",
+      "language_model.model.layers.10.self_attn.qkv_proj",
+      "language_model.model.layers.11.self_attn.qkv_proj",
+      "language_model.model.layers.12.self_attn.qkv_proj",
+      "language_model.model.layers.13.self_attn.qkv_proj",
+      "language_model.model.layers.14.self_attn.qkv_proj",
+      "language_model.model.layers.15.self_attn.qkv_proj",
+      "language_model.model.layers.16.self_attn.qkv_proj",
+      "language_model.model.layers.17.self_attn.qkv_proj",
+      "language_model.model.layers.18.self_attn.qkv_proj",
+      "language_model.model.layers.19.self_attn.qkv_proj",
+      "language_model.model.layers.2.self_attn.qkv_proj",
+      "language_model.model.layers.20.self_attn.qkv_proj",
+      "language_model.model.layers.21.self_attn.qkv_proj",
+      "language_model.model.layers.22.self_attn.qkv_proj",
+      "language_model.model.layers.23.self_attn.qkv_proj",
+      "language_model.model.layers.24.self_attn.qkv_proj",
+      "language_model.model.layers.25.self_attn.qkv_proj",
+      "language_model.model.layers.26.self_attn.qkv_proj",
+      "language_model.model.layers.27.self_attn.qkv_proj",
+      "language_model.model.layers.3.self_attn.qkv_proj",
+      "language_model.model.layers.4.self_attn.qkv_proj",
+      "language_model.model.layers.5.self_attn.qkv_proj",
+      "language_model.model.layers.6.self_attn.qkv_proj",
+      "language_model.model.layers.7.self_attn.qkv_proj",
+      "language_model.model.layers.8.self_attn.qkv_proj",
+      "language_model.model.layers.9.self_attn.qkv_proj"
+    ],
+    "adapter_logit_effect": 22.38549041748047,
+    "return_to_base_error": 0.0,
+    "runner": "pooling",
+    "generated_tokens": 0,
+    "optimizer_updates": 0,
+    "scope": "Single real-audio native pooling adapter; HF parity diagnostic, no task or RL gain."
+  },
+  "files": {
+    "config.json": "55c1824f1e0cef6e22d03d71e67ecdbe0c814f0ce3e408c5f93e0176aecaf4c4",
+    "run/result.json": "5596fdab8f8ec24a5e253e9bef3cdf026bd0dfb220d7c22ad163d76e47a6fdc8",
+    "run/terminal.json": "25abcd64116077b05978be331d038f4571f8d891c8dae72a6ced3d8c32d8470c"
+  },
+  "scope": "Recorded adapter effect/return-to-base and independently recomputed policy discrepancy; no worker module receipt in v3."
+}

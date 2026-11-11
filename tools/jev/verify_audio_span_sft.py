@@ -56,7 +56,12 @@ def verify(config, output):
     torch.set_num_threads(4)
     torch.manual_seed(train_config['seed'])
     processor,base=load_runtime(train_config['model_path'],'npu:0','bfloat16')
-    adapted=PeftModel.from_pretrained(base,root/'run/adapter',is_trainable=False).eval()
+    bf16_lora = train_config.get('lora_execution_dtype') == 'bfloat16'
+    adapted=PeftModel.from_pretrained(base,root/'run/adapter',is_trainable=False,
+                                     autocast_adapter_dtype=not bf16_lora).eval()
+    if bf16_lora:
+        from multimodal_jev.bf16_lora import cast_lora_bf16
+        cast_lora_bf16(adapted)
     model=NativeAudioSpanModel(adapted.get_base_model()).eval()
     saved=json.loads((root/'run/after.json').read_text())['records']
     maximum=0.

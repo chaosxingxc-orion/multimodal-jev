@@ -12,6 +12,8 @@
 
 ## 开发
 
+最新精度约束：用户要求 BF16 训练并保证训推一致。Span 主线的基座、LoRA 执行/导出和输出投影使用 BF16；显式关闭 PEFT adapter 自动升精度，vLLM lora_dtype=bfloat16、head_dtype=model。FP32 候选归一化/损失及优化器 master/state 保留稳定性。两侧均使用同一未合并适配器，禁止把 FP32 训练 adapter 仅在 rollout 降为 BF16 后声称一致。通过保存重载及跨后端全候选/联合概率 gate 前不准入 RL；同 dtype 不等于已通过一致性验收。
+
 用户新增输入与调试要求：允许可配置 preemphasis、首尾静音处理、音量处理和语速增强。保留 raw 对照，记录处理后音频身份，actor/rollout 使用同一波形或特征；速度与保音高 tempo 不混称。调试训练要求分类均衡：检查单标签及联合标签分布，并保证当前三任务每个 batch 正负均衡；不修改原始发布、不补造缺失监督、不改变测试分布。见 docs/engineering/audio-preprocessing-v1.md 和 experiments/slurp-native-spans-balanced-v1.md。
 
 最新用户纠正（优先于下文历史策略）：主任务是一次填充的 Jev 决策 CoT：输入音频及 `Q1,<SPAN1>,Q2,<SPAN2>,Final Q,<SPAN3>` 完整问题模板，由同一模型一次性输出各 Span 的 typed value/state。研究结构化 CoT 或模型内部隐式思维链，不采用 ReAct、外部循环触发/复核/停止控制器，不以自回归文本解码作为新任务的实现目标。所有前置问题在输入时给定，最终答案由模型读出。既有单问 JSON 生成实验仅为历史工程证据，不能冒称已实现 Span 一次填充。当前契约见 docs/research/12-single-pass-span-cot-contract.md；其内容取代 09/10/11 中把有界复核和学习停止当主线的安排。

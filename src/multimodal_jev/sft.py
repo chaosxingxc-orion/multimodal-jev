@@ -29,12 +29,21 @@ def initialization_identity(config):
 
 def initialize_adapter(base,config):
     from peft import LoraConfig,get_peft_model,PeftModel
+    precision = config.get('lora_execution_dtype')
+    if precision not in (None, 'bfloat16'):
+        raise ValueError('unsupported explicit LoRA execution dtype')
+    options = {'autocast_adapter_dtype': False} if precision == 'bfloat16' else {}
     if config.get('initial_adapter'):
-        return PeftModel.from_pretrained(base,config['initial_adapter'],is_trainable=True)
-    modules=[name for name,_ in base.named_modules() if name.startswith('model.language_model.')
-             and name.rsplit('.',1)[-1] in {'q_proj','v_proj'}]
-    return get_peft_model(base,LoraConfig(r=config['lora_rank'],lora_alpha=config['lora_alpha'],
-                         lora_dropout=0.0,target_modules=modules,task_type='CAUSAL_LM',bias='none'))
+        adapted = PeftModel.from_pretrained(base,config['initial_adapter'],is_trainable=True,**options)
+    else:
+        modules=[name for name,_ in base.named_modules() if name.startswith('model.language_model.')
+                 and name.rsplit('.',1)[-1] in {'q_proj','v_proj'}]
+        adapted = get_peft_model(base,LoraConfig(r=config['lora_rank'],lora_alpha=config['lora_alpha'],
+                             lora_dropout=0.0,target_modules=modules,task_type='CAUSAL_LM',bias='none'),**options)
+    if precision == 'bfloat16':
+        from .bf16_lora import cast_lora_bf16
+        cast_lora_bf16(adapted)
+    return adapted
 
 
 def select_training(config):
