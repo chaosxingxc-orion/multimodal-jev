@@ -29,3 +29,23 @@ NPU actor中保留检查；此数值是结构估算，不是本次实测HBM。�
 清单只执行初始化/完整性验证，不执行actor前向，原快照不受本修订影响。
 后续概率运行须使用包含该修订的新源码快照，仍等待单层NPU与双卡初始化
 验收、完整真实采样及预登记数值门槛。
+
+## 实际verl actor双rank集成
+
+进一步运行`probe_verl_fsdp_forward.py`，使用固定镜像真实
+`DataParallelPPOActor`、真实DataProto和两rank CPU/Gloo FSDP1。
+每rank四条不同输入，响应长度3/2/1/3，分别用microbatch1和2，总计每rank
+六次真实FSDP前向。合成特征通过`multi_modal_inputs`进入模型，逐次核对
+特征顺序；置零特征确实改变有效位置参考概率，避免特征被忽略仍通过。
+
+两个rank的所有有效响应概率均与未分片模型的独立log-softmax/gather参考
+逐元素一致，padding概率为0，原old logprob和metadata保持不变。每次完整
+actor调用结束后root完整权重存储均为0。原始actor源码哈希与固定版本一致。
+这里显式使用已有CPU设备选择和FP32 logprob适配，未改包文件；因此不是
+未修改加速器dispatcher的验证。音频processor、Omni权重和NPU均未使用。
+
+容器`0657e8f69597298c9135ef6fc77502d33b7d70b45b88a088607852e8a5685a2c`，
+源码`d805124af00c33717010392e6d3e69ca9bda32d9`，4CPU/8GiB、无网络/设备，
+退出0且无OOM。独立核对127份源码、容器资源/命令/挂载、两rank终态和
+全部输出，见[集成核验](verl-fsdp-forward-cpu-v1-verified.json)。该结果填补
+实际verl与FSDP直接调用衔接，不能替代真实Omni采样概率和跨任务提升证据。

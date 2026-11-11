@@ -1,0 +1,76 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/verl-fsdp-forward-cpu-v1",
+  "container_id": "0657e8f69597298c9135ef6fc77502d33b7d70b45b88a088607852e8a5685a2c",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_commit": "d805124af00c33717010392e6d3e69ca9bda32d9",
+  "source_files_verified": 127,
+  "intent_sha256": "de5460ef56aa56ffb5ea12c5df75c508d35c599aafb95b8f45d1033c1d9aee4b",
+  "inspection_sha256": "ea9c07c81472c949cb76a9bb5ead7ca5ef6bbafcfb32477af36a0ac13bc8fb5f",
+  "ranks": [
+    {
+      "rank": 0,
+      "result_sha256": "aa0b0f3472ba0b873cefd816baf606dc3c2f1bfd4ed3217fa388dba52ced1c86",
+      "micro_batches": [
+        1,
+        2
+      ],
+      "forward_calls": 6,
+      "reference": [
+        [
+          -1.840652346611023,
+          -1.8582308292388916,
+          -2.023232936859131
+        ],
+        [
+          -1.966305136680603,
+          -1.8436052799224854,
+          0.0
+        ],
+        [
+          -2.0005457401275635,
+          0.0,
+          0.0
+        ],
+        [
+          -1.9393889904022217,
+          -2.0019330978393555,
+          -1.9923675060272217
+        ]
+      ],
+      "root_full_storage_after_each_call": 0
+    },
+    {
+      "rank": 1,
+      "result_sha256": "36a1141a58360feae712ec88776a6a63634d18f40bdac7a14e974124b2913bdb",
+      "micro_batches": [
+        1,
+        2
+      ],
+      "forward_calls": 6,
+      "reference": [
+        [
+          -1.8591898679733276,
+          -2.0199403762817383,
+          -1.9988187551498413
+        ],
+        [
+          -1.844549298286438,
+          -1.862106442451477,
+          0.0
+        ],
+        [
+          -1.983107328414917,
+          0.0,
+          0.0
+        ],
+        [
+          -2.0023155212402344,
+          -1.996145486831665,
+          -1.8516486883163452
+        ]
+      ],
+      "root_full_storage_after_each_call": 0
+    }
+  ],
+  "scope": "Actual verl actor/DataProto with two CPU/Gloo FSDP ranks and synthetic feature-conditioned model. Explicit CPU device/logprob adapters. No Omni/audio processor/NPU/HCCL or training."
+}
