@@ -4,6 +4,13 @@
 
 ## 1. 锁定结论与边界
 
+当前执行口径已同步到机器登记的 `execution_policy`：主actor为本地冻结
+Qwen3-Omni，直接消费音频和任务定义。四项历史 `ours-*-asr-text/gold-text`
+登记保留方法与来源，但标记为 `archived_not_dispatchable`，不再是必需运行
+对照；八项旧ASR head/SFT/RL方案标为暂缓研究参考，不自动成为当前Omni
+配置或训练队列。外部论文中的串联/人工转写方法仍可作为明确标注输入模态
+的文献参考，其存在不授权本项目执行串联路线。当前不新增模型下载或权重训练。
+
 首轮主表采用 FSC、SLURP 的原生任务；SFC 与 Audio2Tool 各建外部函数调用表；MMAR 单独建 AudioJev 原顺序复测表。优先复测已有公开权重的官方参考，随后开展同骨干受控重跑。不能用自己的 frozen Qwen head 代替学术基线，也不能因缺少外部 checkpoint 就给它填一个推测分数。
 
 | 数据集 | 必需原始/官方参考 | 适合本研究的强对照 | 本次锁定的复现性质 |
@@ -58,6 +65,12 @@ native严格JSON候选选择1752/3793（46.1904%），六视图全对9/3793（0.
 | ESPnet 2-pass deliberation + gold transcript | 同 README 的 ground truth 条件、同 test 行 | **89.0% intent** | 音频+人工文本证据参考，不能冒充纯音频 |
 
 SpeechBrain 的 [固定当前配方](https://github.com/speechbrain/speechbrain/blob/c0241278f93ef02cd5191f03caf4e5f8e1292bf6/recipes/SLURP/direct/hparams/train_with_wav2vec2.yaml) 使用 `facebook/hubert-base-ls960`，`train_splits=[train_synthetic, train_real]`，冻结卷积部分、其余 encoder 可训练，attention decoder；beam size 80、temperature 1.25。模型卡声明历史训练 commit `aa018540`，初次按当前路径查询返回 404。后续已解析为 `aa0185408025e80f6c748d2c7af7fa96958c2231`：完整 tree 无卡片引用的 wav2vec2 训练文件，历史 direct 配方是 LibriSpeech ASR 编码器而非 HuBERT，见 [源码追溯](speechbrain-history-v1.md)。故**历史 commit 可解析仍不证明 HuBERT 权重的训练配方已核实**。real-only 强对照采用同 recipe 显式去掉 synthetic 重训，分数空置。
+
+后续已核查固定任务revision随附的hyperparams和直接音频接口，确认同样的
+beam80/temperature1.25，并执行当前配方解析器的10个边界案例及11514条
+TRAIN序列往返；发现406条目标表示与官方token-span实体表面文本不一致。
+这些是源码/标注诊断，不是模型错误率。核心任务与基础依赖权重尚未下载，
+模型未运行；详见[推理准备与解析边界](slurp-hubert-inference-readiness-v1.md)。
 
 ESPnet 的两个官方 HF 权重 revision 已登记；README 声称的历史 git hash 尚未独立核验，登记 `code_revision=null`。特别避免沿用 [ESPnet-SLU 2111.14706v1](https://arxiv.org/pdf/2111.14706v1) Table 5 中混杂的 `IC (F1)` 列来替换 SLU-F1：该表把 SpeechBrain 75.1 放在 IC 列，和官方模型卡含义不同。本报告优先采用明确原始指标来源，保留论文作方法参考。
 

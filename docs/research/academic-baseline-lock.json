@@ -271,10 +271,12 @@
           "provenance": "author_report_not_local_reproduction"
         }
       ],
-      "local_status": "未运行本地学术复测",
+      "local_status": "固定任务revision的推理接口、发布配置和离线依赖已核查；当前配方解析器已执行10个边界案例与11514条TRAIN往返核查。未下载核心权重，未加载模型或执行本地学术复测。",
       "blockers": [
         "模型卡 commit 已解析为 aa0185408025e80f6c748d2c7af7fa96958c2231；完整 tree 无 train_with_wav2vec2.py/yaml，所存 direct 配方使用 LibriSpeech ASR 而非 HuBERT，历史训练绑定仍未成立",
-        "scorer 必须覆盖全部预测并拒绝重复 ID；权重未加载"
+        "任务与默认加载依赖的核心权重/tokenizer共788105608字节尚未下载；当前不新增模型下载，不能隐式联网补齐。",
+        "旧路径解析、完整权重加载、真实TRAIN音频推理与完整TEST13078覆盖仍未验证。",
+        "当前配方解析存在未捕获ValueError与字段校验缺口；复测须保留原始字符串、显式登记失败策略，不静默修复或丢弃。历史配方身份仍未证实。"
       ],
       "lock_status": "locked_comparison_target",
       "result_null_reason": null,
@@ -287,15 +289,17 @@
         "note": "未填字段未从该结果的精确历史配方核验；不得以当前默认脚本补齐。"
       },
       "inference_settings": {
-        "decoding": "current recipe beam=80, temperature=1.25; historical checkpoint config pending",
+        "decoding": "pinned task hyperparams: beam=80, temperature=1.25, eos_threshold=1.5, max_decode_ratio=10; BOS/EOS=0",
         "precision": null,
         "max_output_tokens": null,
         "sampling_rate_hz": 16000,
-        "note": "精确历史 decoding 未核验；执行前冻结。"
+        "note": "Task-release settings verified statically, not actual model execution or proof of original historical training recipe. Initial batch1 proposed due to encoder wav_lens omission."
       },
       "reference_role": "academic method or official publisher reference",
       "primary_table": "native dataset-specific or external reference; see comparison_scope",
-      "historical_source_audit": "speechbrain-history-source-audit-v1.json"
+      "historical_source_audit": "speechbrain-history-source-audit-v1.json",
+      "inference_source_audit": "slurp-hubert-interface-audit-v1.json",
+      "parser_source_audit": "slurp-speechbrain-parser-audit-v1.json"
     },
     {
       "id": "slurp-speechbrain-real-only",
@@ -2673,7 +2677,7 @@
     {
       "id": "ours-fsc-asr-text",
       "dataset": "FSC",
-      "priority": "A-required-control",
+      "priority": "historical-diagnostic-only",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -2698,7 +2702,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "archived_not_dispatchable",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -2716,12 +2720,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "historical diagnostic appendix; excluded from end-to-end baseline, TFRL improvement and cross-task generalization claims",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical diagnostic only. User requires direct audio end-to-end task inference; do not dispatch ASR-to-text-model or reference-transcript substitutes."
     },
     {
       "id": "ours-fsc-gold-text",
       "dataset": "FSC",
-      "priority": "A-required-control",
+      "priority": "historical-diagnostic-only",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -2746,7 +2753,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "archived_not_dispatchable",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -2764,12 +2771,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "historical diagnostic appendix; excluded from end-to-end baseline, TFRL improvement and cross-task generalization claims",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical diagnostic only. User requires direct audio end-to-end task inference; do not dispatch ASR-to-text-model or reference-transcript substitutes."
     },
     {
       "id": "ours-fsc-frozen-head",
       "dataset": "FSC",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -2794,7 +2804,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -2812,12 +2822,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     },
     {
       "id": "ours-fsc-generative-sft",
       "dataset": "FSC",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -2842,7 +2855,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -2860,12 +2873,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     },
     {
       "id": "ours-fsc-typed-sft",
       "dataset": "FSC",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -2890,7 +2906,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -2908,12 +2924,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     },
     {
       "id": "ours-fsc-budget-rl",
       "dataset": "FSC",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -2938,7 +2957,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -2956,12 +2975,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     },
     {
       "id": "ours-slurp-asr-text",
       "dataset": "SLURP",
-      "priority": "A-required-control",
+      "priority": "historical-diagnostic-only",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -2986,7 +3008,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "archived_not_dispatchable",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -3004,12 +3026,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "historical diagnostic appendix; excluded from end-to-end baseline, TFRL improvement and cross-task generalization claims",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical diagnostic only. User requires direct audio end-to-end task inference; do not dispatch ASR-to-text-model or reference-transcript substitutes."
     },
     {
       "id": "ours-slurp-gold-text",
       "dataset": "SLURP",
-      "priority": "A-required-control",
+      "priority": "historical-diagnostic-only",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -3034,7 +3059,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "archived_not_dispatchable",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -3052,12 +3077,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "historical diagnostic appendix; excluded from end-to-end baseline, TFRL improvement and cross-task generalization claims",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical diagnostic only. User requires direct audio end-to-end task inference; do not dispatch ASR-to-text-model or reference-transcript substitutes."
     },
     {
       "id": "ours-slurp-frozen-head",
       "dataset": "SLURP",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -3082,7 +3110,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -3100,12 +3128,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     },
     {
       "id": "ours-slurp-generative-sft",
       "dataset": "SLURP",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -3130,7 +3161,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -3148,12 +3179,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     },
     {
       "id": "ours-slurp-typed-sft",
       "dataset": "SLURP",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -3178,7 +3212,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -3196,12 +3230,15 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     },
     {
       "id": "ours-slurp-budget-rl",
       "dataset": "SLURP",
-      "priority": "A-required-control",
+      "priority": "deferred-research-reference",
       "reference_url": "https://huggingface.co/api/models/Qwen/Qwen3-ASR-0.6B-hf",
       "source_ids": [
         "qwen06-meta"
@@ -3226,7 +3263,7 @@
         "full training budget/config/typed-head adapter not frozen; NPU validation required",
         "closed-set head alone cannot solve dynamic rebind/missing; task-specific adapters must be explicit"
       ],
-      "lock_status": "method_locked_execution_proposed",
+      "lock_status": "deferred_no_weight_training_dispatch",
       "result_null_reason": "未核验与该条 split/版本/设置一致的公开分数，或属于尚未执行的本项目重跑；不得填零或借用别条结果。",
       "code_revision_note": "未独立核验完整 commit；不将 main 或 README 声称的短 hash 冒充已核验 revision。",
       "training_settings": {
@@ -3244,7 +3281,25 @@
         "note": "精确历史 decoding 未核验；执行前冻结。"
       },
       "reference_role": "model metadata only; no academic result claimed",
-      "primary_table": "proposed matched reruns"
+      "primary_table": "deferred historical matched-rerun proposal; no current execution authorization inferred",
+      "historical_priority": "A-required-control",
+      "historical_lock_status": "method_locked_execution_proposed",
+      "execution_applicability": "Historical ASR-based research proposal, not the active Omni actor configuration. Weight training dispatch remains deferred until current frozen-baseline/prompt/Jev work and required runtime validation complete."
     }
-  ]
+  ],
+  "execution_policy": {
+    "basis": "Current user end-to-end audio requirement and AGENTS.md execution priority; supersedes historical proposed dispatch labels.",
+    "active_actor": "Local frozen Qwen3-Omni-30B-A3B-Instruct, direct audio plus task definition to task output.",
+    "priority": [
+      "frozen native task baselines",
+      "offline teacher prompt optimization",
+      "native versus derived Jev task comparison"
+    ],
+    "new_weight_training_dispatch": false,
+    "asr_to_text_model_dispatch": false,
+    "reference_transcript_substitution_dispatch": false,
+    "new_model_downloads": false,
+    "academic_cascade_results": "Literature references only; inclusion does not authorize local cascade execution.",
+    "scope": "Execution applicability only; preserves historical reference results, identities and task protocols. Not a new experiment registration."
+  }
 }
