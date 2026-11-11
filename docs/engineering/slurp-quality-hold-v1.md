@@ -46,3 +46,14 @@ TRAIN排除240个bundle/40320决策，TEST排除87个bundle/14616决策。
 这只是映射，尚未发布可训练的clean Jev版本或验收learning/selection。
 TRAIN剩余50388条录音引用对应50387个文件，既有重复文件的冲突标签仍存在。
 因此质量限制没有解除，也没有产生清洗后的性能分数。
+
+来源角色划分已落盘为`source80-v1`：只在clean TRAIN内按原始语句ID、
+NFKC/casefold/空白归一文本、录音文件名及已有音频SHA的传递闭包分组，
+再按固定SHA分桶80/20。得到11448个来源连接组，learning可用40713录音、
+selection可用9673录音；另1条冲突录音标记conflict，不参与监督。
+独立检查来源ID完整、所有文本/文件/音频hash键跨角色交集为零。
+见[来源划分核验](slurp-clean-source-split-v1-verified.json)。7项测试覆盖传递
+关系、输入顺序无关、冲突音频传播、缺失/重复/非TRAIN拒绝。
+
+这一划分不是说话人隔离，不覆盖语义近重复；未读取TEST。规则族/表达模板
+划分与可训练release仍待完成，不能仅凭source80名单解除训练数据准入限制。
