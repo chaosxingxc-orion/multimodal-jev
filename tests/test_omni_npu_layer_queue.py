@@ -58,12 +58,24 @@ def test_ambiguous_create_retains_intent_and_never_starts(tmp_path,monkeypatch):
     assert len(calls)==1
 
 
-@pytest.mark.parametrize('kind',['docker_busy','driver_busy','free'])
+@pytest.mark.parametrize('kind',['docker_busy','driver_busy','free','explicit_free','message_plus_pid','driver_error'])
 def test_both_npu45_checked_before_dispatch(tmp_path,monkeypatch,kind):
     def remote(argv,**kw):
         if argv[:2]==['docker','ps']:return SimpleNamespace(stdout='a'*64 if kind=='docker_busy' else '')
         assert argv[0]=='npu-smi' and argv[5] in ('4','5')
-        return SimpleNamespace(stdout='PID 12' if kind=='driver_busy' and argv[5]=='5' else '')
+        output='PID 12' if kind=='driver_busy' and argv[5]=='5' else ''
+        if kind=='explicit_free':output='\tNo process in device.\n'
+        if kind=='message_plus_pid' and argv[5]=='5':output='No process in device.\nPID 12'
+        if kind=='driver_error' and argv[5]=='4':output='Error: unavailable'
+        return SimpleNamespace(stdout=output)
     monkeypatch.setattr(m,'remote',remote)
     monkeypatch.setattr(m,'inspect',lambda cid:{'HostConfig':{'Privileged':False,'Devices':[{'PathOnHost':'/dev/davinci5'}]}})
-    assert m.free_devices(tmp_path) is (kind=='free')
+    assert m.free_devices(tmp_path) is (kind in ('free','explicit_free'))
+
+
+def test_expired_original_dependency_deadline_never_dispatches(tmp_path,monkeypatch):
+    monkeypatch.setattr(m,'check_pins',lambda *a:({'dependency_seconds':350000},{}))
+    monkeypatch.setattr(m.time,'time',lambda:1000.)
+    with pytest.raises(TimeoutError,match='original dependency deadline'):
+        m.execute(tmp_path,'pin',999.)
+    assert not (tmp_path/'intent.json').exists()

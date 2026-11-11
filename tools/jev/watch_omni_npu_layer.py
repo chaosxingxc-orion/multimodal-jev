@@ -123,7 +123,9 @@ def free_devices(root):
             return False
     observed = {str(i):remote(['npu-smi','info','-t','proc-mem','-i',str(i),'-c','0']).stdout for i in (4,5)}
     atomic_json(root/'device-observation.json',dict(observed=observed,time=time.time()))
-    return all(not v.strip() for v in observed.values())
+    # Driver releases may emit an explicit empty-device message. Accept only
+    # that exact message (or empty output), never a substring of process/errors.
+    return all(v.strip() in ('', 'No process in device.') for v in observed.values())
 
 
 def dispatch(root, prep):
@@ -144,10 +146,14 @@ def dispatch(root, prep):
     return cid
 
 
-def execute(root,pin):
+def execute(root,pin,dependency_deadline_unix=None):
     if any((root/n).exists() for n in ('intent.json','launch.json','run','evaluation-terminal.json')):
         raise FileExistsError('prior probe attempt; never replay')
     queue,prep = check_pins(root,pin);deadline = time.monotonic()+queue['dependency_seconds']
+    if dependency_deadline_unix is not None:
+        remaining = dependency_deadline_unix-time.time()
+        if remaining <= 0:raise TimeoutError('original dependency deadline expired; no dispatch')
+        deadline = min(deadline,time.monotonic()+remaining)
     dep = Path(queue['dependency_root'])
     while True:
         try:
@@ -197,11 +203,12 @@ def execute(root,pin):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--plan-hash',required=True)
+    p.add_argument('--dependency-deadline-unix',type=float)
     args=p.parse_args()
     with (args.root/'queue.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if (args.root/'evaluation-terminal.json').exists():raise FileExistsError('preserve terminal')
-        try:execute(args.root,args.plan_hash)
+        try:execute(args.root,args.plan_hash,args.dependency_deadline_unix)
         except BaseException as exc:
             write_once(args.root/'evaluation-terminal.json',dict(exit_code=1,error=repr(exc),automatic_retry=False,time=time.time()));raise
         write_once(args.root/'evaluation-terminal.json',dict(exit_code=0,automatic_retry=False,time=time.time()))
