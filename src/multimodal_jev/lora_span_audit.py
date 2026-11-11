@@ -31,6 +31,21 @@ class SpanAuditWorkerExtension:
         from .span_projection_alignment import install_separate_mlp
         return install_separate_mlp(self.get_model())
 
+    def align_jev_internal_format(self):
+        import torch
+        import torch_npu
+        before=torch_npu._C._npu_getOption('ALLOW_INTERNAL_FORMAT')
+        torch.npu.config.allow_internal_format=False
+        after=torch_npu._C._npu_getOption('ALLOW_INTERNAL_FORMAT')
+        if after!=b'disable':
+            raise ValueError('NPU internal format option failed to change')
+        return dict(before=None if before is None else before.decode(),after=after.decode(),
+                    scope='Diagnostic worker-local process option matching actor default; no weight changes')
+
+    def align_jev_audio_attention(self):
+        from .span_audio_attention_alignment import install_eager_audio_attention
+        return install_eager_audio_attention(self.get_model())
+
     def begin_jev_span_trace(self):
         from .span_trace import attach_vllm_trace
         if getattr(self,'_jev_span_trace',None) is not None:

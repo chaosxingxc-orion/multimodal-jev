@@ -1,0 +1,168 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-bf16-projection-audit-v3",
+  "conv_comparisons": {
+    "internal-False/hf/fused": {
+      "versus_hf": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.0009765625,
+        "rms": 5.687197699444368e-07,
+        "unequal": 8,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    },
+    "internal-False/hf/separate": {
+      "versus_hf": {
+        "maximum": 0.015625,
+        "rms": 0.00034589384449645877,
+        "unequal": 1058008,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.015625,
+        "rms": 0.00034589352435432374,
+        "unequal": 1058004,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    },
+    "internal-False/vllm/fused": {
+      "versus_hf": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.0009765625,
+        "rms": 5.687197699444368e-07,
+        "unequal": 8,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    },
+    "internal-False/vllm/separate": {
+      "versus_hf": {
+        "maximum": 0.015625,
+        "rms": 0.00034589384449645877,
+        "unequal": 1058008,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.015625,
+        "rms": 0.00034589352435432374,
+        "unequal": 1058004,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    },
+    "internal-True/hf/fused": {
+      "versus_hf": {
+        "maximum": 0.0009765625,
+        "rms": 5.687197699444368e-07,
+        "unequal": 8,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    },
+    "internal-True/hf/separate": {
+      "versus_hf": {
+        "maximum": 0.015625,
+        "rms": 0.00034589413553476334,
+        "unequal": 1058010,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.015625,
+        "rms": 0.0003458938153926283,
+        "unequal": 1058006,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    },
+    "internal-True/vllm/fused": {
+      "versus_hf": {
+        "maximum": 0.0009765625,
+        "rms": 5.687197699444368e-07,
+        "unequal": 8,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    },
+    "internal-True/vllm/separate": {
+      "versus_hf": {
+        "maximum": 0.015625,
+        "rms": 0.00034589413553476334,
+        "unequal": 1058010,
+        "elements": 4608000
+      },
+      "versus_vllm": {
+        "maximum": 0.015625,
+        "rms": 0.0003458938153926283,
+        "unequal": 1058006,
+        "elements": 4608000
+      },
+      "repeat": {
+        "maximum": 0.0,
+        "rms": 0.0,
+        "unequal": 0,
+        "elements": 4608000
+      }
+    }
+  },
+  "result_sha256": "a7207d6019b2fb8c473612fcafd16b4e787915f41cdf95e1dbc0e51c02ec319a",
+  "conclusion": "Same-process BF16 convolution replay: internal-format=False reproduces HF exactly; True reproduces vLLM exactly. Input stride does not change result.",
+  "scope": "First convolution only; complete audio/model parity remains unproven."
+}

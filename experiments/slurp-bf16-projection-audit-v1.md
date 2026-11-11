@@ -15,3 +15,11 @@ v1 因 torch-npu 的 allow_internal_format 仅提供 setter，读取属性失败
 QKV整模型探针终态0：568个相同输入位置Q/K/V输出全部逐位一致，原生LoRA路径保留。最终max logp差0.140574，完整动作比率[0.839265,1.165205]，Span0 argmax变化，未过gate。局部修复不能冒充端到端验收。
 
 后续mlp-v1仅在QKV+norm设置上拆分gate/up投影和SiLU→BF16→乘法，保留原生down projection、attention、rotary和音频塔；新增第一层MLP输出hook。该干预同时覆盖MLP投影打包和激活融合，不能单独归因其中一个因素，仍为诊断。
+
+MLP探针终态0：max logp差0.109080，完整动作比率[0.866957,1.130725]，本样本argmax不再变化但gate仍失败。相对QKV-only有所变化，不能据一个样本判定泛化或已满足训推一致。新增MLP hook未独立做无hook对照，因此仅记录本配置的候选概率，不把变化全部归因某一个算子。
+
+## 音频首卷积复算
+
+projection-audit-v3在前述GEMM对照之后补充首卷积同进程对照，使用两个trace中逐位一致的真实input/weight/bias。显式交叉输入stride（HF/vLLM）、ALLOW_INTERNAL_FORMAT（disable/enable）以及偏置融合/分离。全部重复计算误差0。融合偏置时，disable逐位复现HF、enable逐位复现vLLM，与stride无关；两者只差8个元素，max0.0009765625。分离偏置明显不同，不作为修复。源码核查发现vllm-ascend model_runner_v1在模块导入时显式开启allow_internal_format，而独立HF进程默认disable；这是有因果复算支持的具体运行时差异。
+
+internal-format-v1在MLP+QKV+norm配置上，仅在worker加载完成后显式关闭内部格式，保留原生LoRA、attention、rotary；将验证首卷积、完整音频塔和完整动作gate。不能把首卷积对齐等同整模型已一致。
