@@ -18,9 +18,12 @@ from multimodal_jev.baseline import file_hash,atomic_json
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True)
-    p.add_argument('--output-root',type=Path,required=True);args=p.parse_args()
+    p.add_argument('--output-root',type=Path,required=True)
+    p.add_argument('--terminal',type=Path,help='Explicit successful wrapper terminal for nested training output')
+    args=p.parse_args()
     result=json.loads((args.run/'result.json').read_text())
-    terminal=json.loads((args.run/'terminal.json').read_text())
+    terminal_path=args.terminal or args.run/'terminal.json'
+    terminal=json.loads(terminal_path.read_text())
     if terminal['exit_code']!=0 or result['status']!='passed':raise ValueError('successful completed training required')
     config=result['config'];identity=json.loads((args.run/'identity.json').read_text())
     if file_hash(Path(config['model_path'])/'model.safetensors')!=identity['weights_sha256']:
@@ -76,6 +79,8 @@ def main():
             reload_errors.append(float((logp-ref).abs().max()))
         files={p.name:file_hash(p) for p in sorted(stage.iterdir()) if p.is_file()}
         receipt={'status':'passed','release_id':release,'training_run':str(args.run),
+                 'training_result_sha256':file_hash(args.run/'result.json'),
+                 'training_terminal':str(terminal_path),'training_terminal_sha256':file_hash(terminal_path),
                  'training_scope':result.get('scope','unspecified'),
                  'adapter_files':adapter_files,'base_sha256':identity['weights_sha256'],
                  'export_files':files,'merge_max_logprob_error':max(merge_errors),
