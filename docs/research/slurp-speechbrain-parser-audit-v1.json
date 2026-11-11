@@ -1,0 +1,132 @@
+{
+  "schema": "slurp-speechbrain-parser-audit-v1",
+  "speechbrain_commit": "c0241278f93ef02cd5191f03caf4e5f8e1292bf6",
+  "sources": {
+    "recipes/SLURP/direct/train_with_wav2vec2.py": "6ff49889568906d222829f19c6415462860985bc886752070417e07ddebcf22e",
+    "recipes/SLURP/prepare.py": "babdb897d7864d2b123340f0e672485715bc7b5c9cd9d91a52a08fac002918db"
+  },
+  "parser_source": "try:\n                            _dict = ast.literal_eval(\n                                \" \".join(predicted_semantics[i]).replace(\n                                    \"|\", \",\"\n                                )\n                            )\n                            if not isinstance(_dict, dict):\n                                _dict = {\n                                    \"scenario\": \"none\",\n                                    \"action\": \"none\",\n                                    \"entities\": [],\n                                }\n                        # need this if the output is not a valid dictionary\n                        except SyntaxError:\n                            _dict = {\n                                \"scenario\": \"none\",\n                                \"action\": \"none\",\n                                \"entities\": [],\n                            }",
+  "cases": [
+    {
+      "case": "pipe_dictionary",
+      "raw": "{'scenario': 'music'| 'action': 'play'| 'entities': []}",
+      "parsed": {
+        "scenario": "music",
+        "action": "play",
+        "entities": []
+      },
+      "exception": null
+    },
+    {
+      "case": "json_dictionary",
+      "raw": "{\"scenario\":\"music\",\"action\":\"play\",\"entities\":[]}",
+      "parsed": {
+        "scenario": "music",
+        "action": "play",
+        "entities": []
+      },
+      "exception": null
+    },
+    {
+      "case": "syntax_error",
+      "raw": "{'scenario':",
+      "parsed": {
+        "scenario": "none",
+        "action": "none",
+        "entities": []
+      },
+      "exception": null
+    },
+    {
+      "case": "non_dictionary",
+      "raw": "[]",
+      "parsed": {
+        "scenario": "none",
+        "action": "none",
+        "entities": []
+      },
+      "exception": null
+    },
+    {
+      "case": "json_null",
+      "raw": "{\"scenario\":null,\"action\":\"play\",\"entities\":[]}",
+      "exception": "ValueError"
+    },
+    {
+      "case": "missing_fields",
+      "raw": "{'scenario': 'music'}",
+      "parsed": {
+        "scenario": "music"
+      },
+      "exception": null
+    },
+    {
+      "case": "wrong_entity_type",
+      "raw": "{'scenario': 'music'| 'action': 'play'| 'entities': 'bad'}",
+      "parsed": {
+        "scenario": "music",
+        "action": "play",
+        "entities": "bad"
+      },
+      "exception": null
+    },
+    {
+      "case": "duplicate_keys",
+      "raw": "{'scenario':'music'| 'scenario':'alarm'| 'action':'set'| 'entities':[]}",
+      "parsed": {
+        "scenario": "alarm",
+        "action": "set",
+        "entities": []
+      },
+      "exception": null
+    },
+    {
+      "case": "pipe_in_filler",
+      "raw": "{'scenario':'music'| 'action':'play'| 'entities':[{'type':'song_name'| 'filler':'a|b'}]}",
+      "parsed": {
+        "scenario": "music",
+        "action": "play",
+        "entities": [
+          {
+            "type": "song_name",
+            "filler": "a,b"
+          }
+        ]
+      },
+      "exception": null
+    },
+    {
+      "case": "duplicate_entities",
+      "raw": "{'scenario':'music'| 'action':'play'| 'entities':[{'type':'song_name'| 'filler':'a'}| {'type':'song_name'| 'filler':'a'}]}",
+      "parsed": {
+        "scenario": "music",
+        "action": "play",
+        "entities": [
+          {
+            "type": "song_name",
+            "filler": "a"
+          },
+          {
+            "type": "song_name",
+            "filler": "a"
+          }
+        ]
+      },
+      "exception": null
+    }
+  ],
+  "train_sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e",
+  "train_utterances": 11514,
+  "train_exceptions": [],
+  "train_roundtrip_mismatches": [],
+  "scope": "Executed original pinned current-recipe AST fragments, without importing SpeechBrain or running a model. TRAIN annotations only. Not historical training recipe proof, model performance or TEST scoring.",
+  "train_recipe_vs_official_target_mismatch_count": 406,
+  "mismatch_categories": {
+    "case_only": 51,
+    "surface_or_spacing": 355
+  },
+  "train_mismatch_ids_sha256": "8df812d110c4964b552012bc9bfd5581311d8cfef446b2afdfcc46527d09ce2b",
+  "full_local_audit": ".local/research/slurp-hubert-interface-v1/train-parser-audit-full.json",
+  "full_local_audit_sha256": "86704291eb9d52749548d65a9124f8313c28760d5739ffbfda0bc1bbad60c54d",
+  "audit_script_sha256": "a76596fc97e8eba49f968cc1769ba8e462b1cd9f3f6fdaa6969da33f63d8d911"
+}

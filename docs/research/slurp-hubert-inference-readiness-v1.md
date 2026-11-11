@@ -59,3 +59,26 @@ decoder及tokenizer。因此默认入口还需要基础HuBERT配置、feature ex
 历史模型卡commit与HuBERT训练recipe的不一致仍保留，见
 [历史源码追溯](speechbrain-history-v1.md)。即便后续权重复测成功，也不能
 据此补写作者真实训练配置或声称已完成训练全过程复现。
+
+## 当前固定配方的解析与TRAIN核查
+
+已实际执行上述固定SpeechBrain提交的原始AST片段，未导入模型或改写解析
+规则。配方将`str(semantics_dict)`中的逗号全部替换成`|`作为训练序列；
+解码后全局替换回逗号，再调用`ast.literal_eval`。这和Omni的严格JSON接口
+不同。10个边界案例确认：单引号/pipe字典可以解析；SyntaxError与非dict
+返回`scenario=action="none", entities=[]`；JSON null导致未捕获ValueError；
+缺字段、错误entities类型不会被此处拒绝；重复字典键后者覆盖，重复实体
+保留；filler内部的字面`|`同样会被改为逗号。原始模型字符串必须保留。
+
+全部11,514条TRAIN标注在原序列编码/解析间往返一致，无异常。但配方从
+`sentence_annotation`提取的实体与官方token-span目标有406条不一致：
+51条仅大小写，355条为表面文本或分词空格差异，没有实体数量/类型差异。
+例如`today's`和`today 's`不同。此处是目标表示诊断，不是模型推理成绩；
+未读取dev/TEST标注，也未计算任何TEST指标。完整逐条差异保留本地缓存，
+仓库只登记计数、ID列表哈希及证据哈希，见
+[解析核查](slurp-speechbrain-parser-audit-v1.json)。
+
+未来官方权重复测应保留当前配方解析结果并进入官方scorer，不能静默增加
+lowercase、重新分词、缺字段补全或丢弃坏样本。未捕获异常与字段缺失需作为
+明确的运行/协议失败记录；如果另加健壮适配，必须注册为独立后处理版本，
+同时保留上游原始行为。这里的当前recipe证据不解决历史训练commit不一致。
