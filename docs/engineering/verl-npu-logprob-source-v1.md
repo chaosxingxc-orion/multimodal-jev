@@ -57,3 +57,12 @@ log-softmax/gather参考；随后原函数只调用一次，原输出对象直�
 近确定token舍入差异、输出对象保持、单次调用、异常恢复、错误分派及数值
 拒绝。与CPU概率适配和响应导出测试合计53通过、1项因宿主缺verl跳过
 （2.65秒）；新observer测试全部通过。尚未在固定镜像或NPU实际执行。
+
+后续固定镜像验证完成：源码9d4af5b，实际容器
+`411e380e9b4bbd4543f7992a54475eb24e4c8a67e566d0b5cc0035f39b6a335f`，
+2CPU/8GiB、无网络/设备，30项通过、0跳过，12.96秒，退出0且无OOM。
+新增实际verl绑定检查确认原函数源码SHA、flash不可用/NPU算子可用的标志，
+CPU输入在kernel调用前拒绝，正常/异常退出均恢复原函数。数值用例仍是
+CPU合成张量，没有执行NPU cross entropy、音频或模型前向。逐文件源码、
+实际容器配置和JUnit核验见
+[固定镜像验收](omni-logprob-observer-tests-v1-verified.json)。
