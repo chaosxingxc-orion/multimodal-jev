@@ -68,3 +68,19 @@ Adam 参数组（含学习率）来自 checkpoint；当前不提供恢复时修�
 本轮相关本地测试 26 项通过；固定镜像 NPU4 实验验证了真实后端路径。
 凭证为同目录 `slurp-span-verl-vllm-resume-v1-verified.json` 与
 `slurp-bf16-resume-suite-v1-verified.json`。
+
+## 连续运行器（CPU 控制流程已测，NPU 未验收）
+
+新增 `tools/jev/train_span_rl_chain.py --config CONFIG --output NEW_ROOT`。
+配置结构为 `{"num_updates": 2, "suite_identity": "/path/identity.json", "step": {...}}`，
+其中 step 为上文完整单步配置；所有 source/checkpoint/suite/identity 输入需加入 step.pins。
+仅接受自带训练游标的 checkpoint，拒绝旧游标迁移模式及越过固定 epoch 末尾。
+
+每步依次调用真实单步入口、独立 48 条版本验收，再复算验收门槛；只有成功才更新
+`accepted-versions.json` 和 `last-accepted.json`。每个子任务有日志、配置和终态，
+总控另存 progress/READY/terminal。失败的新版本不能成为下一步起点；可从最后通过版本
+新建输出目录恢复。当前不会自动重试，也不删除中间 checkpoint。
+
+10 项 CPU 故障注入覆盖两次版本交接、错误游标、旧 adapter 验收回执、缺少终态、
+第二轮失败后保留首轮结果，以及未 pin/篡改/越界等启动前拒绝。
+这是控制流程验收，尚未运行连续 NPU 训练，不能替代多步稳定性结果。
