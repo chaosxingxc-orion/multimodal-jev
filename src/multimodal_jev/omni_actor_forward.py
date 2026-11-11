@@ -31,6 +31,14 @@ def compute_log_probs(actor, data, *, micro_batch_size, pad_token_id):
     inputs.meta_info=dict(inputs.meta_info,micro_batch_size=micro_batch_size,
                           temperature=1.,use_dynamic_bsz=False,pad_token_id=pad_token_id)
     output=actor.compute_log_prob(inputs,calculate_entropy=False)
+    # Direct actor calls bypass FSDPWorker.compute_log_prob's root cleanup.
+    # FSDP1 retains the root full-parameter buffer after a no-grad forward;
+    # reproduce the pinned worker's reshard before exporting probabilities.
+    from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+    module=actor.actor_module if hasattr(actor,'actor_module') else None
+    if isinstance(module,FSDP) and torch.distributed.get_world_size(module.process_group)>1:
+        if module._handle is not None:
+            module._handle.reshard(True)
     logp=output['log_probs']
     if logp.shape!=mask.shape:raise ValueError('actor response shape differs')
     active=mask.to(device=logp.device,dtype=torch.bool)
