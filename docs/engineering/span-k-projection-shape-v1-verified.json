@@ -1,0 +1,104 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-k-projection-shape-v1",
+  "independently_recomputed": true,
+  "input_shape": [
+    600,
+    1024
+  ],
+  "weight_shape": [
+    1024,
+    1024
+  ],
+  "weight_key": "model.language_model.layers.0.self_attn.k_proj.weight",
+  "dtype": "bfloat16",
+  "against_hf": {
+    "hf_recorded": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    },
+    "tp4_recorded": {
+      "exact": false,
+      "maximum": 0.00048828125,
+      "unequal_elements": 20,
+      "elements": 614400
+    },
+    "full_0": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    },
+    "sliced_0": {
+      "exact": false,
+      "maximum": 0.00048828125,
+      "unequal_elements": 20,
+      "elements": 614400
+    },
+    "full_1": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    },
+    "sliced_1": {
+      "exact": false,
+      "maximum": 0.00048828125,
+      "unequal_elements": 20,
+      "elements": 614400
+    },
+    "full_2": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    },
+    "sliced_2": {
+      "exact": false,
+      "maximum": 0.00048828125,
+      "unequal_elements": 20,
+      "elements": 614400
+    },
+    "padded_full_width": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    }
+  },
+  "pairs": {
+    "full_repeat": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    },
+    "slice_repeat": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    },
+    "sliced_matches_tp4": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    },
+    "padding_matches_full": {
+      "exact": true,
+      "maximum": 0.0,
+      "unequal_elements": 0,
+      "elements": 614400
+    }
+  },
+  "tensors_sha256": "30cec4c8dc88bdbea997470669e08ef1f97e5ae9342c34d7523135d870706a07",
+  "scope": "Offline first-layer K projection only; same real input, unadapted K weight; no full-model fix or RL admission",
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-k-projection-shape-v1/config.json": "4a504ab08849e2df9a765ed331c52d5c13346358995fd6815ee24e3bdc7eb729",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-k-projection-shape-v1/run/result.json": "f73b961077f0a527511b41b8929bac1e8f1fab4121137362a9abec037620372e",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-k-projection-shape-v1/run/terminal.json": "e227c0405700eac2f8a33cb0020d0f370e389c72f85972c816efa8b5f35ac979",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-k-projection-shape-v1/run/tensors.pt": "30cec4c8dc88bdbea997470669e08ef1f97e5ae9342c34d7523135d870706a07"
+  }
+}

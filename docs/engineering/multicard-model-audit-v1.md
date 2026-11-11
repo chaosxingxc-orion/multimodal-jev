@@ -105,3 +105,7 @@ HCCL_DETERMINISTIC=strict、LCCL_DETERMINISTIC=1后，固定请求六次logits�
 拼接输出，保留每rank四分之一常驻权重及native q/v LoRA。重复调用精确一致，
 48条最大logp误差降至0.1957，但仅1条通过，仍不准入RL。
 首层Q/K/V初始偏差仍存在。详见 `span-tp4-complete-k-v1.md`。
+
+第0层无LoRA的K投影离线对照复现了初始偏差：完整输出宽度与HF精确一致，
+四份输出切片产生20个不同元素且与真实TP4记录逐位一致；补齐原输出宽度后误差消失。
+结论仅限该层/输入，尚未构成全模型修复。见 `span-k-projection-shape-v1.md`。
