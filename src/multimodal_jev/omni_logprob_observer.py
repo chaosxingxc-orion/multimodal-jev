@@ -80,6 +80,78 @@ def observed_call(original, logits, labels, records, *, expected_device, rows_pe
     return output
 
 
+def bind_observations(data, log_probs, records, report, *, name, micro_batch_size):
+    """Bind static, padded normalization calls to the authenticated input rows.
+
+    Requires one call per contiguous microbatch and exact native-output equality
+    on valid tokens. Padding is retained in call evidence but excluded from both
+    exported runs. This is an evidence consistency check, not runtime attestation:
+    identical token/probability rows alone cannot authenticate audio identity.
+    The caller must collect the report around this exact isolated actor forward.
+    """
+    import torch
+    from .omni_probability_capture import _aligned, capture
+    from .sfc_reward_batch import digest
+
+    rows = _aligned(data, records)
+    if type(micro_batch_size) is not int or micro_batch_size < 1:
+        raise ValueError('positive static microbatch size required')
+    native_run = capture(data, log_probs, records, name=name)
+    if (report.get('source_sha256') != PINNED_SOURCE
+            or report.get('flash_available') is not False
+            or report.get('npu_available') is not True):
+        raise ValueError('pinned native Ascend observer report required')
+    calls = report.get('calls')
+    count, width = data.batch['responses'].shape
+    if type(calls) is not list or len(calls) != (count + micro_batch_size - 1) // micro_batch_size:
+        raise ValueError('exactly one normalization call per static microbatch required')
+    references = torch.empty((count, width), dtype=torch.float32)
+    bindings = []
+    for index, call in enumerate(calls):
+        start = index * micro_batch_size; end = min(start + micro_batch_size, count)
+        shape = call.get('logits_shape')
+        if (type(call.get('call')) is not int or call['call'] != index
+                or type(shape) is not list or len(shape) != 3
+                or shape[:2] != [end - start, width]
+                or type(shape[2]) is not int or shape[2] < 1
+                or call.get('positions') != (end - start) * width
+                or call.get('labels_dtype') != 'torch.int64'
+                or call.get('reference_dtype') != 'torch.float32'
+                or call.get('reference_device') != 'cpu'):
+            raise ValueError('ordered padded normalization call shape required')
+        device = call.get('logits_device', '')
+        if (not (device == 'npu' or device.startswith('npu:'))
+                or call.get('output_device') != device):
+            raise ValueError('native NPU call devices required')
+        labels = data.batch['responses'][start:end].detach().cpu()
+        label_ids = call.get('label_ids')
+        if (type(label_ids) is not list or len(label_ids) != end-start
+                or any(type(row) is not list or len(row) != width
+                       or any(type(token) is not int for token in row) for row in label_ids)
+                or label_ids != labels.tolist()):
+            raise ValueError('observed labels differ from exact padded response tokens')
+        native = torch.tensor(call['native_log_probs'], dtype=torch.float64)
+        reference = torch.tensor(call['reference_log_probs'], dtype=torch.float32)
+        if (native.shape != labels.shape or reference.shape != labels.shape
+                or not torch.isfinite(native).all() or not torch.isfinite(reference).all()
+                or (native > 0).any() or (reference > 0).any()):
+            raise ValueError('finite aligned observed probabilities required')
+        mask = data.batch['response_mask'][start:end].detach().cpu().bool()
+        returned = log_probs[start:end].detach().to(device='cpu', dtype=torch.float64)
+        if not torch.equal(native[mask], returned[mask]):
+            raise ValueError('native observations differ from returned actor probabilities')
+        references[start:end] = reference
+        bindings.append(dict(call=index,
+            record_identities=[[r['example_id'], r['decision_id'], r['replicate']] for r in rows[start:end]],
+            record_sha256=[digest(r) for r in rows[start:end]],
+            response_mask=mask.tolist()))
+    return dict(schema='omni-native-logprob-observation-v1',
+        native=native_run,
+        reference=capture(data, references, records, name=name+'-same-logits-fp32'),
+        observer=report, microbatch_bindings=bindings,
+        scope='Same-forward static microbatch consistency; no numerical acceptance or runtime attestation.')
+
+
 @contextmanager
 def observe_native_logprobs(*, expected_source_sha256=PINNED_SOURCE, rows_per_chunk=16):
     """Instrument the pinned, unmodified imported dispatcher on NPU only.

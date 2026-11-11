@@ -99,3 +99,23 @@ def recompute(actor, data, records, *, name, micro_batch_size, pad_token_id):
         log_probs = compute_log_probs(actor, data, micro_batch_size=micro_batch_size,
                                       pad_token_id=pad_token_id)
     return capture(data, log_probs, records, name=name)
+
+
+def recompute_native_observed(actor, data, records, *, name, micro_batch_size, pad_token_id):
+    """Observe one native NPU recomputation and bind its static microbatch order.
+
+    Diagnostic only; no numerical threshold or retry. Runtime/model/rank identity
+    authentication remains the runner's responsibility, as for ``recompute``.
+    """
+    import torch
+    from .omni_actor_forward import compute_log_probs
+    from .omni_logprob_observer import observe_native_logprobs, bind_observations
+
+    if type(name) is not str or not name:
+        raise ValueError('registered run name required')
+    _aligned(data, records)
+    with torch.no_grad(), observe_native_logprobs() as report:
+        log_probs = compute_log_probs(actor, data, micro_batch_size=micro_batch_size,
+                                      pad_token_id=pad_token_id)
+    return bind_observations(data, log_probs, records, report,
+                             name=name, micro_batch_size=micro_batch_size)

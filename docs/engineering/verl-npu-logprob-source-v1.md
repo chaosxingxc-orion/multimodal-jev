@@ -66,3 +66,18 @@ CPU输入在kernel调用前拒绝，正常/异常退出均恢复原函数。数�
 CPU合成张量，没有执行NPU cross entropy、音频或模型前向。逐文件源码、
 实际容器配置和JUnit核验见
 [固定镜像验收](omni-logprob-observer-tests-v1-verified.json)。
+
+## 微批观测绑定补充
+
+`omni_probability_capture.recompute_native_observed` 在一次 no-grad actor 调用周围
+使用原生 observer，恢复函数绑定后才导出结果。`bind_observations` 要求静态连续
+微批每批恰好一次归一化调用，逐项核对完整 padded labels、调用顺序、shape、
+原生 NPU 设备，以及有效 token 上观测值与 actor 返回值的精确一致性。
+导出原生与同 logits FP32 参考两份完整响应记录，附各微批的响应身份、原记录
+哈希和 mask；padding 留在原始观测中，但不进入有效 token 比较。
+
+此绑定不设置数值通过阈值，不修复概率、不重试，也不证明运行环境或音频身份。
+具有相同 tokens/概率的不同音频不能仅靠输出区分，调用方仍须认证实际输入及
+隔离的同一次 forward。完整 NPU runner、真实采样与多 rank 集成仍待验证。
+本地 CPU 合成测试覆盖不同微批大小、缺失/额外调用、错序、错 token、错 mask、
+返回概率不一致与绑定恢复顺序；不能用这些测试宣称原生 NPU 数值已经通过。
