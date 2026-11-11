@@ -7,7 +7,7 @@ from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.span_parity import compare_span_policies
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.span_runtime_profile import PROFILE
-from infer_span_rule_baseline import select_rows
+from multimodal_jev.span_rule_population import configured_rule_rows
 
 
 def verify(root):
@@ -25,7 +25,7 @@ def verify(root):
     if (result['base_id']!=base_id or result['adapter_id']!=adapter_id or result['runtime_profile']!=PROFILE
             or result['tensor_parallel_size']!=1 or result['optimizer_updates']!=0 or result['generated_tokens']!=0):
         raise ValueError('policy or runtime differs')
-    rows=select_rows(Path(config['release']))
+    rows=configured_rule_rows(config)
     hf=[json.loads(s) for s in (Path(config['hf_run'])/'run/records.jsonl').read_text().splitlines()]
     if [r['id'] for r in rows]!=[r['id'] for r in hf] or [r['id'] for r in rows]!=[r['id'] for r in result['records']]:
         raise ValueError('full fixed coverage differs')
@@ -53,7 +53,7 @@ def verify(root):
         argmax_changed_spans=sum(len(a['argmax_changed_spans']) for a in audits),
         physical_devices=[5],training_admitted=False,
         files={str(p):file_hash(p) for p in [root/'config.json',run/'result.json',run/'identity.json',run/'worker.json',run/'terminal.json']},
-        scope='216 learning rule requests on one immutable policy; not all schedule inputs or new policy versions, no automatic RL admission')
+        scope='Declared learning runtime coverage on one immutable policy; no automatic training admission')
 
 
 if __name__=='__main__':

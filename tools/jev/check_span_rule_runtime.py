@@ -17,7 +17,7 @@ def prepare(config,output):
     from multimodal_jev.task_schema import DecisionSchema
     from multimodal_jev.span_request_identity import bind_span_request
     from multimodal_jev.policy_identity import checkpoint_identity
-    from infer_span_rule_baseline import select_rows
+    from multimodal_jev.span_rule_population import configured_rule_rows
     for path,digest in config['pins'].items():
         if file_hash(path)!=digest:raise ValueError('pinned source/reference changed')
     prior=Path(config['hf_run']);read=lambda p:json.loads(p.read_text())
@@ -26,7 +26,7 @@ def prepare(config,output):
     if file_hash(prior/'run/records.jsonl')!=result['records_sha256']:raise ValueError('HF records changed')
     base_id=checkpoint_identity(config['model'])[0];adapter_id=checkpoint_identity(config['adapter'])[0]
     if result['base_id']!=base_id or result['adapter']!=adapter_id:raise ValueError('HF policy differs')
-    rows=select_rows(Path(config['release']));records=[json.loads(s) for s in (prior/'run/records.jsonl').read_text().splitlines()]
+    rows=configured_rule_rows(config);records=[json.loads(s) for s in (prior/'run/records.jsonl').read_text().splitlines()]
     if [r['id'] for r in rows]!=prior_config['request_ids']:raise ValueError('fixed HF selection differs')
     processor=Qwen3ASRProcessor.from_pretrained(config['model'],local_files_only=True)
     bundles=[]

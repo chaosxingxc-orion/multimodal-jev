@@ -7,6 +7,13 @@ LEARNING_PROBE = 'learning-probe-216-v1'
 SELECTION_FULL = 'selection-full-v1'
 
 
+def configured_rule_rows(config):
+    if config.get('population')=='transfer-version-gate-v1':
+        from .span_transfer_runtime import version_rows
+        return version_rows(config)
+    return select_rule_rows(Path(config['release']),config.get('population',LEARNING_PROBE))
+
+
 def select_rule_rows(release, population=LEARNING_PROBE):
     release=Path(release)
     manifest=json.loads((release/'MANIFEST.json').read_text())

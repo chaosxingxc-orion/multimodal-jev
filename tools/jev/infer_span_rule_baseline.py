@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import time
 from multimodal_jev.baseline import atomic_json,file_hash
-from multimodal_jev.span_rule_population import select_rule_rows, validate_selection_protocol, LEARNING_PROBE, SELECTION_FULL
+from multimodal_jev.span_rule_population import configured_rule_rows, select_rule_rows, validate_selection_protocol, LEARNING_PROBE, SELECTION_FULL
 
 
 def select_rows(release):
@@ -32,7 +32,7 @@ def run(config,output):
     for path,digest in config['pins'].items():
         if file_hash(path)!=digest:raise ValueError('pinned asset changed: '+path)
     population=config.get('population',LEARNING_PROBE)
-    rows=select_rule_rows(Path(config['release']),population)
+    rows=configured_rule_rows(config)
     if population==SELECTION_FULL:
         validate_selection_protocol(config,rows)
         from verify_span_selection_rules import verify

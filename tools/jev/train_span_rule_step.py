@@ -26,22 +26,24 @@ def run(config, output):
     from multimodal_jev.span_actor_update import record_rollout, admit_actor, update_span_actor
     from multimodal_jev.span_rule_objectives import rule_sft_loss, rule_sample_rewards, expected_rule_reward
     from multimodal_jev.bf16_lora import BF16MasterAdamW
-    from multimodal_jev.span_checkpoint import save_span_checkpoint
+    from multimodal_jev.span_checkpoint import save_span_checkpoint, restore_span_optimizer
     from multimodal_jev.policy_identity import checkpoint_identity
     from infer_span_rule_baseline import select_rows
     from verify_span_rule_runtime import verify
 
     if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != ['davinci5']:
         raise ValueError('isolated physical NPU5 required')
-    if (config['method'] not in ('sft', 'rl', 'conditional') or config['optimizer_start'] != 'fresh'
-            or config['num_updates'] != 1 or config['seed'] != 17):
-        raise ValueError('fixed one-update matched pilot required')
+    transfer = config.get('population') == 'transfer-version-gate-v1'
+    if not transfer:
+        if (config['method'] not in ('sft', 'rl', 'conditional') or config['optimizer_start'] != 'fresh'
+                or config['num_updates'] != 1 or config['seed'] != 17):
+            raise ValueError('fixed one-update matched pilot required')
     for path, digest in config['pins'].items():
         if file_hash(path) != digest:
             raise ValueError('pinned pilot asset changed: '+path)
     admission_root = Path(config['runtime_admission'])
     verified = verify(admission_root)
-    if not verified['passed'] or verified['requests'] != 216:
+    if not verified['passed'] or (not transfer and verified['requests'] != 216):
         raise ValueError('complete rule probe runtime gate required before either method')
     base_id = checkpoint_identity(config['model'])[0]
     adapter_id = checkpoint_identity(config['adapter'])[0]
@@ -54,34 +56,47 @@ def run(config, output):
     release = Path(config['release'])
     # Only a scoped, pinned protocol may use these development controls. The
     # immutable pool manifest remains unadmitted for arbitrary training/eval.
-    protocol = json.loads(Path(config['protocol']).read_text())
-    if config['pins'].get(config['protocol']) != file_hash(config['protocol']):
-        raise ValueError('pinned scoped pilot protocol required')
-    protocol_schema = ('jev-span-rule-conditional-pilot-v1' if config['method'] == 'conditional'
-                       else 'jev-span-rule-matched-pilot-v1')
-    if (protocol['schema'] != protocol_schema
-            or protocol['release_manifest_sha256'] != file_hash(release/'MANIFEST.json')
-            or protocol['initial_adapter_id'] != adapter_id
-            or protocol['request_ids'] != config['request_ids']
-            or protocol['runtime_admission'] != config['runtime_admission']
-            or protocol['num_updates'] != 1 or protocol['optimizer_start'] != 'fresh'
-            or protocol['arm'] != config['arm'] or config['lr'] != protocol['lr']
-            or protocol['seed'] != config['seed']
-            or config['samples_per_request'] != protocol['samples_per_request']
-            or [config['method'], config['auxiliary_weight']] not in protocol['objectives']):
-        raise ValueError('run differs from matched protocol')
-    if protocol['data_audit']['passed'] is not True:
-        raise ValueError('reviewed rule provenance audit required')
-    if config['method'] == 'conditional':
-        if (protocol.get('algorithm') != 'exact-conditional-marginal-ppo-v1'
-                or protocol.get('clip_ratio') != 0.2
-                or protocol.get('advantage_standardization') != 'none'):
-            raise ValueError('explicit conditional-credit algorithm contract required')
-    rows = {r['id']:r for r in select_rows(release)}
-    batch = json.loads((release/'schedule.json').read_text())['batches'][0]
-    if config['request_ids'] != batch['arms'][config['arm']]:
-        raise ValueError('pilot must use the fixed first balanced batch')
-    selected = [rows[k] for k in config['request_ids']]
+    if transfer:
+        from multimodal_jev.span_transfer_runtime import branch_protocol, step_rows, cursor, validate_parent
+        protocol = branch_protocol(config)
+        if (config['num_updates'] != 1 or config['adapter_id'] != adapter_id
+                or admission_config.get('version_index') != config['batch_index']):
+            raise ValueError('transfer update or runtime version differs')
+        for key in ('transfer_protocol','seed','arm','method','auxiliary_weight'):
+            if admission_config.get(key) != config[key]:
+                raise ValueError('runtime branch differs')
+        if config['batch_index'] == 0 and base_id != protocol['initializer']['base_id']:
+            raise ValueError('initializer base differs')
+        selected = step_rows(config)
+    else:
+        protocol = json.loads(Path(config['protocol']).read_text())
+        if config['pins'].get(config['protocol']) != file_hash(config['protocol']):
+            raise ValueError('pinned scoped pilot protocol required')
+        protocol_schema = ('jev-span-rule-conditional-pilot-v1' if config['method'] == 'conditional'
+                           else 'jev-span-rule-matched-pilot-v1')
+        if (protocol['schema'] != protocol_schema
+                or protocol['release_manifest_sha256'] != file_hash(release/'MANIFEST.json')
+                or protocol['initial_adapter_id'] != adapter_id
+                or protocol['request_ids'] != config['request_ids']
+                or protocol['runtime_admission'] != config['runtime_admission']
+                or protocol['num_updates'] != 1 or protocol['optimizer_start'] != 'fresh'
+                or protocol['arm'] != config['arm'] or config['lr'] != protocol['lr']
+                or protocol['seed'] != config['seed']
+                or config['samples_per_request'] != protocol['samples_per_request']
+                or [config['method'], config['auxiliary_weight']] not in protocol['objectives']):
+            raise ValueError('run differs from matched protocol')
+        if protocol['data_audit']['passed'] is not True:
+            raise ValueError('reviewed rule provenance audit required')
+        if config['method'] == 'conditional':
+            if (protocol.get('algorithm') != 'exact-conditional-marginal-ppo-v1'
+                    or protocol.get('clip_ratio') != 0.2
+                    or protocol.get('advantage_standardization') != 'none'):
+                raise ValueError('explicit conditional-credit algorithm contract required')
+        rows = {r['id']:r for r in select_rows(release)}
+        batch = json.loads((release/'schedule.json').read_text())['batches'][0]
+        if config['request_ids'] != batch['arms'][config['arm']]:
+            raise ValueError('pilot must use the fixed first balanced batch')
+        selected = [rows[k] for k in config['request_ids']]
     width = len(selected[0]['targets'])
     if (len(selected) != 8 or len({r['provenance']['source_group'] for r in selected}) != 4
             or any(r['split'] != 'learning' or not all(r['supervised']) for r in selected)
@@ -132,7 +147,7 @@ def run(config, output):
     behavior = tuple(torch.tensor([references[r['id']]['candidate_logprobs'][j] for r in selected])
                      for j in range(width))
     rollout = record_rollout(policy_id, ids, behavior, config['samples_per_request'],
-                             torch.Generator().manual_seed(config['seed']))
+                             torch.Generator().manual_seed(config['seed'] + (config['batch_index'] if transfer else 0)))
     targets = torch.tensor([r['targets'] for r in selected], dtype=torch.long, device='npu:0')
     masks = torch.ones_like(targets, dtype=torch.bool)
     weight = config['auxiliary_weight']
@@ -144,6 +159,12 @@ def run(config, output):
         candidate_logprobs=[p.cpu().tolist() for p in before], request_ids=ids))
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = BF16MasterAdamW(params, lr=config['lr'])
+    if transfer:
+        parent = None
+        if config['batch_index'] > 0:
+            parent = restore_span_optimizer(config['initial_optimizer_checkpoint'], model, optimizer, base_id)
+        validate_parent(config, parent)
+        atomic_json(output/'optimizer-before.json', optimizer.receipt())
     with (output/'update-claimed.json').open('x') as handle:
         json.dump(dict(policy_id=policy_id, method=config['method'], request_ids=ids), handle)
     if config['method'] == 'rl':
@@ -180,9 +201,14 @@ def run(config, output):
         norm = torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
         optimizer.step()
         update = dict(loss=sum(losses), gradient_norm=float(norm), optimizer_updates=1)
-    state = dict(schema='jev-rule-pilot-cursor-v1', request_ids=config['request_ids'], next_batch_index=1,
-        method=config['method'], auxiliary_weight=weight, protocol_sha256=file_hash(config['protocol']))
-    next_id = save_span_checkpoint(output/'policy-1', adapted, model, optimizer, base_id, 1, state)
+    if transfer:
+        completed_updates = config['batch_index'] + 1
+        state = cursor(config, completed_updates)
+    else:
+        completed_updates = 1
+        state = dict(schema='jev-rule-pilot-cursor-v1', request_ids=config['request_ids'], next_batch_index=1,
+            method=config['method'], auxiliary_weight=weight, protocol_sha256=file_hash(config['protocol']))
+    next_id = save_span_checkpoint(output/'policy-1', adapted, model, optimizer, base_id, completed_updates, state)
     with torch.no_grad():
         after = forward()
         expected_after = expected_rule_reward(after, targets, masks, weight).cpu().tolist()
@@ -190,7 +216,8 @@ def run(config, output):
         expected_reward=expected_after, policy_id=next_id))
     update['scope'] = 'One matched learning update; export pending independent HF reload and full HF/vLLM gate; no held-out gain'
     atomic_json(output/'update.json', dict(**update, optimizer=optimizer.receipt(),
-        method=config['method'], auxiliary_weight=weight, optimizer_start='fresh',
+        method=config['method'], auxiliary_weight=weight, optimizer_start='resume' if transfer and config['batch_index'] > 0 else 'fresh',
+        completed_updates=completed_updates,
         training_requests=8, unique_recordings=4, input_tokens=token_count,
         audio_seconds_with_repetition=audio_seconds, samples_per_request=config['samples_per_request'],
         initial_policy_id=policy_id, exported_policy_id=next_id, training_admitted=False))

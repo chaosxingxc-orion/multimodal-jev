@@ -9,7 +9,7 @@ from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.span_rule_metrics import score_rules
 from infer_span_rule_baseline import select_rows
-from multimodal_jev.span_rule_population import select_rule_rows, validate_selection_protocol, LEARNING_PROBE, SELECTION_FULL
+from multimodal_jev.span_rule_population import configured_rule_rows, select_rule_rows, validate_selection_protocol, LEARNING_PROBE, SELECTION_FULL
 
 
 def verify(root):
@@ -30,7 +30,7 @@ def verify(root):
         raise ValueError('immutable policy differs')
     if file_hash(run/'records.jsonl')!=result['records_sha256']:raise ValueError('predictions changed')
     population=config.get('population',LEARNING_PROBE)
-    rows=select_rule_rows(Path(config['release']),population)
+    rows=configured_rule_rows(config)
     if population==SELECTION_FULL:
         validate_selection_protocol(config,rows)
         from verify_span_selection_rules import verify as verify_data
@@ -59,7 +59,15 @@ def verify(root):
             raise ValueError('source audio changed')
     if result['requests']!=len(records) or result['recordings']!=len({r['provenance']['recording_id'] for r in rows}):
         raise ValueError('reported population denominator differs')
-    metrics=score_rules(rows,records)
+    if population=='transfer-version-gate-v1':
+        # Adjacent training batches may add only one input arm. Audit every
+        # request above, but compute paired task metrics on the fixed probe.
+        metric_rows=select_rows(Path(config['release']))
+        by_id={r['id']:r for r in records}
+        metrics=score_rules(metric_rows,[by_id[r['id']] for r in metric_rows])
+        metrics['scope']='Fixed 216 learning-probe metrics only; extra adjacent batch requests are runtime coverage, not new paired task observations'
+    else:
+        metrics=score_rules(rows,records)
     if population==SELECTION_FULL:
         metrics['scope']='Stratified reserved-source selection diagnostics; correlated rule requests, not official-test distribution or speaker/task generalization proof'
     return dict(root=str(root),passed=True,base_id=result['base_id'],adapter=adapter_id,
