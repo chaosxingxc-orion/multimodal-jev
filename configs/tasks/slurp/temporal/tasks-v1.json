@@ -1,0 +1,71 @@
+{
+  "date": {
+    "entity_type": "date",
+    "kind": "type_presence",
+    "schema": {
+      "allow_unknown": false,
+      "candidates": [],
+      "decision_type": "noul",
+      "id": "slurp.temporal-role.v1",
+      "levels": [],
+      "question": "Does the audio explicitly express this temporal role? An explicitly stated calendar day, date, weekday, or calendar period, including today, tomorrow, this week and this weekend. A day-part expression such as tonight or this afternoon alone does not additionally count as a calendar-date label. A named weekday still counts when used in a recurring schedule. Merely asking for a date does not supply one."
+    },
+    "thinking": {
+      "max_rounds": 1,
+      "mode": "direct",
+      "output": "decision_only",
+      "requirements": [
+        "Check the entire spoken request, including quoted or requested message content.",
+        "Separate calendar references, clock times or durations, and named day parts using the supplied definition.",
+        "Several temporal roles may coexist; do not infer one role solely from another."
+      ],
+      "version": "slurp-temporal-v1"
+    }
+  },
+  "time": {
+    "entity_type": "time",
+    "kind": "type_presence",
+    "schema": {
+      "allow_unknown": false,
+      "candidates": [],
+      "decision_type": "noul",
+      "id": "slurp.temporal-role.v1",
+      "levels": [],
+      "question": "Does the audio explicitly express this temporal role? An explicitly stated clock time, quantified duration or temporal offset, including a clock range. Under this dataset convention, named day parts and noon are classified as timeofday rather than time unless a separate clock expression or quantified duration is also present. Merely asking what time does not supply a time. AM or PM inside a clock expression does not alone create a separate timeofday label."
+    },
+    "thinking": {
+      "max_rounds": 1,
+      "mode": "direct",
+      "output": "decision_only",
+      "requirements": [
+        "Check the entire spoken request, including quoted or requested message content.",
+        "Separate calendar references, clock times or durations, and named day parts using the supplied definition.",
+        "Several temporal roles may coexist; do not infer one role solely from another."
+      ],
+      "version": "slurp-temporal-v1"
+    }
+  },
+  "timeofday": {
+    "entity_type": "timeofday",
+    "kind": "type_presence",
+    "schema": {
+      "allow_unknown": false,
+      "candidates": [],
+      "decision_type": "noul",
+      "id": "slurp.temporal-role.v1",
+      "levels": [],
+      "question": "Does the audio explicitly express this temporal role? An explicitly named day part such as morning, afternoon, evening, night, tonight or noon, including modified expressions such as this afternoon. AM or PM attached to a numeric clock expression alone does not count. A meal name such as dinner alone is not sufficient evidence of a day-part label."
+    },
+    "thinking": {
+      "max_rounds": 1,
+      "mode": "direct",
+      "output": "decision_only",
+      "requirements": [
+        "Check the entire spoken request, including quoted or requested message content.",
+        "Separate calendar references, clock times or durations, and named day parts using the supplied definition.",
+        "Several temporal roles may coexist; do not infer one role solely from another."
+      ],
+      "version": "slurp-temporal-v1"
+    }
+  }
+}
