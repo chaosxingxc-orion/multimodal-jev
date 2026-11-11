@@ -1,0 +1,33 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-temporal-projection-replay-v1",
+  "container_id": "d1e1f76eceb1c8ed760a3beece025a3705d117e3092b7745653b1640f7e52e5d",
+  "exit_code": 0,
+  "oom_killed": false,
+  "physical_devices": [
+    4
+  ],
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "responses": 6,
+  "tokens": 36,
+  "recomputed_max_logprob_error_vs_sampler": {
+    "native": 0.13464361429214478,
+    "hf": 0.13464361429214478,
+    "vllm": 0.003516079857945442
+  },
+  "native_vs_hf_replay_max_error": 0.0,
+  "verified_files": {
+    "run/response-003.json": "d5f2533f5d0981651f7fb74a172a9d86e677825ec0f0b331e36891863d96ecb5",
+    "run/progress.json": "bc5b7f0771c30e58f4ab55b9e59e72116bab04235693878a7c855ce3f1842383",
+    "run/result.json": "8637c85488fc1d97e34d3a890e6877ab04ce4f316c159a7c411b627601cb50bd",
+    "run/response-004.json": "8fd5bee294cfe492068cb753432e18ab71b1743a3b9c297d4679c2b51c5c209c",
+    "run/response-005.json": "faf1ce737f84d335db69aba2e1565ef4362b0754bdd0c3d469ddf051b15d5c6c",
+    "run/response-002.json": "bc3238caf9f4620e5860e1c8e7263457c1e3037537f043f31c9722bdae167dce",
+    "run/terminal.json": "d757d62730db46b26f2db79d43aa5d3163c99760dfa263ef016e0ea2ed8ff761",
+    "run/response-000.json": "cb4d79818a30b99e6cfff6c85ff9a1140f1826758ee855e5fcdc20058e5460ce",
+    "run/response-001.json": "4f4cfbbd8b0f3dfdfaa36ee3d17537c21ed993d78bf7e847317acd594a567ed4",
+    "config.json": "4eb2bc59daad7c0dd8e66c01e95983aeed7a1d0d142f4ec43106c967dc9d445c",
+    "launch.json": "2b6355c2e932a4e6d02fd5743635180613f9fdaddc6b59eb8e7868bfb865c134",
+    "source-manifest.json": "a4759d62015bcb88010aaadd51e013522beb3699b8630f0dfe7d795f378f0bac"
+  },
+  "interpretation": "For this recording, replacing only the audio projection reduces maximum probability discrepancy below the reference threshold. Native HF replay is exactly identical. Acoustic numerical path is a principal contributor here; not a deployable fix or RL admission."
+}

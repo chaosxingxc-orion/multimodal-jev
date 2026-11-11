@@ -11,3 +11,17 @@
 运行根目录：`/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-temporal-projection-replay-v1`。
 容器：`d1e1f76eceb1c8ed760a3beece025a3705d117e3092b7745653b1640f7e52e5d`。
 详见[启动凭证](../docs/engineering/slurp-temporal-projection-replay-v1-launch.json)。
+
+## 完成结果
+
+容器退出 0、无 OOM、仅物理 4 号卡。独立检查所有输入 pins、逐响应身份及 token、原采样概率、有限性和分母后重新计算，见[核验凭证](../docs/engineering/slurp-temporal-projection-replay-v1-verified.json)。三个提示、六条响应、36 个响应 token：
+
+| HF 前向音频投影来源 | 对原 vLLM 采样概率的最大绝对 logprob 差 |
+| --- | ---: |
+| 原生实时音频路径 | 0.13464361429214478 |
+| 保存的 HF 投影回放 | 0.13464361429214478 |
+| 保存的 vLLM 投影回放 | 0.003516079857945442 |
+
+HF 自身投影回放与原生前向逐 token 概率完全一致；被替换的 HF 实时投影与保存的 HF 投影逐元素相同。控制通过。对这条录音，仅替换音频投影已使最大概率差降到原参考门槛 0.02 以下，支持音频编码数值路径是当前差异的主要贡献因素；剩余语言路径误差非零。不能据此声称所有录音、微批或训练状态均一致。
+
+后续修复方向是让两端实时音频编码采用一致实现，并检查权重、padding、dtype 和参数更新的对应关系；继续直接消费音频，不能将保存的投影作为正式 actor 的输入、用缓存隐藏模型更新，或替换 old logprob 绕过验证。优先在当前两个来源/六提示复验，再扩到短音频边界及实际微批。共享编码实现仍须真实采样验证，不因本次干预成功就准入 RL。
