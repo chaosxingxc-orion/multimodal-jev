@@ -4,6 +4,8 @@
 
 > 2026-11-12补记：Qwen3-ASR-0.6B的真实四卡BF16 LoRA RL已进入受限intent先导，D/Q/P及FSC配置迁移协议见[当前主线](14-rl-decision-credit-and-transfer.md)。下文“主actor为冻结Omni”“不新增权重训练”只描述历史锁定阶段；当前不新增模型下载、不做RL/SFT效果比较。作者报告与官方权重复测仍分别列示，不能将不同训练来源的参考分数当作RL增益。FSC官方权重已有完整TEST复测；SLURP HuBERT缺本地权重，仍未运行。
 
+> Omni项目84.56%的历史意图参照另经[输入条件审计](../engineering/omni-intent-reference-coverage-v1.md)：每请求9–21个候选，并非固定60类；与当前89条学习音频仅3条哈希相同，且这3条候选也不相同。保留历史参照，不作为同条件ASR-Jev差值或本项目复现结果。
+
 调研日期：2026-11-10（Asia/Shanghai；来源访问时间保留 UTC）。本次锁定的是**比较对象、证据口径和复现路径**，调研子进程没有运行训练、模型评测或设备验证；主进程同期运行验证在下文另引工程凭证。不是穷尽最新 SOTA 的排行榜。机器登记见 [academic-baseline-lock.json](academic-baseline-lock.json)，来源和失败记录见 [academic-baseline-sources-v1.json](academic-baseline-sources-v1.json)，执行门槛见 [横比方案](../../experiments/academic-baseline-comparison-v1.md)。
 
 ## 1. 锁定结论与边界
