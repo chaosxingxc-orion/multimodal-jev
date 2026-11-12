@@ -6,6 +6,8 @@
 
 三条主线的集中决策说明见[Loss、过程信用与配置迁移工作基线](15-rl-three-track-working-baseline.md)。针对低正确概率样本信用弱，新增[平滑效用候选](intent-smoothed-utility-candidate-v1.md)：仅完成数学、真实verl四rank CPU验证及固定策略离线诊断，未改变冻结D/Q/P奖励，尚无NPU训练收益。
 
+新增[组合数据承载审计](16-composition-data-support.md)：SLURP60类中45类可由一个真实组件唯一确定，当前89条学习来源中仅26条需要scenario/action共同消歧；FSC31类中仅4类在本体上必须三个组件齐全。标签分解不能自动证明多步推理。未来组合划分已有可行性与训练支持见证，现有学习样本不得改称未见测试。
+
 新增[过程奖励预算诊断](../engineering/intent-process-credit-step0and11-v1.md)：在固定D step0/11的Q模板输出上反事实计算P信用，分别有40/89、39/89来源的过程输出logit梯度范数超过Final；两端各有2/12个固定日程batch出现这一现象。它只证明奖励预算不能直接约束梯度预算，不是共享参数冲突或P收益证据。实际D第11步8来源的前两条输出信用范数占72.62%；后续优化须同时关注来源覆盖、Final信用和共享梯度关系。
 
 新增[过程与Final逐来源结果诊断](../engineering/intent-process-outcomes-step0and12-v1.md)：D step0/12的Q模板输出中，两过程都正确及过程/Final兼容均为0/89，Final分别正确1/2条且都存在过程错误。后续Q/P比较需分开统计过程修复、Final修复和一致但全错；空条件人口的准确率保持null。这是结构模板在D权重上的诊断，不是过程奖励训练结论。

@@ -1,0 +1,1265 @@
+{
+  "slurp": {
+    "labels": 60,
+    "components": [
+      {
+        "index": 0,
+        "values": 18,
+        "degrees": {
+          "alarm": 3,
+          "audio": 4,
+          "calendar": 3,
+          "cooking": 2,
+          "datetime": 2,
+          "email": 4,
+          "general": 3,
+          "iot": 9,
+          "lists": 3,
+          "music": 4,
+          "news": 1,
+          "play": 5,
+          "qa": 5,
+          "recommendation": 3,
+          "social": 2,
+          "takeaway": 2,
+          "transport": 4,
+          "weather": 1
+        },
+        "uniquely_identified_labels": [
+          "news_query",
+          "weather_query"
+        ],
+        "uniform_label_oracle_accuracy": 0.3,
+        "learning_gold_component_majority_accuracy": 0.38202247191011235,
+        "learning_unique_label_recordings": 3
+      },
+      {
+        "index": 1,
+        "values": 46,
+        "degrees": {
+          "addcontact": 1,
+          "audiobook": 1,
+          "cleaning": 1,
+          "coffee": 1,
+          "convert": 1,
+          "createoradd": 1,
+          "currency": 1,
+          "definition": 1,
+          "dislikeness": 1,
+          "events": 1,
+          "factoid": 1,
+          "game": 1,
+          "greet": 1,
+          "hue_lightchange": 1,
+          "hue_lightdim": 1,
+          "hue_lightoff": 1,
+          "hue_lighton": 1,
+          "hue_lightup": 1,
+          "joke": 1,
+          "likeness": 1,
+          "locations": 1,
+          "maths": 1,
+          "movies": 1,
+          "music": 1,
+          "order": 1,
+          "podcasts": 1,
+          "post": 1,
+          "query": 12,
+          "querycontact": 1,
+          "quirky": 1,
+          "radio": 1,
+          "recipe": 1,
+          "remove": 3,
+          "sendemail": 1,
+          "set": 2,
+          "settings": 1,
+          "stock": 1,
+          "taxi": 1,
+          "ticket": 1,
+          "traffic": 1,
+          "volume_down": 1,
+          "volume_mute": 1,
+          "volume_other": 1,
+          "volume_up": 1,
+          "wemo_off": 1,
+          "wemo_on": 1
+        },
+        "uniquely_identified_labels": [
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_other",
+          "audio_volume_up",
+          "cooking_recipe",
+          "datetime_convert",
+          "email_addcontact",
+          "email_querycontact",
+          "email_sendemail",
+          "general_greet",
+          "general_joke",
+          "general_quirky",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "lists_createoradd",
+          "music_dislikeness",
+          "music_likeness",
+          "music_settings",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_stock",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "social_post",
+          "takeaway_order",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic"
+        ],
+        "uniform_label_oracle_accuracy": 0.7666666666666667,
+        "learning_gold_component_majority_accuracy": 0.7415730337078652,
+        "learning_unique_label_recordings": 60
+      }
+    ],
+    "proper_subsets": [
+      {
+        "indices": [
+          0
+        ],
+        "distinct_values": 18,
+        "uniquely_identified_labels": [
+          "news_query",
+          "weather_query"
+        ],
+        "uniform_label_oracle_accuracy": 0.3,
+        "learning_gold_subset_majority_accuracy": 0.38202247191011235
+      },
+      {
+        "indices": [
+          1
+        ],
+        "distinct_values": 46,
+        "uniquely_identified_labels": [
+          "audio_volume_down",
+          "audio_volume_mute",
+          "audio_volume_other",
+          "audio_volume_up",
+          "cooking_recipe",
+          "datetime_convert",
+          "email_addcontact",
+          "email_querycontact",
+          "email_sendemail",
+          "general_greet",
+          "general_joke",
+          "general_quirky",
+          "iot_cleaning",
+          "iot_coffee",
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup",
+          "iot_wemo_off",
+          "iot_wemo_on",
+          "lists_createoradd",
+          "music_dislikeness",
+          "music_likeness",
+          "music_settings",
+          "play_audiobook",
+          "play_game",
+          "play_music",
+          "play_podcasts",
+          "play_radio",
+          "qa_currency",
+          "qa_definition",
+          "qa_factoid",
+          "qa_maths",
+          "qa_stock",
+          "recommendation_events",
+          "recommendation_locations",
+          "recommendation_movies",
+          "social_post",
+          "takeaway_order",
+          "transport_taxi",
+          "transport_ticket",
+          "transport_traffic"
+        ],
+        "uniform_label_oracle_accuracy": 0.7666666666666667,
+        "learning_gold_subset_majority_accuracy": 0.7415730337078652
+      }
+    ],
+    "minimum_identifying_components": {
+      "alarm_query": 2,
+      "alarm_remove": 2,
+      "alarm_set": 2,
+      "audio_volume_down": 1,
+      "audio_volume_mute": 1,
+      "audio_volume_other": 1,
+      "audio_volume_up": 1,
+      "calendar_query": 2,
+      "calendar_remove": 2,
+      "calendar_set": 2,
+      "cooking_query": 2,
+      "cooking_recipe": 1,
+      "datetime_convert": 1,
+      "datetime_query": 2,
+      "email_addcontact": 1,
+      "email_query": 2,
+      "email_querycontact": 1,
+      "email_sendemail": 1,
+      "general_greet": 1,
+      "general_joke": 1,
+      "general_quirky": 1,
+      "iot_cleaning": 1,
+      "iot_coffee": 1,
+      "iot_hue_lightchange": 1,
+      "iot_hue_lightdim": 1,
+      "iot_hue_lightoff": 1,
+      "iot_hue_lighton": 1,
+      "iot_hue_lightup": 1,
+      "iot_wemo_off": 1,
+      "iot_wemo_on": 1,
+      "lists_createoradd": 1,
+      "lists_query": 2,
+      "lists_remove": 2,
+      "music_dislikeness": 1,
+      "music_likeness": 1,
+      "music_query": 2,
+      "music_settings": 1,
+      "news_query": 1,
+      "play_audiobook": 1,
+      "play_game": 1,
+      "play_music": 1,
+      "play_podcasts": 1,
+      "play_radio": 1,
+      "qa_currency": 1,
+      "qa_definition": 1,
+      "qa_factoid": 1,
+      "qa_maths": 1,
+      "qa_stock": 1,
+      "recommendation_events": 1,
+      "recommendation_locations": 1,
+      "recommendation_movies": 1,
+      "social_post": 1,
+      "social_query": 2,
+      "takeaway_order": 1,
+      "takeaway_query": 2,
+      "transport_query": 2,
+      "transport_taxi": 1,
+      "transport_ticket": 1,
+      "transport_traffic": 1,
+      "weather_query": 1
+    },
+    "requires_all_components_labels": [
+      "alarm_query",
+      "alarm_remove",
+      "alarm_set",
+      "calendar_query",
+      "calendar_remove",
+      "calendar_set",
+      "cooking_query",
+      "datetime_query",
+      "email_query",
+      "lists_query",
+      "lists_remove",
+      "music_query",
+      "social_query",
+      "takeaway_query",
+      "transport_query"
+    ],
+    "single_component_unique": {
+      "alarm_query": [],
+      "alarm_remove": [],
+      "alarm_set": [],
+      "audio_volume_down": [
+        1
+      ],
+      "audio_volume_mute": [
+        1
+      ],
+      "audio_volume_other": [
+        1
+      ],
+      "audio_volume_up": [
+        1
+      ],
+      "calendar_query": [],
+      "calendar_remove": [],
+      "calendar_set": [],
+      "cooking_query": [],
+      "cooking_recipe": [
+        1
+      ],
+      "datetime_convert": [
+        1
+      ],
+      "datetime_query": [],
+      "email_addcontact": [
+        1
+      ],
+      "email_query": [],
+      "email_querycontact": [
+        1
+      ],
+      "email_sendemail": [
+        1
+      ],
+      "general_greet": [
+        1
+      ],
+      "general_joke": [
+        1
+      ],
+      "general_quirky": [
+        1
+      ],
+      "iot_cleaning": [
+        1
+      ],
+      "iot_coffee": [
+        1
+      ],
+      "iot_hue_lightchange": [
+        1
+      ],
+      "iot_hue_lightdim": [
+        1
+      ],
+      "iot_hue_lightoff": [
+        1
+      ],
+      "iot_hue_lighton": [
+        1
+      ],
+      "iot_hue_lightup": [
+        1
+      ],
+      "iot_wemo_off": [
+        1
+      ],
+      "iot_wemo_on": [
+        1
+      ],
+      "lists_createoradd": [
+        1
+      ],
+      "lists_query": [],
+      "lists_remove": [],
+      "music_dislikeness": [
+        1
+      ],
+      "music_likeness": [
+        1
+      ],
+      "music_query": [],
+      "music_settings": [
+        1
+      ],
+      "news_query": [
+        0
+      ],
+      "play_audiobook": [
+        1
+      ],
+      "play_game": [
+        1
+      ],
+      "play_music": [
+        1
+      ],
+      "play_podcasts": [
+        1
+      ],
+      "play_radio": [
+        1
+      ],
+      "qa_currency": [
+        1
+      ],
+      "qa_definition": [
+        1
+      ],
+      "qa_factoid": [
+        1
+      ],
+      "qa_maths": [
+        1
+      ],
+      "qa_stock": [
+        1
+      ],
+      "recommendation_events": [
+        1
+      ],
+      "recommendation_locations": [
+        1
+      ],
+      "recommendation_movies": [
+        1
+      ],
+      "social_post": [
+        1
+      ],
+      "social_query": [],
+      "takeaway_order": [
+        1
+      ],
+      "takeaway_query": [],
+      "transport_query": [],
+      "transport_taxi": [
+        1
+      ],
+      "transport_ticket": [
+        1
+      ],
+      "transport_traffic": [
+        1
+      ],
+      "weather_query": [
+        0
+      ]
+    },
+    "all_single_components_ambiguous_labels": [
+      "alarm_query",
+      "alarm_remove",
+      "alarm_set",
+      "calendar_query",
+      "calendar_remove",
+      "calendar_set",
+      "cooking_query",
+      "datetime_query",
+      "email_query",
+      "lists_query",
+      "lists_remove",
+      "music_query",
+      "social_query",
+      "takeaway_query",
+      "transport_query"
+    ],
+    "all_single_components_ambiguous_recordings": 26,
+    "learning_recordings": 89,
+    "prospective_split": {
+      "seed": 941,
+      "method": "hash-order greedy component-preserving removal; not optimal or an approved split",
+      "supported_labels": 56,
+      "retained_labels": [
+        "alarm_query",
+        "audio_volume_down",
+        "audio_volume_mute",
+        "audio_volume_other",
+        "audio_volume_up",
+        "calendar_set",
+        "cooking_recipe",
+        "datetime_convert",
+        "email_addcontact",
+        "email_querycontact",
+        "email_sendemail",
+        "general_greet",
+        "general_joke",
+        "iot_cleaning",
+        "iot_coffee",
+        "iot_hue_lightchange",
+        "iot_hue_lightdim",
+        "iot_hue_lightoff",
+        "iot_hue_lighton",
+        "iot_hue_lightup",
+        "iot_wemo_off",
+        "iot_wemo_on",
+        "lists_createoradd",
+        "lists_remove",
+        "music_dislikeness",
+        "music_likeness",
+        "news_query",
+        "play_audiobook",
+        "play_game",
+        "play_music",
+        "play_radio",
+        "qa_currency",
+        "qa_definition",
+        "qa_factoid",
+        "qa_stock",
+        "recommendation_events",
+        "recommendation_locations",
+        "recommendation_movies",
+        "social_post",
+        "takeaway_order",
+        "transport_taxi",
+        "transport_ticket",
+        "transport_traffic",
+        "weather_query"
+      ],
+      "heldout_labels": [
+        "alarm_remove",
+        "alarm_set",
+        "calendar_query",
+        "calendar_remove",
+        "cooking_query",
+        "datetime_query",
+        "email_query",
+        "lists_query",
+        "music_query",
+        "social_query",
+        "takeaway_query",
+        "transport_query"
+      ],
+      "witnesses": {
+        "social_query": {
+          "0": [
+            "social_post"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "alarm_set": {
+          "0": [
+            "alarm_query"
+          ],
+          "1": [
+            "calendar_set"
+          ]
+        },
+        "calendar_remove": {
+          "0": [
+            "calendar_set"
+          ],
+          "1": [
+            "lists_remove"
+          ]
+        },
+        "datetime_query": {
+          "0": [
+            "datetime_convert"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "music_query": {
+          "0": [
+            "music_dislikeness",
+            "music_likeness"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "calendar_query": {
+          "0": [
+            "calendar_set"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "alarm_remove": {
+          "0": [
+            "alarm_query"
+          ],
+          "1": [
+            "lists_remove"
+          ]
+        },
+        "takeaway_query": {
+          "0": [
+            "takeaway_order"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "transport_query": {
+          "0": [
+            "transport_taxi",
+            "transport_ticket",
+            "transport_traffic"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "lists_query": {
+          "0": [
+            "lists_createoradd",
+            "lists_remove"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "email_query": {
+          "0": [
+            "email_addcontact",
+            "email_querycontact",
+            "email_sendemail"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        },
+        "cooking_query": {
+          "0": [
+            "cooking_recipe"
+          ],
+          "1": [
+            "alarm_query",
+            "news_query",
+            "weather_query"
+          ]
+        }
+      },
+      "heldout_recordings": 21
+    },
+    "admission": false,
+    "scope": "Ontology/support audit. Gold-component oracles are in-population structural diagnostics, not audio inference or generalization."
+  },
+  "fsc_ontology_only": {
+    "labels": 31,
+    "components": [
+      {
+        "index": 0,
+        "values": 6,
+        "degrees": {
+          "activate": 6,
+          "bring": 4,
+          "change language": 5,
+          "deactivate": 6,
+          "decrease": 5,
+          "increase": 5
+        },
+        "uniquely_identified_labels": [],
+        "uniform_label_oracle_accuracy": 0.1935483870967742
+      },
+      {
+        "index": 1,
+        "values": 14,
+        "degrees": {
+          "Chinese": 1,
+          "English": 1,
+          "German": 1,
+          "Korean": 1,
+          "heat": 8,
+          "juice": 1,
+          "lamp": 2,
+          "lights": 8,
+          "music": 2,
+          "newspaper": 1,
+          "none": 1,
+          "shoes": 1,
+          "socks": 1,
+          "volume": 2
+        },
+        "uniquely_identified_labels": [
+          "command_06",
+          "command_07",
+          "command_08",
+          "command_09",
+          "command_10",
+          "command_11",
+          "command_12",
+          "command_13",
+          "command_14"
+        ],
+        "uniform_label_oracle_accuracy": 0.45161290322580644
+      },
+      {
+        "index": 2,
+        "values": 4,
+        "degrees": {
+          "bedroom": 4,
+          "kitchen": 4,
+          "none": 19,
+          "washroom": 4
+        },
+        "uniquely_identified_labels": [],
+        "uniform_label_oracle_accuracy": 0.12903225806451613
+      }
+    ],
+    "proper_subsets": [
+      {
+        "indices": [
+          0
+        ],
+        "distinct_values": 6,
+        "uniquely_identified_labels": [],
+        "uniform_label_oracle_accuracy": 0.1935483870967742,
+        "learning_gold_subset_majority_accuracy": null
+      },
+      {
+        "indices": [
+          1
+        ],
+        "distinct_values": 14,
+        "uniquely_identified_labels": [
+          "command_06",
+          "command_07",
+          "command_08",
+          "command_09",
+          "command_10",
+          "command_11",
+          "command_12",
+          "command_13",
+          "command_14"
+        ],
+        "uniform_label_oracle_accuracy": 0.45161290322580644,
+        "learning_gold_subset_majority_accuracy": null
+      },
+      {
+        "indices": [
+          2
+        ],
+        "distinct_values": 4,
+        "uniquely_identified_labels": [],
+        "uniform_label_oracle_accuracy": 0.12903225806451613,
+        "learning_gold_subset_majority_accuracy": null
+      },
+      {
+        "indices": [
+          0,
+          1
+        ],
+        "distinct_values": 19,
+        "uniquely_identified_labels": [
+          "command_00",
+          "command_05",
+          "command_06",
+          "command_07",
+          "command_08",
+          "command_09",
+          "command_10",
+          "command_11",
+          "command_12",
+          "command_13",
+          "command_14",
+          "command_15",
+          "command_20",
+          "command_25",
+          "command_30"
+        ],
+        "uniform_label_oracle_accuracy": 0.6129032258064516,
+        "learning_gold_subset_majority_accuracy": null
+      },
+      {
+        "indices": [
+          0,
+          2
+        ],
+        "distinct_values": 18,
+        "uniquely_identified_labels": [
+          "command_01",
+          "command_02",
+          "command_04",
+          "command_16",
+          "command_17",
+          "command_19",
+          "command_21",
+          "command_22",
+          "command_24",
+          "command_26",
+          "command_27",
+          "command_29"
+        ],
+        "uniform_label_oracle_accuracy": 0.5806451612903226,
+        "learning_gold_subset_majority_accuracy": null
+      },
+      {
+        "indices": [
+          1,
+          2
+        ],
+        "distinct_values": 20,
+        "uniquely_identified_labels": [
+          "command_06",
+          "command_07",
+          "command_08",
+          "command_09",
+          "command_10",
+          "command_11",
+          "command_12",
+          "command_13",
+          "command_14"
+        ],
+        "uniform_label_oracle_accuracy": 0.6451612903225806,
+        "learning_gold_subset_majority_accuracy": null
+      }
+    ],
+    "minimum_identifying_components": {
+      "command_00": 2,
+      "command_01": 2,
+      "command_02": 2,
+      "command_03": 3,
+      "command_04": 2,
+      "command_05": 2,
+      "command_06": 1,
+      "command_07": 1,
+      "command_08": 1,
+      "command_09": 1,
+      "command_10": 1,
+      "command_11": 1,
+      "command_12": 1,
+      "command_13": 1,
+      "command_14": 1,
+      "command_15": 2,
+      "command_16": 2,
+      "command_17": 2,
+      "command_18": 3,
+      "command_19": 2,
+      "command_20": 2,
+      "command_21": 2,
+      "command_22": 2,
+      "command_23": 3,
+      "command_24": 2,
+      "command_25": 2,
+      "command_26": 2,
+      "command_27": 2,
+      "command_28": 3,
+      "command_29": 2,
+      "command_30": 2
+    },
+    "requires_all_components_labels": [
+      "command_03",
+      "command_18",
+      "command_23",
+      "command_28"
+    ],
+    "single_component_unique": {
+      "command_00": [],
+      "command_01": [],
+      "command_02": [],
+      "command_03": [],
+      "command_04": [],
+      "command_05": [],
+      "command_06": [
+        1
+      ],
+      "command_07": [
+        1
+      ],
+      "command_08": [
+        1
+      ],
+      "command_09": [
+        1
+      ],
+      "command_10": [
+        1
+      ],
+      "command_11": [
+        1
+      ],
+      "command_12": [
+        1
+      ],
+      "command_13": [
+        1
+      ],
+      "command_14": [
+        1
+      ],
+      "command_15": [],
+      "command_16": [],
+      "command_17": [],
+      "command_18": [],
+      "command_19": [],
+      "command_20": [],
+      "command_21": [],
+      "command_22": [],
+      "command_23": [],
+      "command_24": [],
+      "command_25": [],
+      "command_26": [],
+      "command_27": [],
+      "command_28": [],
+      "command_29": [],
+      "command_30": []
+    },
+    "all_single_components_ambiguous_labels": [
+      "command_00",
+      "command_01",
+      "command_02",
+      "command_03",
+      "command_04",
+      "command_05",
+      "command_15",
+      "command_16",
+      "command_17",
+      "command_18",
+      "command_19",
+      "command_20",
+      "command_21",
+      "command_22",
+      "command_23",
+      "command_24",
+      "command_25",
+      "command_26",
+      "command_27",
+      "command_28",
+      "command_29",
+      "command_30"
+    ],
+    "all_single_components_ambiguous_recordings": null,
+    "learning_recordings": null,
+    "prospective_split": {
+      "seed": 941,
+      "method": "hash-order greedy component-preserving removal; not optimal or an approved split",
+      "supported_labels": 31,
+      "retained_labels": [
+        "command_00",
+        "command_02",
+        "command_05",
+        "command_06",
+        "command_07",
+        "command_08",
+        "command_09",
+        "command_10",
+        "command_11",
+        "command_12",
+        "command_13",
+        "command_14",
+        "command_16",
+        "command_24",
+        "command_25",
+        "command_26"
+      ],
+      "heldout_labels": [
+        "command_01",
+        "command_03",
+        "command_04",
+        "command_15",
+        "command_17",
+        "command_18",
+        "command_19",
+        "command_20",
+        "command_21",
+        "command_22",
+        "command_23",
+        "command_27",
+        "command_28",
+        "command_29",
+        "command_30"
+      ],
+      "witnesses": {
+        "command_18": {
+          "0": [
+            "command_16"
+          ],
+          "1": [
+            "command_02",
+            "command_16"
+          ],
+          "2": [
+            "command_00",
+            "command_05",
+            "command_06",
+            "command_07",
+            "command_08",
+            "command_09",
+            "command_10",
+            "command_11",
+            "command_12",
+            "command_13",
+            "command_14",
+            "command_25"
+          ]
+        },
+        "command_30": {
+          "0": [
+            "command_26"
+          ],
+          "1": [
+            "command_25"
+          ],
+          "2": [
+            "command_00",
+            "command_05",
+            "command_06",
+            "command_07",
+            "command_08",
+            "command_09",
+            "command_10",
+            "command_11",
+            "command_12",
+            "command_13",
+            "command_14",
+            "command_25"
+          ]
+        },
+        "command_20": {
+          "0": [
+            "command_16"
+          ],
+          "1": [
+            "command_05"
+          ],
+          "2": [
+            "command_00",
+            "command_05",
+            "command_06",
+            "command_07",
+            "command_08",
+            "command_09",
+            "command_10",
+            "command_11",
+            "command_12",
+            "command_13",
+            "command_14",
+            "command_25"
+          ]
+        },
+        "command_15": {
+          "0": [
+            "command_16"
+          ],
+          "1": [
+            "command_00"
+          ],
+          "2": [
+            "command_00",
+            "command_05",
+            "command_06",
+            "command_07",
+            "command_08",
+            "command_09",
+            "command_10",
+            "command_11",
+            "command_12",
+            "command_13",
+            "command_14",
+            "command_25"
+          ]
+        },
+        "command_21": {
+          "0": [
+            "command_24",
+            "command_25"
+          ],
+          "1": [
+            "command_24",
+            "command_26"
+          ],
+          "2": [
+            "command_16",
+            "command_26"
+          ]
+        },
+        "command_22": {
+          "0": [
+            "command_24",
+            "command_25"
+          ],
+          "1": [
+            "command_24",
+            "command_26"
+          ],
+          "2": [
+            "command_02"
+          ]
+        },
+        "command_27": {
+          "0": [
+            "command_26"
+          ],
+          "1": [
+            "command_24",
+            "command_26"
+          ],
+          "2": [
+            "command_02"
+          ]
+        },
+        "command_17": {
+          "0": [
+            "command_16"
+          ],
+          "1": [
+            "command_02",
+            "command_16"
+          ],
+          "2": [
+            "command_02"
+          ]
+        },
+        "command_19": {
+          "0": [
+            "command_16"
+          ],
+          "1": [
+            "command_02",
+            "command_16"
+          ],
+          "2": [
+            "command_24"
+          ]
+        },
+        "command_01": {
+          "0": [
+            "command_00",
+            "command_02",
+            "command_05"
+          ],
+          "1": [
+            "command_02",
+            "command_16"
+          ],
+          "2": [
+            "command_16",
+            "command_26"
+          ]
+        },
+        "command_03": {
+          "0": [
+            "command_00",
+            "command_02",
+            "command_05"
+          ],
+          "1": [
+            "command_02",
+            "command_16"
+          ],
+          "2": [
+            "command_00",
+            "command_05",
+            "command_06",
+            "command_07",
+            "command_08",
+            "command_09",
+            "command_10",
+            "command_11",
+            "command_12",
+            "command_13",
+            "command_14",
+            "command_25"
+          ]
+        },
+        "command_28": {
+          "0": [
+            "command_26"
+          ],
+          "1": [
+            "command_24",
+            "command_26"
+          ],
+          "2": [
+            "command_00",
+            "command_05",
+            "command_06",
+            "command_07",
+            "command_08",
+            "command_09",
+            "command_10",
+            "command_11",
+            "command_12",
+            "command_13",
+            "command_14",
+            "command_25"
+          ]
+        },
+        "command_29": {
+          "0": [
+            "command_26"
+          ],
+          "1": [
+            "command_24",
+            "command_26"
+          ],
+          "2": [
+            "command_24"
+          ]
+        },
+        "command_04": {
+          "0": [
+            "command_00",
+            "command_02",
+            "command_05"
+          ],
+          "1": [
+            "command_02",
+            "command_16"
+          ],
+          "2": [
+            "command_24"
+          ]
+        },
+        "command_23": {
+          "0": [
+            "command_24",
+            "command_25"
+          ],
+          "1": [
+            "command_24",
+            "command_26"
+          ],
+          "2": [
+            "command_00",
+            "command_05",
+            "command_06",
+            "command_07",
+            "command_08",
+            "command_09",
+            "command_10",
+            "command_11",
+            "command_12",
+            "command_13",
+            "command_14",
+            "command_25"
+          ]
+        }
+      },
+      "heldout_recordings": null
+    },
+    "admission": false,
+    "scope": "Ontology/support audit. Gold-component oracles are in-population structural diagnostics, not audio inference or generalization."
+  },
+  "learning_admission": {
+    "recordings": 89,
+    "source_groups": 89,
+    "covered_classes": 56,
+    "candidate_intents": 60,
+    "arm": "P",
+    "manifest_sha256": "071db09e2486f58f596011b903187303682402a16423a9eacfabc7020e314a5e",
+    "audio_verified": true,
+    "review_scope": "Manual per-record reference-text semantic audit against canonical scenario/action. Official reference is offline evidence only; no listening or audio/reference alignment adjudication performed. Learning sources only. Accepted labels support a restricted training pilot, not an audited benchmark or full ontology approval. No entity-type labels reviewed."
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-dqp-reference-pilot-v1/MANIFEST.json": "071db09e2486f58f596011b903187303682402a16423a9eacfabc7020e314a5e",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-learning-reference-audit-v1/releases/91948631815495cb48e35dc6fd781571d25af36715d3075ee01d8274be2ec153/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    "/home/xingchao/workspace/multimodal-jev/configs/tasks/fsc-span-transfer-v1.json": "d08fb6acbbb3ff936557b29f8c1f32113a4fff93892f18c6d35c7d23f195bef4",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/audit_intent_composition_support.py": "579882634a40addb91f0d93699f6118b257535a3955e4c1d96ecafd78156f6eb",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/composition_support.py": "52c5781f9bfebc0f43f4f63f109fb6f8a6afd92561525f85bfbecc6252e3fab0"
+  },
+  "limits": [
+    "No FSC utterance labels opened; no target test feedback.",
+    "Existing 89 learning sources were already used for RL. A proposed heldout subset cannot become an unseen test of existing checkpoints.",
+    "A future compositional run requires new frozen splits, fresh optimization from a disclosed initialization, source isolation and audio review.",
+    "Component uniqueness and oracle scores measure annotation structure, not independent audio facts or causal reasoning."
+  ]
+}
