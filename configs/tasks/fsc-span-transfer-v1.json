@@ -1,0 +1,349 @@
+{
+  "schema": "fsc-span-transfer-v1",
+  "input_modality": "audio",
+  "components": {
+    "action": {
+      "activate": "Turn on or start the named object.",
+      "bring": "Bring the named item to the speaker.",
+      "change language": "Change the assistant language setting.",
+      "deactivate": "Turn off or stop the named object.",
+      "decrease": "Lower the named setting.",
+      "increase": "Raise the named setting."
+    },
+    "object": {
+      "Chinese": "Chinese language setting.",
+      "English": "English language setting.",
+      "German": "German language setting.",
+      "Korean": "Korean language setting.",
+      "heat": "Heating or temperature setting.",
+      "juice": "Juice beverage.",
+      "lamp": "A lamp.",
+      "lights": "Room lights.",
+      "music": "Music playback.",
+      "newspaper": "A newspaper.",
+      "none": "No particular object or language value is specified in the native command. This is a valid category.",
+      "shoes": "Shoes.",
+      "socks": "Socks.",
+      "volume": "Audio volume setting."
+    },
+    "location": {
+      "bedroom": "Bedroom.",
+      "kitchen": "Kitchen.",
+      "none": "No particular room is specified in the native command. This is a valid category.",
+      "washroom": "Washroom or bathroom."
+    }
+  },
+  "questions": {
+    "action": "Which action does the speaker request?",
+    "object": "Which object or setting does the speaker refer to?",
+    "location": "Which room does the speaker specify?",
+    "final": "Which of the complete legal commands does the speaker request?"
+  },
+  "thinking_requirements": [
+    "Listen to the audio and interpret the supplied candidate meanings.",
+    "Use only the current configuration to bind decision symbols to answers.",
+    "Fill all supplied decision spans in one pass.",
+    "The string none is a valid unspecified value, not missing evidence or an abstention."
+  ],
+  "commands": [
+    {
+      "id": "command_00",
+      "values": {
+        "action": "activate",
+        "object": "lamp",
+        "location": "none"
+      },
+      "description": "action: activate. Turn on or start the named object. object: lamp. A lamp. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_01",
+      "values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "bedroom"
+      },
+      "description": "action: activate. Turn on or start the named object. object: lights. Room lights. location: bedroom. Bedroom."
+    },
+    {
+      "id": "command_02",
+      "values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "kitchen"
+      },
+      "description": "action: activate. Turn on or start the named object. object: lights. Room lights. location: kitchen. Kitchen."
+    },
+    {
+      "id": "command_03",
+      "values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "none"
+      },
+      "description": "action: activate. Turn on or start the named object. object: lights. Room lights. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_04",
+      "values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "washroom"
+      },
+      "description": "action: activate. Turn on or start the named object. object: lights. Room lights. location: washroom. Washroom or bathroom."
+    },
+    {
+      "id": "command_05",
+      "values": {
+        "action": "activate",
+        "object": "music",
+        "location": "none"
+      },
+      "description": "action: activate. Turn on or start the named object. object: music. Music playback. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_06",
+      "values": {
+        "action": "bring",
+        "object": "juice",
+        "location": "none"
+      },
+      "description": "action: bring. Bring the named item to the speaker. object: juice. Juice beverage. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_07",
+      "values": {
+        "action": "bring",
+        "object": "newspaper",
+        "location": "none"
+      },
+      "description": "action: bring. Bring the named item to the speaker. object: newspaper. A newspaper. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_08",
+      "values": {
+        "action": "bring",
+        "object": "shoes",
+        "location": "none"
+      },
+      "description": "action: bring. Bring the named item to the speaker. object: shoes. Shoes. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_09",
+      "values": {
+        "action": "bring",
+        "object": "socks",
+        "location": "none"
+      },
+      "description": "action: bring. Bring the named item to the speaker. object: socks. Socks. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_10",
+      "values": {
+        "action": "change language",
+        "object": "Chinese",
+        "location": "none"
+      },
+      "description": "action: change language. Change the assistant language setting. object: Chinese. Chinese language setting. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_11",
+      "values": {
+        "action": "change language",
+        "object": "English",
+        "location": "none"
+      },
+      "description": "action: change language. Change the assistant language setting. object: English. English language setting. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_12",
+      "values": {
+        "action": "change language",
+        "object": "German",
+        "location": "none"
+      },
+      "description": "action: change language. Change the assistant language setting. object: German. German language setting. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_13",
+      "values": {
+        "action": "change language",
+        "object": "Korean",
+        "location": "none"
+      },
+      "description": "action: change language. Change the assistant language setting. object: Korean. Korean language setting. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_14",
+      "values": {
+        "action": "change language",
+        "object": "none",
+        "location": "none"
+      },
+      "description": "action: change language. Change the assistant language setting. object: none. No particular object or language value is specified in the native command. This is a valid category. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_15",
+      "values": {
+        "action": "deactivate",
+        "object": "lamp",
+        "location": "none"
+      },
+      "description": "action: deactivate. Turn off or stop the named object. object: lamp. A lamp. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_16",
+      "values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "bedroom"
+      },
+      "description": "action: deactivate. Turn off or stop the named object. object: lights. Room lights. location: bedroom. Bedroom."
+    },
+    {
+      "id": "command_17",
+      "values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "kitchen"
+      },
+      "description": "action: deactivate. Turn off or stop the named object. object: lights. Room lights. location: kitchen. Kitchen."
+    },
+    {
+      "id": "command_18",
+      "values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "none"
+      },
+      "description": "action: deactivate. Turn off or stop the named object. object: lights. Room lights. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_19",
+      "values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "washroom"
+      },
+      "description": "action: deactivate. Turn off or stop the named object. object: lights. Room lights. location: washroom. Washroom or bathroom."
+    },
+    {
+      "id": "command_20",
+      "values": {
+        "action": "deactivate",
+        "object": "music",
+        "location": "none"
+      },
+      "description": "action: deactivate. Turn off or stop the named object. object: music. Music playback. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_21",
+      "values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "bedroom"
+      },
+      "description": "action: decrease. Lower the named setting. object: heat. Heating or temperature setting. location: bedroom. Bedroom."
+    },
+    {
+      "id": "command_22",
+      "values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "kitchen"
+      },
+      "description": "action: decrease. Lower the named setting. object: heat. Heating or temperature setting. location: kitchen. Kitchen."
+    },
+    {
+      "id": "command_23",
+      "values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "none"
+      },
+      "description": "action: decrease. Lower the named setting. object: heat. Heating or temperature setting. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_24",
+      "values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "washroom"
+      },
+      "description": "action: decrease. Lower the named setting. object: heat. Heating or temperature setting. location: washroom. Washroom or bathroom."
+    },
+    {
+      "id": "command_25",
+      "values": {
+        "action": "decrease",
+        "object": "volume",
+        "location": "none"
+      },
+      "description": "action: decrease. Lower the named setting. object: volume. Audio volume setting. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_26",
+      "values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "bedroom"
+      },
+      "description": "action: increase. Raise the named setting. object: heat. Heating or temperature setting. location: bedroom. Bedroom."
+    },
+    {
+      "id": "command_27",
+      "values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "kitchen"
+      },
+      "description": "action: increase. Raise the named setting. object: heat. Heating or temperature setting. location: kitchen. Kitchen."
+    },
+    {
+      "id": "command_28",
+      "values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "none"
+      },
+      "description": "action: increase. Raise the named setting. object: heat. Heating or temperature setting. location: none. No particular room is specified in the native command. This is a valid category."
+    },
+    {
+      "id": "command_29",
+      "values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "washroom"
+      },
+      "description": "action: increase. Raise the named setting. object: heat. Heating or temperature setting. location: washroom. Washroom or bathroom."
+    },
+    {
+      "id": "command_30",
+      "values": {
+        "action": "increase",
+        "object": "volume",
+        "location": "none"
+      },
+      "description": "action: increase. Raise the named setting. object: volume. Audio volume setting. location: none. No particular room is specified in the native command. This is a valid category."
+    }
+  ],
+  "provenance": {
+    "source": "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/data/train_data.csv",
+    "source_sha256": "df1b87b7122c7a9fa1555fda61ba45436c4bbb33428e1ea54adcc1c3c1317ea4",
+    "usage": "Only the complete TRAIN ontology support; no target utterances, examples, per-class frequencies or model errors used for template selection.",
+    "historical_fsc_experiments_exist": true
+  },
+  "evaluation": {
+    "primary": "31 legal joint command exact accuracy",
+    "templates": [
+      "direct",
+      "structured"
+    ],
+    "variants": [
+      "native",
+      "permutation",
+      "rebind"
+    ],
+    "weights": "Frozen SLURP step0 and preregistered later RL checkpoints; no FSC update or checkpoint selection.",
+    "test_feedback_for_template_selection": false
+  }
+}
