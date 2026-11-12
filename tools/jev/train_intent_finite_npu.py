@@ -173,6 +173,9 @@ def run(config,root,out,rank):
         if any(peer!=hashes for peer in peers):raise ValueError('rank exports differ')
         if rank==0:
             dest=root/'adapter';dest.mkdir();save_file(tensors,str(dest/'adapter_model.safetensors'))
+            # safetensors may create mode 0600 despite the shared directory ACL.
+            # The host controller must hash the export before independent audit.
+            (dest/'adapter_model.safetensors').chmod(0o644)
             shutil.copyfile(Path(config['initial_adapter'])/'adapter_config.json',dest/'adapter_config.json')
         dist.barrier();adapter_id=checkpoint_identity(root/'adapter')[0]
         atomic_json(out/'result.json',dict(passed=True,rank=rank,world_size=4,updates=config['step']+1,arm=config['arm'],restored=restored,
