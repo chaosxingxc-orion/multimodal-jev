@@ -1,0 +1,342 @@
+{
+  "update": 3,
+  "source": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite03-v1/policy-drift-v1.json",
+  "source_sha256": "7d75db9317c38019b6e68dba055dc9f50204e5a4f9c367ece9d544a9dc4ca300",
+  "reports": {
+    "D": {
+      "all_learning": {
+        "recordings": 89,
+        "spans": {
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.03792348416126484,
+              "kl_new_to_old": 0.03542222040469004,
+              "total_variation": 0.1191993907694747,
+              "maximum_abs_log_ratio": 0.7231209422004723,
+              "old_mass_outside_clip": 0.6491528689681646,
+              "old_mass_clipped_by_advantage": 0.31906583150283974,
+              "postupdate_unclipped_surrogate": -0.0008675880170770599,
+              "postupdate_clipped_surrogate": -0.0015874199578642387,
+              "postupdate_dual_clipped_surrogate": -0.0015874199578642387,
+              "gold_probability_before": 0.016177331760107085,
+              "gold_probability_after": 0.015309743743030024,
+              "gold_probability_delta": -0.000867588017077059,
+              "argmax_changed": 0.0
+            },
+            "max_kl_old_to_new": 0.10487091341803616,
+            "max_abs_log_ratio": 1.4370032803373523,
+            "request_weighted": {
+              "gold_probability_delta": 0.00011337905713819303,
+              "postupdate_clipped_surrogate": -0.0008342479961266057,
+              "postupdate_dual_clipped_surrogate": -0.0008342479961266057,
+              "kl_old_to_new": 0.037972028068692626
+            }
+          }
+        }
+      },
+      "updated_this_step": {
+        "recordings": 8,
+        "spans": {
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.039124140797719205,
+              "kl_new_to_old": 0.03662685146015836,
+              "total_variation": 0.12112908794112738,
+              "maximum_abs_log_ratio": 0.6816228812913483,
+              "old_mass_outside_clip": 0.6283524737005248,
+              "old_mass_clipped_by_advantage": 0.31150327340164297,
+              "postupdate_unclipped_surrogate": -6.341217882376512e-05,
+              "postupdate_clipped_surrogate": -0.00014893469879289874,
+              "postupdate_dual_clipped_surrogate": -0.00014893469879289874,
+              "gold_probability_before": 0.002674103418005426,
+              "gold_probability_after": 0.002610691239181662,
+              "gold_probability_delta": -6.341217882376474e-05,
+              "argmax_changed": 0.0
+            },
+            "max_kl_old_to_new": 0.09089417453663376,
+            "max_abs_log_ratio": 1.1414479717626165,
+            "request_weighted": {
+              "gold_probability_delta": -6.881578359678892e-05,
+              "postupdate_clipped_surrogate": -0.00014530441995421975,
+              "postupdate_dual_clipped_surrogate": -0.00014530441995421975,
+              "kl_old_to_new": 0.036515172177134396
+            }
+          }
+        }
+      },
+      "other_learning": {
+        "recordings": 81,
+        "spans": {
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.03780490078976319,
+              "kl_new_to_old": 0.03530324449797712,
+              "total_variation": 0.11900880339449667,
+              "maximum_abs_log_ratio": 0.727219516117423,
+              "old_mass_outside_clip": 0.6512072289945982,
+              "old_mass_clipped_by_advantage": 0.31981275082147653,
+              "postupdate_unclipped_surrogate": -0.0009470127912255338,
+              "postupdate_clipped_surrogate": -0.0017294925760441245,
+              "postupdate_dual_clipped_surrogate": -0.0017294925760441245,
+              "gold_probability_before": 0.017510983942043052,
+              "gold_probability_after": 0.016563971150817515,
+              "gold_probability_delta": -0.0009470127912255328,
+              "argmax_changed": 0.0
+            },
+            "max_kl_old_to_new": 0.10487091341803616,
+            "max_abs_log_ratio": 1.4370032803373523,
+            "request_weighted": {
+              "gold_probability_delta": 0.00012929899467814293,
+              "postupdate_clipped_surrogate": -0.0008944469493843866,
+              "postupdate_dual_clipped_surrogate": -0.0008944469493843866,
+              "kl_old_to_new": 0.03809932615630452
+            }
+          }
+        }
+      }
+    },
+    "Q": {
+      "all_learning": {
+        "recordings": 89,
+        "spans": {
+          "scenario": {
+            "mean": {
+              "kl_old_to_new": 0.01284306654998292,
+              "kl_new_to_old": 0.012533753441084008,
+              "total_variation": 0.06120990238797887,
+              "maximum_abs_log_ratio": 0.37735291731298964,
+              "old_mass_outside_clip": 0.21924244105953844,
+              "old_mass_clipped_by_advantage": 0.10508895282714972,
+              "postupdate_unclipped_surrogate": 0.0001731636530916473,
+              "postupdate_clipped_surrogate": -0.0002338664515713568,
+              "postupdate_dual_clipped_surrogate": -0.0002338664515713568,
+              "gold_probability_before": 0.0677728483778317,
+              "gold_probability_after": 0.06794601203092329,
+              "gold_probability_delta": 0.00017316365309164822,
+              "argmax_changed": 0.06741573033707865
+            },
+            "max_kl_old_to_new": 0.05558355033542213,
+            "max_abs_log_ratio": 0.6570404151510165,
+            "request_weighted": {
+              "gold_probability_delta": 0.0006624962056886778,
+              "postupdate_clipped_surrogate": 0.00024692598852979426,
+              "postupdate_dual_clipped_surrogate": 0.00024692598852979426,
+              "kl_old_to_new": 0.012557139786991382
+            }
+          },
+          "action": {
+            "mean": {
+              "kl_old_to_new": 0.013543267020562725,
+              "kl_new_to_old": 0.013259666083623408,
+              "total_variation": 0.06643591176299518,
+              "maximum_abs_log_ratio": 0.3797586742297078,
+              "old_mass_outside_clip": 0.19886764897586207,
+              "old_mass_clipped_by_advantage": 0.10607270317674816,
+              "postupdate_unclipped_surrogate": 0.00011019280986526893,
+              "postupdate_clipped_surrogate": -0.0002716368831371508,
+              "postupdate_dual_clipped_surrogate": -0.0002716368831371508,
+              "gold_probability_before": 0.018044244080192264,
+              "gold_probability_after": 0.018154436890057527,
+              "gold_probability_delta": 0.00011019280986526955,
+              "argmax_changed": 0.10112359550561797
+            },
+            "max_kl_old_to_new": 0.041798384839612485,
+            "max_abs_log_ratio": 0.7147787571637441,
+            "request_weighted": {
+              "gold_probability_delta": 0.0005273041295515243,
+              "postupdate_clipped_surrogate": -2.5883994035183785e-05,
+              "postupdate_dual_clipped_surrogate": -2.5883994035183785e-05,
+              "kl_old_to_new": 0.013698840427456524
+            }
+          },
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.010643497914332176,
+              "kl_new_to_old": 0.010440167153990536,
+              "total_variation": 0.05666461266281096,
+              "maximum_abs_log_ratio": 0.397052911903467,
+              "old_mass_outside_clip": 0.16850670964455866,
+              "old_mass_clipped_by_advantage": 0.07876059583507936,
+              "postupdate_unclipped_surrogate": 0.0006029579260836231,
+              "postupdate_clipped_surrogate": 0.00043845637374840683,
+              "postupdate_dual_clipped_surrogate": 0.00043845637374840683,
+              "gold_probability_before": 0.016157043018625347,
+              "gold_probability_after": 0.016760000944708975,
+              "gold_probability_delta": 0.0006029579260836238,
+              "argmax_changed": 0.24719101123595505
+            },
+            "max_kl_old_to_new": 0.040353585362368494,
+            "max_abs_log_ratio": 0.6259549053128914,
+            "request_weighted": {
+              "gold_probability_delta": 0.0006476798005588242,
+              "postupdate_clipped_surrogate": 0.000485538614491666,
+              "postupdate_dual_clipped_surrogate": 0.000485538614491666,
+              "kl_old_to_new": 0.01096305817033373
+            }
+          }
+        }
+      },
+      "updated_this_step": {
+        "recordings": 8,
+        "spans": {
+          "scenario": {
+            "mean": {
+              "kl_old_to_new": 0.010999021136372297,
+              "kl_new_to_old": 0.010920070749056848,
+              "total_variation": 0.05745122088986447,
+              "maximum_abs_log_ratio": 0.358034079904867,
+              "old_mass_outside_clip": 0.12195884893303233,
+              "old_mass_clipped_by_advantage": 0.05356320105370019,
+              "postupdate_unclipped_surrogate": 0.009663927898504142,
+              "postupdate_clipped_surrogate": 0.00817626846558713,
+              "postupdate_dual_clipped_surrogate": 0.00817626846558713,
+              "gold_probability_before": 0.14467839443635594,
+              "gold_probability_after": 0.1543423223348601,
+              "gold_probability_delta": 0.009663927898504142,
+              "argmax_changed": 0.0
+            },
+            "max_kl_old_to_new": 0.026316237338940954,
+            "max_abs_log_ratio": 0.4686979904195643,
+            "request_weighted": {
+              "gold_probability_delta": 0.009296626293169593,
+              "postupdate_clipped_surrogate": 0.007526303716473029,
+              "postupdate_dual_clipped_surrogate": 0.007526303716473029,
+              "kl_old_to_new": 0.010183324462488461
+            }
+          },
+          "action": {
+            "mean": {
+              "kl_old_to_new": 0.014746911838139873,
+              "kl_new_to_old": 0.014182060367781513,
+              "total_variation": 0.06907068153124528,
+              "maximum_abs_log_ratio": 0.4038473975295489,
+              "old_mass_outside_clip": 0.22170522644109877,
+              "old_mass_clipped_by_advantage": 0.09752508993365405,
+              "postupdate_unclipped_surrogate": 0.000252798875644895,
+              "postupdate_clipped_surrogate": 0.0001614279545451952,
+              "postupdate_dual_clipped_surrogate": 0.0001614279545451952,
+              "gold_probability_before": 0.007880860146882798,
+              "gold_probability_after": 0.008133659022527691,
+              "gold_probability_delta": 0.00025279887564489485,
+              "argmax_changed": 0.0
+            },
+            "max_kl_old_to_new": 0.024956192066127803,
+            "max_abs_log_ratio": 0.5677408786006439,
+            "request_weighted": {
+              "gold_probability_delta": 0.00026117705866052373,
+              "postupdate_clipped_surrogate": 0.00016224348764700523,
+              "postupdate_dual_clipped_surrogate": 0.00016224348764700523,
+              "kl_old_to_new": 0.014948716516277442
+            }
+          },
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.011444476667852576,
+              "kl_new_to_old": 0.011229019571198196,
+              "total_variation": 0.05969287389275797,
+              "maximum_abs_log_ratio": 0.36433199970875374,
+              "old_mass_outside_clip": 0.21005178337356706,
+              "old_mass_clipped_by_advantage": 0.10734713089991084,
+              "postupdate_unclipped_surrogate": 0.0011994125247274028,
+              "postupdate_clipped_surrogate": 0.001130837900588706,
+              "postupdate_dual_clipped_surrogate": 0.001130837900588706,
+              "gold_probability_before": 0.012199800218364745,
+              "gold_probability_after": 0.013399212743092142,
+              "gold_probability_delta": 0.0011994125247273982,
+              "argmax_changed": 0.125
+            },
+            "max_kl_old_to_new": 0.021516003580966205,
+            "max_abs_log_ratio": 0.49712526594307604,
+            "request_weighted": {
+              "gold_probability_delta": 0.0010363898745884331,
+              "postupdate_clipped_surrogate": 0.0009750328008575606,
+              "postupdate_dual_clipped_surrogate": 0.0009750328008575606,
+              "kl_old_to_new": 0.01125359568731014
+            }
+          }
+        }
+      },
+      "other_learning": {
+        "recordings": 81,
+        "spans": {
+          "scenario": {
+            "mean": {
+              "kl_old_to_new": 0.01302519449206792,
+              "kl_new_to_old": 0.012693129509432369,
+              "total_variation": 0.06158113019026179,
+              "maximum_abs_log_ratio": 0.37926095063724885,
+              "old_mass_outside_clip": 0.2288506970720329,
+              "old_mass_clipped_by_advantage": 0.11017791596526816,
+              "postupdate_unclipped_surrogate": -0.0007641957785540309,
+              "postupdate_clipped_surrogate": -0.0010644970606734296,
+              "postupdate_dual_clipped_surrogate": -0.0010644970606734296,
+              "gold_probability_before": 0.06017723889057003,
+              "gold_probability_after": 0.05941304311201598,
+              "gold_probability_delta": -0.0007641957785540303,
+              "argmax_changed": 0.07407407407407407
+            },
+            "max_kl_old_to_new": 0.05558355033542213,
+            "max_abs_log_ratio": 0.6570404151510165,
+            "request_weighted": {
+              "gold_probability_delta": -9.194234564460579e-05,
+              "postupdate_clipped_surrogate": -0.0003891361430380605,
+              "postupdate_dual_clipped_surrogate": -0.0003891361430380605,
+              "kl_old_to_new": 0.012764560543501346
+            }
+          },
+          "action": {
+            "mean": {
+              "kl_old_to_new": 0.013424388520061281,
+              "kl_new_to_old": 0.0131685654135831,
+              "total_variation": 0.06617568758835318,
+              "maximum_abs_log_ratio": 0.37737954106429134,
+              "old_mass_outside_clip": 0.19661208576941888,
+              "old_mass_clipped_by_advantage": 0.10691691189211548,
+              "postupdate_unclipped_surrogate": 9.610826015863921e-05,
+              "postupdate_clipped_surrogate": -0.0003144087189576294,
+              "postupdate_dual_clipped_surrogate": -0.0003144087189576294,
+              "gold_probability_before": 0.019048035085951223,
+              "gold_probability_after": 0.01914414334610986,
+              "gold_probability_delta": 9.610826015864033e-05,
+              "argmax_changed": 0.1111111111111111
+            },
+            "max_kl_old_to_new": 0.041798384839612485,
+            "max_abs_log_ratio": 0.7147787571637441,
+            "request_weighted": {
+              "gold_probability_delta": 0.0005505579512798641,
+              "postupdate_clipped_surrogate": -4.232231767731684e-05,
+              "postupdate_dual_clipped_surrogate": -4.232231767731684e-05,
+              "kl_old_to_new": 0.013589627953676056
+            }
+          },
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.010564388901638803,
+              "kl_new_to_old": 0.010362255804142864,
+              "total_variation": 0.05636552513392731,
+              "maximum_abs_log_ratio": 0.4002846069350436,
+              "old_mass_outside_clip": 0.16440349248613806,
+              "old_mass_clipped_by_advantage": 0.07593723434719477,
+              "postupdate_unclipped_surrogate": 0.0005440488299212745,
+              "postupdate_clipped_surrogate": 0.0003700730130728218,
+              "postupdate_dual_clipped_surrogate": 0.0003700730130728218,
+              "gold_probability_before": 0.016547881813712816,
+              "gold_probability_after": 0.017091930643634092,
+              "gold_probability_delta": 0.0005440488299212757,
+              "argmax_changed": 0.25925925925925924
+            },
+            "max_kl_old_to_new": 0.040353585362368494,
+            "max_abs_log_ratio": 0.6259549053128914,
+            "request_weighted": {
+              "gold_probability_delta": 0.000613714842633907,
+              "postupdate_clipped_surrogate": 0.00044276727781891793,
+              "postupdate_dual_clipped_surrogate": 0.00044276727781891793,
+              "kl_old_to_new": 0.010937671397005693
+            }
+          }
+        }
+      }
+    }
+  },
+  "scope": "Post-update learning-population finite policy drift. Not measured training-time clip fraction, trust-region guarantee, parameter-gradient attribution or held-out efficacy. Q is inference on D-trained weights when training_arm=D."
+}
