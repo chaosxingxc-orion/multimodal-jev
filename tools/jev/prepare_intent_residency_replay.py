@@ -58,6 +58,7 @@ def prepare(root,reference,suite_reference):
         else:
             cfg={k:v for k,v in read(suite_reference/'config-template.json').items() if k!='pins'}
             cfg.update(training_root=str(root/'training'),adapter=str(root/'training/run/adapter'),adapter_id=None,pins=pins)
+            argv=[s.replace('run_intent_finite_acceptance.py','run_intent_residency_acceptance.py') for s in argv]
         atomic_json(out/'config-template.json',cfg)
         atomic_json(out/'prepared.json',dict(root=str(out),image=image,physical_devices=[4,5,6,7] if kind=='training' else [4],
             create_argv=argv,config_template_sha256=file_hash(out/'config-template.json'),source_manifest_sha256=file_hash(out/'source-manifest.json'),pending_pins=[]))

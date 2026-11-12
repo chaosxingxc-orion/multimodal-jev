@@ -61,6 +61,8 @@ def run(config, out):
     from multimodal_jev.intent_actor_inputs import schedule
     if list(Path('/dev').glob('davinci[0-9]*')):
         raise ValueError('CPU-only diagnostic required')
+    progress=lambda phase,**fields:atomic_json(out/'progress.json',dict(phase=phase,updated_unix=time.time(),**fields))
+    progress('authenticate_assets')
     for path, digest in config['pins'].items():
         if file_hash(path) != digest:
             raise ValueError('diagnostic pin changed: '+path)
@@ -70,6 +72,7 @@ def run(config, out):
     if policy_id != config['policy_id']:
         raise ValueError('fixed accepted policy required')
     items, admission = load_pilot(config['pilot'], config['manifest_sha256'], 'P')
+    progress('load_model')
     processor, base = load_runtime(config['model_path'], 'cpu', 'bfloat16')
     adapted = initialize_adapter(base, config).eval()
     model = NativeAudioSpanModel(adapted.get_base_model()).eval()
@@ -85,6 +88,7 @@ def run(config, out):
         sums=[{n:torch.zeros_like(p,dtype=torch.float32) for n,p in named.items()} for _ in range(2)]
         rows=[]
         for item in chosen:
+            progress('encode',batch=batch_index+1,completed=len(rows),recording_id=item['id'])
             target=item['target']; request=item['request']
             if target['span_weights']!=[.1,.1,1.] or target['supervised']!=[True]*3:
                 raise ValueError('fixed full process supervision required')
@@ -96,6 +100,7 @@ def run(config, out):
             if rid!=ref['request_id'] or identity!=ref['request_identity']:
                 raise ValueError('accepted request identity differs')
             inputs={k:v.to(dtype=torch.bfloat16) if v.is_floating_point() else v for k,v in inputs.items()}
+            progress('forward',batch=batch_index+1,completed=len(rows),recording_id=item['id'],tokens=inputs['input_ids'].shape[-1])
             _,logp=model(inputs,positions,candidates)
             delta=max((a.detach().float()-torch.tensor([b])).abs().max().item()
                       for a,b in zip(logp,ref['candidate_logprobs'],strict=True))
@@ -103,6 +108,7 @@ def run(config, out):
             losses=[-probabilities[-1], -sum(w*p for w,p in zip(target['span_weights'][:-1],probabilities[:-1],strict=True))]
             gradients=[]
             for j,loss in enumerate(losses):
+                progress('backward_final' if j==0 else 'backward_process',batch=batch_index+1,completed=len(rows),recording_id=item['id'])
                 values=torch.autograd.grad(loss,tuple(named.values()),retain_graph=(j==0),allow_unused=True)
                 gradient={n:(torch.zeros_like(p,dtype=torch.float32) if g is None else g.detach().float())
                           for (n,p),g in zip(named.items(),values,strict=True)}
@@ -110,7 +116,9 @@ def run(config, out):
                 for n,g in gradient.items():sums[j][n].add_(g,alpha=target['request_weight']/total_weight)
             rows.append(dict(id=item['id'],request_id=rid,cpu_vs_accepted_max_logprob_error=delta,
                              gold_probabilities=[p.item() for p in probabilities],geometry=geometry(*gradients)))
-            atomic_json(out/'progress.json',dict(batch=batch_index+1,completed=len(rows),updated_unix=time.time()))
+            progress('record_complete',batch=batch_index+1,completed=len(rows))
+            # Release references before the next forward allocates its graph.
+            del _,logp,probabilities,losses,loss,values,gradient,gradients
         reports.append(dict(schedule_batch=batch_index+1,recordings=8,geometry=geometry(*sums),records=rows))
         atomic_json(out/f'batch-{batch_index+1}.json',reports[-1])
     if any(not torch.equal(p,before[n]) or p.grad is not None for n,p in named.items()):

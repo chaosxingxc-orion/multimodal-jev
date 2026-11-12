@@ -1,0 +1,143 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-residency-real-shard-controls-cpu-v1",
+  "container_id": "899c7d9a6266edad7c89a2bad03dc9fd7bd3fcec3c698bb9ae932271957d1c54",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "actual_exit_code": 0,
+  "source_manifest_sha256": "ff2f2aed8a6deda50e1636a45ea34ec7b0ac28c8da7b8849f6a92dc2c87e5543",
+  "config_sha256": "67dcfc3b9ee0b3edf2f449a90bdb3de7ad65b17f2c82642f695dfd55aaef67da",
+  "result_sha256": "933997ddac5a9c9777935d936b2aa921c5a23e36a4a37ed9aaa886eb334a2c90",
+  "passed": true,
+  "ranks": [
+    {
+      "passed": true,
+      "rank": 0,
+      "updates": 2,
+      "exact_master_and_adam": true,
+      "tensors_compared": 448,
+      "elements": 430192
+    },
+    {
+      "passed": true,
+      "rank": 1,
+      "updates": 2,
+      "exact_master_and_adam": true,
+      "tensors_compared": 448,
+      "elements": 430192
+    },
+    {
+      "passed": true,
+      "rank": 2,
+      "updates": 2,
+      "exact_master_and_adam": true,
+      "tensors_compared": 448,
+      "elements": 430192
+    },
+    {
+      "passed": true,
+      "rank": 3,
+      "updates": 2,
+      "exact_master_and_adam": true,
+      "tensors_compared": 448,
+      "elements": 430192
+    }
+  ],
+  "corruptions": [
+    {
+      "rank": 0,
+      "field": "master",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 0,
+      "field": "exp_avg",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 0,
+      "field": "exp_avg_sq",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 0,
+      "field": "step",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 1,
+      "field": "master",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 1,
+      "field": "exp_avg",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 1,
+      "field": "exp_avg_sq",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 1,
+      "field": "step",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 2,
+      "field": "master",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 2,
+      "field": "exp_avg",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 2,
+      "field": "exp_avg_sq",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 2,
+      "field": "step",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 3,
+      "field": "master",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 3,
+      "field": "exp_avg",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 3,
+      "field": "exp_avg_sq",
+      "rejected": true,
+      "bf16_unchanged": true
+    },
+    {
+      "rank": 3,
+      "field": "step",
+      "rejected": true,
+      "bf16_unchanged": true
+    }
+  ],
+  "scope": "Real accepted four-rank D step2 layout/self-comparison plus16 mutated-copy rejections. No residency replay, model update or NPU execution."
+}
