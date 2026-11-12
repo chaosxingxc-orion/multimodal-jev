@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare a separately frozen LR or momentum control from the original start."""
+"""Prepare separately frozen LR, momentum or coverage controls."""
 import argparse
 import copy
 import json
@@ -15,7 +15,8 @@ from queue_span_dp4_resume import check_pins
 MOMENTUM_FILES = ('tools/jev/train_intent_finite_npu.py',
                   'tools/jev/verify_intent_finite_npu.py',
                   'src/multimodal_jev/intent_resume.py',
-                  'src/multimodal_jev/intent_optimizer.py')
+                  'src/multimodal_jev/intent_optimizer.py',
+                  'src/multimodal_jev/intent_batch_layout.py')
 
 
 def freeze_source(repo, template, destination, control_kind):
@@ -23,7 +24,7 @@ def freeze_source(repo, template, destination, control_kind):
     source = repo if control_kind == 'lr' else template/'source'
     for folder in ('src','tools'):
         shutil.copytree(source/folder, destination/folder, ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
-    if control_kind == 'momentum':
+    if control_kind in ('momentum','batch32'):
         for rel in MOMENTUM_FILES:
             shutil.copy2(repo/rel, destination/rel)
     manifest = {str(p.relative_to(destination)):file_hash(p) for p in destination.rglob('*') if p.is_file()}
@@ -62,10 +63,23 @@ def audit_momentum_control(reference, control):
     return dict(only_training_parameter_changed='adam_beta1', reference_betas=[.9,.999], control_betas=[0.,.999])
 
 
+def audit_batch_control(reference, control):
+    if (reference['arm']!='D' or reference['step']!=0 or reference['global_requests']!=8
+            or reference['lr']!=1e-4 or control['global_requests']!=32):
+        raise ValueError('original D batch8 and proposed batch32 required')
+    left={k:v for k,v in reference.items() if k not in ('global_requests','pins')}
+    right={k:v for k,v in control.items() if k not in ('global_requests','pins')}
+    if left!=right:raise ValueError('non-batch training factor changed')
+    if control.get('previous_root') or control.get('initial_optimizer_checkpoint'):
+        raise ValueError('fresh optimizer from original initialization required')
+    return dict(only_training_parameter_changed='global_requests',reference_requests=8,control_requests=32,
+                budget='same96 source uses;3 versus12 optimizer updates')
+
+
 def prepare(root, reference_training, reference_suite, reference_protocol, control_kind='lr'):
-    if control_kind not in ('lr','momentum'): raise ValueError('known one-factor control required')
-    audit_fn = audit_control if control_kind == 'lr' else audit_momentum_control
-    changes = dict(lr=2e-5) if control_kind == 'lr' else dict(adam_betas=[0.,.999])
+    if control_kind not in ('lr','momentum','batch32'): raise ValueError('known one-factor control required')
+    audit_fn = {'lr':audit_control,'momentum':audit_momentum_control,'batch32':audit_batch_control}[control_kind]
+    changes = {'lr':dict(lr=2e-5),'momentum':dict(adam_betas=[0.,.999]),'batch32':dict(global_requests=32)}[control_kind]
     root,reference_training,reference_suite,reference_protocol=map(Path,(root,reference_training,reference_suite,reference_protocol))
     read=lambda p:json.loads(p.read_text());repo=Path(__file__).resolve().parents[2]
     if root.exists():raise FileExistsError('immutable LR control already exists')
@@ -111,10 +125,18 @@ def prepare(root, reference_training, reference_suite, reference_protocol, contr
     if control_kind == 'momentum':
         locked.update(rationale='Steps3/4 reconstructed gradients oppose actual Adam displacement; step5 does not. Isolate first momentum without changing reward or coverage.',
                       scope='Prospective learning-only control after observing steps1-5. No held-out or transfer efficacy claim.')
+    if control_kind == 'batch32':
+        large=[[r['id'] for r in schedule(items,reference['seed'],i,32)] for i in range(3)]
+        if sum(large,[])!=sum(batches,[]):raise ValueError('source-use budget or ordering differs')
+        locked.update(schema='intent-finite-batch32-control-v1',schedule=large,total_updates=3,
+            global_requests_per_update=32,checkpoints=list(range(4)),prospective_updates=[1,2,3],
+            selection='Report all0-3 points, aligned by cumulative source uses32/64/96 to D4/8/12; no best-point selection.',
+            rationale='Test broader within-update source coverage after low-probability credit diagnosis; unchanged reward and optimizer.',
+            scope='Prospective source-use-matched learning control after observing D steps0-6; different optimizer update budget. No held-out or transfer efficacy claim.')
     atomic_json(root/'protocol.json',locked)
     report=dict(root=str(root),training=str(train),suite=str(suite),audit=audit,
-        protocol_sha256=file_hash(root/'protocol.json'),prepared_updates=1,total_planned_updates=12,
-        continuation=f'Prepare steps2-12 with the same {control_kind} configuration after first pair review; no mixed-optimizer resume.',
+        protocol_sha256=file_hash(root/'protocol.json'),prepared_updates=1,total_planned_updates=locked['total_updates'],
+        continuation=f'Prepare steps2-{locked["total_updates"]} with the same {control_kind} configuration after first pair review; no mixed-optimizer resume.',
         execution_order='Preparation only; existing queue priority unchanged. No new controller or NPU dispatch.',
         initial_adapter=reference['initial_adapter'],source_gate=reference['acceptance_root'],
         scope=locked['scope'])
@@ -125,6 +147,6 @@ def prepare(root, reference_training, reference_suite, reference_protocol, contr
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
-    p.add_argument('--control-kind',choices=('lr','momentum'),default='lr')
+    p.add_argument('--control-kind',choices=('lr','momentum','batch32'),default='lr')
     for name in ('root','reference-training','reference-suite','reference-protocol','output'):p.add_argument('--'+name,required=True)
     a=p.parse_args();atomic_json(Path(a.output),prepare(a.root,a.reference_training,a.reference_suite,a.reference_protocol,a.control_kind))

@@ -1,0 +1,19 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-batch32-control-prepared-v1",
+  "training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-batch32-control-prepared-v1/training",
+  "suite": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-batch32-control-prepared-v1/suite",
+  "audit": {
+    "only_training_parameter_changed": "global_requests",
+    "reference_requests": 8,
+    "control_requests": 32,
+    "budget": "same96 source uses;3 versus12 optimizer updates"
+  },
+  "protocol_sha256": "f76147b2a26551ad53f05737d392590b7ed7600a177262d8c4d5514ccfadd5f8",
+  "prepared_updates": 1,
+  "total_planned_updates": 3,
+  "continuation": "Prepare steps2-3 with the same batch32 configuration after first pair review; no mixed-optimizer resume.",
+  "execution_order": "Preparation only; existing queue priority unchanged. No new controller or NPU dispatch.",
+  "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-v1/run/adapter",
+  "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2",
+  "scope": "Prospective source-use-matched learning control after observing D steps0-6; different optimizer update budget. No held-out or transfer efficacy claim."
+}

@@ -3,7 +3,7 @@ from pathlib import Path
 import sys
 import pytest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools/jev'))
-from prepare_intent_lr_control import audit_control, audit_momentum_control, freeze_source, MOMENTUM_FILES
+from prepare_intent_lr_control import audit_control, audit_momentum_control, audit_batch_control, freeze_source, MOMENTUM_FILES
 
 
 def fixture():
@@ -29,6 +29,13 @@ def test_only_first_momentum_changes():
     assert audit_momentum_control(a,b)['control_betas']==[0.,.999]
 
 
+def test_batch_control_preserves_original_optimizer_and_start():
+    a,_=fixture();b=dict(a,global_requests=32)
+    assert audit_batch_control(a,b)['control_requests']==32
+    for key,value in [('lr',2e-5),('adam_betas',[0.,.999]),('seed',318),('initial_adapter','/step6'),('step',1)]:
+        with pytest.raises(ValueError):audit_batch_control(a,dict(b,**{key:value}))
+
+
 @pytest.mark.parametrize('key,value', [('adam_betas',[0.,.99]),('lr',2e-5),('arm','P'),
     ('seed',318),('initial_adapter','/step5'),('initial_optimizer_checkpoint','/adam'),
     ('global_requests',16),('step',1)])
@@ -37,7 +44,8 @@ def test_momentum_control_rejects_confounders(key,value):
     with pytest.raises(ValueError):audit_momentum_control(a,b)
 
 
-def test_momentum_snapshot_preserves_reference_compute(tmp_path):
+@pytest.mark.parametrize('kind',['momentum','batch32'])
+def test_momentum_snapshot_preserves_reference_compute(tmp_path,kind):
     repo=tmp_path/'repo';template=tmp_path/'template';destination=tmp_path/'snapshot'
     paths=(*MOMENTUM_FILES,'src/multimodal_jev/span_finite_credit.py','tools/jev/other.py')
     for base in (repo,template/'source'):
@@ -46,7 +54,7 @@ def test_momentum_snapshot_preserves_reference_compute(tmp_path):
             p.write_text(str(base)+'/'+path)
     # An unrelated new algorithm in the live repo must not enter the control.
     (repo/'src/new_algorithm.py').write_text('unrelated')
-    manifest=freeze_source(repo,template,destination,'momentum')
+    manifest=freeze_source(repo,template,destination,kind)
     assert 'src/new_algorithm.py' not in manifest
     for path in paths:
         expected=repo if path in MOMENTUM_FILES else template/'source'
