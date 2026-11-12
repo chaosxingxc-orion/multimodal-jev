@@ -2,7 +2,7 @@
 """Independent HF/vLLM TP1 full-candidate gate on native SLURP inputs.
 
 Consumes the CPU-verified label-free input artifact. No labels, optimization,
-text generation or promotion beyond these exact 44 requests.
+text generation or promotion beyond the pinned engineering population.
 """
 import argparse
 import json
@@ -26,8 +26,12 @@ def validate(config):
     if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=['davinci4']:
         raise ValueError('isolated physical NPU4 required')
     artifact=json.loads(Path(config['inputs']).read_text())
-    if not artifact['passed'] or artifact['recordings']!=4 or artifact['requests']!=44:
-        raise ValueError('complete CPU-verified native input sample required')
+    population=config.get('population',{'recordings':4,'requests':44})
+    if (set(population)!={'recordings','requests'} or any(type(n)!=int or n<1 for n in population.values())
+            or not artifact['passed'] or artifact['recordings']!=population['recordings']
+            or artifact['requests']!=population['requests'] or len(artifact['records'])!=population['requests']
+            or len({r['id'] for r in artifact['records']})!=population['requests']):
+        raise ValueError('complete pinned CPU-verified input population required')
     return artifact
 
 
@@ -89,7 +93,7 @@ def phase(config,output,backend):
             if reference['base_id']!=config['base_id'] or reference['adapter_id']!=config['adapter_id']:
                 raise ValueError('HF policy identity differs')
             references={r['id']:r for r in reference['records']}
-            if len(references)!=44 or set(references)!={r['id'] for r in artifact['records']}:
+            if len(references)!=artifact['requests'] or set(references)!={r['id'] for r in artifact['records']}:
                 raise ValueError('complete independent HF population required')
             targets=json.loads((adapter/'adapter_config.json').read_text())['target_modules']
             if not isinstance(targets,list) or not targets or any(not t.startswith('model.language_model.layers.') or t.rsplit('.',1)[-1] not in {'q_proj','v_proj'} for t in targets):
@@ -129,9 +133,9 @@ def phase(config,output,backend):
                 logp=[p.tolist() for p in unpack_candidate_logits(result.outputs.data,candidates)]
                 parity=compare_span_policies(hf['candidate_logprobs'],logp)
             records.append(dict(id=row['id'],request_id=rid,request_identity=identity,candidate_logprobs=logp,parity=parity))
-            atomic_json(output/'progress.json',dict(completed=len(records),total=44,updated_unix=time.time()))
+            atomic_json(output/'progress.json',dict(completed=len(records),total=artifact['requests'],updated_unix=time.time()))
         if engine is not None:atomic_json(output/'worker.json',engine.llm_engine.collective_rpc('inspect_jev_span_lora'))
-        passed=len(records)==44 and all(r['parity'] is None or r['parity']['passed'] for r in records)
+        passed=len(records)==artifact['requests'] and all(r['parity'] is None or r['parity']['passed'] for r in records)
         atomic_json(output/'result.json',dict(passed=passed,records=records,backend=backend,
             base_id=config['base_id'],adapter_id=config['adapter_id'],max_model_len=config['max_model_len'],
             scope='Native full-candidate engineering inputs only; no task labels, training or benchmark result.'))
@@ -141,7 +145,7 @@ def phase(config,output,backend):
 
 
 def run(config,output):
-    validate(config)
+    artifact=validate(config)
     for backend in ('hf','vllm'):
         c={**config,'pins':dict(config['pins'])}
         if backend=='vllm':
@@ -149,7 +153,7 @@ def run(config,output):
             if json.loads((output/'hf/terminal.json').read_text())['exit_code']!=0:raise ValueError('HF phase failed')
         path=output/(backend+'-config.json');atomic_json(path,c)
         subprocess.run([sys.executable,__file__,'--config',str(path),'--output',str(output/backend),'--phase',backend],check=True)
-    atomic_json(output/'READY.json',dict(passed=True,requests=44,base_id=config['base_id'],adapter_id=config['adapter_id'],
+    atomic_json(output/'READY.json',dict(passed=True,requests=artifact['requests'],base_id=config['base_id'],adapter_id=config['adapter_id'],
         result_sha256=file_hash(output/'vllm/result.json'),scope='Only this frozen engineering input population; no full-dataset training admission.'))
 
 
