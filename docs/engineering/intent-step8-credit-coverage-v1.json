@@ -1,0 +1,129 @@
+{
+  "update": 8,
+  "training_arm": "D",
+  "spans": {
+    "intent": {
+      "logit_credit": {
+        "requests": 8,
+        "sum_norms": 0.014100823282010306,
+        "effective_requests": 2.097293982884588,
+        "top2_share": 0.7866457914677034,
+        "top10percent_share": 0.6707138171388376,
+        "below_one_thousandth_share": 0.00028367468355191877
+      },
+      "rows": [
+        {
+          "id": "slurp:audio-1490181844-headset.flac::intent",
+          "gold": "news_query",
+          "gold_probability": 0.0012112810044574956,
+          "norm": 0.00032510691094673745,
+          "request_weight": 1.5892857142857142,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.00024319130569412325
+        },
+        {
+          "id": "slurp:audio-1490262141.flac::intent",
+          "gold": "play_game",
+          "gold_probability": 0.07207535000214205,
+          "norm": 0.009457617008277325,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.012431582004352792
+        },
+        {
+          "id": "slurp:audio-1497557886-headset.flac::intent",
+          "gold": "iot_hue_lightchange",
+          "gold_probability": 2.9172488605499957e-05,
+          "norm": 4.0000465823458025e-06,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 8.859858994201105e-06
+        },
+        {
+          "id": "slurp:audio-1497869698-headset.flac::intent",
+          "gold": "recommendation_movies",
+          "gold_probability": 0.0016485056102173868,
+          "norm": 0.00021685151400402904,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0016606178034801297
+        },
+        {
+          "id": "slurp:audio-1501414676.flac::intent",
+          "gold": "iot_cleaning",
+          "gold_probability": 0.001802863736529889,
+          "norm": 0.0002369559974118182,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0006026872640066594
+        },
+        {
+          "id": "slurp:audio-1501696303.flac::intent",
+          "gold": "qa_factoid",
+          "gold_probability": 0.007975664717505968,
+          "norm": 0.0010998622563481218,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0030338543698456098
+        },
+        {
+          "id": "slurp:audio-1502216083.flac::intent",
+          "gold": "social_query",
+          "gold_probability": 0.008369710650736913,
+          "norm": 0.0011256932656940363,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0071072596296003765
+        },
+        {
+          "id": "slurp:audio-1502376086.flac::intent",
+          "gold": "lists_remove",
+          "gold_probability": 0.01260729263903363,
+          "norm": 0.0016347362827458928,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": -0.0022163332059188332
+        }
+      ]
+    }
+  },
+  "populations": {
+    "updated": {
+      "recordings": 8,
+      "increased": 7,
+      "decreased": 1,
+      "unchanged": 0,
+      "mean_delta": 0.0028589648787568827,
+      "median_delta": 0.0011316525337433945
+    },
+    "other_learning": {
+      "recordings": 81,
+      "increased": 72,
+      "decreased": 9,
+      "unchanged": 0,
+      "mean_delta": 0.0006960970711674609,
+      "median_delta": 0.000266472098366811
+    },
+    "all_learning": {
+      "recordings": 89,
+      "increased": 79,
+      "decreased": 10,
+      "unchanged": 0,
+      "mean_delta": 0.0008905121549957236,
+      "median_delta": 0.00031064204698205656
+    }
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update08-v1/config.json": "f519409f3ca50a1b2556bd99d692da7e51b1ef9022e69fd349ce266c68483712",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update08-v1/run/selection.json": "b4478371aac1e50d54632611dca44621dc41d3de21b4afceed45d2f006ea9c57",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite08-v1/verified.json": "119119f55e49bf34b94155bc6f2017d77b2422969eca89d9d3ecd617ae0576f0",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite08-v1/ACCEPTED.json": "1bc0bb0103cdc3056c17b5017e85161a74f4b377f8ca8c7a444820cad06a0a1a",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite07-v1/run/vllm/result.json": "a69092b146aa689bd4f36e729df1bd7468899520ed7a8a30c2f62e3ac9f197ab",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite08-v1/run/vllm/result.json": "a9445f9ad233695e406845804102b230349bab7475b02ca3ce534caa10ed93b6",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/diagnose_intent_policy_drift.py": "359c41d779a9228c8d7666e278ec44762708cd29b0c678028b65ad5fe3bea4c7",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/span_policy_drift.py": "4a540db38726e252b556b6bbb1b2947c1c8e1e6bd4af75a9f1a71d8c95322d8a",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/diagnose_intent_update_coverage.py": "fdcd046648eceb76da7c98cc3f7affc9106c9cdff1738c05f5707c8080ce2593",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/span_credit_concentration.py": "e7bfe428ce861c0ce0a9cd9c731a96a497cdfe5febfbd2e50d9f3046455f4100"
+  },
+  "scope": "Learning-only actual batch credit and before/after probability changes. Independent-logit norms are not shared-parameter gradient contributions or causal attribution."
+}

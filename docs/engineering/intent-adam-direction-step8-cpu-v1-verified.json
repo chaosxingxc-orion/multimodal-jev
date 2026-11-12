@@ -1,0 +1,97 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-adam-direction-step8-cpu-v1",
+  "container_id": "42e3aee2f13218e093d67fa5299d8814f7145c3434d99efe5809328db870ad1e",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "actual_exit_code": 0,
+  "config_sha256": "d89413fd8a630c5b8582b35e80a2ee83037e25e3a0ec9e7f855de6697eaacba3",
+  "source_manifest_sha256": "580923a9a5ec7f78813c00d8f03baf443f686b52ba02df7c6f18028fa152e967",
+  "result_sha256": "9ff7f94545e5626d5314caae82b1f6057c14a4cdc9abcfc2956752d4d35f9cbf",
+  "result": {
+    "passed": true,
+    "selftest": {
+      "passed": true,
+      "momentum_opposition": {
+        "elements": 3,
+        "gradient_squared_norm": 0.0002999998748302641,
+        "delta_squared_norm": 1.3170372958892784e-08,
+        "gradient_dot_delta": 1.987739982778364e-06,
+        "current_component_dot_gradient": -2.2334147251425194e-08,
+        "history_component_dot_gradient": 2.0100737019147276e-06,
+        "maximum_second_moment_residual": 6.7638232254668695e-12,
+        "maximum_delta_reconstruction_error": 1.427050502506716e-11,
+        "bf16_changed_elements": 3,
+        "fp32_changed_elements": 3
+      }
+    },
+    "reports": [
+      {
+        "update": 8,
+        "ranks": [
+          {
+            "elements": 143360,
+            "gradient_squared_norm": 0.054205800897299004,
+            "delta_squared_norm": 0.00015616891271315897,
+            "gradient_dot_delta": -0.0006255167874263714,
+            "current_component_dot_gradient": -0.0007719210167872686,
+            "history_component_dot_gradient": 0.00014640425722037558,
+            "maximum_second_moment_residual": 9.406697608315675e-14,
+            "maximum_delta_reconstruction_error": 1.8570467628863346e-09,
+            "bf16_changed_elements": 109511,
+            "fp32_changed_elements": 143360
+          },
+          {
+            "elements": 143360,
+            "gradient_squared_norm": 0.048839259559696944,
+            "delta_squared_norm": 0.0001423918914475112,
+            "gradient_dot_delta": -0.0005506065054784484,
+            "current_component_dot_gradient": -0.0007036830905232515,
+            "history_component_dot_gradient": 0.0001530765977449312,
+            "maximum_second_moment_residual": 1.225962894028064e-13,
+            "maximum_delta_reconstruction_error": 1.8606189219106696e-09,
+            "bf16_changed_elements": 107961,
+            "fp32_changed_elements": 143357
+          },
+          {
+            "elements": 143360,
+            "gradient_squared_norm": 0.04639258834572469,
+            "delta_squared_norm": 0.00015063851535873196,
+            "gradient_dot_delta": -0.0005438952036982598,
+            "current_component_dot_gradient": -0.000674367521329228,
+            "history_component_dot_gradient": 0.00013047235769584586,
+            "maximum_second_moment_residual": 2.935301944540468e-13,
+            "maximum_delta_reconstruction_error": 1.8495220712418168e-09,
+            "bf16_changed_elements": 109629,
+            "fp32_changed_elements": 143360
+          },
+          {
+            "elements": 143360,
+            "gradient_squared_norm": 0.04596603099561684,
+            "delta_squared_norm": 0.00015701455672562868,
+            "gradient_dot_delta": -0.0005394723321283976,
+            "current_component_dot_gradient": -0.0006708103592124486,
+            "history_component_dot_gradient": 0.00013133803910620677,
+            "maximum_second_moment_residual": 1.0080825021244774e-13,
+            "maximum_delta_reconstruction_error": 1.8333335295474533e-09,
+            "bf16_changed_elements": 109931,
+            "fp32_changed_elements": 143358
+          }
+        ],
+        "global_statistics": {
+          "elements": 573440,
+          "gradient_squared_norm": 0.19540367979833748,
+          "delta_squared_norm": 0.0006062138762450308,
+          "gradient_dot_delta": -0.0022594908287314774,
+          "current_component_dot_gradient": -0.002820781987852197,
+          "history_component_dot_gradient": 0.0005612912517673594,
+          "maximum_second_moment_residual": 2.935301944540468e-13,
+          "maximum_delta_reconstruction_error": 1.8606189219106696e-09,
+          "bf16_changed_elements": 437032,
+          "fp32_changed_elements": 573435,
+          "cosine_gradient_delta": -0.20760187771507224,
+          "first_order_descent": true
+        }
+      }
+    ],
+    "scope": "Post-hoc reconstructed clipped gradient and actual FP32 master displacement. FP32 moments induce reconstruction error. First-order loss direction does not guarantee finite-step BF16 reward, held-out gain or identify a unique cause."
+  }
+}
