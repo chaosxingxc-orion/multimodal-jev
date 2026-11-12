@@ -1,9 +1,26 @@
 #!/usr/bin/env python3
-"""Real FSC TRAIN audio processor probe; no target labels or model scoring."""
+"""Real FSC input processor check; no target labels or model scoring."""
 import argparse
 import json
 from pathlib import Path
 from multimodal_jev.baseline import atomic_json,file_hash
+
+
+def validate_roster(roster):
+    role=roster['role'];records=roster['records']
+    if role=='engineering_train_inputs':
+        if len(records)!=12:raise ValueError('fixed twelve-source TRAIN engineering roster required')
+    elif role=='frozen_transfer_evaluation_inputs':
+        if (roster['schema']!='fsc-official-span-population-v1' or roster['split'] not in ('valid','test')
+                or roster['recordings']!=len(records) or not records
+                or roster['speakers']!=len({r['speaker_id'] for r in records})):
+            raise ValueError('complete frozen official input population required')
+        if any(set(r)!={'id','audio','audio_sha256','speaker_id'} for r in records):
+            raise ValueError('evaluation roster must contain only audio identities and speakers')
+    else:raise ValueError('unsupported input population role')
+    if len({r['id'] for r in records})!=len(records) or len({r['audio'] for r in records})!=len(records):
+        raise ValueError('distinct recording identities required')
+    return role
 
 
 def run(config):
@@ -19,8 +36,9 @@ def run(config):
     torch.set_num_threads(2)
     processor=Qwen3ASRProcessor.from_pretrained(config['model'],local_files_only=True)
     task=json.loads(Path(config['task']).read_text());roster=json.loads(Path(config['roster']).read_text())
-    if roster['role']!='engineering_train_inputs' or len(roster['records'])!=12:
-        raise ValueError('fixed twelve-source TRAIN engineering roster required')
+    for key in ('task','roster'):
+        if config['pins'].get(config[key])!=file_hash(config[key]):raise ValueError('pinned task and roster required')
+    role=validate_roster(roster)
     records=[]
     for item in roster['records']:
         if file_hash(item['audio'])!=item['audio_sha256']:raise ValueError('audio identity changed')
@@ -39,9 +57,9 @@ def run(config):
                     template=template,variant=variant,request=request.model_input(),binding=binding,
                     audio_sha256=item['audio_sha256'],audio_processing=receipt,input_tokens=length,
                     positions=positions.tolist(),candidate_mapping=mapping,input_ids=tensor_identity(batch['input_ids']),**current))
-    return dict(passed=True,recordings=12,requests=len(records),records=records,maximum_input_tokens=max(r['input_tokens'] for r in records),
-        role='engineering_train_inputs',task_sha256=file_hash(config['task']),roster_sha256=file_hash(config['roster']),
-        scope='Real FSC TRAIN input-only CPU processor check. No target labels extracted, no model weights loaded, no transfer metrics.')
+    return dict(passed=True,recordings=len(roster['records']),requests=len(records),records=records,maximum_input_tokens=max(r['input_tokens'] for r in records),
+        role=role,task_sha256=file_hash(config['task']),roster_sha256=file_hash(config['roster']),
+        scope='Real FSC input-only CPU processor check. No target labels extracted, no model weights loaded, no transfer metrics. Population completeness relies on the pinned official roster publication.')
 
 
 if __name__=='__main__':
