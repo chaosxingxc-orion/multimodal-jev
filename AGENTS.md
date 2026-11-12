@@ -12,6 +12,8 @@
 
 ## 开发
 
+2026-11-12 任务先行设计稿：docs/research/24-task-definition-freeze-draft.md与configs/tasks/jev-task-design-v1.json登记I_class/I_present/S_present/B_bound真值、Final关系及迁移条件。55槽位卡仍全部draft；S需区分explicit_filler和允许未赋值角色激活，现有filler模板未覆盖新契约，不冒称已实现。参考NGA定义消费/稳定配置及omni槽位角色边界，来源hash已归档。尚无完整定义/监督准入，不训练。上轮未提交的恢复入口/驻留概率检查修改暂存为工作树草稿，不继续派发或冻结成正式工程版本。
+
 2026-11-12 最新用户要求任务→工程→训练顺序：先完成Q/任务/监督/Final设计，再锁定统一工程基线与实验配置，最后启动训练。撤销processor完成后自动恢复Stage1的安排；不派发新研究训练，已有只读检查正常归档。登记PPO-critic、GRPO、RLOO三种通用配置，同一typed-action工程底座；现有实际RL是无critic的精确有限候选边缘PPO定制变体，最近两步NPU只是CE。step-wise先研究语义节点信用，不能把并行Span当时序状态套GAE。configs/experiments/rl-baseline-design-v1.json明确training_dispatch_allowed=false，尚未工程锁定。详见docs/research/23-task-engineering-rl-baseline-lock.md。
 
 2026-11-12 prefix导出与一致性更新：发现并修复LoRA键名丢点；保留原快照，从四rank FP32分片独立重建112张量，实际PEFT重载精确。修复adapter身份85120a606c313c142e11c7444a1242cb526898bf9fa82251423b891771e7b1ac；prefix-parity-v3实际exit0，256输入HF/vLLM最大logprob误差9.54e-7、argmax变化0。无驻留FSDP输出证据，不夸大。全量恢复入口已实现但未NPU验收/派发，full processor仍运行。可迁移Q增加固定菜单与显式正/负/缺标映射；84项相关测试通过，未接入新训练。详见docs/engineering/slurp-instruction-recovery-and-predicates-v1.md。
