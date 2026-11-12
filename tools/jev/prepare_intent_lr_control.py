@@ -16,6 +16,8 @@ MOMENTUM_FILES = ('tools/jev/train_intent_finite_npu.py',
                   'tools/jev/verify_intent_finite_npu.py',
                   'src/multimodal_jev/intent_resume.py',
                   'src/multimodal_jev/intent_optimizer.py',
+                  'src/multimodal_jev/intent_objective.py',
+                  'src/multimodal_jev/span_smoothed_utility.py',
                   'src/multimodal_jev/intent_batch_layout.py')
 
 

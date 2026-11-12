@@ -50,6 +50,8 @@ def freeze(root):
             for name in ('restored-local.pt','optimizer-resume.json'):
                 config['pins'][str(out/name)]=file_hash(out/name)
     if parent['step']>0:config['pins'][str(training/'run/resume-lineage.json')]=file_hash(training/'run/resume-lineage.json')
+    if 'objective' in parent or (training/'run/objective.json').exists():
+        path=training/'run/objective.json';config['pins'][str(path)]=file_hash(path)
     for path in (training/'launch.json',training/'config.json',training/'source-manifest.json',
                  training/'run/selection.json',training/'run/supervision.json'):
         config['pins'][str(path)]=file_hash(path)

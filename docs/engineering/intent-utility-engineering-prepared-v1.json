@@ -1,0 +1,108 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1",
+  "protocol_sha256": "e1d22bbb3e68f811c0cc2227731203313fa5bc86693d07d4f02497df86300678",
+  "arms": [
+    {
+      "name": "correctness",
+      "objective": {
+        "name": "correctness-v1"
+      },
+      "steps": [
+        {
+          "training_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/correctness/training01",
+          "suite_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/correctness/suite01"
+        },
+        {
+          "training_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/correctness/training02",
+          "suite_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/correctness/suite02"
+        }
+      ]
+    },
+    {
+      "name": "smoothed-utility",
+      "objective": {
+        "name": "smoothed-utility-v1"
+      },
+      "steps": [
+        {
+          "training_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/smoothed-utility/training01",
+          "suite_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/smoothed-utility/suite01"
+        },
+        {
+          "training_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/smoothed-utility/training02",
+          "suite_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/smoothed-utility/suite02"
+        }
+      ]
+    },
+    {
+      "name": "uniform-credit",
+      "objective": {
+        "name": "uniform-credit-v1",
+        "scale": 8.0
+      },
+      "steps": [
+        {
+          "training_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/uniform-credit/training01",
+          "suite_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/uniform-credit/suite01"
+        },
+        {
+          "training_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/uniform-credit/training02",
+          "suite_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-utility-engineering-prepared-v1/uniform-credit/suite02"
+        }
+      ]
+    }
+  ],
+  "audits": [
+    {
+      "reference_objective": {
+        "specification": {
+          "name": "correctness-v1"
+        },
+        "sha256": "657a283ab7922ffcead31f887134e11033505d0404725421265ca2a58a4a430a"
+      },
+      "candidate_objective": {
+        "specification": {
+          "name": "correctness-v1"
+        },
+        "sha256": "657a283ab7922ffcead31f887134e11033505d0404725421265ca2a58a4a430a"
+      }
+    },
+    {
+      "reference_objective": {
+        "specification": {
+          "name": "correctness-v1"
+        },
+        "sha256": "657a283ab7922ffcead31f887134e11033505d0404725421265ca2a58a4a430a"
+      },
+      "candidate_objective": {
+        "specification": {
+          "name": "smoothed-utility-v1",
+          "tau": "1/K^2",
+          "scale": "U_prime(p_old)",
+          "normalization": "original-effective-request-weight",
+          "version": 1
+        },
+        "sha256": "b5e3a215a33c1bea022272e6877db7d023357a4b6bcf6784b084157246ea8510"
+      }
+    },
+    {
+      "reference_objective": {
+        "specification": {
+          "name": "correctness-v1"
+        },
+        "sha256": "657a283ab7922ffcead31f887134e11033505d0404725421265ca2a58a4a430a"
+      },
+      "candidate_objective": {
+        "specification": {
+          "name": "uniform-credit-v1",
+          "scale": 8.0,
+          "normalization": "original-effective-request-weight",
+          "version": 1
+        },
+        "sha256": "db2670c6df52ee2f303b2830d6e5e32a235e59bf0e8c9a7ae74a83fb4927b3d3"
+      }
+    }
+  ],
+  "status": "prepared_not_dispatched",
+  "scope": "Post-D12 prospective optimization hypothesis; no independent evaluation population yet. Fresh Adam and identical BF16 initialization; no RL/SFT comparison."
+}
