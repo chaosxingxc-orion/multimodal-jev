@@ -1,0 +1,89 @@
+{
+  "arms": {
+    "D": {
+      "requests": 89,
+      "total_input_tokens": 176292,
+      "mean_input_tokens": 1980.808988764045,
+      "minimum_input_tokens": 1955,
+      "maximum_input_tokens": 2028,
+      "spans": {
+        "intent": {
+          "correct": 1,
+          "mean_gold_probability": 0.015183418597110488,
+          "mean_allwrong32": 0.8213321847410999,
+          "span_weight": 1.0,
+          "mean_weighted_advantage_variance": 0.010274232483066347
+        }
+      }
+    },
+    "Q": {
+      "requests": 89,
+      "total_input_tokens": 318603,
+      "mean_input_tokens": 3579.808988764045,
+      "minimum_input_tokens": 3554,
+      "maximum_input_tokens": 3627,
+      "spans": {
+        "scenario": {
+          "correct": 7,
+          "mean_gold_probability": 0.06976267671249294,
+          "mean_allwrong32": 0.5794135220004919,
+          "span_weight": 0.0,
+          "mean_weighted_advantage_variance": 0.0
+        },
+        "action": {
+          "correct": 0,
+          "mean_gold_probability": 0.018274972119695785,
+          "mean_allwrong32": 0.7302322886084371,
+          "span_weight": 0.0,
+          "mean_weighted_advantage_variance": 0.0
+        },
+        "intent": {
+          "correct": 1,
+          "mean_gold_probability": 0.016712095506795893,
+          "mean_allwrong32": 0.7378485786677019,
+          "span_weight": 1.0,
+          "mean_weighted_advantage_variance": 0.01536046118383143
+        }
+      }
+    },
+    "P": {
+      "requests": 89,
+      "total_input_tokens": 318603,
+      "mean_input_tokens": 3579.808988764045,
+      "minimum_input_tokens": 3554,
+      "maximum_input_tokens": 3627,
+      "spans": {
+        "scenario": {
+          "correct": 7,
+          "mean_gold_probability": 0.06976267671249294,
+          "mean_allwrong32": 0.5794135220004919,
+          "span_weight": 0.1,
+          "mean_weighted_advantage_variance": 0.0005044543358206098
+        },
+        "action": {
+          "correct": 0,
+          "mean_gold_probability": 0.018274972119695785,
+          "mean_allwrong32": 0.7302322886084371,
+          "span_weight": 0.1,
+          "mean_weighted_advantage_variance": 0.0001626607990257332
+        },
+        "intent": {
+          "correct": 1,
+          "mean_gold_probability": 0.016712095506795893,
+          "mean_allwrong32": 0.7378485786677019,
+          "span_weight": 1.0,
+          "mean_weighted_advantage_variance": 0.01536046118383143
+        }
+      }
+    }
+  },
+  "Q_over_D_input_token_ratio": 1.8072459328840786,
+  "scope": "Fixed89 learning sources, initialization only. Input-token ratio is not FLOPs or NPU-time ratio; marginal advantage variance is not parameter-gradient norm. Q/P same input/behavior, different registered credit.",
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-processor-cpu-v2/run/result.json": "5816392ebd2dcc4369ec3e15b6753d9243b0cb92f8039fa1f043559c168bbe64",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/run/vllm/result.json": "7bc68ccb905fb91068b062da1c30d31662de3a4c38a96eb3e2d819ba1157cc66",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-dqp-reference-pilot-v1/D-targets.json": "fed56a802e7938349eefb379d22601f60aafa81fc1b32b0d4b97c648fdd0cb1d",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-dqp-reference-pilot-v1/Q-targets.json": "902d0d6cf73b5f85c61a8e6c9d2d1e49243605e6975b069730a5b22c87179c80",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-dqp-reference-pilot-v1/P-targets.json": "7e59f164c6e3462d951321f61ee33e428a98fbba9c6f1801418408f29816a38d"
+  }
+}
