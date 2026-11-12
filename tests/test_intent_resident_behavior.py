@@ -106,3 +106,18 @@ def test_binder_authenticates_both_state_and_new_behavior(tmp_path,monkeypatch):
     atomic_json(failed,{'exit_code':1});original['pins'][str(failed)]=file_hash(failed)
     atomic_json(path,original)
     with pytest.raises(ValueError,match='acceptance failed'):binder.bind(path,audit,'first')
+
+
+def test_binder_accepts_identical_verifier_in_frozen_snapshot(tmp_path,monkeypatch):
+    import inspect
+    cfg,audit,path=fixture(tmp_path,monkeypatch)
+    current=Path(inspect.getfile(verifier.verify));old=tmp_path/'frozen/tools/jev/verify_span_resident_policy_suite.py'
+    old.parent.mkdir(parents=True);old.write_bytes(current.read_bytes())
+    audit['files'].pop(str(current));audit['files'][str(old)]=file_hash(old);atomic_json(path,audit)
+    original=dict(cfg,pins={});original.pop('resident_behavior');original['acceptance_root']='old'
+    training=tmp_path/'training.json';atomic_json(training,original)
+    monkeypatch.setattr(binder,'checkpoint_identity',lambda p:(p,{}))
+    bound,_=binder.bind(training,path,'first')
+    assert bound['pins'][str(old)]==file_hash(old)
+    old.write_text('changed code');audit['files'][str(old)]=file_hash(old);atomic_json(path,audit)
+    with pytest.raises(ValueError,match='implementation changed'):binder.bind(training,path,'first')

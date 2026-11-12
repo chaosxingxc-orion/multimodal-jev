@@ -6,6 +6,7 @@ optimizer restoration without authenticating the original state acceptance.
 Online dispatch and in-memory session integration remain separate.
 """
 import argparse
+import inspect
 from pathlib import Path
 from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.policy_identity import checkpoint_identity
@@ -25,14 +26,27 @@ def bind(training_config,audit_path,key):
     # Re-observe actual container exit and reconstruct the complete audit. The
     # saved audit is not accepted merely because its own passed field is true.
     fresh=verify(saved['root'],original['pilot'],original['manifest_sha256'],saved['image'])
-    if fresh!=saved:raise ValueError('resident audit does not match independent host verification')
+    # Producer and consumer can live in different immutable source snapshots.
+    # Only identical verifier code may normalize its own evidence path; every
+    # workload pin and all recomputed values must still match exactly.
+    verifier_path=Path(inspect.getfile(verify))
+    old_paths=[p for p in saved['files'] if p.endswith('/tools/jev/verify_span_resident_policy_suite.py')]
+    if len(old_paths)!=1:raise ValueError('exact saved verifier implementation required')
+    old_path=old_paths[0]
+    if (saved['files'][old_path]!=file_hash(old_path)
+            or file_hash(old_path)!=file_hash(verifier_path)
+            or fresh['files'].get(str(verifier_path))!=file_hash(verifier_path)):
+        raise ValueError('resident verifier implementation changed')
+    normalized=dict(saved,files=dict(saved['files']));normalized['files'].pop(old_path)
+    normalized['files'][str(verifier_path)]=file_hash(verifier_path)
+    if fresh!=normalized:raise ValueError('resident audit does not match independent host verification')
     entries=[r for r in fresh['policies'] if r['key']==key]
     if len(entries)!=1:raise ValueError('exact resident policy key required')
     pid=checkpoint_identity(original['model_path'])[0]+':'+checkpoint_identity(original['initial_adapter'])[0]
     if entries[0]['policy_id']!=pid:raise ValueError('actor adapter differs from resident policy')
     cfg=dict(original,pins=dict(original['pins']),acceptance_root=entries[0]['gate_root'],
         resident_behavior=dict(schema='jev-resident-behavior-v1',audit=str(audit_path),key=key))
-    cfg['pins'].update(fresh['files']);cfg['pins'][str(audit_path)]=file_hash(audit_path)
+    cfg['pins'].update(saved['files']);cfg['pins'].update(fresh['files']);cfg['pins'][str(audit_path)]=file_hash(audit_path)
     cfg['pins'][str(training_config)]=file_hash(training_config)
     evidence=authenticate(cfg,pid)
     if continuation:
