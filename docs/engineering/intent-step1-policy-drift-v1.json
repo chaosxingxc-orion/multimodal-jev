@@ -1,0 +1,351 @@
+{
+  "reports": {
+    "D": {
+      "all_learning": {
+        "recordings": 89,
+        "spans": {
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.10907588569779839,
+              "kl_new_to_old": 0.127093388891557,
+              "total_variation": 0.2060965420728785,
+              "maximum_abs_log_ratio": 0.909472209429156,
+              "old_mass_outside_clip": 0.8512573422344702,
+              "old_mass_clipped_by_advantage": 0.6465069574163317,
+              "postupdate_unclipped_surrogate": 0.0010252166279073743,
+              "postupdate_clipped_surrogate": -0.0030041935422879308,
+              "postupdate_dual_clipped_surrogate": -0.0030026584769332694,
+              "gold_probability_before": 0.015183418699600475,
+              "gold_probability_after": 0.016208635327507853,
+              "gold_probability_delta": 0.0010252166279073728,
+              "argmax_changed": 0.011235955056179775
+            },
+            "max_kl_old_to_new": 0.16885972686718703,
+            "max_abs_log_ratio": 1.2526823854262223,
+            "request_weighted": {
+              "gold_probability_delta": -0.0006399075679323903,
+              "postupdate_clipped_surrogate": -0.004231517540381845,
+              "postupdate_dual_clipped_surrogate": -0.004230201223014478,
+              "kl_old_to_new": 0.11021259357319442
+            }
+          }
+        }
+      },
+      "updated_this_step": {
+        "recordings": 8,
+        "spans": {
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.12312430930234647,
+              "kl_new_to_old": 0.14489884374670398,
+              "total_variation": 0.22082320721449095,
+              "maximum_abs_log_ratio": 0.9628564226715146,
+              "old_mass_outside_clip": 0.9121069920070091,
+              "old_mass_clipped_by_advantage": 0.7270108211114554,
+              "postupdate_unclipped_surrogate": 0.021638471068134886,
+              "postupdate_clipped_surrogate": 0.0036363492512525948,
+              "postupdate_dual_clipped_surrogate": 0.003642157604235162,
+              "gold_probability_before": 0.017660209979408387,
+              "gold_probability_after": 0.03929868104754326,
+              "gold_probability_delta": 0.021638471068134876,
+              "argmax_changed": 0.125
+            },
+            "max_kl_old_to_new": 0.1662724910287409,
+            "max_abs_log_ratio": 1.1580140103134786,
+            "request_weighted": {
+              "gold_probability_delta": 0.01992499647093294,
+              "postupdate_clipped_surrogate": 0.00344810945679108,
+              "postupdate_dual_clipped_surrogate": 0.0034527561391771338,
+              "kl_old_to_new": 0.12089998201945444
+            }
+          }
+        }
+      },
+      "other_learning": {
+        "recordings": 81,
+        "spans": {
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.10768838707018871,
+              "kl_new_to_old": 0.12533482544907334,
+              "total_variation": 0.20464205662679333,
+              "maximum_abs_log_ratio": 0.9041996945410217,
+              "old_mass_outside_clip": 0.8452475002816269,
+              "old_mass_clipped_by_advantage": 0.6385559585328628,
+              "postupdate_unclipped_surrogate": -0.0010106603538434901,
+              "postupdate_clipped_surrogate": -0.0036600496206623027,
+              "postupdate_dual_clipped_surrogate": -0.003658936608406695,
+              "gold_probability_before": 0.014938797338631795,
+              "gold_probability_after": 0.013928136984788305,
+              "gold_probability_delta": -0.0010106603538434908,
+              "argmax_changed": 0.0
+            },
+            "max_kl_old_to_new": 0.16885972686718703,
+            "max_abs_log_ratio": 1.2526823854262223,
+            "request_weighted": {
+              "gold_probability_delta": -0.0026560746305662464,
+              "postupdate_clipped_surrogate": -0.0049844221479478186,
+              "postupdate_dual_clipped_surrogate": -0.004983432336954832,
+              "kl_old_to_new": 0.10916481039218857
+            }
+          }
+        }
+      }
+    },
+    "Q": {
+      "all_learning": {
+        "recordings": 89,
+        "spans": {
+          "scenario": {
+            "mean": {
+              "kl_old_to_new": 0.027044723249194515,
+              "kl_new_to_old": 0.027556096418308626,
+              "total_variation": 0.0927221950380063,
+              "maximum_abs_log_ratio": 0.39995316907331024,
+              "old_mass_outside_clip": 0.37773426918007713,
+              "old_mass_clipped_by_advantage": 0.17598928833698585,
+              "postupdate_unclipped_surrogate": -0.001963466378923045,
+              "postupdate_clipped_surrogate": -0.005367087502767996,
+              "postupdate_dual_clipped_surrogate": -0.005367087502767996,
+              "gold_probability_before": 0.06976267826813902,
+              "gold_probability_after": 0.06779921188921596,
+              "gold_probability_delta": -0.001963466378923043,
+              "argmax_changed": 0.33707865168539325
+            },
+            "max_kl_old_to_new": 0.0858660001480747,
+            "max_abs_log_ratio": 0.8026226184503795,
+            "request_weighted": {
+              "gold_probability_delta": -0.0016212993044126252,
+              "postupdate_clipped_surrogate": -0.0045492980837952435,
+              "postupdate_dual_clipped_surrogate": -0.0045492980837952435,
+              "kl_old_to_new": 0.027039485801122847
+            }
+          },
+          "action": {
+            "mean": {
+              "kl_old_to_new": 0.02069503523392464,
+              "kl_new_to_old": 0.021868797263896764,
+              "total_variation": 0.0833691710595981,
+              "maximum_abs_log_ratio": 0.48501975462864194,
+              "old_mass_outside_clip": 0.29158447695616857,
+              "old_mass_clipped_by_advantage": 0.12064107544111634,
+              "postupdate_unclipped_surrogate": 0.0006316301812020641,
+              "postupdate_clipped_surrogate": 0.00016335893749912684,
+              "postupdate_dual_clipped_surrogate": 0.00016335893749912684,
+              "gold_probability_before": 0.018274971647950753,
+              "gold_probability_after": 0.01890660182915282,
+              "gold_probability_delta": 0.0006316301812020643,
+              "argmax_changed": 0.15730337078651685
+            },
+            "max_kl_old_to_new": 0.04646204925413951,
+            "max_abs_log_ratio": 0.7321005453416967,
+            "request_weighted": {
+              "gold_probability_delta": 0.0003922013084910302,
+              "postupdate_clipped_surrogate": 6.576357652845524e-06,
+              "postupdate_dual_clipped_surrogate": 6.576357652845524e-06,
+              "kl_old_to_new": 0.020235689593630788
+            }
+          },
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.02368978576918687,
+              "kl_new_to_old": 0.024878930011060077,
+              "total_variation": 0.09050286237119042,
+              "maximum_abs_log_ratio": 0.4722579178899396,
+              "old_mass_outside_clip": 0.32902576701809877,
+              "old_mass_clipped_by_advantage": 0.14419611382138764,
+              "postupdate_unclipped_surrogate": -0.00025667596657352043,
+              "postupdate_clipped_surrogate": -0.0008023577344134453,
+              "postupdate_dual_clipped_surrogate": -0.0008023577344134453,
+              "gold_probability_before": 0.01671209574662004,
+              "gold_probability_after": 0.016455419780046526,
+              "gold_probability_delta": -0.00025667596657352054,
+              "argmax_changed": 0.10112359550561797
+            },
+            "max_kl_old_to_new": 0.04682768327823962,
+            "max_abs_log_ratio": 0.7196693587464602,
+            "request_weighted": {
+              "gold_probability_delta": -9.245239841782433e-05,
+              "postupdate_clipped_surrogate": -0.0006647412982228348,
+              "postupdate_dual_clipped_surrogate": -0.0006647412982228348,
+              "kl_old_to_new": 0.023760765663836284
+            }
+          }
+        }
+      },
+      "updated_this_step": {
+        "recordings": 8,
+        "spans": {
+          "scenario": {
+            "mean": {
+              "kl_old_to_new": 0.01985064244907292,
+              "kl_new_to_old": 0.020297310760853247,
+              "total_variation": 0.08080076838577088,
+              "maximum_abs_log_ratio": 0.35086143273890646,
+              "old_mass_outside_clip": 0.2970423399325667,
+              "old_mass_clipped_by_advantage": 0.130344024374132,
+              "postupdate_unclipped_surrogate": -0.0004550543882257187,
+              "postupdate_clipped_surrogate": -0.000554823451347853,
+              "postupdate_dual_clipped_surrogate": -0.000554823451347853,
+              "gold_probability_before": 0.015298285636877953,
+              "gold_probability_after": 0.014843231248652236,
+              "gold_probability_delta": -0.000455054388225717,
+              "argmax_changed": 0.25
+            },
+            "max_kl_old_to_new": 0.03927093377598853,
+            "max_abs_log_ratio": 0.41807471680270814,
+            "request_weighted": {
+              "gold_probability_delta": -0.00032663481824713933,
+              "postupdate_clipped_surrogate": -0.00041860810382478715,
+              "postupdate_dual_clipped_surrogate": -0.00041860810382478715,
+              "kl_old_to_new": 0.01840973100935424
+            }
+          },
+          "action": {
+            "mean": {
+              "kl_old_to_new": 0.0229533344534666,
+              "kl_new_to_old": 0.02447774866466002,
+              "total_variation": 0.08888655655854619,
+              "maximum_abs_log_ratio": 0.4953765702283535,
+              "old_mass_outside_clip": 0.28321561262425393,
+              "old_mass_clipped_by_advantage": 0.10933535007668377,
+              "postupdate_unclipped_surrogate": 0.0009222557340381843,
+              "postupdate_clipped_surrogate": 0.000470885330372547,
+              "postupdate_dual_clipped_surrogate": 0.000470885330372547,
+              "gold_probability_before": 0.005361107553146104,
+              "gold_probability_after": 0.006283363287184286,
+              "gold_probability_delta": 0.0009222557340381831,
+              "argmax_changed": 0.25
+            },
+            "max_kl_old_to_new": 0.04646204925413951,
+            "max_abs_log_ratio": 0.7268985111925619,
+            "request_weighted": {
+              "gold_probability_delta": 0.0008111406391952643,
+              "postupdate_clipped_surrogate": 0.0003680941661689196,
+              "postupdate_dual_clipped_surrogate": 0.0003680941661689196,
+              "kl_old_to_new": 0.024726585058820794
+            }
+          },
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.02387263352931529,
+              "kl_new_to_old": 0.025075453095140348,
+              "total_variation": 0.09221013590086354,
+              "maximum_abs_log_ratio": 0.46405436626910146,
+              "old_mass_outside_clip": 0.3715064360530208,
+              "old_mass_clipped_by_advantage": 0.19047807686703538,
+              "postupdate_unclipped_surrogate": 0.0037892679144849923,
+              "postupdate_clipped_surrogate": 0.002240078302038475,
+              "postupdate_dual_clipped_surrogate": 0.002240078302038475,
+              "gold_probability_before": 0.013033925138403395,
+              "gold_probability_after": 0.01682319305288839,
+              "gold_probability_delta": 0.0037892679144849954,
+              "argmax_changed": 0.125
+            },
+            "max_kl_old_to_new": 0.03435956859800931,
+            "max_abs_log_ratio": 0.5156495484085828,
+            "request_weighted": {
+              "gold_probability_delta": 0.005354959021362374,
+              "postupdate_clipped_surrogate": 0.003222258496736493,
+              "postupdate_dual_clipped_surrogate": 0.003222258496736493,
+              "kl_old_to_new": 0.023856512880678676
+            }
+          }
+        }
+      },
+      "other_learning": {
+        "recordings": 81,
+        "spans": {
+          "scenario": {
+            "mean": {
+              "kl_old_to_new": 0.02775524974797195,
+              "kl_new_to_old": 0.028273013520279524,
+              "total_variation": 0.09389961989254803,
+              "maximum_abs_log_ratio": 0.4048017356248562,
+              "old_mass_outside_clip": 0.3857038424390906,
+              "old_mass_clipped_by_advantage": 0.18049746255553933,
+              "postupdate_unclipped_surrogate": -0.0021124453409672264,
+              "postupdate_clipped_surrogate": -0.005842372841179863,
+              "postupdate_dual_clipped_surrogate": -0.005842372841179863,
+              "gold_probability_before": 0.07514187754036232,
+              "gold_probability_after": 0.07302943219939509,
+              "gold_probability_delta": -0.0021124453409672238,
+              "argmax_changed": 0.345679012345679
+            },
+            "max_kl_old_to_new": 0.0858660001480747,
+            "max_abs_log_ratio": 0.8026226184503795,
+            "request_weighted": {
+              "gold_probability_delta": -0.0017482271952131638,
+              "postupdate_clipped_surrogate": -0.004954267689674701,
+              "postupdate_dual_clipped_surrogate": -0.004954267689674701,
+              "kl_old_to_new": 0.02788554019247273
+            }
+          },
+          "action": {
+            "mean": {
+              "kl_old_to_new": 0.020471993335698272,
+              "kl_new_to_old": 0.021611123051475705,
+              "total_variation": 0.08282424409673904,
+              "maximum_abs_log_ratio": 0.48399685926076935,
+              "old_mass_outside_clip": 0.29241103145808606,
+              "old_mass_clipped_by_advantage": 0.1217576902919245,
+              "postupdate_unclipped_surrogate": 0.0006029264228972623,
+              "postupdate_clipped_surrogate": 0.00013298596042520872,
+              "postupdate_dual_clipped_surrogate": 0.00013298596042520872,
+              "gold_probability_before": 0.019550415015338867,
+              "gold_probability_after": 0.020153341438236133,
+              "gold_probability_delta": 0.0006029264228972624,
+              "argmax_changed": 0.14814814814814814
+            },
+            "max_kl_old_to_new": 0.04520084484258454,
+            "max_abs_log_ratio": 0.7321005453416967,
+            "request_weighted": {
+              "gold_probability_delta": 0.0003511288250886545,
+              "postupdate_clipped_surrogate": -2.8866564750691176e-05,
+              "postupdate_dual_clipped_surrogate": -2.8866564750691176e-05,
+              "kl_old_to_new": 0.01979540572449452
+            }
+          },
+          "intent": {
+            "mean": {
+              "kl_old_to_new": 0.02367172673114949,
+              "kl_new_to_old": 0.024859520323743504,
+              "total_variation": 0.09033424276332144,
+              "maximum_abs_log_ratio": 0.47306814521051616,
+              "old_mass_outside_clip": 0.3248301453850199,
+              "old_mass_clipped_by_advantage": 0.13962505574280515,
+              "postupdate_unclipped_surrogate": -0.0006562753622336206,
+              "postupdate_clipped_surrogate": -0.0011028452441864743,
+              "postupdate_dual_clipped_surrogate": -0.0011028452441864743,
+              "gold_probability_before": 0.017075371856073537,
+              "gold_probability_after": 0.016419096493839918,
+              "gold_probability_delta": -0.0006562753622336206,
+              "argmax_changed": 0.09876543209876543
+            },
+            "max_kl_old_to_new": 0.04682768327823962,
+            "max_abs_log_ratio": 0.7196693587464602,
+            "request_weighted": {
+              "gold_probability_delta": -0.0006265123415335304,
+              "postupdate_clipped_surrogate": -0.0010458197094933574,
+              "postupdate_dual_clipped_surrogate": -0.0010458197094933574,
+              "kl_old_to_new": 0.02375137868179292
+            }
+          }
+        }
+      }
+    }
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-finite-dp4-prepared-v2/config.json": "ffb4843552787f2ce68b8b0dabf285a2513f66e2d803f0bf0754e767aa3bdc60",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-finite-dp4-prepared-v2/run/selection.json": "317ab096e267a1f5db77975e7d20e587b444ef4473a5846aad6de5189d083024",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-finite-dp4-suite-prepared-v2/verified.json": "161e6cbee7b50a2b305e762f22df1abc6de2d062c4f40c57e36f0954a4ed3c7d",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-finite-dp4-suite-prepared-v2/ACCEPTED.json": "3ea6b0868759bfaa5278b30131fb98a71946d4af74e1cb53177cce8201765f06",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/run/vllm/result.json": "7bc68ccb905fb91068b062da1c30d31662de3a4c38a96eb3e2d819ba1157cc66",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-finite-dp4-suite-prepared-v2/run/vllm/result.json": "0d20cdbb7349280c8ec6dcf4f9900de29a741e471a734080e32847aacc403615",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/diagnose_intent_policy_drift.py": "359c41d779a9228c8d7666e278ec44762708cd29b0c678028b65ad5fe3bea4c7",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/span_policy_drift.py": "4a540db38726e252b556b6bbb1b2947c1c8e1e6bd4af75a9f1a71d8c95322d8a"
+  },
+  "artifact": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step1-policy-drift-v1.json",
+  "artifact_sha256": "13d18d635c7d98adc88e51006400a5fd64e4a8432cd8ed7b0fa08eac51304f29",
+  "scope": "Post-update learning-population finite policy drift. Not measured training-time clip fraction, trust-region guarantee, parameter-gradient attribution or held-out efficacy. Q is inference on D-trained weights when training_arm=D."
+}
