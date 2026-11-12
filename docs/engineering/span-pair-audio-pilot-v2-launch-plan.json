@@ -1,0 +1,101 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2",
+  "prepared": true,
+  "launched": false,
+  "create_argv": [
+    "docker",
+    "create",
+    "--pull=never",
+    "--network=none",
+    "--name",
+    "multimodal-jev-span-pair-audio-pilot-prepared-v2",
+    "--cpus=8",
+    "--memory=64g",
+    "--shm-size=4g",
+    "--device",
+    "/dev/davinci5:/dev/davinci5",
+    "--device",
+    "/dev/davinci_manager:/dev/davinci_manager",
+    "--device",
+    "/dev/devmm_svm:/dev/devmm_svm",
+    "--device",
+    "/dev/hisi_hdc:/dev/hisi_hdc",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-e",
+    "HF_HUB_OFFLINE=1",
+    "-e",
+    "TRANSFORMERS_OFFLINE=1",
+    "-e",
+    "TOKENIZERS_PARALLELISM=false",
+    "-e",
+    "OMP_NUM_THREADS=4",
+    "-e",
+    "VLLM_WORKER_MULTIPROC_METHOD=spawn",
+    "-e",
+    "PYTHONPATH=/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source/src",
+    "-v",
+    "/usr/local/Ascend/driver:/usr/local/Ascend/driver:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/models:/mnt/cephfs/xingchao/models:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/datasets:/mnt/cephfs/xingchao/datasets:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev:/mnt/cephfs/xingchao/experiments/multimodal-jev:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2:/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2:rw",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source:/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source/src:/home/xingchao/workspace/multimodal-jev/src:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source/tools:/home/xingchao/workspace/multimodal-jev/tools:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source/configs/tasks/slurp/temporal/tasks-v1.json:/home/xingchao/workspace/multimodal-jev/configs/tasks/slurp/temporal/tasks-v1.json:ro",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/evidence/docs/engineering/span-pair-verl-cpu-v2-verified.json:/home/xingchao/workspace/multimodal-jev/docs/engineering/span-pair-verl-cpu-v2-verified.json:ro",
+    "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=30s",
+    "7200s",
+    "python3",
+    "-B",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source/tools/jev/run_span_pair_pilot.py",
+    "--root",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2",
+    "--output",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/run"
+  ],
+  "start_argv_template": [
+    "docker",
+    "start",
+    "<exact-created-container-id>"
+  ],
+  "evidence": {
+    "/home/xingchao/workspace/multimodal-jev/docs/engineering/span-pair-verl-cpu-v2-verified.json": {
+      "source": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/evidence/docs/engineering/span-pair-verl-cpu-v2-verified.json",
+      "sha256": "cfe993d71ea393d1fa1a66f30190bcf63b797f1844917f822d836a682c0ca35a"
+    }
+  },
+  "receipt_fields": {
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "physical_devices": [
+      5
+    ],
+    "source_manifest_sha256": "6178d67a8fa3dd8c956d1710637b4fdc0070d50fdaede05e24b01f9055e01030",
+    "protocol_sha256": "2fc157289eb1eddf37d566bd5d3ea6d159d4c6bffba48083c5b77369b3a1b3ad",
+    "controller_sha256": "2bbddff37cf68b482ea59d9ec4a4e154671cee5eee21e6e3392b85130f0a9ace",
+    "config_sha256": {
+      "pair0": "8c86c5ed307861a1969d338080af57acee38674a5ad80be033f44caad491fe97",
+      "pair05": "e7bf451e7e1877acf8243eb32559ea90a9caf2651daece21f595cc7d2eb8b6ec"
+    }
+  },
+  "required_sequence": [
+    "Confirm physical NPU5 and its queued work are free.",
+    "docker create; record exact container ID and exit status in root/launch.json.",
+    "docker start that exact ID; save start status separately; never recreate on observation timeout."
+  ],
+  "scope": "Launch argv preparation only. Source and evidence mounts complete; no device allocation or NPU execution."
+}
