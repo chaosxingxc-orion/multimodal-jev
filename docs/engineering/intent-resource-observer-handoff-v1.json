@@ -1,0 +1,92 @@
+{
+  "suite_container": "728b193a420a6c4393e8c93bdfd1dbb3f53bdd1eeee8f20c32ff720e8f841b9a",
+  "state": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1357198,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-12T04:58:01.76629836Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "previous_controllers": {
+    "intent-step2-acceptance-resource-queue-v1": {
+      "pid": 3547966,
+      "argv": [
+        "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+        "-B",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v1/source/tools/jev/queue_intent_prepared_acceptance.py",
+        "--config",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v1/config.json",
+        "--output",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v1/run"
+      ],
+      "replacement": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v2",
+      "signal": "SIGTERM",
+      "reason": "audited non-NPU listener caused false resource reservation",
+      "observed_unix": 1794459553.6194959,
+      "scope": "Intentional waiting-controller handoff, not model/job failure. No training or suite restarted."
+    },
+    "intent-finite-d12-pilot-controller-v2": {
+      "pid": 3548079,
+      "argv": [
+        "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+        "-B",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v2/source/tools/jev/run_intent_bounded_continuation.py",
+        "--config",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v2/config.json",
+        "--output",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v2/run"
+      ],
+      "replacement": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v3",
+      "signal": "SIGTERM",
+      "reason": "audited non-NPU listener caused false resource reservation",
+      "observed_unix": 1794459553.6167066,
+      "scope": "Intentional waiting-controller handoff, not model/job failure. No training or suite restarted."
+    }
+  },
+  "new_controllers": {
+    "intent-step2-acceptance-resource-queue-v2": {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v2",
+      "pid": 3552950,
+      "argv": [
+        "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+        "-B",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v2/source/tools/jev/queue_intent_prepared_acceptance.py",
+        "--config",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v2/config.json",
+        "--output",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v2/run"
+      ],
+      "config_sha256": "610f3f5af4038a5e1f7d45a0cb6b5783c71c26d5d3afc6e49f6b24daa4970dd6",
+      "source_manifest_sha256": "cc9175c6969d044d297bf6f42daf82e588afb04a7fe001279f987a5ded8d961e",
+      "supersedes": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-step2-acceptance-resource-queue-v1"
+    },
+    "intent-finite-d12-pilot-controller-v3": {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v3",
+      "pid": 3552952,
+      "argv": [
+        "/home/xingchao/workspace/multimodal-jev/.venv/bin/python",
+        "-B",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v3/source/tools/jev/run_intent_bounded_continuation.py",
+        "--config",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v3/config.json",
+        "--output",
+        "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v3/run"
+      ],
+      "config_sha256": "6851837f30f1eaa2b5dbca3d21680fe06b333305aa511bff2935e82861de5ad3",
+      "source_manifest_sha256": "cc9175c6969d044d297bf6f42daf82e588afb04a7fe001279f987a5ded8d961e",
+      "supersedes": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-controller-v2"
+    }
+  },
+  "host_fd_audit": {
+    "busy": [],
+    "denied": [],
+    "observed": "2026-11-12 approximately04:57 UTC"
+  },
+  "scope": "Audited specific inotify-only observer excluded from privileged reservation check; mandatory actual FD check retained. Original training and suite snapshots unchanged."
+}

@@ -15,6 +15,7 @@ import subprocess
 import time
 
 from multimodal_jev.baseline import atomic_json, file_hash
+from multimodal_jev.resource_observers import is_audited_completion_observer
 
 SSH = ['ssh', '-o', 'ControlMaster=no', '-o', 'ControlPath=none', 'npu']
 CARDS = (4, 5, 6, 7)
@@ -119,7 +120,8 @@ def check_devices(image):
     for row in inspect(result.stdout.split()).values():
         host = row['HostConfig']
         devices = {d['PathOnHost'] for d in host.get('Devices') or []}
-        if host.get('Privileged') or devices & {f'/dev/davinci{i}' for i in CARDS}:
+        if (devices & {f'/dev/davinci{i}' for i in CARDS}
+                or (host.get('Privileged') and not is_audited_completion_observer(row))):
             raise ValueError('physical cards reserved by container: ' + row['Id'])
     # Root read-only descriptor inspection also catches jobs outside Docker.
     # No --device mapping and no NPU open: this is an ownership check only.

@@ -1,0 +1,54 @@
+{
+  "Id": "6767685f2b385bbfb8534f9b6974a3ace70578aab24bd1bd0bfdf54c24ff69f8",
+  "Name": "/quirky_sutherland",
+  "Image": "sha256:7e60208fb45e8af3f1ab777cf24df7a7a415d8d84e2972ee76def4daf5c0f026",
+  "State": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1296823,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-12T04:46:08.06634678Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "Path": "chroot",
+  "Args": [
+    "/host",
+    "/usr/bin/nsenter",
+    "-t",
+    "1",
+    "-m",
+    "/usr/bin/python3",
+    "-c",
+    "import ctypes,os,pathlib,select,sys,time,json\np=pathlib.Path(sys.argv[1]);lib=ctypes.CDLL(None,use_errno=True)\nfd=lib.inotify_init1(os.O_NONBLOCK|os.O_CLOEXEC)\nif fd<0:raise OSError(ctypes.get_errno(),'inotify_init1')\nif lib.inotify_add_watch(fd,os.fsencode(p),0x80|0x8)<0:raise OSError(ctypes.get_errno(),'inotify_add_watch')\ndeadline=time.monotonic()+600\nwhile True:\n if any((p/n).exists() for n in ['GENERATION_COMPLETE.json','ERROR.json']):\n  print('terminal');break\n remaining=deadline-time.monotonic()\n if remaining<=0:print('interval');break\n if select.select([fd],[],[],remaining)[0]:os.read(fd,65536)\nos.close(fd)\n",
+    "/var/tmp/omni-local-state/s1-r05-bl-control-C"
+  ],
+  "Mounts": [
+    {
+      "Type": "bind",
+      "Source": "/",
+      "Destination": "/host",
+      "Mode": "",
+      "RW": true,
+      "Propagation": "rslave"
+    }
+  ],
+  "host_config": {
+    "Privileged": true,
+    "Devices": [],
+    "PidMode": "host",
+    "Binds": [
+      "/:/host"
+    ],
+    "CapAdd": null,
+    "SecurityOpt": [
+      "label=disable"
+    ],
+    "AutoRemove": true,
+    "NetworkMode": "host"
+  }
+}
