@@ -9,7 +9,8 @@ from multimodal_jev.container_pins import validate_bind_pins
 from multimodal_jev.intent_resume import validate_lineage
 
 
-def prepare(training,suite,previous_training,previous_suite,training_template,suite_template):
+def prepare(training,suite,previous_training,previous_suite,training_template,suite_template,source_mode='current'):
+    if source_mode not in ('current','template'):raise ValueError('explicit source mode required')
     training,suite,previous_training,previous_suite,training_template,suite_template=map(Path,
         (training,suite,previous_training,previous_suite,training_template,suite_template))
     if training.exists() or suite.exists() or training==suite:
@@ -19,13 +20,16 @@ def prepare(training,suite,previous_training,previous_suite,training_template,su
     outputs=[]
     for root,template in ((training,training_template),(suite,suite_template)):
         root.mkdir(parents=True)
+        source=repo if source_mode=='current' else template/'source'
         for folder in ('src','tools'):
-            shutil.copytree(repo/folder,root/'source'/folder,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+            shutil.copytree(source/folder,root/'source'/folder,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
         manifest={str(p.relative_to(root/'source')):file_hash(p) for p in (root/'source').rglob('*') if p.is_file()}
         for name,h in manifest.items():
-            if file_hash(repo/name)!=h:raise ValueError('source changed during snapshot')
+            if file_hash(source/name)!=h:raise ValueError('source changed during snapshot')
             if name.endswith('.py'):compile((root/'source'/name).read_bytes(),name,'exec')
         atomic_json(root/'source-manifest.json',manifest)
+        if source_mode=='template' and manifest!=read(template/'source-manifest.json'):
+            raise ValueError('continuation source differs from frozen template')
         cfg=read(template/'config-template.json');plan=read(template/'prepared.json')
         if (template/'evidence').exists():shutil.copytree(template/'evidence',root/'evidence')
         cfg['pins']={p.replace(str(template),str(root)):h for p,h in cfg['pins'].items()
@@ -52,5 +56,6 @@ def prepare(training,suite,previous_training,previous_suite,training_template,su
 
 if __name__=='__main__':
     p=argparse.ArgumentParser()
+    p.add_argument('--source-mode',choices=('current','template'),default='current')
     for name in ('training','suite','previous-training','previous-suite','training-template','suite-template'):p.add_argument('--'+name,required=True)
     a=p.parse_args();print(json.dumps(prepare(**vars(a)),indent=2))
