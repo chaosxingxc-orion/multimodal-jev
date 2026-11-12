@@ -1,9 +1,16 @@
 # SLURP样本解构与判别问句
 
+> 用户评审修订：本页的主题模板包保留为离线分析，已撤回作为主训练问句的建议。
+> 问题必须能在不知道当前输入主题及答案时确定，见[修订契约](20-query-independent-thinking-contract.md)。
+
 2026-11-12。使用clean-v7 TRAIN的全部learning来源，未读取TEST标签。
 仓库统计快照：[全量学习人口统计](../engineering/slurp-learning-complexity-v1.json)。
 机器报告：`/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/learning-complexity-v1/report.json`，
 逐录音切片在同目录`records.jsonl`。这是数据分析，不是训练发布或模型效果。
+
+> 更新：正式准入人口已发布。下文首节的40,713条是隔离pending前的历史统计；
+> 当前训练与新问句审计使用40,513条，具体以文末“正式准入人口复算”及
+> [问句工作指南](19-discriminative-question-working-guide.md)为准。
 
 ## 全量结构统计
 
@@ -103,3 +110,21 @@ NPU时间和推理延迟。若过程正确率提高但Final没有改善，就不
 未见组合实验必须在Stage 1之前就隔离对应来源/组合；Stage 1见过、Stage 2没见过的
 组合不能称为整个模型的未见组合。主训练先覆盖全部类，组合实验需另行登记专门划分，
 不悄悄改当前全量任务定义。
+
+## 正式准入人口复算
+
+`official-clean-intent-v1`学习集：40,513条录音、9,181来源组、9,192原始语句、60类。
+复算[结果](../engineering/slurp-admitted-question-support-v1.json)与逐录音离线切片位于
+`datasets/slurp-jev-benchmark/admitted-question-support-v1`。
+26,834条（66.24%）单组件可消歧，13,679条（33.76%）需两组件；类数仍为45/15。
+尾类cooking_query只有2条/2来源组，calendar_set为2,557条，不能继续引用隔离前4条的分母。
+
+参考文本筛查覆盖9,192语句：指代词触发1,254、连接/条件词647、否定91、纠正7，
+对应录音5,433/2,604/415/40；集合可重叠，都是待审标记。录音时长中位2.624秒，
+p95为5.248秒，最长23.36秒，未检出幅度≥.999的采样点。这些技术统计不等于可懂度评级。
+
+问句组合审计显示：schedule两问联合区分6类/7,422条；device两问中8类/2,808条
+必须结合两问才能消歧，另3类可被单问唯一标识。music_email与food_transport的
+族内意图均可被单问唯一标识，只能作为语义改写候选，不能作为组合机制主证据。
+不同问题永远输出outside_family的准确率达81.68%–96.37%，必须报告族内过程指标。
+此处“必须两问”相对于指定问句分区；与原scenario/action划分不同，不是固有难度等级。

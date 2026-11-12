@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Resident DP4 BF16 instruction prefix on the frozen full SLURP schedule.
+"""Resident DP4 BF16 instruction training on the frozen full SLURP schedule.
 
 Native verl owns backward/accumulation/optimizer. Checkpoints are immutable;
-this entry currently starts from fresh LoRA and does not claim resume support.
+continuation requires independent state/reload/parity and full processor evidence.
 """
 import argparse
 from datetime import timedelta
@@ -32,10 +32,20 @@ def run(config, root, rank):
     from multimodal_jev.audio_policy import load_audio
     from multimodal_jev.span_hybrid_actor import MODE, make_batch, build_actor
     from multimodal_jev.policy_identity import checkpoint_identity
+    from multimodal_jev.span_adapter_export import adapter_key
+    from multimodal_jev.slurp_instruction_resume import authenticate, load_full_schedule, schedule_cursor
+    from multimodal_jev.span_fsdp_resume import restore_local_shard
     from probe_fsdp_lora_npu import digest
-    if (torch.npu.device_count() != 4 or config['global_batch'] != 128 or config['updates'] != 2
-            or config['lora_execution_dtype'] != 'bfloat16' or config.get('initial_adapter')):
-        raise ValueError('fresh BF16 full-schedule DP4 two-update admission prefix required')
+    continuing=bool(config.get('initial_adapter'));start_update=config.get('start_update',0)
+    if (torch.npu.device_count() != 4 or config['global_batch'] != 128
+            or config['lora_execution_dtype'] != 'bfloat16'):
+        raise ValueError('BF16 global128 DP4 required')
+    if not continuing and (config['updates']!=2 or start_update!=0):
+        raise ValueError('fresh training requires the two-update admission prefix')
+    lineage=authenticate(config) if continuing else None
+    checkpoint_interval=config.get('checkpoint_interval',1)
+    if type(checkpoint_interval) is not int or checkpoint_interval<1:
+        raise ValueError('positive checkpoint interval required')
     for path, expected in config['pins'].items():
         if file_hash(path) != expected:
             raise ValueError('frozen instruction dependency changed: '+path)
@@ -52,14 +62,16 @@ def run(config, root, rank):
         processor,base=load_runtime(config['model_path'],device,'bfloat16')
         adapted=initialize_adapter(base,config).eval();model=NativeAudioSpanModel(adapted.get_base_model()).eval()
         # Preserve initial BF16 LoRA independently of subsequent optimizer masters.
-        initial_tensors={n.replace('.default.',''):p.detach().cpu().to(torch.bfloat16).clone()
+        initial_tensors={adapter_key(n):p.detach().cpu().to(torch.bfloat16).clone()
                          for n,p in adapted.named_parameters() if 'lora_A.' in n or 'lora_B.' in n}
-        if rank==0:
+        if rank==0 and not continuing:
             initial=root/'adapter-step0000';initial.mkdir()
             save_file(initial_tensors,str(initial/'adapter_model.safetensors'))
             adapted.peft_config['default'].save_pretrained(initial)
             (initial/'adapter_model.safetensors').chmod(0o644)
-        dist.barrier();initial_id=checkpoint_identity(root/'adapter-step0000')[0]
+        dist.barrier();initial_id=checkpoint_identity(config['initial_adapter'] if continuing else root/'adapter-step0000')[0]
+        if continuing and initial_id!=lineage['adapter_id']:
+            raise ValueError('loaded predecessor identity differs')
         for p in model.parameters():
             if p.requires_grad:p.data=p.data.float()
         executions={}
@@ -78,6 +90,10 @@ def run(config, root, rank):
                                           cast_forward_inputs=True,keep_low_precision_grads=False),limit_all_gathers=True)
         parameters=[p for p in wrapped.parameters() if p.requires_grad]
         optimizer=torch.optim.AdamW(parameters,lr=config['lr'],betas=(.9,.999),eps=1e-8,weight_decay=0.,foreach=False,fused=False)
+        if continuing:
+            state=torch.load(Path(config['previous_root'])/'run'/f'rank-{rank}'/f'checkpoint-{start_update:04d}.pt',map_location='cpu',weights_only=True)
+            restored=restore_local_shard(wrapped,optimizer,state,rank=rank,world_size=4,updates=start_update)
+            atomic_json(out/'restored.json',dict(**restored,lineage=lineage))
         local=config['global_batch']//4
         cfg=OmegaConf.create(dict(use_remove_padding=False,use_fused_kernels=False,ulysses_sequence_parallel_size=1,
             use_dynamic_bsz=False,use_prefix_grouper=False,entropy_from_logits_with_chunking=False,use_torch_compile=False,
@@ -88,29 +104,39 @@ def run(config, root, rank):
             global_batch_info={},grad_clip=1.,jev_policy_id=base_id+':'+initial_id))
         actor=build_actor(cfg,wrapped,optimizer)
         frozen={n:digest(p) for n,p in wrapped.named_parameters() if not p.requires_grad}
-        data_payload=[None];population=None;batches=None;task=None
+        data_payload=[None];population=None;batches=None;task=None;epoch_updates=None
         if rank==0:
             try:
                 rows,task,release=load(config['release'],config['release_sha256'],'learning',purpose='optimize')
                 population={r['id']:r for r in rows}
-                schedule=json.loads(Path(config['epoch_file']).read_text())
-                if content_hash(schedule['batches'])!=schedule['report']['batches_sha256']:
-                    raise ValueError('schedule contents changed')
-                batches=schedule['batches']
-                if schedule['report']['global_batch']!=128 or schedule['report']['recordings']!=len(rows):
-                    raise ValueError('full-population global128 schedule required')
-                data_payload[0]=dict(error=None,recordings=len(rows),schedule=schedule['report'])
+                if continuing:
+                    batches,epoch_updates,schedule_report=load_full_schedule(config)
+                    if schedule_report['unique_recordings']!=len(rows):
+                        raise ValueError('full population differs')
+                else:
+                    schedule=json.loads(Path(config['epoch_file']).read_text())
+                    if content_hash(schedule['batches'])!=schedule['report']['batches_sha256']:
+                        raise ValueError('schedule contents changed')
+                    batches=[(0,i,s) for i,s in enumerate(schedule['batches'])]
+                    epoch_updates=[len(batches)];schedule_report=schedule['report']
+                    if schedule_report['global_batch']!=128 or schedule_report['recordings']!=len(rows):
+                        raise ValueError('full-population global128 schedule required')
+                data_payload[0]=dict(error=None,recordings=len(rows),schedule=schedule_report,epoch_updates=epoch_updates)
             except Exception as exc:data_payload[0]=dict(error=repr(exc))
         dist.broadcast_object_list(data_payload,src=0)
         if data_payload[0]['error']:raise ValueError(data_payload[0]['error'])
+        epoch_updates=data_payload[0]['epoch_updates']
         atomic_json(out/'population.json',data_payload[0]);step_metrics=[]
-        for step in range(config['updates']):
+        if continuing and (state['epoch'],state['next_batch'])!=schedule_cursor(start_update,epoch_updates):
+            raise ValueError('checkpoint next epoch/batch differs from full schedule')
+        for step in range(start_update,start_update+config['updates']):
             progress('prepare_global_batch',step=step)
             payload=[None];chunks=None
             if rank==0:
                 try:
                     items=[];metadata=[]
-                    for index,slot in enumerate(batches[step]):
+                    epoch,batch_index,slots=batches[step]
+                    for index,slot in enumerate(slots):
                         row=population[slot['id']]
                         if file_hash(row['audio'])!=row['audio_sha256']:raise ValueError('audio identity changed')
                         request,target,binding=example(row,task,slot['view'],slot['variant'])
@@ -119,7 +145,7 @@ def run(config, root, rank):
                         length=inputs['input_ids'].shape[-1]
                         if length>config['context_limit']:raise ValueError('untruncated context exceeds registered limit')
                         candidates=[m['token_ids'] for m in span_labels(processor.tokenizer,request.questions)]
-                        uid=f'{row["id"]}::epoch0-batch{step}-slot{index}'
+                        uid=f'{row["id"]}::epoch{epoch}-batch{batch_index}-slot{index}'
                         items.append(dict(request_id=uid,policy_id=cfg.jev_policy_id,inputs=inputs,positions=positions,
                             candidates=candidates,targets=torch.tensor([target['targets']],dtype=torch.long),
                             supervised=torch.tensor([target['supervised']],dtype=torch.bool),
@@ -147,10 +173,19 @@ def run(config, root, rank):
                     raise ValueError('optimizer state differs')
             if {n:digest(p) for n,p in wrapped.named_parameters() if not p.requires_grad}!=frozen:
                 raise ValueError('frozen base changed')
+            next_epoch,next_batch=schedule_cursor(step+1,epoch_updates)
+            record=dict(update=step+1,seconds=seconds,metrics=metrics,admission=actor.last_admission,
+                peak_memory_allocated=torch.npu.max_memory_allocated())
+            save_now=((step+1)%checkpoint_interval==0 or next_batch==0
+                      or step+1==start_update+config['updates'])
+            if not save_now:
+                step_metrics.append(record);atomic_json(out/f'update-{step+1:04d}.json',record)
+                cfg.jev_policy_id=base_id+':'+initial_id+f':instruction-update{step+1}'
+                continue
             progress('export_checkpoint',step=step)
             dest=root/f'adapter-step{step+1:04d}'
             with FSDP.summon_full_params(wrapped,writeback=False,rank0_only=False):
-                tensors={n.replace('_fsdp_wrapped_module.','').replace('.default.',''):p.detach().cpu().to(torch.bfloat16).clone()
+                tensors={adapter_key(n):p.detach().cpu().to(torch.bfloat16).clone()
                          for n,p in adapted.named_parameters() if 'lora_A.' in n or 'lora_B.' in n}
             hashes={n:digest(p) for n,p in tensors.items()};peers=[None]*4;dist.all_gather_object(peers,hashes)
             if any(v!=hashes for v in peers):raise ValueError('cross-rank BF16 exports differ')
@@ -161,15 +196,14 @@ def run(config, root, rank):
             dist.barrier();adapter_id=checkpoint_identity(dest)[0]
             torch.save(dict(world_size=4,rank=rank,updates=step+1,names=[n for n,p in wrapped.named_parameters() if p.requires_grad],
                 parameters={n:p.detach().cpu().clone() for n,p in wrapped.named_parameters() if p.requires_grad},
-                optimizer=optimizer.state_dict(),epoch=0,next_batch=step+1,schedule_sha256=config['schedule_sha256'],
+                optimizer=optimizer.state_dict(),epoch=next_epoch,next_batch=next_batch,schedule_sha256=config['schedule_sha256'],
                 release_sha256=config['release_sha256'],adapter_id=adapter_id),out/f'checkpoint-{step+1:04d}.pt')
-            step_metrics.append(dict(update=step+1,seconds=seconds,metrics=metrics,admission=actor.last_admission,
-                peak_memory_allocated=torch.npu.max_memory_allocated(),adapter_id=adapter_id))
+            step_metrics.append(dict(**record,adapter_id=adapter_id))
             atomic_json(out/f'update-{step+1:04d}.json',step_metrics[-1]);cfg.jev_policy_id=base_id+':'+adapter_id
-        atomic_json(out/'result.json',dict(passed=True,rank=rank,updates=config['updates'],base_id=base_id,
+        atomic_json(out/'result.json',dict(passed=True,rank=rank,updates=start_update+config['updates'],executed_updates=config['updates'],base_id=base_id,
             initial_adapter_id=initial_id,final_adapter_id=adapter_id,step_metrics=step_metrics,
             execution_dtypes=executions,seconds=time.monotonic()-start,
-            scope='Two native verl resident DP4 FSDP BF16 CE updates on first 256 slots of frozen full-data schedule. Not complete Stage1, independent reload/rollout acceptance or efficacy.'))
+            scope='Native verl resident DP4 FSDP BF16 instruction CE on the fixed full-data schedule. Completed update count only; independent endpoint reload/rollout and selection efficacy require separate acceptance.'))
     finally:dist.destroy_process_group()
 
 

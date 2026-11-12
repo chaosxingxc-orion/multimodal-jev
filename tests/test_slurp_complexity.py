@@ -2,7 +2,7 @@ import pytest
 import json
 from pathlib import Path
 
-from multimodal_jev.slurp_complexity import ontology_strata, surface_flags
+from multimodal_jev.slurp_complexity import ontology_strata, surface_flags, question_pack_profile
 
 
 def test_joint_ambiguity_is_not_just_repeated_action():
@@ -42,3 +42,44 @@ def test_question_packs_have_disjoint_external_supervision():
         assert len(classes) == len(set(classes))
         assert q['values'] == list(q['class_sets']) + ['outside_family']
         assert q['supervision'] == 'ontology_projection_not_independent_audio_evidence'
+
+
+def partition_fixture():
+    return dict(questions=[
+        dict(id='domain', values=['a','b','outside_family'], default='outside_family',
+             class_sets={'a':['a1','a2'], 'b':['b1','b2']}),
+        dict(id='operation', values=['one','two','outside_family'], default='outside_family',
+             class_sets={'one':['a1','b1'], 'two':['a2','b2']})], packs={'joint':['domain','operation']})
+
+
+def test_partition_distinguishes_joint_information_from_majority_shortcut():
+    result = question_pack_profile(partition_fixture(), {'a1':2,'a2':2,'b1':2,'b2':2,'other':92})['joint']
+    assert result['joint_only_unique_classes'] == ['a1','a2','b1','b2']
+    assert result['single_question_unique_classes'] == []
+    assert result['unresolved_family_classes'] == []
+    assert result['joint_only_recordings'] == 8
+    assert result['constant_answer_accuracy'] == {'domain':.92,'operation':.92}
+
+
+def test_single_question_label_copy_is_not_joint_reasoning_support():
+    config = partition_fixture()
+    config['questions'][1]['class_sets'] = {k:[k] for k in ['a1','a2','b1','b2']}
+    config['questions'][1]['values'] = ['a1','a2','b1','b2','outside_family']
+    result = question_pack_profile(config, dict.fromkeys(['a1','a2','b1','b2','other'], 1))['joint']
+    assert result['joint_only_unique_classes'] == []
+    assert len(result['single_question_unique_classes']) == 4
+
+
+@pytest.mark.parametrize('mutation', ['overlap','unknown','duplicate_question','unknown_pack'])
+def test_reject_invalid_partition(mutation):
+    config = partition_fixture()
+    if mutation == 'overlap':
+        config['questions'][0]['class_sets']['b'].append('a1')
+    elif mutation == 'unknown':
+        config['questions'][0]['class_sets']['b'].append('absent')
+    elif mutation == 'duplicate_question':
+        config['questions'].append(config['questions'][0])
+    else:
+        config['packs']['joint'][0] = 'missing'
+    with pytest.raises(ValueError):
+        question_pack_profile(config, dict.fromkeys(['a1','a2','b1','b2','other'], 1))

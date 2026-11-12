@@ -2,7 +2,7 @@
 
 调研日期：2026-11-09（America/Los_Angeles）。范围：模型、SLU / Agentic Speech 数据集、直接音频决策研究和可复用工程方案。
 
-**当前主线是简单决策 RL、结构决策过程信用、跨数据集配置迁移。** 使用本地 Qwen3-ASR-0.6B、BF16 LoRA、四卡 FSDP 数据并行与 vLLM TP1；直接消费音频与完整问题配置，一次填充 typed Span。比较 RL 更新的持续收益及 D/Q/P 对照，不新增 RL/SFT 效果比较。FSC 用于冻结源域权重的配置迁移。SLURP 当前仅89条学习来源的意图经参考文本审核准入，未复听音频，槽位监督与独立开发评测仍须准入；不将受影响标签用于训练、奖励或模型选择。工程验收不等于任务收益，最新结果以逐次归档凭证为准。
+**当前主线是语义规约驱动的语音决策、RL+衰减CE的任务提升及跨数据集配置迁移。** 使用本地 Qwen3-ASR-0.6B、BF16 LoRA、四卡 FSDP 数据并行与 vLLM TP1；模型消费任务规约和预先提供的决策范式，一次交付typed Span，不生成推理过程。SLURP官方clean标签发布已准入40,513条学习录音，独立内部selection为9,226条；不等于逐条语义复听或槽位监督准入。采用先学习指令/规约消费、再任务RL+衰减CE的两阶段方案，不新增RL/SFT胜负比较。FSC用于冻结权重的配置迁移。工程验收不等于任务收益。
 
 2026-11-11 工作基线：[16 项数据集与指标指南](08-dataset-metrics-working-guide.md)；[单问、多问与推理学习策略](09-query-decision-learning-guide.md)。前者统一任务边界、指标与横比条件，后者分析原子决策与联合判决。用户最新要求已固定为[可配置思考与非文本判决](10-configurable-thinking-decision-contract.md)，取代文本 CoT 实验路线。意图/类型作为 Jev 主范围及具体学习策略仍是建议，不冒充用户已确认或工程已实现。
 
@@ -14,10 +14,14 @@
 
 | 文档 | 内容 |
 | --- | --- |
+| [同任务跨数据集的判决Q](22-transferable-decision-questions.md) | 最新细化：意图、槽位、绑定等共同逻辑要素，定义驱动监督与Final/迁移收益 |
+| [语义规约驱动决策](21-semantic-decision-specification.md) | 最新定位：供给概念、证据规则、决策范式与typed读出，模型理解并使用 |
 | [三条研究主线工作基线](15-rl-three-track-working-baseline.md) | 简单任务 Loss/Reward、D/Q/P 过程信用、SLURP→FSC 配置迁移与收益判据 |
 | [完整 RL 协议](14-rl-decision-credit-and-transfer.md) | 有限候选边缘 PPO、监督预算、冻结实验与证据边界 |
 | [单次 Span 契约](12-single-pass-span-cot-contract.md) | 全部问题预先给定，一次读出 typed Span，不生成文本思维链 |
 | [组合数据承载审计](16-composition-data-support.md) | 单组件捷径、组合划分可行性及多步推理结论的限制 |
+| [输入未知时的问题契约](20-query-independent-thinking-contract.md) | 当前修订：根据任务定义配置思考，不预知样本主题，不按答案选题 |
+| [判别式问句工作指南](19-discriminative-question-working-guide.md) | 人口统计保留；主题模板主方案已根据用户评审撤回 |
 | [模型与接口](01-models.md) | Qwen ASR 的最新公开版本、内部结构、适配点、替代模型与运行限制 |
 | [数据集与指标工作基线](08-dataset-metrics-working-guide.md) | 16 项资源的角色、Jev 边界、主指标、质量限制与执行顺序 |
 | [可配置思考与决策契约](10-configurable-thinking-decision-contract.md) | 思考要求、触发/停止策略、非文本判决复核及 RL 对照 |

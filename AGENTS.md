@@ -12,6 +12,16 @@
 
 ## 开发
 
+2026-11-12 prefix导出与一致性更新：发现并修复LoRA键名丢点；保留原快照，从四rank FP32分片独立重建112张量，实际PEFT重载精确。修复adapter身份85120a606c313c142e11c7444a1242cb526898bf9fa82251423b891771e7b1ac；prefix-parity-v3实际exit0，256输入HF/vLLM最大logprob误差9.54e-7、argmax变化0。无驻留FSDP输出证据，不夸大。全量恢复入口已实现但未NPU验收/派发，full processor仍运行。可迁移Q增加固定菜单与显式正/负/缺标映射；84项相关测试通过，未接入新训练。详见docs/engineering/slurp-instruction-recovery-and-predicates-v1.md。
+
+2026-11-12 最新用户明确核心是可迁移判决Q：先分析同任务跨数据集共同的逻辑判决要素，再定义“query是否表达定义中的意图”“是否包含定义中的槽位类型”等参数化Q，训练并检查Final收益。不能只提供笼统思考要求。规约供给概念/关系定义，Q算子固定、实例定义由任务配置提供，禁止gold选题。单标签成员与多意图语义存在性区别登记，缺标不能转false；先I/S，绑定/条件/状态依数据监督扩展。首版decision_questions仅编译输入未准入新训练。详见docs/research/22-transferable-decision-questions.md。
+
+2026-11-12 最新用户定位：设计语义规约及思考决策范式供模型理解、参考和使用，以服务Final；不是让模型自己生成思维链。任务级规约定义概念边界、证据、绑定/组合、优先级和typed读出；具体证据由模型从音频获取，不按样本主题预选问句。保留一次交付可配置Span，未必每条规约都对应监督头；过程缺标不造reward。两阶段主线依然有效，现有全量视图仅是工程起点，不冒称完整规约学习。详见docs/research/21-semantic-decision-specification.md，优先于历史CoT定位。
+
+2026-11-12 最新用户否定query-specific问句主设计：撤回按闹钟/日历、设备等主题模板包推进训练的建议，候选配置新增do_not_dispatch处置。固定模板不等于通用问题；禁止先猜当前样本主题再选择前置问题，禁止用gold/参考文本/离线复杂度选题。问题构造只依赖部署时已知任务定义、完整候选、本体属性和用户思考配置。通用过程问题缺标不得虚造奖励；显式属性分解与隐式计算候选均须验证，不能预先声称推理收益。现有全scenario/action视图是全本体辅助分类工程控制，不是已证明通用CoT。详见docs/research/20-query-independent-thinking-contract.md。
+
+2026-11-12 正式学习人口问句审计：40,513录音中26,834单组件可消歧、13,679需scenario/action联合；闹钟/日历两问支持6类7,422条联合消歧，设备两问支持8类2,808条。不同问句恒答outside_family可达81.68%–96.37%，过程必须报告族内指标。新问句仍candidate，不原位改冻结Stage1日程。详见docs/research/19-discriminative-question-working-guide.md；10项测试及独立人口/分区复算通过。四卡prefix实际exit0、四rank两步完成，记录见docs/engineering/slurp-instruction-prefix-v1-observed.json，尚未独立checkpoint/重载/跨后端验收，不等于Stage1或效果完成。
+
 2026-11-12 原生混合actor进展：`span_hybrid_actor`经verl注册loss接口保持原生update_policy负责累积/backward/Adam，真实四rank CPU连续更新与恢复已通过，最大梯度误差2.98e-8。全量两轮processor预检`slurp-instruction-processor-full-v2`及真实四卡global128两更新前缀`slurp-instruction-dp4-prefix-v1`已派发；这是新LoRA的执行验收，不是完成Stage1。核验实际launch/container及独立验收后才能继续全量。prefix入口尚无恢复继续功能，不能直接宣称支持完整常驻训练。详见docs/engineering/slurp-native-hybrid-actor-v1.md。普通状态检查仍至少600秒。
 
 2026-11-12 两阶段主线数据/目标进展：`datasets/slurp-jev-benchmark/official-clean-intent-v1`已发布，manifest `38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482`。官方clean标签依据，learning 40,513录音、selection 9,226录音，分别9,181/2,146来源组、均60类；已知pending整组隔离共647录音。49,739条音频已重新hash/解码，通过独立标签/人口复算，无语义复听声明。使用新的slurp_official_training接口，不关闭旧reviewed准入校验；selection禁止优化。混合CE+verl有限PPO已通过固定镜像四rank CPU梯度/Adam恢复，尚未接入native actor完整生命周期或NPU音频混合训练。详见docs/engineering/slurp-two-stage-data-and-loss-v1.md。

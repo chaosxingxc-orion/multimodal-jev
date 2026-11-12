@@ -1,0 +1,20 @@
+{
+  "version": "jev-semantic-spec-v1",
+  "id": "slurp-single-intent-request-v1",
+  "objective": "Identify the user's requested task using the complete intent candidate definitions supplied with the final decision.",
+  "evidence_rules": [
+    "Use the supplied audio as evidence. Do not invent missing context or rely on a reference transcript.",
+    "Distinguish the behavior the user requests from behaviors or entities that are only mentioned."
+  ],
+  "binding_rules": [
+    "Interpret an operation together with the object or service it applies to; a topic word alone does not determine the intent.",
+    "Interpret candidate identifiers through their supplied definitions, not their position or arbitrary output symbol."
+  ],
+  "decision_pattern": [
+    "Interpret the requested outcome from the audio.",
+    "Relate the requested operation to its object or service.",
+    "Compare that interpretation with the complete candidate definitions and their distinctions.",
+    "Make the final decision using the combined evidence and the configured output schema."
+  ],
+  "output_rule": "Fill only the configured typed decision spans. Respect each span's legal values and unknown policy. Do not generate an explanation or a reasoning trace."
+}
