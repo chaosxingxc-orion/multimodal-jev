@@ -1,0 +1,103 @@
+{
+  "passed": true,
+  "result": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-initialization-development-overlap-v1.json",
+  "result_sha256": "3ac5f57ec983192412f8a6f55fd511403ea83ad0ccc683ccb119ae963e757e74",
+  "initialization_adapter_id": "7341430053a9b4f36f5d5b8fe80616889af1857c71187d22b4895b062f557140",
+  "decoded_audio_files": 437,
+  "schedule_function_ast_matches_frozen": true,
+  "frozen_schedule_reexecuted_exact": true,
+  "schedule_function_ast_sha256": "19cc02778e0cd83318be2a52a53b0737ce13b16b6b4e60c0a99cd5514e6abc99",
+  "populations": {
+    "initialization_trained": {
+      "population": {
+        "recordings": 40,
+        "source_groups": 40,
+        "speakers": 28
+      },
+      "overlap_counts": {
+        "source_group": 0,
+        "file": 0,
+        "audio_sha256": 0,
+        "speaker": 22
+      },
+      "development_seen_speaker_recordings": 82,
+      "development_unseen_speaker_recordings": 218,
+      "pcm_duplicate_recordings": 0
+    },
+    "initialization_diagnostic": {
+      "population": {
+        "recordings": 48,
+        "source_groups": 48,
+        "speakers": 31
+      },
+      "overlap_counts": {
+        "source_group": 0,
+        "file": 0,
+        "audio_sha256": 0,
+        "speaker": 25
+      },
+      "development_seen_speaker_recordings": 88,
+      "development_unseen_speaker_recordings": 212,
+      "pcm_duplicate_recordings": 0
+    },
+    "rl_learning": {
+      "population": {
+        "recordings": 89,
+        "source_groups": 89,
+        "speakers": 52
+      },
+      "overlap_counts": {
+        "source_group": 0,
+        "file": 0,
+        "audio_sha256": 0,
+        "speaker": 45
+      },
+      "development_seen_speaker_recordings": 158,
+      "development_unseen_speaker_recordings": 142,
+      "pcm_duplicate_recordings": 0
+    },
+    "all_weight_training": {
+      "population": {
+        "recordings": 129,
+        "source_groups": 129,
+        "speakers": 64
+      },
+      "overlap_counts": {
+        "source_group": 0,
+        "file": 0,
+        "audio_sha256": 0,
+        "speaker": 53
+      },
+      "development_seen_speaker_recordings": 194,
+      "development_unseen_speaker_recordings": 106,
+      "pcm_duplicate_recordings": 0
+    },
+    "all_known_exposure": {
+      "population": {
+        "recordings": 137,
+        "source_groups": 137,
+        "speakers": 66
+      },
+      "overlap_counts": {
+        "source_group": 0,
+        "file": 0,
+        "audio_sha256": 0,
+        "speaker": 55
+      },
+      "development_seen_speaker_recordings": 198,
+      "development_unseen_speaker_recordings": 102,
+      "pcm_duplicate_recordings": 0
+    }
+  },
+  "implementation_files": {
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/audit_intent_initialization_overlap.py": "9db33e9c4fb995a3b396910b23365dee6919355aaa80a1e1dee971126cfa0799",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/audit_intent_development_overlap.py": "3085e4a116e6296a75082a769b079a1264b987c22e5d8f3f620173a41b1fb975",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/audit_intent_development_audio.py": "2569dba40f23c9661301bb3fb02fb4777f628aabfcd20e540ff698afd0a3f428",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/span_balance.py": "025d53e094e8c5bda46c5ec380fec638b6084cb0ef18403b2121950753e347a5",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/span_training.py": "7a80c0eaf0ca838a339f790ab4c5b6c43bc3de315e8f3a473532704597d39e39",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-v1/source/src/multimodal_jev/span_balance.py": "5781a5712ca347f5bd80991c4694ea2cb3af6d0c6bad169e46d577f165447192"
+  },
+  "evaluation_allowed": false,
+  "optimization_allowed": false,
+  "scope": "Known temporal initialization and current intent RL exposure only. Exact source/file/bytes/PCM and publisher speakers; no near-duplicate, pretraining, semantic listening or benchmark admission claim."
+}

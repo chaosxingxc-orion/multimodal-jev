@@ -27,3 +27,8 @@ metadata.json中的recording→usrid映射；缺失或多说话人冲突映射�
 工具`audit_intent_development_overlap.py`产生逐条可追溯映射与全部文件哈希，
 机器证据见同名JSON。5项测试覆盖来源不重叠但说话人重叠、相同音频哈希、缺失/
 歧义说话人及重复ID；实际全量资产核查已通过。原数据、学习协议与排队任务未改。
+
+补充：现已核查当前初始化adapter实际训练历史。合并40条初始化训练与89条intent
+RL后，开发未见说话人分母为106；连初始化48条诊断人口也计入则为102。
+437条已知历史/开发录音解码后跨人口完全相同PCM为0。详见
+[初始化历史补查](intent-initialization-development-overlap-v1.md)；原142条结论仍只相对89条RL人口成立。
