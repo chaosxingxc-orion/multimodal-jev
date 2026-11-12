@@ -16,6 +16,8 @@ from multimodal_jev.baseline import atomic_json,file_hash
 
 
 def validate_config(config):
+    from multimodal_jev.intent_optimizer import optimizer_kwargs
+    optimizer_kwargs(config)
     if (config['arm'] not in ('D','Q','P') or config['global_requests']!=8
             or type(config['step'])!=int or config['step']<0
             or config.get('initial_optimizer_checkpoint')
@@ -109,7 +111,8 @@ def run(config,root,out,rank):
                 buffer_dtype=torch.float32,cast_forward_inputs=True,keep_low_precision_grads=False),limit_all_gathers=True)
         parameters=[p for p in wrapped.parameters() if p.requires_grad]
         if any(p.dtype!=torch.float32 for p in parameters):raise ValueError('FP32 master shards required')
-        optimizer=torch.optim.AdamW(parameters,lr=config['lr'],weight_decay=0.,foreach=False,fused=False)
+        from multimodal_jev.intent_optimizer import optimizer_kwargs
+        optimizer=torch.optim.AdamW(parameters,**optimizer_kwargs(config))
         restored=None
         if config['step']>0:
             from multimodal_jev.span_fsdp_resume import restore_local_shard

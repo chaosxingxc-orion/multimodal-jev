@@ -1,0 +1,51 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v2",
+  "container_id": "9c503cd85c945e872afa301a30ef6d900bc2abe193a96d6e35ec4f9af377f461",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "actual_exit_code": 0,
+  "no_device_mounts": true,
+  "result": {
+    "passed": true,
+    "original_default_trajectory_exact": true,
+    "reports": [
+      {
+        "beta1": 0.9,
+        "second_step_gradient_dot_delta": 1.9877404042745184e-06,
+        "exact_resume_and_next_update": true,
+        "mismatch_rejected_before_mutation": true,
+        "restore": {
+          "rank": 0,
+          "world_size": 1,
+          "previous_updates": 2,
+          "master_shards": 1,
+          "exact_masters": true,
+          "exact_adam": true,
+          "adapter_execution_dtype": "bfloat16"
+        }
+      },
+      {
+        "beta1": 0.0,
+        "second_step_gradient_dot_delta": -4.242174167501389e-08,
+        "exact_resume_and_next_update": true,
+        "mismatch_rejected_before_mutation": true,
+        "restore": {
+          "rank": 0,
+          "world_size": 1,
+          "previous_updates": 2,
+          "master_shards": 1,
+          "exact_masters": true,
+          "exact_adam": true,
+          "adapter_execution_dtype": "bfloat16"
+        }
+      }
+    ],
+    "torch_version": "2.10.0+cpu",
+    "scope": "Synthetic CPU FP32 masters/Adam restored from BF16-rounded exports. No actual FSDP topology, NPU/audio execution or task improvement verified."
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v2/launch.json": "092c002715e0d230291d8be8e93ba6dca958917c1de9817bca5afeea631c3e12",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v2/config.json": "10ba1beda0977e9e6d6be04882c5b1b0ec5ac736f45b727b8524ed70f3031689",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v2/run/result.json": "2d4ab9b43c0e3971ea973b7e0b1f0bfa6f69666a0230e496fe00b2e76eb60089",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v2/run/terminal.json": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2"
+  }
+}

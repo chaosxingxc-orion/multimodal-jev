@@ -93,6 +93,8 @@ def verify(root,suite):
         if len(result['execution_dtypes'])!=112 or any(v!=['torch.bfloat16','torch.bfloat16'] for v in result['execution_dtypes'].values()):
             raise ValueError('112 BF16 adapter executions required')
         saved=torch.load(out/'optimizer-local.pt',map_location='cpu',weights_only=True)
+        from multimodal_jev.intent_optimizer import validate_saved_optimizer
+        validate_saved_optimizer(config,saved['optimizer'])
         if (saved['rank']!=rank or saved['world_size']!=4 or saved['updates']!=updates
                 or len(saved['names'])!=112 or set(saved['names'])!=set(saved['parameters'])):raise ValueError('optimizer layout differs')
         if any(p.dtype!=torch.float32 or not torch.isfinite(p).all() for p in saved['parameters'].values()):raise ValueError('finite FP32 masters required')

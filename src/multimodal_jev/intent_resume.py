@@ -9,6 +9,9 @@ from .baseline import file_hash
 
 
 def validate_lineage(previous,current):
+    from .intent_optimizer import optimizer_kwargs
+    if optimizer_kwargs(previous) != optimizer_kwargs(current):
+        raise ValueError('intent continuation optimizer configuration changed')
     for key in ('model_path','pilot','manifest_sha256','arm','global_requests','seed',
                 'lr','lora_rank','lora_alpha','lora_execution_dtype','runtime_profile'):
         if key not in previous or previous[key]!=current.get(key):

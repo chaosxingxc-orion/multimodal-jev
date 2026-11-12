@@ -53,3 +53,13 @@ def test_rehashed_failed_controller_still_rejected(tmp_path):
     cfg=fixture(tmp_path);path=Path(cfg['previous_suite'])/'controller-terminal.json'
     atomic_json(path,{'exit_code':1});cfg['pins'][str(path)]=file_hash(path)
     with pytest.raises(ValueError,match='acceptance failed'):authenticate(cfg)
+
+
+def test_momentum_control_requires_same_optimizer_throughout(tmp_path):
+    previous,current=configs(tmp_path)
+    current['adam_betas']=[.9,.999]
+    validate_lineage(previous,current)
+    current['adam_betas']=[0,.999]
+    with pytest.raises(ValueError,match='optimizer'):validate_lineage(previous,current)
+    previous['adam_betas']=[0,.999]
+    validate_lineage(previous,current)

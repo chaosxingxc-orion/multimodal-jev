@@ -1,0 +1,40 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1",
+  "container_id": "1947f52eb54a14e484a1cf39d515c16efa125b463e23c43c06ca93c713b38149",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [],
+  "argv": [
+    "docker",
+    "create",
+    "--pull=never",
+    "--network=none",
+    "--name",
+    "multimodal-jev-intent-optimizer-control-cpu-v1",
+    "--cpus=2",
+    "--memory=4g",
+    "-e",
+    "PYTHONPATH=/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source/src",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1:/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1:rw",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source:/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source:ro",
+    "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "python3",
+    "-B",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source/tools/jev/probe_intent_optimizer_cpu.py",
+    "--config",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/config.json",
+    "--output",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/run"
+  ],
+  "config_sha256": "bbfe04cac85e94ed2b7192ebcf8bf80a582efbec8fe9da6b3cb76b256e663c43",
+  "source_pins": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source/tools/jev/probe_intent_optimizer_cpu.py": "cfa22151045f39b5a6996c07bf1c0a268c592c7a090554b02bfde245e1fedd33",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source/src/multimodal_jev/__init__.py": "4683e26acaa4f4d35a43ac2dda24ec87a306b819a44cc2f52ff91dec867446d3",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source/src/multimodal_jev/baseline.py": "cf9e1ca0e901d0d0c694e920f7db6623e46151d767d11ea657cce9fc2f729927",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source/src/multimodal_jev/intent_optimizer.py": "02e550660bfae4a5090c07f4afdd3a5f1f91a125077fd4c62287888412182887",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-optimizer-control-cpu-v1/source/src/multimodal_jev/span_fsdp_resume.py": "ac8c6590e0ff2454ec6f237393ac5b9b77ee735da47a776a44f7ba28bdf66b25"
+  }
+}
