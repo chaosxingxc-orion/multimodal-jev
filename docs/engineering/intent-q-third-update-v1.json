@@ -1,0 +1,39 @@
+{
+  "training_root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update03-v1",
+  "suite": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-suite03-v1",
+  "comparison": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update03-v1/independent-learning-comparison.json",
+  "comparison_sha256": "575dc7e7bbc2dd6e0adde8e1a90b224f4242726d020d4a63ad21ff10288b43c1",
+  "adapter_id": "1b63d45b6e18852c78caf13b4aa9e1b0d222cd8fd9c9048f26eebc320cba36b4",
+  "summary": {
+    "full_before": {
+      "recordings": 89,
+      "final_accuracy": 0.011235955056179775,
+      "final_expected_reward": 0.016783567526269208,
+      "final_nll": 5.404245298899961,
+      "final_predicted_classes": 3,
+      "component_accuracy": {
+        "scenario": 0.06741573033707865,
+        "action": 0.011235955056179775,
+        "intent": 0.011235955056179775
+      },
+      "component_final_compatibility": 0.0
+    },
+    "full_after": {
+      "recordings": 89,
+      "final_accuracy": 0.02247191011235955,
+      "final_expected_reward": 0.01674300102432,
+      "final_nll": 5.446684431493952,
+      "final_predicted_classes": 4,
+      "component_accuracy": {
+        "scenario": 0.07865168539325842,
+        "action": 0.011235955056179775,
+        "intent": 0.02247191011235955
+      },
+      "component_final_compatibility": 0.0
+    }
+  },
+  "maximum_logprob_error": 9.5367431640625e-07,
+  "actual_training_exit_code": 0,
+  "actual_suite_exit_code": 0,
+  "scope": "Actual Docker completions authenticated by independent comparator. Learning-only Q update3; no held-out or sustained efficacy."
+}
