@@ -15,6 +15,7 @@ from multimodal_jev.span_native_actor import ACTOR_SHA256
 from multimodal_jev.slurp_intent_pilot import load_pilot
 from multimodal_jev.intent_actor_inputs import schedule
 from multimodal_jev.intent_gate_identity import verify_population
+from multimodal_jev.intent_batch_layout import rank_slice
 
 
 def verify(root,suite):
@@ -79,16 +80,16 @@ def verify(root,suite):
         audits.append(audit)
     files={};all_rank_ids=[];wire_arm='D' if config['arm']=='D' else 'Q'
     global_weight=sum(r['target']['request_weight'] for r in selected)
-    rank_weights=[sum(r['target']['request_weight'] for r in selected[i:i+2]) for i in range(0,8,2)]
+    rank_weights=[sum(r['target']['request_weight'] for r in selected[rank_slice(config,i)]) for i in range(4)]
     for rank in range(4):
-        out=root/'run'/f'rank-{rank}';result=read(out/'result.json');local_ids=ids[rank*2:rank*2+2]
+        out=root/'run'/f'rank-{rank}';result=read(out/'result.json');local_ids=ids[rank_slice(config,rank)]
         if (read(out/'terminal.json')['exit_code']!=0 or result['passed'] is not True or result['rank']!=rank
                 or result['world_size']!=4 or result['updates']!=updates or result['arm']!=config['arm']
                 or result['actor_sha256']!=ACTOR_SHA256 or result['base_id']!=base_id
                 or result['initial_policy_id']!=initial_id or result['adapter_id']!=adapter_id
                 or result['recording_ids']!=local_ids or not result['frozen_base_unchanged'] or not result['cross_rank_export_exact']):
             raise ValueError('rank contract differs')
-        expected_admission=dict(passed=True,world_size=4,global_requests=8,global_effective_weight=global_weight,rank_effective_weights=rank_weights)
+        expected_admission=dict(passed=True,world_size=4,global_requests=config['global_requests'],global_effective_weight=global_weight,rank_effective_weights=rank_weights)
         if result['admission']!=expected_admission:raise ValueError('global weighting differs')
         if len(result['execution_dtypes'])!=112 or any(v!=['torch.bfloat16','torch.bfloat16'] for v in result['execution_dtypes'].values()):
             raise ValueError('112 BF16 adapter executions required')
@@ -125,17 +126,17 @@ def verify(root,suite):
             for name in ('restored-local.pt','optimizer-resume.json'):files[str(out/name)]=file_hash(out/name)
         after=read(out/'after.json')
         if [r['id'] for r in after]!=local_ids:raise ValueError('after-update population differs')
-        for row,item in zip(after,selected[rank*2:rank*2+2],strict=True):
+        for row,item in zip(after,selected[rank_slice(config,rank)],strict=True):
             ref=refs[row['id']+'::'+wire_arm]
             expected_request=json.loads(json.dumps(item['request'].model_input()))
             if ref['request_identity']['request']!=expected_request:raise ValueError('export reloaded different request')
             if row['candidate_logprobs']!=ref['candidate_logprobs']:raise ValueError('FSDP/HF export reload not exact')
         all_rank_ids.extend(local_ids)
         for name in ('result.json','terminal.json','selection.json','before.json','after.json','optimizer-local.pt'):files[str(out/name)]=file_hash(out/name)
-    if len(set(all_rank_ids))!=8:raise ValueError('unique global sources required')
+    if len(all_rank_ids)!=config['global_requests'] or len(set(all_rank_ids))!=config['global_requests']:raise ValueError('unique global sources required')
     for name in ('READY.json','terminal.json','hf/result.json','vllm/result.json'):files[str(suite/'run'/name)]=file_hash(suite/'run'/name)
     return dict(passed=True,root=str(root),suite=str(suite),adapter_id=adapter_id,adapter_files=adapter_files,
-        updates=updates,arm=config['arm'],recordings=8,full_gate_requests=len(expected_population),
+        updates=updates,arm=config['arm'],recordings=config['global_requests'],full_gate_requests=len(expected_population),
         exact_export_reload=True,maximum_logprob_error=max(a['maximum_logprob_error'] for a in audits),
         files=files,scope='Finite-support intent update: native verl/FSDP state, applicable exact restore and independent BF16 export/HF/vLLM verified. No held-out task gain, continuous Ray trainer or transfer result.')
 

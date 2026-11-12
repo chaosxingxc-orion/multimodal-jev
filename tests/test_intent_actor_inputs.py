@@ -15,3 +15,11 @@ def test_cyclic_schedule_covers_every_source_without_partial_dp_batch():
 @pytest.mark.parametrize('step,size',[(-1,8),(0,0),(0,90),(True,8)])
 def test_rejects_invalid_schedule(step,size):
     with pytest.raises(ValueError):schedule([{'id':str(i)} for i in range(89)],317,step,size)
+
+
+def test_batch32_preserves_source_use_order_of_four_batch8_updates():
+    items=[{'id':str(i)} for i in range(89)]
+    for step in range(3):
+        large=schedule(items,317,step,32)
+        small=sum([schedule(items,317,step*4+i,8) for i in range(4)],[])
+        assert large==small and len({r['id'] for r in large})==32

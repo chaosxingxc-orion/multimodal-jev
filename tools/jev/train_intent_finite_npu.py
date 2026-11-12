@@ -16,9 +16,11 @@ from multimodal_jev.baseline import atomic_json,file_hash
 
 
 def validate_config(config):
+    from multimodal_jev.intent_batch_layout import local_requests
+    local_requests(config)
     from multimodal_jev.intent_optimizer import optimizer_kwargs
     optimizer_kwargs(config)
-    if (config['arm'] not in ('D','Q','P') or config['global_requests']!=8
+    if (config['arm'] not in ('D','Q','P')
             or type(config['step'])!=int or config['step']<0
             or config.get('initial_optimizer_checkpoint')
             or config['lora_execution_dtype']!='bfloat16'):
@@ -48,6 +50,7 @@ def run(config,root,out,rank):
     from multimodal_jev.sft import initialize_adapter
     from multimodal_jev.span_model import NativeAudioSpanModel
     from multimodal_jev.intent_actor_inputs import prepare
+    from multimodal_jev.intent_batch_layout import local_requests,rank_slice
     from probe_fsdp_lora_npu import digest
     validate_config(config)
     for path,h in config['pins'].items():
@@ -83,7 +86,7 @@ def run(config,root,out,rank):
         if rank==0:
             try:
                 items,selection=prepare(config,processor,policy_id,config['step'])
-                batch=make_global_batch(items);chunks=list(batch.split(2))
+                batch=make_global_batch(items);chunks=list(batch.split(local_requests(config)))
                 payload[0]=dict(error=None,selection=selection)
                 atomic_json(root/'selection.json',selection)
                 atomic_json(root/'supervision.json',[dict(request_id=i['request_id'],targets=i['targets'].tolist(),
@@ -92,7 +95,7 @@ def run(config,root,out,rank):
         dist.broadcast_object_list(payload,src=0)
         if payload[0]['error']:raise ValueError('controller admission failed: '+payload[0]['error'])
         incoming=[None];dist.scatter_object_list(incoming,chunks,src=0);batch=incoming[0]
-        selection=payload[0]['selection'];local_ids=selection['recording_ids'][rank*2:rank*2+2]
+        selection=payload[0]['selection'];local_ids=selection['recording_ids'][rank_slice(config,rank)]
         atomic_json(out/'selection.json',dict(**selection,rank=rank,local_recording_ids=local_ids))
         for p in model.parameters():
             if p.requires_grad:p.data=p.data.float()
@@ -127,7 +130,7 @@ def run(config,root,out,rank):
             ulysses_sequence_parallel_size=1,use_dynamic_bsz=False,use_prefix_grouper=False,
             entropy_from_logits_with_chunking=False,use_torch_compile=False,
             fsdp_config={'dtype':'bfloat16'},calculate_sum_pi_squared=False,entropy_checkpointing=False,
-            ppo_mini_batch_size=2,ppo_micro_batch_size_per_gpu=1,ppo_epochs=1,use_kl_loss=False,
+            ppo_mini_batch_size=local_requests(config),ppo_micro_batch_size_per_gpu=1,ppo_epochs=1,use_kl_loss=False,
             calculate_entropy=False,entropy_coeff=0.,loss_agg_mode='token-mean',use_rollout_log_probs=True,
             policy_loss={'loss_mode':'vanilla'},clip_ratio=.2,clip_ratio_low=None,clip_ratio_high=None,
             clip_ratio_c=3.,global_batch_info={},grad_clip=1.,jev_policy_id=policy_id))

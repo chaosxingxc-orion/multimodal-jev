@@ -1,0 +1,19 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-batch32-dp4-cpu-v1",
+  "container_id": "a535a487ec4c8791c4b2426932e7ccb321c9fba615847b94b4c245c28f2bb893",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "actual_exit_code": 0,
+  "requests_per_step": 32,
+  "world_size": 4,
+  "microbatches": [
+    1,
+    2,
+    8
+  ],
+  "steps_per_case": 2,
+  "maximum_reference_error": 5.960464477539063e-08,
+  "minimum_wrong_denominator_gradient_error": 0.032164543867111206,
+  "negative_rejections": 120,
+  "result_sha256": "703cbb7ea095166dedd22c4212becaeb6f5edea0c68576f0e57fbc7f87db16e2",
+  "scope": "Actual native verl finite-support compute/update on four Gloo/DDP CPU ranks; unequal effective rank weights including a fully masked rank; synthetic FP32 only. No NPU/audio/BF16/Ray/vLLM validation."
+}
