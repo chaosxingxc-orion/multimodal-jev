@@ -29,3 +29,7 @@ Q第1–7步正确数为2、1、2、2、2、2、2，尚无持续分类改善证�
 学习比较及验收文件。共享完整结果：
 `/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update07-v1/independent-learning-comparison.json`。
 仅89条参考文本审核学习来源，不支持独立泛化或迁移结论。
+
+后续[更新方向诊断](intent-q7-update-mechanism-v1.md)确认Q7实际位移在重建梯度
+的一阶近似下仍为下降方向，而更新后本批加权正确概率下降；不能将退化单独
+归因为动量推反，也不能以训练时clipfrac=0保证实际收益。
