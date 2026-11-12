@@ -3,7 +3,7 @@
 
 Native verl owns accumulation and Adam stepping. Each subsequent update needs
 fresh accepted behavior probabilities and exact restored FP32 master/Adam.
-This first implementation admits fresh optimizer step zero only.
+Continuation requires an independently accepted predecessor and exact shards.
 """
 import argparse
 from datetime import timedelta
@@ -17,10 +17,15 @@ from multimodal_jev.baseline import atomic_json,file_hash
 
 def validate_config(config):
     if (config['arm'] not in ('D','Q','P') or config['global_requests']!=8
-            or type(config['step'])!=int or config['step']!=0
-            or config.get('previous_root') or config.get('initial_optimizer_checkpoint')
+            or type(config['step'])!=int or config['step']<0
+            or config.get('initial_optimizer_checkpoint')
             or config['lora_execution_dtype']!='bfloat16'):
-        raise ValueError('first accepted-policy DP4/BF16 update only; no implicit optimizer reset on continuation')
+        raise ValueError('accepted-policy DP4/BF16 update required; no implicit optimizer reset')
+    if config['step']==0:
+        if config.get('previous_root') or config.get('previous_suite'):
+            raise ValueError('step zero requires fresh optimizer without predecessor')
+    elif not config.get('previous_root') or not config.get('previous_suite'):
+        raise ValueError('continuation requires accepted predecessor and optimizer')
     import math
     if type(config['lr']) not in (int,float) or not math.isfinite(config['lr']) or config['lr']<=0:
         raise ValueError('positive finite learning rate required')
@@ -56,6 +61,16 @@ def run(config,root,out,rank):
     begin=time.monotonic()
     progress=lambda phase:atomic_json(out/'progress.json',dict(phase=phase,updated_unix=time.time()))
     try:
+        lineage=[None]
+        if config['step']>0:
+            if rank==0:
+                try:
+                    from multimodal_jev.intent_resume import authenticate
+                    lineage[0]=dict(error=None,evidence=authenticate(config))
+                    atomic_json(root/'resume-lineage.json',lineage[0]['evidence'])
+                except Exception as exc:lineage[0]=dict(error=repr(exc))
+            dist.broadcast_object_list(lineage,src=0)
+            if lineage[0]['error']:raise ValueError('continuation admission failed: '+lineage[0]['error'])
         progress('load_accepted_policy')
         base_id=checkpoint_identity(config['model_path'])[0]
         policy_id=base_id+':'+checkpoint_identity(config['initial_adapter'])[0]
@@ -95,6 +110,16 @@ def run(config,root,out,rank):
         parameters=[p for p in wrapped.parameters() if p.requires_grad]
         if any(p.dtype!=torch.float32 for p in parameters):raise ValueError('FP32 master shards required')
         optimizer=torch.optim.AdamW(parameters,lr=config['lr'],weight_decay=0.,foreach=False,fused=False)
+        restored=None
+        if config['step']>0:
+            from multimodal_jev.span_fsdp_resume import restore_local_shard
+            path=Path(config['previous_root'])/'run'/f'rank-{rank}'/'optimizer-local.pt'
+            state=torch.load(path,map_location='cpu',weights_only=True)
+            restored=restore_local_shard(wrapped,optimizer,state,rank=rank,world_size=4,updates=config['step'])
+            torch.save(dict(names=[n for n,p in wrapped.named_parameters() if p.requires_grad],
+                parameters={n:p.detach().cpu().clone() for n,p in wrapped.named_parameters() if p.requires_grad},
+                optimizer=optimizer.state_dict()),out/'restored-local.pt')
+            atomic_json(out/'optimizer-resume.json',restored)
         actor_config=OmegaConf.create(dict(use_remove_padding=False,use_fused_kernels=False,
             ulysses_sequence_parallel_size=1,use_dynamic_bsz=False,use_prefix_grouper=False,
             entropy_from_logits_with_chunking=False,use_torch_compile=False,
@@ -119,14 +144,14 @@ def run(config,root,out,rank):
         if len(norms)!=1 or not torch.isfinite(torch.tensor(norms)).all() or norms[0]<=0:raise ValueError('one finite nonzero gradient required')
         for p in parameters:
             state=optimizer.state[p]
-            if p.dtype!=torch.float32 or not torch.isfinite(p).all() or state['step'].item()!=1:raise ValueError('finite master/step required')
+            if p.dtype!=torch.float32 or not torch.isfinite(p).all() or state['step'].item()!=config['step']+1:raise ValueError('finite master/step required')
             for key in ('exp_avg','exp_avg_sq'):
                 if state[key].dtype!=torch.float32 or not torch.isfinite(state[key]).all():raise ValueError('finite FP32 Adam required')
         if frozen!={n:digest(p) for n,p in wrapped.named_parameters() if not p.requires_grad}:raise ValueError('base changed')
         changed=torch.tensor([sum(before[n]!=digest(p) for n,p in wrapped.named_parameters() if p.requires_grad)],device=device)
         dist.all_reduce(changed)
         if not changed.item():raise ValueError('no adapter change')
-        torch.save(dict(world_size=4,rank=rank,updates=1,names=[n for n,p in wrapped.named_parameters() if p.requires_grad],
+        torch.save(dict(world_size=4,rank=rank,updates=config['step']+1,names=[n for n,p in wrapped.named_parameters() if p.requires_grad],
             parameters={n:p.detach().cpu().clone() for n,p in wrapped.named_parameters() if p.requires_grad},
             optimizer=optimizer.state_dict()),out/'optimizer-local.pt')
         after=[]
@@ -150,7 +175,7 @@ def run(config,root,out,rank):
             dest=root/'adapter';dest.mkdir();save_file(tensors,str(dest/'adapter_model.safetensors'))
             shutil.copyfile(Path(config['initial_adapter'])/'adapter_config.json',dest/'adapter_config.json')
         dist.barrier();adapter_id=checkpoint_identity(root/'adapter')[0]
-        atomic_json(out/'result.json',dict(passed=True,rank=rank,world_size=4,updates=1,arm=config['arm'],
+        atomic_json(out/'result.json',dict(passed=True,rank=rank,world_size=4,updates=config['step']+1,arm=config['arm'],restored=restored,
             base_id=base_id,initial_policy_id=policy_id,adapter_id=adapter_id,recording_ids=local_ids,
             admission=admission,metrics=metrics,execution_dtypes=executions,changed_shards=int(changed.item()),
             frozen_base_unchanged=True,cross_rank_export_exact=True,actor_sha256=ACTOR_SHA256,

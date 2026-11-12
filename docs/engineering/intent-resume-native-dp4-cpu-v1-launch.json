@@ -1,0 +1,33 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [],
+  "container_id": "4aa85a9f8b1bb06d853baaa885c6fde05c9f0e6bd3275718f4a349f18ab3a8c1",
+  "argv": [
+    "docker",
+    "create",
+    "--pull=never",
+    "--network=none",
+    "--name",
+    "multimodal-jev-intent-resume-native-dp4-cpu-v1",
+    "--cpus=4",
+    "--memory=16g",
+    "-e",
+    "PYTHONPATH=/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1/source/src",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1:/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1:rw",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1/source:/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1/source:ro",
+    "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "timeout",
+    "300s",
+    "python3",
+    "-B",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1/source/tools/jev/probe_intent_resume_dp_cpu.py",
+    "--output",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-resume-native-dp4-cpu-v1/run"
+  ],
+  "source_manifest_sha256": "6c2e4c2e7b864428cfbaff81b8ab689589c4465c655a3ef76de94cad9e446bd5"
+}

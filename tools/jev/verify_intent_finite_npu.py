@@ -27,6 +27,11 @@ def verify(root,suite):
         if file_hash(root/'source'/path)!=h:raise ValueError('training snapshot changed')
     from train_intent_finite_npu import validate_config
     validate_config(config)
+    updates=config['step']+1
+    if config['step']>0:
+        from multimodal_jev.intent_resume import authenticate
+        lineage=authenticate(config)
+        if read(root/'run/resume-lineage.json')!=lineage:raise ValueError('recorded continuation lineage differs')
     items,admission=load_pilot(config['pilot'],config['manifest_sha256'],config['arm'])
     selected=schedule(items,config['seed'],config['step'],config['global_requests'])
     ids=[r['id'] for r in selected]
@@ -78,7 +83,7 @@ def verify(root,suite):
     for rank in range(4):
         out=root/'run'/f'rank-{rank}';result=read(out/'result.json');local_ids=ids[rank*2:rank*2+2]
         if (read(out/'terminal.json')['exit_code']!=0 or result['passed'] is not True or result['rank']!=rank
-                or result['world_size']!=4 or result['updates']!=1 or result['arm']!=config['arm']
+                or result['world_size']!=4 or result['updates']!=updates or result['arm']!=config['arm']
                 or result['actor_sha256']!=ACTOR_SHA256 or result['base_id']!=base_id
                 or result['initial_policy_id']!=initial_id or result['adapter_id']!=adapter_id
                 or result['recording_ids']!=local_ids or not result['frozen_base_unchanged'] or not result['cross_rank_export_exact']):
@@ -88,16 +93,34 @@ def verify(root,suite):
         if len(result['execution_dtypes'])!=112 or any(v!=['torch.bfloat16','torch.bfloat16'] for v in result['execution_dtypes'].values()):
             raise ValueError('112 BF16 adapter executions required')
         saved=torch.load(out/'optimizer-local.pt',map_location='cpu',weights_only=True)
-        if (saved['rank']!=rank or saved['world_size']!=4 or saved['updates']!=1
+        if (saved['rank']!=rank or saved['world_size']!=4 or saved['updates']!=updates
                 or len(saved['names'])!=112 or set(saved['names'])!=set(saved['parameters'])):raise ValueError('optimizer layout differs')
         if any(p.dtype!=torch.float32 or not torch.isfinite(p).all() for p in saved['parameters'].values()):raise ValueError('finite FP32 masters required')
         adam=saved['optimizer']['state']
         if len(adam)!=112:raise ValueError('Adam coverage differs')
         for s in adam.values():
-            if s['step'].item()!=1:raise ValueError('Adam cursor differs')
+            if s['step'].item()!=updates:raise ValueError('Adam cursor differs')
             for name in ('exp_avg','exp_avg_sq'):
                 if s[name].dtype!=torch.float32 or not torch.isfinite(s[name]).all():raise ValueError('finite FP32 moments required')
             if (s['exp_avg_sq']<0).any():raise ValueError('negative Adam second moment')
+        if config['step']>0:
+            prior_path=Path(config['previous_root'])/'run'/f'rank-{rank}'/'optimizer-local.pt'
+            prior=torch.load(prior_path,map_location='cpu',weights_only=True)
+            restored=torch.load(out/'restored-local.pt',map_location='cpu',weights_only=True)
+            if restored['names']!=prior['names'] or set(restored['parameters'])!=set(prior['parameters']):
+                raise ValueError('restored master layout differs')
+            for name,value in prior['parameters'].items():
+                if not torch.equal(restored['parameters'][name],value):raise ValueError('restored master not exact')
+            a,b=restored['optimizer'],prior['optimizer']
+            if a['param_groups']!=b['param_groups'] or set(a['state'])!=set(b['state']):raise ValueError('restored Adam layout differs')
+            for key,fields in b['state'].items():
+                if set(a['state'][key])!=set(fields):raise ValueError('restored Adam fields differ')
+                for field,value in fields.items():
+                    if not torch.equal(a['state'][key][field],value):raise ValueError('restored Adam not exact')
+            receipt=read(out/'optimizer-resume.json')
+            if (result['restored']!=receipt or receipt['previous_updates']!=config['step']
+                    or not receipt['exact_masters'] or not receipt['exact_adam']):raise ValueError('restore receipt differs')
+            for name in ('restored-local.pt','optimizer-resume.json'):files[str(out/name)]=file_hash(out/name)
         after=read(out/'after.json')
         if [r['id'] for r in after]!=local_ids:raise ValueError('after-update population differs')
         for row,item in zip(after,selected[rank*2:rank*2+2],strict=True):
@@ -110,9 +133,9 @@ def verify(root,suite):
     if len(set(all_rank_ids))!=8:raise ValueError('unique global sources required')
     for name in ('READY.json','terminal.json','hf/result.json','vllm/result.json'):files[str(suite/'run'/name)]=file_hash(suite/'run'/name)
     return dict(passed=True,root=str(root),suite=str(suite),adapter_id=adapter_id,adapter_files=adapter_files,
-        updates=1,arm=config['arm'],recordings=8,full_gate_requests=len(expected_population),
+        updates=updates,arm=config['arm'],recordings=8,full_gate_requests=len(expected_population),
         exact_export_reload=True,maximum_logprob_error=max(a['maximum_logprob_error'] for a in audits),
-        files=files,scope='First finite-support intent update: native verl/FSDP state and independent BF16 export/HF/vLLM verified. No held-out task gain, continuous trainer or transfer result.')
+        files=files,scope='Finite-support intent update: native verl/FSDP state, applicable exact restore and independent BF16 export/HF/vLLM verified. No held-out task gain, continuous Ray trainer or transfer result.')
 
 
 if __name__=='__main__':

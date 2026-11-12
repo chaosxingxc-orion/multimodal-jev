@@ -1,0 +1,11 @@
+# 原生意图有限候选策略的连续更新恢复准备
+
+2026-11-12 UTC。首步训练与验收队列继续使用不可变旧快照，本次修改仅进入后续版本，未替换正在排队的源码。
+
+`intent_resume.py`新增续训准入：保持学习数据与manifest、D/Q/P臂、seed、global batch、LoRA配置、精度、学习率和runtime profile；step必须连续加1。initial adapter必须来自上一训练根目录，行为策略必须来自其独立验收suite。核对ACCEPTED、controller终态、verified及四个实际optimizer分片的哈希。派发控制器仍须独立核实前序容器实际退出0，文件准入不代替进程终态。
+
+`train_intent_finite_npu.py`接入既有`restore_local_shard`，保留FP32 master中低于BF16精度的信息及完整Adam状态；保存更新前真实恢复快照。更新前仍需对新行为策略的当前批次进行全候选一致性检查。`verify_intent_finite_npu.py`独立比较恢复快照与上一轮分片，逐张量核对master、Adam矩和step，然后检查更新后的导出与完整178输入gate。首步继续拒绝意外携带前序状态，续训缺少任一前序身份则拒绝。
+
+本地21项相关测试通过。固定镜像中的四个真实Gloo/DDP rank完成原生verl有限候选actor对照：不间断两次更新，与第一步落盘、BF16舍入加载、恢复FP32 master/Adam后第二次更新，最终参数及Adam逐张量精确相等。每rank均验证舍入确实丢失了master精度、恢复后精确信息回归。负对照加载正确master但清空Adam，第二步参数最大偏差0.016650795936584473。
+
+实际CPU容器退出0，结果、rank文件、源码manifest已核验，见同名verified JSON。该测试使用合成FP32特征和DDP全参数副本，不证明FSDP分片语音输入、BF16执行或HCCL续训成功，也不代表完整Ray trainer。后续仍需首步意图NPU验收成功，再冻结新版本进行第二步NPU恢复与独立后端验收。

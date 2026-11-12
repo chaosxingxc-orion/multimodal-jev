@@ -29,7 +29,7 @@ def freeze(root):
         str(training/'source-manifest.json'):launch['source_manifest_sha256']})
     parent=read(training/'config.json');check_pins(parent['pins'])
     if (parent['model_path']!=config['model'] or parent['runtime_profile']!=config['runtime_profile']
-            or parent['step']!=0):raise ValueError('training contract differs')
+            or type(parent['step'])!=int or parent['step']<0):raise ValueError('training contract differs')
     config['pins'].update(parent['pins'])
     for base in (training,root):
         source_pins={str(base/'source'/p):h for p,h in read(base/'source-manifest.json').items()}
@@ -41,11 +41,15 @@ def freeze(root):
     for rank in range(4):
         out=training/'run'/f'rank-{rank}';result=read(out/'result.json')
         if (read(out/'terminal.json')['exit_code']!=0 or result['passed'] is not True
-                or result['rank']!=rank or result['world_size']!=4 or result['updates']!=1
+                or result['rank']!=rank or result['world_size']!=4 or result['updates']!=parent['step']+1
                 or result['adapter_id']!=adapter_id or result['arm']!=parent['arm']):
             raise ValueError('successful matching finite update required')
         for name in ('result.json','terminal.json','selection.json','before.json','after.json','optimizer-local.pt'):
             config['pins'][str(out/name)]=file_hash(out/name)
+        if parent['step']>0:
+            for name in ('restored-local.pt','optimizer-resume.json'):
+                config['pins'][str(out/name)]=file_hash(out/name)
+    if parent['step']>0:config['pins'][str(training/'run/resume-lineage.json')]=file_hash(training/'run/resume-lineage.json')
     for path in (training/'launch.json',training/'config.json',training/'source-manifest.json',
                  training/'run/selection.json',training/'run/supervision.json'):
         config['pins'][str(path)]=file_hash(path)
