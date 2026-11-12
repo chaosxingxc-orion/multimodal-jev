@@ -54,3 +54,8 @@ BF16执行/导出、FP32 master/Adam、DP4和vLLM TP1保持原准入要求。
 后续自动执行入口已排队，工程验收和correctness实际状态重放通过后才继续，
 完整FSC矩阵安排在其后；参见[控制器证据](../engineering/intent-utility-curves12-controller-v1.md)。
 本段更新调度状态，不改变冻结曲线协议或说明训练已完成。
+
+补充只读报告入口已实现：`tools/jev/report_intent_utility_curves.py`，将每步
+gold margin、更新后KL/ratio裁剪质量、四rank更新前梯度及裁剪日志汇总，
+要求所有36组完整且逐项独立验收。已用实际Q7验证单步读取，完整效用曲线
+尚未执行；未修改冻结队列。参见[报告验证](../engineering/intent-update-metrics-v1.md)。
