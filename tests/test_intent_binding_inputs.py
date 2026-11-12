@@ -55,3 +55,29 @@ def test_rejects_original_template_or_false_evidence(bad):
     if bad=='support':vl['candidate_logprobs'].pop()
     if bad=='probability':vl['candidate_logprobs'][0][0]=0.
     with pytest.raises(ValueError):bind_behavior(item,hf['request_id'],identity,hf,vl,'p')
+
+
+def test_prepare_transports_external_targets_without_encoding_them(monkeypatch):
+    import torch
+    import multimodal_jev.intent_binding_inputs as module
+    item,identity,hf,vl=evidence();seen=[]
+    def encoded(row,processor,policy):
+        seen.append(row['request'].model_input())
+        return dict(request_id=hf['request_id'],policy_id=policy,inputs={},positions=None,candidates=[]),identity
+    monkeypatch.setattr(module,'encode',encoded)
+    prepared,receipt=module.prepare_item(item,None,'p',hf,vl)
+    assert prepared['targets'].dtype==torch.long
+    assert prepared['targets'].tolist()==[item['target']['targets']]
+    assert prepared['request_weight']==item['target']['request_weight']
+    assert receipt['parity']['passed']
+    assert len(seen)==1 and 'targets' not in seen[0]
+    changed=copy.deepcopy(item);changed['target']['targets'][0]=(changed['target']['targets'][0]+1)%60
+    with pytest.raises(ValueError,match='reviewed semantic'):
+        module.prepare_item(changed,None,'p',hf,vl)
+
+
+def test_encode_rejects_changed_audio_before_processor(monkeypatch):
+    import multimodal_jev.intent_binding_inputs as module
+    monkeypatch.setattr(module,'file_hash',lambda path:'changed')
+    with pytest.raises(ValueError,match='audio changed'):
+        module.encode(rows()[0],None,'p')

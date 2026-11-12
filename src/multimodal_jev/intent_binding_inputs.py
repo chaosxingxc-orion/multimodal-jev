@@ -81,3 +81,44 @@ def bind_behavior(item,request_id,identity,hf_record,vllm_record,policy_id):
     audit=compare_span_policies(hf_record['candidate_logprobs'],vllm_record['candidate_logprobs'])
     if not audit['passed']:raise ValueError('transformed HF/vLLM candidate parity failed')
     return vllm_record['candidate_logprobs'],audit
+
+
+def encode(item,processor,policy_id):
+    """Encode real audio without targets; return the exact policy-bound identity.
+
+    Loading the complete release and authenticating accepted backend records
+    remain caller responsibilities. This function never creates behavior data.
+    """
+    from .audio_policy import load_audio
+    from .span_contract import encode_span_request,span_labels
+    from .span_request_identity import bind_span_request
+    request=item['request']
+    if file_hash(request.audio)!=item['audio_sha256']:
+        raise ValueError('augmented source audio changed')
+    audio,receipt=load_audio(request.audio,return_receipt=True)
+    inputs,positions=encode_span_request(processor,request,audio)
+    if inputs['input_ids'].shape[-1]>4096:
+        raise ValueError('complete transformed input exceeds context limit')
+    candidates=[m['token_ids'] for m in span_labels(processor.tokenizer,request.questions)]
+    rid,identity=bind_span_request(request,receipt,inputs,positions,candidates,policy_id)
+    return dict(request_id=rid,policy_id=policy_id,inputs=inputs,positions=positions,
+                candidates=candidates),identity
+
+
+def prepare_item(item,processor,policy_id,hf_record,vllm_record):
+    """Prepare one actor row after the caller authenticates the full policy gate."""
+    import torch
+    encoded,identity=encode(item,processor,policy_id)
+    behavior,audit=bind_behavior(item,encoded['request_id'],identity,hf_record,vllm_record,policy_id)
+    target=item['target'];questions=item['request'].questions
+    if any(len(target[k])!=len(questions) for k in ('targets','target_values','supervised','span_weights')):
+        raise ValueError('complete transformed supervision required')
+    for q,y,value,known in zip(questions,target['targets'],target['target_values'],target['supervised'],strict=True):
+        if known is not True or type(y)!=int or not 0<=y<len(q.values) or q.values[y]!=value:
+            raise ValueError('transformed target is not its reviewed semantic value')
+    encoded.update(behavior=tuple(torch.tensor([p],dtype=torch.float32) for p in behavior),
+        targets=torch.tensor([target['targets']],dtype=torch.long),
+        supervised=torch.tensor([target['supervised']],dtype=torch.bool),
+        span_weights=torch.tensor([target['span_weights']],dtype=torch.float32),
+        request_weight=target['request_weight'])
+    return encoded,dict(gate_id=item['gate_id'],request_identity=identity,parity=audit)
