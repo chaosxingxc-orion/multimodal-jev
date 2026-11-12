@@ -24,7 +24,7 @@
 
 ## omni 参照及可比性
 
-固定来源为 `omni/repro/publication/omni`，HEAD `7e826249bfcb8abc0f095df0bfc17edaee3cea71`；文件 SHA256 及分母见 [参考锁定](../docs/research/omni-slurp-jev-reference-lock-v1.json)。以下均为 omni 历史项目结果，不是本项目新复测，也不是行业 SOTA 声明。
+固定来源为 `omni/repro/publication/omni`，锁定版本 `9acf649ef93df21dc887c5cfe9a4ac2a0f4c55c9`；文件 SHA256 及分母见 [参考锁定](../docs/research/omni-slurp-jev-reference-lock-v1.json)。已用该版本的 Git 对象逐一核验5个文件，不能用持续变化的工作区 HEAD 替代该引用。以下均为 omni 历史项目结果，不是本项目新复测，也不是行业 SOTA 声明。
 
 | 任务 | 历史结果 | 使用限制 |
 |---|---|---|
@@ -46,7 +46,7 @@ S1 的职责更接近当前 Jev 类型任务，但训练集筛选偏差仍在。
 
 先锁定监督起点，再比较同预算 SFT 与 verl RL。奖励按有效任务监督计算：意图正确性、类型正负判别及集合质量分别记录；权重和类平衡只由 TRAIN 定义。类型奖励必须检查全选/全空退化，不能用全体类型的平均负类正确率主导。批次类别均衡须在所有对照一致并披露采样分布。
 
-前置 Span 有可靠标签时才允许过程奖励，未知位置 mask。首先做无过程奖励的 Final-only 对照，再独立比较加入过程奖励；不默认奖励所有前置问题能改善 Final。已有 conditional seed17 的全部差值区间含0，尚无可靠收益；成对奖励候选也不能当作已验证主算法。
+前置 Span 有可靠标签时才允许过程奖励，未知位置 mask。首先做无过程奖励的 Final-only 对照，再独立比较加入过程奖励；不默认奖励所有前置问题能改善 Final。seed17 双留出 structured Final 上，GRPO 与 conditional 相对 SFT 的差值区间均含0，并出现几乎全判 false 的退化；其它单元存在未校正区间不含0的结果，不能概括为全部差值区间含0。成对奖励候选尚未验证，当前奖励方案不晋升主算法。详见 `docs/engineering/span-transfer-three-methods-s17-a2-v1.md`。
 
 ## 已有证据与下一步验收
 

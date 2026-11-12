@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "actual_native_compute_and_update": true,
+  "actor_sha256": "207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce",
+  "cases": [
+    {
+      "micro_batch_size": 8,
+      "passed": true,
+      "errors": {
+        "gradients": 0.0,
+        "parameters": 0.0,
+        "exp_avg": 0.0,
+        "exp_avg_sq": 0.0
+      },
+      "metrics": {
+        "actor/pg_loss": -2.9802322387695312e-08,
+        "actor/kl_loss": 0.0,
+        "actor/pg_clipfrac": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "actor/ppo_kl": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "actor/pg_clipfrac_lower": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "actor/grad_norm": [
+          0.3275814354419708
+        ]
+      },
+      "reference_mean_loss": -2.9802322387695312e-08
+    },
+    {
+      "micro_batch_size": 24,
+      "passed": true,
+      "errors": {
+        "gradients": 1.862645149230957e-09,
+        "parameters": 0.0,
+        "exp_avg": 1.8189894035458565e-10,
+        "exp_avg_sq": 4.218847493575595e-15
+      },
+      "metrics": {
+        "actor/pg_loss": -3.973643103449831e-08,
+        "actor/kl_loss": 0.0,
+        "actor/pg_clipfrac": [
+          0.0
+        ],
+        "actor/ppo_kl": [
+          0.0
+        ],
+        "actor/pg_clipfrac_lower": [
+          0.0
+        ],
+        "actor/grad_norm": [
+          0.3275814354419708
+        ]
+      },
+      "reference_mean_loss": -2.9802322387695312e-08
+    }
+  ],
+  "old_probabilities_unchanged": true,
+  "stale_policy_rejected": true,
+  "partial_group_rejected": true,
+  "pickle_roundtrip": true,
+  "changed_old_probabilities_rejected": true,
+  "reordered_group_rejected": true,
+  "scope": "Actual verl DataProto and native actor loop with explicit typed forward and scoped CPU placement; synthetic float32 model, not BF16 audio/NPU/FSDP/Ray lifecycle.",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-native-actor-cpu-v2",
+  "container_id": "b926f03da81af3d92e8efadf99d839a296ae1b8c21e4de34f1c86aa72089dedb",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "container_exit_code": 0,
+  "physical_devices": [],
+  "source_files_verified": 555,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-native-actor-cpu-v2/launch.json": "71fe1081a09018a99c44c742169076cc65a534b37c5cfcc65cf740bbdc2ad862",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-native-actor-cpu-v2/source-manifest.json": "25637102e1de138b4bb3cf98d522f8632af4c8bcca4ddc3b16eff0d6c6a32f89",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-native-actor-cpu-v2/run/result.json": "8bb821bc6e3087d54e0c292ff0c8b5ec49d70f226a6c6379dd096f31bc3de500",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-native-actor-cpu-v2/run/terminal.json": "81868a6e94ffc0178bf833deb1c9013d9fab4ee95ddb876a5e8ec4f1d26376d2"
+  }
+}
