@@ -26,6 +26,9 @@ def test_separates_template_start_from_process_credit():
     assert last['effects']['total_structure']['change_difference']['final_accuracy']==-1
     assert last['effects']['process_credit']['left_only_correct']==1
     assert out['metric_direction']['final_nll']=='lower'
+    assert out['trajectories']['Q']['complete']
+    assert out['trajectories']['Q']['metrics']['final_accuracy']['worsening_transitions']==1
+    assert out['trajectories']['P']['metrics']['final_accuracy']['unchanged_transitions']==1
 
 
 @pytest.mark.parametrize('defect',['partial','initial','qp_initial','label','role','duplicate','correctness','aggregate','schedule'])

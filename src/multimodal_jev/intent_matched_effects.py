@@ -1,5 +1,6 @@
 """Paired D/Q/P learning effects; structured inference is not structured training."""
 import math
+from .intent_learning_trajectory import summarize as summarize_trajectory
 
 
 METRICS = ('final_accuracy', 'final_macro_f1_observed', 'final_expected_reward', 'final_nll')
@@ -63,7 +64,12 @@ def compare(arms, schedule):
                 right_only_correct=sum(b[i]['correct'] and not a[i]['correct'] for i in a))
         curve.append(dict(update=step,source_uses=source_uses,
             absolute={a:values[a][step] for a in arms},change_from_initial=changes,effects=effects))
+    trajectories = {arm:summarize_trajectory(
+        [dict(update=p['update'],source_uses=p['source_uses'],metrics=p['absolute'][arm]) for p in curve],
+        registered_updates=len(schedule),
+        directions={k:-1 if k=='final_nll' else 1 for k in METRICS}) for arm in arms}
     return dict(role='learning',complete=True,recordings=len(populations['D']),updates=len(schedule),curve=curve,
+        trajectories=trajectories,
         metric_direction={k:'lower' if k=='final_nll' else 'higher' for k in METRICS},
         scope='Complete matched learning curves only. Training-arm identity and budget require external run authentication. '
               'No held-out gain, confidence interval, equal-compute or multihop-reasoning claim. No best-point selection.')
