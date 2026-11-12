@@ -21,9 +21,11 @@ HF/vLLM候选、音频重新编码、policy-bound请求摘要、每来源完整�
 
 ## 尚未完成的训练闭环
 
-绑定输出只是输入消费配置，不是可直接派发的训练恢复计划。它不修改
-previous_root/previous_suite，不绕过FP32 master/Adam恢复和原acceptance_root
-谱系限制；常驻会话需要单独连接这些状态验收后才能使用。
+初版绑定输出只是输入消费配置，原恢复路径会拒绝不同acceptance_root。
+后续开发版已增加[独立行为与恢复状态的联合认证](intent-resident-resume-v1.md)：
+保留previous_root/previous_suite及其完整FP32 master/Adam验收，只允许经完整
+resident_behavior认证的相同策略使用另一个行为概率目录。它不是可直接派发
+的常驻训练计划，动态导出、在线调度及真实两步闭环仍待接入。
 当前新函数没有真实常驻suite可供绑定，不能把模拟目录或旧独立引擎输出
 转换成成功运行凭证。既有D/Q/P和utility冻结源码继续原路径。
 
@@ -34,6 +36,7 @@ previous_root/previous_suite，不绕过FP32 master/Adam恢复和原acceptance_r
 同一组40项测试已在固定镜像的无设备CPU容器通过，实际容器退出码为0；
 实现源码与测试快照哈希一致。[固定镜像验收凭证](intent-resident-behavior-cpu-v1-verified.json)
 记录源码及日志身份。这一结果只验证绑定契约，不代表常驻NPU训练闭环完成。
+该凭证对应初版冻结源码；后续恢复集成的独立验证见上方新版本文档。
 
 关键实现：`src/multimodal_jev/intent_resident_behavior.py`及
 `tools/jev/bind_intent_resident_behavior.py`。真实上线仍需多策略suite实际成功、
