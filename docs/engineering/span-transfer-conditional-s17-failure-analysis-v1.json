@@ -1,0 +1,671 @@
+{
+  "cells": {
+    "learning_source:trained_rule_group": {
+      "initial": {
+        "arms": {
+          "final_only": {
+            "requests": 560,
+            "final_accuracy": 0.4767857142857143,
+            "final_true_rate": 0.06607142857142857,
+            "mean_final_nll": 0.7571214490104466,
+            "complement": {
+              "pairs": 280,
+              "both_correct": 3,
+              "both_wrong": 16,
+              "exactly_one_correct": 261,
+              "prediction_flips": 19,
+              "mean_probability_sum_error": 0.26726994351814665,
+              "mean_absolute_probability_change": 0.057039199014099824
+            }
+          },
+          "reordered": {
+            "requests": 560,
+            "final_accuracy": 0.5285714285714286,
+            "final_true_rate": 0.16428571428571428,
+            "mean_final_nll": 0.7399976466915437,
+            "complement": {
+              "pairs": 280,
+              "both_correct": 21,
+              "both_wrong": 5,
+              "exactly_one_correct": 254,
+              "prediction_flips": 26,
+              "mean_probability_sum_error": 0.231409600986851,
+              "mean_absolute_probability_change": 0.03649223425381846
+            },
+            "fact_pair_accuracy": 0.32142857142857145,
+            "fact_decision_accuracy": 0.5803571428571429,
+            "facts_by_final": [
+              [
+                184,
+                196
+              ],
+              [
+                80,
+                100
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 80,
+            "final_accuracy_given_both_facts_correct": 0.5555555555555556,
+            "deterministic_executor_accuracy": 0.6767857142857143,
+            "final_executor_consistency": 0.5267857142857143
+          },
+          "structured": {
+            "requests": 560,
+            "final_accuracy": 0.5125,
+            "final_true_rate": 0.16964285714285715,
+            "mean_final_nll": 0.7425423401807035,
+            "complement": {
+              "pairs": 280,
+              "both_correct": 13,
+              "both_wrong": 6,
+              "exactly_one_correct": 261,
+              "prediction_flips": 19,
+              "mean_probability_sum_error": 0.23072720648475992,
+              "mean_absolute_probability_change": 0.03136641307606008
+            },
+            "fact_pair_accuracy": 0.37142857142857144,
+            "fact_decision_accuracy": 0.6125,
+            "facts_by_final": [
+              [
+                171,
+                181
+              ],
+              [
+                102,
+                106
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 102,
+            "final_accuracy_given_both_facts_correct": 0.5096153846153846,
+            "deterministic_executor_accuracy": 0.7053571428571429,
+            "final_executor_consistency": 0.5
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      },
+      "final": {
+        "arms": {
+          "final_only": {
+            "requests": 560,
+            "final_accuracy": 0.4875,
+            "final_true_rate": 0.01607142857142857,
+            "mean_final_nll": 0.8839943153118449,
+            "complement": {
+              "pairs": 280,
+              "both_correct": 1,
+              "both_wrong": 8,
+              "exactly_one_correct": 271,
+              "prediction_flips": 9,
+              "mean_probability_sum_error": 0.4845532318389651,
+              "mean_absolute_probability_change": 0.05692539477035868
+            }
+          },
+          "reordered": {
+            "requests": 560,
+            "final_accuracy": 0.525,
+            "final_true_rate": 0.08214285714285714,
+            "mean_final_nll": 0.8127928274683655,
+            "complement": {
+              "pairs": 280,
+              "both_correct": 18,
+              "both_wrong": 4,
+              "exactly_one_correct": 258,
+              "prediction_flips": 22,
+              "mean_probability_sum_error": 0.3989396024833575,
+              "mean_absolute_probability_change": 0.059986003766487044
+            },
+            "fact_pair_accuracy": 0.26785714285714285,
+            "fact_decision_accuracy": 0.5535714285714286,
+            "facts_by_final": [
+              [
+                191,
+                219
+              ],
+              [
+                75,
+                75
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 75,
+            "final_accuracy_given_both_facts_correct": 0.5,
+            "deterministic_executor_accuracy": 0.65,
+            "final_executor_consistency": 0.5071428571428571
+          },
+          "structured": {
+            "requests": 560,
+            "final_accuracy": 0.5089285714285714,
+            "final_true_rate": 0.06607142857142857,
+            "mean_final_nll": 0.8172210084141365,
+            "complement": {
+              "pairs": 280,
+              "both_correct": 7,
+              "both_wrong": 2,
+              "exactly_one_correct": 271,
+              "prediction_flips": 9,
+              "mean_probability_sum_error": 0.4077086759145704,
+              "mean_absolute_probability_change": 0.04315391055888766
+            },
+            "fact_pair_accuracy": 0.3107142857142857,
+            "fact_decision_accuracy": 0.5910714285714286,
+            "facts_by_final": [
+              [
+                188,
+                198
+              ],
+              [
+                87,
+                87
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 87,
+            "final_accuracy_given_both_facts_correct": 0.5,
+            "deterministic_executor_accuracy": 0.6482142857142857,
+            "final_executor_consistency": 0.5
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      }
+    },
+    "learning_source:heldout_rule_group": {
+      "initial": {
+        "arms": {
+          "final_only": {
+            "requests": 280,
+            "final_accuracy": 0.525,
+            "final_true_rate": 0.060714285714285714,
+            "mean_final_nll": 0.7317449318245053,
+            "complement": {
+              "pairs": 140,
+              "both_correct": 9,
+              "both_wrong": 2,
+              "exactly_one_correct": 129,
+              "prediction_flips": 11,
+              "mean_probability_sum_error": 0.27677486518999583,
+              "mean_absolute_probability_change": 0.059043823239316166
+            }
+          },
+          "reordered": {
+            "requests": 280,
+            "final_accuracy": 0.45714285714285713,
+            "final_true_rate": 0.17142857142857143,
+            "mean_final_nll": 0.7626214898856623,
+            "complement": {
+              "pairs": 140,
+              "both_correct": 2,
+              "both_wrong": 14,
+              "exactly_one_correct": 124,
+              "prediction_flips": 16,
+              "mean_probability_sum_error": 0.2255424306628364,
+              "mean_absolute_probability_change": 0.03594031254101159
+            },
+            "fact_pair_accuracy": 0.325,
+            "fact_decision_accuracy": 0.5839285714285715,
+            "facts_by_final": [
+              [
+                98,
+                91
+              ],
+              [
+                54,
+                37
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 54,
+            "final_accuracy_given_both_facts_correct": 0.4065934065934066,
+            "deterministic_executor_accuracy": 0.6321428571428571,
+            "final_executor_consistency": 0.46785714285714286
+          },
+          "structured": {
+            "requests": 280,
+            "final_accuracy": 0.4785714285714286,
+            "final_true_rate": 0.17857142857142858,
+            "mean_final_nll": 0.7494504267615931,
+            "complement": {
+              "pairs": 140,
+              "both_correct": 3,
+              "both_wrong": 9,
+              "exactly_one_correct": 128,
+              "prediction_flips": 12,
+              "mean_probability_sum_error": 0.21987395008010693,
+              "mean_absolute_probability_change": 0.03567418269695776
+            },
+            "fact_pair_accuracy": 0.3607142857142857,
+            "fact_decision_accuracy": 0.6107142857142858,
+            "facts_by_final": [
+              [
+                91,
+                88
+              ],
+              [
+                55,
+                46
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 55,
+            "final_accuracy_given_both_facts_correct": 0.45544554455445546,
+            "deterministic_executor_accuracy": 0.6321428571428571,
+            "final_executor_consistency": 0.48214285714285715
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      },
+      "final": {
+        "arms": {
+          "final_only": {
+            "requests": 280,
+            "final_accuracy": 0.5071428571428571,
+            "final_true_rate": 0.007142857142857143,
+            "mean_final_nll": 0.8482437872261341,
+            "complement": {
+              "pairs": 140,
+              "both_correct": 2,
+              "both_wrong": 0,
+              "exactly_one_correct": 138,
+              "prediction_flips": 2,
+              "mean_probability_sum_error": 0.4898323913856229,
+              "mean_absolute_probability_change": 0.05505626259815733
+            }
+          },
+          "reordered": {
+            "requests": 280,
+            "final_accuracy": 0.475,
+            "final_true_rate": 0.06785714285714285,
+            "mean_final_nll": 0.8648260483119105,
+            "complement": {
+              "pairs": 140,
+              "both_correct": 0,
+              "both_wrong": 7,
+              "exactly_one_correct": 133,
+              "prediction_flips": 7,
+              "mean_probability_sum_error": 0.40956158049874086,
+              "mean_absolute_probability_change": 0.058707472898726985
+            },
+            "fact_pair_accuracy": 0.26785714285714285,
+            "fact_decision_accuracy": 0.5535714285714286,
+            "facts_by_final": [
+              [
+                111,
+                94
+              ],
+              [
+                36,
+                39
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 36,
+            "final_accuracy_given_both_facts_correct": 0.52,
+            "deterministic_executor_accuracy": 0.4857142857142857,
+            "final_executor_consistency": 0.5392857142857143
+          },
+          "structured": {
+            "requests": 280,
+            "final_accuracy": 0.48214285714285715,
+            "final_true_rate": 0.06785714285714285,
+            "mean_final_nll": 0.8476524882949888,
+            "complement": {
+              "pairs": 140,
+              "both_correct": 0,
+              "both_wrong": 5,
+              "exactly_one_correct": 135,
+              "prediction_flips": 5,
+              "mean_probability_sum_error": 0.4086682255769762,
+              "mean_absolute_probability_change": 0.04419443357824484
+            },
+            "fact_pair_accuracy": 0.3107142857142857,
+            "fact_decision_accuracy": 0.5928571428571429,
+            "facts_by_final": [
+              [
+                100,
+                93
+              ],
+              [
+                45,
+                42
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 45,
+            "final_accuracy_given_both_facts_correct": 0.4827586206896552,
+            "deterministic_executor_accuracy": 0.7428571428571429,
+            "final_executor_consistency": 0.48214285714285715
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      }
+    },
+    "reserved_source:trained_rule_group": {
+      "initial": {
+        "arms": {
+          "final_only": {
+            "requests": 512,
+            "final_accuracy": 0.49609375,
+            "final_true_rate": 0.10546875,
+            "mean_final_nll": 0.7472839103720617,
+            "complement": {
+              "pairs": 256,
+              "both_correct": 17,
+              "both_wrong": 19,
+              "exactly_one_correct": 220,
+              "prediction_flips": 36,
+              "mean_probability_sum_error": 0.24825195100501685,
+              "mean_absolute_probability_change": 0.06758930214510266
+            }
+          },
+          "reordered": {
+            "requests": 512,
+            "final_accuracy": 0.51171875,
+            "final_true_rate": 0.20703125,
+            "mean_final_nll": 0.7412138219806366,
+            "complement": {
+              "pairs": 256,
+              "both_correct": 19,
+              "both_wrong": 13,
+              "exactly_one_correct": 224,
+              "prediction_flips": 32,
+              "mean_probability_sum_error": 0.1869556635385147,
+              "mean_absolute_probability_change": 0.03757436934263413
+            },
+            "fact_pair_accuracy": 0.30078125,
+            "fact_decision_accuracy": 0.521484375,
+            "facts_by_final": [
+              [
+                172,
+                186
+              ],
+              [
+                78,
+                76
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 78,
+            "final_accuracy_given_both_facts_correct": 0.4935064935064935,
+            "deterministic_executor_accuracy": 0.615234375,
+            "final_executor_consistency": 0.509765625
+          },
+          "structured": {
+            "requests": 512,
+            "final_accuracy": 0.50390625,
+            "final_true_rate": 0.17578125,
+            "mean_final_nll": 0.7394652100338135,
+            "complement": {
+              "pairs": 256,
+              "both_correct": 12,
+              "both_wrong": 10,
+              "exactly_one_correct": 234,
+              "prediction_flips": 22,
+              "mean_probability_sum_error": 0.1894415525004912,
+              "mean_absolute_probability_change": 0.033162369612730946
+            },
+            "fact_pair_accuracy": 0.296875,
+            "fact_decision_accuracy": 0.5078125,
+            "facts_by_final": [
+              [
+                175,
+                185
+              ],
+              [
+                79,
+                73
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 79,
+            "final_accuracy_given_both_facts_correct": 0.48026315789473684,
+            "deterministic_executor_accuracy": 0.62109375,
+            "final_executor_consistency": 0.48828125
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      },
+      "final": {
+        "arms": {
+          "final_only": {
+            "requests": 512,
+            "final_accuracy": 0.505859375,
+            "final_true_rate": 0.005859375,
+            "mean_final_nll": 0.8821580011463084,
+            "complement": {
+              "pairs": 256,
+              "both_correct": 3,
+              "both_wrong": 0,
+              "exactly_one_correct": 253,
+              "prediction_flips": 3,
+              "mean_probability_sum_error": 0.5001676302021927,
+              "mean_absolute_probability_change": 0.05696495788677734
+            }
+          },
+          "reordered": {
+            "requests": 512,
+            "final_accuracy": 0.505859375,
+            "final_true_rate": 0.060546875,
+            "mean_final_nll": 0.8171159540506778,
+            "complement": {
+              "pairs": 256,
+              "both_correct": 8,
+              "both_wrong": 5,
+              "exactly_one_correct": 243,
+              "prediction_flips": 13,
+              "mean_probability_sum_error": 0.37216963143246284,
+              "mean_absolute_probability_change": 0.05866331684633873
+            },
+            "fact_pair_accuracy": 0.30078125,
+            "fact_decision_accuracy": 0.51953125,
+            "facts_by_final": [
+              [
+                178,
+                180
+              ],
+              [
+                75,
+                79
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 75,
+            "final_accuracy_given_both_facts_correct": 0.512987012987013,
+            "deterministic_executor_accuracy": 0.61328125,
+            "final_executor_consistency": 0.513671875
+          },
+          "structured": {
+            "requests": 512,
+            "final_accuracy": 0.490234375,
+            "final_true_rate": 0.048828125,
+            "mean_final_nll": 0.8158105308102677,
+            "complement": {
+              "pairs": 256,
+              "both_correct": 2,
+              "both_wrong": 7,
+              "exactly_one_correct": 247,
+              "prediction_flips": 9,
+              "mean_probability_sum_error": 0.3771407023163464,
+              "mean_absolute_probability_change": 0.044022640552681125
+            },
+            "fact_pair_accuracy": 0.28125,
+            "fact_decision_accuracy": 0.505859375,
+            "facts_by_final": [
+              [
+                188,
+                180
+              ],
+              [
+                73,
+                71
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 73,
+            "final_accuracy_given_both_facts_correct": 0.4930555555555556,
+            "deterministic_executor_accuracy": 0.587890625,
+            "final_executor_consistency": 0.5078125
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      }
+    },
+    "reserved_source:heldout_rule_group": {
+      "initial": {
+        "arms": {
+          "final_only": {
+            "requests": 256,
+            "final_accuracy": 0.52734375,
+            "final_true_rate": 0.07421875,
+            "mean_final_nll": 0.7302547449653503,
+            "complement": {
+              "pairs": 128,
+              "both_correct": 10,
+              "both_wrong": 3,
+              "exactly_one_correct": 115,
+              "prediction_flips": 13,
+              "mean_probability_sum_error": 0.2531889886299611,
+              "mean_absolute_probability_change": 0.06264469999893678
+            }
+          },
+          "reordered": {
+            "requests": 256,
+            "final_accuracy": 0.4765625,
+            "final_true_rate": 0.1953125,
+            "mean_final_nll": 0.7572857066406868,
+            "complement": {
+              "pairs": 128,
+              "both_correct": 5,
+              "both_wrong": 11,
+              "exactly_one_correct": 112,
+              "prediction_flips": 16,
+              "mean_probability_sum_error": 0.18885242433331742,
+              "mean_absolute_probability_change": 0.03672083587685311
+            },
+            "fact_pair_accuracy": 0.30859375,
+            "fact_decision_accuracy": 0.5234375,
+            "facts_by_final": [
+              [
+                93,
+                84
+              ],
+              [
+                41,
+                38
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 41,
+            "final_accuracy_given_both_facts_correct": 0.4810126582278481,
+            "deterministic_executor_accuracy": 0.6484375,
+            "final_executor_consistency": 0.484375
+          },
+          "structured": {
+            "requests": 256,
+            "final_accuracy": 0.484375,
+            "final_true_rate": 0.1875,
+            "mean_final_nll": 0.7485098499746528,
+            "complement": {
+              "pairs": 128,
+              "both_correct": 3,
+              "both_wrong": 7,
+              "exactly_one_correct": 118,
+              "prediction_flips": 10,
+              "mean_probability_sum_error": 0.1801490901326536,
+              "mean_absolute_probability_change": 0.03621045059407676
+            },
+            "fact_pair_accuracy": 0.296875,
+            "fact_decision_accuracy": 0.50390625,
+            "facts_by_final": [
+              [
+                91,
+                89
+              ],
+              [
+                41,
+                35
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 41,
+            "final_accuracy_given_both_facts_correct": 0.4605263157894737,
+            "deterministic_executor_accuracy": 0.63671875,
+            "final_executor_consistency": 0.50390625
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      },
+      "final": {
+        "arms": {
+          "final_only": {
+            "requests": 256,
+            "final_accuracy": 0.50390625,
+            "final_true_rate": 0.00390625,
+            "mean_final_nll": 0.8676704941317439,
+            "complement": {
+              "pairs": 128,
+              "both_correct": 1,
+              "both_wrong": 0,
+              "exactly_one_correct": 127,
+              "prediction_flips": 1,
+              "mean_probability_sum_error": 0.4998397158634526,
+              "mean_absolute_probability_change": 0.055605922832452075
+            }
+          },
+          "reordered": {
+            "requests": 256,
+            "final_accuracy": 0.49609375,
+            "final_true_rate": 0.05078125,
+            "mean_final_nll": 0.8512943357418408,
+            "complement": {
+              "pairs": 128,
+              "both_correct": 3,
+              "both_wrong": 4,
+              "exactly_one_correct": 121,
+              "prediction_flips": 7,
+              "mean_probability_sum_error": 0.38173175644821183,
+              "mean_absolute_probability_change": 0.05744080674211862
+            },
+            "fact_pair_accuracy": 0.30078125,
+            "fact_decision_accuracy": 0.521484375,
+            "facts_by_final": [
+              [
+                91,
+                88
+              ],
+              [
+                38,
+                39
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 38,
+            "final_accuracy_given_both_facts_correct": 0.5064935064935064,
+            "deterministic_executor_accuracy": 0.60546875,
+            "final_executor_consistency": 0.5
+          },
+          "structured": {
+            "requests": 256,
+            "final_accuracy": 0.4921875,
+            "final_true_rate": 0.0390625,
+            "mean_final_nll": 0.8368061784713063,
+            "complement": {
+              "pairs": 128,
+              "both_correct": 1,
+              "both_wrong": 3,
+              "exactly_one_correct": 124,
+              "prediction_flips": 4,
+              "mean_probability_sum_error": 0.37812802631247167,
+              "mean_absolute_probability_change": 0.043391110886016875
+            },
+            "fact_pair_accuracy": 0.28515625,
+            "fact_decision_accuracy": 0.509765625,
+            "facts_by_final": [
+              [
+                93,
+                90
+              ],
+              [
+                37,
+                36
+              ]
+            ],
+            "final_errors_with_both_facts_correct": 37,
+            "final_accuracy_given_both_facts_correct": 0.4931506849315068,
+            "deterministic_executor_accuracy": 0.7265625,
+            "final_executor_consistency": 0.484375
+          }
+        },
+        "scope": "Post-hoc fixed-policy error decomposition; no causal attribution, reward update, checkpoint selection or additional model inference. Deterministic executor is a diagnostic only."
+      }
+    }
+  },
+  "verified_comparison_sha256": "a8f478103599c4b9a43e427e845292808e4075c3bccf2facef1210e9108842da",
+  "study_sha256": "cafffabd98c79410d9b91d14f281069fe2084af2d9513f43a8ea25f85c826d05",
+  "scope": "Post-hoc descriptive diagnosis of all prespecified cells and arms. No new inference, causal claim, changed training reward or checkpoint selection."
+}
