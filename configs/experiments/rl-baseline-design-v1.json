@@ -1,0 +1,84 @@
+{
+  "schema": "jev-rl-baseline-design-v1",
+  "status": "design_registered_engineering_not_locked",
+  "training_dispatch_allowed": false,
+  "required_order": ["task_and_q_definition_frozen", "engineering_and_experiment_config_accepted", "training"],
+  "runtime_candidate": {
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "verl_commit": "e9405d70b77d56a23e72bb2e40a17b906856e913",
+    "verl_core_algos_sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+    "model": "Qwen3-ASR-0.6B",
+    "physical_devices": [4,5,6,7],
+    "actor_parallelism": "FSDP_FULL_SHARD_DP4",
+    "rollout_parallelism": "vLLM_TP1",
+    "execution_dtype": "bfloat16",
+    "optimizer_master_dtype": "float32",
+    "lora": {"rank": 4, "alpha": 8, "dropout": 0, "targets": "language_q_v"}
+  },
+  "common_policy_contract": {
+    "input": "audio_plus_frozen_task_definitions_and_fixed_Q_menu",
+    "action": "one_complete_typed_span_assignment",
+    "distribution": "product_of_categorical_span_policies_given_same_input",
+    "action_logprob": "sum_of_active_span_logprobs",
+    "transition_steps": 1,
+    "generation": false,
+    "sampling_temperature": 1.0,
+    "samples_per_request": 16,
+    "request_normalization": "mean_over_real_requests_then_mean_over_action_samples",
+    "ppo_clip_ratio": 0.2,
+    "dual_clip": null,
+    "optimizer_epochs_per_behavior_batch": 2,
+    "shuffle_seed": 317,
+    "reference_kl": {"type": "exact_sum_of_marginal_KL_policy_to_fixed_stage1_reference", "coefficient": 0.01},
+    "task_stage_ce": {"start": 1.0, "end": 0.1, "decay_fraction": 0.8, "schedule": "cosine", "unit": "global_optimizer_update"},
+    "outer_class_weighting": "none_initial_class_interleaved_full_population",
+    "note": "Registered initial comparison design; numerical settings require task-finalization and engineering acceptance before release lock. No task-specific reward inferred here."
+  },
+  "profiles": {
+    "ppo_critic_v1": {
+      "advantage": "one_step_return_minus_detached_V_of_input",
+      "verl_reference": "compute_gae_advantage_return",
+      "gamma": 1.0,
+      "gae_lambda": 1.0,
+      "actor_objective": "clipped_joint_action_PPO",
+      "critic": "separate_learner_value_head_on_audio_task_input_not_sampled_answers",
+      "critic_loss": "return_regression_with_value_clipping",
+      "status": "not_integrated_not_accepted"
+    },
+    "grpo_v1": {
+      "advantage": "group_reward_minus_group_mean_divided_by_sample_std_plus_1e-6",
+      "verl_reference": "compute_grpo_outcome_advantage",
+      "norm_adv_by_std_in_grpo": true,
+      "actor_objective": "clipped_joint_action_surrogate",
+      "critic": null,
+      "status": "not_integrated_not_accepted"
+    },
+    "rloo_v1": {
+      "advantage": "reward_minus_mean_reward_of_other_samples_same_request",
+      "verl_reference": "compute_rloo_outcome_advantage",
+      "actor_objective": "clipped_joint_action_surrogate",
+      "critic": null,
+      "note": "RLOO advantage with PPO clipping; explicitly distinguish from an unclipped REINFORCE-RLOO implementation.",
+      "status": "not_integrated_not_accepted"
+    },
+    "jev_exact_marginal_legacy": {
+      "advantage": "w_j_times_indicator_correct_minus_old_gold_probability",
+      "actor_objective": "old_policy_quadrature_of_marginal_clipped_surrogates",
+      "dual_clip": 3.0,
+      "critic": null,
+      "scope": "additive_rewards_only",
+      "status": "existing_custom_diagnostic_not_a_standard_algorithm_baseline"
+    }
+  },
+  "stepwise_extensions": {
+    "status": "design_only_after_common_profiles_accepted",
+    "first_factor": "outcome_only_vs_fixed_budget_supervised_Q_credit",
+    "second_factor": "shared_joint_advantage_vs_per_node_conditional_credit",
+    "conditional_advantage": "E_old[R_given_input_and_node_action]-E_old[R_given_input]",
+    "no_temporal_GAE_over_parallel_spans": true,
+    "missing_supervision": "mask_never_false",
+    "process_budget": 0.2,
+    "per_component_std_normalization": false,
+    "reward_schema": "must_be_frozen_per_task_before_launch"
+  }
+}

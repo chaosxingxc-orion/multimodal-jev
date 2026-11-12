@@ -14,6 +14,7 @@
 
 | 文档 | 内容 |
 | --- | --- |
+| [任务、工程与RL配置锁定](23-task-engineering-rl-baseline-lock.md) | 最新执行顺序；实际算法审计；PPO/GRPO/RLOO统一配置及step-wise信用方案 |
 | [同任务跨数据集的判决Q](22-transferable-decision-questions.md) | 最新细化：意图、槽位、绑定等共同逻辑要素，定义驱动监督与Final/迁移收益 |
 | [语义规约驱动决策](21-semantic-decision-specification.md) | 最新定位：供给概念、证据规则、决策范式与typed读出，模型理解并使用 |
 | [三条研究主线工作基线](15-rl-three-track-working-baseline.md) | 简单任务 Loss/Reward、D/Q/P 过程信用、SLURP→FSC 配置迁移与收益判据 |
