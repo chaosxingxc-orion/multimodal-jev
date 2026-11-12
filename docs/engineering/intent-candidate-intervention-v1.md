@@ -8,6 +8,8 @@
 
 CPU检查使用固定镜像且不挂NPU，读取已成功完成的全178输入processor产物；逐项核对native token身份与读出位置、原音频哈希、所有变体的特征身份和4096上下文上限。产物位于`/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-candidate-intervention-processor-cpu-v1`。启动回执记录精确容器身份；最终完成状态以独立verified回执为准。
 
+CPU验收现已完成：容器`4679321861b9ebf86cbfff3b1e7115b8a83ed4e0317803255748817d6b4c4e5c`实际退出0，89条音频、712请求覆盖完整，最长3627tokens。独立复核重新编译全部视图，验证映射、音频处理回执及特征完全一致；native视图的token、读出位置和候选映射逐项复现。结果哈希`59fcf98751ed6abcf0ceb955cdb6eab9a2540316f56320ef8a42a7754c3abbc2`，详见`intent-candidate-intervention-processor-cpu-v1-verified.json`。相关编译、分布统计和冻结意图契约共16项测试通过。此结果只证明输入有效，不证明配置迁移或模型能力。
+
 后续模型诊断应固定step0和已接受step4两份权重，先完成全候选HF/vLLM验收，再同时报告所有视图：
 
 - 映射还原后的语义分布TV、语义greedy一致率。
