@@ -12,7 +12,7 @@ import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
-from multimodal_jev.baseline import atomic_json
+from multimodal_jev.baseline import atomic_json, file_hash
 from probe_span_native_actor_dp_cpu import Model, config, optimizer, snapshot
 from probe_span_finite_actor_dp_cpu import make_items, backward_reference
 
@@ -20,29 +20,40 @@ from probe_span_finite_actor_dp_cpu import make_items, backward_reference
 def worker(rank, output):
     from multimodal_jev.span_finite_actor import make_global_batch, build_actor, admit_batch
     from multimodal_jev.verl_cpu_logprobs import native_actor_cpu_device
+    from multimodal_jev.span_training_session import SpanTrainingSession
     output = Path(output); torch.set_num_threads(1); torch.manual_seed(317)
     if list(Path('/dev').glob('davinci[0-9]*')): raise ValueError('CPU only')
     dist.init_process_group('gloo', init_method=(output/'gloo-init').resolve().as_uri(),
         rank=rank, world_size=4, timeout=timedelta(seconds=90))
     try:
+        def gather(value):
+            peers=[None]*4;dist.all_gather_object(peers,value);return peers
         initial = copy.deepcopy(Model().state_dict())
         reference = Model(); reference.load_state_dict(initial); refopt = optimizer(reference)
         branches = {}
         for key in ('resident', 'resumed'):
             module = Model(); module.load_state_dict(initial); model = DDP(module); opt = optimizer(model)
             cfg = config(1, 'policy0'); cfg.ppo_mini_batch_size = 2
-            branches[key] = dict(model=model, optimizer=opt, actor=build_actor(cfg, model, opt))
+            actor=build_actor(cfg,model,opt)
+            branches[key] = dict(model=model, optimizer=opt, actor=actor,
+                session=SpanTrainingSession(actor,policy_id='policy0',completed_updates=0,gather=gather))
         cases = []; restored = False
         for step in range(8):
             if step == 4:
                 prior = branches['resumed']; path = output/f'rank-{rank}-step4.pt'
                 torch.save(dict(model=prior['model'].module.state_dict(), optimizer=prior['optimizer'].state_dict(),
                                 completed_updates=4, next_policy='policy4', rank=rank, world_size=4), path)
+                import hashlib
+                checkpoint_id=hashlib.sha256(json.dumps(gather(file_hash(path))).encode()).hexdigest()
+                cursor=prior['session'].checkpoint_cursor(schedule_sha256='synthetic-eight-update-seed918-v1',checkpoint_id=checkpoint_id)
+                atomic_json(output/f'rank-{rank}-session-step4.json',cursor)
                 saved = torch.load(path, map_location='cpu', weights_only=True)
                 assert saved['rank'] == rank and saved['world_size'] == 4 and saved['completed_updates'] == step
                 module = Model(); module.load_state_dict(saved['model']); model = DDP(module); opt = optimizer(model)
                 opt.load_state_dict(saved['optimizer']); cfg = config(1, saved['next_policy']); cfg.ppo_mini_batch_size = 2
-                branches['resumed'] = dict(model=model, optimizer=opt, actor=build_actor(cfg, model, opt))
+                actor=build_actor(cfg,model,opt)
+                branches['resumed'] = dict(model=model, optimizer=opt, actor=actor,
+                    session=SpanTrainingSession.restore(actor,cursor,schedule_sha256='synthetic-eight-update-seed918-v1',checkpoint_id=checkpoint_id,gather=gather))
                 for old, new in zip(prior['model'].parameters(), model.parameters(), strict=True):
                     assert torch.equal(old, new)
                     for field in ('step', 'exp_avg', 'exp_avg_sq'):
@@ -57,14 +68,14 @@ def worker(rank, output):
             expected = snapshot(reference, refopt, gradients); measured = {}; errors = {}; stale_rejections = []
             for key, branch in branches.items():
                 model, opt, actor = (branch[k] for k in ('model', 'optimizer', 'actor'))
+                session=branch['session']
+                assert session.policy_id==f'policy{step}' and session.completed_updates==step
                 if step:
-                    # The resident actor still carries the preceding policy ID.
-                    # A new batch cannot be consumed until the ID is advanced.
-                    if key == 'resident' or step != 4:
-                        try: admit_batch(batch, actor.config)
-                        except ValueError: stale_rejections.append(key)
-                        else: raise AssertionError('new behavior accepted under stale resident policy ID')
-                actor.config.jev_policy_id = f'policy{step}'
+                    stale=copy.deepcopy(batch)
+                    for payload in stale.non_tensor_batch['multi_modal_inputs']:payload['policy_id']=f'policy{step-1}'
+                    try:admit_batch(stale,actor.config)
+                    except ValueError:stale_rejections.append(key)
+                    else:raise AssertionError('stale behavior accepted')
                 captured = {}; original = actor._optimizer_step
                 def capture(original=original, captured=captured, model=model):
                     captured['gradients'] = [p.grad.detach().clone() for p in model.parameters()]
@@ -75,7 +86,7 @@ def worker(rank, output):
                     with native_actor_cpu_device(actor):
                         computed = actor.compute_log_prob(batch)['log_probs']
                         torch.testing.assert_close(computed, old, atol=2e-7, rtol=2e-5)
-                        metrics = actor.update_policy(batch)
+                        metrics = session.update(batch)
                 finally: actor._optimizer_step = original
                 assert torch.equal(old, batch.batch['old_log_probs'])
                 assert all(opt.state[p]['step'].item() == step+1 for p in model.parameters())
@@ -84,6 +95,17 @@ def worker(rank, output):
                     errors[key][field] = max(float((a-b).abs().max()) for a, b in zip(values, actual[field], strict=True))
                     for a, b in zip(values, actual[field], strict=True):
                         torch.testing.assert_close(a, b, atol=2e-7, rtol=2e-5)
+                try:session.update(batch)
+                except ValueError:pass
+                else:raise AssertionError('unaccepted second update permitted')
+                session.publish(f'policy{step+1}')
+                # Independent numerical reference check; synthetic CPU only.
+                def verify(policy,updates):
+                    for field,values in expected.items():
+                        for a,b in zip(values,actual[field],strict=True):torch.testing.assert_close(a,b,atol=2e-7,rtol=2e-5)
+                    assert policy==f'policy{step+1}' and updates==step+1
+                    return dict(passed=True,policy_id=policy,updates=updates)
+                session.accept(verify)
             exact = {}
             for field in expected:
                 exact[field] = all(torch.equal(a, b) for a, b in zip(measured['resident'][field], measured['resumed'][field], strict=True))
@@ -104,7 +126,7 @@ if __name__ == '__main__':
         ranks = [json.loads((a.output/f'rank-{i}.json').read_text()) for i in range(4)]
         if not all(r['passed'] for r in ranks): raise ValueError('incomplete ranks')
         atomic_json(a.output/'result.json', dict(passed=True, ranks=ranks, world_size=4, updates=8,
-            scope='Synthetic FP32 four-Gloo-rank resident native verl actor and exact mid-run model/Adam reload. '
+            scope='Reusable session with synthetic FP32 four-Gloo-rank resident native verl actor and exact model/Adam/cursor reload. '
                   'Unequal request weights and fully masked rank retained. No audio/NPU/BF16/FSDP/vLLM/Ray validation.'))
         atomic_json(a.output/'terminal.json', {'exit_code': 0})
     except BaseException as exc:

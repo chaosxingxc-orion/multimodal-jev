@@ -7,3 +7,5 @@
 任务配置、名单、processor文件及源码均固定哈希。程序只读取发布后的音频名单，不调用官方CSV标签提取器，不加载模型权重，不输出预测或目标域分数。官方划分完整性由既有名单发布负责，本工具不把自报的recordings数作为新的官方完整性认证。
 
 共享根目录为`/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-official-test-processor-cpu-v1`，结果预期为`run/result.json`，成功需实际Docker退出0和`run/terminal.json`相符。失败/超时保留原容器与终态，不自动替换或删样本规避。该检查独立于D/Q/P NPU队列，不选择源域checkpoint，也不授予迁移收益声明。
+
+完成更新：实际Docker退出0，全部3793条、10位说话人、22758请求已处理。最长完整输入3031tokens，六视图各3793条，无截断或缺失。独立复核逐条模型输入与固定task编译结果、绑定、音频哈希、同录音跨视图音频特征/处理身份及请求覆盖，全部通过；文件pins与终态一致。见`fsc-official-test-processor-cpu-v1-verified.json`。没有模型权重推理或目标标签评分，该产物现可作为后续正式目标gate的固定CPU输入。
