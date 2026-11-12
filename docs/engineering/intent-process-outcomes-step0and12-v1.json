@@ -1,0 +1,198 @@
+{
+  "reports": [
+    {
+      "update": 0,
+      "adapter_id": "7341430053a9b4f36f5d5b8fe80616889af1857c71187d22b4895b062f557140",
+      "gate": {
+        "passed": true,
+        "requests": 178,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "joint_ratio_range": [
+          0.9999990463261383,
+          1.0000010728841815
+        ],
+        "scope": "Full pilot input/policy parity, not held-out efficacy."
+      },
+      "outcomes": {
+        "recordings": 89,
+        "signature_order": [
+          "scenario",
+          "action",
+          "Final"
+        ],
+        "correctness_patterns": {
+          "000": 81,
+          "001": 1,
+          "010": 0,
+          "011": 0,
+          "100": 7,
+          "101": 0,
+          "110": 0,
+          "111": 0
+        },
+        "all_three_correct": 0,
+        "both_process_correct": 0,
+        "final_correct": 1,
+        "compatible": 0,
+        "compatible_but_final_wrong": 0,
+        "both_process_correct_but_final_wrong": 0,
+        "final_correct_with_process_error": 1,
+        "conditional_final": {
+          "both_process_correct": {
+            "recordings": 0,
+            "final_correct": 0,
+            "final_accuracy": null
+          },
+          "some_process_wrong": {
+            "recordings": 89,
+            "final_correct": 1,
+            "final_accuracy": 0.011235955056179775
+          }
+        },
+        "mean_expected_process_reward": 0.00880376488321887,
+        "mean_expected_final_reward": 0.016712095506795893,
+        "scope": "Unweighted learning population. Process reward is counterfactual 0.1/0.1; no training-arm inference or causal mediation claim."
+      },
+      "from_first": {
+        "recordings": 89,
+        "final_gains": 0,
+        "final_losses": 0,
+        "both_process_repaired_final_still_wrong": 0,
+        "both_process_and_final_repaired": 0,
+        "cells": [
+          {
+            "before": "000",
+            "after": "000",
+            "recordings": 81
+          },
+          {
+            "before": "001",
+            "after": "001",
+            "recordings": 1
+          },
+          {
+            "before": "100",
+            "after": "100",
+            "recordings": 7
+          }
+        ]
+      }
+    },
+    {
+      "update": 12,
+      "adapter_id": "1815810ce3a4e7c4e0263e02e1a8f77e6c21881efe089c9bde8b89b58901b4c5",
+      "gate": {
+        "passed": true,
+        "requests": 178,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "joint_ratio_range": [
+          0.999998807907815,
+          1.0000009536747712
+        ],
+        "scope": "Full pilot input/policy parity, not held-out efficacy."
+      },
+      "outcomes": {
+        "recordings": 89,
+        "signature_order": [
+          "scenario",
+          "action",
+          "Final"
+        ],
+        "correctness_patterns": {
+          "000": 79,
+          "001": 2,
+          "010": 1,
+          "011": 0,
+          "100": 7,
+          "101": 0,
+          "110": 0,
+          "111": 0
+        },
+        "all_three_correct": 0,
+        "both_process_correct": 0,
+        "final_correct": 2,
+        "compatible": 0,
+        "compatible_but_final_wrong": 0,
+        "both_process_correct_but_final_wrong": 0,
+        "final_correct_with_process_error": 2,
+        "conditional_final": {
+          "both_process_correct": {
+            "recordings": 0,
+            "final_correct": 0,
+            "final_accuracy": null
+          },
+          "some_process_wrong": {
+            "recordings": 89,
+            "final_correct": 2,
+            "final_accuracy": 0.02247191011235955
+          }
+        },
+        "mean_expected_process_reward": 0.008518937671258966,
+        "mean_expected_final_reward": 0.017183650767395836,
+        "scope": "Unweighted learning population. Process reward is counterfactual 0.1/0.1; no training-arm inference or causal mediation claim."
+      },
+      "from_first": {
+        "recordings": 89,
+        "final_gains": 1,
+        "final_losses": 0,
+        "both_process_repaired_final_still_wrong": 0,
+        "both_process_and_final_repaired": 0,
+        "cells": [
+          {
+            "before": "000",
+            "after": "000",
+            "recordings": 77
+          },
+          {
+            "before": "000",
+            "after": "001",
+            "recordings": 1
+          },
+          {
+            "before": "000",
+            "after": "010",
+            "recordings": 1
+          },
+          {
+            "before": "000",
+            "after": "100",
+            "recordings": 2
+          },
+          {
+            "before": "001",
+            "after": "001",
+            "recordings": 1
+          },
+          {
+            "before": "100",
+            "after": "000",
+            "recordings": 2
+          },
+          {
+            "before": "100",
+            "after": "100",
+            "recordings": 5
+          }
+        ]
+      }
+    }
+  ],
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-curve-step0to12-v1/result.json": "6fc82933fa3d5cf7de51597c3983216ec96fe2fd7b4e508b2a36b1d3287cbff3",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/launch.json": "ad8d20fbaf8bc16e19adf3f2f68805aebb204dbe0b782efadd7822b4d97c053d",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1/launch.json": "31fdc9545aa5a35060e581c4032f1a4718b6ef7c54b844a02691c4f34ddb67cb",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/config.json": "d6147d318660f47d7683739f012e90363ab163b4f7edbed38ee74c5d5d28f30b",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/run/READY.json": "331d7d24bc06d3533ee403083e36d97401e04a1895ac6db7b41adb5ab1a3b229",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/run/terminal.json": "3e05926cbfb07ec207a6e57db1455aa24e3b6442d3ef7d6219614fe2df0a7a5c",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/run/vllm/result.json": "7bc68ccb905fb91068b062da1c30d31662de3a4c38a96eb3e2d819ba1157cc66",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/run/vllm/terminal.json": "7fe44c0655d58b3f267faac495baa157388dc72830db8fa1fcfedddbe79b38bf",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1/config.json": "62513ab1c1330fe4275dc9ae3ab79377ca41d82381dab5126a3ec9b86cd9c685",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1/run/READY.json": "222972bb5b8cb3e4122216c2a77c0e1336ff2167a33d7e3303d04df2e76ba360",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1/run/terminal.json": "cabcbca7d74f74eb8d5a6d2ef99daeac408cdf5cb44a69702faf2da99f75618f",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1/run/vllm/result.json": "29d38b6789d65c22a0777e2781751a2f65be72247cdc660584b716d7514c1463",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1/run/vllm/terminal.json": "aea00c3cdd761ed0fa650b4eedaaf3a255f678d6bd3051522d9694528c0291ce",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/diagnose_intent_process_outcomes.py": "6fbfae80b8639a72ea6a824998eb3f2ad5da1dc8254b84456f39265cfdb1b8d0",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/intent_process_outcomes.py": "b1171b00b46b116b078de5079249d07ff47e46d8c4b19a2c3f7fb064af111f83"
+  },
+  "scope": "Structured-template learning diagnostics. Gate identity is verified; supplied update labels require external lineage evidence. Not evidence of Q/P training, held-out gain or causal reasoning."
+}
