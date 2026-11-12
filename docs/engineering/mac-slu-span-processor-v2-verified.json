@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2",
+  "launch": {
+    "argv": [
+      "docker",
+      "run",
+      "-d",
+      "--pull=never",
+      "--network=none",
+      "--name",
+      "multimodal-jev-mac-slu-span-processor-v2",
+      "--cpus=2",
+      "--memory=8g",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "HF_HUB_OFFLINE=1",
+      "-e",
+      "TRANSFORMERS_OFFLINE=1",
+      "-e",
+      "PYTHONPATH=/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2/source/src",
+      "-v",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2:/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2:rw",
+      "-v",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2/source:/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2/source:ro",
+      "-v",
+      "/mnt/cephfs/xingchao/datasets:/mnt/cephfs/xingchao/datasets:ro",
+      "-v",
+      "/mnt/cephfs/xingchao/models:/mnt/cephfs/xingchao/models:ro",
+      "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "timeout",
+      "300s",
+      "python3",
+      "-B",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2/source/tools/jev/probe_mac_slu_span_processor.py",
+      "--config",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2/config.json",
+      "--output",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/mac-slu-span-processor-v2/run"
+    ],
+    "container_id": "d133c5e7994900576252e5ec51767b6d454f7440ced2d40e564ff29cd6722de3",
+    "returncode": 0,
+    "stderr": "",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "config_sha256": "c0de13f4f7c9572d920ca71e08001695c8abc8fe9fbbf7c0dacb1d4de231fcdf"
+  },
+  "result_sha256": "0325df5333c240793958554a40423916c4fc0a0b76154d154f66dfc2f0befc27",
+  "records": [
+    {
+      "id": "5505",
+      "spans": 37,
+      "input_tokens": 5039,
+      "audio_sha256": "67536bcbf5b0b57135834e6e808d0a1c24fefb12fa1ae9cf60715bbb2898ae8e"
+    },
+    {
+      "id": "12677",
+      "spans": 38,
+      "input_tokens": 5095,
+      "audio_sha256": "b1dd939594b06e4838e36b62bc04ccb699ded378de2cfe81af7072c69d5db5d4"
+    },
+    {
+      "id": "5532",
+      "spans": 41,
+      "input_tokens": 5503,
+      "audio_sha256": "f989ed8e7472c6c93970cf279ffa85036fd18ee06ab0c973e41f336c0416cfed"
+    }
+  ],
+  "scope": "Three deterministic TRAIN inputs with fixed domains; CPU tokenization/audio expansion and ordered native Span positions only, no prediction, parity or task metrics.",
+  "language_caveat": "Existing frozen ASR Span template includes English system prefix; Chinese schema is preserved verbatim, no Chinese task-accuracy claim.",
+  "release": "/mnt/cephfs/xingchao/datasets/mac-slu-spans-train-16k-v1",
+  "manifest_sha256": "497b94de8092dfe76dd3c0600fc0914154cf039ea067af4dfb2eb33957541509",
+  "normalization": {
+    "scipy": "1.13.1",
+    "numpy": "1.26.4",
+    "soundfile": "0.14.0",
+    "implementation_sha256": "00c258d470092462b31acea146c55ab672f8b6cd0bcbaeb7ec63b4c585f62b79",
+    "algorithm": "scipy.signal.resample_poly, default Kaiser beta 5, ratio 2/3 for observed 24kHz mono source",
+    "serialization": "WAV FLOAT; exact float32 waveform reload checked for every file"
+  },
+  "training_admitted": false
+}

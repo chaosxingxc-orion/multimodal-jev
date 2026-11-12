@@ -1,0 +1,47 @@
+{
+  "release": "/mnt/cephfs/xingchao/datasets/mac-slu-spans-train-diagnostic-v2",
+  "manifest_sha256": "a598ec550d14d33ad453faccfc768c5eb303cd933326142376cebe575e4aee11",
+  "manifest": {
+    "schema": "mac-slu-span-preparation-v1",
+    "split": "train",
+    "records": 18000,
+    "audio_records": 17999,
+    "missing_audio_ids": [
+      "4207"
+    ],
+    "sample_rates": {
+      "24000": 17999
+    },
+    "channels": {
+      "1": 17999
+    },
+    "audio_seconds": 51167.120000000104,
+    "native_audio_compatible": 0,
+    "official_format_counts": {
+      "unavailable": 5364,
+      "representable": 12636
+    },
+    "domain_intents": 87,
+    "domain_roles": 193,
+    "files": {
+      "bank.json": "299909482a99e2f0a51d8d030d0e2685ce60932b3904b339c8cef8be88b2e094",
+      "train.inputs.jsonl": "25316fbc4d8e356945577569f83ef18580ca40dbc250d496c5f1c853898b9eee",
+      "train.targets.jsonl": "1ec5dd669f8684efb0b2d9e06159d2f0131f78cf81f0b3e75276a3574ecf55b7"
+    },
+    "source_files": {
+      "/mnt/cephfs/xingchao/datasets/mac-slu/label/train_set.jsonl": "d1e9a63fa61ef2d5eec4ef543356fb53d653070916c5ceaf72962047f9aef681",
+      "/mnt/cephfs/xingchao/datasets/mac-slu/audio_train.tar.gz": "c8355349555f4c3f2faf2f5024b1f0817b4e66f9766ea22769402c896a69f0da",
+      "/mnt/cephfs/xingchao/datasets/mac-slu/README.md": "424029c3606363a5011d6b564b7e442c3e9d857639567b9d2e4ac5e3584c178a"
+    },
+    "official_source_sha256": "150dd06b3268efb13391ae28cbf7e42aabe55029a977b31b5243eebfcb2b517b",
+    "audit_sha256": "6c1be9060be266bac73bd57b6898593a3e4e7cce8ca843cf9b588ab89818ab2e",
+    "training_admitted": false,
+    "negative_supervision": "unavailable_pending_annotation_completeness_review",
+    "task_scope": "Parallel intent and bound-role presence, one forward per fixed intent group; not decision-chain reasoning, instance-value extraction or official full SLU.",
+    "elapsed_seconds": 72.82804918289185,
+    "code": {
+      "/home/xingchao/workspace/multimodal-jev/tools/jev/prepare_mac_slu_spans.py": "63962e74e5e0eee384475767eda415a9c2a186754986acef5d46143c29d54258",
+      "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/mac_slu_projection.py": "9fb2d0da3550db1f8c856d61a260f79743f9dd32af048911d93e11b6171a6ff6"
+    }
+  }
+}
