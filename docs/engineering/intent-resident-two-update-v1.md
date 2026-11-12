@@ -22,3 +22,16 @@ HF/vLLM gate，再与热切换/设备驻留验证衔接。不能把本准备称�
 
 尚未派发NPU：需先完善独立最终gate与队列验收，保持原冻结队列顺序。
 已有运行源码快照未修改，当前单步入口默认行为不变。
+
+后续补齐独立验收并排队：新suite使用回放的resident-adapter，实际重新运行178输入
+HF/vLLM，然后独立加载两步所有rank的master/Adam，比较原参考；并要求两个后端
+的完整候选概率与同策略历史参考完全相同。训练内部passed不是独立验收。
+宿主控制器必须观察训练、验收和历史参考实际容器退出0；任何失败均不重建或跳过。
+
+固定镜像CPU验收测试22项通过，包含真实张量漂移负对照和mock gate失败路径；
+所有真实计划pin在容器内可见。[CPU证据](intent-resident-acceptance-cpu-v1-verified.json)。
+这不代表真实NPU回放或gate已经通过。
+
+控制器已启动，等待常驻vLLM A/B/A切换探针成功，之后派发DP4常驻回放及TP1独立suite，
+600秒轮询。[启动记录](intent-resident-two-update-controller-v1-launch.json)保存准确进程与源码身份。
+原冻结队列不变，当前工作只验证已有D1/D2的执行等价性，不新增学习结果或SFT对照。
