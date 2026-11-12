@@ -1,0 +1,92 @@
+{
+  "rows": [
+    {
+      "id": "slurp:audio--1505405308-headset.flac::intent",
+      "gold": "alarm_set",
+      "old_gold_probability": 0.0006886322296285456,
+      "normalized_request_weight": 0.1,
+      "initial_logit_gradient_l2": 8.229321382276565e-05,
+      "gold_probability_delta": -7.947420762179655e-05,
+      "share_of_sum_logit_norms": 0.004405373022812601,
+      "share_of_positive_probability_changes": 0.0
+    },
+    {
+      "id": "slurp:audio-1490704050.flac::intent",
+      "gold": "alarm_remove",
+      "old_gold_probability": 0.002631942903418621,
+      "normalized_request_weight": 0.1,
+      "initial_logit_gradient_l2": 0.0003083893252759472,
+      "gold_probability_delta": -0.0006004680196885748,
+      "share_of_sum_logit_norms": 0.01650889485273939,
+      "share_of_positive_probability_changes": 0.0
+    },
+    {
+      "id": "slurp:audio--1504193194.flac::intent",
+      "gold": "play_audiobook",
+      "old_gold_probability": 0.03168246090685891,
+      "normalized_request_weight": 0.2,
+      "initial_logit_gradient_l2": 0.007253557726421846,
+      "gold_probability_delta": 0.026455310928576288,
+      "share_of_sum_logit_norms": 0.3883020973784445,
+      "share_of_positive_probability_changes": 0.15113022523501074
+    },
+    {
+      "id": "slurp:audio-1490800732-headset.flac::intent",
+      "gold": "weather_query",
+      "old_gold_probability": 0.003276340017465958,
+      "normalized_request_weight": 0.1,
+      "initial_logit_gradient_l2": 0.0003836525263410707,
+      "gold_probability_delta": -0.0009489644926625844,
+      "share_of_sum_logit_norms": 0.02053793273060013,
+      "share_of_positive_probability_changes": 0.0
+    },
+    {
+      "id": "slurp:audio-1498575831.flac::intent",
+      "gold": "calendar_set",
+      "old_gold_probability": 0.0006089193031278976,
+      "normalized_request_weight": 0.2,
+      "initial_logit_gradient_l2": 0.0001390804569507429,
+      "gold_probability_delta": -0.00031311248183059744,
+      "share_of_sum_logit_norms": 0.007445344088405913,
+      "share_of_positive_probability_changes": 0.0
+    },
+    {
+      "id": "slurp:audio-1501692130-headset.flac::intent",
+      "gold": "iot_hue_lightoff",
+      "old_gold_probability": 4.4961473027707504e-05,
+      "normalized_request_weight": 0.1,
+      "initial_logit_gradient_l2": 5.02712872134354e-06,
+      "gold_probability_delta": 2.7548377177732773e-06,
+      "share_of_sum_logit_norms": 0.00026911547407675366,
+      "share_of_positive_probability_changes": 1.5737454225996655e-05
+    },
+    {
+      "id": "slurp:audio-1497451192.flac::intent",
+      "gold": "iot_hue_lightoff",
+      "old_gold_probability": 7.45349140767119e-05,
+      "normalized_request_weight": 0.1,
+      "initial_logit_gradient_l2": 8.395462032884034e-06,
+      "gold_probability_delta": 1.3866132690622222e-05,
+      "share_of_sum_logit_norms": 0.0004494312499858058,
+      "share_of_positive_probability_changes": 7.921251662208521e-05
+    },
+    {
+      "id": "slurp:audio-1502894383.flac::intent",
+      "gold": "play_game",
+      "old_gold_probability": 0.10227387030720671,
+      "normalized_request_weight": 0.1,
+      "initial_logit_gradient_l2": 0.010499796143410072,
+      "gold_probability_delta": 0.14857783652052048,
+      "share_of_sum_logit_norms": 0.562081811202935,
+      "share_of_positive_probability_changes": 0.8487748247941411
+    }
+  ],
+  "top2_share_of_sum_logit_norms": 0.9503839085813794,
+  "formula": "w_normalized * p_old(y) * ||onehot(y)-p_old||_2 at on-policy unclipped expected-correctness loss",
+  "scope": "Analytic initial output-logit sensitivity only; not backbone gradient attribution, Adam step attribution or causal explanation. Actual reward/learning rate unchanged.",
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-finite-dp4-suite-prepared-v2/learning-comparison-v1.json": "b4eec88d201719989aceaea8c1249fb8e8fc74c4558a4754eb3ff7ad627f7159",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-dqp-reference-pilot-v1/D-targets.json": "fed56a802e7938349eefb379d22601f60aafa81fc1b32b0d4b97c648fdd0cb1d",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/run/vllm/result.json": "7bc68ccb905fb91068b062da1c30d31662de3a4c38a96eb3e2d819ba1157cc66"
+  }
+}
