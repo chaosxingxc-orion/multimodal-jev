@@ -202,3 +202,8 @@ MASSIVE/ATIS/SNIPS 文本版、VoiceAgentBench、From Text to Voice、VGBench、
 需要主进程决策的是执行资源与预算、是否另立 SFC 内域重训轨道、Audio2Tool 论文协议与当前官方代码差异的适配范围、以及 L3 首个 voice-v2 cell/provider。无需这些决定即可审阅并采用当前学术锁表。
 
 本次交付校验：58 条登记覆盖全部 16 项指定资源；JSON 可解析，稳定 ID 唯一，报告来源引用与结果定位字段齐全，公开 SHA 格式及此次成功响应的原文哈希通过检查。四个新增文件逐个检查 diff/空白错误；共享工作区其他变化由主进程独立产生，本次未修改。
+
+2026-11-12补充：同人口外部参考报告已实现并登记等待完整FSC迁移矩阵。
+它比较七策略各direct/structured原生模板与SpeechBrain的配对错误和speaker区间，
+保留训练条件差异，不把原生参考复制到符号重绑定视图。29项测试通过，尚无
+实际迁移比较结果，见[比较协议与队列](../engineering/fsc-external-reference-comparison-v1.md)。
