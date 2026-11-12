@@ -145,7 +145,35 @@ def worker(rank, output):
         except ValueError:pass
         else:raise AssertionError('peer reload failure accepted')
         assert paused_session.phase=='failed' and dummy.config.jev_policy_id=='receipt0'
+        # A real native actor update completes on all ranks, then one rank
+        # raises before returning metrics (e.g. post-step numerical check).
+        # All parameters may already have mutated: no cursor/rollback/retry.
+        branch=branches['resident'];session=branch['session'];actor=branch['actor']
+        items=make_items(reference,8)
+        chunks=list(make_global_batch(items).split(2)) if rank==0 else None
+        incoming=[None];dist.scatter_object_list(incoming,chunks,src=0)
+        original_update=actor.update_policy
+        def fail_after_native_step(batch):
+            metrics=original_update(batch)
+            if rank==2:raise RuntimeError('injected post-optimizer rank2 failure')
+            return metrics
+        actor.update_policy=fail_after_native_step
+        try:
+            with native_actor_cpu_device(actor):session.update(incoming[0])
+        except ValueError as exc:
+            assert 'injected post-optimizer rank2 failure' in str(exc)
+        else:raise AssertionError('peer update failure accepted')
+        finally:actor.update_policy=original_update
+        assert session.phase=='failed' and session.completed_updates==8 and session.policy_id=='policy8'
+        assert all(branch['optimizer'].state[p]['step'].item()==9 for p in branch['model'].parameters())
+        try:session.publish('policy9')
+        except ValueError:pass
+        else:raise AssertionError('failed update published')
+        try:session.update(incoming[0])
+        except ValueError:pass
+        else:raise AssertionError('failed update retried')
         atomic_json(output/f'rank-{rank}.json', dict(passed=True, rank=rank, restored_step4=restored,
+            peer_post_optimizer_failure_rejected=True,failed_update_cursor=8,actual_failed_optimizer_step=9,
             peer_reload_failure_rejected=True,
             divergent_receipt_rejected=True, cases=cases))
     except BaseException as exc:

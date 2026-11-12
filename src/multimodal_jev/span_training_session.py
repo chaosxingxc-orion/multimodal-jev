@@ -33,8 +33,19 @@ class SpanTrainingSession:
         # An exception may occur after optimizer mutation. No automatic retry or
         # accepted-policy rollback without restoring exact model/Adam together.
         self.phase = 'updating'
+        error = None; metrics = None
         try:
             metrics = self.actor.update_policy(batch)
+        except Exception as exc:
+            error = repr(exc)
+        except BaseException:
+            self.phase = 'failed'
+            raise
+        # Every rank that returns from the actor must agree before advancing
+        # the cursor or publishing. This cannot recover a worker killed inside
+        # a backend collective; the distributed timeout remains authoritative.
+        try:
+            self._agree('update_result', 'updating', error)
         except BaseException:
             self.phase = 'failed'
             raise

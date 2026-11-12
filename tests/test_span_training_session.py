@@ -26,9 +26,36 @@ def test_ambiguous_optimizer_failure_never_retries():
     actor,s=fixture()
     def fail(batch):raise RuntimeError('possibly already stepped')
     actor.update_policy=fail
-    with pytest.raises(RuntimeError):s.update(None)
+    with pytest.raises(ValueError,match='possibly already stepped'):s.update(None)
     assert s.phase=='failed'
+    assert s.completed_updates==0
     with pytest.raises(ValueError):s.update(None)
+
+
+def test_peer_update_failure_blocks_cursor_and_publication():
+    actor,s=fixture();calls=[]
+    actor.update_policy=lambda batch:calls.append('optimizer')
+    def gather(value):
+        if value['operation']=='update_result':return [value,dict(value,error='peer mutated then failed')]
+        return [value]*4
+    s.gather=gather
+    with pytest.raises(ValueError,match='peer mutated'):s.update(None)
+    assert calls==['optimizer'] and s.phase=='failed' and s.completed_updates==0
+    assert s.policy_id==actor.config.jev_policy_id=='p0'
+    with pytest.raises(ValueError):s.publish('p1')
+    with pytest.raises(ValueError):s.update(None)
+    assert calls==['optimizer']
+
+
+def test_update_result_collective_failure_never_leaves_publishable_session():
+    actor,s=fixture()
+    def gather(value):
+        if value['operation']=='update_result':raise RuntimeError('collective timeout')
+        return [value]*4
+    s.gather=gather
+    with pytest.raises(RuntimeError,match='timeout'):s.update(None)
+    assert s.phase=='failed' and s.completed_updates==0
+    with pytest.raises(ValueError):s.publish('p1')
 
 
 @pytest.mark.parametrize('bad',['policy','step','failed'])
