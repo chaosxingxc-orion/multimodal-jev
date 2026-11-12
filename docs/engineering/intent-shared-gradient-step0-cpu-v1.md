@@ -33,3 +33,9 @@ FP32相加再转FP64比较，出现约7e-9舍入差；修正参考计算为先�
 未放宽容差或改变诊断算法，失败证据保留在v1目录。
 共享目录：
 `/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-shared-gradient-step0-cpu-v1`。
+
+09:08 UTC按间隔复查原容器仍running，镜像一致、无NPU映射。准确PID
+2416117的命令与诊断一致，状态Rsl，CPU时间16分48秒；docker stats约
+100% CPU、10.59GiB/16GiB内存，尚未写出首条进度。日志确认611项模型
+权重已加载。该状态证明进程仍计算，不能证明反向已通过或推断剩余时间。
+继续原任务，不因等待超时重建；下一次普通观察不早于09:18 UTC。
