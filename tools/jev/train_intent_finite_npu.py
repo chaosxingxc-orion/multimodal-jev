@@ -36,7 +36,7 @@ def validate_config(config):
     if type(config['seed'])!=int:raise ValueError('fixed seed required')
 
 
-def run(config,root,out,rank):
+def run(config,root,out,rank,*,before_update=None):
     import torch
     import torch_npu
     import torch.distributed as dist
@@ -143,6 +143,10 @@ def run(config,root,out,rank):
         old=batch.batch['old_log_probs'].clone()
         if not torch.isfinite(computed).all():raise ValueError('nonfinite candidate probability')
         atomic_json(out/'before.json',dict(old=old.tolist(),actor=computed.tolist(),admission=admission))
+        if before_update is not None:
+            if config['step']<1:raise ValueError('residency replay requires restored Adam state')
+            # compute_log_prob has materialized FSDP's lazy local-shard state.
+            before_update(wrapped,optimizer,out,config,rank)
         progress('native_finite_support_update')
         metrics=actor.update_policy(batch)
         if not torch.equal(old,batch.batch['old_log_probs']):raise ValueError('behavior replaced')

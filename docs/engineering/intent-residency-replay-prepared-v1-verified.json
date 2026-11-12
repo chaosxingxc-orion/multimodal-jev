@@ -1,0 +1,41 @@
+{
+  "prepared": true,
+  "dispatched": false,
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-residency-replay-prepared-v1",
+  "protocol_sha256": "21ab8c4ca25818441d9fdcee00c0f9ec63204a5355347304f23a76e443bff200",
+  "cpu_tests": 17,
+  "config_tests": 8,
+  "controls": {
+    "container_id": "99673c7a573a817d1ee17fc2bc41a8a4af4d2e685b6f60477dd265732ed5ef12",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "actual_exit_code": 0,
+    "source_manifest_sha256": "3a6337bb9a23dfcb44b2b85fec0fd0b37eda896a616a0bada73fb00ff78bd4af",
+    "junit_sha256": "d4a1a1bf5b44cfd979d52d5118a7850e8a0834fdcfa28f9d0d363241c361f40e"
+  },
+  "preflight": {
+    "container_id": "ba1f0dac2cb1fc422826732a2e57b215e93f4f356677cb5d59ba331d60bb044f",
+    "image_matches": true,
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-12T09:15:46.75131406Z",
+      "FinishedAt": "2026-11-12T09:16:08.05642823Z"
+    },
+    "devices": []
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-residency-replay-prepared-v1/config-tests.xml": "d9889ab6545e8b48ed7dcc7be08a29c4507f141839f58ff2307633d079849763",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-residency-replay-prepared-v1/training/config-template.json": "3435d4721c6134f51d911caf3a33cc74b1c2a7713bf3af5ae1804f92819b5ad9",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-residency-replay-prepared-v1/training/source-manifest.json": "9e0f99a4f19b07812f512e50adf2d5118adafbef13fe23d742b208625a637220",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-residency-replay-prepared-v1/suite/config-template.json": "2667ce4d194688e45d66c89f31b01e02b91fd0f126fc49132f786a0d481cf577",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-residency-replay-prepared-v1/suite/source-manifest.json": "9e0f99a4f19b07812f512e50adf2d5118adafbef13fe23d742b208625a637220"
+  },
+  "scope": "CPU controls, fixed actual-bind preflight, and immutable real-audio replay plans only; no NPU replay or co-residency result."
+}
