@@ -1,0 +1,129 @@
+{
+  "update": 11,
+  "training_arm": "D",
+  "spans": {
+    "intent": {
+      "logit_credit": {
+        "requests": 8,
+        "sum_norms": 0.002699866368846056,
+        "effective_requests": 3.344530299536533,
+        "top2_share": 0.7262479769864879,
+        "top10percent_share": 0.4096153289512813,
+        "below_one_thousandth_share": 0.04181861267310395
+      },
+      "rows": [
+        {
+          "id": "slurp:audio-1434538075.flac::intent",
+          "gold": "email_addcontact",
+          "gold_probability": 8.828722663173843e-05,
+          "norm": 1.930665418385663e-05,
+          "request_weight": 1.5892857142857142,
+          "span_weight": 1.0,
+          "gold_probability_delta": 3.260249843973138e-05
+        },
+        {
+          "id": "slurp:audio-1488563457.flac::intent",
+          "gold": "email_sendemail",
+          "gold_probability": 0.0077965383709393595,
+          "norm": 0.0008548658377089246,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0004011078955788632
+        },
+        {
+          "id": "slurp:audio-1490106691-headset.flac::intent",
+          "gold": "transport_taxi",
+          "gold_probability": 0.0038339327051884245,
+          "norm": 0.00041870857272763946,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0009767121836571804
+        },
+        {
+          "id": "slurp:audio-1490371042-headset.flac::intent",
+          "gold": "iot_hue_lightdim",
+          "gold_probability": 0.0018592857365829414,
+          "norm": 0.00020748064166220038,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0014961740799300253
+        },
+        {
+          "id": "slurp:audio-1497437104-headset.flac::intent",
+          "gold": "music_dislikeness",
+          "gold_probability": 7.646906258063337e-05,
+          "norm": 8.539821059415448e-06,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 2.7648823887069587e-06
+        },
+        {
+          "id": "slurp:audio-1498570957.flac::intent",
+          "gold": "play_radio",
+          "gold_probability": 2.296354488991302e-05,
+          "norm": 2.4717438852135415e-06,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": 7.938698009030523e-06
+        },
+        {
+          "id": "slurp:audio-1502311520-headset.flac::intent",
+          "gold": "iot_hue_lightup",
+          "gold_probability": 0.004933074704121917,
+          "norm": 0.0011059066507993786,
+          "request_weight": 1.5892857142857142,
+          "span_weight": 1.0,
+          "gold_probability_delta": 0.0001366116601372435
+        },
+        {
+          "id": "slurp:audio-1502894298.flac::intent",
+          "gold": "email_query",
+          "gold_probability": 0.0007430479189276349,
+          "norm": 8.258644681942721e-05,
+          "request_weight": 0.7946428571428571,
+          "span_weight": 1.0,
+          "gold_probability_delta": -5.019278728023364e-05
+        }
+      ]
+    }
+  },
+  "populations": {
+    "updated": {
+      "recordings": 8,
+      "increased": 7,
+      "decreased": 1,
+      "unchanged": 0,
+      "mean_delta": 0.0003754648888575685,
+      "median_delta": 8.460707928848745e-05
+    },
+    "other_learning": {
+      "recordings": 81,
+      "increased": 67,
+      "decreased": 14,
+      "unchanged": 0,
+      "mean_delta": -2.079616072548132e-05,
+      "median_delta": 0.00027965423170065937
+    },
+    "all_learning": {
+      "recordings": 89,
+      "increased": 74,
+      "decreased": 15,
+      "unchanged": 0,
+      "mean_delta": 1.4822810023556832e-05,
+      "median_delta": 0.0002714197953734742
+    }
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update11-v1/config.json": "8a65f5b53e5ceba37582c3714a4e124cb7df447a3c12b5ae9a28adc980dcc720",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update11-v1/run/selection.json": "9eb805f0e7d86205f5b6333f1c73d340bd02f9ce86dd69671d35578f930a5385",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite11-v1/verified.json": "c55d6b9a74985b38d6d12d45ec2ee40083098f52111eac57ec422b3deb46a3aa",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite11-v1/ACCEPTED.json": "361cad8f364e3fe37671fcd9a73f492feb56a6d58c2caed1365c3d157842345b",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite10-v1/run/vllm/result.json": "528e4038a9760dfc9a127084384711cf2c9ab1da9e27bc7ae177e993cd129ff3",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite11-v1/run/vllm/result.json": "24b7432bfd2fa00542c7c5734fd59a8758dffe37c09d89d325e1f1b3b7b85f51",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/diagnose_intent_policy_drift.py": "359c41d779a9228c8d7666e278ec44762708cd29b0c678028b65ad5fe3bea4c7",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/span_policy_drift.py": "4a540db38726e252b556b6bbb1b2947c1c8e1e6bd4af75a9f1a71d8c95322d8a",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/diagnose_intent_update_coverage.py": "fdcd046648eceb76da7c98cc3f7affc9106c9cdff1738c05f5707c8080ce2593",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/span_credit_concentration.py": "e7bfe428ce861c0ce0a9cd9c731a96a497cdfe5febfbd2e50d9f3046455f4100"
+  },
+  "scope": "Learning-only actual batch credit and before/after probability changes. Independent-logit norms are not shared-parameter gradient contributions or causal attribution."
+}
