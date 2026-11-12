@@ -16,6 +16,8 @@ from multimodal_jev.baseline import atomic_json,file_hash
 
 
 def validate_config(config):
+    from multimodal_jev.intent_objective import specification
+    specification(config)
     from multimodal_jev.intent_batch_layout import local_requests
     local_requests(config)
     from multimodal_jev.intent_optimizer import optimizer_kwargs
@@ -51,6 +53,7 @@ def run(config,root,out,rank,*,before_update=None):
     from multimodal_jev.span_model import NativeAudioSpanModel
     from multimodal_jev.intent_actor_inputs import prepare
     from multimodal_jev.intent_batch_layout import local_requests,rank_slice
+    from multimodal_jev.intent_objective import identity as objective_identity
     from probe_fsdp_lora_npu import digest
     validate_config(config)
     for path,h in config['pins'].items():
@@ -86,6 +89,9 @@ def run(config,root,out,rank,*,before_update=None):
         if rank==0:
             try:
                 items,selection=prepare(config,processor,policy_id,config['step'])
+                from multimodal_jev.intent_objective import apply
+                items,objective_receipt=apply(config,items)
+                atomic_json(root/'objective.json',objective_receipt)
                 batch=make_global_batch(items);chunks=list(batch.split(local_requests(config)))
                 payload[0]=dict(error=None,selection=selection)
                 atomic_json(root/'selection.json',selection)
@@ -189,6 +195,7 @@ def run(config,root,out,rank,*,before_update=None):
             shutil.copyfile(Path(config['initial_adapter'])/'adapter_config.json',dest/'adapter_config.json')
         dist.barrier();adapter_id=checkpoint_identity(root/'adapter')[0]
         atomic_json(out/'result.json',dict(passed=True,rank=rank,world_size=4,updates=config['step']+1,arm=config['arm'],restored=restored,
+            objective=objective_identity(config),
             base_id=base_id,initial_policy_id=policy_id,adapter_id=adapter_id,recording_ids=local_ids,
             admission=admission,metrics=metrics,execution_dtypes=executions,changed_shards=int(changed.item()),
             frozen_base_unchanged=True,cross_rank_export_exact=True,actor_sha256=ACTOR_SHA256,

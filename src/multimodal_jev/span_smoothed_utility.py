@@ -29,6 +29,8 @@ inputs. This restricted candidate never scales multi-Span process rewards.
     from .span_finite_credit import validate_policy
     if not items:raise ValueError('nonempty full batch required')
     result=[];receipts=[]
+    if len({item['request_id'] for item in items})!=len(items):
+        raise ValueError('distinct requests required')
     for item in items:
         old=item['behavior'];validate_policy(old,1,detached=True)
         y,mask,w=item['targets'],item['supervised'],item['span_weights']
@@ -36,6 +38,12 @@ inputs. This restricted candidate never scales multi-Span process rewards.
                 or mask.dtype!=torch.bool or w.shape!=(1,1) or w.requires_grad
                 or not w.is_floating_point() or not torch.isfinite(w).all() or w.item()!=1.):
             raise ValueError('single Final with original unit credit required')
+        if any(t.device!=old[0].device for t in (y,mask,w)):
+            raise ValueError('credit tensors must share policy device')
+        request_weight=item['request_weight']
+        if (type(request_weight) not in (int,float) or not math.isfinite(request_weight)
+                or request_weight<0):
+            raise ValueError('finite nonnegative request weight required')
         if bool(mask.item()):
             target=y.item();p=old[0]
             if not 0<=target<p.shape[1]:raise ValueError('reviewed target outside support')
@@ -43,6 +51,7 @@ inputs. This restricted candidate never scales multi-Span process rewards.
             scaled=w*measured['scale']
         else:
             measured=None;scaled=w.clone()
+        if not torch.isfinite(scaled).all():raise ValueError('finite transformed credit required')
         result.append(dict(item,span_weights=scaled.detach()))
         receipts.append(dict(request_id=item['request_id'],supervised=bool(mask.item()),credit=measured))
     return result,dict(schema='jev-final-smoothed-utility-v1',records=receipts,

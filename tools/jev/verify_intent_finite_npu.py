@@ -35,6 +35,14 @@ def verify(root,suite):
         if read(root/'run/resume-lineage.json')!=lineage:raise ValueError('recorded continuation lineage differs')
     items,admission=load_pilot(config['pilot'],config['manifest_sha256'],config['arm'])
     selected=schedule(items,config['seed'],config['step'],config['global_requests'])
+    from multimodal_jev.intent_objective import identity as objective_identity,verify_credit
+    objective=objective_identity(config)
+    objective_path=root/'run/objective.json'
+    if objective_path.exists() or 'objective' in config:
+        # Independently reconstruct credit from the accepted old policy, never
+        # trust the training receipt as its own reference.
+        behavior=read(Path(config['acceptance_root'])/'run/vllm/result.json')
+        verify_credit(config,selected,behavior,read(objective_path),read(root/'run/supervision.json'))
     ids=[r['id'] for r in selected]
     selection=read(root/'run/selection.json')
     if selection['recording_ids']!=ids or selection['source_groups']!=[r['target']['source_group'] for r in selected]:
@@ -83,6 +91,8 @@ def verify(root,suite):
     rank_weights=[sum(r['target']['request_weight'] for r in selected[rank_slice(config,i)]) for i in range(4)]
     for rank in range(4):
         out=root/'run'/f'rank-{rank}';result=read(out/'result.json');local_ids=ids[rank_slice(config,rank)]
+        if (objective_path.exists() or 'objective' in config) and result.get('objective')!=objective:
+            raise ValueError('rank objective identity differs')
         if (read(out/'terminal.json')['exit_code']!=0 or result['passed'] is not True or result['rank']!=rank
                 or result['world_size']!=4 or result['updates']!=updates or result['arm']!=config['arm']
                 or result['actor_sha256']!=ACTOR_SHA256 or result['base_id']!=base_id
@@ -134,9 +144,11 @@ def verify(root,suite):
         all_rank_ids.extend(local_ids)
         for name in ('result.json','terminal.json','selection.json','before.json','after.json','optimizer-local.pt'):files[str(out/name)]=file_hash(out/name)
     if len(all_rank_ids)!=config['global_requests'] or len(set(all_rank_ids))!=config['global_requests']:raise ValueError('unique global sources required')
+    if objective_path.exists():
+        for path in (objective_path,root/'run/supervision.json'):files[str(path)]=file_hash(path)
     for name in ('READY.json','terminal.json','hf/result.json','vllm/result.json'):files[str(suite/'run'/name)]=file_hash(suite/'run'/name)
     return dict(passed=True,root=str(root),suite=str(suite),adapter_id=adapter_id,adapter_files=adapter_files,
-        updates=updates,arm=config['arm'],recordings=config['global_requests'],full_gate_requests=len(expected_population),
+        updates=updates,arm=config['arm'],objective=objective,recordings=config['global_requests'],full_gate_requests=len(expected_population),
         exact_export_reload=True,maximum_logprob_error=max(a['maximum_logprob_error'] for a in audits),
         files=files,scope='Finite-support intent update: native verl/FSDP state, applicable exact restore and independent BF16 export/HF/vLLM verified. No held-out task gain, continuous Ray trainer or transfer result.')
 

@@ -9,6 +9,9 @@ from .baseline import file_hash
 
 
 def validate_lineage(previous,current):
+    from .intent_objective import identity
+    if identity(previous)!=identity(current):
+        raise ValueError('intent continuation objective changed')
     from .intent_optimizer import optimizer_kwargs
     if optimizer_kwargs(previous) != optimizer_kwargs(current):
         raise ValueError('intent continuation optimizer configuration changed')
@@ -32,6 +35,13 @@ def authenticate(config):
         return json.loads(path.read_text())
     previous=pinned(root/'config.json');validate_lineage(previous,config)
     accepted=pinned(suite/'ACCEPTED.json');verified=pinned(suite/'verified.json')
+    if 'objective' in previous:
+        from .intent_objective import identity
+        if verified.get('objective')!=identity(previous):
+            raise ValueError('accepted predecessor objective identity differs')
+        for name in ('objective.json','supervision.json'):
+            if str(root/'run'/name) not in verified['files']:
+                raise ValueError('accepted predecessor objective evidence missing')
     if pinned(suite/'controller-terminal.json')['exit_code']!=0:
         raise ValueError('predecessor acceptance failed')
     gate=pinned(suite/'config.json')

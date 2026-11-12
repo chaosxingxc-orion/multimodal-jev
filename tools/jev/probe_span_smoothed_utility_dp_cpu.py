@@ -9,7 +9,7 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from multimodal_jev.baseline import atomic_json
-from multimodal_jev.span_smoothed_utility import transform
+from multimodal_jev.intent_objective import apply as apply_objective
 from probe_span_native_actor_dp_cpu import Model,config,optimizer,snapshot
 
 
@@ -48,7 +48,8 @@ def worker(rank,output):
             ref=Model();ref.load_state_dict(initial);ropt=optimizer(ref)
             module=Model();module.load_state_dict(initial);model=DDP(module);opt=optimizer(model)
             for step in range(2):
-                raw=items(ref,step);scaled,receipt=transform(raw)
+                raw=items(ref,step)
+                scaled,receipt=apply_objective(dict(arm='D',objective={'name':'smoothed-utility-v1'}),raw)
                 for a,b in zip(raw,scaled,strict=True):
                     assert a['inputs'] is b['inputs'] and a['behavior'] is b['behavior']
                     assert a['request_weight']==b['request_weight'] and torch.equal(a['span_weights'],torch.ones(1,1))
