@@ -24,3 +24,11 @@ PYTHONPATH=src:tools/jev .venv/bin/python tools/jev/compare_intent_matched_pilot
   --config /mnt/cephfs/xingchao/experiments/multimodal-jev/intent-dqp-matched-effects-prepared-v1/config.json \
   --output /mnt/cephfs/xingchao/experiments/multimodal-jev/intent-dqp-matched-effects-prepared-v1/result.json
 ```
+
+后续自动收尾已接入（2026-11-12 UTC）：intent-dqp-matched-report-controller-v1，
+PID3691383，等待当前Q/P控制器v3真实P12完成后复核全部36个训练/suite对并
+生成13个曲线点及Q−D、P−Q、P−D差异。固定原评分协议和来源日程，未增加
+训练或NPU推理。已核对全部36个现有/冻结训练配置的非arm因素一致。
+21项本地入口/数学/队列测试通过，覆盖前驱失败禁止评分和不完整曲线禁止发布；
+未运行新固定镜像测试。启动后精确argv确认存活；[队列证据](intent-dqp-matched-report-controller-v1-evidence.json)。
+当前未生成完整比较，不将已排队视为过程奖励收益。

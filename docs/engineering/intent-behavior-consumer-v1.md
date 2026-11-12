@@ -1,5 +1,12 @@
 # 行为概率进入真实actor输入的消费探针
 
+后续实际验收：v2历史控制容器96372bc8…于12:32:57 UTC退出0。全部12批、
+96次来源使用覆盖89条，逐批request身份与原gate及固定日程独立复算一致，
+输入/监督完全一致、最大行为logprob误差0。原日志、Docker终态与结果均归档。
+[独立验收凭证](intent-behavior-consumer-historical-v2-verified.json)。这是真实
+音频/processor/actor prepare的历史同配置控制成功，不代表resident行为消费、
+训练更新或学习收益。下文较早的运行中记录保留为历史。
+
 2026-11-12 UTC。新增probe_intent_behavior_consumption_cpu.py，以本地真实processor
 重新编码音频，分别调用原行为配置和候选行为配置的intent_actor_inputs.prepare。
 逐来源要求音频特征、输入token、Span位置、候选、policy/request身份、监督、
