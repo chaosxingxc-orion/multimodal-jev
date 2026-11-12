@@ -1,0 +1,107 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-dqp-transfer-selection-rule-v1",
+  "rule": "/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-dqp-transfer-selection-rule-v1/rule.json",
+  "rule_sha256": "48bad4d39bd612b0e86d1a6b6b6249c0ead7b670e18055f018a667bd12d91bb8",
+  "policies": 7,
+  "recordings": 3793,
+  "views": 6,
+  "requests_per_policy": 22758,
+  "total_requests": 159306,
+  "status": "prospectively_registered_no_target_model_inference",
+  "rule_content": {
+    "schema": "fsc-dqp-transfer-prospective-selection-v1",
+    "created_utc": "2026-11-12T05:32:00Z",
+    "selection": "fixed updates 0,6,12 for each of D,Q,P; shared initial evaluated once; no best-checkpoint selection",
+    "target_feedback_used_for_selection": false,
+    "checkpoints": [
+      {
+        "key": "step0",
+        "update": 0,
+        "arm": "shared_initial",
+        "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2"
+      },
+      {
+        "key": "D-step6",
+        "update": 6,
+        "arm": "D",
+        "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite06-v1",
+        "source_training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update06-v1"
+      },
+      {
+        "key": "D-step12",
+        "update": 12,
+        "arm": "D",
+        "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1",
+        "source_training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update12-v1"
+      },
+      {
+        "key": "Q-step6",
+        "update": 6,
+        "arm": "Q",
+        "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-suite06-v1",
+        "source_training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update06-v1"
+      },
+      {
+        "key": "Q-step12",
+        "update": 12,
+        "arm": "Q",
+        "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-suite12-v1",
+        "source_training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update12-v1"
+      },
+      {
+        "key": "P-step6",
+        "update": 6,
+        "arm": "P",
+        "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-p12-suite06-v1",
+        "source_training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-p12-update06-v1"
+      },
+      {
+        "key": "P-step12",
+        "update": 12,
+        "arm": "P",
+        "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-p12-suite12-v1",
+        "source_training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-p12-update12-v1"
+      }
+    ],
+    "pins": {
+      "/home/xingchao/workspace/multimodal-jev/configs/tasks/fsc-span-transfer-v1.json": "d08fb6acbbb3ff936557b29f8c1f32113a4fff93892f18c6d35c7d23f195bef4",
+      "/mnt/cephfs/xingchao/datasets/jev/fsc-span-transfer-test-population-v1/population.json": "c8891b36f27340a41b6e1c961ceeffdefa3b2316f91237820de736092cff5552",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-pilot-v1/protocol.json": "529260ed0137baedc74d4c1d5ab2e77c05eaafce13e9981aeb6112bf16bf3ac5",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-qp-d12-controller-v1/protocol.json": "c26efb4805de2ebca09d2ee27d617b79ea1e09dfd6651cb102d4ea434d60a8f3",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/launch.json": "ad8d20fbaf8bc16e19adf3f2f68805aebb204dbe0b782efadd7822b4d97c053d",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2/config.json": "d6147d318660f47d7683739f012e90363ab163b4f7edbed38ee74c5d5d28f30b"
+    },
+    "views": {
+      "templates": [
+        "direct",
+        "structured"
+      ],
+      "variants": [
+        "native",
+        "permutation",
+        "rebind"
+      ],
+      "binding_seed": 317
+    },
+    "primary_metric": "native-view 31-command Final exact accuracy; report direct and structured separately",
+    "statistics": {
+      "paired_by": "recording",
+      "bootstrap_cluster": "speaker",
+      "bootstrap_seed": 941,
+      "bootstrap_replicates": 2000,
+      "confidence_level": 0.95,
+      "limitations": "10 speakers; intervals do not cover training-seed variance or command-level dependence; exploratory pilot multiple comparisons, not confirmatory significance"
+    },
+    "resolution_requirements": [
+      "All D/Q/P 12-step source pilots must successfully finish before target model inference.",
+      "Every selected source gate must have actual Docker exit zero and authenticated full-candidate/export/state acceptance.",
+      "Resolve actual adapter identities only from those gates; pin complete selection receipt and evaluation protocol in every target gate before creation.",
+      "Require complete fixed official population and all six views; score only after the whole seven-policy matrix completes.",
+      "If a source arm or selected gate fails, record failure; do not substitute a better checkpoint or publish a partial success matrix."
+    ],
+    "historical_target_exposure": "Project has prior FSC experiments; pretrained exposure unknown. This rule uses no new target inference scores, and makes no never-seen-FSC claim.",
+    "source_scope": "89 reference-text-reviewed SLURP learning sources; no audio-listening certification or independent source-domain efficacy yet. Initialization is existing temporal adapter, not untrained base.",
+    "purpose": "Exploratory fixed-source RL transfer curve, no FSC target weight updates or prompt search. Not a completed evaluation protocol: future adapter identities remain unresolved.",
+    "complete": false
+  }
+}
