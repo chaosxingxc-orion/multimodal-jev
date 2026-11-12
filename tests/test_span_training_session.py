@@ -49,3 +49,23 @@ def test_same_export_identity_preserves_no_change_update():
     actor,s=fixture();s.update(None);s.publish('p0')
     s.accept(lambda p,n:dict(passed=True,policy_id=p,updates=n))
     assert s.completed_updates==1 and s.policy_id=='p0'
+
+
+def test_different_acceptance_evidence_across_ranks_fails_closed():
+    actor,s=fixture();s.update(None);s.publish('p1')
+    def gather(value):
+        if value['operation'].startswith('accept_result:'):
+            return [value,dict(value,operation='accept_result:different-gate-receipt')]
+        return [value]*4
+    s.gather=gather
+    with pytest.raises(ValueError,match='collective'):
+        s.accept(lambda p,n:dict(passed=True,policy_id=p,updates=n,files={'gate':'sha256-a'}))
+    assert s.phase=='failed' and actor.config.jev_policy_id=='p0'
+
+
+@pytest.mark.parametrize('extra',[{'metric':float('nan')},{'metric':float('inf')},{'updates':True}])
+def test_invalid_receipt_cannot_advance_session(extra):
+    actor,s=fixture();s.update(None);s.publish('p1')
+    with pytest.raises(ValueError):
+        s.accept(lambda p,n:dict(dict(passed=True,policy_id=p,updates=n),**extra))
+    assert s.phase=='failed' and actor.config.jev_policy_id=='p0'

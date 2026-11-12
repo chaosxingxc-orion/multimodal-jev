@@ -112,7 +112,19 @@ def worker(rank, output):
                 if not exact[field]: raise AssertionError('resume diverged from resident: '+field)
             cases.append(dict(update=step+1, errors_against_reference=errors, resident_resume_exact=exact,
                               stale_policy_rejected_branches=stale_rejections))
-        atomic_json(output/f'rank-{rank}.json', dict(passed=True, rank=rank, restored_step4=restored, cases=cases))
+        # Real collective negative control: each rank's receipt names different
+        # evidence despite agreeing on policy and cursor. No optimizer involved.
+        from types import SimpleNamespace
+        dummy = SimpleNamespace(config=SimpleNamespace(jev_policy_id='receipt0'), update_policy=lambda batch: {})
+        receipt_session = SpanTrainingSession(dummy, policy_id='receipt0', completed_updates=0, gather=gather)
+        receipt_session.update(None); receipt_session.publish('receipt1')
+        try:
+            receipt_session.accept(lambda p,n:dict(passed=True,policy_id=p,updates=n,gate_hash='rank-'+str(rank)))
+        except ValueError: pass
+        else: raise AssertionError('different rank evidence accepted')
+        assert receipt_session.phase == 'failed' and dummy.config.jev_policy_id == 'receipt0'
+        atomic_json(output/f'rank-{rank}.json', dict(passed=True, rank=rank, restored_step4=restored,
+            divergent_receipt_rejected=True, cases=cases))
     except BaseException as exc:
         atomic_json(output/f'rank-{rank}-failure.json', dict(error=repr(exc))); raise
     finally: dist.destroy_process_group()

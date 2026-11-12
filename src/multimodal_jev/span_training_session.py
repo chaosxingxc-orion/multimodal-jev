@@ -4,6 +4,8 @@ The caller owns model/optimizer loading, checkpoint publication and independent
 backend verification. This component never turns a policy name into acceptance.
 All ranks must enter every method together, including failure handling.
 """
+import hashlib
+import json
 
 class SpanTrainingSession:
     def __init__(self, actor, *, policy_id, completed_updates, gather):
@@ -53,16 +55,21 @@ class SpanTrainingSession:
         verify files/exits/probabilities rather than trust those fields alone.
         """
         self._agree('accept', 'awaiting_acceptance')
-        error = None; receipt = None
+        error = None; receipt = None; receipt_digest = None
         try:
             receipt = verify(self.pending_policy, self.completed_updates)
             if (receipt['passed'] is not True or receipt['policy_id'] != self.pending_policy
-                    or receipt['updates'] != self.completed_updates):
+                    or type(receipt['updates']) is not int or receipt['updates'] != self.completed_updates):
                 raise ValueError('independent acceptance identity or cursor differs')
+            # All ranks must advance on the same evidence, not merely the same
+            # policy name. Require a finite, JSON-serializable receipt; differing
+            # file/gate identities are disagreement even when passed is true.
+            receipt_digest = hashlib.sha256(json.dumps(receipt, sort_keys=True,
+                separators=(',', ':'), allow_nan=False).encode()).hexdigest()
         except Exception as exc:
             error = repr(exc)
         try:
-            self._agree('accept_result', 'awaiting_acceptance', error)
+            self._agree('accept_result:'+str(receipt_digest), 'awaiting_acceptance', error)
         except BaseException:
             self.phase = 'failed'
             raise

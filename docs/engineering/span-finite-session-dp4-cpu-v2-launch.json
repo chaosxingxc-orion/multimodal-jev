@@ -1,0 +1,33 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2",
+  "container_id": "0c6184fbb423d717eb3591541c0aafb365c69581b174a46664ed252cd112f67a",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [],
+  "argv": [
+    "docker",
+    "create",
+    "--pull=never",
+    "--network=none",
+    "--name",
+    "multimodal-jev-span-finite-session-dp4-cpu-v2",
+    "--cpus=4",
+    "--memory=16g",
+    "-e",
+    "PYTHONPATH=/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2/source/src",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2:/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2:rw",
+    "-v",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2/source:/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2/source:ro",
+    "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "timeout",
+    "300s",
+    "python3",
+    "-B",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2/source/tools/jev/probe_span_finite_resident_cpu.py",
+    "--output",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-finite-session-dp4-cpu-v2/run"
+  ],
+  "source_manifest_sha256": "76441e3b0a0824bffb10ec5cdee24becda780efe67b6600a19761967a4f78bfa"
+}
