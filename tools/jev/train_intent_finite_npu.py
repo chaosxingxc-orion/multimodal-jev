@@ -38,7 +38,7 @@ def validate_config(config):
     if type(config['seed'])!=int:raise ValueError('fixed seed required')
 
 
-def run(config,root,out,rank,*,before_update=None):
+def run(config,root,out,rank,*,before_update=None,after_update=None):
     import torch
     import torch_npu
     import torch.distributed as dist
@@ -200,6 +200,10 @@ def run(config,root,out,rank,*,before_update=None):
             admission=admission,metrics=metrics,execution_dtypes=executions,changed_shards=int(changed.item()),
             frozen_base_unchanged=True,cross_rank_export_exact=True,actor_sha256=ACTOR_SHA256,
             seconds=time.monotonic()-begin,scope='One finite-support native verl DP4/FSDP BF16 learning update. Independent export/backend verification still required; no continuous trainer or task-gain claim.'))
+        if after_update is not None:
+            after_update(config=config,root=root,out=out,rank=rank,processor=processor,
+                adapted=adapted,model=wrapped,optimizer=optimizer,actor=actor,
+                base_id=base_id,adapter_id=adapter_id)
     finally:dist.destroy_process_group()
 
 
