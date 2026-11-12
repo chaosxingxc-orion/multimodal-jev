@@ -21,7 +21,7 @@ def digest(t):
     return hashlib.sha256(c.view(torch.uint8).numpy().tobytes()).hexdigest()
 
 
-def run(output, rank):
+def run(output, rank, residency_roundtrip=False):
     import torch
     import torch_npu
     import torch.distributed as dist
@@ -118,6 +118,27 @@ def run(output, rank):
         with torch.no_grad():
             for n,p in restored.named_parameters():p.copy_(state['parameters'][n].to(device))
         restored_optimizer.load_state_dict(state['optimizer'])
+        residency_report=None
+        if residency_roundtrip:
+            import inspect
+            from verl.utils import fsdp_utils
+            from multimodal_jev.span_residency import SpanResidency
+            if file_hash(inspect.getfile(fsdp_utils))!='5dff5af2125de68d3cb15deb519f30a47e603a36e8f75d6a250a12c9e9941840':
+                raise ValueError('audited FSDP movement implementation changed')
+            # Materialize FSDP lazy state before moving its local shards.
+            with torch.no_grad():restored(x)
+            restored_optimizer.zero_grad(set_to_none=True)
+            residency=SpanResidency(restored,restored_optimizer,
+                offload_model=lambda m:fsdp_utils.offload_fsdp_model_to_cpu(m,empty_cache=False),
+                load_model=fsdp_utils.load_fsdp_model_to_gpu,synchronize=torch.npu.synchronize)
+            allocated_before=torch.npu.memory_allocated()
+            residency.offload();torch.npu.empty_cache()
+            allocated_offloaded=torch.npu.memory_allocated()
+            residency.reload()
+            residency_report=dict(exact_parameters_and_adam=True,original_tensor_devices_preserved=True,
+                parameter_references_preserved=True,allocated_before=allocated_before,
+                allocated_offloaded=allocated_offloaded,allocated_reloaded=torch.npu.memory_allocated(),
+                scope='One tiny restored branch only; uninterrupted branch and HCCL remain allocated. Not vLLM capacity evidence.')
         with torch.no_grad():
             if not torch.equal(restored(x),expected_before):raise ValueError('restored outputs differ')
         step(restored,restored_optimizer,2)
@@ -151,6 +172,7 @@ def run(output, rank):
             checkpoint_sha256=file_hash(output/'local-checkpoint.pt'),
             scope='Synthetic four-rank NPU HCCL/FSDP PEFT BF16 compute, native FP32 masters/Adam and real verl loss. '
             'Fixed-topology local-shard resume only; no speech, Omni weights, vLLM TP4 or task-gain acceptance.')
+        if residency_report is not None:result['residency_roundtrip']=residency_report
         atomic_json(output/'result.json',result)
         dist.barrier()
     finally:dist.destroy_process_group()
@@ -158,11 +180,12 @@ def run(output, rank):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--residency-roundtrip',action='store_true')
     args=parser.parse_args();rank=int(os.environ['RANK'])
     if int(os.environ['WORLD_SIZE'])!=4 or rank!=int(os.environ['LOCAL_RANK']):
         raise ValueError('single-node four-rank topology required')
     output=args.output/f'rank-{rank}';output.mkdir(parents=True,exist_ok=False)
-    try:run(output,rank)
+    try:run(output,rank,args.residency_roundtrip)
     except BaseException as exc:
         atomic_json(output/'terminal.json',dict(exit_code=1,error=repr(exc)));raise
     atomic_json(output/'terminal.json',dict(exit_code=0))
