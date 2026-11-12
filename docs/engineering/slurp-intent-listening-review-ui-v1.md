@@ -7,3 +7,5 @@
 实际校验全部300段内嵌WAV与原FLAC解码后的PCM16样本逐一相等。JS通过node语法检查，另有参考文本脚本注入/JSON往返测试；没有安装浏览器自动化，尚未执行实际浏览器交互验证。材料构建不是听音审核，未将任何样本提升为可评测。原始音频/记录/packet哈希保留在审核记录中，防止审核结论误绑定；后续应独立校验导入记录、复审本体边界，再发布新的固定评测版本。
 
 证据见同名JSON与`slurp-intent-listening-review-ui-v1-verified.json`。该材料不改变89条学习发布，不读取官方TEST，也不改变训练奖励。
+
+补充导入工具`tools/jev/verify_intent_listening_review.py`核对全部原始样本、packet/参考审核/音频/记录哈希，以及审核人、带时区时间、明确状态和理由。8项测试覆盖错绑、缺少依据/审核人、非法时间和擅自准入。即使填写完整，输出仍强制`evaluation_allowed=false`、`optimization_allowed=false`；这是账本完整性校验，不能替代独立语义裁决。当前没有导入实际听音审核结果。
