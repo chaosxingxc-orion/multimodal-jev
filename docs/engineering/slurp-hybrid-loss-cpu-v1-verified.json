@@ -1,0 +1,53 @@
+{
+  "slurp-hybrid-loss-cpu-v1": {
+    "container_id": "ebebbf035d89cf09a13f543eaa0667efea4cdca958472a15730ca6655136ad88",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-12T14:43:56.86726876Z",
+      "FinishedAt": "2026-11-12T14:44:15.37945923Z"
+    },
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "files": {
+      "src/multimodal_jev/span_hybrid_objective.py": "c8f4d25c766a8eb8cc5cb64997e3a500ca5eb0ec47f6256ccc2a610fb69ceb0b",
+      "src/multimodal_jev/span_finite_credit.py": "504b2bcfe983d6aaf2894d8341a236a7e7d5636fdd00072d98c712481ff06c36",
+      "tests/test_span_hybrid_objective.py": "01d71a5b93862b8a75819f36b14d0f5b3f04ff1d4f553afb83c339fff95d0599"
+    },
+    "log_sha256": "21557cbdc4c4c7bf5c572e40c82e459f1a261720679e87696c847dc194c0ca09"
+  },
+  "slurp-hybrid-loss-dp4-cpu-v1": {
+    "container_id": "c6451293366e15254b90788af7696b7ad7419424a2de709c338f9b7a7839ef0e",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-12T14:45:23.78923194Z",
+      "FinishedAt": "2026-11-12T14:45:49.07793557Z"
+    },
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "files": {
+      "src/multimodal_jev/span_hybrid_objective.py": "c8f4d25c766a8eb8cc5cb64997e3a500ca5eb0ec47f6256ccc2a610fb69ceb0b",
+      "src/multimodal_jev/span_finite_credit.py": "504b2bcfe983d6aaf2894d8341a236a7e7d5636fdd00072d98c712481ff06c36",
+      "src/multimodal_jev/baseline.py": "cf9e1ca0e901d0d0c694e920f7db6623e46151d767d11ea657cce9fc2f729927",
+      "tools/jev/probe_span_hybrid_dp_cpu.py": "879963ec9fa991c73f1fc63c3e9c05f98e7c3743f61f32eeeeac16e753e146ff"
+    },
+    "log_sha256": "5995e4f56b15ad7fac71f8db4ce8a76870191eeff4384202e689f60bcd88bb64",
+    "max_gradient_error": 5.960464477539063e-08,
+    "cases": 6,
+    "result_sha256": "962134021e2689681cea8d009276e978357dc073151f75fa3a743757edc223cf",
+    "scope": "Real Gloo DDP, native verl loss, synthetic FP32 mixed objective, global normalization and Adam resume. No native actor lifecycle, BF16/audio/NPU or vLLM acceptance."
+  }
+}
