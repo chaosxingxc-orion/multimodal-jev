@@ -34,3 +34,7 @@ master/Adam；更新后suite使用物理NPU4、vLLM TP1及完整712输入HF/vLLM
 下一步实现并验证专用队列控制器，排在当前beta1zero连续控制之后。派发必须
 重新核验实际前驱完成、原step0绑定gate、完整计划哈希及物理卡所有权。首步
 真实训练和更新后独立验收通过前，不推进更长重绑定训练。
+
+08:35 UTC更新：专用控制器已完成22项CPU测试并挂入原队列末尾，目前实际存活
+且等待beta1zero连续控制完成。见[队列启动记录](intent-binding-first-controller-v1.md)。
+计划目录仍未创建NPU任务，原冻结内容不变。
