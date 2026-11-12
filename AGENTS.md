@@ -12,6 +12,8 @@
 
 ## 开发
 
+2026-11-12 原生混合actor进展：`span_hybrid_actor`经verl注册loss接口保持原生update_policy负责累积/backward/Adam，真实四rank CPU连续更新与恢复已通过，最大梯度误差2.98e-8。全量两轮processor预检`slurp-instruction-processor-full-v2`及真实四卡global128两更新前缀`slurp-instruction-dp4-prefix-v1`已派发；这是新LoRA的执行验收，不是完成Stage1。核验实际launch/container及独立验收后才能继续全量。prefix入口尚无恢复继续功能，不能直接宣称支持完整常驻训练。详见docs/engineering/slurp-native-hybrid-actor-v1.md。普通状态检查仍至少600秒。
+
 2026-11-12 两阶段主线数据/目标进展：`datasets/slurp-jev-benchmark/official-clean-intent-v1`已发布，manifest `38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482`。官方clean标签依据，learning 40,513录音、selection 9,226录音，分别9,181/2,146来源组、均60类；已知pending整组隔离共647录音。49,739条音频已重新hash/解码，通过独立标签/人口复算，无语义复听声明。使用新的slurp_official_training接口，不关闭旧reviewed准入校验；selection禁止优化。混合CE+verl有限PPO已通过固定镜像四rank CPU梯度/Adam恢复，尚未接入native actor完整生命周期或NPU音频混合训练。详见docs/engineering/slurp-two-stage-data-and-loss-v1.md。
 
 2026-11-12 用户补充要求全量解构数据集的简单/复杂样本，设计判别式问句改善Final。复杂度分为本体消歧、语言证据、声学、模型经验四维，不用长度或组件数冒称真实推理难度；按gold挑问句禁止。全量learning分析与固定问句候选见docs/research/18-slurp-complexity-and-discriminative-questions-v1.md。规则投影只监督任务属性，否定/指代/可听证据需独立标签，缺标mask。
