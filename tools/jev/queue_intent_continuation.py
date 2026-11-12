@@ -71,11 +71,14 @@ def run(config,output):
             or acceptance['training_root']!=str(training)):
         raise ValueError('continuation topology or lineage differs')
     await_predecessor(config,output)
+    from queue_intent_prepared_acceptance import wait_resources
+    wait_resources(config,output)
     with locks(Path(config['lock_directory'])):
         check_pins(config['pins']);freeze_training(training)
         receipt=launch(training,plan,plan['create_argv'])
         atomic_json(output/'training-dispatched.json',receipt)
     wait_exact(receipt['container_id'],config['image'],output,'waiting_continuation',time.time()+600)
+    wait_resources(config,output)
     with locks(Path(config['lock_directory'])):
         check_pins(config['pins']);freeze_suite(suite)
         receipt=launch(suite,suite_plan,suite_plan['create_argv'])
