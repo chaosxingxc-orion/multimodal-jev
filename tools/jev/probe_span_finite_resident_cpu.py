@@ -21,6 +21,7 @@ def worker(rank, output):
     from multimodal_jev.span_finite_actor import make_global_batch, build_actor, admit_batch
     from multimodal_jev.verl_cpu_logprobs import native_actor_cpu_device
     from multimodal_jev.span_training_session import SpanTrainingSession
+    from multimodal_jev.span_residency import SpanResidency
     output = Path(output); torch.set_num_threads(1); torch.manual_seed(317)
     if list(Path('/dev').glob('davinci[0-9]*')): raise ValueError('CPU only')
     dist.init_process_group('gloo', init_method=(output/'gloo-init').resolve().as_uri(),
@@ -31,7 +32,7 @@ def worker(rank, output):
         initial = copy.deepcopy(Model().state_dict())
         reference = Model(); reference.load_state_dict(initial); refopt = optimizer(reference)
         branches = {}
-        for key in ('resident', 'resumed'):
+        for key in ('resident', 'resumed', 'paused'):
             module = Model(); module.load_state_dict(initial); model = DDP(module); opt = optimizer(model)
             cfg = config(1, 'policy0'); cfg.ppo_mini_batch_size = 2
             actor=build_actor(cfg,model,opt)
@@ -105,12 +106,22 @@ def worker(rank, output):
                         for a,b in zip(values,actual[field],strict=True):torch.testing.assert_close(a,b,atol=2e-7,rtol=2e-5)
                     assert policy==f'policy{step+1}' and updates==step+1
                     return dict(passed=True,policy_id=policy,updates=updates)
-                session.accept(verify)
+                if key == 'paused':
+                    opt.zero_grad(set_to_none=True)
+                    residency=SpanResidency(model,opt,offload_model=lambda m:None,
+                        load_model=lambda m:None,synchronize=lambda:None)
+                    session.accept_offloaded(residency,verify)
+                    assert residency.phase == 'resident'
+                else:
+                    session.accept(verify)
             exact = {}
             for field in expected:
                 exact[field] = all(torch.equal(a, b) for a, b in zip(measured['resident'][field], measured['resumed'][field], strict=True))
                 if not exact[field]: raise AssertionError('resume diverged from resident: '+field)
+                if not all(torch.equal(a,b) for a,b in zip(measured['resident'][field],measured['paused'][field],strict=True)):
+                    raise AssertionError('offload boundary diverged from resident: '+field)
             cases.append(dict(update=step+1, errors_against_reference=errors, resident_resume_exact=exact,
+                              offloaded_verification_next_update_exact=True,
                               stale_policy_rejected_branches=stale_rejections))
         # Real collective negative control: each rank's receipt names different
         # evidence despite agreeing on policy and cursor. No optimizer involved.
@@ -123,7 +134,19 @@ def worker(rank, output):
         except ValueError: pass
         else: raise AssertionError('different rank evidence accepted')
         assert receipt_session.phase == 'failed' and dummy.config.jev_policy_id == 'receipt0'
+        # A single rank failing reload must prevent acceptance on every rank.
+        from types import SimpleNamespace
+        paused_session=SpanTrainingSession(dummy,policy_id='receipt0',completed_updates=0,gather=gather)
+        paused_session.update(None);paused_session.publish('receipt1')
+        def bad_reload():
+            if rank==2:raise ValueError('injected rank2 reload failure')
+        boundary=SimpleNamespace(offload=lambda:None,reload=bad_reload)
+        try:paused_session.accept_offloaded(boundary,lambda p,n:dict(passed=True,policy_id=p,updates=n))
+        except ValueError:pass
+        else:raise AssertionError('peer reload failure accepted')
+        assert paused_session.phase=='failed' and dummy.config.jev_policy_id=='receipt0'
         atomic_json(output/f'rank-{rank}.json', dict(passed=True, rank=rank, restored_step4=restored,
+            peer_reload_failure_rejected=True,
             divergent_receipt_rejected=True, cases=cases))
     except BaseException as exc:
         atomic_json(output/f'rank-{rank}-failure.json', dict(error=repr(exc))); raise
@@ -139,7 +162,8 @@ if __name__ == '__main__':
         if not all(r['passed'] for r in ranks): raise ValueError('incomplete ranks')
         atomic_json(a.output/'result.json', dict(passed=True, ranks=ranks, world_size=4, updates=8,
             scope='Reusable session with synthetic FP32 four-Gloo-rank resident native verl actor and exact model/Adam/cursor reload. '
-                  'Unequal request weights and fully masked rank retained. No audio/NPU/BF16/FSDP/vLLM/Ray validation.'))
+                  'Unequal request weights and fully masked rank retained. CPU offload callbacks are no-ops; '
+                  'exact state/cursor boundary and peer failure only. No audio/NPU/BF16/FSDP/vLLM/Ray validation.'))
         atomic_json(a.output/'terminal.json', {'exit_code': 0})
     except BaseException as exc:
         atomic_json(a.output/'terminal.json', dict(exit_code=1, error=repr(exc))); raise

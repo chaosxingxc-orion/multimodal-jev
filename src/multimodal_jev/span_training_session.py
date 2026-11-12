@@ -86,6 +86,34 @@ class SpanTrainingSession:
         return dict(schema='jev-span-training-session-v1', completed_updates=self.completed_updates,
                     policy_id=self.policy_id, schedule_sha256=schedule_sha256, checkpoint_id=checkpoint_id)
 
+    def accept_offloaded(self, residency, verify):
+        """Pause all ranks, verify while offloaded, reload, then accept evidence.
+
+        The callback owns device leases and actual independent backend exits.
+        Offloading alone grants no permission to launch another device user.
+        All ranks must call this method; failure never retries or accepts policy.
+        """
+        self._agree('accept_offloaded', 'awaiting_acceptance')
+        self.phase = 'verifying_offloaded'
+        receipt = None
+        operations = [('offload', residency.offload),
+                      ('verify', lambda: verify(self.pending_policy, self.completed_updates)),
+                      ('reload', residency.reload)]
+        for name, operation in operations:
+            error = None
+            try:
+                result = operation()
+                if name == 'verify': receipt = result
+            except Exception as exc:
+                error = repr(exc)
+            try:
+                self._agree('offloaded_'+name, 'verifying_offloaded', error)
+            except BaseException:
+                self.phase = 'failed'
+                raise
+        self.phase = 'awaiting_acceptance'
+        return self.accept(lambda policy, updates: receipt)
+
     @classmethod
     def restore(cls, actor, cursor, *, schedule_sha256, checkpoint_id, gather):
         if (cursor['schema'] != 'jev-span-training-session-v1' or cursor['schedule_sha256'] != schedule_sha256
