@@ -14,6 +14,7 @@ from multimodal_jev.span_parity import compare_span_policies
 from multimodal_jev.span_native_actor import ACTOR_SHA256
 from multimodal_jev.slurp_intent_pilot import load_pilot
 from multimodal_jev.intent_actor_inputs import schedule
+from multimodal_jev.intent_gate_identity import verify_population
 
 
 def verify(root,suite):
@@ -49,6 +50,16 @@ def verify(root,suite):
     if not ready['passed'] or ready['result_sha256']!=file_hash(suite/'run/vllm/result.json'):raise ValueError('suite not ready')
     for result in (hf,vl):
         if not result['passed'] or result['base_id']!=base_id or result['adapter_id']!=adapter_id:raise ValueError('independent policy differs')
+    inputs=Path(suite_config['inputs'])
+    if suite_config['pins'].get(str(inputs))!=file_hash(inputs):raise ValueError('pinned processor inputs required')
+    artifact=read(inputs);expected={}
+    for arm in ('D','Q'):
+        population,_=load_pilot(config['pilot'],config['manifest_sha256'],arm)
+        expected.update({item['id']+'::'+arm:item['request'].model_input() for item in population})
+    for result in (hf,vl):verify_population(artifact,expected,result['records'],base_id+':'+adapter_id)
+    if (ready['requests']!=len(expected) or ready['base_id']!=base_id
+            or ready['adapter_id']!=adapter_id or suite_config['base_id']!=base_id
+            or suite_config['adapter_id']!=adapter_id):raise ValueError('readiness policy/population differs')
     refs={r['id']:r for r in hf['records']};observed={r['id']:r for r in vl['records']}
     expected_population={r['id']+'::'+a for r in items for a in ('D','Q')}
     if (set(refs)!=expected_population or set(observed)!=expected_population
