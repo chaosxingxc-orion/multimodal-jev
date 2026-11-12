@@ -1,0 +1,101 @@
+{
+  "update": 5,
+  "logit_credit": {
+    "requests": 8,
+    "sum_norms": 0.009301940853637405,
+    "effective_requests": 1.9735374793075013,
+    "top2_share": 0.8813915501672039,
+    "top10percent_share": 0.6773833873462848,
+    "below_one_thousandth_share": 0.014877087735527032
+  },
+  "rows": [
+    {
+      "id": "slurp:audio--1505405685.flac::intent",
+      "gold": "alarm_query",
+      "norm": 0.0002997825948511421,
+      "gold_probability": 0.0027315674091824083,
+      "request_weight": 0.7946428571428571,
+      "gold_probability_delta": 0.0015223493928662097
+    },
+    {
+      "id": "slurp:audio-1488975295.flac::intent",
+      "gold": "datetime_convert",
+      "norm": 0.006300980204331698,
+      "gold_probability": 0.029476981503787813,
+      "request_weight": 1.5892857142857142,
+      "gold_probability_delta": 0.012928004403649565
+    },
+    {
+      "id": "slurp:audio-1489673020-headset.flac::intent",
+      "gold": "music_dislikeness",
+      "norm": 3.578456338962978e-06,
+      "gold_probability": 3.148978067689935e-05,
+      "request_weight": 0.7946428571428571,
+      "gold_probability_delta": -6.0687570372564775e-06
+    },
+    {
+      "id": "slurp:audio-1490199961.flac::intent",
+      "gold": "music_likeness",
+      "norm": 3.08143084282424e-05,
+      "gold_probability": 0.00014008016208495627,
+      "request_weight": 1.5892857142857142,
+      "gold_probability_delta": -4.909736271153769e-05
+    },
+    {
+      "id": "slurp:audio-1490960972.flac::intent",
+      "gold": "audio_volume_down",
+      "norm": 2.94400440664059e-05,
+      "gold_probability": 0.0002818726892354449,
+      "request_weight": 0.7946428571428571,
+      "gold_probability_delta": -2.0978916696418807e-05
+    },
+    {
+      "id": "slurp:audio-1490966873-headset.flac::intent",
+      "gold": "lists_createoradd",
+      "norm": 7.455298135663562e-05,
+      "gold_probability": 0.0006755240926555825,
+      "request_weight": 0.7946428571428571,
+      "gold_probability_delta": -0.00015413718252041148
+    },
+    {
+      "id": "slurp:audio-1497868501.flac::intent",
+      "gold": "lists_query",
+      "norm": 0.000665120400044899,
+      "gold_probability": 0.00652832261800038,
+      "request_weight": 0.7946428571428571,
+      "gold_probability_delta": -0.0018758504111692645
+    },
+    {
+      "id": "slurp:audio-1498485821.flac::intent",
+      "gold": "iot_hue_lighton",
+      "norm": 0.0018976718642194192,
+      "gold_probability": 0.009002754834487293,
+      "request_weight": 1.5892857142857142,
+      "gold_probability_delta": -0.00029692688816404
+    }
+  ],
+  "populations": {
+    "updated": {
+      "recordings": 8,
+      "increased": 2,
+      "decreased": 6
+    },
+    "other_learning": {
+      "recordings": 81,
+      "increased": 26,
+      "decreased": 55
+    },
+    "all_learning": {
+      "recordings": 89,
+      "increased": 28,
+      "decreased": 61
+    }
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update05-v1/config.json": "2553475104eb4d6fc0ebe860181263728508a8892701fdda896c192771d45f12",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update05-v1/run/selection.json": "0d317fcfdbd9346879173b88b5b669186d29f734db8c421fae0550e5bdacdd7b",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite04-v1/run/vllm/result.json": "8f24d39b0d7a756640a52c8efb40e01dbda2637682ba551d9f8a3fa8a31dfb4a",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-policy-drift-step5-v1/result.json": "b0a63a6c6f639beecba2e4df12bd823c786d7af3afbdc311a1dfda2372453d66"
+  },
+  "scope": "Learning inputs only; independent-logit sensitivity, not shared-parameter gradient contributions. No change to sampling/weights."
+}
