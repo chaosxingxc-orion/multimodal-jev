@@ -7,6 +7,9 @@ from queue_span_native_actor_npu import read, completed
 
 
 def authenticate(config, root):
+    if config.get('priority_kind') == 'utility_curves12':
+        from run_intent_utility_curves import authenticate_complete
+        return authenticate_complete(config,root)
     prior = read(root/'config.json')
     if prior['image'] != config['image']:
         raise ValueError('priority predecessor image differs')

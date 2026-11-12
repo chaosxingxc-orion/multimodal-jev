@@ -50,3 +50,7 @@ BF16执行/导出、FP32 master/Adam、DP4和vLLM TP1保持原准入要求。
 延续相关测试通过。[准备验收记录](../engineering/intent-utility-curves12-prepared-v1-verified.json)。
 复算脚本`tools/jev/audit_intent_utility_curves12.py`固定审计本版根目录；
 运行后会重新写审计结果，不会派发NPU或修改实验协议。
+
+后续自动执行入口已排队，工程验收和correctness实际状态重放通过后才继续，
+完整FSC矩阵安排在其后；参见[控制器证据](../engineering/intent-utility-curves12-controller-v1.md)。
+本段更新调度状态，不改变冻结曲线协议或说明训练已完成。
