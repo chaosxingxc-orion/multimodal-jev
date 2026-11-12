@@ -5,6 +5,10 @@
 论文/代码/权重 revision、表号及来源哈希继承 [学术登记](academic-baseline-lock.json) 与
 [来源记录](academic-baseline-sources-v1.json)；不能据此声称穷尽当日 SOTA。
 
+> 2026-11-12执行口径更新：首轮主线已锁定Qwen3-ASR-0.6B、BF16 LoRA、四卡FSDP数据并行与vLLM TP1；一次填充typed Span。只验证RL自身的持续提升、D/Q/P结构信用与冻结权重的FSC配置迁移，不新增RL/SFT效果比较。下文保留历史研究选项；涉及“typed尚未实现”“尚未准入任何RL”“必须先做SFT/RL横比”的阶段描述已过时，不作为新实验派发要求。当前奖励与比较协议以[三条主线协议](14-rl-decision-credit-and-transfer.md)及冻结配置为准。
+
+> 当前证据仍有限：89条参考文本审核通过的SLURP学习来源仅准入intent，未复听音频、未准入完整55类型监督；D前四步已通过实际四卡恢复、BF16重载及178输入HF/vLLM验收，但没有持续任务收益。独立开发候选尚待听音审核。FSC官方TEST的3793条音频与六视图输入已验收，七策略迁移矩阵排队中；这些不能替代独立泛化结果或正式基线复现。
+
 **已经确定的执行方向**：优先清理后的 SLURP，准备 Qwen3-ASR 端到端训练；FSC 作为简单控制；停止扩展 Omni 验证。
 actor 直接消费音频、任务定义和允许的上下文，不使用参考转写，也不走 ASR→独立文本模型串联。
 **本文建议、尚未获得用户最终确认的研究边界**：Jev 主任务为定义驱动的意图/函数选择和槽位类型存在性；开放值抽取、完整调用生成与实时执行分别建表。
@@ -310,7 +314,7 @@ whole-bundle 必须固定所需决策清单和规则数量；168 项、6 项、4
 每条结果键至少为：dataset release + split + metric/scorer hash + input modality + candidate protocol + model revision + training exposure + code/config + seed + inference settings。
 任一关键字段不同，分列说明，不直接解释为算法增益。
 
-比较顺序：原生官方参考 → 同骨干同任务的生成式/typed SFT → 同初始化与预算的 SFT/RL/关系奖励消融 → 外部迁移。
+当前比较顺序：原生官方参考 → 固定RL起点与完整更新曲线 → 同初始化/来源/预算的D/Q/P结构信用比较 → 冻结权重的配置迁移。既有SFT来源的初始化如实披露，不新增SFT效果对照；旧生成式/typed比较作为历史工程证据保留。
 开放值若不属主任务，两臂都只做同一决策任务；如比较完整 SLU，两臂都必须有同条件抽取模块，或者明确报告整体系统差异。
 不把模型换代、去除坏样本、更多 rollout 或更强教师归因为单个 Jev 设计的收益。
 

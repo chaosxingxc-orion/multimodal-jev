@@ -2,6 +2,8 @@
 
 > 2026-11-11 执行方向更新：已转向 clean SLURP / Qwen3-ASR 训练准备，FSC 为简单控制，停止扩展 Omni 验证。以下学术来源/历史协议保留；旧文中的长期冻结、FSC 优先及“p1 仍在运行”等状态已被后续记录取代。当前数据角色、质量限制与指标指南见[工作基线](08-dataset-metrics-working-guide.md)；这不表示新训练已派发。
 
+> 2026-11-12补记：Qwen3-ASR-0.6B的真实四卡BF16 LoRA RL已进入受限intent先导，D/Q/P及FSC配置迁移协议见[当前主线](14-rl-decision-credit-and-transfer.md)。下文“主actor为冻结Omni”“不新增权重训练”只描述历史锁定阶段；当前不新增模型下载、不做RL/SFT效果比较。作者报告与官方权重复测仍分别列示，不能将不同训练来源的参考分数当作RL增益。FSC官方权重已有完整TEST复测；SLURP HuBERT缺本地权重，仍未运行。
+
 调研日期：2026-11-10（Asia/Shanghai；来源访问时间保留 UTC）。本次锁定的是**比较对象、证据口径和复现路径**，调研子进程没有运行训练、模型评测或设备验证；主进程同期运行验证在下文另引工程凭证。不是穷尽最新 SOTA 的排行榜。机器登记见 [academic-baseline-lock.json](academic-baseline-lock.json)，来源和失败记录见 [academic-baseline-sources-v1.json](academic-baseline-sources-v1.json)，执行门槛见 [横比方案](../../experiments/academic-baseline-comparison-v1.md)。
 
 ## 1. 锁定结论与边界
@@ -35,6 +37,8 @@ Qwen3-Omni，直接消费音频和任务定义。四项历史 `ours-*-asr-text/g
 ## 2. 核心数据集与精确参考
 
 ### 2.1 FSC：保留原生 joint intent 主表
+
+后续身份对齐已将官方权重已有TEST预测与本轮FSC配置迁移人口逐条匹配：3793录音、10位说话人、全部音频哈希相同，无缺失/额外预测。只建立同音频外部参照，未读取目标标签或重算指标；任务监督训练与源域迁移条件仍不同。见[对齐证据](../engineering/fsc-published-transfer-audio-alignment-v1.md)。
 
 原始论文 [Lugosch et al., 1904.03670v1](https://arxiv.org/pdf/1904.03670v1) Table 1 给出 train/valid/test **23,132 / 3,118 / 3,793**，Table 2 明确为 test。正确标准是 action、object、location 三者全对；不是把三个槽位平均，也不是本项目六视图平均。
 
