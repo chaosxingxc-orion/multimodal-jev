@@ -1,0 +1,72 @@
+{
+  "role": "learning",
+  "source_result": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-initial-learning-diagnostics-v2/collapse-diagnostics.json",
+  "result_sha256": "51a73a7ab0f549c8a01234329cc03179ffeac8b4a223d1410d9f84817b74d698",
+  "implementation_sha256": "895a203a95ce7bf52510724d9159e1704ac2d650f947bbfc55d8e8e4fb2fdc20",
+  "arms": {
+    "D": {
+      "recordings": 89,
+      "final_accuracy": 0.011235955056179775,
+      "final_macro_recall_observed": 0.017857142857142856,
+      "final_macro_f1_observed": 0.0003968253968253968,
+      "observed_classes": 56,
+      "candidate_classes": 60,
+      "unobserved_classes": [
+        "general_quirky",
+        "music_settings",
+        "play_podcasts",
+        "qa_maths"
+      ],
+      "component_accuracy": {
+        "intent": 0.011235955056179775
+      },
+      "final_expected_reward": 0.015183418597110483,
+      "weighted_final_expected_reward": 0.018968694076972194,
+      "final_nll": 6.240396458111452,
+      "final_mean_entropy": 2.064530755572284,
+      "final_predicted_classes": 1,
+      "final_dominant_prediction_fraction": 1.0,
+      "final_prediction_counts": {
+        "qa_definition": 89
+      },
+      "final_mean_all_wrong_probability_at_32_samples": 0.8213321847410996,
+      "component_final_compatibility": null,
+      "tie_policy": "first supplied candidate",
+      "scope": "Metrics for supplied population only. Macro averages cover observed gold classes; no claim on absent classes or held-out improvement."
+    },
+    "Q": {
+      "recordings": 89,
+      "final_accuracy": 0.011235955056179775,
+      "final_macro_recall_observed": 0.008928571428571428,
+      "final_macro_f1_observed": 0.000496031746031746,
+      "observed_classes": 56,
+      "candidate_classes": 60,
+      "unobserved_classes": [
+        "general_quirky",
+        "music_settings",
+        "play_podcasts",
+        "qa_maths"
+      ],
+      "component_accuracy": {
+        "scenario": 0.07865168539325842,
+        "action": 0.0,
+        "intent": 0.011235955056179775
+      },
+      "final_expected_reward": 0.016712095506795893,
+      "weighted_final_expected_reward": 0.017204351729454694,
+      "final_nll": 5.353812820456001,
+      "final_mean_entropy": 3.015703116171844,
+      "final_predicted_classes": 2,
+      "final_dominant_prediction_fraction": 0.7865168539325843,
+      "final_prediction_counts": {
+        "calendar_remove": 70,
+        "qa_definition": 19
+      },
+      "final_mean_all_wrong_probability_at_32_samples": 0.737848578667702,
+      "component_final_compatibility": 0.0,
+      "tie_policy": "first supplied candidate",
+      "scope": "Metrics for supplied population only. Macro averages cover observed gold classes; no claim on absent classes or held-out improvement."
+    }
+  },
+  "scope": "89-source reference-reviewed learning diagnostics only. Structured template means Q/P shared inputs, not evidence of P training. No development/test accuracy or RL improvement claim."
+}

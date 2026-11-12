@@ -20,6 +20,9 @@ def test_final_and_compatibility_are_distinct():
     row['candidate_logprobs'][0].reverse();r=score([item],[row],'Q')
     assert r['final_accuracy']==1 and r['component_final_compatibility']==0
     assert r['final_expected_reward']==pytest.approx(.8)
+    assert r['final_nll']==pytest.approx(-math.log(.8))
+    assert r['final_predicted_classes']==1 and r['final_dominant_prediction_fraction']==1
+    assert r['final_mean_all_wrong_probability_at_32_samples']==pytest.approx(.2**32)
 
 
 def test_ties_and_missing_rows_are_not_hidden():

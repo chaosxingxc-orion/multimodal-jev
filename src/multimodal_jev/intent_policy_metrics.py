@@ -17,6 +17,7 @@ def score(items,records,wire_arm):
     if set(predictions)!={i['id']+'::'+wire_arm for i in items}:raise ValueError('exact prediction population required')
     gold_count=Counter();pred_count=Counter();correct_count=Counter();confusion=Counter();components=Counter()
     rows=[];probability_sum=0.;weighted_reward=0.;weight_sum=0.;compatible=0
+    nll_sum=0.;entropy_sum=0.;sampling_risk_sum=0.
     final_schema=items[0]['request'].questions[-1].schema
     for item in items:
         request=item['request'];target=item['target'];record=predictions[item['id']+'::'+wire_arm]
@@ -38,6 +39,9 @@ def score(items,records,wire_arm):
         gold=truth[-1];prediction=predicted[-1];gold_count[gold]+=1;pred_count[prediction]+=1
         correct_count[gold]+=gold==prediction;confusion[(gold,prediction)]+=1
         probability_sum+=gold_probs[-1]
+        nll_sum-=probs[-1][target['targets'][-1]]
+        entropy_sum-=sum(math.exp(p)*p for p in probs[-1])
+        sampling_risk_sum+=(1-gold_probs[-1])**32
         w=target['request_weight']
         if type(w) not in (int,float) or not math.isfinite(w) or w<=0:raise ValueError('positive finite request weight required')
         weight_sum+=w;weighted_reward+=w*gold_probs[-1]
@@ -56,6 +60,10 @@ def score(items,records,wire_arm):
         observed_classes=len(observed),candidate_classes=len(labels),unobserved_classes=sorted(set(labels)-set(observed)),
         component_accuracy={k:v/len(items) for k,v in components.items()},
         final_expected_reward=probability_sum/len(items),weighted_final_expected_reward=weighted_reward/weight_sum,
+        final_nll=nll_sum/len(items),final_mean_entropy=entropy_sum/len(items),
+        final_predicted_classes=len(pred_count),final_dominant_prediction_fraction=max(pred_count.values())/len(items),
+        final_prediction_counts=dict(sorted(pred_count.items())),
+        final_mean_all_wrong_probability_at_32_samples=sampling_risk_sum/len(items),
         component_final_compatibility=compatible/len(items) if wire_arm=='Q' else None,
         confusion=[dict(gold=g,prediction=p,count=n) for (g,p),n in sorted(confusion.items())],
         records=rows,tie_policy='first supplied candidate',
