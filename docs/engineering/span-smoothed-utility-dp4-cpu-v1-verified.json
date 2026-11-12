@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-smoothed-utility-dp4-cpu-v1",
+  "container_id": "244b511d21630f4643f14bab22c1d436c0569245d697622452841b90c266e085",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "actual_exit_code": 0,
+  "world_size": 4,
+  "updates_per_case": 2,
+  "microbatches": [
+    1,
+    2
+  ],
+  "math_tests": 8,
+  "maximum_errors": {
+    "gradients": 1.4901161193847656e-08,
+    "parameters": 2.9802322387695312e-08,
+    "exp_avg": 1.862645149230957e-09,
+    "exp_avg_sq": 2.7284841053187847e-12
+  },
+  "source_manifest_sha256": "69a55d25be5a69ba47a538945617c992954868e209b6dbec665fc4fe194d9658",
+  "result_sha256": "060ade352ce82a210d56f0cd063c5bb341de0235b069b9e5db50dbde245cf17d",
+  "junit_sha256": "aef3cdc473c119a9a4939840990e57dc70702a50649f2420daf203080e5202fb",
+  "scope": "Synthetic CPU FP32 DP4 actual verl gradient/master/Adam versus independent nonlinear utility; 2updates, micro1/2, mixed2/31/60support and fully masked rank. No NPU/audio/BF16 utility training or task gain."
+}

@@ -4,6 +4,8 @@
 
 阅读入口（截至已归档D step12，非实时运行状态）：简单任务使用正确性奖励与全候选边缘PPO；结构任务用同一个loss算子，分别设置D仅Final、Q多问题但仅Final奖励、P多问题并增加总预算0.2的过程奖励；迁移固定源域权重与FSC模板，分别测权重收益、模板收益及交互。当前D step0–12均为1/89，尚未获得持续提升证据；文中较早的工程阶段记录保留为历史。已有实现是共享隐藏表示的一次多Span读出，不是Final读取前置离散预测的串行决策。最新归档证据见[D十二步完整验收](../engineering/intent-finite-d12-complete-v1.md)。
 
+三条主线的集中决策说明见[Loss、过程信用与配置迁移工作基线](15-rl-three-track-working-baseline.md)。针对低正确概率样本信用弱，新增[平滑效用候选](intent-smoothed-utility-candidate-v1.md)：仅完成数学、真实verl四rank CPU验证及固定策略离线诊断，未改变冻结D/Q/P奖励，尚无NPU训练收益。
+
 新增[过程奖励预算诊断](../engineering/intent-process-credit-step0and11-v1.md)：在固定D step0/11的Q模板输出上反事实计算P信用，分别有40/89、39/89来源的过程输出logit梯度范数超过Final；两端各有2/12个固定日程batch出现这一现象。它只证明奖励预算不能直接约束梯度预算，不是共享参数冲突或P收益证据。实际D第11步8来源的前两条输出信用范数占72.62%；后续优化须同时关注来源覆盖、Final信用和共享梯度关系。
 
 新增[过程与Final逐来源结果诊断](../engineering/intent-process-outcomes-step0and12-v1.md)：D step0/12的Q模板输出中，两过程都正确及过程/Final兼容均为0/89，Final分别正确1/2条且都存在过程错误。后续Q/P比较需分开统计过程修复、Final修复和一致但全错；空条件人口的准确率保持null。这是结构模板在D权重上的诊断，不是过程奖励训练结论。
