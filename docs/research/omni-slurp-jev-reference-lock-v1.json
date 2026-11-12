@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-11-12T01:12:30.743690+00:00",
+  "source_root": "/home/xingchao/workspace/omni/repro/publication/omni",
+  "source_git_head": "9acf649ef93df21dc887c5cfe9a4ac2a0f4c55c9",
+  "source_files": {
+    "docs/results/P-S-Instruct-Baseline.md": "2c712f1256bbbfd117efc2f43a520acda4bf4b8c4176f753aeff27db7f097cc0",
+    "docs/results/S-Type-Only-Baseline.md": "44f5d23b04aa41bcfdab78d6774fadc6b19eed40435b284d31cd36abf7621100",
+    "docs/results/S1-Functional-Baseline.md": "b54b9a38066437338c805b0b1655fd9c85ffbc50b7024f45060129bba2b1ec39",
+    "docs/results/s-stages/S1-FULL-BASELINE.json": "ed1e67969f47f8ce8d9138f048f5ed199c89b76b9348c59cace1c1ac60ce97b5",
+    "docs/results/s-stages/FOLDS.json": "0e25f9dbf0cc8b97f44727df29df55cc0db2693855449f18478c8a257b120901"
+  },
+  "reference_model": "Qwen3-Omni-30B-A3B-Instruct",
+  "scope": "Historical project reference; not a new local reproduction or industry SOTA claim",
+  "references": [
+    {
+      "id": "P-instruct",
+      "task": "intent",
+      "n": 1075,
+      "metrics_percent": {
+        "top1": 84.56,
+        "top3": 94.7
+      },
+      "counts": {
+        "top1_correct": 909,
+        "top3_correct": 1018
+      },
+      "source": "docs/results/P-S-Instruct-Baseline.md",
+      "limitations": [
+        "FoldA1080 after five quality exclusions",
+        "independent P node; not end-to-end pipeline"
+      ]
+    },
+    {
+      "id": "S-type-only",
+      "task": "intent_conditioned_type_set",
+      "n": 545,
+      "metrics_percent": {
+        "micro_precision": 72.2,
+        "micro_recall": 82.99,
+        "micro_f1": 77.22
+      },
+      "counts": {
+        "set_exact": 310
+      },
+      "source": "docs/results/S-Type-Only-Baseline.md",
+      "limitations": [
+        "gold intent branch only",
+        "historically P-success-selected cohort",
+        "476 learning plus 69 held out; not an unconditional test score"
+      ]
+    },
+    {
+      "id": "S1-original",
+      "task": "audio_only_no_intent_type_set",
+      "n": 6681,
+      "metrics_percent": {
+        "micro_precision": 14.183816651075773,
+        "micro_recall": 94.11855990068281,
+        "micro_f1": 24.652467279083
+      },
+      "counts": {
+        "tp": 6065,
+        "fp_reference_unmatched": 36695,
+        "fn": 379,
+        "set_exact": 206,
+        "positive_complete": 4136,
+        "positive_n": 4501,
+        "empty_correct": 94,
+        "empty_n": 2180
+      },
+      "source": "docs/results/s-stages/S1-FULL-BASELINE.json",
+      "limitations": [
+        "TRAIN cohort historically selected by P success",
+        "55 output types; 54 supported types in observed macro metric",
+        "scoring_status PARTIAL; one truncated output remains in denominator"
+      ]
+    },
+    {
+      "id": "S1-grounding",
+      "task": "audio_only_no_intent_type_set",
+      "n": 6681,
+      "metrics_percent": {
+        "micro_precision": 23.42,
+        "micro_recall": 89.46,
+        "micro_f1": 37.12,
+        "positive_complete": 85.63
+      },
+      "source": "docs/results/S1-Functional-Baseline.md",
+      "limitations": [
+        "same selected TRAIN cohort; not generalization",
+        "not promoted as overall better baseline"
+      ]
+    },
+    {
+      "id": "S1-none",
+      "task": "audio_only_no_intent_type_set",
+      "n": 6681,
+      "metrics_percent": {
+        "micro_precision": 27.3737,
+        "micro_recall": 84.9162,
+        "micro_f1": 41.4012
+      },
+      "counts": {
+        "tp": 5472,
+        "fp_reference_unmatched": 14518,
+        "fn": 972,
+        "set_exact": 935,
+        "positive_complete": 3589,
+        "positive_n": 4501,
+        "empty_correct": 397,
+        "empty_n": 2180
+      },
+      "source": "docs/results/S1-Functional-Baseline.md",
+      "limitations": [
+        "same selected TRAIN cohort; not generalization",
+        "None is fold control, not a business type or unknown label",
+        "not promoted: complete coverage decreased"
+      ]
+    }
+  ],
+  "comparison_requirements": [
+    "same audited clean-v7 audio roster and annotation masks",
+    "same business ontology, candidate sets and question knowledge",
+    "report native Omni prompting separately from matched Jev interface",
+    "no gold intent or target reference transcript in primary type task",
+    "separate published historical scores from matched local rerun",
+    "invalid outputs stay in full denominator; unknown annotations are masked, never fabricated false"
+  ]
+}

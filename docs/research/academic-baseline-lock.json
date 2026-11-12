@@ -3288,18 +3288,47 @@
     }
   ],
   "execution_policy": {
-    "basis": "Current user end-to-end audio requirement and AGENTS.md execution priority; supersedes historical proposed dispatch labels.",
-    "active_actor": "Local frozen Qwen3-Omni-30B-A3B-Instruct, direct audio plus task definition to task output.",
+    "basis": "Latest user instruction: multi-card LoRA data-parallel verl training, compare Qwen-ASR Jev with omni SLURP baselines.",
+    "active_actor": "Local Qwen3-ASR-0.6B; direct audio and complete question template; single-pass typed Span readout.",
+    "reference_actor": "Local frozen Qwen3-Omni-30B-A3B-Instruct",
     "priority": [
-      "frozen native task baselines",
-      "offline teacher prompt optimization",
-      "native versus derived Jev task comparison"
+      "finish existing runs and their evaluations",
+      "DP4 native resume and full HF-vLLM TP1 parity acceptance",
+      "continuous verl actor/rollout/checkpoint lifecycle",
+      "audited SLURP intent and no-intent slot-type benchmark; matched SFT and RL comparison"
     ],
-    "new_weight_training_dispatch": false,
+    "new_weight_training_dispatch": true,
+    "dispatch_constraints": [
+      "only physical NPU4-7 on ssh npu",
+      "all four cards free and prerequisite gates pass",
+      "only audited labels admitted",
+      "do not restart cancelled single-card pair-reward queue"
+    ],
+    "training_parallelism": "FSDP FULL_SHARD data parallel world_size=4",
+    "rollout_tensor_parallel_size": 1,
+    "precision": "BF16 base, LoRA execution/export and typed projection; FP32 masters/optimizer/loss allowed",
     "asr_to_text_model_dispatch": false,
     "reference_transcript_substitution_dispatch": false,
     "new_model_downloads": false,
-    "academic_cascade_results": "Literature references only; inclusion does not authorize local cascade execution.",
-    "scope": "Execution applicability only; preserves historical reference results, identities and task protocols. Not a new experiment registration."
-  }
+    "protocol": "experiments/slurp-asr-jev-dp4-lock-v1.md",
+    "reference_lock": "docs/research/omni-slurp-jev-reference-lock-v1.json",
+    "scope": "Execution priority lock; not a claim that continuous verl trainer or full native-task benchmark is implemented."
+  },
+  "execution_policy_history": [
+    {
+      "basis": "Current user end-to-end audio requirement and AGENTS.md execution priority; supersedes historical proposed dispatch labels.",
+      "active_actor": "Local frozen Qwen3-Omni-30B-A3B-Instruct, direct audio plus task definition to task output.",
+      "priority": [
+        "frozen native task baselines",
+        "offline teacher prompt optimization",
+        "native versus derived Jev task comparison"
+      ],
+      "new_weight_training_dispatch": false,
+      "asr_to_text_model_dispatch": false,
+      "reference_transcript_substitution_dispatch": false,
+      "new_model_downloads": false,
+      "academic_cascade_results": "Literature references only; inclusion does not authorize local cascade execution.",
+      "scope": "Execution applicability only; preserves historical reference results, identities and task protocols. Not a new experiment registration."
+    }
+  ]
 }

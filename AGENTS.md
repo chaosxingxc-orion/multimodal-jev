@@ -12,6 +12,8 @@
 
 ## 开发
 
+最新主线锁定（2026-11-12 UTC）：用户要求 Qwen-ASR 在 Jev 类评测上对标基座，参考 omni 的 SLURP 基线。使用本地 Qwen3-ASR-0.6B、BF16 LoRA、175 物理卡4–7的四卡 FSDP 数据并行；rollout 使用已通过一致性检查的 vLLM TP1。该决定优先于历史冻结权重阶段，不切换到30B训练。主评测是意图分类和不提供意图的槽位类型集合；时间三布尔/规则任务仅为独立扩展诊断。既有训练及自动评估正常收尾，取消的单卡成对奖励队列不得重启，四卡可用后优先恢复与连续训练验收。已有四卡一步不等于完整 verl trainer；全量本体也未全部准入训练。协议见 experiments/slurp-asr-jev-dp4-lock-v1.md，参考源见 docs/research/omni-slurp-jev-reference-lock-v1.json。旧 clean-v7 总体暂停按已完成的逐标签准入收窄：仅审核通过的监督可训练，不能把数据清洗对齐当作所有缺标已解决。
+
 最新精度约束：用户要求 BF16 训练并保证训推一致。Span 主线的基座、LoRA 执行/导出和输出投影使用 BF16；显式关闭 PEFT adapter 自动升精度，vLLM lora_dtype=bfloat16、head_dtype=model。FP32 候选归一化/损失及优化器 master/state 保留稳定性。两侧均使用同一未合并适配器，禁止把 FP32 训练 adapter 仅在 rollout 降为 BF16 后声称一致。通过保存重载及跨后端全候选/联合概率 gate 前不准入 RL；同 dtype 不等于已通过一致性验收。
 
 用户新增输入与调试要求：允许可配置 preemphasis、首尾静音处理、音量处理和语速增强。保留 raw 对照，记录处理后音频身份，actor/rollout 使用同一波形或特征；速度与保音高 tempo 不混称。调试训练要求分类均衡：检查单标签及联合标签分布，并保证当前三任务每个 batch 正负均衡；不修改原始发布、不补造缺失监督、不改变测试分布。见 docs/engineering/audio-preprocessing-v1.md 和 experiments/slurp-native-spans-balanced-v1.md。
