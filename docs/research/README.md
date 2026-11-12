@@ -2,7 +2,7 @@
 
 调研日期：2026-11-09（America/Los_Angeles）。范围：模型、SLU / Agentic Speech 数据集、直接音频决策研究和可复用工程方案。
 
-**当前主线已转为清理后的 SLURP 与本地 Qwen3-ASR 端到端训练准备。** actor 直接消费音频与任务定义；FSC 保留为简单控制，已有 Omni 冻结基线及教师提示优化结果保留，停止扩展 Omni 验证。SLURP clean-v7 元数据和 TRAIN 来源划分已经完成，但语义角色定义、规则族划分与可训练 release 尚未验收，不将受影响标签用于训练/奖励/模型选择。ASR→独立文本模型不进入执行路线，不新增模型下载。
+**当前主线是简单决策 RL、结构决策过程信用、跨数据集配置迁移。** 使用本地 Qwen3-ASR-0.6B、BF16 LoRA、四卡 FSDP 数据并行与 vLLM TP1；直接消费音频与完整问题配置，一次填充 typed Span。比较 RL 更新的持续收益及 D/Q/P 对照，不新增 RL/SFT 效果比较。FSC 用于冻结源域权重的配置迁移。SLURP 当前仅89条学习来源的意图经参考文本审核准入，未复听音频，槽位监督与独立开发评测仍须准入；不将受影响标签用于训练、奖励或模型选择。工程验收不等于任务收益，最新结果以逐次归档凭证为准。
 
 2026-11-11 工作基线：[16 项数据集与指标指南](08-dataset-metrics-working-guide.md)；[单问、多问与推理学习策略](09-query-decision-learning-guide.md)。前者统一任务边界、指标与横比条件，后者分析原子决策与联合判决。用户最新要求已固定为[可配置思考与非文本判决](10-configurable-thinking-decision-contract.md)，取代文本 CoT 实验路线。意图/类型作为 Jev 主范围及具体学习策略仍是建议，不冒充用户已确认或工程已实现。
 
@@ -10,10 +10,14 @@
 
 ## 阅读入口
 
-最新执行约束见[决策链—数据集协同设计](11-decision-chain-dataset-codesign.md)：本地学习集覆盖、SFC 轮次捷径、可证伪对照及候选链准入。先验证数据能承载方法，再扩大训练链。
+当前入口为[三条研究主线工作基线](15-rl-three-track-working-baseline.md)及[完整 RL 协议](14-rl-decision-credit-and-transfer.md)，输入输出遵循[单次 Span 契约](12-single-pass-span-cot-contract.md)。[组合数据承载审计](16-composition-data-support.md)区分标签分解与多步推理证据。09–11保留设计演进，其外部触发/停止循环不再是当前执行契约。
 
 | 文档 | 内容 |
 | --- | --- |
+| [三条研究主线工作基线](15-rl-three-track-working-baseline.md) | 简单任务 Loss/Reward、D/Q/P 过程信用、SLURP→FSC 配置迁移与收益判据 |
+| [完整 RL 协议](14-rl-decision-credit-and-transfer.md) | 有限候选边缘 PPO、监督预算、冻结实验与证据边界 |
+| [单次 Span 契约](12-single-pass-span-cot-contract.md) | 全部问题预先给定，一次读出 typed Span，不生成文本思维链 |
+| [组合数据承载审计](16-composition-data-support.md) | 单组件捷径、组合划分可行性及多步推理结论的限制 |
 | [模型与接口](01-models.md) | Qwen ASR 的最新公开版本、内部结构、适配点、替代模型与运行限制 |
 | [数据集与指标工作基线](08-dataset-metrics-working-guide.md) | 16 项资源的角色、Jev 边界、主指标、质量限制与执行顺序 |
 | [可配置思考与决策契约](10-configurable-thinking-decision-contract.md) | 思考要求、触发/停止策略、非文本判决复核及 RL 对照 |
@@ -35,7 +39,7 @@
 Hugging Face 授权入口和安全登录步骤见 [hf-auth.md](hf-auth.md)。
 3. **Qwen3-ASR 有适合改造的内部接口，但不是通用音频指令模型。** 技术报告 §2.2 明确将其后训练为不跟随一般自然语言指令的 ASR-only 模型。必须检验任务定义能否重新进入决策，而不能只修改 prompt 后假定已经具备 SLU。
 4. **SLU、语音函数调用与 Agentic Speech 是不同证据层级。** 意图准确率、工具名/参数匹配、工具执行后的任务成功、实时纠正与取消，必须分别评估。静态数据上的 JSON 合法率不能证明智能体可靠性。
-5. **当前算法问题是业务关系奖励能否带来真实任务收益及迁移。** 在相同初始策略、监督来源和预算下比较继续 SFT、独立决策奖励和关系奖励；联合验证定义变化、声学证据、开放参数、缺失状态与完整任务正确性。文献已经涉及其中多项，是否构成创新仍取决于同条件对照及完整复现。详见 [Omni RL 设计](../../proposal/03-omni-sfc-rl-design-v1.md)。
+5. **当前算法问题是 RL 能否持续改善 Final，以及过程信用和配置消费能否带来额外收益。** 固定初始化和来源预算，比较直接问题 D、多问题但仅 Final 奖励 Q、多问题加过程奖励 P；另用冻结 FSC 模板区分权重迁移、模板收益及二者交互。过程标签与计算开销单独披露，不把总 reward 上升或配置可加载当作成功。详见[三条研究主线工作基线](15-rl-three-track-working-baseline.md)。
 
 ## 已修正的参考资料假设
 

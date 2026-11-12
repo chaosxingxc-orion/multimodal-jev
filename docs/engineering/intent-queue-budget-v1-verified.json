@@ -1,0 +1,24 @@
+{
+  "audit": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-queue-budget-v1.json",
+  "sha256": "c16f70c67362d45d7b1f3d6e226cc5545cad0e0bedeb44be844e6f3d76a8fe60",
+  "summary": {
+    "reference_updates": 5,
+    "training_seconds_median": 61.065338,
+    "suite_seconds_median": 392.88477,
+    "seconds_per_input_for_both_backends": {
+      "min": 2.1464558988764044,
+      "median": 2.207217808988764,
+      "max": 2.464661011235955
+    },
+    "target_requests_per_backend": 159306,
+    "target_forward_calls": 318612,
+    "extrapolated_matrix_hours": {
+      "min": 94.98425095177902,
+      "median": 97.67306674410112,
+      "max": 109.06535751554307
+    },
+    "scope": "Linear workload extrapolation from complete SLURP suite walltimes, including startup/state audit. FSC audio/context/candidate shapes differ; extrema are not confidence bounds or a completion promise. Queue polling/other experiments excluded.",
+    "scheduling_changed": false
+  },
+  "scope": "Measured successful Q1-5 runtimes; linear extrapolation only, not an ETA."
+}

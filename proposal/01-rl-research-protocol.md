@@ -2,11 +2,13 @@
 
 2026-11-09；CPU 资源与数据接口准备阶段。以下假设为前瞻登记，不是实验结论。
 
-**历史协议，已被后续执行路线修订。** 下文ASR→文本、人工转写替换、旧ASR SFT
-初始化及200次更新等设置仅供追溯，不是当前派发指令。当前冻结实验遵循
-[端到端实施协议](02-frozen-baselines-tfrl-jev.md)，长期Omni权重学习遵循
-[Omni RL设计](03-omni-sfc-rl-design-v1.md)。现用本地Qwen3-Omni直接消费音频与
-任务定义，权重训练队列不派发；不能将下文旧CPU组件验证当作Omni训练就绪。
+**历史协议，已被后续执行路线修订。** 下文ASR→文本、RL/SFT效果比较、
+调度循环及200次更新等设置仅供追溯，不是当前派发指令。当前执行遵循
+[三条研究主线工作基线](../docs/research/15-rl-three-track-working-baseline.md)
+与[单次Span契约](../docs/research/12-single-pass-span-cot-contract.md)：本地
+Qwen3-ASR-0.6B直接消费音频与任务配置，BF16 LoRA四卡数据并行训练，
+研究RL持续提升、结构过程信用及FSC配置迁移，不新增RL/SFT效果比较。
+具体准入与运行证据见当前工程记录，不能将下文旧CPU验证当作训练收益。
 
 ## 研究问题与判据
 

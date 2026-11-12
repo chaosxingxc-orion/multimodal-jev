@@ -12,6 +12,9 @@ from score_intent_binding_matrix import authenticate, run as score
 
 
 def await_predecessor(config, output):
+    if config.get('predecessor_kind') == 'lower_lr_d12':
+        from run_fsc_transfer_matrix import await_training
+        return await_training(config, output)
     root=Path(config['predecessor_controller'])
     for name in ('launch.json','config.json'):
         if config['pins'].get(str(root/name))!=file_hash(root/name): raise ValueError('exact predecessor required')

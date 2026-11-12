@@ -83,6 +83,9 @@ def run(config, output):
     if config['pins'].get(config['builder_config'])!=file_hash(config['builder_config']):
         raise ValueError('fixed matrix builder required')
     await_training(config,output)
+    if config.get('priority_predecessor'):
+        from wait_intent_priority_tail import wait_tail
+        wait_tail(config, output)
     atomic_json(output/'prepared-matrix.json',prepare(read(config['builder_config']),config['matrix_root']))
     run_matrix(config,output)
 
