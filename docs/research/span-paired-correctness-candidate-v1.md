@@ -26,8 +26,9 @@ Span 前向。记两项 Final 正确性为 c1、c2，离线学习奖励定义为
 `A_i(a) = [(1−β)/2 + β*p_partner] * (1[a=gold_i]−p_i)`。
 
 这是两个不同输入共享一个离线奖励组，不是同输入下的 GRPO 采样组。
-候选有限支持计算不能直接伪装为现有 `uid` 分组。实现目前只提供独立的
-未裁剪诊断 surrogate；还没有生产 verl loss、NPU 参数更新或 rollout 准入。
+候选有限支持计算不能直接伪装为现有 `uid` 分组。实现提供未裁剪诊断 surrogate，
+以及独立实验性 verl 边际裁剪 loss（CPU 核验见下）；尚未接入生产训练控制器，
+也没有 NPU 参数更新或 rollout 准入。
 最终推理不需要同时询问正反两题，不增加外部调用循环或离散答案回填。
 
 ## 已完成验证
@@ -51,6 +52,27 @@ autograd 对照完整期望奖励梯度，奖励方向检查，重复/缺失配�
 
 这证明两个目标能区分实际策略变化，不证明候选优化器会产生这些更新，更不
 证明提高最终准确率。原轨迹没有使用本候选奖励；这些是反事实目标评分。
+
+## 固定镜像的真实 verl 核验
+
+新增 `span_pair_verl.py` 调用固定镜像内 verl 0.8.0.dev 的
+`compute_policy_loss_vanilla`。对每个请求分别计算概率比，采用完整二元候选
+支持的精确积分，按 pair 数量归一化。它是边际裁剪 surrogate，不等于
+两个请求联合概率比的 PPO。β=0 保持单题平均正确性的梯度尺度；复制整个
+batch 不改变平均梯度，已由本地测试验证。
+
+镜像固定为 `sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c`。
+CPU 容器 `99c986456a57ede6d6d1aff7b1b5068fb357701a77ebc0cf9a390b9f526d6984`
+退出0，无OOM、无NPU映射、无网络；实际 torch=2.10.0+cpu。
+15组覆盖 β=0/0.5/1、logit shift=0/0.1/1/8/30。真实 verl 与独立手算
+裁剪 loss 的梯度最大误差0，on-policy 与完整期望奖励梯度误差最大
+7.45e-9；非零 clipping 分支实际触发。本地相关25项测试通过。
+
+[结果与梯度](../engineering/span-pair-verl-cpu-v2-result.json)和
+[独立身份核验](../engineering/span-pair-verl-cpu-v2-verified.json)记录真实 verl
+源码哈希、固定源码快照和结果身份。首个 v1 CPU 容器因快照未包含包初始化
+所需 `reward` 模块而退出1，未执行 loss；v2使用完整src快照，失败根保留。
+以上只验证 CPU loss 接口，不证明 BF16/NPU 梯度、模型更新、训推一致性或收益。
 
 ## 必须保留的反例与研究边界
 
