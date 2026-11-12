@@ -12,6 +12,8 @@
 
 ## 开发
 
+2026-11-12 用户明确三条研究主线：简单任务 RL Loss/Reward；预先拆解的复杂任务中多步显式结构判决、最终综合判决的 Loss/Reward 及相对直接问题的增益；相似任务跨数据集配置迁移，FSC 为首个指定例。显式结构保持一次填充 Span 契约，不自动转成文本 CoT/外部解码。允许直接问题 RL 与结构问题 RL 对照，不新增 RL/SFT 效果对照。FSC 当前用于冻结源域模型的配置迁移，不恢复历史 FSC SFT 主训练。方案见 docs/research/14-rl-decision-credit-and-transfer.md。
+
 2026-11-12 用户进一步调整验收目标：不比较 RL 与 SFT 的表现，不再以 RL 超过同预算 SFT 作为条件。主线验证固定 RL 起点后，任务指标随 RL 更新的持续提升；固定评测名单、本体、奖励与预算，报告预定检查点的完整曲线和退化情况。已有运行正常收尾、历史结果保留；不新增 SFT 对照训练。SFT 来源的初始 adapter 如被采用，仅如实记录为初始化。Omni 仍为任务能力定位参照，跨任务泛化目标保留。详见 experiments/slurp-asr-jev-dp4-lock-v1.md。
 
 最新主线锁定（2026-11-12 UTC）：用户要求 Qwen-ASR 在 Jev 类评测上对标基座，参考 omni 的 SLURP 基线。使用本地 Qwen3-ASR-0.6B、BF16 LoRA、175 物理卡4–7的四卡 FSDP 数据并行；rollout 使用已通过一致性检查的 vLLM TP1。该决定优先于历史冻结权重阶段，不切换到30B训练。主评测是意图分类和不提供意图的槽位类型集合；时间三布尔/规则任务仅为独立扩展诊断。既有训练及自动评估正常收尾，取消的单卡成对奖励队列不得重启，四卡可用后优先恢复与连续训练验收。已有四卡一步不等于完整 verl trainer；全量本体也未全部准入训练。协议见 experiments/slurp-asr-jev-dp4-lock-v1.md，参考源见 docs/research/omni-slurp-jev-reference-lock-v1.json。旧 clean-v7 总体暂停按已完成的逐标签准入收窄：仅审核通过的监督可训练，不能把数据清洗对齐当作所有缺标已解决。
