@@ -1,0 +1,24 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-d12-beta1zero-control-prepared-v1",
+  "training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-d12-beta1zero-control-prepared-v1/training",
+  "suite": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-d12-beta1zero-control-prepared-v1/suite",
+  "audit": {
+    "only_training_parameter_changed": "adam_beta1",
+    "reference_betas": [
+      0.9,
+      0.999
+    ],
+    "control_betas": [
+      0.0,
+      0.999
+    ]
+  },
+  "protocol_sha256": "f5d6f5f007ca541d8a8ac78f92b84f88486628b81d2872b891f9439794b51ea1",
+  "prepared_updates": 1,
+  "total_planned_updates": 12,
+  "continuation": "Prepare steps2-12 with the same momentum configuration after first pair review; no mixed-optimizer resume.",
+  "execution_order": "Preparation only; existing queue priority unchanged. No new controller or NPU dispatch.",
+  "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-v1/run/adapter",
+  "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2",
+  "scope": "Prospective learning-only control after observing steps1-5. No held-out or transfer efficacy claim."
+}
