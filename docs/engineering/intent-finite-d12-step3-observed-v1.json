@@ -1,0 +1,163 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update03-v1",
+  "container_id": "98db709a200295cd6703c75a0a0e2def8e15b283d384a9bd68b52c03f2e392ce",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-12T05:18:06.79866036Z",
+    "FinishedAt": "2026-11-12T05:19:02.09440036Z"
+  },
+  "ranks": [
+    {
+      "rank": 0,
+      "updates": 3,
+      "adapter_id": "4cdf3fa8a7bda24e6cfc373c5b62d65153cfb3224579b77839f545eb98b7506c",
+      "restored": {
+        "rank": 0,
+        "world_size": 4,
+        "previous_updates": 2,
+        "master_shards": 112,
+        "exact_masters": true,
+        "exact_adam": true,
+        "adapter_execution_dtype": "bfloat16"
+      },
+      "metrics": {
+        "actor/pg_loss": -2.619344845189442e-10,
+        "actor/kl_loss": 0.0,
+        "actor/pg_clipfrac": [
+          0.0,
+          0.0
+        ],
+        "actor/ppo_kl": [
+          0.0,
+          -2.3841858265427618e-08
+        ],
+        "actor/pg_clipfrac_lower": [
+          0.0,
+          0.0
+        ],
+        "actor/grad_norm": [
+          0.08388064801692963
+        ]
+      },
+      "frozen_base_unchanged": true,
+      "cross_rank_export_exact": true
+    },
+    {
+      "rank": 1,
+      "updates": 3,
+      "adapter_id": "4cdf3fa8a7bda24e6cfc373c5b62d65153cfb3224579b77839f545eb98b7506c",
+      "restored": {
+        "rank": 1,
+        "world_size": 4,
+        "previous_updates": 2,
+        "master_shards": 112,
+        "exact_masters": true,
+        "exact_adam": true,
+        "adapter_execution_dtype": "bfloat16"
+      },
+      "metrics": {
+        "actor/pg_loss": 4.2200553056377654e-10,
+        "actor/kl_loss": 0.0,
+        "actor/pg_clipfrac": [
+          0.0,
+          0.0
+        ],
+        "actor/ppo_kl": [
+          -2.9802322831784522e-09,
+          3.2484530265719513e-07
+        ],
+        "actor/pg_clipfrac_lower": [
+          0.0,
+          0.0
+        ],
+        "actor/grad_norm": [
+          0.08388064801692963
+        ]
+      },
+      "frozen_base_unchanged": true,
+      "cross_rank_export_exact": true
+    },
+    {
+      "rank": 2,
+      "updates": 3,
+      "adapter_id": "4cdf3fa8a7bda24e6cfc373c5b62d65153cfb3224579b77839f545eb98b7506c",
+      "restored": {
+        "rank": 2,
+        "world_size": 4,
+        "previous_updates": 2,
+        "master_shards": 112,
+        "exact_masters": true,
+        "exact_adam": true,
+        "adapter_execution_dtype": "bfloat16"
+      },
+      "metrics": {
+        "actor/pg_loss": 0.0,
+        "actor/kl_loss": 0.0,
+        "actor/pg_clipfrac": [
+          0.0,
+          0.0
+        ],
+        "actor/ppo_kl": [
+          9.934107980669182e-10,
+          0.0
+        ],
+        "actor/pg_clipfrac_lower": [
+          0.0,
+          0.0
+        ],
+        "actor/grad_norm": [
+          0.08388064801692963
+        ]
+      },
+      "frozen_base_unchanged": true,
+      "cross_rank_export_exact": true
+    },
+    {
+      "rank": 3,
+      "updates": 3,
+      "adapter_id": "4cdf3fa8a7bda24e6cfc373c5b62d65153cfb3224579b77839f545eb98b7506c",
+      "restored": {
+        "rank": 3,
+        "world_size": 4,
+        "previous_updates": 2,
+        "master_shards": 112,
+        "exact_masters": true,
+        "exact_adam": true,
+        "adapter_execution_dtype": "bfloat16"
+      },
+      "metrics": {
+        "actor/pg_loss": -3.958120914360208e-10,
+        "actor/kl_loss": 0.0,
+        "actor/pg_clipfrac": [
+          0.0,
+          0.0
+        ],
+        "actor/ppo_kl": [
+          3.973643192267673e-09,
+          0.0
+        ],
+        "actor/pg_clipfrac_lower": [
+          0.0,
+          0.0
+        ],
+        "actor/grad_norm": [
+          0.08388064801692963
+        ]
+      },
+      "frozen_base_unchanged": true,
+      "cross_rank_export_exact": true
+    }
+  ],
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-update03-v1/launch.json": "53f6d0352990044ec62b7c752ed0f13f8637ea7335be878e17a5a5e2ce478d41"
+  },
+  "scope": "Third D update actually exited zero; rank reports only, independent export/backend/state acceptance pending."
+}
