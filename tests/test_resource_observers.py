@@ -57,3 +57,10 @@ def test_listener_never_bypasses_actual_device_fd_check(monkeypatch, busy,kind):
 def test_archive_requires_exact_second_path():
     row=observer('archive');row['Args'][9]+='/different'
     assert not is_audited_completion_observer(row)
+
+
+def test_same_completion_listener_at_audited_runtime_only():
+    row=observer();row['Args'][8]='/var/tmp/s1-bl-candidate-ops-media-v1/runtime'
+    assert is_audited_completion_observer(row)
+    row['Args'][8]+='/other'
+    assert not is_audited_completion_observer(row)

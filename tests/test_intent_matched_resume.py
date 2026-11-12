@@ -56,3 +56,17 @@ def test_stopped_original_allows_same_unclaimed_suite_only(tmp_path,monkeypatch)
     cfg['pins'][str(old/'launch.json')]=file_hash(old/'launch.json')
     atomic_json(old/'superseded.json',dict(observed_process_exit=True,pid=999999999))
     assert module.boundary(cfg)==6
+
+
+def test_second_handoff_keeps_exact_original_training_dispatch(tmp_path,monkeypatch):
+    cfg=fixture(tmp_path,monkeypatch);old=Path(cfg['resume_from_controller']);ancestor=tmp_path/'ancestor'
+    (ancestor/'run/Q-update-0007').mkdir(parents=True)
+    for name in ('config.json','launch.json'):(ancestor/name).write_bytes((old/name).read_bytes())
+    atomic_json(ancestor/'superseded.json',dict(observed_process_exit=True))
+    dispatch=old/'run/Q-update-0007/training-dispatched.json';dispatch.rename(ancestor/'run/Q-update-0007/training-dispatched.json')
+    previous=module.read(old/'config.json');previous['resume_from_controller']=str(ancestor)
+    previous['pins']={str(ancestor/n):file_hash(ancestor/n) for n in ('config.json','launch.json','superseded.json')}
+    atomic_json(old/'config.json',previous);cfg['pins'][str(old/'config.json')]=file_hash(old/'config.json')
+    assert module.boundary(cfg,require_stopped=False)==6
+    atomic_json(ancestor/'superseded.json',dict(observed_process_exit=False))
+    with pytest.raises(ValueError):module.boundary(cfg,require_stopped=False)

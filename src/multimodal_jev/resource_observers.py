@@ -30,6 +30,8 @@ def is_audited_completion_observer(row):
                 and args[8:] == [ARCHIVE_ROOT, ARCHIVE_ROOT + '/queue'])
     if digest != SCRIPT_SHA256:
         return False
+    if args[8] == ARCHIVE_ROOT:
+        return True
     path = PurePosixPath(args[8])
     return (str(path) == args[8] and path.parent == PurePosixPath('/var/tmp/omni-local-state')
             and path.name not in ('', '.', '..'))

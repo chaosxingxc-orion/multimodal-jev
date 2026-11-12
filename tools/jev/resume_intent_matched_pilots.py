@@ -44,7 +44,7 @@ def boundary(config,*,require_stopped=True):
     for name in ('config.json','launch.json','source-manifest.json'):
         if config['pins'].get(str(old/name))!=file_hash(old/name):
             raise ValueError('exact superseded controller required')
-    if {k:v for k,v in config.items() if k not in ('pins','resume_from_controller')}!={k:v for k,v in previous.items() if k!='pins'}:
+    if {k:v for k,v in config.items() if k not in ('pins','resume_from_controller')}!={k:v for k,v in previous.items() if k not in ('pins','resume_from_controller')}:
         raise ValueError('frozen matched protocol changed')
     check_pins(previous['pins'])
     if (old/'run/terminal.json').exists():raise ValueError('original controller already terminal')
@@ -65,7 +65,20 @@ def boundary(config,*,require_stopped=True):
     if read(stage/'progress.json')['stage']!='waiting_resource_before_first_create':
         raise ValueError('original controller is not waiting for resources')
     step=steps[count];training=Path(step['training_root']);tr=read(training/'launch.json')
-    if (tr!=read(stage/'training-dispatched.json') or tr['image']!=config['image']
+    origin=old;origin_cfg=previous;visited=set()
+    while not (origin/'run'/stage.name/'training-dispatched.json').exists():
+        if str(origin) in visited or 'resume_from_controller' not in origin_cfg:
+            raise ValueError('missing original training dispatch provenance')
+        visited.add(str(origin));ancestor=Path(origin_cfg['resume_from_controller'])
+        for name in ('config.json','launch.json','superseded.json'):
+            if origin_cfg['pins'].get(str(ancestor/name))!=file_hash(ancestor/name):
+                raise ValueError('pinned superseded ancestor required')
+        if read(ancestor/'superseded.json').get('observed_process_exit') is not True:
+            raise ValueError('ancestor not superseded')
+        ancestor_cfg=read(ancestor/'config.json')
+        if ancestor_cfg['arms']!=config['arms']:raise ValueError('ancestor workload differs')
+        origin,origin_cfg=ancestor,ancestor_cfg
+    if (tr!=read(origin/'run'/stage.name/'training-dispatched.json') or tr['image']!=config['image']
             or tr['physical_devices']!=[4,5,6,7] or not completed(tr['container_id'],config['image'])):
         raise ValueError('exact pending training must have exited zero')
     if (stage/'acceptance-dispatched.json').exists():raise ValueError('acceptance already dispatched')
