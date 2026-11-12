@@ -12,6 +12,8 @@
 
 ## 开发
 
+2026-11-12 原生意图新增受限准入：预先固定120条学习来源经参考文本逐条语义审核，89条意图标签准入、31条pending，覆盖56类，候选仍为60类。未复听音频，不代表全本体或基准评测认证；不准入槽位类型。发布与限制见 docs/engineering/slurp-intent-reference-admission-v1.md。D/Q/P过程标签仅由已审核joint intent的canonical scenario/action投影，不称独立过程标注或已验证多跳推理。新产物仍需processor/backend验收后才能派发。
+
 2026-11-12 用户明确三条研究主线：简单任务 RL Loss/Reward；预先拆解的复杂任务中多步显式结构判决、最终综合判决的 Loss/Reward 及相对直接问题的增益；相似任务跨数据集配置迁移，FSC 为首个指定例。显式结构保持一次填充 Span 契约，不自动转成文本 CoT/外部解码。允许直接问题 RL 与结构问题 RL 对照，不新增 RL/SFT 效果对照。FSC 当前用于冻结源域模型的配置迁移，不恢复历史 FSC SFT 主训练。方案见 docs/research/14-rl-decision-credit-and-transfer.md。
 
 2026-11-12 用户进一步调整验收目标：不比较 RL 与 SFT 的表现，不再以 RL 超过同预算 SFT 作为条件。主线验证固定 RL 起点后，任务指标随 RL 更新的持续提升；固定评测名单、本体、奖励与预算，报告预定检查点的完整曲线和退化情况。已有运行正常收尾、历史结果保留；不新增 SFT 对照训练。SFT 来源的初始 adapter 如被采用，仅如实记录为初始化。Omni 仍为任务能力定位参照，跨任务泛化目标保留。详见 experiments/slurp-asr-jev-dp4-lock-v1.md。

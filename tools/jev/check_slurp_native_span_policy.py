@@ -11,6 +11,11 @@ import subprocess
 import sys
 import time
 from multimodal_jev.baseline import atomic_json,file_hash
+from multimodal_jev.vllm_spans import register_span_model
+
+# Spawned EngineCore imports this entrypoint before resolving the architecture.
+# Register at module scope, matching check_span_runtime_suite.py.
+register_span_model()
 
 
 def validate(config):
@@ -76,8 +81,6 @@ def phase(config,output,backend):
             model=NativeAudioSpanModel(adapted.get_base_model()).eval()
             if any(p.dtype!=torch.bfloat16 for n,p in adapted.named_parameters() if 'lora_' in n):raise ValueError('adapter execution dtype differs')
         else:
-            from multimodal_jev.vllm_spans import register_span_model
-            register_span_model()
             from multimodal_jev.vllm_audio_features import enable_feature_passthrough
             enable_feature_passthrough()
             from vllm import LLM,PoolingParams

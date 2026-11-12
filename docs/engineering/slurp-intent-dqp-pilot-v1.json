@@ -1,0 +1,35 @@
+{
+  "root": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-dqp-reference-pilot-v1",
+  "manifest_sha256": "071db09e2486f58f596011b903187303682402a16423a9eacfabc7020e314a5e",
+  "schema": "slurp-intent-dqp-pilot-v1",
+  "release": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-learning-reference-audit-v1/releases/91948631815495cb48e35dc6fd781571d25af36715d3075ee01d8274be2ec153",
+  "release_manifest_sha256": "560d49c43427b5c5efb9fdcbc9bd769ad8939379d90653f568da7f1d94bed6d6",
+  "arms": {
+    "D": {
+      "requests": 89,
+      "spans_per_request": 1,
+      "effective_weight_sum": 88.99999999999999
+    },
+    "Q": {
+      "requests": 89,
+      "spans_per_request": 3,
+      "effective_weight_sum": 88.99999999999999
+    },
+    "P": {
+      "requests": 89,
+      "spans_per_request": 3,
+      "effective_weight_sum": 88.99999999999999
+    }
+  },
+  "sampling": "One pass over unique recordings; outer inverse-class weights only, no additional class-balanced resampling.",
+  "files": {
+    "Q-targets.json": "902d0d6cf73b5f85c61a8e6c9d2d1e49243605e6975b069730a5b22c87179c80",
+    "D-targets.json": "fed56a802e7938349eefb379d22601f60aafa81fc1b32b0d4b97c648fdd0cb1d",
+    "P-requests.json": "dadd9773ed90fa673453978cb2f2a3f7fac94120f27cbf30ec00bfc26837ea70",
+    "Q-requests.json": "dadd9773ed90fa673453978cb2f2a3f7fac94120f27cbf30ec00bfc26837ea70",
+    "D-requests.json": "bc58b584eecf7899a3795477ab0da4fa7e8636a11b7b7f3b7f4805d4e7b0d545",
+    "P-targets.json": "7e59f164c6e3462d951321f61ee33e428a98fbba9c6f1801418408f29816a38d"
+  },
+  "implementation_sha256": "9410681cc3571eb52791e2336edd94fd0a95e4050524ace2d5358db2968a5b23",
+  "scope": "89 learning sources, 56 observed labels, full 60 candidate inventory. Reference-only semantic audit; scenario/action are deterministic projections, not separately reviewed reasoning. Prepared requests/targets, no processor/backend acceptance or efficacy claim."
+}

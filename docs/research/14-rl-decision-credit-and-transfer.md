@@ -107,7 +107,7 @@ FSC 容易且已有强基线接近天花板，因此成功结果也不能替代 
 
 ## 当前落地边界
 
-已验证：typed 单次读出、Boolean 条件信用数学/verl CPU 路径、原生 actor CPU 单 rank 与四 rank 更新；真实音频四卡显式 verl loss 探针已有证据。四卡显式 loss 路径已完成 FP32 master/Adam 精确恢复至第2步，并通过独立48输入 HF/vLLM gate；原生 actor NPU、完整连续 trainer 仍待验收。60类意图均衡审核包已生成120个不同来源样本，尚未语义准入；55类型缺标仍不能整体补负例。
+已验证：typed 单次读出、Boolean 条件信用数学/verl CPU 路径、原生 actor CPU 单 rank 与四 rank 更新；真实音频四卡显式 verl loss 探针已有证据。四卡显式 loss 路径已完成 FP32 master/Adam 精确恢复至第2步，并通过独立48输入 HF/vLLM gate；原生 actor NPU、完整连续 trainer 仍待验收。60类意图均衡审核包120个不同来源样本已完成首轮参考文本语义审核：89条准入、31条pending，覆盖56类；未复听音频，不构成完整基准认证。D/Q/P固定请求与独立监督已发布，尚需processor/backend验收。55类型缺标仍不能整体补负例。
 
 下一步先完成真实四卡原生 actor/恢复与全候选验收，同时推进意图/类型监督。算法先扩展简单任务有限支持信用与零方差监测，再接 D/Q/P 的相同最终任务比较，最后冻结 FSC 配置执行跨检查点迁移。不得把现有小样本时间规则结果替代这三条正式证据。
 
