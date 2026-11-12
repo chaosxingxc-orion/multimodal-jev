@@ -75,10 +75,38 @@ def verify_final(root):
     return accepted
 
 
+def await_gate_dispatch(config,output):
+    """Follow the authenticated existing queue; never invent a replacement."""
+    queue=Path(config['gate_queue']);launch_record=read(queue/'launch.json')
+    if config['pins'].get(str(queue/'launch.json'))!=file_hash(queue/'launch.json'):
+        raise ValueError('pinned gate queue identity required')
+    while True:
+        terminal=queue/'run/terminal.json'
+        if terminal.exists():
+            if read(terminal)['exit_code']!=0:raise ValueError('gate dispatch queue failed')
+            receipt=read(queue/'run/dispatched.json');gate=Path(config['gate_root'])
+            if receipt!=read(gate/'launch.json') or receipt['root']!=str(gate) or receipt['image']!=config['image']:
+                raise ValueError('gate dispatch receipt differs')
+            atomic_json(output/'gate-dispatch-observed.json',receipt)
+            return receipt
+        try:
+            actual=(Path('/proc')/str(launch_record['pid'])/'cmdline').read_bytes().rstrip(b'\0').decode().split('\0')
+        except FileNotFoundError:
+            if terminal.exists():continue
+            raise ValueError('gate queue missing without terminal')
+        if actual!=launch_record['argv']:raise ValueError('gate queue PID reused')
+        atomic_json(output/'progress.json',dict(stage='waiting_existing_gate_queue',pid=launch_record['pid'],updated_unix=time.time()))
+        time.sleep(600)
+
+
 def run(config,output):
-    check_pins(config['pins']);gate=Path(config['gate_root']);receipt=read(gate/'launch.json')
-    if receipt['container_id']!=config['gate_container']:raise ValueError('exact gate container differs')
-    wait_exact(receipt['container_id'],config['image'],output,'waiting_intent_gate',config['first_poll_after'])
+    check_pins(config['pins']);gate=Path(config['gate_root'])
+    if config.get('gate_queue'):
+        receipt=await_gate_dispatch(config,output);first_poll=time.time()+600
+    else:
+        receipt=read(gate/'launch.json');first_poll=config['first_poll_after']
+        if receipt['container_id']!=config['gate_container']:raise ValueError('exact gate container differs')
+    wait_exact(receipt['container_id'],config['image'],output,'waiting_intent_gate',first_poll)
     verify_suite_terminal(Path(config['native_suite']))
     plan=read(config['training_plan']);parent=read(Path(plan['root'])/'config-template.json')
     audit=verify_gate(gate,parent['pilot'],parent['manifest_sha256']);atomic_json(output/'input-gate-verified.json',audit)

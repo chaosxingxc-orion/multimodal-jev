@@ -4,7 +4,7 @@ import sys
 import pytest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools/jev'))
 from multimodal_jev.baseline import atomic_json,file_hash
-from queue_intent_finite_npu import freeze_training,verify_final
+from queue_intent_finite_npu import freeze_training,verify_final,await_gate_dispatch
 
 
 def test_training_freeze_requires_future_behavior_and_refuses_reentry(tmp_path):
@@ -36,3 +36,19 @@ def test_final_receipt_cannot_hide_failure_or_changed_state(tmp_path):
     with pytest.raises(ValueError,match='asset changed'):verify_final(tmp_path)
     atomic_json(tmp_path/'controller-terminal.json',{'exit_code':1})
     with pytest.raises(ValueError,match='controller failed'):verify_final(tmp_path)
+
+
+def test_follow_exact_gate_dispatch_rejects_replaced_receipt(tmp_path):
+    queue=tmp_path/'queue';gate=tmp_path/'gate';out=tmp_path/'output'
+    for p in (queue/'run',gate,out):p.mkdir(parents=True)
+    atomic_json(queue/'launch.json',dict(pid=0,argv=['original']))
+    atomic_json(queue/'run/terminal.json',{'exit_code':0})
+    receipt=dict(root=str(gate),image='fixed',container_id='exact')
+    atomic_json(queue/'run/dispatched.json',receipt);atomic_json(gate/'launch.json',receipt)
+    cfg=dict(gate_queue=str(queue),gate_root=str(gate),image='fixed',
+        pins={str(queue/'launch.json'):file_hash(queue/'launch.json')})
+    assert await_gate_dispatch(cfg,out)==receipt
+    atomic_json(gate/'launch.json',dict(receipt,container_id='replacement'))
+    with pytest.raises(ValueError,match='receipt differs'):await_gate_dispatch(cfg,out)
+    atomic_json(queue/'run/terminal.json',{'exit_code':1})
+    with pytest.raises(ValueError,match='queue failed'):await_gate_dispatch(cfg,out)
