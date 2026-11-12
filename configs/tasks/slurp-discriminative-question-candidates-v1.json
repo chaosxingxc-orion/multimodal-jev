@@ -1,0 +1,286 @@
+{
+  "schema": "slurp-discriminative-question-candidates-v1",
+  "status": "prepared_not_admitted_for_training",
+  "selection_rule": "Choose a fixed template pack before reading audio targets; same pack for every evaluated source. Training may rotate packs by source-independent deterministic schedule. Never select by gold intent or per-source complexity.",
+  "packs": {
+    "schedule": [
+      "schedule_domain",
+      "schedule_operation"
+    ],
+    "device": [
+      "device_target",
+      "device_change"
+    ],
+    "music_email": [
+      "music_request",
+      "email_request"
+    ],
+    "food_transport": [
+      "food_request",
+      "transport_request"
+    ]
+  },
+  "final": "full_60_intent_enum_always_present_last",
+  "questions": [
+    {
+      "id": "schedule_domain",
+      "question": "Which service is the requested task about: an alarm or the personal calendar? Choose outside_family for other tasks.",
+      "values": [
+        "alarm",
+        "personal_calendar",
+        "outside_family"
+      ],
+      "class_sets": {
+        "alarm": [
+          "alarm_set",
+          "alarm_query",
+          "alarm_remove"
+        ],
+        "personal_calendar": [
+          "calendar_set",
+          "calendar_query",
+          "calendar_remove"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    },
+    {
+      "id": "schedule_operation",
+      "question": "For an alarm or calendar request, is the user asking to create an item, inspect existing items, or remove an item? Choose outside_family for other tasks.",
+      "values": [
+        "create",
+        "inspect",
+        "remove",
+        "outside_family"
+      ],
+      "class_sets": {
+        "create": [
+          "alarm_set",
+          "calendar_set"
+        ],
+        "inspect": [
+          "alarm_query",
+          "calendar_query"
+        ],
+        "remove": [
+          "alarm_remove",
+          "calendar_remove"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    },
+    {
+      "id": "music_request",
+      "question": "What is the requested music-related outcome: start playback, obtain music information, express liking, express dislike, or change music settings? Choose outside_family for other tasks.",
+      "values": [
+        "playback",
+        "information",
+        "positive_preference",
+        "negative_preference",
+        "settings",
+        "outside_family"
+      ],
+      "class_sets": {
+        "playback": [
+          "play_music"
+        ],
+        "information": [
+          "music_query"
+        ],
+        "positive_preference": [
+          "music_likeness"
+        ],
+        "negative_preference": [
+          "music_dislikeness"
+        ],
+        "settings": [
+          "music_settings"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    },
+    {
+      "id": "email_request",
+      "question": "What is the requested email task: read or find messages, look up a contact, save a contact, or send a message? Choose outside_family for other tasks.",
+      "values": [
+        "message_lookup",
+        "contact_lookup",
+        "contact_save",
+        "message_send",
+        "outside_family"
+      ],
+      "class_sets": {
+        "message_lookup": [
+          "email_query"
+        ],
+        "contact_lookup": [
+          "email_querycontact"
+        ],
+        "contact_save": [
+          "email_addcontact"
+        ],
+        "message_send": [
+          "email_sendemail"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    },
+    {
+      "id": "device_target",
+      "question": "Which device function is the requested change about: audio volume, lights, or a smart socket? Choose outside_family for other tasks.",
+      "values": [
+        "audio_volume",
+        "lighting",
+        "smart_socket",
+        "outside_family"
+      ],
+      "class_sets": {
+        "audio_volume": [
+          "audio_volume_down",
+          "audio_volume_up",
+          "audio_volume_mute",
+          "audio_volume_other"
+        ],
+        "lighting": [
+          "iot_hue_lightchange",
+          "iot_hue_lightdim",
+          "iot_hue_lightoff",
+          "iot_hue_lighton",
+          "iot_hue_lightup"
+        ],
+        "smart_socket": [
+          "iot_wemo_off",
+          "iot_wemo_on"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    },
+    {
+      "id": "device_change",
+      "question": "For volume, light or socket control, which change is requested: increase, decrease, switch on, switch off, mute audio, change light color, or another volume adjustment? Choose outside_family for other tasks.",
+      "values": [
+        "increase",
+        "decrease",
+        "on",
+        "off",
+        "mute",
+        "color",
+        "other_volume",
+        "outside_family"
+      ],
+      "class_sets": {
+        "increase": [
+          "audio_volume_up",
+          "iot_hue_lightup"
+        ],
+        "decrease": [
+          "audio_volume_down",
+          "iot_hue_lightdim"
+        ],
+        "on": [
+          "iot_hue_lighton",
+          "iot_wemo_on"
+        ],
+        "off": [
+          "iot_hue_lightoff",
+          "iot_wemo_off"
+        ],
+        "mute": [
+          "audio_volume_mute"
+        ],
+        "color": [
+          "iot_hue_lightchange"
+        ],
+        "other_volume": [
+          "audio_volume_other"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    },
+    {
+      "id": "food_request",
+      "question": "Is the task asking for a recipe, asking other cooking information, ordering takeaway, or asking takeaway information? Choose outside_family for other tasks.",
+      "values": [
+        "recipe",
+        "cooking_information",
+        "takeaway_order",
+        "takeaway_information",
+        "outside_family"
+      ],
+      "class_sets": {
+        "recipe": [
+          "cooking_recipe"
+        ],
+        "cooking_information": [
+          "cooking_query"
+        ],
+        "takeaway_order": [
+          "takeaway_order"
+        ],
+        "takeaway_information": [
+          "takeaway_query"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    },
+    {
+      "id": "transport_request",
+      "question": "Is the task requesting a taxi, requesting a transport ticket, asking about traffic, or asking other transport information? Choose outside_family for other tasks.",
+      "values": [
+        "taxi",
+        "ticket",
+        "traffic",
+        "other_information",
+        "outside_family"
+      ],
+      "class_sets": {
+        "taxi": [
+          "transport_taxi"
+        ],
+        "ticket": [
+          "transport_ticket"
+        ],
+        "traffic": [
+          "transport_traffic"
+        ],
+        "other_information": [
+          "transport_query"
+        ]
+      },
+      "default": "outside_family",
+      "default_meaning": "The annotated requested task is outside this contrast family; this does not assert absence of words or entities.",
+      "supervision": "ontology_projection_not_independent_audio_evidence",
+      "review_status": "candidate_requires_semantic_validation"
+    }
+  ],
+  "missing_label_rule": "mask_process_supervision; never convert missing or ambiguous gold to outside_family",
+  "budget": "Final 1.0; total process weight 0.2 divided across valid process questions; no extra source count for template views",
+  "evidence_questions_not_yet_supervised": [
+    "negation_scope",
+    "self_correction",
+    "reference_resolution",
+    "sufficient_audio_evidence"
+  ],
+  "inference": "one_forward_all_spans_no_discrete_answer_feedback"
+}

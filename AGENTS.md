@@ -12,6 +12,10 @@
 
 ## 开发
 
+2026-11-12 用户补充要求全量解构数据集的简单/复杂样本，设计判别式问句改善Final。复杂度分为本体消歧、语言证据、声学、模型经验四维，不用长度或组件数冒称真实推理难度；按gold挑问句禁止。全量learning分析与固定问句候选见docs/research/18-slurp-complexity-and-discriminative-questions-v1.md。规则投影只监督任务属性，否定/指代/可听证据需独立标签，缺标mask。
+
+2026-11-12 最新用户调整（优先于下述小样本与纯RL安排）：主训练回到规模化SLURP TRAIN，采用两阶段：先学习音频指令/问题/候选绑定的消费能力，再学习任务能力；第二阶段使用RL loss加可逐渐衰减的SFT分类loss。不新增RL/SFT胜负对照。“不比较RL与SFT”不禁止辅助监督损失。89来源先导只作历史工程诊断，不再作为主学习人口。旧小样本控制器已停止继续派发，已启动容器不强杀，不把未完成P曲线记为完成。使用新的版本化发布协议消费clean-v7官方意图标签，并隔离已知缺陷、冲突及项目已标pending来源；明确official-clean与逐条reviewed区别，不伪造审核状态或原位修改旧optimization_allowed。类型缺标不能补false。保持端到端音频、一次Span读出、BF16、175卡4–7与来源隔离。执行方案见docs/research/17-slurp-two-stage-training-v1.md；新混合loss、规模化loader与常驻循环尚需实现和真实验收，不能声称已经启动大规模训练。
+
 2026-11-12 原生意图新增受限准入：预先固定120条学习来源经参考文本逐条语义审核，89条意图标签准入、31条pending，覆盖56类，候选仍为60类。未复听音频，不代表全本体或基准评测认证；不准入槽位类型。发布与限制见 docs/engineering/slurp-intent-reference-admission-v1.md。D/Q/P过程标签仅由已审核joint intent的canonical scenario/action投影，不称独立过程标注或已验证多跳推理。新产物仍需processor/backend验收后才能派发。
 
 2026-11-12 用户明确三条研究主线：简单任务 RL Loss/Reward；预先拆解的复杂任务中多步显式结构判决、最终综合判决的 Loss/Reward 及相对直接问题的增益；相似任务跨数据集配置迁移，FSC 为首个指定例。显式结构保持一次填充 Span 契约，不自动转成文本 CoT/外部解码。允许直接问题 RL 与结构问题 RL 对照，不新增 RL/SFT 效果对照。FSC 当前用于冻结源域模型的配置迁移，不恢复历史 FSC SFT 主训练。方案见 docs/research/14-rl-decision-credit-and-transfer.md。
