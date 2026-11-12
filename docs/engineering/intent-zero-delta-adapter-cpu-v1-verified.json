@@ -1,0 +1,359 @@
+{
+  "container_id": "784aa62cb3906c2c4c4cac2a250a0396a377a6741468b3ccad14904ee107c4f2",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "actual_exit_code": 0,
+  "source_manifest_sha256": "ce6fbd97d015ad02035338f24e9bc6fed4702254aef8072304e8fb467f63a86c",
+  "result_sha256": "51e7c732a44082bcadbc34cafe8780e18705537f6f0a7f9601b887920ef57f4a",
+  "passed": true,
+  "source": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-v1/run/adapter",
+  "source_id": "7341430053a9b4f36f5d5b8fe80616889af1857c71187d22b4895b062f557140",
+  "source_files": {
+    "adapter_config.json": "047938a0d55832f07dd21805f174ee1e0b911df07b923ba390ec414a0b4bf461",
+    "adapter_model.safetensors": "dfddbaeafcb98f9ec4b549096ac2ca4860be000452f78daa2d0e11ff8d4b0639"
+  },
+  "adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-zero-delta-adapter-cpu-v1/run/adapter",
+  "adapter_id": "856158fe698107d20806203255ddf6efbe5c323bbe2a0f28a5003fe541ab1ad2",
+  "adapter_files": {
+    "adapter_config.json": "047938a0d55832f07dd21805f174ee1e0b911df07b923ba390ec414a0b4bf461",
+    "adapter_model.safetensors": "67b0fe8fae39e392b8b28e72865fcfc6603c2941ae86797c35ca43efbcdd49e5"
+  },
+  "checks": [
+    {
+      "target": "model.language_model.layers.0.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.0.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.1.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.1.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.10.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.10.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.11.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.11.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.12.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.12.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.13.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.13.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.14.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.14.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.15.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.15.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.16.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.16.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.17.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.17.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.18.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.18.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.19.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.19.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.2.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.2.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.20.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.20.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.21.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.21.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.22.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.22.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.23.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.23.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.24.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.24.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.25.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.25.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.26.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.26.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.27.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.27.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.3.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.3.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.4.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.4.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.5.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.5.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.6.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.6.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.7.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.7.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.8.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.8.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.9.self_attn.q_proj",
+      "input_features": 1024,
+      "output_features": 2048,
+      "zero_delta": true
+    },
+    {
+      "target": "model.language_model.layers.9.self_attn.v_proj",
+      "input_features": 1024,
+      "output_features": 1024,
+      "zero_delta": true
+    }
+  ],
+  "scope": "All56 actual BF16 LoRA factor pairs give exact zero delta on fixed synthetic features; A retained/Bzero. Full real audio/model/vLLM equivalence not yet executed. Inference control only, not RL initialization or task improvement."
+}
