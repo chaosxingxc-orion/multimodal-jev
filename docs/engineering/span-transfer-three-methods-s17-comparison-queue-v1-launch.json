@@ -1,0 +1,32 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-transfer-three-methods-s17-comparison-queue-v1",
+  "pid": 3497791,
+  "argv": [
+    "/usr/bin/python",
+    "-B",
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/queue_span_method_comparison.py",
+    "--config",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-transfer-three-methods-s17-comparison-queue-v1/config.json",
+    "--output",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-transfer-three-methods-s17-comparison-queue-v1/run"
+  ],
+  "config_sha256": "f47e0592ea4cb0d2156e71bc798ba36abbf3929441a8b8ee219e862a92cb19b4",
+  "evaluations": {
+    "sft": {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-transfer-sft-s17-a2-evaluation-v1",
+      "container_id": "c099602ada42e2a6af24450a0e39649ce78a590a0ee207bd0fedbd3879ccde1b",
+      "launch_sha256": "3cef5033981a0297ed7c3811b7d002ba27214277ad2a5b370a37cd424c852942"
+    },
+    "rl": {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-transfer-grpo-s17-a2-evaluation-v1",
+      "container_id": "560b0370adc212de33ab4d04a69e5a53993193725669b0b36eed72f901ba68cf",
+      "launch_sha256": "d3bd99b0195c994a6d0d64ccc074228f3068d81d19bf7900c61f520a7197b5f3"
+    },
+    "conditional": {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-transfer-conditional-s17-a2-evaluation-v1",
+      "container_id": "25c4a055a3a99762913f257f6cc8d6ff82914c8426a3f91a7c8e1acb2180bcf1",
+      "launch_sha256": "48190da43cc9d896fd8282d22df1ec3b7b0bf4d50e5c42da343954873e480b71"
+    }
+  },
+  "scope": "Wait exact existing evaluation containers; no training/inference restart. Full independent comparison after all successful exits."
+}

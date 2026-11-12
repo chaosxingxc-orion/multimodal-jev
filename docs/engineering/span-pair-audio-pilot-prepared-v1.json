@@ -1,0 +1,19 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v1",
+  "prepared": true,
+  "launched": false,
+  "configs": [
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v1/pair0.json",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v1/pair05.json"
+  ],
+  "protocol_sha256": "2fc157289eb1eddf37d566bd5d3ea6d159d4c6bffba48083c5b77369b3a1b3ad",
+  "source_manifest_sha256": "b007348928a0754aac5e46b97162fe43667ab4e9d634d916f5c22ee17068bc96",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "requests_per_branch": 8,
+  "pairs_per_branch": 4,
+  "launch_blockers": [
+    "Wait for existing experiments; verify physical card availability.",
+    "Implement independent post-update audit and full HF/vLLM reload gate before dispatch."
+  ],
+  "scope": "Prepared full-source training entry and fixed one-step configs only; no NPU execution or accepted checkpoint."
+}

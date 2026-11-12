@@ -1,0 +1,20 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2",
+  "prepared": true,
+  "launched": false,
+  "configs": [
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/pair0.json",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/pair05.json"
+  ],
+  "protocol_sha256": "2fc157289eb1eddf37d566bd5d3ea6d159d4c6bffba48083c5b77369b3a1b3ad",
+  "source_manifest_sha256": "6178d67a8fa3dd8c956d1710637b4fdc0070d50fdaede05e24b01f9055e01030",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "requests_per_branch": 8,
+  "pairs_per_branch": 4,
+  "controller": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-pair-audio-pilot-prepared-v2/source/tools/jev/run_span_pair_pilot.py",
+  "launch_blockers": [
+    "Wait for existing experiments; verify physical card availability.",
+    "Create authenticated launch receipt and isolated pinned-image container for controller."
+  ],
+  "scope": "Prepared full-source training entry and fixed one-step configs only; no NPU execution or accepted checkpoint."
+}
