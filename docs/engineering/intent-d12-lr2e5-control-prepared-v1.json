@@ -1,0 +1,18 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-d12-lr2e5-control-prepared-v1",
+  "training": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-d12-lr2e5-control-prepared-v1/training",
+  "suite": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-d12-lr2e5-control-prepared-v1/suite",
+  "audit": {
+    "only_training_parameter_changed": "lr",
+    "reference_lr": 0.0001,
+    "control_lr": 2e-05
+  },
+  "protocol_sha256": "e2b8cacdd048f573affd1d0482db7460ddf3d0609654336e5439d6f2a7126ca2",
+  "prepared_updates": 1,
+  "total_planned_updates": 12,
+  "continuation": "Prepare steps2-12 with the same lower LR after first pair review; no mixed-LR resume.",
+  "execution_order": "After existing D12 and same-LR Q/P pilot controls; no NPU dispatch in this preparation.",
+  "initial_adapter": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-native-spans-bf16-v1/run/adapter",
+  "source_gate": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2",
+  "scope": "Prospective learning-only control, chosen after observing reference updates1/2. Not a blind hyperparameter study, held-out experiment or transfer result."
+}
