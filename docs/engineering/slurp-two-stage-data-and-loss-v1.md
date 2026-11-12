@@ -21,6 +21,17 @@ official_clean_v7，不伪造逐条语义审核。该实现没有准入未知槽
 预期输出为`datasets/slurp-jev-benchmark/official-clean-intent-v1`；必须以实际terminal、
 MANIFEST和独立load重建为准，不以预期路径代表完成。
 
+实际发布已于14:46:38 UTC退出0。全量49,739候选音频身份与解码检查通过，无额外
+技术失败隔离。最终learning为40,513录音/9,181来源组/32.2721小时，selection为
+9,226录音/2,146来源组/7.3503小时，两侧均覆盖60类。已知pending共647录音仍
+隔离。跨角色来源组与解码波形交集为0。学习录音时长中位数2.6237秒，P95为5.248秒，
+最长23.36秒；没有超过30秒。此统计不能代替ASR实际processor上下文检查。
+
+独立工具未调用publisher重建函数，重新核对全部录音的原标签、请求/目标身份、
+pending来源集合、人口分母、类别计数及保存的音频凭证；[验收结果](slurp-official-intent-v1-verified.json)。
+发布manifest SHA256为`38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482`。
+验收复核保存的波形检查结果，没有再次解码全部音频，未进行语义复听。
+
 loader只允许learning用于optimize，selection用于evaluate，并重新从原始来源
 恢复标签与pending隔离，拒绝重新哈希后篡改标签/角色。音频字节的实际训练前使用
 还须绑定发布资产；载入清单本身不是NPU预检。
