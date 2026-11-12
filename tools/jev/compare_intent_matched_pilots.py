@@ -62,7 +62,8 @@ def run(config):
     result=compare(arms,protocol['schedule'])
     evidence.update(config['pins'])
     for path in (Path(__file__),Path(__file__).resolve().parents[2]/'src/multimodal_jev/intent_matched_effects.py',
-                 Path(__file__).resolve().parents[2]/'src/multimodal_jev/intent_learning_trajectory.py'):
+                 Path(__file__).resolve().parents[2]/'src/multimodal_jev/intent_learning_trajectory.py',
+                 Path(__file__).resolve().parents[2]/'src/multimodal_jev/intent_process_outcomes.py'):
         evidence[str(path)]=file_hash(path)
     return dict(result,evidence=evidence,protocol_sha256=file_hash(config['protocol']))
 

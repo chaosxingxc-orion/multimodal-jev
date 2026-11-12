@@ -1,6 +1,7 @@
 """Paired D/Q/P learning effects; structured inference is not structured training."""
 import math
 from .intent_learning_trajectory import summarize as summarize_trajectory
+from .intent_process_outcomes import summarize as summarize_process, transitions as process_transitions
 
 
 METRICS = ('final_accuracy', 'final_macro_f1_observed', 'final_expected_reward', 'final_nll')
@@ -62,8 +63,13 @@ def compare(arms, schedule):
                 change_difference={k:changes[left][k]-changes[right][k] for k in METRICS},
                 left_only_correct=sum(a[i]['correct'] and not b[i]['correct'] for i in a),
                 right_only_correct=sum(b[i]['correct'] and not a[i]['correct'] for i in a))
+        structured = {a:list(rows_by_arm[a][step].values()) for a in ('Q','P')}
+        process = dict(absolute={a:summarize_process(rows) for a,rows in structured.items()},
+            paired_q_to_p=process_transitions(structured['Q'],structured['P']),
+            scope='Q/P paired descriptions at the same update, not temporal or causal mediation effects.')
         curve.append(dict(update=step,source_uses=source_uses,
-            absolute={a:values[a][step] for a in arms},change_from_initial=changes,effects=effects))
+            absolute={a:values[a][step] for a in arms},change_from_initial=changes,effects=effects,
+            process_outcomes=process))
     trajectories = {arm:summarize_trajectory(
         [dict(update=p['update'],source_uses=p['source_uses'],metrics=p['absolute'][arm]) for p in curve],
         registered_updates=len(schedule),
