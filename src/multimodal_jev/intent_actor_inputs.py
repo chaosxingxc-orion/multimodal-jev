@@ -35,6 +35,9 @@ def prepare(config,processor,policy_id,step):
     from .policy_identity import checkpoint_identity
     for path,digest in config['pins'].items():
         if file_hash(path)!=digest:raise ValueError('actor input pin changed')
+    if 'resident_behavior' in config:
+        from .intent_resident_behavior import authenticate
+        authenticate(config,policy_id)
     root=Path(config['acceptance_root'])
     # Never accept a path merely because an old READY exists.
     required=[root/'config.json',root/'run/READY.json',root/'run/terminal.json',
