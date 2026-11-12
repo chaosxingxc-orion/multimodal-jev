@@ -6,6 +6,7 @@ does not grant training admission: every request/version still needs parity.
 """
 
 PROFILE = 'qwen3-asr-bf16-hf-order-v1'
+SHORT_AUDIO_PROFILE = 'qwen3-asr-bf16-hf-order-short-audio-v2'
 RPCS = (
     'align_jev_internal_format',
     'align_jev_audio_attention',
@@ -53,17 +54,18 @@ def preserve_qwen3_import(targets, importer):
 
 
 def install_rollout_profile(engine, name):
-    if name != PROFILE:
+    if name not in (PROFILE,SHORT_AUDIO_PROFILE):
         raise ValueError('unsupported Span runtime profile')
     receipts = {}
-    for rpc in RPCS:
+    operations=RPCS+('align_jev_short_audio_padding',) if name==SHORT_AUDIO_PROFILE else RPCS
+    for rpc in operations:
         receipts[rpc] = engine.llm_engine.collective_rpc(rpc)
     return dict(profile=name, operations=receipts,
                 scope='BF16 TP1 single complete uncached sequence; parity required per policy/request')
 
 
 def configure_actor_profile(name):
-    if name != PROFILE:
+    if name not in (PROFILE,SHORT_AUDIO_PROFILE):
         raise ValueError('unsupported Span runtime profile')
     import torch
     import torch_npu

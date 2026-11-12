@@ -73,6 +73,10 @@ class SpanAuditWorkerExtension:
         from .span_audio_attention_alignment import install_eager_audio_attention
         return install_eager_audio_attention(self.get_model())
 
+    def align_jev_short_audio_padding(self):
+        from .span_audio_padding import install_short_audio_padding
+        return install_short_audio_padding(self.get_model())
+
     def begin_jev_span_trace(self):
         from .span_trace import attach_vllm_trace
         if getattr(self,'_jev_span_trace',None) is not None:

@@ -1,0 +1,63 @@
+{
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-prepared-v1",
+  "actual_exit_code": 1,
+  "requests": 178,
+  "failed": [
+    {
+      "id": "slurp:audio-1502376086.flac::intent::D",
+      "parity": {
+        "passed": false,
+        "per_span_passed": false,
+        "joint_ratio_passed": false,
+        "maximum_logprob_error": 0.4116523265838623,
+        "p95_logprob_error": 0.2866525650024414,
+        "joint_log_ratio_min": -0.4116523265838623,
+        "joint_log_ratio_max": 0.0883476734161377,
+        "joint_ratio_min": 0.6625545886302286,
+        "joint_ratio_max": 1.0923678432746313,
+        "candidate_kl_actor_to_behavior": 0.008350386468630955,
+        "argmax_changed_spans": [],
+        "per_span_tolerance": 0.02,
+        "joint_ratio_bounds": [
+          0.98,
+          1.02
+        ],
+        "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+      }
+    },
+    {
+      "id": "slurp:audio-1502376086.flac::intent::Q",
+      "parity": {
+        "passed": false,
+        "per_span_passed": false,
+        "joint_ratio_passed": false,
+        "maximum_logprob_error": 0.22334814071655273,
+        "p95_logprob_error": 0.1482677459716797,
+        "joint_log_ratio_min": -0.4520106315612793,
+        "joint_log_ratio_max": 0.5948643684387207,
+        "joint_ratio_min": 0.6363474043226998,
+        "joint_ratio_max": 1.8127850574178765,
+        "candidate_kl_actor_to_behavior": 0.00984040573795569,
+        "argmax_changed_spans": [],
+        "per_span_tolerance": 0.02,
+        "joint_ratio_bounds": [
+          0.98,
+          1.02
+        ],
+        "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+      }
+    }
+  ],
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-prepared-v1/run/hf/result.json": "7570a119fd2894fe5fe9c1ef9a79b289378112c4f1213b92b3eddbe82ff19c3d",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-prepared-v1/run/vllm/result.json": "e073f493830cd5f9662d182ca03c47048be3b1dc1c05769b162c7ca88d7c2565",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-prepared-v1/run/terminal.json": "3601ec84be1d91041edb6b450e60b578eae4c1016bd98140f862162b4165dee3",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-prepared-v1/run/vllm/terminal.json": "9972b851edbeae37100edf2b4088831f99c01d1d65329a370217f9f9e5cf66fb"
+  },
+  "queue_terminal": {
+    "exit_code": 1,
+    "error": "ValueError('predecessor failed or unexpected state: 22679c148888b3223b855169fca99a1926c9bb2657b1f8dee33d84b60c464904')",
+    "finished_unix": 1794453772.7154384
+  },
+  "scope": "Original gate rejected; finite intent training not dispatched. v2 full parity pending."
+}

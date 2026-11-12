@@ -28,6 +28,14 @@ def test_profile_receipt_preserves_worker_results():
     assert all(receipt['operations'][name]==[{'rpc':name}] for name in RPCS)
 
 
+def test_short_audio_profile_is_explicit_and_keeps_legacy_operations():
+    from multimodal_jev.span_runtime_profile import SHORT_AUDIO_PROFILE
+    engine=SimpleNamespace(llm_engine=SimpleNamespace(collective_rpc=lambda name:[{'rpc':name}]))
+    old=install_rollout_profile(engine,PROFILE);new=install_rollout_profile(engine,SHORT_AUDIO_PROFILE)
+    assert list(old['operations'])==list(RPCS)
+    assert list(new['operations'])==[*RPCS,'align_jev_short_audio_padding']
+
+
 @pytest.mark.parametrize('replacement_module',['verl.models.transformers.npu_patch','unexpected.patch'])
 def test_verl_import_restores_exact_original_functions_even_on_rejection(replacement_module):
     from multimodal_jev.span_runtime_profile import preserve_qwen3_import
