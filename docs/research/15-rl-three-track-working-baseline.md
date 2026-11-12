@@ -7,6 +7,8 @@
 执行排期更新：全量FSC矩阵移至既定短程训练、奖励候选与常驻验收之后，
 实验预算和人口不变，见[实际队列迁移](../engineering/intent-priority-schedule-v2.md)。
 Q已归档至第6步仍2/89，无持续分类改善证据；不是独立评测成绩。
+Q7训练完成后发生资源等待，已[按原预算接续调度](../engineering/intent-resource-archive-handoff-v1.md)；
+该工程变化不构成Q7验收成功或新的学习结果。
 
 ## 1. 简单判决：先锁定目标，再处理弱信用
 

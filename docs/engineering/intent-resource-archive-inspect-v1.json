@@ -1,0 +1,39 @@
+{
+  "Id": "2e92c2a0b34505ad4c20f7d7d9ee93bc8c18e55bcfd6a68a47d4fffd5605e257",
+  "Image": "sha256:7e60208fb45e8af3f1ab777cf24df7a7a415d8d84e2972ee76def4daf5c0f026",
+  "Path": "chroot",
+  "Args": [
+    "/host",
+    "/usr/bin/nsenter",
+    "-t",
+    "1",
+    "-m",
+    "/usr/bin/python3",
+    "-c",
+    "import pathlib,tarfile,sys,time,json,io,re,os\np=pathlib.Path(sys.argv[1]);q=pathlib.Path(sys.argv[2])\ndef temporary(name):\n return bool(re.fullmatch(r\"\\..+\\.json\\.[A-Za-z0-9_-]+\",name) or re.fullmatch(r\".+\\.tmp-\\d+(?:-\\d+)?\",name))\ndef add(t,path,name):\n if temporary(path.name):return\n if path.is_dir():\n  t.add(path,arcname=name,recursive=False)\n  for child in sorted(path.iterdir()):add(t,child,name+'/'+child.name)\n else:t.add(path,arcname=name,recursive=False)\nwith tarfile.open(fileobj=sys.stdout.buffer,mode='w|gz') as t:\n for n in ['LAUNCH.json','ERROR.json','GENERATION_COMPLETE.json','CONTAINER-STATE.json','MONITOR.json','S-RETURN-PREDECESSOR.json','TASK.json','controller.log','jobs']:\n  if (p/n).exists():add(t,p/n,n)\n for n in ['STATE.json','PREDECESSOR-TERMINAL.json','HOST-INVOKE-INTENT.json','HOST-RETURN.json']:\n  if (q/n).exists():add(t,q/n,'QUEUE-'+n)\n if (q/'queue.json').exists():\n  pred=pathlib.Path(json.loads((q/'queue.json').read_bytes())['predecessor_root'])/'GENERATION_COMPLETE.json'\n  if pred.exists():add(t,pred,'RESOURCE-PREDECESSOR-GENERATION-COMPLETE.json')\n raw=json.dumps({'epoch':time.time()}).encode();info=tarfile.TarInfo('HOST-CLOCK.json');info.size=len(raw);t.addfile(info,io.BytesIO(raw))\n",
+    "/var/tmp/s1-bl-candidate-ops-media-v1/runtime",
+    "/var/tmp/s1-bl-candidate-ops-media-v1/runtime/queue"
+  ],
+  "State": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 3316118,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-12T11:55:55.15190048Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "host_config": {
+    "Privileged": true,
+    "Devices": [],
+    "PidMode": "host",
+    "AutoRemove": true,
+    "Binds": [
+      "/:/host"
+    ]
+  }
+}

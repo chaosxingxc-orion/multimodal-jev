@@ -9,19 +9,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'tools/jev'))
 import queue_span_dp4_resume as queue
 
 
-def observer():
-    record = json.loads((Path(__file__).resolve().parents[1]/'docs/engineering/intent-resource-observer-inspect-v1.json').read_text())
+def observer(kind='observer'):
+    record = json.loads((Path(__file__).resolve().parents[1]/f'docs/engineering/intent-resource-{kind}-inspect-v1.json').read_text())
     record['HostConfig'] = record.pop('host_config')
     return record
 
 
 def test_exact_listener_is_identified():
     assert is_audited_completion_observer(observer())
+    assert is_audited_completion_observer(observer('archive'))
 
 
-@pytest.mark.parametrize('bad', ['program', 'argument', 'path', 'image', 'device', 'bind', 'extra', 'pid'])
-def test_unknown_privileged_program_is_not_exempt(bad):
-    row = observer()
+@pytest.mark.parametrize('kind', ['observer', 'archive'])
+@pytest.mark.parametrize('bad', ['program', 'argument', 'path', 'image', 'device', 'bind', 'extra', 'pid', 'remove'])
+def test_unknown_privileged_program_is_not_exempt(bad,kind):
+    row = observer(kind)
     if bad == 'program': row['Args'][7] += '\nimport torch_npu\n'
     if bad == 'argument': row['Args'][5] = '/different/python'
     if bad == 'path': row['Args'][8] = '/var/tmp/omni-local-state/../different'
@@ -30,12 +32,14 @@ def test_unknown_privileged_program_is_not_exempt(bad):
     if bad == 'bind': row['HostConfig']['Binds'].append('/extra:/extra')
     if bad == 'extra': row['Args'].append('extra')
     if bad == 'pid': row['HostConfig']['PidMode'] = 'private'
+    if bad == 'remove': row['HostConfig']['AutoRemove'] = False
     assert not is_audited_completion_observer(row)
 
 
 @pytest.mark.parametrize('busy', [False, True])
-def test_listener_never_bypasses_actual_device_fd_check(monkeypatch, busy):
-    row = observer(); calls = []
+@pytest.mark.parametrize('kind', ['observer', 'archive'])
+def test_listener_never_bypasses_actual_device_fd_check(monkeypatch, busy,kind):
+    row = observer(kind); calls = []
     monkeypatch.setattr(queue, 'inspect', lambda ids: {row['Id']: row})
     def remote(argv):
         calls.append(argv)
@@ -48,3 +52,8 @@ def test_listener_never_bypasses_actual_device_fd_check(monkeypatch, busy):
         with pytest.raises(subprocess.CalledProcessError): queue.check_devices('fixed')
     else: queue.check_devices('fixed')
     assert len(calls) == 2
+
+
+def test_archive_requires_exact_second_path():
+    row=observer('archive');row['Args'][9]+='/different'
+    assert not is_audited_completion_observer(row)
