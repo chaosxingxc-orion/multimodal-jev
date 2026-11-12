@@ -34,3 +34,15 @@ ratio[0.8,1.2]外。相同Q9权重的D输入仍1/89、一个预测类别。
 [独立凭证](intent-q9-learning-v1-verified.json)绑定实际容器状态、配置和结果。
 完整产物在共享实验目录`intent-q12-update09-v1/independent-learning-comparison.json`
 与`intent-q9-update-metrics-v1.json`。
+
+## 过程判决补充复算
+
+从上述已验收报告逐条语义预测复算Q8→Q9：scenario正确数6→6，action
+正确数0→1，Final仍2→2；唯一过程修复来源的Final仍错误。两过程同时正确
+均为0，组件与Final兼容均为0，因此“过程全对时Final准确率”仍为null。
+Q只训练Final信用，这一局部过程变化不能归因于过程奖励或多步推理。
+
+新产物`intent-q9-structured-outcomes-v1.json`保存在共享实验目录，SHA256为
+`bce317a79619092e8e457d2df5c0d7d48ca66382c30df47d4fd0c567da5a84f5`。
+已核对原验收凭证与比较报告绑定文件的全部哈希，并用独立逐条计数复核三个
+Span正确数；未重新推理、未修改训练和已发布评分。下一步仍需P对Q的匹配结果。

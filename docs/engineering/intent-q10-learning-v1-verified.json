@@ -1,0 +1,230 @@
+{
+  "passed": true,
+  "observed_unix": 1794491217.9527664,
+  "containers": {
+    "90fba3d734573f20bfaaa6d724541568d0734fadc9e6b9149bffd16762ab2f96": {
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-12T13:23:16.74523105Z",
+        "FinishedAt": "2026-11-12T13:24:19.44177219Z"
+      },
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c"
+    },
+    "9d79f81572b734388c451e127ec573012425ea4f116888511c909f04ba2f8f19": {
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-12T13:33:35.34567638Z",
+        "FinishedAt": "2026-11-12T13:40:12.95903583Z"
+      },
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c"
+    }
+  },
+  "metrics": {
+    "D": {
+      "final_accuracy": [
+        0.011235955056179775,
+        0.011235955056179775
+      ],
+      "final_macro_f1_observed": [
+        0.0003968253968253968,
+        0.0003968253968253968
+      ],
+      "final_expected_reward": [
+        0.014492236362726459,
+        0.015038413099149512
+      ],
+      "weighted_final_expected_reward": [
+        0.01907781332086128,
+        0.01945398239076672
+      ],
+      "final_nll": [
+        6.772877000021131,
+        6.653131572383173
+      ],
+      "final_predicted_classes": [
+        1,
+        1
+      ]
+    },
+    "Q": {
+      "final_accuracy": [
+        0.02247191011235955,
+        0.02247191011235955
+      ],
+      "final_macro_f1_observed": [
+        0.01235684147076552,
+        0.018339768339768338
+      ],
+      "final_expected_reward": [
+        0.01776118327815289,
+        0.018118074346275045
+      ],
+      "weighted_final_expected_reward": [
+        0.02000333175975925,
+        0.020161787423366953
+      ],
+      "final_nll": [
+        5.407974970474672,
+        5.3958678620584895
+      ],
+      "final_predicted_classes": [
+        4,
+        4
+      ]
+    }
+  },
+  "process_outcomes": {
+    "before": {
+      "recordings": 89,
+      "signature_order": [
+        "scenario",
+        "action",
+        "Final"
+      ],
+      "correctness_patterns": {
+        "000": 81,
+        "001": 1,
+        "010": 1,
+        "011": 0,
+        "100": 5,
+        "101": 1,
+        "110": 0,
+        "111": 0
+      },
+      "all_three_correct": 0,
+      "both_process_correct": 0,
+      "final_correct": 2,
+      "compatible": 0,
+      "compatible_but_final_wrong": 0,
+      "both_process_correct_but_final_wrong": 0,
+      "final_correct_with_process_error": 2,
+      "conditional_final": {
+        "both_process_correct": {
+          "recordings": 0,
+          "final_correct": 0,
+          "final_accuracy": null
+        },
+        "some_process_wrong": {
+          "recordings": 89,
+          "final_correct": 2,
+          "final_accuracy": 0.02247191011235955
+        }
+      },
+      "mean_expected_process_reward": 0.008408510061297432,
+      "mean_expected_final_reward": 0.01776118327815289,
+      "scope": "Unweighted learning population. Process reward is counterfactual 0.1/0.1; no training-arm inference or causal mediation claim."
+    },
+    "after": {
+      "recordings": 89,
+      "signature_order": [
+        "scenario",
+        "action",
+        "Final"
+      ],
+      "correctness_patterns": {
+        "000": 80,
+        "001": 1,
+        "010": 1,
+        "011": 0,
+        "100": 6,
+        "101": 1,
+        "110": 0,
+        "111": 0
+      },
+      "all_three_correct": 0,
+      "both_process_correct": 0,
+      "final_correct": 2,
+      "compatible": 0,
+      "compatible_but_final_wrong": 0,
+      "both_process_correct_but_final_wrong": 0,
+      "final_correct_with_process_error": 2,
+      "conditional_final": {
+        "both_process_correct": {
+          "recordings": 0,
+          "final_correct": 0,
+          "final_accuracy": null
+        },
+        "some_process_wrong": {
+          "recordings": 89,
+          "final_correct": 2,
+          "final_accuracy": 0.02247191011235955
+        }
+      },
+      "mean_expected_process_reward": 0.008627354462075982,
+      "mean_expected_final_reward": 0.018118074346275045,
+      "scope": "Unweighted learning population. Process reward is counterfactual 0.1/0.1; no training-arm inference or causal mediation claim."
+    },
+    "transitions": {
+      "recordings": 89,
+      "final_gains": 0,
+      "final_losses": 0,
+      "both_process_repaired_final_still_wrong": 0,
+      "both_process_and_final_repaired": 0,
+      "cells": [
+        {
+          "before": "000",
+          "after": "000",
+          "recordings": 80
+        },
+        {
+          "before": "000",
+          "after": "100",
+          "recordings": 1
+        },
+        {
+          "before": "001",
+          "after": "001",
+          "recordings": 1
+        },
+        {
+          "before": "010",
+          "after": "010",
+          "recordings": 1
+        },
+        {
+          "before": "100",
+          "after": "100",
+          "recordings": 5
+        },
+        {
+          "before": "101",
+          "after": "101",
+          "recordings": 1
+        }
+      ]
+    }
+  },
+  "adapter_id": "addf19ceb565dcffd56f8901c62ab9c78201b5fd4d2ea50ab25ead6feb835469",
+  "full_gate_requests": 178,
+  "maximum_logprob_error": 9.5367431640625e-07,
+  "exact_export_reload": true,
+  "exact_previous_score_match": true,
+  "files": {
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update10-v1/launch.json": "3b0dcdb311e938fafbc894ecc3669ee5ba2a0c4304e5d8326f43610e89932089",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-suite10-v1/launch.json": "573078346fb97d3919259bfd4f520568312fa3fc6d8cd25f7179a9d0f3bf2403",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-suite10-v1/verified.json": "fb9f43ac480a9bbb168f9f34e4be5406f343f91d62077720465aecb8cea70e54",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-suite10-v1/ACCEPTED.json": "4cf1b37d97c6bea9acd0ae0ad643e85991f2f4cc0bec3318df99fc9f70b48953",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update10-v1/independent-learning-comparison.json": "ff0cf05dcc21c52df53cbcd4fe449aebb0923808b6f6f16f540467f5dd906cb9",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q10-update-metrics-v1.json": "454c18e25c1e1283ebb461d859425721e0651d26fc1c634082523efa8cc619cf",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-runtime-observed-1346.json": "3e727e02ff63df739af1f9d6ccbfdd44753290cb8292e1f17015bf46130c1d39",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-q12-update09-v1/independent-learning-comparison.json": "4b9a0f7effa86b449860bf16958781608f979dcf5e85bb312996303daf28137f",
+    "/home/xingchao/workspace/multimodal-jev/src/multimodal_jev/intent_process_outcomes.py": "b1171b00b46b116b078de5079249d07ff47e46d8c4b19a2c3f7fb064af111f83"
+  },
+  "scope": "Q10 accepted learning-source evidence only. No held-out, process-reward or transfer efficacy."
+}

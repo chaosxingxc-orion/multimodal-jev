@@ -6,9 +6,9 @@
 
 执行排期更新：全量FSC矩阵移至既定短程训练、奖励候选与常驻验收之后，
 实验预算和人口不变，见[实际队列迁移](../engineering/intent-priority-schedule-v2.md)。
-Q已归档至[第9步](../engineering/intent-q9-learning-v1.md)，仍2/89；本步总体
-正确概率及均衡加权正确概率上涨、NLL下降，但实际更新8条概率下降，
-没有新增正确判决。无持续分类改善证据，不是独立评测成绩。
+Q已归档至[第10步](../engineering/intent-q10-learning-v1.md)，仍2/89；本步总体
+及实际更新8条的平均正确概率上涨、NLL下降，macro-F1改善，但没有新增正确
+判决。无持续分类改善证据，不是独立评测成绩。
 Q7资源等待经[固定监听目录审计及接续](../engineering/intent-resource-listener-handoff-v1.md)
 解除，独立suite已实际退出0并通过完整验收，原训练未重跑。
 
