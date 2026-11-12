@@ -9,6 +9,17 @@ from queue_span_native_actor_npu import read
 from compare_intent_learning_update import run as compare
 
 
+CLASSIFICATION_METRICS = ('final_accuracy','final_macro_f1_observed','final_expected_reward',
+                          'weighted_final_expected_reward','final_nll')
+
+
+def classification(checked,wire):
+    """Preserve policy identities with comparable metrics from accepted scores."""
+    return {name:dict(base_id=checked[key]['base_id'],adapter_id=checked[key]['adapter_id'],
+        metrics={k:checked[key]['reports'][wire]['metrics'][k] for k in CLASSIFICATION_METRICS})
+        for name,key in (('before','full_before'),('after','full_after'))}
+
+
 def run(training,suite):
     training,suite = Path(training),Path(suite)
     checked = compare(training,suite)  # Actual exits, restore/export and full gate first.
@@ -35,7 +46,7 @@ def run(training,suite):
                    Path(__file__).resolve().parents[2]/'src/multimodal_jev/span_policy_drift.py']:
         files[str(p)] = file_hash(p)
     return dict(result,training_root=str(training),suite_root=str(suite),training_arm=cfg['arm'],
-                training_trace=trace,files=files)
+                training_trace=trace,classification=classification(checked,wire),files=files)
 
 
 if __name__=='__main__':

@@ -8,6 +8,7 @@ import argparse
 from pathlib import Path
 from multimodal_jev.baseline import atomic_json,file_hash
 from multimodal_jev.intent_resume import validate_lineage
+from multimodal_jev.intent_learning_trajectory import summarize as summarize_trajectory
 from prepare_intent_utility_curves import validate_protocol
 from queue_span_native_actor_npu import read
 from queue_span_dp4_resume import check_pins
@@ -59,16 +60,34 @@ def run(protocol_path,digest):
             if selection['recording_ids']!=protocol['schedule'][index]:raise ValueError('registered source schedule differs')
             plans.append((arm['name'],index,training,suite));prior,prior_step=cfg,step
     curves={a['name']:[] for a in protocol['arms']};files={}
+    classification={a['name']:[] for a in protocol['arms']};initial=None;previous={}
     for name,index,training,suite in plans:
         report=update_report(training,suite)
         if report['training_trace']['updates']!=index+1:raise ValueError('accepted cursor differs')
+        before,after=report['classification']['before'],report['classification']['after']
+        if before['base_id']!=after['base_id'] or after['adapter_id']!=report['training_trace']['adapter_id']:
+            raise ValueError('classification policy differs from accepted training')
+        if index==0:
+            if initial is None:initial=before
+            if before!=initial:raise ValueError('common initial classification differs')
+            classification[name].append(dict(update=0,source_uses=0,metrics=before['metrics']))
+        elif before!=previous[name]:raise ValueError('adjacent classification policies or scores differ')
+        previous[name]=after
+        classification[name].append(dict(update=index+1,source_uses=(index+1)*protocol['global_requests'],
+            metrics=after['metrics']))
         files.update(report['files'])
         curves[name].append(dict(update=index+1,source_uses=(index+1)*protocol['global_requests'],
             groups=report['groups'],training_trace=report['training_trace']))
-    for path in (protocol_path,pilot_path,Path(__file__).resolve()):files[str(path)]=file_hash(path)
+    trajectories={name:summarize_trajectory(points,registered_updates=12,
+        directions={k:-1 if k=='final_nll' else 1 for k in points[0]['metrics']})
+        for name,points in classification.items()}
+    for path in (protocol_path,pilot_path,Path(__file__).resolve(),
+                 Path(__file__).resolve().parents[2]/'src/multimodal_jev/intent_learning_trajectory.py'):
+        files[str(path)]=file_hash(path)
     return dict(complete=True,role='learning',updates=12,protocol_sha256=digest,curves=curves,files=files,
+        classification_curves=classification,trajectories=trajectories,
         scope='All three objectives and all12 accepted updates. Each point includes before/after margins and correctness, '
-              'post-update KL and pre-update gradient/clipping traces. Read alongside full classification curves; '
+              'post-update KL and pre-update gradient/clipping traces, plus comparable classification trajectories. '
               'not parameter displacement, independent efficacy or transfer. No best-point selection.')
 
 

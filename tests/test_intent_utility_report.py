@@ -35,7 +35,13 @@ def fixture(tmp_path,monkeypatch):
     path=tmp_path/'protocol.json';atomic_json(path,protocol);calls=[]
     def report(training,suite):
         calls.append(str(training));cfg=module.read(training/'config.json')
-        return dict(files={},groups={'all_learning':{'recordings':89}},training_trace={'updates':cfg['step']+1})
+        step=cfg['step'];name=cfg['objective']['name']
+        def policy(index):
+            return dict(base_id='base',adapter_id='initial' if index==0 else name+str(index),
+                metrics={'final_accuracy':.1+index*.01,'final_nll':2.-index*.01})
+        return dict(files={},groups={'all_learning':{'recordings':89}},
+            training_trace={'updates':step+1,'adapter_id':policy(step+1)['adapter_id']},
+            classification={'before':policy(step),'after':policy(step+1)})
     monkeypatch.setattr(module,'update_report',report)
     return path,protocol,calls
 
@@ -52,6 +58,25 @@ def test_all_three_curves_and_every_update_are_authenticated(tmp_path,monkeypatc
     for points in r['curves'].values():
         assert [v['update'] for v in points]==list(range(1,13))
         assert points[-1]['source_uses']==96
+    for trajectory in r['trajectories'].values():
+        assert trajectory['complete'] and trajectory['source_uses']==96
+        assert trajectory['metrics']['final_accuracy']['improving_transitions']==12
+        assert trajectory['metrics']['final_nll']['worsening_transitions']==0
+
+
+@pytest.mark.parametrize('defect',['initial','adjacent_score','adjacent_policy','export'])
+def test_classification_identity_and_continuity_required(tmp_path,monkeypatch,defect):
+    path,p,calls=fixture(tmp_path,monkeypatch);original=module.update_report
+    def report(training,suite):
+        r=original(training,suite);cfg=module.read(training/'config.json')
+        if cfg['objective']['name']==p['arms'][1]['objective']['name']:
+            if defect=='initial' and cfg['step']==0:r['classification']['before']['metrics']['final_accuracy']=.9
+            if defect=='adjacent_score' and cfg['step']==1:r['classification']['before']['metrics']['final_nll']=4.
+            if defect=='adjacent_policy' and cfg['step']==1:r['classification']['before']['adapter_id']='wrong'
+            if defect=='export':r['classification']['after']['adapter_id']='wrong'
+        return r
+    monkeypatch.setattr(module,'update_report',report)
+    with pytest.raises(ValueError,match='classification'):module.run(path,file_hash(path))
 
 
 @pytest.mark.parametrize('bad',['missing','objective','optimizer','schedule','lineage','source','pilot_hash','protocol_hash'])
