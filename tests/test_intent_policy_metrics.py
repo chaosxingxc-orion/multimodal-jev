@@ -31,3 +31,11 @@ def test_ties_and_missing_rows_are_not_hidden():
     with pytest.raises(ValueError):score([item],[],'Q')
     row['request_identity']['request']['requirements']=['leaked answer']
     with pytest.raises(ValueError,match='identity'):score([item],[row],'Q')
+
+
+def test_top3_is_separate_from_top1_and_uses_stable_tie_order():
+    item,row=inputs()
+    # Three-way fixture: gold is rank2, hence wrong Top1 but correct Top3.
+    row['candidate_logprobs'][-1]=[math.log(.6),math.log(.3),math.log(.1)]
+    result=score([item],[row],'Q')
+    assert result['final_accuracy']==0 and result['final_top3_accuracy']==1 and result['top3_k']==3

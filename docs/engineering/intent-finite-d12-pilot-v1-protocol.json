@@ -1,0 +1,170 @@
+{
+  "schema": "intent-finite-d12-learning-pilot-v1",
+  "arm": "D",
+  "seed": 317,
+  "initial_updates": 2,
+  "total_updates": 12,
+  "global_requests_per_update": 8,
+  "total_requests": 96,
+  "unique_learning_sources": 89,
+  "repeated_sources": 7,
+  "lr": 0.0001,
+  "reward": "expected reviewed Final correctness with exact old-policy quadrature",
+  "checkpoints": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "evaluation": "all89 D/Q learning diagnostics after each accepted update; no held-out claim",
+  "selection": "report every point, no best-point selection, no early stopping by learning reward",
+  "schedule": [
+    [
+      "slurp:audio--1505405308-headset.flac::intent",
+      "slurp:audio-1490704050.flac::intent",
+      "slurp:audio--1504193194.flac::intent",
+      "slurp:audio-1490800732-headset.flac::intent",
+      "slurp:audio-1498575831.flac::intent",
+      "slurp:audio-1501692130-headset.flac::intent",
+      "slurp:audio-1497451192.flac::intent",
+      "slurp:audio-1502894383.flac::intent"
+    ],
+    [
+      "slurp:audio-1502302200.flac::intent",
+      "slurp:audio-1489673538.flac::intent",
+      "slurp:audio-1495377342-headset.flac::intent",
+      "slurp:audio-1502895910-headset.flac::intent",
+      "slurp:audio-1490801220.flac::intent",
+      "slurp:audio--1505407260-headset.flac::intent",
+      "slurp:audio-1490108517-headset.flac::intent",
+      "slurp:audio-1502894975.flac::intent"
+    ],
+    [
+      "slurp:audio-1489154629.flac::intent",
+      "slurp:audio-1497861427.flac::intent",
+      "slurp:audio-1500980091-headset.flac::intent",
+      "slurp:audio-1501151499.flac::intent",
+      "slurp:audio-1498566333-headset.flac::intent",
+      "slurp:audio-1490203106-headset.flac::intent",
+      "slurp:audio-1499088848-headset.flac::intent",
+      "slurp:audio-1502896953.flac::intent"
+    ],
+    [
+      "slurp:audio-1502308953-headset.flac::intent",
+      "slurp:audio-1502200493.flac::intent",
+      "slurp:audio-1490705591.flac::intent",
+      "slurp:audio-1497265164.flac::intent",
+      "slurp:audio-1495372297.flac::intent",
+      "slurp:audio-1498577293.flac::intent",
+      "slurp:audio-1499090499-headset.flac::intent",
+      "slurp:audio-1502377680-headset.flac::intent"
+    ],
+    [
+      "slurp:audio-1489673020-headset.flac::intent",
+      "slurp:audio-1497868501.flac::intent",
+      "slurp:audio--1505405685.flac::intent",
+      "slurp:audio-1488975295.flac::intent",
+      "slurp:audio-1498485821.flac::intent",
+      "slurp:audio-1490966873-headset.flac::intent",
+      "slurp:audio-1490960972.flac::intent",
+      "slurp:audio-1490199961.flac::intent"
+    ],
+    [
+      "slurp:audio-1501688084-headset.flac::intent",
+      "slurp:audio-1497271978.flac::intent",
+      "slurp:audio-1498573920.flac::intent",
+      "slurp:audio-1492781389-headset.flac::intent",
+      "slurp:audio-1434529817-headset.flac::intent",
+      "slurp:audio-1502891870.flac::intent",
+      "slurp:audio-1498576370.flac::intent",
+      "slurp:audio-1501694907.flac::intent"
+    ],
+    [
+      "slurp:audio-1502195617-headset.flac::intent",
+      "slurp:audio-1498484236-headset.flac::intent",
+      "slurp:audio-1498566935-headset.flac::intent",
+      "slurp:audio-1492783171-headset.flac::intent",
+      "slurp:audio-1492782930-headset.flac::intent",
+      "slurp:audio-1489154897.flac::intent",
+      "slurp:audio--1504194219.flac::intent",
+      "slurp:audio-1501765234.flac::intent"
+    ],
+    [
+      "slurp:audio-1497869698-headset.flac::intent",
+      "slurp:audio-1502216083.flac::intent",
+      "slurp:audio-1490181844-headset.flac::intent",
+      "slurp:audio-1502376086.flac::intent",
+      "slurp:audio-1490262141.flac::intent",
+      "slurp:audio-1501696303.flac::intent",
+      "slurp:audio-1497557886-headset.flac::intent",
+      "slurp:audio-1501414676.flac::intent"
+    ],
+    [
+      "slurp:audio-1502377774-headset.flac::intent",
+      "slurp:audio-1501155744.flac::intent",
+      "slurp:audio-1502197357.flac::intent",
+      "slurp:audio--1504194527.flac::intent",
+      "slurp:audio--1506521449.flac::intent",
+      "slurp:audio-1501414692-headset.flac::intent",
+      "slurp:audio--1504190775.flac::intent",
+      "slurp:audio-1434534766-headset.flac::intent"
+    ],
+    [
+      "slurp:audio-1497269851-headset.flac::intent",
+      "slurp:audio-1490370124-headset.flac::intent",
+      "slurp:audio-1490193531-headset.flac::intent",
+      "slurp:audio-1497882509-headset.flac::intent",
+      "slurp:audio-1490192785-headset.flac::intent",
+      "slurp:audio-1498573220-headset.flac::intent",
+      "slurp:audio-1502299403.flac::intent",
+      "slurp:audio-1497869848.flac::intent"
+    ],
+    [
+      "slurp:audio-1502894298.flac::intent",
+      "slurp:audio-1490371042-headset.flac::intent",
+      "slurp:audio-1434538075.flac::intent",
+      "slurp:audio-1497437104-headset.flac::intent",
+      "slurp:audio-1490106691-headset.flac::intent",
+      "slurp:audio-1502311520-headset.flac::intent",
+      "slurp:audio-1488563457.flac::intent",
+      "slurp:audio-1498570957.flac::intent"
+    ],
+    [
+      "slurp:audio-1501151736.flac::intent",
+      "slurp:audio--1505405308-headset.flac::intent",
+      "slurp:audio-1490704050.flac::intent",
+      "slurp:audio--1504193194.flac::intent",
+      "slurp:audio-1490800732-headset.flac::intent",
+      "slurp:audio-1498575831.flac::intent",
+      "slurp:audio-1501692130-headset.flac::intent",
+      "slurp:audio-1497451192.flac::intent"
+    ]
+  ],
+  "retrospective_updates": [
+    0,
+    1,
+    2
+  ],
+  "prospective_updates": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "scope": "Registered after observing step1 and step2 training completion; new fixed continuation budget, not a fully preregistered formal experiment."
+}

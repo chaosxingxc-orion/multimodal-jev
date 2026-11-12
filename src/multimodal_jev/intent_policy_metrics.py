@@ -17,7 +17,7 @@ def score(items,records,wire_arm):
     if set(predictions)!={i['id']+'::'+wire_arm for i in items}:raise ValueError('exact prediction population required')
     gold_count=Counter();pred_count=Counter();correct_count=Counter();confusion=Counter();components=Counter()
     rows=[];probability_sum=0.;weighted_reward=0.;weight_sum=0.;compatible=0
-    nll_sum=0.;entropy_sum=0.;sampling_risk_sum=0.
+    nll_sum=0.;entropy_sum=0.;sampling_risk_sum=0.;top3_correct=0
     final_schema=items[0]['request'].questions[-1].schema
     for item in items:
         request=item['request'];target=item['target'];record=predictions[item['id']+'::'+wire_arm]
@@ -37,6 +37,8 @@ def score(items,records,wire_arm):
             predicted.append(q.values[best]);truth.append(q.values[y]);gold_probs.append(math.exp(logp[y]))
             components[q.id]+=best==y
         gold=truth[-1];prediction=predicted[-1];gold_count[gold]+=1;pred_count[prediction]+=1
+        ranked=sorted(range(len(probs[-1])),key=lambda k:-probs[-1][k])
+        top3_correct+=target['targets'][-1] in ranked[:3]
         correct_count[gold]+=gold==prediction;confusion[(gold,prediction)]+=1
         probability_sum+=gold_probs[-1]
         nll_sum-=probs[-1][target['targets'][-1]]
@@ -55,6 +57,7 @@ def score(items,records,wire_arm):
     f1={label:2*correct_count[label]/(gold_count[label]+pred_count[label])
         if gold_count[label]+pred_count[label] else 0. for label in labels}
     return dict(recordings=len(items),final_accuracy=sum(correct_count.values())/len(items),
+        final_top3_accuracy=top3_correct/len(items),top3_k=min(3,len(labels)),
         final_macro_recall_observed=sum(correct_count[c]/gold_count[c] for c in observed)/len(observed),
         final_macro_f1_observed=sum(f1[c] for c in observed)/len(observed),
         observed_classes=len(observed),candidate_classes=len(labels),unobserved_classes=sorted(set(labels)-set(observed)),
