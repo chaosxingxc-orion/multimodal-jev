@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "source": "/mnt/cephfs/xingchao/experiments/multimodal-jev/span-resident-host-reference-regression-v1.json",
+  "sha256": "e5249d30c49a1917e00cb0c008479394502adae5f6987171e2827339cd4c49ec",
+  "rows": [
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-intent-dqp-policy-v2",
+      "original": {
+        "passed": true,
+        "requests": 178,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "joint_ratio_range": [
+          0.9999990463261383,
+          1.0000010728841815
+        ],
+        "scope": "Full pilot input/policy parity, not held-out efficacy."
+      },
+      "independent_numeric_audit": {
+        "passed": true,
+        "requests": 178,
+        "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:7341430053a9b4f36f5d5b8fe80616889af1857c71187d22b4895b062f557140",
+        "slot": 1,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "joint_ratio_range": [
+          0.9999990463261383,
+          1.0000010728841815
+        ]
+      }
+    },
+    {
+      "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/intent-finite-d12-suite12-v1",
+      "original": {
+        "passed": true,
+        "requests": 178,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "joint_ratio_range": [
+          0.999998807907815,
+          1.0000009536747712
+        ],
+        "scope": "Full pilot input/policy parity, not held-out efficacy."
+      },
+      "independent_numeric_audit": {
+        "passed": true,
+        "requests": 178,
+        "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:1815810ce3a4e7c4e0263e02e1a8f77e6c21881efe089c9bde8b89b58901b4c5",
+        "slot": 1,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "joint_ratio_range": [
+          0.999998807907815,
+          1.0000009536747712
+        ]
+      }
+    }
+  ],
+  "scope": "Verifier numerical/population regression against actual accepted standalone engines. Synthetic resident slot envelope added; not resident execution or resident suite acceptance."
+}
