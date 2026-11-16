@@ -185,8 +185,11 @@ ssh npu2 'sudo -n rm -rf /opt/omni-hot-runtime'
   diag-63 的 `lease_controller.py`）带一条**只读** bind，源即被删的
   `/opt/omni-hot-runtime/…/diagnostic-61-terminal-main-split61-v1`。删除后容器内该路径
   `ls` 为空、`find` 无结果；容器仍 running（`oom=false`）、`docker logs --since 15:39`
-  无新增输出，diag-63 仍在 `/var/lib` 正常推进（15:38 写 `results/*.json`）。
-  只读挂载无法写回已删 inode，因此**没有**「写进已删除目录」的数据丢失。
+  无新增输出。只读挂载无法写回已删 inode，因此**没有**「写进已删除目录」的数据丢失。
+- **删除后 4 分钟的复核（15:43:47Z）**：`/opt/omni-hot-runtime` 未被重建（`absent`），
+  `/opt` 仍是 4 项；diag-63 在 `/var/lib` 正常换段——15:38:21 写 `NPU-EXIT.json`，
+  **15:43:21 写 `HF-SERVICE-RESTORED.json`**，即删除后仍在推进下一阶段。
+  这是「该目录已不是写入目标」最直接的验证：活任务没有失败，只是继续用 `/var/lib`。
 - **若该容器被重建**，这条 bind 的源已不存在，Docker 会按挂载方式重建空目录或报错；
   它引用的 diag-61 终态收据在上面的归档里，可恢复。
 - **未停止**任何进程或容器：`lease_controller`(1798791)、watchdog(1799326) 均存活，
