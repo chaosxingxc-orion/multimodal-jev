@@ -25,14 +25,20 @@
 - `/var/tmp/omni-npu175-experiment-v1` 2,196 MB、`/var/tmp/omni-npu175-b175-minus-r01-v2` 573 MB
   —— 其他项目在驱动。
 - `/var/tmp/mkinitramfs_*` 665 MB —— 系统 initramfs 残留，非本项目。
-- `/home/x00930083/workspace/nga` 3,477 MB —— NGA 项目（另一项目），非 git 仓库、已卸载但保留。
+- `/home/xingchao/workspace/nga` 3.4 GB —— NGA 项目（另一项目），属主 `root`、
+  非 git 仓库、内容仅 `docker/ experiments/ tools/`，最后写入 **2026-11-09**，
+  自那以后无更新。**待删除**，因 175 `sudo` 需密码，交由用户执行：
+  `ssh npu 'sudo rm -rf /home/xingchao/workspace/nga'`。
+  同目录下 `multimodal-jev`（本项目）与 `omni → /mnt/cephfs/xingchao/omni`（软链）
+  **不可一并删除**。（此前记录写成 `/home/x00930083/workspace/nga`，路径有误。）
 - `/var/tmp/omni-confirmed-only-c-overlay.tar.gz` —— 实为指向 ceph
   `omni-retained/npu175/var/tmp/` 的符号链接（0 字节），非占用来源。
 - `/data` 下 `jev-macro-train-v1/v2/v4/v5`、`jev-macro-v1/v2` 等历史目录约 600 MB ——
   `/data` 仍有 3.1 TB 空闲，回收价值低于误删风险，**保留待确认**。
 
-结论：175 的 `/home` 已用 96%（620 G / 680 G），但绝大部分属于其他用户，
-本项目可回收部分仅约 0.56 GB。**175 不是本项目的空间瓶颈。**
+结论：175 的 `/home` 已用 96%（620 G / 680 G），但绝大部分属于其他用户。
+本项目已自行回收约 0.56 GB；另有 **3.4 GB 的停更 NGA 目录**待用户执行 `sudo`
+删除（见上）。**175 不是本项目的空间瓶颈。**
 
 ## 181（A800I-03，账号 `x00930083`）
 
@@ -71,23 +77,33 @@
 
 ## ceph `/mnt/cephfs/xingchao` 分析与建议（**本轮不删**）
 
-体积用 `getfattr -n ceph.dir.rbytes` 读取（不做递归 `du`，避免拖垮 MDS）。总计约 1.71 TB。
+> **更正（2026-11-16 晚）**：本节最初用 `getfattr -n ceph.dir.rbytes` 取体积，但该
+> 属性在**本挂载上返回空**，据此得出的 1.71 TB 及下面各分项数字**全部作废**。
+> 已改写为一次 `du -sb` 实测，见
+> `ceph-datasets-models-normalization-v1.md`。
 
-| 目录 | 体积 | 归属 | 判断 |
-| --- | --- | --- | --- |
-| `omni-retained/` | 563.8 GB（npu181 373.4 / npu175 177.5 / s2-independent-archive 12.5） | 归档 | **可清理候选**，按"archive 同样按 1 天规则"处理，但需 omni 方确认无回滚依赖 |
-| `omni/` | 478.7 GB（models 198.7 / work 122.8 / archives 86.3 / datasets 59.3） | 其他项目 | 保留（活跃），`archives/` 86.3 GB 可列入候选 |
-| `experiments/jev/` | 225.5 GB（`r3_runs` 136.5 / `engineering-base-rc1` 73.3） | 本项目历史产物 | **本项目最大可回收项**，`r3_runs` 为历史轮次运行目录，建议保留最终 checkpoint 与汇总，清理中间态 |
-| `experiments/multimodal-jev/` | 14.1 GB | 本项目历史产物 | 保留（多为已验证的正式包） |
-| `datasets/` | 168.2 GB（slue-phase-2 96.0） | 数据 | 保留 |
-| `docker/` | 144.4 GB（`verl_v030_20261029` 116.7） | 镜像 tar 备份 | 可分批复核后清理旧 tag |
-| `models/` | 116.9 GB（`jev` 78.2：Qwen3.5 0.8B–9B 各 2 份） | 权重 | 保留（`models/jev` 中的 Base/Instruct 重复副本可评估） |
-| `repos/` | 2.1 GB | 参考仓库 | 保留 |
-| `asset-registry/` | 1.3 GB（`s-host-deep-cleanup-v1` 1.2） | 清理登记 | 保留（审计链） |
+实测（**一次** `du -sb`，必须一次，因为 `models/`、`datasets/` 有 13 个一级目录
+与 `omni/` 是**文件级**硬链接镜像，`nlink=2`；分次跑会重复计数）：
+
+| 目录 | 实测 | 说明 |
+| --- | --- | --- |
+| `models/` | 459,093,454,708 B = **427.6 GiB** | 已对 `omni/models`（0 B）去重 |
+| `datasets/` | 245,025,940,414 B = **228.2 GiB** | 已对 `omni/datasets`（125,681,519 B）去重 |
+| `omni/models` | 0 B | 全部与 `models/` 同名目录共 inode |
+| `omni/datasets` | 125,681,519 B | 仅未被 `datasets/` 镜像的余量 |
+
+`omni-retained/`、`experiments/`、`docker/`、`repos/`、`asset-registry/`
+本轮**未测量**——按用户决策 2「其他数据先放一放，交给其他任务去修复」，只登记不动，
+也不再引用那些无效数字。
+
+`models/` 与 `datasets/` 的逐目录明细、散落族清单（SLURP 10 处、FSC 4、SFC 4、
+mac-slu 5、MMAU 3、audio2tool 2）、错位训练产物（`models/local-training` 112 GiB、
+`models/multimodal-jev` 11.7 GiB）以及唯一真派生物（`models/serving-views` 34.2 GiB，
+可由源权重按 `audio_tower.* → thinker.audio_tower.*` 前缀重写再生）见
+`ceph-datasets-models-normalization-v1.md`；声明式清单为 `configs/ceph-assets-v1.json`，
+只读校验工具为 `tools/ceph_asset_catalog.py`。
 
 按决策 5「延后清理远端文件」，以上仅登记，本轮**未删除任何 ceph 文件**。
-建议的下一步优先级：`experiments/jev/r3_runs`（136.5 GB，本项目自有）→
-`omni-retained`（563.8 GB，需跨项目确认）→ `docker/` 旧镜像 tar。
 
 ## 复现命令
 
@@ -99,9 +115,15 @@ for e in *; do
   rm -rf "$e" 2>/dev/null || sudo rm -rf "$e"
 done
 
-# ceph 体积（轻量）
-getfattr -n ceph.dir.rbytes --only-values /mnt/cephfs/xingchao/<dir>
+# ceph 体积：一次 du -sb 覆盖所有一级目录（硬链接只在单次运行内去重）
+du -sb /mnt/cephfs/xingchao/{models,datasets}/* \
+       /mnt/cephfs/xingchao/omni/{models,datasets}/*
+
+# 或者直接用归一工具（会自动做单次 du 与硬链接镜像检测）
+python -m tools.ceph_asset_catalog --check --sizes --report -
 ```
+
+不要用 `getfattr -n ceph.dir.rbytes`：本挂载返回空值。
 
 ## 边界
 
