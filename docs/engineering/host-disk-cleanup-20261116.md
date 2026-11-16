@@ -67,11 +67,16 @@
 结论：181 的 `/data` 仍 99% 满（110 GB 空闲），但占用主体是 omni 的 244 GB + 156 GB，
 不属于本项目。本项目侧可回收空间已在 `/var/tmp` 回收完毕。
 
-## `/opt` 专项（175 + 181，**本轮不删**）
+## `/opt` 专项（175 + 181）
 
-用户要求「继续清理 175 和 181 下面 `/opt` 的临时文件」。实测结论：**两台主机的 `/opt`
-都没有可按「>1 天」规则删除的本项目文件**——175 只有 12 KB 属主为 root 的 NGA 探针，
-181 的全部非系统内容属**另一个正在推进的任务**。本轮 `/opt` 未删除任何文件。
+用户要求「继续清理 175 和 181 下面 `/opt` 的临时文件」，随后明确指定
+「`/opt/omni-hot-runtime` 就是这个目录，要清理掉，后续已经不会往这个目录下写东西了」。
+结果：175 无可自行删除项（root 属主，`sudo` 需密码，交用户执行）；181 的
+`/opt/omni-hot-runtime` **已于 2026-11-16T15:39:41Z 删除**，释放 **21,330,111,740 B**。
+
+> 本节 15:30 的版本曾判定「登记不删」，理由是该目录仍在推进、有其他项目在驱动。
+> 用户随后明确该目录可清理、且不会再写入；该判定被新指令取代。下方记录执行结果，
+> 并把原判定依据与「判定反转所依据的实测证据」分开写，避免看起来像事后改口。
 
 ### 175 `/opt`（全部条目，快照 2026-11-16T15:30:22Z）
 
@@ -104,60 +109,98 @@ containerd 运行时，后者属于另一账号 `shenlu`）。收益 12 KB——
 | `containerd/` | root | 2025-09-16 | 4 K | 系统组件，保留 |
 | `data/usr/` | root | 2026-01-28 | 8 K | 空目录树，无引用，体积可忽略，暂留 |
 | `os_start_run.sh` | root | 2026-09-29 | 868 B | 主机启动脚本，**保留** |
-| `omni-hot-runtime/` | root | **2026-11-16 15:29** | **21,330,111,740 B** | **其他项目的活跃任务，不动** |
+| `omni-hot-runtime/` | root | 2026-11-16 15:29（末次写入） | **21,330,111,740 B**（36,497 条、47 个 generation） | **已删除**（15:39:41Z，用户指令） |
 
-`/opt` 下**恰好 8 个条目超过 1 天**，全部是上表前四行的系统项；其余 44 条都属于
-`omni-hot-runtime` 且为当天写入。也就是说：**181 `/opt` 没有一条「>1 天且属本次可清理」
-的条目**。
+删除前 `/opt` 共 5 个一级条目：前四行是系统项，第五行 `omni-hot-runtime` 是 omni
+跨后端诊断的产物树。删除后 `/opt` 只剩前四项。上表体积取 `du -sb`；15:18 的一次
+分目录统计读到 32 G，差异来自 omni 自身按代回收（见本节末快照说明）。
 
-### 为什么 `/opt/omni-hot-runtime` 不能删
+### 删除前的判定证据（2026-11-16T15:39，删前 2 秒）
 
-它是 omni 音频塔跨后端（HF vs vLLM）分层对齐诊断扫描的产物树，`diagnostic-38`
-（05:39）到 `diagnostic-61-terminal-main-split61-v1`（15:14）共 **71 个 generation 目录**，
-最大三项为 `diagnostic-46` 2.59 GB、`diagnostic-48-…-capacity-failed` 1.95 GB、
-`diagnostic-42-…-rope42-v1` 1.14 GB。判定依据（全部为实测，非推测）：
+15:30 的初判是「其他项目的活跃任务，不能删」，依据是它每 20–30 分钟新增一代、最新写入
+就在观察前 3 分钟。用户随后明确该目录可清理且不再写入，于是按**「写入已停止」**重新取证：
 
-1. **仍在推进**：整棵树最后一次写入为 **15:29**（观察时刻 15:32），`stage-54…stage-61`
-   每 20–30 分钟一个新目录，且最新 `reclaim-diagnostic61-copy.jsonl` 同样写于 15:29。
-2. **有活进程**：`pgrep` 命中
-   `lease_controller.py --dispatch-plan /var/lib/omni-hot-runtime/…/diagnostic-63/dispatch-plan.json`
-   （pid 1798791）与同目录 watchdog（pid 1799326）——扫描已到第 63 代，`/opt` 只是它的
-   克隆/回收目标。
-3. **它自己在回收**：树内 20 余份 `reclaim-diagnostic*-{original,copy}.jsonl` 每份都以
-   `{"event":"complete","files":…,"bytes":…}` 收尾，单代回收约 3.2 GB
-   （如 `reclaim-diagnostic61`：1017 文件 / 3,247,579,648 B）。**我们再删就是和它的回收
-   循环抢同一批文件**，会破坏它的证据链。
-4. **不是 `/home/xingchao/omni-hot-runtime` 的副本**：两者无同 inode 文件
-   （`nlink` 全为 1），且 `/home` 那棵树里没有任何 `*diagnostic*` 条目；
-   在 omni 工程中也搜不到对 `/opt/omni-hot-runtime` 的引用——它是按代重建的临时区。
-5. 结构上每代都带 root 属主的 `COMPLETE.json` / `FINAL-AUDIT.json` /
-   `external/*-STAGE-PINS.json` / `watchdog-inspect.json`，属**冻结证据**（本账号读不了，
-   `Permission denied`），AGENTS.md 禁止删运行证据。
+| 检查项 | 结果 |
+| --- | --- |
+| `find -xdev -newermt "-5 min"` | **0**（间隔 24 分钟连续两次） |
+| 最新条目 mtime | **15:29**（`reclaim-diagnostic61-copy.jsonl`、`reclaim-diagnostic46-copy.jsonl`） |
+| 最新 generation | `diagnostic-61-terminal-main-split61-v1`，**15:14**；此后 26 分钟无新代 |
+| 规模 | `du -sb` **21,330,111,740 B**、**36,497** 条、一级 generation **47** 个 |
+| 活跃扫描写在哪 | `diagnostic-63` 的 `hot/`、`results/` 全在 **`/var/lib/omni-hot-runtime/…/diagnostic-63`**（15:30–15:38 持续写入）；`/opt` 停在 15:29 |
 
-结论：按用户决策 3「暂时不动，有一些其他项目还在驱动」，本轮**登记不删**。
-可回收条件写成可执行判据，不靠人记：
+关键一点：**omni 的扫描确实还在跑，但写目标已经迁到 `/var/lib`**——`lease_controller`
+（pid 1798791）与 watchdog（pid 1799326）都在操作 `/var/lib` 那棵树，`/opt` 这棵是残留的
+历史代。这与用户「后续不会往这个目录下写东西」一致，也是判定反转的实质依据：原「不能删」
+的三条理由（仍在推进、有活进程、它自己在回收）现在都不再作用于 `/opt`。
+
+> 一级 generation 数：删除前实测 **47**；15:30 的旧版本文档写「71 个 generation 目录」
+> 用的是更早、口径不同的一次统计，未再复核，二者不要交叉引用。
+
+### 收据归档（先存后删）
+
+每代都带 root 属主的 `COMPLETE.json` / `COMMIT.json` / `FINAL-AUDIT.json` /
+`*-inspect.json` / `external/*-STAGE-PINS.json`，属运行证据（AGENTS.md 禁止直接删除），
+因此先把收据打包留档：
 
 ```bash
-# 满足全部三条才可清理 /opt/omni-hot-runtime：
-#   (a) 整树 24h 内无写入  (b) 无 lease_controller/reclaim 进程  (c) 最新 reclaim jsonl 的
-#   "complete" 事件之后再无新 generation
-ssh npu2 'sudo find /opt/omni-hot-runtime -xdev -newermt "-1 day" | wc -l'   # 须为 0
-ssh npu2 'pgrep -af "omni-hot-runtime"'                                      # 须为空
-# 三条都满足后才执行：
-# ssh npu2 'sudo rm -rf /opt/omni-hot-runtime'
+S=/var/backups/omni-hot-runtime-opt-receipts-20261116T153915Z.tar.gz
+find /opt/omni-hot-runtime -xdev -type f \
+  \( -name COMPLETE.json -o -name COMMIT.json -o -name FINAL-AUDIT.json \
+     -o -name '*-inspect.json' -o -name '*-STAGE-PINS.json' \) -print0 |
+  tar --null -T - -czf "$S"
 ```
 
-预计届时释放约 **21 GB**（181 `/` 现 238G/298G used，占 84%）。注意**任何单次读数都只是
-快照**：15:18 一次分目录统计读到 32 G，15:32 精确 `du -sb` 为 21.33 GB，差值来自它自身
-按代回收——不要拿不同时刻的数字相互校验。
+| 项 | 值 |
+| --- | --- |
+| 归档路径 | `/var/backups/omni-hot-runtime-opt-receipts-20261116T153915Z.tar.gz` |
+| 成员数 | **2,194** 个收据文件 |
+| 大小 / SHA256 | 18,771,088 B / `cb70ae6bb350d53d3db143f378a2bac169febe8d89b3966cde00dafc33756cae` |
+| 具名清单 | 同目录 `….diag63-named.txt` |
+
+`/opt` 里唯一被**活跃计划**点名的是 `diagnostic-63/dispatch-plan.json` 的
+`known_terminal_receipts` 中的 6 份 `diagnostic-61-terminal-main-split61-v1/{COMMIT,
+COMPLETE,controller-inspect,FINAL-AUDIT,npu-inspect,watchdog-inspect}.json`；已逐份确认
+全在归档内（各命中 1 次）。这些是**来源存证**，不是逐次读取的运行依赖。
+
+### 执行与磁盘效果
+
+```bash
+ssh npu2 'sudo -n rm -rf /opt/omni-hot-runtime'
+```
+
+| 指标 | 删除前 | 删除后 |
+| --- | --- | --- |
+| `/` 已用 | 238 G / 298 G（84%） | **218 G / 298 G（77%）** |
+| `/` 可用 | 48 G | **68 G（+20 G）** |
+| `/opt` 一级条目 | 5 | 4（`cni`、`containerd`、`data`、`os_start_run.sh`） |
+
+`du -sb` 的 21,330,111,740 B（19.87 GiB）与 `df` 的 +20 GiB 相符（块分配与四舍五入）。
+
+> **任何单次读数都只是快照**：15:18 一次分目录统计读到 32 G，15:29 精确 `du -sb` 为
+> 21.33 GB，差值来自 omni 自身按代回收——不要拿不同时刻的数字相互校验。
+
+### 残留与风险（如实记录）
+
+- 运行中容器 `configured-sync-MAIN-instance-down-actual63-v1`（启动 15:30:17，命令是
+  diag-63 的 `lease_controller.py`）带一条**只读** bind，源即被删的
+  `/opt/omni-hot-runtime/…/diagnostic-61-terminal-main-split61-v1`。删除后容器内该路径
+  `ls` 为空、`find` 无结果；容器仍 running（`oom=false`）、`docker logs --since 15:39`
+  无新增输出，diag-63 仍在 `/var/lib` 正常推进（15:38 写 `results/*.json`）。
+  只读挂载无法写回已删 inode，因此**没有**「写进已删除目录」的数据丢失。
+- **若该容器被重建**，这条 bind 的源已不存在，Docker 会按挂载方式重建空目录或报错；
+  它引用的 diag-61 终态收据在上面的归档里，可恢复。
+- **未停止**任何进程或容器：`lease_controller`(1798791)、watchdog(1799326) 均存活，
+  操作的是 `/var/lib`。也未触碰 `/opt/cni`、`/opt/containerd`、`/opt/data`、
+  `/opt/os_start_run.sh`（后者含 ceph key，**绝不入库**）。
 
 ### 181 真正紧张的位置（不在 `/opt`）
 
-同一时刻 `df`：`/` 238G/298G（84%）、`/var` 780G/984G（84%，其中 `/var/lib` **774 G**
-为容器镜像/层）、`/data` **5.5T/5.9T（99%，仅 110 G 空闲）**、ceph 63T/65T（98%）。
-`/opt` 的 21 GB 排在最后。`/var/lib` 与 `/data` 的占用主体是 omni 的
+删除后的 `df`：`/` **218G/298G（77%，68 G 空闲）**、`/var` 783G/984G（84%，151 G 空闲，
+其中 `/var/lib` 约 774 G 为容器镜像/层）、`/data` **5.5T/5.9T（99%，仅 110 G 空闲）**、
+ceph 63T/65T（98%）。`/var/lib` 与 `/data` 的占用主体是 omni 的
 `/var/lib/omni-hot-runtime`（244 GB）与 `/home/xingchao/omni-hot-runtime`（156 GB），
-属其他项目，按决策 3 未触碰——已在上一节登记，不作为本项目清理目标。
+属其他项目，按决策 3 未触碰——已登记，不作为本项目清理目标。
+**181 真正的瓶颈仍是 `/data`（仅 110 G 空闲）**，`/opt` 已经不是因素。
 
 ## 全项目运行态保护（未受影响）
 
