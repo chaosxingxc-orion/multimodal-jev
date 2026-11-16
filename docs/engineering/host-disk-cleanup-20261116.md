@@ -67,6 +67,98 @@
 结论：181 的 `/data` 仍 99% 满（110 GB 空闲），但占用主体是 omni 的 244 GB + 156 GB，
 不属于本项目。本项目侧可回收空间已在 `/var/tmp` 回收完毕。
 
+## `/opt` 专项（175 + 181，**本轮不删**）
+
+用户要求「继续清理 175 和 181 下面 `/opt` 的临时文件」。实测结论：**两台主机的 `/opt`
+都没有可按「>1 天」规则删除的本项目文件**——175 只有 12 KB 属主为 root 的 NGA 探针，
+181 的全部非系统内容属**另一个正在推进的任务**。本轮 `/opt` 未删除任何文件。
+
+### 175 `/opt`（全部条目，快照 2026-11-16T15:30:22Z）
+
+| 条目 | 属主 | mtime | 体积 | 判定 |
+| --- | --- | --- | --- | --- |
+| `containerd/` | root | 2025-01-22 | 4 K | 系统组件，保留 |
+| `os_start_run.sh` | root | 2026-09-29 | 860 B | 主机启动脚本，**保留**（内含 ceph key，且不得复制进仓库） |
+| `vllm/` | **shenlu** | 2026-03-12 | 28 K | **其他账号**的文件，保留 |
+| `nga-rc1-protected-assets-probe-20261106/` | root | 2026-11-06 17:56 | 4,106 B | 过期探针，**待用户 sudo 删除** |
+| `nga-rc1-protected-review-probe-20261106-v1/` | root | 2026-11-06 18:02 | 8,204 B | 过期探针，**待用户 sudo 删除** |
+
+两个探针目录内容确认（只有一个 `file`、以及 `file` + 空 `directory` 的权限测试存根，
+9 天无更新，`du -sb` 合计 **12,310 B**）。175 `/opt` 全树 **没有任何 24 小时内变更的条目**
+（`find -newermt "-1 day"` = 0）。删除需 root 且 175 `sudo` 需要密码，请手动执行：
+
+```bash
+ssh npu 'sudo rm -rf /opt/nga-rc1-protected-assets-probe-20261106 \
+                    /opt/nga-rc1-protected-review-probe-20261106-v1'
+```
+
+**不要**连带删除 `/opt/containerd`、`/opt/os_start_run.sh`、`/opt/vllm`（前者是
+containerd 运行时，后者属于另一账号 `shenlu`）。收益 12 KB——175 的 `/` 本来就只占
+24%（45G/198G），这一项纯粹是卫生清理，不是空间回收。
+
+### 181 `/opt`（全部条目，快照 2026-11-16T15:30:33Z）
+
+| 条目 | 属主 | mtime | 体积 | 判定 |
+| --- | --- | --- | --- | --- |
+| `cni/bin/` | root | 2025-09-18 | 232 M | CNI 插件（tuning/portmap…），保留 |
+| `containerd/` | root | 2025-09-16 | 4 K | 系统组件，保留 |
+| `data/usr/` | root | 2026-01-28 | 8 K | 空目录树，无引用，体积可忽略，暂留 |
+| `os_start_run.sh` | root | 2026-09-29 | 868 B | 主机启动脚本，**保留** |
+| `omni-hot-runtime/` | root | **2026-11-16 15:29** | **21,330,111,740 B** | **其他项目的活跃任务，不动** |
+
+`/opt` 下**恰好 8 个条目超过 1 天**，全部是上表前四行的系统项；其余 44 条都属于
+`omni-hot-runtime` 且为当天写入。也就是说：**181 `/opt` 没有一条「>1 天且属本次可清理」
+的条目**。
+
+### 为什么 `/opt/omni-hot-runtime` 不能删
+
+它是 omni 音频塔跨后端（HF vs vLLM）分层对齐诊断扫描的产物树，`diagnostic-38`
+（05:39）到 `diagnostic-61-terminal-main-split61-v1`（15:14）共 **71 个 generation 目录**，
+最大三项为 `diagnostic-46` 2.59 GB、`diagnostic-48-…-capacity-failed` 1.95 GB、
+`diagnostic-42-…-rope42-v1` 1.14 GB。判定依据（全部为实测，非推测）：
+
+1. **仍在推进**：整棵树最后一次写入为 **15:29**（观察时刻 15:32），`stage-54…stage-61`
+   每 20–30 分钟一个新目录，且最新 `reclaim-diagnostic61-copy.jsonl` 同样写于 15:29。
+2. **有活进程**：`pgrep` 命中
+   `lease_controller.py --dispatch-plan /var/lib/omni-hot-runtime/…/diagnostic-63/dispatch-plan.json`
+   （pid 1798791）与同目录 watchdog（pid 1799326）——扫描已到第 63 代，`/opt` 只是它的
+   克隆/回收目标。
+3. **它自己在回收**：树内 20 余份 `reclaim-diagnostic*-{original,copy}.jsonl` 每份都以
+   `{"event":"complete","files":…,"bytes":…}` 收尾，单代回收约 3.2 GB
+   （如 `reclaim-diagnostic61`：1017 文件 / 3,247,579,648 B）。**我们再删就是和它的回收
+   循环抢同一批文件**，会破坏它的证据链。
+4. **不是 `/home/xingchao/omni-hot-runtime` 的副本**：两者无同 inode 文件
+   （`nlink` 全为 1），且 `/home` 那棵树里没有任何 `*diagnostic*` 条目；
+   在 omni 工程中也搜不到对 `/opt/omni-hot-runtime` 的引用——它是按代重建的临时区。
+5. 结构上每代都带 root 属主的 `COMPLETE.json` / `FINAL-AUDIT.json` /
+   `external/*-STAGE-PINS.json` / `watchdog-inspect.json`，属**冻结证据**（本账号读不了，
+   `Permission denied`），AGENTS.md 禁止删运行证据。
+
+结论：按用户决策 3「暂时不动，有一些其他项目还在驱动」，本轮**登记不删**。
+可回收条件写成可执行判据，不靠人记：
+
+```bash
+# 满足全部三条才可清理 /opt/omni-hot-runtime：
+#   (a) 整树 24h 内无写入  (b) 无 lease_controller/reclaim 进程  (c) 最新 reclaim jsonl 的
+#   "complete" 事件之后再无新 generation
+ssh npu2 'sudo find /opt/omni-hot-runtime -xdev -newermt "-1 day" | wc -l'   # 须为 0
+ssh npu2 'pgrep -af "omni-hot-runtime"'                                      # 须为空
+# 三条都满足后才执行：
+# ssh npu2 'sudo rm -rf /opt/omni-hot-runtime'
+```
+
+预计届时释放约 **21 GB**（181 `/` 现 238G/298G used，占 84%）。注意**任何单次读数都只是
+快照**：15:18 一次分目录统计读到 32 G，15:32 精确 `du -sb` 为 21.33 GB，差值来自它自身
+按代回收——不要拿不同时刻的数字相互校验。
+
+### 181 真正紧张的位置（不在 `/opt`）
+
+同一时刻 `df`：`/` 238G/298G（84%）、`/var` 780G/984G（84%，其中 `/var/lib` **774 G**
+为容器镜像/层）、`/data` **5.5T/5.9T（99%，仅 110 G 空闲）**、ceph 63T/65T（98%）。
+`/opt` 的 21 GB 排在最后。`/var/lib` 与 `/data` 的占用主体是 omni 的
+`/var/lib/omni-hot-runtime`（244 GB）与 `/home/xingchao/omni-hot-runtime`（156 GB），
+属其他项目，按决策 3 未触碰——已在上一节登记，不作为本项目清理目标。
+
 ## 全项目运行态保护（未受影响）
 
 清理全程未触碰正在运行的简单任务效率实验：
