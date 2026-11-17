@@ -1,0 +1,205 @@
+{
+  "schema": "ceph-assets-v1",
+  "observed": "2026-11-16",
+  "root": "/mnt/cephfs/xingchao",
+  "scope": {
+    "in_scope": ["models", "datasets"],
+    "deferred": ["experiments", "omni", "omni-retained", "archive", "docker", "repos", "asset-registry"],
+    "deferred_reason": "用户 2026-11-16: 其他数据先放一放，交给其他任务去修复。本清单只归一 models/ 与 datasets/，其余只登记不动。"
+  },
+  "layout_rules": {
+    "datasets": "datasets/<family>/<stage>/<version>/ ; 一个数据族只占一个顶层目录，阶段用 stage 名区分",
+    "models": "models/<org>__<Model>/ ; 只放上游权重，禁止放训练产物",
+    "artifacts": "artifacts/<experiment>/<run>/ ; 本项目训练产物（当前尚未建立，见迁移计划）",
+    "views": "datasets/_families/, models/_families/ ; 只读符号链接视图，唯一入口，可为空"
+  },
+  "families": [
+    {
+      "family": "slurp",
+      "kind": "dataset",
+      "stages": [
+        {"stage": "raw", "path": "datasets/slurp"},
+        {"stage": "clean-v7", "path": "datasets/slurp-clean/clean-v7-a3cd74482c32b74f"},
+        {"stage": "native", "path": "datasets/slurp-native/240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add"},
+        {"stage": "benchmark", "path": "datasets/slurp-jev-benchmark"},
+        {"stage": "full", "path": "datasets/slurp-jev-full"},
+        {"stage": "reviewed", "path": "datasets/slurp-jev-reviewed"},
+        {"stage": "rule-controls", "path": "datasets/slurp-jev-rule-controls-v1"},
+        {"stage": "selection-rule-controls", "path": "datasets/slurp-jev-selection-rule-controls-v1"},
+        {"stage": "balanced-rule-controls", "path": "datasets/slurp-jev-balanced-rule-controls-v1"},
+        {"stage": "legacy-root", "path": "datasets/jev/slurp/ba31cd72120ab28309fe40089274b6b70e9a9605c2fcd56e5de4a0323805f3f8"}
+      ]
+    },
+    {
+      "family": "fsc",
+      "kind": "dataset",
+      "stages": [
+        {"stage": "raw", "path": "datasets/fsc"},
+        {"stage": "jev", "path": "datasets/fsc-jev/e046b9e58357e26343b628adce1bcbe178472fa2de0290b6480d489c52fc527c"},
+        {"stage": "native", "path": "datasets/fsc-native/49e2e27359d606a9a37e062d14fae87fb82eb8be94dab9836cbb095d59cea2dd"},
+        {"stage": "legacy-root", "path": "datasets/jev/fsc/62625c057b1b45dcf9c94443fd68915ac0f05f9986619be6ac7b3a12419b9b1c"}
+      ]
+    },
+    {
+      "family": "sfc",
+      "kind": "dataset",
+      "stages": [
+        {"stage": "bench", "path": "datasets/sfc-bench"},
+        {"stage": "jev", "path": "datasets/sfc-jev/fa68f460c415195962a4c986ca9a6ed0a397e9d814751b7a71b46fb711efbcb0"},
+        {"stage": "native", "path": "datasets/sfc-native/8bc5c8bfc4a6d7ec17197134ac9564daf9f6e7d2770ed854ccf1fae58bd82067"},
+        {"stage": "legacy-official", "path": "datasets/jev/sfc-official"}
+      ]
+    },
+    {
+      "family": "audio2tool",
+      "kind": "dataset",
+      "stages": [
+        {"stage": "raw", "path": "datasets/audio2tool"},
+        {"stage": "jev", "path": "datasets/audio2tool-jev/a3a34fdd0da98e6f6c53e9201751993e37202f931a1240a7475bf90593c50235"}
+      ]
+    },
+    {
+      "family": "mac-slu",
+      "kind": "dataset",
+      "stages": [
+        {"stage": "raw", "path": "datasets/mac-slu"},
+        {"stage": "binding-information-v1", "path": "datasets/mac-slu-binding-information-v1"},
+        {"stage": "spans-train-16k-v1", "path": "datasets/mac-slu-spans-train-16k-v1"},
+        {"stage": "spans-train-diagnostic-v1", "path": "datasets/mac-slu-spans-train-diagnostic-v1"},
+        {"stage": "spans-train-diagnostic-v2", "path": "datasets/mac-slu-spans-train-diagnostic-v2"}
+      ]
+    },
+    {
+      "family": "mmau",
+      "kind": "dataset",
+      "stages": [
+        {"stage": "raw", "path": "datasets/mmau"},
+        {"stage": "mini", "path": "datasets/mmau-mini"},
+        {"stage": "mmar-official", "path": "datasets/jev/mmar-official"}
+      ]
+    },
+    {
+      "family": "jev-zoo",
+      "kind": "dataset",
+      "note": "第三方 Jev/decision 基准集合（HF org__name），与我方 pipeline 阶段同处 datasets/jev 一级目录下，属同一目录混用两种角色。",
+      "stages": [
+        {"stage": "root", "path": "datasets/jev"}
+      ]
+    }
+  ],
+  "standalone_datasets": [
+    "datasets/slue",
+    "datasets/slue-phase-2",
+    "datasets/spokenwoz",
+    "datasets/voicebench",
+    "datasets/mmsu",
+    "datasets/mmar",
+    "datasets/earnings21-22",
+    "datasets/fdb-v3",
+    "datasets/tau2-voice",
+    "datasets/minds14",
+    "datasets/eva-bench",
+    "datasets/nlu-evaluation-data",
+    "datasets/versions",
+    "datasets/jev/evaluation"
+  ],
+  "model_groups": [
+    {
+      "group": "qwen3-asr",
+      "note": "同一模型存在两种序列化：HF 原生 repo 布局（vocab.json/merges.txt）与 transformers 单文件布局（tokenizer.json/processor_config.json/VERIFICATION.json）。两者 checkpoint 数不同，不可互相当作同一份资产。",
+      "members": [
+        {"serialization": "repo", "path": "models/Qwen__Qwen3-ASR-0.6B"},
+        {"serialization": "hf", "path": "models/Qwen__Qwen3-ASR-0.6B-hf"},
+        {"serialization": "repo-omni-mirror", "path": "models/qwen3-asr-1.7b"},
+        {"serialization": "hf", "path": "models/Qwen__Qwen3-ASR-1.7B-hf"},
+        {"serialization": "hf", "path": "models/Qwen__Qwen3-ForcedAligner-0.6B"}
+      ]
+    },
+    {
+      "group": "omni",
+      "members": [
+        {"path": "models/qwen3-omni-30b-a3b-instruct"},
+        {"path": "models/qwen3-omni-30b-a3b-thinking"}
+      ]
+    },
+    {
+      "group": "embedding",
+      "note": "serving-views/<name>-v1 与左侧同权重：tensor 数、dtype、shape、总字节完全一致，差异仅为键名前缀 audio_tower.* -> thinker.audio_tower.* 及重新分片，属派生产物。",
+      "members": [
+        {"path": "models/lco-embedding-omni-7b", "derived_view": "models/serving-views/lco-embedding-omni-7b-v1"},
+        {"path": "models/lco-embedding-omni-3b-2605", "derived_view": "models/serving-views/lco-embedding-omni-3b-2605-v1"},
+        {"path": "models/omni-embed-nemotron-3b", "derived_view": "models/serving-views/omni-embed-nemotron-3b-causal-v1"},
+        {"path": "models/qwen3-embedding-0.6b"}
+      ]
+    },
+    {
+      "group": "jev-reference-zoo",
+      "note": "44 个上游 jev/decider 模型，混合命名（多数 org__Model，个别小写如 qwen3.5-0.8b-base）。Base/Instruct 成对存在，是可选起点而非重复。",
+      "members": [
+        {"path": "models/jev"}
+      ]
+    },
+    {
+      "group": "speechbrain",
+      "members": [
+        {"path": "models/speechbrain__asr-crdnn-rnnlm-librispeech"},
+        {"path": "models/speechbrain__slu-direct-fluent-speech-commands-librispeech-asr"}
+      ]
+    },
+    {
+      "group": "third-party",
+      "members": [
+        {"path": "models/shlv__AudioJev"}
+      ]
+    }
+  ],
+  "misplaced_models": [
+    {
+      "path": "models/multimodal-jev",
+      "bytes": 12565037056,
+      "actual_role": "本项目训练产物（container-audio-rl-two-step-v1 / vllm-cpu-chain-sft-v3 / fsc-sft-init）",
+      "target_role": "artifacts/",
+      "action": "登记；迁移需先改 52 处引用并对冻结包保留兼容链接"
+    },
+    {
+      "path": "models/local-training",
+      "bytes": 120259200000,
+      "actual_role": "训练产物容器：nga（其他项目，2026-11-09 后无更新）+ verl_v030_20261029",
+      "target_role": "artifacts/ 或交回 nga 项目",
+      "action": "登记；nga 属其他项目（用户决策 2），本轮不动"
+    }
+  ],
+  "reclaim_register": [
+    {
+      "path": "models/serving-views",
+      "bytes": 36722008064,
+      "verdict": "与 lco-embedding-omni-7b / -3b-2605 / omni-embed-nemotron-3b 同权重（tensor 字节数逐项相等），仅键名前缀与分片不同",
+      "reclaim": "可由源权重 + 键名前缀重写脚本重新生成；删除可回收约 34.2 GiB",
+      "blocker": "该目录由 omni 服务侧消费，属其他项目，需跨项目确认后执行"
+    }
+  ],
+  "top_level_contract": {
+    "note": "顶层只允许清单声明的条目；出现未声明的一级目录时 tools/ceph_asset_catalog.py --check 会失败。",
+    "models": [
+      "local-training", "jev", "qwen3-omni-30b-a3b-instruct", "qwen3-omni-30b-a3b-thinking",
+      "serving-views", "shlv__AudioJev", "lco-embedding-omni-7b", "multimodal-jev",
+      "lco-embedding-omni-3b-2605", "omni-embed-nemotron-3b", "qwen3-asr-1.7b",
+      "Qwen__Qwen3-ASR-1.7B-hf", "Qwen__Qwen3-ASR-0.6B", "Qwen__Qwen3-ForcedAligner-0.6B",
+      "Qwen__Qwen3-ASR-0.6B-hf", "qwen3-embedding-0.6b",
+      "speechbrain__asr-crdnn-rnnlm-librispeech",
+      "speechbrain__slu-direct-fluent-speech-commands-librispeech-asr",
+      "README.md", "_families"
+    ],
+    "datasets": [
+      "slue-phase-2", "jev", "slurp", "spokenwoz", "voicebench", "mmau", "audio2tool", "mmar",
+      "earnings21-22", "fsc", "mac-slu-spans-train-16k-v1", "mmsu", "sfc-bench",
+      "mac-slu-spans-train-diagnostic-v2", "slurp-jev-benchmark", "mac-slu", "fdb-v3",
+      "mmau-mini", "tau2-voice", "minds14", "fsc-jev", "slurp-jev-full", "versions", "sfc-jev",
+      "slurp-native", "fsc-native", "slurp-clean", "audio2tool-jev", "sfc-native",
+      "nlu-evaluation-data", "slurp-jev-balanced-rule-controls-v1",
+      "slurp-jev-selection-rule-controls-v1", "mac-slu-binding-information-v1",
+      "slurp-jev-rule-controls-v1", "slurp-jev-reviewed", "eva-bench", "slue",
+      "mac-slu-spans-train-diagnostic-v1", "README.md", "_families"
+    ]
+  }
+}
