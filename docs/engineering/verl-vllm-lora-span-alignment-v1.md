@@ -2,13 +2,13 @@
 
 ## 当前证据与结论
 
-**最新用户精度决定：BF16 训练/推理。** 基座、LoRA 执行/导出、LM head 投影均 BF16；FP32 保留在候选归一化、损失及优化器 master/state。显式关闭 PEFT adapter 自动升精度，vLLM 指定 lora_dtype=bfloat16、head_dtype=model；两侧使用完全相同的未合并 adapter。已有 FP32 adapter 探针仅作历史诊断，不作为 BF16 的验收证据。新增本地 FP32 master AdamW 桥接支持 BF16 SFT，尚非分布式 verl optimizer 集成。见 `experiments/slurp-native-spans-bf16-v1.md`。
+**最新用户精度决定：BF16 训练/推理。** 基座、LoRA 执行/导出、LM head 投影均 BF16；FP32 保留在候选归一化、损失及优化器 master/state。显式关闭 PEFT adapter 自动升精度，vLLM 指定 lora_dtype=bfloat16、head_dtype=model；两侧使用完全相同的未合并 adapter。已有 FP32 adapter 探针仅作历史诊断，不作为 BF16 的验收证据。新增本地 FP32 master AdamW 桥接支持 BF16 SFT，尚非分布式 verl optimizer 集成。见 `../../experiments/archive/raw/span-rl-probes/slurp-native-spans-bf16-v1.md`。
 
-最新进度：BF16 candidate-CE LoRA 20步训练与独立保存重载已完成；48条学习录音重载候选概率最大误差为0。原生vLLM BF16概率gate失败，max logp差0.140574、完整动作比率[0.811465,1.199267]。分层及同进程复算依次确认语言RMSNorm、基础QKV打包、音频卷积internal-format与attention/rotary运算顺序的差异。最终组合探针 `language-rotary-v2` 在一条600-token真实录音上全部100个非stride激活trace点逐位一致，max logp差5.9604645e-08、完整动作比率1.0000001192，通过固定gate；保留vLLM原生LoRA add、未合并adapter和BF16执行。此前的单项干预未单独通过，不作为独立修复保证。证据见 `slurp-bf16-language-rotary-v2-verified.json` 和 `experiments/slurp-bf16-projection-audit-v1.md`。
+最新进度：BF16 candidate-CE LoRA 20步训练与独立保存重载已完成；48条学习录音重载候选概率最大误差为0。原生vLLM BF16概率gate失败，max logp差0.140574、完整动作比率[0.811465,1.199267]。分层及同进程复算依次确认语言RMSNorm、基础QKV打包、音频卷积internal-format与attention/rotary运算顺序的差异。最终组合探针 `language-rotary-v2` 在一条600-token真实录音上全部100个非stride激活trace点逐位一致，max logp差5.9604645e-08、完整动作比率1.0000001192，通过固定gate；保留vLLM原生LoRA add、未合并adapter和BF16执行。此前的单项干预未单独通过，不作为独立修复保证。证据见 `slurp-bf16-language-rotary-v2-verified.json` 和 `../../experiments/archive/raw/span-rl-probes/slurp-bf16-projection-audit-v1.md`。
 
 已将组合对齐封装为命名profile `qwen3-asr-bf16-hf-order-v1`，限定TP1、单条完整序列、无cache/解码/量化。48条顺序请求suite已全部通过，max logp差1.1920929e-07，完整动作概率比范围[0.9999999851,1.0000001788]，覆盖全部八种Boolean监督组合，原始音频约1.7–8.4秒。训练入口必须验证suite结果文件hash、基座/adapter身份并独立重算每条完整动作gate；仍逐次验证更新前和新adapter，不能仅凭profile名称放行。step-v3已完成一次真实语音RL更新，但更新后HF重载失败，新版本未准入。源码确认verl导入时全局替换Qwen3 norm/MLP/rotary；step-v4提前导入verl并恢复原HF算子后完整通过：独立HF重载误差0、两条更新后vLLM max误差≤5.9604645e-08，已生成READY；新adapter全48条独立复核也全部通过，max logp差1.1920929e-07、完整动作概率比[0.9999998808,1.0000002086]。批量、分布式及跨任务效果未验收。
 
-工程验收：`tools/jev/train_span_rl_step.py` 已在隔离NPU4完成一次真实音频verl GRPO/PPO完整动作更新，BF16 LoRA执行、FP32 master/Adam，gradient norm=3.984375。两条更新前概率误差0，独立HF重载误差0，两条更新后vLLM误差≤5.9604645e-08，生成READY；新adapter在独立48条HF/vLLM复核中全部通过。过程修复了JSON tuple/list身份表示和verl NPU导入时全局算子替换，失败运行保留并与成功版本隔离。详见 `span-bf16-runtime-profile-v1.md` 和 `experiments/span-actor-update-v1.md`。这不是分布式Ray/verl trainer验收，也不代表任务收益或跨任务泛化。
+工程验收：`tools/jev/train_span_rl_step.py` 已在隔离NPU4完成一次真实音频verl GRPO/PPO完整动作更新，BF16 LoRA执行、FP32 master/Adam，gradient norm=3.984375。两条更新前概率误差0，独立HF重载误差0，两条更新后vLLM误差≤5.9604645e-08，生成READY；新adapter在独立48条HF/vLLM复核中全部通过。过程修复了JSON tuple/list身份表示和verl NPU导入时全局算子替换，失败运行保留并与成功版本隔离。详见 `span-bf16-runtime-profile-v1.md` 和 `../../experiments/archive/raw/span-rl-probes/span-actor-update-v1.md`。这不是分布式Ray/verl trainer验收，也不代表任务收益或跨任务泛化。
 
 下文保留设计和历史诊断；其中“LoRA未验证”“当前SFT为全词表CE”属于初始阶段描述。候选CE对照已完成，最新主线使用candidate CE、BF16执行策略。
 
@@ -29,7 +29,7 @@ BF16候选CE实验已完成20次均衡更新，学习诊断93/142，静音80/142
 
 BF16跨后端探针最新结果：实际28个LoRA wrapper缓冲和LM head投影均BF16，但同checkpoint单音频最大logprob差0.140574，完整动作比率[0.811465,1.199267]，一项argmax改变。adapter加载与返回base隔离通过；概率gate失败，不准入RL。下一步分层定位首次偏差，不能把“统一dtype”报告成“训推一致已完成”。过程奖励与精度修复独立，当前不调整奖励补偿后端误差。
 
-分层定位与norm干预完成：原始61点trace不改变logits。音频投影有小差异，第一层文本norm亦存在独立差异；将113个语言RMSNorm按HF顺序计算后，第一层文本embedding/norm逐位一致，候选logprob最大误差降至0.101054、argmax全同，但联合概率比[0.844176,1.153852]仍失败。保留独立诊断配置，不将干预当作默认已验收服务后端。剩余音频塔、packed QKV及attention差异需继续定位；见 `experiments/slurp-bf16-layer-trace-v1.md`。
+分层定位与norm干预完成：原始61点trace不改变logits。音频投影有小差异，第一层文本norm亦存在独立差异；将113个语言RMSNorm按HF顺序计算后，第一层文本embedding/norm逐位一致，候选logprob最大误差降至0.101054、argmax全同，但联合概率比[0.844176,1.153852]仍失败。保留独立诊断配置，不将干预当作默认已验收服务后端。剩余音频塔、packed QKV及attention差异需继续定位；见 `../../experiments/archive/raw/span-rl-probes/slurp-bf16-layer-trace-v1.md`。
 
 采用 LoRA 更新语言骨干，actor 与 rollout 共享基座及适配器身份；不将“同 checkpoint”当作概率一致证明。现有真实 HF Span 前向、LoRA SFT、保存重载已验证；vLLM pooling 无生成多 Span 前向已验证，但单样本候选 logprob 最大误差 0.063258 超过 0.02 门槛。尚未验证 pooling + 原生 LoRA 请求、热更新或端到端 verl Span actor 更新。普通生成 actor 的 responses 拼接逻辑不能直接复用。
 

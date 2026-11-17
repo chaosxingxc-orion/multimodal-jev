@@ -1798,7 +1798,7 @@ configs/releases/research-successors-v1；说明docs/engineering/recovered-resea
 两driver证据/log在/srv/multimodal-jev-xingchao/operations；下一普通检查>=16:47:07UTC。
 RLOO/FSC/TEST/MINDS原后继及endpoint全部stopped，尚未接回，不能声称整链恢复。
 后续先核准确迁移/恢复句柄；再版本化连接后继、让其审核用3.12兼容求和（不放宽阈值）。
-说明docs/engineering/selection-python312-sum-recovery-v1.md已更新。勿修改已锁源码。
+说明archive/raw/intent-rl/selection-python312-sum-recovery-v1.md已更新。勿修改已锁源码。
 
 16:10到期核验发现原driver599307/endpoint969099均已结束，GRPO停止于step64审核。
 根因已实证：Python3.11与固定镜像3.12.13的浮点sum不同，macroF1差1ULP，逐类/
@@ -1810,7 +1810,7 @@ setF1 .7745140545、top1 .8066334273、macroF1 .7557083106、NLL .0402076988、B
 已新增显式恢复控制器resume_context_selection_audit及宏模板，39项相关测试通过，
 实际validate通过，但存储预检拒绝：/home仅8.55%可用、低于10%，未派发。
 下一步迁移后续可写实验到充足本地盘，处理原路径依赖/后继，再接剩余评测；不重训练/
-不重step64推理/不放宽阈值。说明docs/engineering/selection-python312-sum-recovery-v1.md。
+不重step64推理/不放宽阈值。说明archive/raw/intent-rl/selection-python312-sum-recovery-v1.md。
 
 2026-11-15 15:55:09 UTC到期检查：原driver599307、endpoint969099存活，原链已进入
 step0064-audit，实际子进程1297202运行audit_context_rl_selection_v2。step64准确容器
@@ -2206,7 +2206,7 @@ docs/engineering/context-background-observer-first-cycle-v1.json。原句柄/队
 第256步原生loss日志口径完成实际四rank核验：actor/pg_loss是混合目标而非纯RL；
 各卡4项context_loss求和精确等于pg_loss，跨卡均值0.0331963050。直接平均16项会少四倍。
 已绑定原日志hash、实际arithmetic-v2封包actor/objective及原生verl SHA；无训练缩放改动证据。
-见docs/engineering/context-step256-native-metric-semantics-v1.md/json。分项仍未原生记录，
+见archive/raw/context-rl-history/context-step256-native-metric-semantics-v1.md/json。分项仍未原生记录，
 后续日志候选应沿用同一分母并检查loss/梯度不变；本次未改运行包、未新增remote观察。
 
 15分钟后台定时器已启动PID913576：python -m tools.reports.watch_context_existing_jobs。
@@ -2509,7 +2509,7 @@ G16动作全同概率均值behavior83.32%/reference10.07%，为无奖励差异�
 新增正式步骤2–29吞吐报告：总100.43s、rollout65.67s（reference32.61s）、actor23.95s；
 输入缓存3584/3584命中。仅前缀分析，不能称最终稳态或micro32容量证明。
 下一版本先研究rollout批量化/固定reference复用，不修改运行包，不新增当前准入门槛。
-见docs/engineering/context-rl-throughput-prefix-v1.md。复杂Q索引不是时间，禁止套时序GAE；
+见archive/raw/context-rl-history/context-rl-throughput-prefix-v1.md。复杂Q索引不是时间，禁止套时序GAE；
 GRPO过程奖励组标准化的尺度问题先诊断，节点信用另立变体。
 复杂Q比较中Direct/Q-input/Q-credit均不额外加入过程辅助loss，Q-credit仅增加过程reward；
 过程辅助监督另设Q-supervised，避免混淆贡献。当前只更新设计文档，不更改运行/排队包。
@@ -2527,7 +2527,7 @@ FSC官方复测完成、当前Jev迁移待，SLURP HuBERT资产缺口/AudioJev C
 真实NPU候选包/CPU anchors/证据，模型概率和容器传输替身；检验实际镜像/命令/env/device/只读挂载、
 终态/完整hash及两后端输入与已执行CPU tensors逐项一致，拒绝两端同错输入。
 见docs/research/context-attribute-parity-independent-auditor-readiness-v1.json，执行/收集/审核命令
-见docs/engineering/context-attribute-parity-audit-runbook-v1.md。尚无新Qwen/NPU输出或更新恢复验收。
+见archive/raw/context-rl-history/context-attribute-parity-audit-runbook-v1.md。尚无新Qwen/NPU输出或更新恢复验收。
 正式1078/TRAIN1073/selection1092依赖未改，已有驱动实际ps仍存活；不重复派发。
 
 修订probe固定镜像CPU验证已闭合：v4容器3c9a878eea5e9d941d01d63c954dc005ee77520aafed619e0bc87ffe79c36d1d
@@ -3159,7 +3159,7 @@ Stage2仍未发布，无正式连续RL收益。比较器正式收集路径已改
 
 2026-11-14 命名context runtime qwen3-asr-context-bf16-packed-row-v1落地，真实e42ee9ea exit0独立收集：2音频×60 HF/vLLM概率0差、128master/Adam与BF16导出精确、恢复0差，policy26200e05。头改走Module.forward并将完整Transformer头单独FSDP单元（MHA functional out_proj不适合单独包Linear），21本地tests过；CPU v4 574ba353 exit0/48case回归过。真实DP4/global128/micro8×4/学习256更新恢复probe 0aacafce在175卡4–7running，session77254准确wait并持npu175-evaluation-training.lock；pending full-parity/selection启动器共用锁，原fullaudit98629d12及driver229436不动。collector collect_context_native_actor_dp_npu_v1.py已准备，未有NPU更新验收/任务收益。181现场8卡vLLM占满且缺固定镜像，不派发。详见context-named-runtime-v1.md；普通launch+600秒，总目标未完成。
 
-2026-11-14 最新context native actor：v1 ad5d4c7b exit1非OOM，旧诊断lr.01使attention key bias近零梯度归约差经Adam放大，参数差2.2445e-6，本地无verl/DDP复现；保留证据，改为已定正式lr1e-4且比较阈值不变。v2 6930f1f3 exit0，四rank Gloo/DDP、真实verl、合成骨干真实head，GRPO/RLOO×micro1/2×3更新及Adam恢复共48case，最大参数差6.31e-8。v3 89e371b1 exit0再通过行为概率集体校验：正常概率差0，16rank-case同policy ID伪造behavior全部拒绝、参数/Adam不变。18本地tests通过，见docs/engineering/context-native-actor-dp-v1.md。非实际Qwen/NPU/BF16/FSDP或RL效果；生产阈值尚未冻结。learning256 92963435已exit0完整复核：256×60 HF串行/micro8/vLLM概率0差，见context-learning256-parity-v1.json。原fullaudit98629d12本次用户即时11:26UTC确认仍running，原driver继续；普通观察>=600秒。总体目标未完成。
+2026-11-14 最新context native actor：v1 ad5d4c7b exit1非OOM，旧诊断lr.01使attention key bias近零梯度归约差经Adam放大，参数差2.2445e-6，本地无verl/DDP复现；保留证据，改为已定正式lr1e-4且比较阈值不变。v2 6930f1f3 exit0，四rank Gloo/DDP、真实verl、合成骨干真实head，GRPO/RLOO×micro1/2×3更新及Adam恢复共48case，最大参数差6.31e-8。v3 89e371b1 exit0再通过行为概率集体校验：正常概率差0，16rank-case同policy ID伪造behavior全部拒绝、参数/Adam不变。18本地tests通过，见archive/raw/context-rl-history/context-native-actor-dp-v1.md。非实际Qwen/NPU/BF16/FSDP或RL效果；生产阈值尚未冻结。learning256 92963435已exit0完整复核：256×60 HF串行/micro8/vLLM概率0差，见context-learning256-parity-v1.json。原fullaudit98629d12本次用户即时11:26UTC确认仍running，原driver继续；普通观察>=600秒。总体目标未完成。
 
 2026-11-14 融合959fc458 exit0，同策略两音频HF/vLLM hidden/prob全0差（对原eager有差、独立参考保留）。256学习/60类/2807–3104token、HF串行+micro8/vLLM探针92963435卡7running，exactwait26655。collate改走model(return_logits=True)以进入DDP/FSDP forward，20tests通过，非多卡准入。首个context-event RL方案configs/experiments/slurp-context-event-rl-v1.json固定、dispatch false；集合F1+对比/NLL 11tests过，组合loss v1逐位断言失败留证，v2 6210c732 exit0，GRPO梯度差7.45e-9/RLOO0。fullaudit98629d12到期仍running，driver继续。总目标未完成。
 
@@ -3655,7 +3655,7 @@ I_present参考清单收拢：四包1058建议无损合并，全40513录音/9192
 
 2026-11-12 最新用户要求任务→工程→训练顺序：先完成Q/任务/监督/Final设计，再锁定统一工程基线与实验配置，最后启动训练。撤销processor完成后自动恢复Stage1的安排；不派发新研究训练，已有只读检查正常归档。登记PPO-critic、GRPO、RLOO三种通用配置，同一typed-action工程底座；现有实际RL是无critic的精确有限候选边缘PPO定制变体，最近两步NPU只是CE。step-wise先研究语义节点信用，不能把并行Span当时序状态套GAE。configs/experiments/rl-baseline-design-v1.json明确training_dispatch_allowed=false，尚未工程锁定。详见docs/research/23-task-engineering-rl-baseline-lock.md。
 
-2026-11-12 prefix导出与一致性更新：发现并修复LoRA键名丢点；保留原快照，从四rank FP32分片独立重建112张量，实际PEFT重载精确。修复adapter身份85120a606c313c142e11c7444a1242cb526898bf9fa82251423b891771e7b1ac；prefix-parity-v3实际exit0，256输入HF/vLLM最大logprob误差9.54e-7、argmax变化0。无驻留FSDP输出证据，不夸大。全量恢复入口已实现但未NPU验收/派发，full processor仍运行。可迁移Q增加固定菜单与显式正/负/缺标映射；84项相关测试通过，未接入新训练。详见docs/engineering/slurp-instruction-recovery-and-predicates-v1.md。
+2026-11-12 prefix导出与一致性更新：发现并修复LoRA键名丢点；保留原快照，从四rank FP32分片独立重建112张量，实际PEFT重载精确。修复adapter身份85120a606c313c142e11c7444a1242cb526898bf9fa82251423b891771e7b1ac；prefix-parity-v3实际exit0，256输入HF/vLLM最大logprob误差9.54e-7、argmax变化0。无驻留FSDP输出证据，不夸大。全量恢复入口已实现但未NPU验收/派发，full processor仍运行。可迁移Q增加固定菜单与显式正/负/缺标映射；84项相关测试通过，未接入新训练。详见archive/raw/intent-rl/slurp-instruction-recovery-and-predicates-v1.md。
 
 2026-11-12 最新用户明确核心是可迁移判决Q：先分析同任务跨数据集共同的逻辑判决要素，再定义“query是否表达定义中的意图”“是否包含定义中的槽位类型”等参数化Q，训练并检查Final收益。不能只提供笼统思考要求。规约供给概念/关系定义，Q算子固定、实例定义由任务配置提供，禁止gold选题。单标签成员与多意图语义存在性区别登记，缺标不能转false；先I/S，绑定/条件/状态依数据监督扩展。首版decision_questions仅编译输入未准入新训练。详见docs/research/22-transferable-decision-questions.md。
 
@@ -3665,7 +3665,7 @@ I_present参考清单收拢：四包1058建议无损合并，全40513录音/9192
 
 2026-11-12 正式学习人口问句审计：40,513录音中26,834单组件可消歧、13,679需scenario/action联合；闹钟/日历两问支持6类7,422条联合消歧，设备两问支持8类2,808条。不同问句恒答outside_family可达81.68%–96.37%，过程必须报告族内指标。新问句仍candidate，不原位改冻结Stage1日程。详见docs/research/19-discriminative-question-working-guide.md；10项测试及独立人口/分区复算通过。四卡prefix实际exit0、四rank两步完成，记录见docs/engineering/slurp-instruction-prefix-v1-observed.json，尚未独立checkpoint/重载/跨后端验收，不等于Stage1或效果完成。
 
-2026-11-12 原生混合actor进展：`span_hybrid_actor`经verl注册loss接口保持原生update_policy负责累积/backward/Adam，真实四rank CPU连续更新与恢复已通过，最大梯度误差2.98e-8。全量两轮processor预检`slurp-instruction-processor-full-v2`及真实四卡global128两更新前缀`slurp-instruction-dp4-prefix-v1`已派发；这是新LoRA的执行验收，不是完成Stage1。核验实际launch/container及独立验收后才能继续全量。prefix入口尚无恢复继续功能，不能直接宣称支持完整常驻训练。详见docs/engineering/slurp-native-hybrid-actor-v1.md。普通状态检查仍至少600秒。
+2026-11-12 原生混合actor进展：`span_hybrid_actor`经verl注册loss接口保持原生update_policy负责累积/backward/Adam，真实四rank CPU连续更新与恢复已通过，最大梯度误差2.98e-8。全量两轮processor预检`slurp-instruction-processor-full-v2`及真实四卡global128两更新前缀`slurp-instruction-dp4-prefix-v1`已派发；这是新LoRA的执行验收，不是完成Stage1。核验实际launch/container及独立验收后才能继续全量。prefix入口尚无恢复继续功能，不能直接宣称支持完整常驻训练。详见archive/raw/slurp-data-history/slurp-native-hybrid-actor-v1.md。普通状态检查仍至少600秒。
 
 2026-11-12 两阶段主线数据/目标进展：`datasets/slurp-jev-benchmark/official-clean-intent-v1`已发布，manifest `38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482`。官方clean标签依据，learning 40,513录音、selection 9,226录音，分别9,181/2,146来源组、均60类；已知pending整组隔离共647录音。49,739条音频已重新hash/解码，通过独立标签/人口复算，无语义复听声明。使用新的slurp_official_training接口，不关闭旧reviewed准入校验；selection禁止优化。混合CE+verl有限PPO已通过固定镜像四rank CPU梯度/Adam恢复，尚未接入native actor完整生命周期或NPU音频混合训练。详见docs/engineering/slurp-two-stage-data-and-loss-v1.md。
 
@@ -3673,17 +3673,17 @@ I_present参考清单收拢：四包1058建议无损合并，全40513录音/9192
 
 2026-11-12 最新用户调整（优先于下述小样本与纯RL安排）：主训练回到规模化SLURP TRAIN，采用两阶段：先学习音频指令/问题/候选绑定的消费能力，再学习任务能力；第二阶段使用RL loss加可逐渐衰减的SFT分类loss。不新增RL/SFT胜负对照。“不比较RL与SFT”不禁止辅助监督损失。89来源先导只作历史工程诊断，不再作为主学习人口。旧小样本控制器已停止继续派发，已启动容器不强杀，不把未完成P曲线记为完成。使用新的版本化发布协议消费clean-v7官方意图标签，并隔离已知缺陷、冲突及项目已标pending来源；明确official-clean与逐条reviewed区别，不伪造审核状态或原位修改旧optimization_allowed。类型缺标不能补false。保持端到端音频、一次Span读出、BF16、175卡4–7与来源隔离。执行方案见docs/research/17-slurp-two-stage-training-v1.md；新混合loss、规模化loader与常驻循环尚需实现和真实验收，不能声称已经启动大规模训练。
 
-2026-11-12 原生意图新增受限准入：预先固定120条学习来源经参考文本逐条语义审核，89条意图标签准入、31条pending，覆盖56类，候选仍为60类。未复听音频，不代表全本体或基准评测认证；不准入槽位类型。发布与限制见 docs/engineering/slurp-intent-reference-admission-v1.md。D/Q/P过程标签仅由已审核joint intent的canonical scenario/action投影，不称独立过程标注或已验证多跳推理。新产物仍需processor/backend验收后才能派发。
+2026-11-12 原生意图新增受限准入：预先固定120条学习来源经参考文本逐条语义审核，89条意图标签准入、31条pending，覆盖56类，候选仍为60类。未复听音频，不代表全本体或基准评测认证；不准入槽位类型。发布与限制见 archive/raw/intent-rl/slurp-intent-reference-admission-v1.md。D/Q/P过程标签仅由已审核joint intent的canonical scenario/action投影，不称独立过程标注或已验证多跳推理。新产物仍需processor/backend验收后才能派发。
 
 2026-11-12 用户明确三条研究主线：简单任务 RL Loss/Reward；预先拆解的复杂任务中多步显式结构判决、最终综合判决的 Loss/Reward 及相对直接问题的增益；相似任务跨数据集配置迁移，FSC 为首个指定例。显式结构保持一次填充 Span 契约，不自动转成文本 CoT/外部解码。允许直接问题 RL 与结构问题 RL 对照，不新增 RL/SFT 效果对照。FSC 当前用于冻结源域模型的配置迁移，不恢复历史 FSC SFT 主训练。方案见 docs/research/14-rl-decision-credit-and-transfer.md。
 
-2026-11-12 用户进一步调整验收目标：不比较 RL 与 SFT 的表现，不再以 RL 超过同预算 SFT 作为条件。主线验证固定 RL 起点后，任务指标随 RL 更新的持续提升；固定评测名单、本体、奖励与预算，报告预定检查点的完整曲线和退化情况。已有运行正常收尾、历史结果保留；不新增 SFT 对照训练。SFT 来源的初始 adapter 如被采用，仅如实记录为初始化。Omni 仍为任务能力定位参照，跨任务泛化目标保留。详见 experiments/slurp-asr-jev-dp4-lock-v1.md。
+2026-11-12 用户进一步调整验收目标：不比较 RL 与 SFT 的表现，不再以 RL 超过同预算 SFT 作为条件。主线验证固定 RL 起点后，任务指标随 RL 更新的持续提升；固定评测名单、本体、奖励与预算，报告预定检查点的完整曲线和退化情况。已有运行正常收尾、历史结果保留；不新增 SFT 对照训练。SFT 来源的初始 adapter 如被采用，仅如实记录为初始化。Omni 仍为任务能力定位参照，跨任务泛化目标保留。详见 ../../experiments/archive/raw/frozen-baselines/slurp-asr-jev-dp4-lock-v1.md。
 
-最新主线锁定（2026-11-12 UTC）：用户要求 Qwen-ASR 在 Jev 类评测上对标基座，参考 omni 的 SLURP 基线。使用本地 Qwen3-ASR-0.6B、BF16 LoRA、175 物理卡4–7的四卡 FSDP 数据并行；rollout 使用已通过一致性检查的 vLLM TP1。该决定优先于历史冻结权重阶段，不切换到30B训练。主评测是意图分类和不提供意图的槽位类型集合；时间三布尔/规则任务仅为独立扩展诊断。既有训练及自动评估正常收尾，取消的单卡成对奖励队列不得重启，四卡可用后优先恢复与连续训练验收。已有四卡一步不等于完整 verl trainer；全量本体也未全部准入训练。协议见 experiments/slurp-asr-jev-dp4-lock-v1.md，参考源见 docs/research/omni-slurp-jev-reference-lock-v1.json。旧 clean-v7 总体暂停按已完成的逐标签准入收窄：仅审核通过的监督可训练，不能把数据清洗对齐当作所有缺标已解决。
+最新主线锁定（2026-11-12 UTC）：用户要求 Qwen-ASR 在 Jev 类评测上对标基座，参考 omni 的 SLURP 基线。使用本地 Qwen3-ASR-0.6B、BF16 LoRA、175 物理卡4–7的四卡 FSDP 数据并行；rollout 使用已通过一致性检查的 vLLM TP1。该决定优先于历史冻结权重阶段，不切换到30B训练。主评测是意图分类和不提供意图的槽位类型集合；时间三布尔/规则任务仅为独立扩展诊断。既有训练及自动评估正常收尾，取消的单卡成对奖励队列不得重启，四卡可用后优先恢复与连续训练验收。已有四卡一步不等于完整 verl trainer；全量本体也未全部准入训练。协议见 ../../experiments/archive/raw/frozen-baselines/slurp-asr-jev-dp4-lock-v1.md，参考源见 docs/research/omni-slurp-jev-reference-lock-v1.json。旧 clean-v7 总体暂停按已完成的逐标签准入收窄：仅审核通过的监督可训练，不能把数据清洗对齐当作所有缺标已解决。
 
 最新精度约束：用户要求 BF16 训练并保证训推一致。Span 主线的基座、LoRA 执行/导出和输出投影使用 BF16；显式关闭 PEFT adapter 自动升精度，vLLM lora_dtype=bfloat16、head_dtype=model。FP32 候选归一化/损失及优化器 master/state 保留稳定性。两侧均使用同一未合并适配器，禁止把 FP32 训练 adapter 仅在 rollout 降为 BF16 后声称一致。通过保存重载及跨后端全候选/联合概率 gate 前不准入 RL；同 dtype 不等于已通过一致性验收。
 
-用户新增输入与调试要求：允许可配置 preemphasis、首尾静音处理、音量处理和语速增强。保留 raw 对照，记录处理后音频身份，actor/rollout 使用同一波形或特征；速度与保音高 tempo 不混称。调试训练要求分类均衡：检查单标签及联合标签分布，并保证当前三任务每个 batch 正负均衡；不修改原始发布、不补造缺失监督、不改变测试分布。见 docs/engineering/audio-preprocessing-v1.md 和 experiments/slurp-native-spans-balanced-v1.md。
+用户新增输入与调试要求：允许可配置 preemphasis、首尾静音处理、音量处理和语速增强。保留 raw 对照，记录处理后音频身份，actor/rollout 使用同一波形或特征；速度与保音高 tempo 不混称。调试训练要求分类均衡：检查单标签及联合标签分布，并保证当前三任务每个 batch 正负均衡；不修改原始发布、不补造缺失监督、不改变测试分布。见 docs/engineering/audio-preprocessing-v1.md 和 ../../experiments/archive/raw/span-rl-probes/slurp-native-spans-balanced-v1.md。
 
 最新用户纠正（优先于下文历史策略）：主任务是一次填充的 Jev 决策 CoT：输入音频及 `Q1,<SPAN1>,Q2,<SPAN2>,Final Q,<SPAN3>` 完整问题模板，由同一模型一次性输出各 Span 的 typed value/state。研究结构化 CoT 或模型内部隐式思维链，不采用 ReAct、外部循环触发/复核/停止控制器，不以自回归文本解码作为新任务的实现目标。所有前置问题在输入时给定，最终答案由模型读出。既有单问 JSON 生成实验仅为历史工程证据，不能冒称已实现 Span 一次填充。当前契约见 docs/research/12-single-pass-span-cot-contract.md；其内容取代 09/10/11 中把有界复核和学习停止当主线的安排。
 

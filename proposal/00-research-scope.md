@@ -1,5 +1,10 @@
 # 语音多模态 Jev：课题范围与初步工作项
 
+> 文档索引：本页保留 2026-11-09 的课题范围与初步工作项，不是当前实验协议。当前阶段
+> 范围、算法与发布边界以[工程索引](../docs/engineering/README.md)和
+> [协作指南](../docs/collaboration/simple-task-rl-engineering-guide-v1.md)为准；
+> 历史协议已归档到 [`archive/`](archive/README.md)。
+
 状态：用户已明确研究方向；以下工作分解为初步计划，尚非冻结的实验协议或已实现架构。
 
 ## 研究目标

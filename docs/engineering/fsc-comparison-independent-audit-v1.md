@@ -49,7 +49,7 @@ PYTHONPATH=src .venv/bin/python -m pytest -q \
 已对认证的parent全量22758条原始响应实际复算；请求、目标、预测和result
 SHA与原独立审计一致，所有metrics与原score完全相同。复算native正确1752，
 六视图全对9，3793录音完整覆盖。原结果见
-[parent正式报告](../../experiments/fsc-omni-official-test-v2-parent.md)。这只是
+[parent正式报告](../../experiments/archive/raw/frozen-baselines/fsc-omni-official-test-v2-parent.md)。这只是
 既有结果的独立复算，没有重新推理，也不构成p1提升或跨任务成绩。
 
 p1尚在运行，完整比较CLI未运行。完成后先核验实际终态和不可变快照，

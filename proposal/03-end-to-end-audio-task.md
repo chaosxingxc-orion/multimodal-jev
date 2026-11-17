@@ -1,5 +1,9 @@
 # 端到端语音任务路线修订
 
+> 本页是仍然有效的路线硬约束。具体任务、训练和评测范围以
+> [工程索引](../docs/engineering/README.md)和
+> [协作指南](../docs/collaboration/simple-task-rl-engineering-guide-v1.md)为准。
+
 用户明确要求：音频与业务任务定义 → 同一个语音多模态模型 → 任务结果。
 不经过显式转写再调用独立文本语言模型。此要求覆盖此前串联路线设计。
 

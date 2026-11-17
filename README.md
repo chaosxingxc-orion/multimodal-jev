@@ -14,20 +14,18 @@
 详细结论见 [研究报告](docs/research/README.md)，本地资产见 [本地资源](docs/research/06-local-assets.md)。
 研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
 
-当前工程优先级：**BF16 LoRA 训练与重载 → actor/vLLM 概率一致性 → verl 单步更新与新版本复核**。
-BF16 candidate-CE 已完成 20 次均衡更新；48 条学习录音在独立 HF 重载后候选概率误差为零。
-跨后端检查已在一条真实录音通过，100 个分层激活点逐位一致；48 条顺序请求也全部通过，最大候选 log-prob 误差 1.19×10⁻⁷。
-一次真实语音 verl GRPO/PPO LoRA 更新已完整通过：独立HF重载误差0，更新后两条vLLM概率检查通过。
-新adapter的48条全量复核也全部通过，最大候选log-prob误差1.19×10⁻⁷。
-真实 NPU 优化器恢复和第二次均衡更新也已通过：112 个 Adam 状态 step 从 1 到 2，独立 HF 重载误差 0；
-第二次更新后全部 48 条跨后端检查通过，最大候选 log-prob 误差仍为 1.19×10⁻⁷。
-恢复配置与限制见 [断点续训接口](docs/engineering/span-resume-v1.md)。
-真实四卡 FSDP 已完成一次 8 条语音的 verl LoRA 更新；导出重载误差 0，48 条 TP1 vLLM 验收通过。
-详见 [四卡语音验证](docs/engineering/span-fsdp-audio-npu4-v1.md)。
-完整 Ray/verl trainer、TP4 rollout、Omni 30B 训练和跨任务泛化尚未验收。
-运行配置和准入门槛见 [BF16 训推一致性](docs/engineering/verl-vllm-lora-span-alignment-v1.md)，
-生命周期入口见 [单步训练验收](experiments/span-actor-update-v1.md)。
-早期[冻结基线与 TFRL 协议](proposal/02-frozen-baselines-tfrl-jev.md)及下文旧实验用于追溯，不代表当前训练安排。
+当前工程基座与优先级以 [工程索引](docs/engineering/README.md) 为准：全量 clean SLURP
+单音频原生意图成员判决；Stage1 指令/候选绑定 + Stage2 双信用 GRPO；FSC/MINDS 用同一接口
+做跨数据集迁移验证。当前效率候选为声学批处理 + KV16，100 步对照合计 +12.5783%，
+但 MINDS 有限面板仍有一致性失败，尚未准入全量训练；效率数字不是任务收益。
+
+历史工程证据（2026-11-12 前后）：BF16 LoRA 训练/重载、HF/vLLM 概率一致性和单步 verl
+更新曾通过固定录音/身份验收（最大候选 log-prob 误差 1.19×10⁻⁷）；真实四卡 FSDP 完成
+一次 8 条语音更新。这些是工程链路证据，不构成完整训练或任务收益；原始记录见
+[单步训练验收](experiments/archive/raw/span-rl-probes/span-actor-update-v1.md)、
+[BF16 训推一致性](docs/engineering/verl-vllm-lora-span-alignment-v1.md)和
+[四卡语音验证](docs/engineering/span-fsdp-audio-npu4-v1.md)。
+早期[冻结基线与 TFRL 协议](proposal/archive/raw/02-frozen-baselines-tfrl-jev.md)及下文旧实验用于追溯，不代表当前训练安排。
 
 ## 目录
 
@@ -68,31 +66,31 @@ python3 -m venv .venv
 来源与初始化边界见 [参考说明](docs/references.md)，协作规则见 [AGENTS.md](AGENTS.md)。
 本地 `wiki/` 是仓库内文档，尚未配置独立 GitHub Wiki 同步。
 
-长期算法问题、受控对照与泛化判据见 [Omni RL 设计](proposal/03-omni-sfc-rl-design-v1.md)；
+长期算法问题、受控对照与泛化判据见 [Omni RL 设计](proposal/archive/raw/03-omni-sfc-rl-design-v1.md)；
 镜像兼容性见 [运行时说明](docs/engineering/runtime.md)，数据与奖励入口见 [数据契约](docs/engineering/data-contract.md)。
 
-工程证据入口包括[完整CPU数值修复候选](docs/engineering/omni-compact-keys-diagnostic-v1.md)、
-[真实verl冻结actor比较](docs/engineering/omni-compact-verl-v1.md)和
-[Audio2Tool原生/Jev解码成本测量](docs/engineering/audio2tool-decode-profile-v1.md)。
+工程证据入口包括[完整CPU数值修复候选](docs/engineering/archive/raw/omni-baseline/omni-compact-keys-diagnostic-v1.md)、
+[真实verl冻结actor比较](docs/engineering/archive/raw/omni-baseline/omni-compact-verl-v1.md)和
+[Audio2Tool原生/Jev解码成本测量](docs/engineering/archive/raw/complex-tasks-deferred/audio2tool-decode-profile-v1.md)。
 六条CPU候选响应logits与参考一致不证明NPU概率一致、训练收益或任务泛化。
 
 ## 历史实验记录
 
 以下保留早期ASR、SFT与转写对照记录供追溯，所述“已启动”“等待执行”均为当时
 状态，不是当前任务安排。串联文本模型和参考转写替换不再派发；旧SFT/RL配置不能
-直接用于当前Omni actor。原始设计见[历史RL协议](proposal/01-rl-research-protocol.md)。
+直接用于当前Omni actor。原始设计见[历史RL协议](proposal/archive/raw/01-rl-research-protocol.md)。
 
-实现进度：已加入 [冻结声学头开发实验](experiments/fsc-frozen-audio-pilot.md)、
-[音频策略与 verl 接入审计](docs/engineering/audio-rl-integration.md)，以及成对正确性奖励。
+实现进度：已加入 [冻结声学头开发实验](experiments/archive/raw/frozen-baselines/fsc-frozen-audio-pilot.md)、
+[音频策略与 verl 接入审计](docs/engineering/archive/raw/span-engine/audio-rl-integration.md)，以及成对正确性奖励。
 这些是基线/RL 研究组件；正式学界复现、跨任务泛化和 RL 提升仍需实验验证。
 
-跨任务数据已扩展到 [SLURP 域留出协议](experiments/slurp-transfer-v1.md)：
+跨任务数据已扩展到 [SLURP 域留出协议](experiments/archive/raw/frozen-baselines/slurp-transfer-v1.md)：
 59,014 条真实录音、413,098 条派生决策，覆盖 scenario Choice 和四类开放槽位；
 已完成全量数据校验和固定开发子集的原始模型、SFT 迁移评测。
 SFT 输出格式全部有效，但非空目标正确数为 0/81，尚未显示语义迁移收益；
 见 [SLURP 结果](docs/engineering/slurp-sft-development-v1-result.json)。
 
-[vLLM rollout 与 verl 更新入口](docs/engineering/rollout-training.md) 已实现；
+[vLLM rollout 与 verl 更新入口](docs/engineering/archive/raw/span-engine/rollout-training.md) 已实现；
 实际 NPU engine rollout 和完整 RL 更新尚待验证。原始 ASR 模型的实际采样暴露了
 结构化输出失败，因此先进行 SFT 初始化，并运行完整 FSC 冻结基线作为对照。
 
@@ -102,7 +100,7 @@ SFT 初始化现已完成 47 次更新并通过合并/重载数值校验，见
 [SFT 起点的两轮 RL 配置](configs/experiments/rl-schedule-sft-smoke.json)
 已通过真实资产预检，仍待分配空闲 NPU 执行 vLLM 采样与 verl 更新。
 
-[转写文本对照](experiments/text-evidence-baselines.md)已在 FSC、SLURP 固定开发子集启动：
+[转写文本对照](experiments/archive/raw/early-rl-engineering/text-evidence-baselines.md)已在 FSC、SLURP 固定开发子集启动：
 使用同一个 Qwen3-0.6B，比较 ASR 转写与参考转写对决策的影响。
 四组均已产出预测，完成后自动生成成对说话人 bootstrap 比较；当前无完整文本对照结果。
-实验状态与证据索引见 [运行记录](wiki/2026-11-10-development-baselines.md)。
+实验状态与证据索引见 [运行记录](wiki/archive/raw/2026-11-10-development-baselines.md)。

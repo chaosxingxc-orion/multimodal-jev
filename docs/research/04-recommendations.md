@@ -4,7 +4,7 @@
 
 当前围绕**端到端语音 Jev 的强化学习与跨任务泛化**开展研究：输入语音、问题/函数定义和会话状态，输出有限选择、标量判断、开放参数及缺失状态；把声学事实、定义理解和执行时机分别验证。直接音频分类、类型化头、排列一致性和提前调用都已有研究，不能单独作为创新点。
 
-当前执行顺序是冻结基座推理 → 离线远程教师提示优化 → 原生/Jev 对照；actor 使用本地 Qwen3-Omni，直接消费波形，权重训练继续暂停，不新增模型下载。后续算法方案见 [Omni SFC RL 设计](../../proposal/03-omni-sfc-rl-design-v1.md)，工程使用固定 verl + vLLM 镜像。Qwen3-ASR 的官方协议没有通用任务开关，本地 HF 模板会丢弃 user 普通文字，详见 [源码核查](../engineering/qwen3-asr-task-template-analysis-2026-11-10.md)。ASR 适配仅保留为未来研究候选，不能由 template 修改推定具备任务能力。
+当前执行顺序是冻结基座推理 → 离线远程教师提示优化 → 原生/Jev 对照；actor 使用本地 Qwen3-Omni，直接消费波形，权重训练继续暂停，不新增模型下载。后续算法方案见 [Omni SFC RL 设计](../../proposal/archive/raw/03-omni-sfc-rl-design-v1.md)，工程使用固定 verl + vLLM 镜像。Qwen3-ASR 的官方协议没有通用任务开关，本地 HF 模板会丢弃 user 普通文字，详见 [源码核查](../engineering/qwen3-asr-task-template-analysis-2026-11-10.md)。ASR 适配仅保留为未来研究候选，不能由 template 修改推定具备任务能力。
 
 ## 架构候选与公平对照
 

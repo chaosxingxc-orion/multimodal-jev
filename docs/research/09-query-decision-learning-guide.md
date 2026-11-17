@@ -171,7 +171,7 @@ RL 分组边界取决于实际 policy action：单问方案对同一完整单问
 图式策略若包含多个模型调用，是轨迹/多步信用分配问题，不能复用单响应奖励后宣称已解决。
 
 SFC 已有数值审计发现：对同 prompt 的奖励统一乘正类权重，在标准差归一化 GRPO 中会抵消；需要明确采样或策略损失层面的加权，而非只改奖励前的系数。
-见 [数值证据](../engineering/sfc-reward-balance-numerical-v1.md)。这些是夹具/代数验证，不是新训练效果。
+见 [数值证据](../engineering/archive/raw/complex-tasks-deferred/sfc-reward-balance-numerical-v1.md)。这些是夹具/代数验证，不是新训练效果。
 
 ## 8. 多问和复杂推理必须新增的评测
 

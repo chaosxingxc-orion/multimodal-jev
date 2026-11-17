@@ -22,4 +22,4 @@ v2 位于 `/mnt/cephfs/xingchao/experiments/multimodal-jev/slurp-single-pass-spa
 
 `span_training.py` 从已审核 release 合并同一录音的决策，核验发布哈希、决策准入和音频身份，输出独立 targets/mask。当前 48 条学习录音合并为 48 个三 Span 请求，142 项有效监督、2 项屏蔽。完整输入中的其他元数据不进入模型模板。
 
-首轮 native Span SFT 协议见[实验记录](../../experiments/slurp-native-spans-sft-v1.md)。已完成 24 次真实更新并保存适配器；学习集 72/142，静音 71/142，尚不能证明有效语音判决。48 条录音保存后重载的候选 logprob 最大绝对误差为 0，保存/加载验收通过。之后需要独立发布有真实前置—最终关系的样本、同 Final 对照、跨任务划分，以及 verl/vLLM 多位置推理和政策概率接口。旧生成接口的后端概率误差仍未解决，不能以新 HF 前向成功替代一致性验收。
+首轮 native Span SFT 协议见[实验记录](../../experiments/archive/raw/span-rl-probes/slurp-native-spans-sft-v1.md)。已完成 24 次真实更新并保存适配器；学习集 72/142，静音 71/142，尚不能证明有效语音判决。48 条录音保存后重载的候选 logprob 最大绝对误差为 0，保存/加载验收通过。之后需要独立发布有真实前置—最终关系的样本、同 Final 对照、跨任务划分，以及 verl/vLLM 多位置推理和政策概率接口。旧生成接口的后端概率误差仍未解决，不能以新 HF 前向成功替代一致性验收。

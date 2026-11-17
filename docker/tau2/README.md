@@ -27,4 +27,4 @@ directory at `/evidence`. Set `PYTHONPATH=/project/src`, `TAU2_DATA_DIR=/data`,
 ```
 
 Use no provider credentials for this environment-only check. See the
-[protocol](../../experiments/tau2-environment-bridge.md) for its precise scope.
+[protocol](../../experiments/archive/raw/complex-deferred/tau2-environment-bridge.md) for its precise scope.

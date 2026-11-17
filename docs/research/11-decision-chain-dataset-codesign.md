@@ -105,7 +105,7 @@
 
 ## 7. 先导完成后的协同决策
 
-上述第 6 节的审核发布和最小 SFT 已完成一个很窄的版本：48 个 learning 来源、date/time/timeofday 三种角色、142 个可用判断。审核依据是参考文本语义，并非人工听审；两项冲突/不明确判断已隔离。不能据此批准全部 55 类。见[先导记录](../engineering/slurp-temporal-pilot-v1.md)和[诊断凭证](../engineering/slurp-temporal-diagnostic-v1-verified.json)。
+上述第 6 节的审核发布和最小 SFT 已完成一个很窄的版本：48 个 learning 来源、date/time/timeofday 三种角色、142 个可用判断。审核依据是参考文本语义，并非人工听审；两项冲突/不明确判断已隔离。不能据此批准全部 55 类。见[先导记录](../engineering/archive/raw/complex-tasks-deferred/slurp-temporal-pilot-v1.md)和[诊断凭证](../engineering/slurp-temporal-diagnostic-v1-verified.json)。
 
 SFT 在同一训练人口的判断正确率为 80/142，静音为 70/142；46 个完整三问来源的联合全对均为 5/46。合法布尔输出已达到 142/142，但这不是独立泛化或复核收益。当前优先补语义判别与独立来源验证，不以这组结果支持复杂链有效，也不能把基座格式失败算作语义能力为零。
 
