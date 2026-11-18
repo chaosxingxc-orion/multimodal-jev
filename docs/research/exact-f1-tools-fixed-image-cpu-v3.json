@@ -1,0 +1,54 @@
+{
+  "schema": "exact-f1-tools-fixed-image-cpu-v3",
+  "container_id": "b1d620dddd0515a6a134bef115db53c5a4a5cd4390534eee660efcd717a5012a",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T00:24:51.65324381Z",
+    "FinishedAt": "2026-11-15T00:25:50.00356163Z"
+  },
+  "source_files": 360,
+  "source_manifest_sha256": "1d1b0eefb2c9f7283b5e004bc5d6682253445580daa0d454ab3e6fd66dc71335",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/exact-f1-tools-cpu-v3-collected",
+  "files": {
+    "run/terminal.json": "9a85bb6d47bcfc0f955ab9c60361599165a6cb33cbb3190be4d8c17c06a3956b",
+    "run/junit.xml": "8be1914072088b9037eba8a7e8bdcbc0792e6e3c745b8398dc42a69f72e82b57",
+    "run/pytest.log": "fb9ecd9faa5eaa1b258886475955aa7ddd4e0732ac52a67f8b8671683c4b8077",
+    "package/FILES.json": "1d1b0eefb2c9f7283b5e004bc5d6682253445580daa0d454ab3e6fd66dc71335",
+    "package/run.py": "282ea895a789a019c647305de0e21deaef03af8263835f0e6cb3507774ac4450"
+  },
+  "counts": {
+    "tests": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794702318.7411878,
+    "finished_unix": 1794702348.6483405,
+    "source_manifest_sha256": "1d1b0eefb2c9f7283b5e004bc5d6682253445580daa0d454ab3e6fd66dc71335",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/exact-f1-tools-cpu-v3/run/junit.xml",
+      "tests/test_exact_singleton_f1_gradient.py",
+      "tests/test_exact_singleton_f1_torch_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual torch CPU gradient tests in fixed image, no model/NPU/verl actor integration or efficacy claim."
+}

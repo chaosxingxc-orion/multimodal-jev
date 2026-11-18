@@ -1,0 +1,46 @@
+{
+  "status": "prepared_only_not_dispatched",
+  "files": [
+    "src/multimodal_jev/vllm_context_model.py",
+    "src/multimodal_jev/context_resident_rollout.py",
+    "tools/jev/probe_context_engine_audio.py"
+  ],
+  "cpu_evidence": "docs/engineering/context-engine-entry-cpu-v1.json",
+  "tests": 33,
+  "probe_launcher": ".local/decision-objective-research/launch_context_engine_audio_npu5.py",
+  "physical_device": 5,
+  "training_dispatch_allowed": false,
+  "limitations": [
+    "No actual engine constructor/load_weights/startup/encode execution yet",
+    "HF and vLLM raw probability comparisons diagnostic only; no inherited parity",
+    "Fixed one policy per engine; no atomic switch yet",
+    "Real source snapshot initialized LoRA B zero; nonzero trained adapter behavior still needed",
+    "Test-only marker registration"
+  ],
+  "priority": "Existing full Stage1 checkpoint audit and selection precede new NPU probes",
+  "rc2_original_hashes_unchanged": 1360,
+  "updated_policy_probe": {
+    "status": "vllm_only_v2_running",
+    "launcher": ".local/decision-objective-research/launch_context_engine_updated_audio_npu7.py",
+    "behavior": "One audio diagnostic linear-functional update with BF16 execution and FP32 master/Adam, durable checkpoint restore, then export and compare HF/vLLM in separate processes",
+    "task_gain_claim": false,
+    "distributed_training_claim": false,
+    "cpu_evidence": "docs/engineering/context-updated-policy-cpu-v1.json",
+    "container_id": "4584323fdb8bfdccdef9fb5edb9548ec1d363bddeb05f4ab95a7302e7be5d7ae",
+    "physical_device": 7,
+    "exact_wait_session": 55457,
+    "hf_evidence": "docs/engineering/context-updated-audio-npu7-hf-v1.json",
+    "failure_evidence": "docs/engineering/context-engine-updated-audio-npu7-v1.json",
+    "next_launcher": ".local/decision-objective-research/launch_context_engine_updated_audio_npu7_v2.py",
+    "resume": "reuse byte-identical updated policy and HF outputs, vLLM only",
+    "bootstrap_evidence": "docs/engineering/context-worker-bootstrap-cpu-v2.json"
+  },
+  "collector": ".local/decision-objective-research/collect_context_engine_audio.py",
+  "collector_scope": "Exact files/hash/input identities, raw probability errors, joint adapter rederivation, updated128 trainable tensors and FP32 master/Adam; prepared only until actual terminal",
+  "resource_decision": "Current training terminal; card7 preflight free, separate from evaluation chain card5 parity/card6 full selection",
+  "transport_unit_tests": {
+    "passed": 11,
+    "path": "tests/test_context_rollout_transport.py",
+    "scope": "Fake engine input/output boundary only, no actual backend claim"
+  }
+}

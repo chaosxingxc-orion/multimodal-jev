@@ -1,0 +1,86 @@
+{
+  "schema": "slurp-role-boundary-resolution-candidate-v1",
+  "status": "authored_task_rules_not_official_ontology_or_training_release",
+  "training_dispatch_allowed": false,
+  "scope": "request_relevant_role",
+  "definitions_base": "configs/tasks/slurp/type-definition-candidates-v2.json",
+  "definitions_base_sha256": "5b5dfbf8b9847e1315634853d159860eb5f4920a707e0573dcf7cbd5e941c8f1",
+  "policies_base": "configs/tasks/slurp/slot-presence-policy-candidate-v2.json",
+  "policies_base_sha256": "a6751a74a5d6e5ee86cdfb1751600bd4bd3d0d8fd342cd2964d69e02d9465e91",
+  "overlap_contract": "configs/tasks/slurp/type-overlap-contract-candidate-v1.json",
+  "overlap_contract_sha256": "1b758d8bb33b82762f1bf155dbd54349be3ab9d55a76f07535e4bbd2358b1260",
+  "rules": [
+    {
+      "id": "person_reference",
+      "types": [
+        "person"
+      ],
+      "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+      "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+    },
+    {
+      "id": "contact_attribute",
+      "types": [
+        "personal_info",
+        "email_address"
+      ],
+      "rule": "personal_info requires an explicitly requested or stated contact/person attribute, such as a phone number field or work department. The communication medium email and a standalone mailbox identifying expression do not on their own add a second personal_info predicate.",
+      "boundary": "An explicit field and an explicit value can coexist. Absence is established by full-input review, not by native email_address membership."
+    },
+    {
+      "id": "domestic_surface",
+      "types": [
+        "house_place",
+        "place_name"
+      ],
+      "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+      "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+    },
+    {
+      "id": "preparation_input",
+      "types": [
+        "ingredient",
+        "food_type",
+        "cooking_type"
+      ],
+      "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+      "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+    },
+    {
+      "id": "station_service",
+      "types": [
+        "radio_name",
+        "app_name"
+      ],
+      "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+      "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+    }
+  ],
+  "integration": "Explicit rule overlay for seven re-reviewed proposals; not silently applied to other old reviews or canonical task.",
+  "support": {
+    "ingredient_learning_sources": [
+      "10084",
+      "10028",
+      "9995",
+      "9974",
+      "10008",
+      "9939",
+      "10000",
+      "10005",
+      "9997",
+      "9970",
+      "9985",
+      "9960",
+      "9975",
+      "10006",
+      "10035",
+      "10029"
+    ],
+    "support_scope": "All 16 native-positive ingredient learning sources read; this is not all semantic ingredient sources or negative certification."
+  },
+  "release_requirements": [
+    "Incorporate role rules into final type definitions and shared rules before task freeze.",
+    "Full-population annotation under same version; independent disagreement review.",
+    "No training or metric feedback from unadmitted proposals."
+  ]
+}

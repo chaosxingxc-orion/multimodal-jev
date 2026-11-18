@@ -49,7 +49,8 @@ def supervised_numerator(policy, targets, supervised, span_weights, request_weig
 
 
 def loss(policy, targets, supervised, span_weights, request_weights, *, stage,
-         global_effective_weight, world_size=1, behavior=None, coefficient=0., clip_ratio=.2):
+         global_effective_weight, world_size=1, behavior=None, coefficient=0., clip_ratio=.2,
+         real_request_mask=None, global_real_requests=None):
     """Return local loss ready for backward and detached local contribution metrics.
 
     gradient accumulation must SUM these global-normalized microbatch losses;
@@ -61,10 +62,19 @@ def loss(policy, targets, supervised, span_weights, request_weights, *, stage,
             or not math.isfinite(global_effective_weight) or global_effective_weight <= 0
             or type(coefficient) not in (int, float) or not math.isfinite(coefficient) or coefficient < 0):
         raise ValueError('explicit stage and global effective request normalization required')
+    if (real_request_mask is None) != (global_real_requests is None):
+        raise ValueError('real request mask and global count must be supplied together')
+    if real_request_mask is not None:
+        if (stage != 'instruction' or type(global_real_requests) is not int or global_real_requests < 1
+                or real_request_mask.dtype != torch.bool or real_request_mask.shape != request_weights.shape
+                or real_request_mask.device != request_weights.device
+                or int(real_request_mask.sum()) > global_real_requests
+                or (request_weights[~real_request_mask] != 0).any()):
+            raise ValueError('explicit instruction real-request population and zero-weight padding required')
     ce_numerator, local_weight = supervised_numerator(policy, targets, supervised, span_weights, request_weights)
     if local_weight.item() > global_effective_weight+1e-6:
         raise ValueError('local effective weight exceeds global denominator')
-    scale = world_size/global_effective_weight
+    scale = world_size/(global_real_requests if global_real_requests is not None else global_effective_weight)
     ce = ce_numerator*scale
     rl = ce*0
     if stage == 'instruction':
@@ -86,4 +96,4 @@ def loss(policy, targets, supervised, span_weights, request_weights, *, stage,
     return total, dict(ce=float(ce.detach()), rl=float(rl.detach()), total=float(total.detach()),
                       coefficient=coefficient if stage == 'task' else 1.,
                       local_effective_weight=float(local_weight), global_effective_weight=global_effective_weight,
-                      world_size=world_size)
+                      world_size=world_size, global_real_requests=global_real_requests)

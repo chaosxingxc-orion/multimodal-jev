@@ -1,0 +1,17 @@
+{
+  "container_id": "a5d68bb4f42a897f8a7a4158b6ed8c847bd132a599b000cf3ad6038f1ed7ec3f",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-14T13:27:37.85800852Z",
+    "FinishedAt": "2026-11-14T13:28:12.19056534Z"
+  },
+  "log": "/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\nDrvMngGetConsoleLogLevel failed. (ret=4)\n/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\nTraceback (most recent call last):\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/context-learning-cache-assist-v2/run.py\", line 7, in <module>\n    result=run(c,r/'run');terminal=dict(exit_code=0,recordings=result['recordings'])\n           ^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/context-learning-cache-assist-v2/prepare_context_cache_assist_v1.py\", line 25, in run\n    require_training_storage(out);torch.set_num_threads(1)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/context-learning-cache-v1/source/src/multimodal_jev/local_runtime_storage.py\", line 76, in require_training_storage\n    return check_paths(paths)\n           ^^^^^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/context-learning-cache-v1/source/src/multimodal_jev/local_runtime_storage.py\", line 44, in check_paths\n    raise ValueError(f'{name}: hot writes require a verified local ext4/xfs/btrfs '\n[ERROR] 2026-11-14-13:28:10 (PID:1, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception\nValueError: TMPDIR: hot writes require a verified local ext4/xfs/btrfs mount, found overlay: /tmp\n"
+}

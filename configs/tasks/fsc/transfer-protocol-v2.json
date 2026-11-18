@@ -1,0 +1,161 @@
+{
+  "schema": "slurp-to-fsc-transfer-protocol-v2",
+  "status": "task_protocol_registered_pending_source_task_freeze_and_runtime_acceptance",
+  "training_dispatch_allowed": false,
+  "source_model": "same_Qwen3_ASR_0_6B_BF16_LoRA_stage1_and_RL_checkpoints",
+  "target_definitions": "configs/tasks/fsc/intent-definitions-transfer-v1.json",
+  "target_definitions_sha256": "08ba6019f0883f149a86df38f72acf4f07c77be77dafe3753fe6a6c95decb40a",
+  "shared_operator": "I_class_under_complete_exclusive_task_annotation_policy",
+  "primary_native": {
+    "input": "audio_plus_all_31_definitions_before_any_span",
+    "output": "model_Final_choice_of_31_legal_commands",
+    "metric": "native_triple_exact_accuracy",
+    "gold_intent_routing": false
+  },
+  "primary_atomic": {
+    "input": "audio_plus_one_preregistered_command_definition",
+    "output": "one_boolean_Span",
+    "evaluation": "all_31_definitions_cross_each_test_audio; 31 independent calls, never claim one-call full-set inference",
+    "metrics": [
+      "macro_F1_over_31_binary_predicates",
+      "positive_recall",
+      "false_positive_rate",
+      "balanced_accuracy"
+    ],
+    "unknown": false
+  },
+  "structure": {
+    "panels": [
+      [
+        "fsc_command_07",
+        "fsc_command_13",
+        "fsc_command_24",
+        "fsc_command_15"
+      ],
+      [
+        "fsc_command_23",
+        "fsc_command_12",
+        "fsc_command_09",
+        "fsc_command_21"
+      ],
+      [
+        "fsc_command_14",
+        "fsc_command_18",
+        "fsc_command_20",
+        "fsc_command_02"
+      ],
+      [
+        "fsc_command_00",
+        "fsc_command_06",
+        "fsc_command_04",
+        "fsc_command_08"
+      ],
+      [
+        "fsc_command_16",
+        "fsc_command_25",
+        "fsc_command_30",
+        "fsc_command_29"
+      ],
+      [
+        "fsc_command_10",
+        "fsc_command_27",
+        "fsc_command_01",
+        "fsc_command_22"
+      ],
+      [
+        "fsc_command_19",
+        "fsc_command_28",
+        "fsc_command_26",
+        "fsc_command_17"
+      ],
+      [
+        "fsc_command_05",
+        "fsc_command_11",
+        "fsc_command_03"
+      ]
+    ],
+    "questions": "I_class_for_each_command_in_panel; Final=all_31_choice",
+    "arms": [
+      "Direct",
+      "Q-input"
+    ],
+    "knowledge": "same_complete_31_definitions_across_arms",
+    "panel_assignment": "all_8_preregistered_panels_report_separately_and_equal_weight_mean; no_best_panel_no_vote_no_union",
+    "no_slot_substitution": "FSC attributes are not S_present or B_bound labels; evaluate these operators on independently admitted datasets"
+  },
+  "secondary_attributes": {
+    "questions": [
+      "action_choice",
+      "object_choice",
+      "location_choice",
+      "Final_31_command"
+    ],
+    "metrics": [
+      "component_accuracy",
+      "component_triple_exact",
+      "model_Final_accuracy",
+      "component_Final_consistency"
+    ],
+    "limitation": "Different operator family; separate from primary same-I_class transfer. Component combination never replaces model Final."
+  },
+  "checkpoints": {
+    "baseline": "frozen_stage1_before_RL",
+    "later": "predeclared_RL_updates_shared_with_source_evaluation",
+    "selection": "SLURP_selection_only_never_FSC_metrics",
+    "stage1_selection": "SLURP_only",
+    "numerical_update_ids": "must_be_written_after_source_training_budget_frozen_before_first_target_run"
+  },
+  "interventions": {
+    "primary": "native_candidate_order",
+    "secondary": [
+      "fixed_permutation",
+      "neutral_ID_rebinding"
+    ],
+    "mapping": "same_semantics_explicit_mapping_back_before_scoring",
+    "metrics": [
+      "both_original_and_transformed_correct",
+      "mapped_prediction_agreement",
+      "accuracy_delta"
+    ],
+    "excludes": [
+      "gold_based_positive_negative_query_selection",
+      "gold_candidate_removal",
+      "test_error_driven_definition_rewrite"
+    ]
+  },
+  "inference": {
+    "weights_frozen": true,
+    "teacher_feedback_from_target": false,
+    "reference_transcript_input": false,
+    "one_forward_per_registered_request": true,
+    "external_text_reasoning": false
+  },
+  "statistical_plan": {
+    "primary_delta": "later_RL_minus_stage1_on_same_audio_and_template",
+    "paired_bootstrap": {
+      "cluster": "official_test_speaker",
+      "resamples": 10000,
+      "seed": 317,
+      "interval": "percentile_95_percent"
+    },
+    "secondary_cluster": "normalized_reference_utterance_for_reporting_dependency_sensitivity_only_never_actor_or_question_selection",
+    "multiple_testing": "report_all_preregistered_checkpoints_and_panels_with_pointwise_intervals; no_best_checkpoint_significance_claim",
+    "interaction": "(later_Qinput-stage1_Qinput)-(later_Direct-stage1_Direct)",
+    "unsuccessful_transfer": "retain_zero_or_negative_delta_and_saturation_no_test_guided_retry"
+  },
+  "target_usage": "Use TRAIN ontology only for configuration. No target weight updates or target feedback optimization. Disclose historical target use; call frozen-weight cross-dataset configuration transfer, not untouched-task discovery.",
+  "source_quality": "Known reviewed label defects remain excluded by versioned policy; target prediction errors cannot trigger ad hoc evaluation exclusions.",
+  "acceptance_remaining": [
+    "target_manifest_audio_identity_and_full_population_check",
+    "definition_semantic_review",
+    "actual_processor_context_and_symbols_for_every_template",
+    "all_run_ids_and_source_checkpoint_identities_frozen",
+    "fixed_precision_backend_parity",
+    "scorer_independent_reconstruction"
+  ],
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "required_before_release_not_implemented",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created."
+  }
+}

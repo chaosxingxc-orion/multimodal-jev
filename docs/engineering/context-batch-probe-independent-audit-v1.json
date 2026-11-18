@@ -1,0 +1,25 @@
+{
+  "status": "local_independent_auditor_tests_passed_no_NPU_result",
+  "observed_unix": 1794719602.6767755,
+  "tests": {
+    "passed": 11,
+    "seconds": 2.71,
+    "command": "PYTHONPATH=src:.local/verification-python:tools/jev:tests:. python -m pytest -q tests/test_context_batch_probe_audit_candidate.py"
+  },
+  "scope": "real CPU tensor hashes and G16 reconstruction; synthetic probabilities/telemetry/transport; sealed validate mocked only in collection fixture",
+  "source_sha256": {
+    "tools/reports/audit_context_batch_probe_candidate.py": "6be9097c1229c0dbf65ed6a45ceb77c6956c60df8e180bd4fd4b188da6e82ec2",
+    "tests/test_context_batch_probe_audit_candidate.py": "5890f14d744434667ade913776053a69612a518778413813bd1cd7ef2bba7e07"
+  },
+  "unchanged_dependencies": {
+    "context-attribute-population-cpu-v1-driver-pins.json": 1073,
+    "context-attribute-input-finalization-v2-pins.json": 1167
+  },
+  "real_input_manifest": {
+    "rows": 128,
+    "unique_requests": 128,
+    "input_sha256": "4b8791ee0abfe3c40613c24e80737f89630e56321f8f8e14c2cce28237cc9234"
+  },
+  "npu_dispatched": false,
+  "training_changed": false
+}

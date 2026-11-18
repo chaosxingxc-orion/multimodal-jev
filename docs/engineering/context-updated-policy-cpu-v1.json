@@ -1,0 +1,29 @@
+{
+  "container_id": "3dc70275685c077b2f65fb733340672195ab2fb86793d99eefda33284b2558dc",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T10:08:07.5571947Z",
+    "FinishedAt": "2026-11-14T10:08:54.31380441Z"
+  },
+  "evidence": {
+    "config_sha256": "e19edc9db013b4eb30a5b6d2fab6a23b2d337d6435c07c8638a8e0fdb74217cb",
+    "mismatches": [],
+    "pins": 347,
+    "terminal": {
+      "exit_code": 0,
+      "finished_unix": 1794650934.2955449
+    },
+    "log": "..................................                                       [100%]\n=============================== warnings summary ===============================\ntest_context_updated_policy.py::test_bf16_context_update_fp32_resume_matches_uninterrupted_second_update\n  /usr/local/python3.12.13/lib/python3.12/site-packages/torch_npu/utils/storage.py:55: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()\n    if self.device.type != 'cpu':\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n34 passed, 1 warning in 42.86s\nDrvMngGetConsoleLogLevel failed. (ret=4)\n"
+  },
+  "training_dispatch_allowed": false,
+  "scope": "34 fixed-image CPU tests. Actual native adapter parser/serialization; synthetic backbone plus real contextual head/LoRA BF16 update, FP32 master/Adam restoration and exact second-update equivalence. CPU pin-memory disabled in parser test only. No actual NPU/engine/distributed update or task improvement."
+}

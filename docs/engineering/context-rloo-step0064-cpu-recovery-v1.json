@@ -1,0 +1,120 @@
+{
+  "schema": "context-committed-cpu-recovery-audit-v1",
+  "container_id": "c7a9dbd1281556ba13773e41e55c102f2af7b3b1e21e6d577d8ab029dae1ee06",
+  "step": 64,
+  "algorithm": "rloo_v1",
+  "policy_id": "5775542ea83de87fbc244760b62cb0d8f51b9f26ae87d0fc1b245d7b395b0fef",
+  "master_export": {
+    "exact_bf16_from_master_shards": true,
+    "rank_shards": 4,
+    "parameters": 128,
+    "numel": 6878209,
+    "completed_updates": 64,
+    "checkpoint_scopes": [
+      {
+        "tensors": 128,
+        "local_numel": {
+          "lora": 143360,
+          "head": 1576193
+        },
+        "base_model_saved": false,
+        "scope": "LoRA and Jev head only; base identity referenced separately"
+      },
+      {
+        "tensors": 128,
+        "local_numel": {
+          "lora": 143360,
+          "head": 1576193
+        },
+        "base_model_saved": false,
+        "scope": "LoRA and Jev head only; base identity referenced separately"
+      },
+      {
+        "tensors": 128,
+        "local_numel": {
+          "lora": 143360,
+          "head": 1576193
+        },
+        "base_model_saved": false,
+        "scope": "LoRA and Jev head only; base identity referenced separately"
+      },
+      {
+        "tensors": 128,
+        "local_numel": {
+          "lora": 143360,
+          "head": 1576190
+        },
+        "base_model_saved": false,
+        "scope": "LoRA and Jev head only; base identity referenced separately"
+      }
+    ],
+    "scope": "Actual committed FP32 shards reproduce BF16 execution; no gradient, speed or efficacy claim",
+    "files": {
+      "/srv/multimodal-jev-xingchao/collections/rloo-step0064-recovery-snapshot-v2/collection/run/rank-0/checkpoint-0064.pt": "d16290e41acad9c48b4cbaa9d3cbd0b85bac7dfc1f97914e3281a3d2fb3d1f6c",
+      "/srv/multimodal-jev-xingchao/collections/rloo-step0064-recovery-snapshot-v2/collection/run/rank-1/checkpoint-0064.pt": "d0ad32207b6ae7f838649e2e5abcf1c7728e7b0794e77f11a76ef32a22542c2b",
+      "/srv/multimodal-jev-xingchao/collections/rloo-step0064-recovery-snapshot-v2/collection/run/rank-2/checkpoint-0064.pt": "8d1b64a75c77f5b326987d52ac78a1c5cf255d369be133aedb244b769a20b19a",
+      "/srv/multimodal-jev-xingchao/collections/rloo-step0064-recovery-snapshot-v2/collection/run/rank-3/checkpoint-0064.pt": "10bf54fc3d126538ce718ef3c05d0d597d754dc31d1081096faead42afd9c4da",
+      "/srv/multimodal-jev-xingchao/collections/rloo-step0064-recovery-snapshot-v2/collection/run/execution-0064.pt": "c419d587e8b473e5bb694d4c0c2eed83dd4ec95042129f3e3df42204738a7952",
+      "/srv/multimodal-jev-xingchao/collections/rloo-step0064-recovery-snapshot-v2/collection/run/checkpoint-0064-committed.json": "439ab53b34dd5433a759830a4c455038034252d438c05f00fd8da021c57c6f36"
+    },
+    "implementation_sha256": "0fbd46960e22c1c6912085bbff99815dc1d22ce736e2f00214f55f56dfd1075a"
+  },
+  "restored": [
+    {
+      "exact_masters": true,
+      "exact_adam": true,
+      "completed_updates": 64
+    },
+    {
+      "exact_masters": true,
+      "exact_adam": true,
+      "completed_updates": 64
+    },
+    {
+      "exact_masters": true,
+      "exact_adam": true,
+      "completed_updates": 64
+    },
+    {
+      "exact_masters": true,
+      "exact_adam": true,
+      "completed_updates": 64
+    }
+  ],
+  "files": {
+    "config.json": "59e4844ee68e52a02e3300054b81b95dc709d5f71161d324a10da783d9505570",
+    "service-config.json": "2a9283d5f3e4315743e50701a89f345698fdd3604606f62765e25e81c4e1c6f7",
+    "PREPARED.json": "8d66c912500dcef7643173cb277785e84c612f1b3b0947fd2c35b2e4be54fffb",
+    "run/checkpoint-0064-committed.json": "439ab53b34dd5433a759830a4c455038034252d438c05f00fd8da021c57c6f36",
+    "run/rank-0/checkpoint-0064.pt": "d16290e41acad9c48b4cbaa9d3cbd0b85bac7dfc1f97914e3281a3d2fb3d1f6c",
+    "run/rank-1/checkpoint-0064.pt": "d0ad32207b6ae7f838649e2e5abcf1c7728e7b0794e77f11a76ef32a22542c2b",
+    "run/rank-2/checkpoint-0064.pt": "8d1b64a75c77f5b326987d52ac78a1c5cf255d369be133aedb244b769a20b19a",
+    "run/rank-3/checkpoint-0064.pt": "10bf54fc3d126538ce718ef3c05d0d597d754dc31d1081096faead42afd9c4da",
+    "run/execution-0064.pt": "c419d587e8b473e5bb694d4c0c2eed83dd4ec95042129f3e3df42204738a7952",
+    "run/policy-0064/MANIFEST.json": "d8e3b47290e9cb3a97e3b155311f014621d5ba30755755a2944e5725a52f5713",
+    "run/policy-0064/execution.pt": "dccb8b0472a7c17d9a3dc8b345ba36cbd647132bfbd8cc118470ec940c55c77b",
+    "run/policy-0064/processor/processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+    "run/policy-0064/processor/tokenizer.json": "dfc31f2e73e91521a1f664ca198cffaaa123619c10b4638270b804565e4979c8",
+    "run/policy-0064/processor/chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+    "run/policy-0064/processor/tokenizer_config.json": "e2c2078a8c3e0394171ce4e82a76a8b38ced47cd20a34e5149ebb51198b19856",
+    "run/adapter-0064/CONTEXT_POLICY.json": "c4e277002a85dacec73cb2d44486409c89fa43d6a1521732c3519dff858b5d7e",
+    "run/adapter-0064/adapter_config.json": "f561c32c7c671a47731c00d78dfc6b7a9c38198ecc4f4c3a0c72826cf72cbde0",
+    "run/adapter-0064/adapter_model.safetensors": "24a3899f483aaa1397c0e00122b1321b31f2d45524fe2cf3bcf4d7e78b316808"
+  },
+  "snapshot_manifest_sha256": "8db4ef52b38215c7b160c6f3c2cfbfbfca2b62b21979244107195aea96f5fbe7",
+  "implementation_sha256": "3673c35af7d3077926272e53965a72fbbd307220ec506510a9baa46f27e9b25f",
+  "native_adapter_tensor_audit": false,
+  "fresh_process_npu_resume_verified": false,
+  "stop_training_allowed": false,
+  "scope": "Real saved LoRA/head tensors and Adam restored on CPU; no NPU execution, native adapter reload or throughput claim",
+  "config_provenance": {
+    "schema": "jev-resolved-config-v1",
+    "template_sha256": "5ba9294ae76cbc6b586342b5240e353f036035492393ab39608e2f2cf53843fa",
+    "local_bindings_sha256": "e5f97cac29e5fd21d5af0f0f110fb1ce4287364bd0ae528976609fe6ee2455d2",
+    "resolved_semantic_sha256": "6db0b7374e2b8b4fdba244162014ecf6abf3b19c5913438a08df5557ffdeeecc",
+    "macros_used": [
+      "CHECKPOINT_AUDIT_OUTPUT",
+      "CHECKPOINT_SNAPSHOT_ROOT"
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "state": "response_received",
+  "http_status": 200,
+  "usage": {
+    "completion_tokens": 2693,
+    "completion_tokens_details": {
+      "reasoning_tokens": 2170
+    },
+    "prompt_tokens": 23013,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 25706
+  },
+  "finish_reasons": [
+    "stop"
+  ],
+  "elapsed_seconds": 45.3855358697474,
+  "schema": "slurp-provider-rules-teacher-observed-v1",
+  "exit_code": 0,
+  "structure_valid": true,
+  "request_sha256": "e79e4cfa87b9287489ddd4255d5b090f83f07872f291df157c2979ccabd24102",
+  "result_sha256": "f22f0acad539b3e161513480f6e2c5574252848a9237c63aefd550d070e0f52a",
+  "intent_sha256": "fe22667892f1aeb49a726b6afd509c137312965f39401c27d6204f416a7fd105",
+  "workpack_report_sha256": "2044cd0c097fc6a0a52cebea575932340b6ba5033a4103ba50a531f9bdc67f5d",
+  "changed_request": "Only ontology in user payload; new provider rules, same source and8 questions, service parameters unchanged.",
+  "semantic_admission": 0,
+  "training_dispatch_allowed": false,
+  "bulk_dispatch_allowed": false,
+  "content_characters": 2323,
+  "response_format": "json_fence",
+  "decisions": [
+    {
+      "id": "alarm_type",
+      "status": "negative",
+      "rationale": "No alarm is mentioned anywhere; the utterance content is entirely a taxi booking for a flight-arrival pickup, so no alarm kind, purpose or category is expressed."
+    },
+    {
+      "id": "app_name",
+      "status": "negative",
+      "rationale": "No application or software service is named or used as the means of performing the activity; no registered lexical expressions (tweet, Google-as-search) appear, and generic 'book a taxi' does not identify an application."
+    },
+    {
+      "id": "artist_name",
+      "status": "negative",
+      "rationale": "No music creator or musical performer role is expressed; the only person reference (Shelley Hennessey) is a pickup passenger with no singing/song/music relation."
+    },
+    {
+      "id": "audiobook_author",
+      "status": "negative",
+      "rationale": "'Book' occurs only as a travel-booking verb ('book a taxi'), which per the author rules supplies no book-author relation; no book or audiobook is referred to, so no authorship role exists."
+    },
+    {
+      "id": "audiobook_name",
+      "status": "negative",
+      "rationale": "No particular identifying reference to a book or audiobook is expressed; 'book' is the booking verb for a taxi, not a work reference, and no work role or title appears."
+    },
+    {
+      "id": "business_name",
+      "status": "positive",
+      "rationale": "'AA' is attached to a represented transport service ('the arrival of aa flight five thousand four hundred and thirty one'), which per the provider-role rule expresses its operator as part of the service attribution; an identifying name suffices without acronym expansion or corporate lookup."
+    },
+    {
+      "id": "business_type",
+      "status": "positive",
+      "rationale": "'Book a taxi' requests a transportation service as an offered-service category, explicitly matching the business_type definition's example of booking a taxi as a described service."
+    },
+    {
+      "id": "change_amount",
+      "status": "negative",
+      "rationale": "No control adjustment magnitude or desired target level is expressed anywhere in the utterance; the quantities present are a flight number and a clock time, which are not adjustment levels."
+    }
+  ]
+}

@@ -1,0 +1,609 @@
+{
+  "schema": "fsc-transfer-intent-definitions-v1",
+  "training_dispatch_allowed": false,
+  "cards": [
+    {
+      "semantic_id": "fsc_command_00",
+      "native_values": {
+        "action": "activate",
+        "object": "lamp",
+        "location": "none"
+      },
+      "definition": "Request turning on or starting a lamp. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_01",
+      "native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "bedroom"
+      },
+      "definition": "Request turning on or starting room lights. The requested room is the bedroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_02",
+      "native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "kitchen"
+      },
+      "definition": "Request turning on or starting room lights. The requested room is the kitchen.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_03",
+      "native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "none"
+      },
+      "definition": "Request turning on or starting room lights. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_04",
+      "native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "washroom"
+      },
+      "definition": "Request turning on or starting room lights. The requested room is the bathroom or washroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_05",
+      "native_values": {
+        "action": "activate",
+        "object": "music",
+        "location": "none"
+      },
+      "definition": "Request turning on or starting music playback. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_06",
+      "native_values": {
+        "action": "bring",
+        "object": "juice",
+        "location": "none"
+      },
+      "definition": "Request bringing juice to the speaker. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_07",
+      "native_values": {
+        "action": "bring",
+        "object": "newspaper",
+        "location": "none"
+      },
+      "definition": "Request bringing a newspaper to the speaker. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_08",
+      "native_values": {
+        "action": "bring",
+        "object": "shoes",
+        "location": "none"
+      },
+      "definition": "Request bringing shoes to the speaker. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_09",
+      "native_values": {
+        "action": "bring",
+        "object": "socks",
+        "location": "none"
+      },
+      "definition": "Request bringing socks to the speaker. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_10",
+      "native_values": {
+        "action": "change language",
+        "object": "Chinese",
+        "location": "none"
+      },
+      "definition": "Request changing the assistant language to Chinese. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_11",
+      "native_values": {
+        "action": "change language",
+        "object": "English",
+        "location": "none"
+      },
+      "definition": "Request changing the assistant language to English. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_12",
+      "native_values": {
+        "action": "change language",
+        "object": "German",
+        "location": "none"
+      },
+      "definition": "Request changing the assistant language to German. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_13",
+      "native_values": {
+        "action": "change language",
+        "object": "Korean",
+        "location": "none"
+      },
+      "definition": "Request changing the assistant language to Korean. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_14",
+      "native_values": {
+        "action": "change language",
+        "object": "none",
+        "location": "none"
+      },
+      "definition": "Request changing the assistant language without specifying a target language. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_15",
+      "native_values": {
+        "action": "deactivate",
+        "object": "lamp",
+        "location": "none"
+      },
+      "definition": "Request turning off or stopping a lamp. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_16",
+      "native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "bedroom"
+      },
+      "definition": "Request turning off or stopping room lights. The requested room is the bedroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_17",
+      "native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "kitchen"
+      },
+      "definition": "Request turning off or stopping room lights. The requested room is the kitchen.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_18",
+      "native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "none"
+      },
+      "definition": "Request turning off or stopping room lights. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_19",
+      "native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "washroom"
+      },
+      "definition": "Request turning off or stopping room lights. The requested room is the bathroom or washroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_20",
+      "native_values": {
+        "action": "deactivate",
+        "object": "music",
+        "location": "none"
+      },
+      "definition": "Request turning off or stopping music playback. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_21",
+      "native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "bedroom"
+      },
+      "definition": "Request lowering the heating or temperature setting. The requested room is the bedroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_22",
+      "native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "kitchen"
+      },
+      "definition": "Request lowering the heating or temperature setting. The requested room is the kitchen.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_23",
+      "native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "none"
+      },
+      "definition": "Request lowering the heating or temperature setting. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_24",
+      "native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "washroom"
+      },
+      "definition": "Request lowering the heating or temperature setting. The requested room is the bathroom or washroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_25",
+      "native_values": {
+        "action": "decrease",
+        "object": "volume",
+        "location": "none"
+      },
+      "definition": "Request lowering audio volume. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_26",
+      "native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "bedroom"
+      },
+      "definition": "Request raising the heating or temperature setting. The requested room is the bedroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_27",
+      "native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "kitchen"
+      },
+      "definition": "Request raising the heating or temperature setting. The requested room is the kitchen.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_28",
+      "native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "none"
+      },
+      "definition": "Request raising the heating or temperature setting. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_29",
+      "native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "washroom"
+      },
+      "definition": "Request raising the heating or temperature setting. The requested room is the bathroom or washroom.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "fsc_command_30",
+      "native_values": {
+        "action": "increase",
+        "object": "volume",
+        "location": "none"
+      },
+      "definition": "Request raising audio volume. No particular room is specified in the native command.",
+      "annotation_policy": "Complete exclusive command triple, with none an explicit unspecified-category value rather than unknown.",
+      "includes": [
+        "Semantically equivalent command requests under the native attribute policy."
+      ],
+      "excludes": [
+        "Commands differing in any of the three native attributes, including specified versus unspecified values."
+      ],
+      "presence_policy": "I_class_not_multi_intent_presence",
+      "review_status": "ontology_authored_pending_utterance_and_runtime_acceptance",
+      "optimization_allowed": false
+    }
+  ],
+  "source": {
+    "train_csv": "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/data/train_data.csv",
+    "sha256": "df1b87b7122c7a9fa1555fda61ba45436c4bbb33428e1ea54adcc1c3c1317ea4",
+    "reference_config_sha256": "d08fb6acbbb3ff936557b29f8c1f32113a4fff93892f18c6d35c7d23f195bef4",
+    "train_records": 23132,
+    "train_speakers": 77,
+    "test_examples_used": false,
+    "reference_transcripts_used_for_authoring": false
+  },
+  "limits": [
+    "Ontology mapping is verified; no semantic listening or all-utterance review.",
+    "Target TRAIN ontology was used; do not claim completely unseen target task metadata.",
+    "Historical FSC experiments exist; do not claim pristine held-out discovery."
+  ]
+}

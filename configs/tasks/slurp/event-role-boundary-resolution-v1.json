@@ -1,0 +1,71 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "event_represented_content_v1",
+  "status": "selected_task_design_rule_pending_supervision_and_full_task_release",
+  "training_dispatch_allowed": false,
+  "entity_type": "event_name",
+  "definition": "An explicitly represented event, occasion, appointment or activity serving as content or an argument of the request: something scheduled, recalled, queried, reported, used as a condition or temporal anchor, or included in requested message/list content. A command merely specifying the assistant operation does not by itself supply this role. Apply request-relevant scope.",
+  "thinking_requirements": [
+    "Separate the assistant operation from the event content it operates on. Turn off the lights alone does not express an additional event argument; remind me to turn off the lights does, because turning off is the reminder content.",
+    "Accept event nouns, descriptive labels and clauses representing activities or occurrences. A proper event name, concrete participant identity, exact time, or normalized executable value is not required.",
+    "An explicitly referenced event category or unresolved instance such as meetings, my next appointment or that event can count. A request to create an empty calendar event still explicitly names the event category; do not invent an event from a date alone.",
+    "An asserted or queried occurrence can count when it contributes to the request, including past events, a described assassination, a scheduled arrival/departure, or sunshine during a specified period. Generic object properties, static personal attributes and content-category words alone are not events.",
+    "Explicitly postponed, canceled, denied, hypothetical or conditional events remain expressed events. This predicate reports presence, not occurrence truth, commitment, completion or environment state.",
+    "An event in requested message content or task-list content counts independently of the native intent. A bare request to send, play, search, switch or schedule without separately expressed event content does not gain event presence merely from that operation verb.",
+    "A holiday, birthday or anniversary can be an occasion. A screening or concert can be an event while a film/song title alone is not. Meal/sport/person types may also hold when their own roles are expressed.",
+    "Background events count only when they constrain, describe or motivate the requested operation, or are themselves communicated by the request. Unrelated background is outside request-relevant scope.",
+    "Where a fragment does not establish whether a word is an event, a title, a person, or another argument, keep the predicate unavailable; neither native annotation nor normally required parameters settle it."
+  ],
+  "negative_rule": "Full reference review establishes no represented event/occasion/activity role; never infer absence from missing native entities.",
+  "ambiguity_rule": "Keep unavailable if the reference does not establish event-content versus non-event meaning or request relevance.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      139,
+      140,
+      141
+    ],
+    "interpretation": "Calendar examples distinguish operation cancel/schedule from business meeting/chat content. Extension to clauses and cross-intent roles is project task design, not an official exhaustive equivalence claim."
+  },
+  "evidence": {
+    "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/event-role-boundary-evidence-v1/sources.jsonl",
+    "sha256": "63a3e3b66806691c873ddbde26009a1ce80cad07e8ba49fb199c39e7f5f10478",
+    "sources": 778,
+    "recordings": 3091,
+    "native_intent_classes": {
+      "alarm_set": 19,
+      "alarm_query": 2,
+      "datetime_query": 14,
+      "calendar_query": 165,
+      "audio_volume_mute": 1,
+      "alarm_remove": 1,
+      "weather_query": 2,
+      "general_quirky": 6,
+      "calendar_set": 412,
+      "calendar_remove": 80,
+      "email_sendemail": 14,
+      "transport_query": 1,
+      "recommendation_events": 28,
+      "cooking_recipe": 1,
+      "lists_remove": 1,
+      "lists_createoradd": 2,
+      "recommendation_movies": 5,
+      "transport_traffic": 1,
+      "transport_taxi": 1,
+      "qa_factoid": 9,
+      "social_post": 5,
+      "social_query": 2,
+      "email_query": 4,
+      "email_querycontact": 2
+    },
+    "reading": "All778 reference texts read; this does not label the entire cohort or certify native positives."
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v2.json",
+    "previous_package_sha256": "8544ef618d67528476a8acd678527d62412cae4a3df26763c7c457ea610d2dac",
+    "requires": "Re-review affected event_name proposals; do not copy old hashes or infer independent review.",
+    "historical_files_unchanged": true
+  },
+  "scope": "Task rule supplied before audio, no gold-conditioned question routing, text reasoning generation or value extraction."
+}

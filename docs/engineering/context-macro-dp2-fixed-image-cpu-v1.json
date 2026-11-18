@@ -1,0 +1,53 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "d2ee78f76d4a24038992bea965aa8d295447b405859e9817ba15a7c12e5fc5f1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T07:37:09.62216463Z",
+    "FinishedAt": "2026-11-16T07:40:01.77676088Z"
+  },
+  "source_files": 368,
+  "source_manifest_sha256": "ed705e2d7cb8b1bb1758047d671dd7f49c0661ac47ab0ca53be9197e657712ce",
+  "collection": "/srv/multimodal-jev-xingchao/operations/macro-dp2-cpu-v1/context-macro-dp2-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "80c230830929238bca52057938ef950ff92dafba79665315d2c3f09c03fb0dbc",
+    "run/junit.xml": "43150dd46114d308bb968ae96bef82cec9f244c59929978af151b1207a225958",
+    "run/pytest.log": "b4bf0d71abb3830c1727fcfb3566a6e562b9c3dd1fb20e680e2ebfad99068005",
+    "package/FILES.json": "ed705e2d7cb8b1bb1758047d671dd7f49c0661ac47ab0ca53be9197e657712ce",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794814656.614676,
+    "finished_unix": 1794814800.36404,
+    "source_manifest_sha256": "ed705e2d7cb8b1bb1758047d671dd7f49c0661ac47ab0ca53be9197e657712ce",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-macro-dp2-cpu-v1/run/junit.xml",
+      "tests/test_context_macro_actor_dp_resume.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual CPU DP2/native verl GRPO global128 micro8/16/32 accumulation and exact new-process replay on synthetic logits; not BF16 FSDP/audio/NPU/engine or speed proof."
+}

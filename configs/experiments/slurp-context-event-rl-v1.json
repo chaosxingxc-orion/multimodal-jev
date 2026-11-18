@@ -1,0 +1,145 @@
+{
+  "schema": "slurp-context-event-rl-v1",
+  "status": "task_and_experiment_design_fixed_runtime_admission_pending",
+  "training_dispatch_allowed": false,
+  "task_semantics": "exclusive_event",
+  "backbone": "Qwen3-ASR-0.6B",
+  "input": "audio_and_all_60_candidate_definitions",
+  "output": "60_independent_sigmoid_probabilities",
+  "class_specific_head_parameters": false,
+  "release": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1",
+  "release_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+  "learning_recordings": 40513,
+  "selection_recordings": 9226,
+  "official_test_use": "excluded_from_optimization_and_model_selection",
+  "query_weights": "uniform_real_recordings_zero_weight_padding",
+  "schedule": "full_coverage_class_spread_then_length_group_within_global_batch",
+  "global_batch_queries": 128,
+  "planned_dp": 4,
+  "planned_microbatch_per_rank": 8,
+  "planned_accumulation": 4,
+  "execution_dtype": "bfloat16",
+  "master_and_optimizer_dtype": "float32",
+  "lora": {
+    "targets": [
+      "q_proj",
+      "v_proj"
+    ],
+    "rank": 4,
+    "alpha": 8,
+    "dropout": 0
+  },
+  "head": {
+    "hidden_size": 1024,
+    "num_heads": 8,
+    "ffn_size": 1024,
+    "residual_scale": 0.1,
+    "dropout": 0
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "lr": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0,
+    "grad_clip": 1.0
+  },
+  "instruction_stage": {
+    "epochs": 2,
+    "updates": 634,
+    "ranking_coefficient": 1.0,
+    "probability_coefficient": 1.0,
+    "probability_score": "binary_nll",
+    "ranking_temperature": 1.0,
+    "ranking_margin": 0.0
+  },
+  "task_stage": {
+    "epochs": 2,
+    "updates": 634,
+    "primary_algorithm": "grpo_v1",
+    "alternative_algorithm": "rloo_v1",
+    "action": "complete_60_bit_tuple",
+    "sampling": "factorized_Bernoulli_from_current_policy",
+    "group_size": 16,
+    "reward": "complete_candidate_set_f1",
+    "empty_empty_reward": 1.0,
+    "partial_set_truth": "reject_set_reward_do_not_fill_missing_labels",
+    "clip_ratio": 0.2,
+    "native_dual_clip_c": 3.0,
+    "ppo_epochs": 1,
+    "retain_zero_signal_groups": true,
+    "advantage_before_dp_partition": true,
+    "reference": "frozen_end_of_this_instruction_stage_joint_policy",
+    "reference_kl": "sum_candidate_Bernoulli_KL_per_query",
+    "kl_coefficient": 0.01,
+    "auxiliary": {
+      "ranking_coefficient_start": 0.3,
+      "ranking_coefficient_end": 0.1,
+      "probability_coefficient_start": 0.3,
+      "probability_coefficient_end": 0.1,
+      "decay": "cosine_first_80_percent_updates"
+    }
+  },
+  "evaluation": {
+    "set_threshold": 0.5,
+    "checkpoints": [
+      0,
+      64,
+      128,
+      192,
+      256,
+      320,
+      384,
+      448,
+      512,
+      576,
+      634
+    ],
+    "population": "complete_9226_selection_recordings",
+    "primary": "query_macro_set_f1",
+    "secondary": [
+      "set_precision",
+      "set_recall",
+      "exact_set",
+      "mean_selected_count",
+      "top1_event_accuracy",
+      "top1_macro_f1",
+      "candidate_binary_nll",
+      "candidate_brier"
+    ],
+    "selected_checkpoint": "highest_selection_query_macro_set_f1_then_lowest_candidate_binary_nll_then_earliest_step",
+    "report_all_checkpoints": true,
+    "rl_gain_reference": "same_joint_policy_at_task_stage_step0"
+  },
+  "transfer": {
+    "dataset": "FSC",
+    "weights": "frozen_selected_SLURP_policy",
+    "adaptation": "candidate_definitions_and_annotation_rules_only",
+    "local_tuning": false
+  },
+  "pending_runtime": [
+    "joint_policy_rollout_activation",
+    "microbatch_capacity_and_throughput"
+  ],
+  "scope": "Initial predeclared research baseline, not optimal hyperparameters or demonstrated RL gain. One-hot labels mean benchmark event identity, not semantic intent presence. No SFT-versus-RL comparison.",
+  "runtime_evidence": {
+    "learning256_diagnostic_parity": "docs/engineering/context-learning256-parity-v1.json",
+    "native_actor_synthetic_cpu_dp": "docs/engineering/context-native-actor-dp-cpu-v3.json",
+    "scope": "Stage1 initial policy token/request/runtime admitted with unchanged initialization bytes. DP4 recovery and offline-behavior RL updates verified; full input cache, continuous policy refresh, throughput and efficacy remain pending.",
+    "actual_bf16_dp4_update_restore": "docs/engineering/context-native-actor-dp-npu-v3.json",
+    "updated_policy_learning256_hf_vllm": "docs/engineering/context-engine-dp-updated-npu7-v1.json",
+    "full_schedule_prefix": "docs/engineering/context-full-schedule-prefix-npu-v1.json",
+    "fresh_process_replay": "docs/engineering/context-full-schedule-resume-replay-npu-v1.json",
+    "actual_audio_grpo_rloo_update_replay": "docs/engineering/context-rl-actor-dp-npu-v1.json",
+    "rl_updated_policy_learning256_hf_vllm": "docs/engineering/context-engine-rl-updated-npu7-v1.json",
+    "initial_policy_protocol_admission": "docs/engineering/context-initial-policy-admission-cpu-v1.json"
+  },
+  "schedule_artifact": {
+    "path": ".local/decision-objective-research/context-full-learning-schedule-v1",
+    "manifest_sha256": "d9cd5832aa160df46a4c10a2051ff12c352d2a2609e2cffd6901267b28a814f6",
+    "report": "docs/engineering/context-full-learning-schedule-v1.json"
+  }
+}

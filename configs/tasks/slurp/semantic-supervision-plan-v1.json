@@ -1,0 +1,2086 @@
+{
+  "schema": "slurp-semantic-supervision-plan-v1",
+  "status": "required_data_deliverable_pending_annotation_not_training_release",
+  "training_dispatch_allowed": false,
+  "semantic_intent_catalog": {
+    "path": "configs/tasks/slurp/semantic-intent-catalog-candidate-v5.json",
+    "sha256": "e85ffca34a2a3c6a8843093c5fb4485426f62215f1421f5c3ec39fc25c593cdb",
+    "verification": "docs/research/intent-presence-inventory-check-v5.json",
+    "decision_record": "docs/research/107-current-intent-reference-rereview.md",
+    "semantic_cards": 65,
+    "native_classes_with_review_leads": 60,
+    "nonrequest_policy": "configs/tasks/intent-nonrequest-semantics-candidate-v1.json",
+    "semantic_admission": 0,
+    "scope": "Catalog v5 unchanged; all165 changed-card pending coordinates explicitly author rereviewed. No independent semantic admission.",
+    "next": "Finish slot calibration, independent semantic review and full-population annotation/admission protocol; freeze dependent task configs before engineering. No new task families.",
+    "reference_inventory": {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-presence-inventory-v5/report.json",
+      "report_sha256": "cb27fe84b7981a8847a7d485b46159b0f5835b61f23e8c2f5b1e513b89e41072",
+      "spec": "configs/reviews/slurp-intent-presence-inventory-v5.json",
+      "verification": "docs/research/intent-presence-inventory-check-v5.json",
+      "summary": {
+        "recordings": 40513,
+        "sources": 9192,
+        "semantic_cards": 65,
+        "assessments": 1451,
+        "assessed_coordinates": 1266,
+        "sources_with_assessments": 587,
+        "source_coordinate_counts": {
+          "unassessed": 596214,
+          "positive": 489,
+          "negative": 658,
+          "unavailable": 119
+        },
+        "cards_with_positive_and_negative": 65,
+        "cards_without_assessments": 0,
+        "incompatible_assessments": 181,
+        "duplicate_coordinates": 185,
+        "semantic_admission": 0
+      }
+    },
+    "history": [
+      {
+        "path": "configs/tasks/slurp/semantic-intent-catalog-candidate-v1.json",
+        "sha256": "697554f143eb63fd4caea4049f45bab0a95fe2947dbddd27faa6c75c4e3d5c0b",
+        "verification": "docs/research/semantic-intent-catalog-check-v1.json",
+        "decision_record": "docs/research/90-semantic-intent-catalog-and-nonrequest-acts.md",
+        "semantic_cards": 65,
+        "native_classes_with_review_leads": 60,
+        "nonrequest_policy": "configs/tasks/intent-nonrequest-semantics-candidate-v1.json",
+        "semantic_admission": 0,
+        "scope": "Complete inventory candidate; review routing is not a label mapping. Existing four cards unchanged, full boundary review and population supervision pending.",
+        "next": "Concentrate cross-card overlap and act-policy review before new cards or panel/budget changes. Do not auto-convert old denominator60 to65."
+      },
+      {
+        "path": "configs/tasks/slurp/semantic-intent-catalog-candidate-v2.json",
+        "sha256": "954bc1cc098cc8ceacba92db73fa76d35aa84e93fbaeabf6bae1a723be79805f",
+        "verification": "docs/research/audio-intent-boundary-check-v1.json",
+        "decision_record": "docs/research/91-audio-intent-direction-and-control-boundaries.md",
+        "semantic_cards": 65,
+        "native_classes_with_review_leads": 60,
+        "nonrequest_policy": "configs/tasks/intent-nonrequest-semantics-candidate-v1.json",
+        "semantic_admission": 0,
+        "scope": "65-card candidate; six audio boundaries revised,55 other authored and4 imported cards unchanged. No semantic training admission.",
+        "next": "Review broad factual-information overlap and remaining cross-card act boundaries before population supervision and menu/objective release.",
+        "audio_boundary_reference": {
+          "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/audio-intent-boundary-reference-v1/report.json",
+          "report_sha256": "fe89ea5b0ab7f8c13aee114623e1c26845e86d5d0142536405883641c86b8a19",
+          "sources": 27,
+          "decisions": 162,
+          "recordings": 217,
+          "semantic_admission": 0
+        }
+      },
+      {
+        "path": "configs/tasks/slurp/semantic-intent-catalog-candidate-v3.json",
+        "sha256": "a7493f073f892a56d7aedae356ba16a8fe49b46adac702b5ca9bbfb555225997",
+        "verification": "docs/research/factual-intent-boundary-check-v1.json",
+        "decision_record": "docs/research/92-factual-intent-overlap-and-reward-redundancy.md",
+        "semantic_cards": 65,
+        "native_classes_with_review_leads": 60,
+        "nonrequest_policy": "configs/tasks/intent-nonrequest-semantics-candidate-v1.json",
+        "semantic_admission": 0,
+        "scope": "Only factual predicate refined;60 other authored/4 imported cards unchanged,65 total. No training admission.",
+        "next": "Finish collection/nonrequest/media boundaries, then joint supervision overlap and fixed-menu budgets; no native projection or sample-dependent deduplication.",
+        "audio_boundary_reference": {
+          "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/audio-intent-boundary-reference-v1/report.json",
+          "report_sha256": "fe89ea5b0ab7f8c13aee114623e1c26845e86d5d0142536405883641c86b8a19",
+          "sources": 27,
+          "decisions": 162,
+          "recordings": 217,
+          "semantic_admission": 0
+        },
+        "factual_boundary_reference": {
+          "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/factual-intent-boundary-reference-v1/report.json",
+          "report_sha256": "2f1652d99f634b2333f9a7c881739c915601214cc035113f246182eb9bbb4d5c",
+          "sources": 38,
+          "recordings": 186,
+          "semantic_admission": 0
+        },
+        "reference_inventory": {
+          "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-presence-inventory-v1/report.json",
+          "report_sha256": "90d051690e65c727dd93aeb1a7784310486ff2c6b1e25028d5157190376695a3",
+          "spec": "configs/reviews/slurp-intent-presence-inventory-v1.json",
+          "verification": "docs/research/intent-presence-inventory-check-v1.json",
+          "decision_record": "docs/research/93-intent-presence-reference-inventory.md",
+          "summary": {
+            "recordings": 40513,
+            "sources": 9192,
+            "semantic_cards": 65,
+            "assessments": 1058,
+            "assessed_coordinates": 1058,
+            "sources_with_assessments": 491,
+            "source_coordinate_counts": {
+              "unassessed": 596422,
+              "positive": 405,
+              "negative": 568,
+              "unavailable": 85
+            },
+            "cards_with_positive_and_negative": 9,
+            "cards_without_assessments": 54,
+            "incompatible_assessments": 0,
+            "duplicate_coordinates": 0,
+            "semantic_admission": 0
+          },
+          "scope": "Reference-only full-population inventory; independent semantic admission remains zero; historical intent-fit and slot workpack remain separate."
+        }
+      }
+    ],
+    "reference_inventory_history": [
+      {
+        "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-presence-inventory-v2/report.json",
+        "report_sha256": "8204fa253ac0c0132bec95d2b1a75c6a1a4739911caf39ce7f328f76e8ba6a6a",
+        "spec": "configs/reviews/slurp-intent-presence-inventory-v2.json",
+        "verification": "docs/research/intent-presence-inventory-check-v2.json",
+        "summary": {
+          "recordings": 40513,
+          "sources": 9192,
+          "semantic_cards": 65,
+          "assessments": 1146,
+          "assessed_coordinates": 1146,
+          "sources_with_assessments": 530,
+          "source_coordinate_counts": {
+            "unassessed": 596334,
+            "positive": 439,
+            "negative": 609,
+            "unavailable": 98
+          },
+          "cards_with_positive_and_negative": 15,
+          "cards_without_assessments": 48,
+          "incompatible_assessments": 0,
+          "duplicate_coordinates": 0,
+          "semantic_admission": 0
+        },
+        "scope": "All five reference packages; no semantic admission."
+      },
+      {
+        "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-presence-inventory-v3/report.json",
+        "report_sha256": "88d53036d5223aa89c59e21b0cc9c719ebfcb02f9477e23fc391ec26bf3549c9",
+        "spec": "configs/reviews/slurp-intent-presence-inventory-v3.json",
+        "verification": "docs/research/intent-presence-inventory-check-v3.json",
+        "summary": {
+          "recordings": 40513,
+          "sources": 9192,
+          "semantic_cards": 65,
+          "assessments": 1262,
+          "assessed_coordinates": 1261,
+          "sources_with_assessments": 582,
+          "source_coordinate_counts": {
+            "unassessed": 596219,
+            "positive": 489,
+            "negative": 658,
+            "unavailable": 114
+          },
+          "cards_with_positive_and_negative": 65,
+          "cards_without_assessments": 0,
+          "incompatible_assessments": 0,
+          "duplicate_coordinates": 1,
+          "semantic_admission": 0
+        },
+        "scope": "All65 cards have authored positive/negative anchors; not full-population supervision or independent semantic admission."
+      },
+      {
+        "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-presence-inventory-v4/report.json",
+        "report_sha256": "de18e1ab8779a00bf6a938d91f032d1b591b8fc683b928e49a061fe29ccbf65d",
+        "spec": "configs/reviews/slurp-intent-presence-inventory-v4.json",
+        "verification": "docs/research/intent-presence-inventory-check-v4.json",
+        "summary": {
+          "recordings": 40513,
+          "sources": 9192,
+          "semantic_cards": 65,
+          "assessments": 1286,
+          "assessed_coordinates": 1266,
+          "sources_with_assessments": 587,
+          "source_coordinate_counts": {
+            "unassessed": 596214,
+            "positive": 442,
+            "negative": 551,
+            "unavailable": 108,
+            "needs_rereview": 165
+          },
+          "cards_with_positive_and_negative": 65,
+          "cards_without_assessments": 0,
+          "incompatible_assessments": 181,
+          "duplicate_coordinates": 20,
+          "semantic_admission": 0
+        }
+      }
+    ],
+    "ontology_anchor_reference": {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-ontology-anchors-v1/report.json",
+      "report_sha256": "f3b943ae9326153c1f66db54eac8b2bbcf4cda769c95ca0a432c447203e02575",
+      "decisions": 116,
+      "sources": 70,
+      "positive": 50,
+      "negative": 50,
+      "unavailable": 16,
+      "semantic_admission": 0,
+      "decision_record": "docs/research/95-intent-ontology-calibration-coverage.md"
+    }
+  },
+  "native_semantic_task_resolution": {
+    "path": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "sha256": "342fa6dc6b321920fda5b15a758585b7dfee0a15ed84996c002a7576e70d20fc",
+    "verification": "docs/research/native-semantic-task-resolution-check-v1.json",
+    "decision_record": "docs/research/89-native-final-and-semantic-question-resolution.md",
+    "authority": "Main independent intent process is I_present; native Final remains60 and I_class is an optional redundant-membership control. No automatic old-label migration.",
+    "remaining": "Full semantic intent ontology and non-request policies, full-population supervision, masks, menus and objective/evaluation migration before engineering."
+  },
+  "request_semantics_design_study": {
+    "policy": "configs/tasks/intent-request-semantics-candidate-v1.json",
+    "contact_definitions": "configs/tasks/slurp/contact-semantic-presence-candidate-v1.json",
+    "contact_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/contact-semantic-presence-reference-v1/report.json",
+    "contact_report_sha256": "7757882522489f420f0f7be433585fb06fc8a0979ad3a842ec4855d4f8a5bd35",
+    "verification": "docs/research/contact-request-semantics-check-v1.json",
+    "decision_record": "docs/research/87-request-semantics-and-contact-presence.md",
+    "operator": "I_present_separate_candidate_not_a_replacement_for_task_v2_I_class",
+    "sources": 147,
+    "recordings": 557,
+    "proposals": 294,
+    "semantic_admission": 0,
+    "current_workpack_integration": false,
+    "next": "Contact and transport complete cohort studies now share the unchanged request policy. Resolve non-transferable native classes, then finalize operator roles and full-population supervision in one task release.",
+    "transport_definitions": "configs/tasks/slurp/transport-semantic-presence-candidate-v1.json",
+    "transport_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/transport-semantic-presence-reference-v1/report.json",
+    "transport_report_sha256": "0224b6a2f8544fe94f15f2710b229a285ab01996f606d7d8ff9a5d02e811ce1b",
+    "transport_verification": "docs/research/transport-request-semantics-check-v1.json",
+    "transport_decision_record": "docs/research/88-transport-request-semantics-transfer.md",
+    "transport_sources": 282,
+    "transport_recordings": 1232,
+    "transport_proposals": 564,
+    "shared_request_policy_sha256": "4cb8698806311285a30c06cb1c9fe2f60ae3170efe37c52def8a6d5c872f4367"
+  },
+  "intent_definition_mapping_audit": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-mapping-audit-v1/report.json",
+    "report_sha256": "eb4a55d3a5210b33129a51fec111682fe8f092bca557c89d11f41c85eabf4f8d",
+    "verification": "docs/research/intent-definition-mapping-check-v1.json",
+    "decision_record": "docs/research/86-intent-definition-mapping-coverage.md",
+    "own_definition_source_counts": {
+      "supported": 482,
+      "not_supported": 23,
+      "unresolved": 89,
+      "unassessed": 8598
+    },
+    "own_definition_recording_counts": {
+      "supported": 1985,
+      "not_supported": 104,
+      "unresolved": 379,
+      "unassessed": 38045
+    },
+    "assessed_source_definition_coordinates": 1025,
+    "cross_native_supported_coordinates": 11,
+    "semantic_admission": 0,
+    "next_rule_work": "Clarify request information versus operation, clause-level exclusion and conditional-request semantics; resolve non-transferable cooking_query/general_quirky definitions and native-to-semantic mapping before changing operators or bulk review.",
+    "scope": "Existing reference-fit evidence reconstructed over full learning population; no new judgments, native errors, I_class/I_present admission or actor changes inferred."
+  },
+  "ambiguity_and_freeze_policy": {
+    "definition_ambiguity": "Missing or contradictory task-level truth rules block the affected operator/definition release.",
+    "input_ambiguity": "Under a clear frozen rule, an input with insufficient evidence stays unavailable; zero unresolved inputs is not a task-freeze requirement.",
+    "population": "Retain every source/recording and its status; do not replace the full learning objective with a small adjudicated subset.",
+    "mask": "Unavailable/conflict decisions contribute no reward or CE and do not become false; weights are not redistributed.",
+    "coverage": "Freeze per-definition positive/negative/missing/conflict counts and adequate effective supervision for the registered objective; a mask alone does not make a release ready.",
+    "independent_review": "Reference-text proposals remain distinct from independent adjudication and audio evidence; no automatic admission from this policy.",
+    "evidence": "docs/research/58-slot-evidence-ambiguity-and-freeze.md"
+  },
+  "population": {
+    "base_release": "official-clean-intent-v1",
+    "learning_recordings": 40513,
+    "learning_sources": 9192,
+    "preserve_every_record": true,
+    "annotation_unit": "source_utterance_then_explicit_audio_recording_binding",
+    "source_level_review_reuse": "shared_reference_evidence_only_never_claim_all_recordings_were_listened_to",
+    "scope": "all_classes_and_full_learning_population_not_a_small_reviewed_pilot"
+  },
+  "required_per_source": {
+    "identity": [
+      "source_id",
+      "metadata_record_sha256",
+      "ontology_sha256",
+      "policy_sha256"
+    ],
+    "native_final": [
+      "original_scenario_action",
+      "definition_alignment_status",
+      "rationale_for_conflict_or_unavailable"
+    ],
+    "intent_predicates": "explicit_assessed_definition_IDs_and_positive_negative_unavailable_conflict; exclusive_I_class_only_with_valid_exclusive_mapping",
+    "slot_predicates": "explicit_assessed_type_IDs_and_positive_negative_unavailable_conflict_under_fixed_presence_policy",
+    "negative_coverage": "type-specific_verified_absence_or_independent_exhaustive_set_declaration; absent_from_positive_list_is_not_negative_by_default",
+    "evidence": [
+      "evidence_modality",
+      "reviewer_or_annotation_method",
+      "review_revision",
+      "supporting_reference_or_audio_interval_if_available"
+    ],
+    "multi_intent_or_condition": "record_ambiguity_without_inventing_primary_intent_or_environment_state",
+    "admission": "separate_from_proposed_labels; explicit_review_basis_and_release_policy"
+  },
+  "annotation_procedure": [
+    "Resolve task-level definitions and precedence before bulk annotation; class-specific unsupported definitions stay unresolved rather than broadened to fit gold.",
+    "Annotate complete source once for intent and expressed roles; expand predicates only under explicitly recorded per-type coverage.",
+    "Keep native labels and proposed semantic labels in separate fields; never silently coerce disagreement back to native.",
+    "Use independent review for disagreements and unresolved boundaries; teacher or automatic rules alone do not certify final truth.",
+    "Verify recording binding and all source IDs; record reference-only versus audio-reviewed evidence without upgrading scope.",
+    "Aggregate population, polarity, missingness and conflict by class/type/source; recompute Stage1 weights from admitted truth.",
+    "Publish immutable semantic manifest with masks and all original records retained; only then freeze tasks and implement trainer consumption."
+  ],
+  "known_issue_policy": {
+    "inventory": "docs/research/transport-definition-fit-check-v1.json",
+    "native_definition_mismatch": "104_recordings_in23_groups_require_resolution_before_using_the_affected_label_with_current_definition; not_automatically_a_native_annotation_error",
+    "no_historical_rewrite": true,
+    "no_silent_training_admission": "an_old_official_clean_manifest_does_not_override_newly_recorded_definition_conflicts",
+    "unreviewed": "not_marked_wrong_but_not_certified_for_new_semantic_Q",
+    "no_tiny_subset_substitute": true
+  },
+  "evaluation": {
+    "selection": "freeze_definitions_using_learning_then_annotate_selection_under_same_policy_no_selection_error_driven_definition_changes",
+    "official_test": "native_academic_protocol_separate_from_semantic_annotations; no_training_or_model_selection_feedback"
+  },
+  "release_acceptance": [
+    "every_original_record_has_explicit_status_even_if_unavailable",
+    "all_known_definition_conflicts_resolved_or_explicitly_masked_with_impact_report",
+    "coverage_and_class_balance_adequate_for_registered_full_scale_objective_not_just_record_count",
+    "no_unknown_as_false_no_reference_input_to_actor",
+    "source_roles_audio_identity_and_review_hashes_independently_reconstructed",
+    "native_vs_semantic_metric_names_and_denominators_distinct",
+    "stage1_and_stage2_objective_masks_and_counts_frozen"
+  ],
+  "upstream_provenance": {
+    "evidence": "docs/research/upstream-provenance-check-v1.json",
+    "interpretation": "docs/research/55-intent-upstream-provenance.md",
+    "scope": "all_learning_sources_exact_text_provenance_candidates_not_semantic_truth",
+    "collection_prompt_policy": "offline_provenance_only_never_actor_input_or_exclusive_priority",
+    "source_id_policy": "SLURP_slurp_id_and_upstream_answerid_are_distinct_namespaces",
+    "native_conflict_policy": "historical_label_persistence_does_not_certify_semantic_correctness_or_error"
+  },
+  "current_workpack": {
+    "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v14",
+    "report_sha256": "a6e74b01961911ac6c1e10f32fa3d08e3cd0923df40b8192cbadf705e45ca14f",
+    "verification": "docs/research/current-rule-migration-check-v14.json",
+    "slot_reference_coordinates": 4974,
+    "slot_reference_assessments": 6021,
+    "current_rule_compatible_proposal_coordinates": 161,
+    "current_rule_unavailable_coordinates": 10,
+    "requires_current_rule_review_coordinates": 4803,
+    "unassessed_slot_coordinates": 500586,
+    "historical_intent_fit_coordinates": 1025,
+    "shared_boundaries": 89,
+    "semantic_admission": 0,
+    "definition_scope": "Same v16/v16/v17 rules;110 new reference judgments, no ontology change.",
+    "migration_config": "configs/reviews/slurp-reference-migration-v14.json"
+  },
+  "sequential_reference_progress": {
+    "review": "configs/reviews/slurp-full-slot-sequential-reference-b0001.json",
+    "evidence": "docs/research/full-slot-reference-b0001-check-v1.json",
+    "interval": [
+      0,
+      16
+    ],
+    "total_sources": 9192,
+    "type_decisions": 880,
+    "positive": 38,
+    "negative": 814,
+    "unavailable": 28,
+    "admitted": 0,
+    "scope": "first contiguous reference-review batch, not full data completion or a new small training population",
+    "boundary_issues": "configs/tasks/slurp/full-review-boundary-issues-v1.json",
+    "merged_into_workpack": true,
+    "merge_scope": "All880 original assessments retained with current/stale semantic applicability; not all re-reviewed or admitted under current rules."
+  },
+  "current_definition_candidate": "configs/tasks/slurp/slot-consolidated-design-v14.json",
+  "news_scope_progress": {
+    "evidence": "docs/research/news-topic-boundary-check-v1.json",
+    "new_rule": "configs/tasks/slurp/news-topic-boundary-resolution-v1.json",
+    "read_sources": 403,
+    "review_sources": 46,
+    "admitted": 0
+  },
+  "event_role_progress": {
+    "evidence": "docs/research/event-role-boundary-check-v1.json",
+    "rule": "configs/tasks/slurp/event-role-boundary-resolution-v1.json",
+    "read_sources": 778,
+    "reference_review_sources": 44,
+    "first_batch_changed": 8,
+    "admitted": 0
+  },
+  "work_reference_progress": {
+    "rule": "configs/tasks/slurp/work-reference-boundary-resolution-v1.json",
+    "evidence": "docs/research/work-reference-boundary-check-v1.json",
+    "read_sources": 353,
+    "reference_coordinates": 45,
+    "reference_sources": 43,
+    "first_batch_unresolved_rereviewed": 3,
+    "admitted": 0
+  },
+  "property_role_progress": {
+    "rule": "configs/tasks/slurp/property-role-boundary-resolution-v1.json",
+    "evidence": "docs/research/property-role-boundary-check-v1.json",
+    "read_unique_sources": 1129,
+    "reference_coordinates": 53,
+    "reference_sources": 46,
+    "first_batch_unresolved_rereviewed": 4,
+    "admitted": 0
+  },
+  "attribute_relation_progress": {
+    "rule": "configs/tasks/slurp/attribute-relation-boundary-resolution-v1.json",
+    "evidence": "docs/research/attribute-relation-boundary-check-v1.json",
+    "read_unique_sources": 489,
+    "reference_coordinates": 55,
+    "reference_sources": 45,
+    "first_batch_unresolved_rereviewed": 3,
+    "admitted": 0
+  },
+  "historical_workpacks": [
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2",
+      "report_sha256": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+      "verification": "docs/research/annotation-workpack-check-v3.json",
+      "reference_coordinates": 1103,
+      "reference_assessments": 1105,
+      "sources_with_reference": 644,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Historical v3/v3/v4 workpack. Current v8/v8/v9 requires explicit reference review migration; no automatic native or prior semantic truth admission."
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v1",
+      "report_sha256": "0caac43d49264896d12274167aa74245a94bed67047d2c1c65256ff627960fa2",
+      "verification": "docs/research/current-rule-migration-check-v1.json",
+      "slot_reference_coordinates": 1152,
+      "slot_reference_assessments": 1203,
+      "current_rule_compatible_proposal_coordinates": 378,
+      "current_rule_unavailable_coordinates": 31,
+      "requires_current_rule_review_coordinates": 743,
+      "unassessed_slot_coordinates": 504408,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Historical v8/v8/v9 relative to current v9/v9/v10. Owner/channel revision requires explicit affected-reference migration; old workpack remains immutable.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v1.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v2",
+      "report_sha256": "5cd2839ec08d596951d2667c428f11f8b1dba4c916fcdcda0417acdb92e1232f",
+      "verification": "docs/research/current-rule-migration-check-v2.json",
+      "slot_reference_coordinates": 1178,
+      "slot_reference_assessments": 2118,
+      "current_rule_compatible_proposal_coordinates": 713,
+      "current_rule_unavailable_coordinates": 18,
+      "requires_current_rule_review_coordinates": 447,
+      "unassessed_slot_coordinates": 504382,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v9/v9/v10; all original evidence retained and compared using its own original ontology, including full-slot rereview v2 and owner/channel review.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v2.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v3",
+      "report_sha256": "befa1472857bb5e43bae62f810ea08022e3bc7f5deca2bbaade9da516d1d10b3",
+      "verification": "docs/research/current-rule-migration-check-v3.json",
+      "slot_reference_coordinates": 2057,
+      "slot_reference_assessments": 2998,
+      "current_rule_compatible_proposal_coordinates": 1580,
+      "current_rule_unavailable_coordinates": 30,
+      "requires_current_rule_review_coordinates": 447,
+      "unassessed_slot_coordinates": 503503,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v9/v9/v10; original evidence retained, second sequential source batch included.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v3.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v4",
+      "report_sha256": "e4e23e90b6a6ad6799cef1c67d0aa65b594abc5f63eb50f7e57c8c847a98f0c2",
+      "verification": "docs/research/current-rule-migration-check-v4.json",
+      "slot_reference_coordinates": 2936,
+      "slot_reference_assessments": 3878,
+      "current_rule_compatible_proposal_coordinates": 2449,
+      "current_rule_unavailable_coordinates": 40,
+      "requires_current_rule_review_coordinates": 447,
+      "unassessed_slot_coordinates": 502624,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v9/v9/v10; original evidence retained, third sequential source batch included.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v4.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v5",
+      "report_sha256": "65e76fbcb5ee2628fc79b37dd5bdf7e745f3b4e8e8269adb778ca125814801bc",
+      "verification": "docs/research/current-rule-migration-check-v5.json",
+      "slot_reference_coordinates": 2962,
+      "slot_reference_assessments": 3913,
+      "current_rule_compatible_proposal_coordinates": 1897,
+      "current_rule_unavailable_coordinates": 38,
+      "requires_current_rule_review_coordinates": 1027,
+      "unassessed_slot_coordinates": 502598,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v10/v10/v11; descriptor/domestic rules and35 new proposals included; old affected coordinates require explicit rereview.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v5.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v6",
+      "report_sha256": "12c3e1234ac616530d147b44a9311921c75f2fd4b3ee8d46975e5c9528e42041",
+      "verification": "docs/research/current-rule-migration-check-v6.json",
+      "slot_reference_coordinates": 3840,
+      "slot_reference_assessments": 4793,
+      "current_rule_compatible_proposal_coordinates": 2764,
+      "current_rule_unavailable_coordinates": 49,
+      "requires_current_rule_review_coordinates": 1027,
+      "unassessed_slot_coordinates": 501720,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v10/v10/v11; fourth fixed-order sequential batch included without ontology changes.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v6.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v7",
+      "report_sha256": "f2bface49d8198d75b3b9526dcbc7dae01d3e65dfe23d1672abec7f1aab20998",
+      "verification": "docs/research/current-rule-migration-check-v7.json",
+      "slot_reference_coordinates": 4720,
+      "slot_reference_assessments": 5673,
+      "current_rule_compatible_proposal_coordinates": 3632,
+      "current_rule_unavailable_coordinates": 61,
+      "requires_current_rule_review_coordinates": 1027,
+      "unassessed_slot_coordinates": 500840,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v10/v10/v11; fifth fixed-order sequential batch included without ontology changes.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v7.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v8",
+      "report_sha256": "9f37e3af595ae2dfd28684dadff411ced4ff586aa65740c3653f16aac51a0f59",
+      "verification": "docs/research/current-rule-migration-check-v8.json",
+      "slot_reference_coordinates": 4749,
+      "slot_reference_assessments": 5712,
+      "current_rule_compatible_proposal_coordinates": 3480,
+      "current_rule_unavailable_coordinates": 60,
+      "requires_current_rule_review_coordinates": 1209,
+      "unassessed_slot_coordinates": 500811,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v11/v11/v12; explicit collection rule and39 references included, affected prior contracts not automatically admitted.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v8.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v9",
+      "report_sha256": "4f6a1e043ff79650c1bdaf1555374eaae8f6a7756af6f29edafc828c9128e4e5",
+      "verification": "docs/research/current-rule-migration-check-v9.json",
+      "slot_reference_coordinates": 4793,
+      "slot_reference_assessments": 5760,
+      "current_rule_compatible_proposal_coordinates": 2696,
+      "current_rule_unavailable_coordinates": 60,
+      "requires_current_rule_review_coordinates": 2037,
+      "unassessed_slot_coordinates": 500767,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v12/v12/v13; explicit requested calendar/creator rules and48 reference proposals included; affected previous contracts require rereview.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v9.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v10",
+      "report_sha256": "ff6c6725939a15a6def30dd550a99292014457b3c1adc650383272e419692f16",
+      "verification": "docs/research/current-rule-migration-check-v10.json",
+      "slot_reference_coordinates": 4842,
+      "slot_reference_assessments": 5824,
+      "current_rule_compatible_proposal_coordinates": 1534,
+      "current_rule_unavailable_coordinates": 31,
+      "requires_current_rule_review_coordinates": 3277,
+      "unassessed_slot_coordinates": 500718,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v13/v13/v14; five contextual role boundaries and64 reference proposals included; prior affected contracts need rereview.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v10.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v11",
+      "report_sha256": "82139d7edf4061e7e624fd0a666e02b01d04ba9223545979ac0b26ba74f140ad",
+      "verification": "docs/research/current-rule-migration-check-v11.json",
+      "slot_reference_coordinates": 4871,
+      "slot_reference_assessments": 5857,
+      "current_rule_compatible_proposal_coordinates": 29,
+      "current_rule_unavailable_coordinates": 4,
+      "requires_current_rule_review_coordinates": 4838,
+      "unassessed_slot_coordinates": 500689,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v14/v14/v15; expressed communicative content. All historical scope contracts need rereview,33 new slot reference proposals only.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v11.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v12",
+      "report_sha256": "75f5aa74bf47deef3c418fe9ce4774eb5cb381e9def035a342a83e9232206190",
+      "verification": "docs/research/current-rule-migration-check-v12.json",
+      "slot_reference_coordinates": 4871,
+      "slot_reference_assessments": 5857,
+      "current_rule_compatible_proposal_coordinates": 15,
+      "current_rule_unavailable_coordinates": 0,
+      "requires_current_rule_review_coordinates": 4856,
+      "unassessed_slot_coordinates": 500689,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v15/v15/v16; same55 type cards as v14,39 boundary contradictions corrected; no new source judgments.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v12.json"
+    },
+    {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v13",
+      "report_sha256": "b5e278a4fe5117fedd4ede0b4c705c700db911ad0da83acc58bfa1414fc84b7e",
+      "verification": "docs/research/current-rule-migration-check-v13.json",
+      "slot_reference_coordinates": 4921,
+      "slot_reference_assessments": 5911,
+      "current_rule_compatible_proposal_coordinates": 57,
+      "current_rule_unavailable_coordinates": 10,
+      "requires_current_rule_review_coordinates": 4854,
+      "unassessed_slot_coordinates": 500639,
+      "historical_intent_fit_coordinates": 1025,
+      "shared_boundaries": 89,
+      "semantic_admission": 0,
+      "definition_scope": "Current v16/v16/v17;3 provider/service cards and12 incident boundaries changed,52 cards unchanged;54 new reference proposals,0 admission.",
+      "migration_config": "configs/reviews/slurp-reference-migration-v13.json"
+    }
+  ],
+  "current_rule_sequential_rereview": {
+    "review": "configs/reviews/slurp-full-slot-sequential-reference-b0001-v2.json",
+    "evidence": "docs/research/full-slot-reference-b0001-check-v2.json",
+    "interval": [
+      0,
+      16
+    ],
+    "coordinates": 880,
+    "positive": 40,
+    "negative": 837,
+    "unavailable": 3,
+    "changed_from_historical": 30,
+    "previous_positive_changed": 4,
+    "admitted": 0,
+    "merged_into_current_workpack": true,
+    "scope": "Complete current55-type reference rereview, separate additive artifact; does not overwrite current immutable migration workpack or claim independent semantic review.",
+    "merge_scope": "All880 rereview assessments retained and reclassified against current v9/v9/v10; changed incident boundaries remain pending, no admission inferred."
+  },
+  "owner_channel_progress": {
+    "rule": "configs/tasks/slurp/owner-channel-boundary-resolution-v1.json",
+    "review": "configs/reviews/slurp-owner-channel-boundary-v1.json",
+    "evidence": "docs/research/owner-channel-boundary-check-v1.json",
+    "read_sources": 433,
+    "reference_coordinates": 35,
+    "admitted": 0
+  },
+  "sequential_reference_batches": [
+    {
+      "review": "configs/reviews/slurp-full-slot-sequential-reference-b0002.json",
+      "evidence": "docs/research/full-slot-reference-b0002-check-v1.json",
+      "interval": [
+        16,
+        32
+      ],
+      "coordinates": 880,
+      "positive": 47,
+      "negative": 821,
+      "unavailable": 12,
+      "admitted": 0,
+      "merged_into_current_workpack": true,
+      "issues": "configs/reviews/slurp-sequential-review-issues-b0002.json"
+    },
+    {
+      "review": "configs/reviews/slurp-full-slot-sequential-reference-b0003.json",
+      "evidence": "docs/research/full-slot-reference-b0003-check-v1.json",
+      "interval": [
+        32,
+        48
+      ],
+      "coordinates": 880,
+      "positive": 33,
+      "negative": 837,
+      "unavailable": 10,
+      "admitted": 0,
+      "merged_into_current_workpack": true,
+      "issues": "configs/reviews/slurp-sequential-review-issues-b0003.json"
+    },
+    {
+      "review": "configs/reviews/slurp-full-slot-sequential-reference-b0004.json",
+      "evidence": "docs/research/full-slot-reference-b0004-check-v1.json",
+      "interval": [
+        48,
+        64
+      ],
+      "coordinates": 880,
+      "positive": 39,
+      "negative": 830,
+      "unavailable": 11,
+      "admitted": 0,
+      "merged_into_current_workpack": true,
+      "issues": "configs/reviews/slurp-sequential-review-issues-b0004.json"
+    },
+    {
+      "review": "configs/reviews/slurp-full-slot-sequential-reference-b0005.json",
+      "evidence": "docs/research/full-slot-reference-b0005-check-v1.json",
+      "interval": [
+        64,
+        80
+      ],
+      "coordinates": 880,
+      "positive": 28,
+      "negative": 840,
+      "unavailable": 12,
+      "admitted": 0,
+      "merged_into_current_workpack": true,
+      "issues": "configs/reviews/slurp-sequential-review-issues-b0005.json"
+    }
+  ],
+  "sequential_next_source_offset": 80,
+  "descriptor_domestic_progress": {
+    "rule": "configs/tasks/slurp/role-boundary-convergence-resolution-v1.json",
+    "review": "configs/reviews/slurp-role-boundary-convergence-v1.json",
+    "evidence": "docs/research/role-boundary-convergence-check-v1.json",
+    "read_unique_sources": 486,
+    "reference_coordinates": 35,
+    "admitted": 0,
+    "standalone_report_scope": "unresolved_no_global_scope_change"
+  },
+  "communication_scope_review": {
+    "rule": "configs/tasks/slurp/communication-scope-resolution-v2.json",
+    "scope_review": "configs/reviews/slurp-communication-scope-reference-v2.json",
+    "slot_review": "configs/reviews/slurp-communication-scope-slot-reference-v2.json",
+    "verification": "docs/research/communication-scope-check-v2.json",
+    "read_sources": 581,
+    "scope_review_sources": 49,
+    "slot_review_coordinates": 33,
+    "applied_to_current_ontology": true,
+    "user_confirmation": false,
+    "selection_basis": "project_design_choice_after_unanswered_optional_preference; not inferred approval",
+    "admitted": 0,
+    "pending": "full_ontology_consistency_and_population_review; not task freeze"
+  },
+  "current_reference_coverage": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v10/report.json",
+    "verification": "docs/research/current-semantic-coverage-check-v10.json",
+    "current_positive_reference_coordinates": 81,
+    "current_negative_reference_coordinates": 80,
+    "both_polarity_types": 55,
+    "positive_only_types": 0,
+    "negative_only_types": 0,
+    "neither_polarity_types": 0,
+    "training_weight_source": false,
+    "admitted": 0
+  },
+  "historical_reference_coverage": [
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v1/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v1.json",
+      "current_positive_reference_coordinates": 133,
+      "current_negative_reference_coordinates": 1764,
+      "both_polarity_types": 24,
+      "negative_only_types": 20,
+      "neither_polarity_types": 11,
+      "training_weight_source": false,
+      "admitted": 0
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v2/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v2.json",
+      "current_positive_reference_coordinates": 171,
+      "current_negative_reference_coordinates": 2593,
+      "both_polarity_types": 29,
+      "negative_only_types": 26,
+      "neither_polarity_types": 0,
+      "training_weight_source": false,
+      "admitted": 0
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v3/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v3.json",
+      "current_positive_reference_coordinates": 199,
+      "current_negative_reference_coordinates": 3433,
+      "both_polarity_types": 33,
+      "negative_only_types": 22,
+      "neither_polarity_types": 0,
+      "training_weight_source": false,
+      "admitted": 0
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v4/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v4.json",
+      "current_positive_reference_coordinates": 218,
+      "current_negative_reference_coordinates": 3262,
+      "both_polarity_types": 31,
+      "negative_only_types": 22,
+      "neither_polarity_types": 2,
+      "training_weight_source": false,
+      "admitted": 0
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v5/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v5.json",
+      "current_positive_reference_coordinates": 160,
+      "current_negative_reference_coordinates": 2536,
+      "both_polarity_types": 27,
+      "negative_only_types": 18,
+      "neither_polarity_types": 10,
+      "training_weight_source": false,
+      "admitted": 0
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v6/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v6.json",
+      "current_positive_reference_coordinates": 106,
+      "current_negative_reference_coordinates": 1428,
+      "both_polarity_types": 20,
+      "negative_only_types": 12,
+      "neither_polarity_types": 23,
+      "training_weight_source": false,
+      "admitted": 0
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v7/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v7.json",
+      "current_positive_reference_coordinates": 24,
+      "current_negative_reference_coordinates": 5,
+      "both_polarity_types": 1,
+      "positive_only_types": 13,
+      "negative_only_types": 4,
+      "neither_polarity_types": 37,
+      "training_weight_source": false,
+      "admitted": 0
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/current-semantic-coverage-v8/report.json",
+      "verification": "docs/research/current-semantic-coverage-check-v8.json",
+      "current_positive_reference_coordinates": 12,
+      "current_negative_reference_coordinates": 3,
+      "both_polarity_types": 0,
+      "positive_only_types": 6,
+      "negative_only_types": 3,
+      "neither_polarity_types": 46,
+      "training_weight_source": false,
+      "admitted": 0
+    }
+  ],
+  "current_unresolved_triage": {
+    "config": "configs/reviews/slurp-semantic-issue-triage-v1.json",
+    "verification": "docs/research/semantic-issue-triage-check-v1.json",
+    "current_unresolved_coordinates": 61,
+    "definition_first_coordinates": 16,
+    "input_review_coordinates": 45,
+    "groups": 18,
+    "semantic_changes_applied": false,
+    "next_action": "converge_shared_definitions_before_expanding_sequential_reference_batches; input_review_is_not_certified_irreducible_ambiguity",
+    "status": "historical_workpack_v7; definition groups have selected project rules. Current v12 includes known consistency fixes. Historical counts not current and input ambiguity not certified irreducible."
+  },
+  "collection_role_progress": {
+    "rule": "configs/tasks/slurp/collection-role-boundary-resolution-v1.json",
+    "review": "configs/reviews/slurp-collection-role-boundary-v1.json",
+    "verification": "docs/research/collection-role-check-v1.json",
+    "read_unique_sources": 582,
+    "reference_coordinates": 39,
+    "previous_definition_unresolved_reassessed": 5,
+    "admitted": 0
+  },
+  "requested_role_progress": {
+    "rule": "configs/tasks/slurp/requested-role-boundary-resolution-v1.json",
+    "review": "configs/reviews/slurp-requested-role-boundary-v1.json",
+    "verification": "docs/research/requested-role-check-v1.json",
+    "read_unique_sources": 411,
+    "reference_coordinates": 48,
+    "positive": 24,
+    "negative": 13,
+    "unavailable": 11,
+    "admitted": 0,
+    "book_author_interrogative_support": "No observed author question in diagnostic cohort; explicit policy extension, not measured task support.",
+    "previous_unresolved_reassessed": {
+      "5388/artist_name": true,
+      "14749/date": null
+    }
+  },
+  "contextual_role_progress": {
+    "rule": "configs/tasks/slurp/remaining-role-boundary-resolution-v1.json",
+    "review": "configs/reviews/slurp-remaining-role-boundary-v1.json",
+    "verification": "docs/research/remaining-role-check-v1.json",
+    "read_unique_sources": 820,
+    "reference_coordinates": 64,
+    "positive": 30,
+    "negative": 28,
+    "unavailable": 6,
+    "admitted": 0,
+    "previous_definition_unresolved_reassessed": {
+      "8505/event_name": true,
+      "8698/event_name": true,
+      "13534/device_type": false,
+      "15684/app_name": true,
+      "868/business_name": false,
+      "2471/weather_descriptor": false
+    },
+    "next": "Resolve communicative scope and remaining full-ontology consistency before bulk semantic review; do not repeat small sequential batches while shared definitions change."
+  },
+  "historical_communication_scope_review": {
+    "candidate": "configs/tasks/slurp/communication-scope-candidate-v1.json",
+    "review": "configs/reviews/slurp-communication-scope-reference-v1.json",
+    "verification": "docs/research/communication-scope-check-v1.json",
+    "read_sources": 532,
+    "scope_review_sources": 37,
+    "admitted": 0,
+    "applied_to_current_ontology": false,
+    "pending": "mixed_discourse_and_fragment_policy; optional user preference unanswered"
+  },
+  "contract_consistency_check": {
+    "before": "docs/research/slot-contract-consistency-before-v1.json",
+    "after": "docs/research/slot-contract-consistency-after-v1.json",
+    "delta": "docs/research/slot-contract-consistency-delta-check-v1.json",
+    "rule": "configs/tasks/slurp/contract-consistency-resolution-v1.json",
+    "known_issues_before": 44,
+    "known_issues_after": 0,
+    "semantic_certification": false,
+    "scope": "Finite known-pattern and structural checks; does not prove full semantic consistency.",
+    "next": "Use consolidated current rules for full-population reference review, retain explicit masks; finish intent mapping and independent supervision admission before training."
+  },
+  "blind_full_population_annotation": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-workpack-v3/report.json",
+    "report_sha256": "1f959150b82040d98c1d1cb654b6af45eb21905e5ba1ada844d46e80c3866f98",
+    "verification": "docs/research/blind-semantic-annotation-check-v3.json",
+    "decision_record": "docs/research/106-intent-ambiguity-resolution-and-slot-calibration.md",
+    "scope": "Complete learning-source I_present/S_present offline annotation inputs only. No generated labels or training admission.",
+    "summary": {
+      "recordings": 40513,
+      "sources": 9192,
+      "intent_cards": 65,
+      "slot_cards": 55,
+      "panels": 16,
+      "requests_per_pass": 147072,
+      "decisions_per_pass": 1103040,
+      "requests_two_passes": 294144,
+      "decisions_two_passes": 2206080,
+      "max_request_json_bytes_by_panel": {
+        "I_present-00": 20439,
+        "I_present-01": 20408,
+        "I_present-02": 21869,
+        "I_present-03": 20364,
+        "I_present-04": 21150,
+        "I_present-05": 21286,
+        "I_present-06": 20139,
+        "I_present-07": 21647,
+        "I_present-08": 15736,
+        "S_present-00": 407640,
+        "S_present-01": 284614,
+        "S_present-02": 350906,
+        "S_present-03": 276907,
+        "S_present-04": 391815,
+        "S_present-05": 420469,
+        "S_present-06": 215053
+      }
+    },
+    "full_population_API_sent": false,
+    "semantic_admission": 0,
+    "current_slot_rules_compatible": true,
+    "slot_migration_required": false,
+    "next": "Finish running slot calibration; independent semantic review and explicit rereview of165 changed intent coordinates; no automatic replay of historical requests.",
+    "shared_representation_candidate": {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-shared-v3/report.json",
+      "report_sha256": "890f4b4d5a909aa81389cc5a0c6cec79dc0969d940fa8b9c8f7ed9db1f9efb59",
+      "verification": "docs/research/shared-annotation-check-v3.json",
+      "summary": {
+        "recordings": 40513,
+        "sources": 9192,
+        "intent_cards": 65,
+        "slot_cards": 55,
+        "panels": 16,
+        "requests_per_pass": 147072,
+        "decisions_per_pass": 1103040,
+        "requests_two_passes": 294144,
+        "decisions_two_passes": 2206080,
+        "max_request_json_bytes_by_panel": {
+          "I_present-00": 19832,
+          "I_present-01": 19801,
+          "I_present-02": 21540,
+          "I_present-03": 19757,
+          "I_present-04": 20543,
+          "I_present-05": 20679,
+          "I_present-06": 19532,
+          "I_present-07": 21318,
+          "I_present-08": 16081,
+          "S_present-00": 100250,
+          "S_present-01": 77458,
+          "S_present-02": 97047,
+          "S_present-03": 74977,
+          "S_present-04": 104984,
+          "S_present-05": 110974,
+          "S_present-06": 62924
+        }
+      },
+      "input_size_measurement": {
+        "literal": {
+          "panels": {
+            "I_present-00": {
+              "min_json_bytes": 20260,
+              "max_json_bytes": 20439,
+              "total_json_bytes": 186532950
+            },
+            "I_present-01": {
+              "min_json_bytes": 20229,
+              "max_json_bytes": 20408,
+              "total_json_bytes": 186247998
+            },
+            "I_present-02": {
+              "min_json_bytes": 21690,
+              "max_json_bytes": 21869,
+              "total_json_bytes": 199677510
+            },
+            "I_present-03": {
+              "min_json_bytes": 20185,
+              "max_json_bytes": 20364,
+              "total_json_bytes": 185843550
+            },
+            "I_present-04": {
+              "min_json_bytes": 20971,
+              "max_json_bytes": 21150,
+              "total_json_bytes": 193068462
+            },
+            "I_present-05": {
+              "min_json_bytes": 21107,
+              "max_json_bytes": 21286,
+              "total_json_bytes": 194318574
+            },
+            "I_present-06": {
+              "min_json_bytes": 19960,
+              "max_json_bytes": 20139,
+              "total_json_bytes": 183775350
+            },
+            "I_present-07": {
+              "min_json_bytes": 21468,
+              "max_json_bytes": 21647,
+              "total_json_bytes": 197636886
+            },
+            "I_present-08": {
+              "min_json_bytes": 15557,
+              "max_json_bytes": 15736,
+              "total_json_bytes": 143302974
+            },
+            "S_present-00": {
+              "min_json_bytes": 407461,
+              "max_json_bytes": 407640,
+              "total_json_bytes": 3745684542
+            },
+            "S_present-01": {
+              "min_json_bytes": 284435,
+              "max_json_bytes": 284614,
+              "total_json_bytes": 2614829550
+            },
+            "S_present-02": {
+              "min_json_bytes": 350727,
+              "max_json_bytes": 350906,
+              "total_json_bytes": 3224185614
+            },
+            "S_present-03": {
+              "min_json_bytes": 276728,
+              "max_json_bytes": 276907,
+              "total_json_bytes": 2543986806
+            },
+            "S_present-04": {
+              "min_json_bytes": 391636,
+              "max_json_bytes": 391815,
+              "total_json_bytes": 3600221142
+            },
+            "S_present-05": {
+              "min_json_bytes": 420290,
+              "max_json_bytes": 420469,
+              "total_json_bytes": 3863608710
+            },
+            "S_present-06": {
+              "min_json_bytes": 214874,
+              "max_json_bytes": 215053,
+              "total_json_bytes": 1975424838
+            }
+          },
+          "total_json_bytes": 23238345456
+        },
+        "shared": {
+          "panels": {
+            "I_present-00": {
+              "min_json_bytes": 19653,
+              "max_json_bytes": 19832,
+              "total_json_bytes": 180953406
+            },
+            "I_present-01": {
+              "min_json_bytes": 19622,
+              "max_json_bytes": 19801,
+              "total_json_bytes": 180668454
+            },
+            "I_present-02": {
+              "min_json_bytes": 21361,
+              "max_json_bytes": 21540,
+              "total_json_bytes": 196653342
+            },
+            "I_present-03": {
+              "min_json_bytes": 19578,
+              "max_json_bytes": 19757,
+              "total_json_bytes": 180264006
+            },
+            "I_present-04": {
+              "min_json_bytes": 20364,
+              "max_json_bytes": 20543,
+              "total_json_bytes": 187488918
+            },
+            "I_present-05": {
+              "min_json_bytes": 20500,
+              "max_json_bytes": 20679,
+              "total_json_bytes": 188739030
+            },
+            "I_present-06": {
+              "min_json_bytes": 19353,
+              "max_json_bytes": 19532,
+              "total_json_bytes": 178195806
+            },
+            "I_present-07": {
+              "min_json_bytes": 21139,
+              "max_json_bytes": 21318,
+              "total_json_bytes": 194612718
+            },
+            "I_present-08": {
+              "min_json_bytes": 15902,
+              "max_json_bytes": 16081,
+              "total_json_bytes": 146474214
+            },
+            "S_present-00": {
+              "min_json_bytes": 100071,
+              "max_json_bytes": 100250,
+              "total_json_bytes": 920155662
+            },
+            "S_present-01": {
+              "min_json_bytes": 77279,
+              "max_json_bytes": 77458,
+              "total_json_bytes": 710651598
+            },
+            "S_present-02": {
+              "min_json_bytes": 96868,
+              "max_json_bytes": 97047,
+              "total_json_bytes": 890713686
+            },
+            "S_present-03": {
+              "min_json_bytes": 74798,
+              "max_json_bytes": 74977,
+              "total_json_bytes": 687846246
+            },
+            "S_present-04": {
+              "min_json_bytes": 104805,
+              "max_json_bytes": 104984,
+              "total_json_bytes": 963670590
+            },
+            "S_present-05": {
+              "min_json_bytes": 110795,
+              "max_json_bytes": 110974,
+              "total_json_bytes": 1018730670
+            },
+            "S_present-06": {
+              "min_json_bytes": 62745,
+              "max_json_bytes": 62924,
+              "total_json_bytes": 577055070
+            }
+          },
+          "total_json_bytes": 7402873416
+        }
+      },
+      "semantic_admission": 0,
+      "status": "current_rules_single_source_complete_no_bulk_admission",
+      "decision_record": "docs/research/106-intent-ambiguity-resolution-and-slot-calibration.md",
+      "teacher_probe": {
+        "receipt": "docs/research/teacher-provider-rules-observed-v1.json",
+        "receipt_sha256": "53267c39cb2ec9f7684ae143aee051e1baaf6a2ab03e428087e55ee156a1fed2",
+        "check": "docs/research/teacher-provider-rules-check-v1.json",
+        "status": "single_authoring_source_complete_not_quality_admission",
+        "complete_decisions": 8,
+        "reference_agreements": 2,
+        "reference_compared": 2,
+        "semantic_admission": 0,
+        "version_scope": "Historical v2 S00; current v3 S00 byte-identical, not evidence about changed intent panels."
+      }
+    }
+  },
+  "intent_teacher_calibration": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-teacher-calibration-v1/report.json",
+    "report_sha256": "d9dcf46dc55ff5e29a34b7c4aa8452d74954a311e18239c0cd871de69d73167e",
+    "check": "docs/research/intent-teacher-calibration-check-v1.json",
+    "run": ".local/research/intent-teacher-calibration-v1/run",
+    "launch": ".local/research/intent-teacher-calibration-v1/launch.json",
+    "status": "complete115_of122_no_semantic_admission",
+    "requests": 122,
+    "positive_targets": 65,
+    "negative_targets": 65,
+    "ambiguous_targets": 16,
+    "concurrency": 2,
+    "max_tokens_per_request": 4096,
+    "semantic_admission": 0,
+    "decision_record": "docs/research/105-intent-calibration-results-and-ambiguity.md",
+    "observed_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-teacher-calibration-observed-v1/report.json",
+    "observed_report_sha256": "b5f298813048ae783f4cad1c69d5a82abbdc84c6d693b8b35f4c173c2b840287",
+    "verification": "docs/research/intent-teacher-calibration-observed-check-v1.json",
+    "disagreement_triage": "configs/reviews/slurp-intent-calibration-disagreement-triage-v1.json",
+    "author_resolution": "configs/reviews/slurp-intent-calibration-author-resolution-v1.json"
+  },
+  "provider_boundary_issue": {
+    "path": "configs/reviews/slurp-provider-boundary-review-issue-v1.json",
+    "decision_record": "docs/research/102-provider-role-overlap-resolution.md",
+    "status": "rules_selected_references_migrated_no_semantic_admission",
+    "semantic_admission": 0,
+    "resolution": "configs/tasks/slurp/provider-boundary-resolution-v1.json",
+    "check": "docs/research/provider-boundary-check-v1.json"
+  },
+  "historical_blind_annotation_workpacks": [
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-workpack-v1/report.json",
+      "report_sha256": "a24f3817713b312df969d24d1019ce7bf7c33c622c568b22c0cb045a917e83ec",
+      "verification": "docs/research/blind-semantic-annotation-check-v1.json",
+      "decision_record": "docs/research/96-full-population-blind-annotation-inputs.md",
+      "scope": "Complete learning-source I_present/S_present offline annotation inputs only. No generated labels or training admission.",
+      "summary": {
+        "recordings": 40513,
+        "sources": 9192,
+        "intent_cards": 65,
+        "slot_cards": 55,
+        "panels": 16,
+        "requests_per_pass": 147072,
+        "decisions_per_pass": 1103040,
+        "requests_two_passes": 294144,
+        "decisions_two_passes": 2206080,
+        "max_request_json_bytes_by_panel": {
+          "I_present-00": 20439,
+          "I_present-01": 20408,
+          "I_present-02": 21477,
+          "I_present-03": 20364,
+          "I_present-04": 20715,
+          "I_present-05": 20708,
+          "I_present-06": 20139,
+          "I_present-07": 21647,
+          "I_present-08": 15736,
+          "S_present-00": 355534,
+          "S_present-01": 284614,
+          "S_present-02": 339464,
+          "S_present-03": 276907,
+          "S_present-04": 370232,
+          "S_present-05": 405268,
+          "S_present-06": 190468
+        }
+      },
+      "API_sent": false,
+      "semantic_admission": 0,
+      "next": "Separately budgeted output-cap probe for S_present-00; then balanced class/polarity calibration and bounded full-run cost/independent-review protocol. Keep historical truncation and bare-vs-fenced format rates explicit.",
+      "shared_representation_candidate": {
+        "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-shared-v1/report.json",
+        "report_sha256": "aef7555a2d86ce423cf19790df9fcf3448e9b3d85210935ab2348244d5c84cec",
+        "verification": "docs/research/shared-annotation-check-v1.json",
+        "summary": {
+          "recordings": 40513,
+          "sources": 9192,
+          "intent_cards": 65,
+          "slot_cards": 55,
+          "panels": 16,
+          "requests_per_pass": 147072,
+          "decisions_per_pass": 1103040,
+          "requests_two_passes": 294144,
+          "decisions_two_passes": 2206080,
+          "max_request_json_bytes_by_panel": {
+            "I_present-00": 19832,
+            "I_present-01": 19801,
+            "I_present-02": 21148,
+            "I_present-03": 19757,
+            "I_present-04": 20108,
+            "I_present-05": 20101,
+            "I_present-06": 19532,
+            "I_present-07": 21318,
+            "I_present-08": 16081,
+            "S_present-00": 95074,
+            "S_present-01": 77458,
+            "S_present-02": 93054,
+            "S_present-03": 74977,
+            "S_present-04": 100838,
+            "S_present-05": 106889,
+            "S_present-06": 58281
+          }
+        },
+        "input_size_measurement": {
+          "literal": {
+            "panels": {
+              "I_present-00": {
+                "min_json_bytes": 20260,
+                "max_json_bytes": 20439,
+                "total_json_bytes": 186532950
+              },
+              "I_present-01": {
+                "min_json_bytes": 20229,
+                "max_json_bytes": 20408,
+                "total_json_bytes": 186247998
+              },
+              "I_present-02": {
+                "min_json_bytes": 21298,
+                "max_json_bytes": 21477,
+                "total_json_bytes": 196074246
+              },
+              "I_present-03": {
+                "min_json_bytes": 20185,
+                "max_json_bytes": 20364,
+                "total_json_bytes": 185843550
+              },
+              "I_present-04": {
+                "min_json_bytes": 20536,
+                "max_json_bytes": 20715,
+                "total_json_bytes": 189069942
+              },
+              "I_present-05": {
+                "min_json_bytes": 20529,
+                "max_json_bytes": 20708,
+                "total_json_bytes": 189005598
+              },
+              "I_present-06": {
+                "min_json_bytes": 19960,
+                "max_json_bytes": 20139,
+                "total_json_bytes": 183775350
+              },
+              "I_present-07": {
+                "min_json_bytes": 21468,
+                "max_json_bytes": 21647,
+                "total_json_bytes": 197636886
+              },
+              "I_present-08": {
+                "min_json_bytes": 15557,
+                "max_json_bytes": 15736,
+                "total_json_bytes": 143302974
+              },
+              "S_present-00": {
+                "min_json_bytes": 355355,
+                "max_json_bytes": 355534,
+                "total_json_bytes": 3266726190
+              },
+              "S_present-01": {
+                "min_json_bytes": 284435,
+                "max_json_bytes": 284614,
+                "total_json_bytes": 2614829550
+              },
+              "S_present-02": {
+                "min_json_bytes": 339285,
+                "max_json_bytes": 339464,
+                "total_json_bytes": 3119010750
+              },
+              "S_present-03": {
+                "min_json_bytes": 276728,
+                "max_json_bytes": 276907,
+                "total_json_bytes": 2543986806
+              },
+              "S_present-04": {
+                "min_json_bytes": 370053,
+                "max_json_bytes": 370232,
+                "total_json_bytes": 3401830206
+              },
+              "S_present-05": {
+                "min_json_bytes": 405089,
+                "max_json_bytes": 405268,
+                "total_json_bytes": 3723881118
+              },
+              "S_present-06": {
+                "min_json_bytes": 190289,
+                "max_json_bytes": 190468,
+                "total_json_bytes": 1749439518
+              }
+            },
+            "total_json_bytes": 22077193632
+          },
+          "shared": {
+            "panels": {
+              "I_present-00": {
+                "min_json_bytes": 19653,
+                "max_json_bytes": 19832,
+                "total_json_bytes": 180953406
+              },
+              "I_present-01": {
+                "min_json_bytes": 19622,
+                "max_json_bytes": 19801,
+                "total_json_bytes": 180668454
+              },
+              "I_present-02": {
+                "min_json_bytes": 20969,
+                "max_json_bytes": 21148,
+                "total_json_bytes": 193050078
+              },
+              "I_present-03": {
+                "min_json_bytes": 19578,
+                "max_json_bytes": 19757,
+                "total_json_bytes": 180264006
+              },
+              "I_present-04": {
+                "min_json_bytes": 19929,
+                "max_json_bytes": 20108,
+                "total_json_bytes": 183490398
+              },
+              "I_present-05": {
+                "min_json_bytes": 19922,
+                "max_json_bytes": 20101,
+                "total_json_bytes": 183426054
+              },
+              "I_present-06": {
+                "min_json_bytes": 19353,
+                "max_json_bytes": 19532,
+                "total_json_bytes": 178195806
+              },
+              "I_present-07": {
+                "min_json_bytes": 21139,
+                "max_json_bytes": 21318,
+                "total_json_bytes": 194612718
+              },
+              "I_present-08": {
+                "min_json_bytes": 15902,
+                "max_json_bytes": 16081,
+                "total_json_bytes": 146474214
+              },
+              "S_present-00": {
+                "min_json_bytes": 94895,
+                "max_json_bytes": 95074,
+                "total_json_bytes": 872577870
+              },
+              "S_present-01": {
+                "min_json_bytes": 77279,
+                "max_json_bytes": 77458,
+                "total_json_bytes": 710651598
+              },
+              "S_present-02": {
+                "min_json_bytes": 92875,
+                "max_json_bytes": 93054,
+                "total_json_bytes": 854010030
+              },
+              "S_present-03": {
+                "min_json_bytes": 74798,
+                "max_json_bytes": 74977,
+                "total_json_bytes": 687846246
+              },
+              "S_present-04": {
+                "min_json_bytes": 100659,
+                "max_json_bytes": 100838,
+                "total_json_bytes": 925560558
+              },
+              "S_present-05": {
+                "min_json_bytes": 106710,
+                "max_json_bytes": 106889,
+                "total_json_bytes": 981181350
+              },
+              "S_present-06": {
+                "min_json_bytes": 58102,
+                "max_json_bytes": 58281,
+                "total_json_bytes": 534376614
+              }
+            },
+            "total_json_bytes": 7187339400
+          }
+        },
+        "semantic_admission": 0,
+        "status": "all_panels_transport_observed_one_output_budget_failure_no_bulk_admission",
+        "decision_record": "docs/research/97-shared-annotation-rules-and-teacher-probe.md",
+        "teacher_probe": {
+          "receipt": "docs/research/shared-annotation-teacher-probe-v1.json",
+          "request_count": 1,
+          "http_status": 400,
+          "error_code": "400001",
+          "usage": null,
+          "semantic_admission": 0
+        },
+        "teacher_compatibility": {
+          "receipt": "docs/research/teacher-thinking-compatibility-v1.json",
+          "receipt_sha256": "50d420cf99bc284d17c7997ea8c3145dd9a287d1d0e05e489891c16680ebe78f",
+          "profile": "configs/reviews/slurp-semantic-teacher-profile-candidate-v1.json",
+          "thinking": "enabled",
+          "accepted_annotation_requests": 1,
+          "observed_prompt_tokens": 24593,
+          "semantic_admission": 0
+        },
+        "panel_probe": {
+          "receipt": "docs/research/teacher-panel-probe-observed-v1.json",
+          "receipt_sha256": "d763ed298c766db308847157d746d6fabc97d41f2c0ca7afaadecf530c151686",
+          "shared_valid_panels": 15,
+          "shared_total_panels": 16,
+          "semantic_admission": 0
+        }
+      },
+      "current_slot_rules_compatible": false,
+      "slot_migration_required": "Published workpacks use v13 slot package; rebuild against v14 before new slot annotation. Intent-only calibration remains valid because intent templates and ontology did not change."
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-workpack-v2/report.json",
+      "report_sha256": "5e342480e2b348ee73e730a2f1c3e1913f9280311c2cb55c83b0a9d5933b5b77",
+      "verification": "docs/research/blind-semantic-annotation-check-v2.json",
+      "decision_record": "docs/research/103-current-slot-annotation-inputs-and-probe.md",
+      "scope": "Complete learning-source I_present/S_present offline annotation inputs only. No generated labels or training admission.",
+      "summary": {
+        "recordings": 40513,
+        "sources": 9192,
+        "intent_cards": 65,
+        "slot_cards": 55,
+        "panels": 16,
+        "requests_per_pass": 147072,
+        "decisions_per_pass": 1103040,
+        "requests_two_passes": 294144,
+        "decisions_two_passes": 2206080,
+        "max_request_json_bytes_by_panel": {
+          "I_present-00": 20439,
+          "I_present-01": 20408,
+          "I_present-02": 21477,
+          "I_present-03": 20364,
+          "I_present-04": 20715,
+          "I_present-05": 20708,
+          "I_present-06": 20139,
+          "I_present-07": 21647,
+          "I_present-08": 15736,
+          "S_present-00": 407640,
+          "S_present-01": 284614,
+          "S_present-02": 350906,
+          "S_present-03": 276907,
+          "S_present-04": 391815,
+          "S_present-05": 420469,
+          "S_present-06": 215053
+        }
+      },
+      "full_population_API_sent": false,
+      "semantic_admission": 0,
+      "current_slot_rules_compatible": true,
+      "slot_migration_required": false,
+      "next": "Finish fixed intent calibration and evaluate current-rule slot probe; all-class slot reference quality and independent review remain outstanding.",
+      "shared_representation_candidate": {
+        "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-shared-v2/report.json",
+        "report_sha256": "2044cd0c097fc6a0a52cebea575932340b6ba5033a4103ba50a531f9bdc67f5d",
+        "verification": "docs/research/shared-annotation-check-v2.json",
+        "summary": {
+          "recordings": 40513,
+          "sources": 9192,
+          "intent_cards": 65,
+          "slot_cards": 55,
+          "panels": 16,
+          "requests_per_pass": 147072,
+          "decisions_per_pass": 1103040,
+          "requests_two_passes": 294144,
+          "decisions_two_passes": 2206080,
+          "max_request_json_bytes_by_panel": {
+            "I_present-00": 19832,
+            "I_present-01": 19801,
+            "I_present-02": 21148,
+            "I_present-03": 19757,
+            "I_present-04": 20108,
+            "I_present-05": 20101,
+            "I_present-06": 19532,
+            "I_present-07": 21318,
+            "I_present-08": 16081,
+            "S_present-00": 100250,
+            "S_present-01": 77458,
+            "S_present-02": 97047,
+            "S_present-03": 74977,
+            "S_present-04": 104984,
+            "S_present-05": 110974,
+            "S_present-06": 62924
+          }
+        },
+        "input_size_measurement": {
+          "literal": {
+            "panels": {
+              "I_present-00": {
+                "min_json_bytes": 20260,
+                "max_json_bytes": 20439,
+                "total_json_bytes": 186532950
+              },
+              "I_present-01": {
+                "min_json_bytes": 20229,
+                "max_json_bytes": 20408,
+                "total_json_bytes": 186247998
+              },
+              "I_present-02": {
+                "min_json_bytes": 21298,
+                "max_json_bytes": 21477,
+                "total_json_bytes": 196074246
+              },
+              "I_present-03": {
+                "min_json_bytes": 20185,
+                "max_json_bytes": 20364,
+                "total_json_bytes": 185843550
+              },
+              "I_present-04": {
+                "min_json_bytes": 20536,
+                "max_json_bytes": 20715,
+                "total_json_bytes": 189069942
+              },
+              "I_present-05": {
+                "min_json_bytes": 20529,
+                "max_json_bytes": 20708,
+                "total_json_bytes": 189005598
+              },
+              "I_present-06": {
+                "min_json_bytes": 19960,
+                "max_json_bytes": 20139,
+                "total_json_bytes": 183775350
+              },
+              "I_present-07": {
+                "min_json_bytes": 21468,
+                "max_json_bytes": 21647,
+                "total_json_bytes": 197636886
+              },
+              "I_present-08": {
+                "min_json_bytes": 15557,
+                "max_json_bytes": 15736,
+                "total_json_bytes": 143302974
+              },
+              "S_present-00": {
+                "min_json_bytes": 407461,
+                "max_json_bytes": 407640,
+                "total_json_bytes": 3745684542
+              },
+              "S_present-01": {
+                "min_json_bytes": 284435,
+                "max_json_bytes": 284614,
+                "total_json_bytes": 2614829550
+              },
+              "S_present-02": {
+                "min_json_bytes": 350727,
+                "max_json_bytes": 350906,
+                "total_json_bytes": 3224185614
+              },
+              "S_present-03": {
+                "min_json_bytes": 276728,
+                "max_json_bytes": 276907,
+                "total_json_bytes": 2543986806
+              },
+              "S_present-04": {
+                "min_json_bytes": 391636,
+                "max_json_bytes": 391815,
+                "total_json_bytes": 3600221142
+              },
+              "S_present-05": {
+                "min_json_bytes": 420290,
+                "max_json_bytes": 420469,
+                "total_json_bytes": 3863608710
+              },
+              "S_present-06": {
+                "min_json_bytes": 214874,
+                "max_json_bytes": 215053,
+                "total_json_bytes": 1975424838
+              }
+            },
+            "total_json_bytes": 23225430696
+          },
+          "shared": {
+            "panels": {
+              "I_present-00": {
+                "min_json_bytes": 19653,
+                "max_json_bytes": 19832,
+                "total_json_bytes": 180953406
+              },
+              "I_present-01": {
+                "min_json_bytes": 19622,
+                "max_json_bytes": 19801,
+                "total_json_bytes": 180668454
+              },
+              "I_present-02": {
+                "min_json_bytes": 20969,
+                "max_json_bytes": 21148,
+                "total_json_bytes": 193050078
+              },
+              "I_present-03": {
+                "min_json_bytes": 19578,
+                "max_json_bytes": 19757,
+                "total_json_bytes": 180264006
+              },
+              "I_present-04": {
+                "min_json_bytes": 19929,
+                "max_json_bytes": 20108,
+                "total_json_bytes": 183490398
+              },
+              "I_present-05": {
+                "min_json_bytes": 19922,
+                "max_json_bytes": 20101,
+                "total_json_bytes": 183426054
+              },
+              "I_present-06": {
+                "min_json_bytes": 19353,
+                "max_json_bytes": 19532,
+                "total_json_bytes": 178195806
+              },
+              "I_present-07": {
+                "min_json_bytes": 21139,
+                "max_json_bytes": 21318,
+                "total_json_bytes": 194612718
+              },
+              "I_present-08": {
+                "min_json_bytes": 15902,
+                "max_json_bytes": 16081,
+                "total_json_bytes": 146474214
+              },
+              "S_present-00": {
+                "min_json_bytes": 100071,
+                "max_json_bytes": 100250,
+                "total_json_bytes": 920155662
+              },
+              "S_present-01": {
+                "min_json_bytes": 77279,
+                "max_json_bytes": 77458,
+                "total_json_bytes": 710651598
+              },
+              "S_present-02": {
+                "min_json_bytes": 96868,
+                "max_json_bytes": 97047,
+                "total_json_bytes": 890713686
+              },
+              "S_present-03": {
+                "min_json_bytes": 74798,
+                "max_json_bytes": 74977,
+                "total_json_bytes": 687846246
+              },
+              "S_present-04": {
+                "min_json_bytes": 104805,
+                "max_json_bytes": 104984,
+                "total_json_bytes": 963670590
+              },
+              "S_present-05": {
+                "min_json_bytes": 110795,
+                "max_json_bytes": 110974,
+                "total_json_bytes": 1018730670
+              },
+              "S_present-06": {
+                "min_json_bytes": 62745,
+                "max_json_bytes": 62924,
+                "total_json_bytes": 577055070
+              }
+            },
+            "total_json_bytes": 7389958656
+          }
+        },
+        "semantic_admission": 0,
+        "status": "current_rules_single_source_complete_no_bulk_admission",
+        "decision_record": "docs/research/103-current-slot-annotation-inputs-and-probe.md",
+        "teacher_probe": {
+          "receipt": "docs/research/teacher-provider-rules-observed-v1.json",
+          "receipt_sha256": "53267c39cb2ec9f7684ae143aee051e1baaf6a2ab03e428087e55ee156a1fed2",
+          "check": "docs/research/teacher-provider-rules-check-v1.json",
+          "status": "single_authoring_source_complete_not_quality_admission",
+          "complete_decisions": 8,
+          "reference_agreements": 2,
+          "reference_compared": 2,
+          "semantic_admission": 0
+        }
+      }
+    }
+  ],
+  "slot_teacher_calibration": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/slot-teacher-calibration-v1/report.json",
+    "report_sha256": "4688960b722bbd3be012fee109cb607eada9098724be8e356097d345872ada17",
+    "verification": "docs/research/slot-teacher-calibration-check-v1.json",
+    "requests": 89,
+    "positive_targets": 55,
+    "negative_targets": 55,
+    "status": "terminal_scored75of89complete_no_bulk_admission",
+    "decision_record": "docs/research/104-slot-polarity-reference-calibration.md",
+    "semantic_admission": 0,
+    "run": ".local/research/slot-teacher-calibration-v1/run",
+    "launch": ".local/research/slot-teacher-calibration-v1/launch.json",
+    "concurrency": 2,
+    "max_tokens_per_request": 4096,
+    "maximum_completion_tokens": 364544,
+    "automatic_retry": false,
+    "observed": {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/slot-teacher-calibration-observed-v1/report.json",
+      "report_sha256": "51386feca8002f6229fb2802f372bb4cf5ad7abf7afeb4c80ec50cf46a0b62fd",
+      "verification": "docs/research/slot-teacher-calibration-observed-check-v1.json",
+      "decision_record": "docs/research/112-slot-teacher-calibration-observed.md",
+      "valid_requests": 75,
+      "requests": 89,
+      "reference_agreements": 94,
+      "targets": 110,
+      "failed_targets": 16,
+      "semantic_admission": 0
+    }
+  },
+  "quality_protocol": {
+    "path": "configs/reviews/slurp-semantic-quality-protocol-v1.json",
+    "decision_record": "docs/research/108-semantic-quality-protocol-and-cohort.md",
+    "cohort_report_sha256": "1716c2c5a610bddbf2f7330d5b8b78cca9f2271fdd381e6df06e7e3bb6cf0f4f",
+    "status": "cohort_prepared_reviewers_and_execution_pending",
+    "API_sent": false,
+    "semantic_admission": 0,
+    "cost_projection": "docs/research/semantic-annotation-cost-projection-v1.json"
+  },
+  "dependent_task_design_migration": {
+    "decision_record": "docs/research/109-semantic-menu-and-objective-migration.md",
+    "menu": "configs/tasks/slurp/menu-design-candidate-v3.json",
+    "stage1": "configs/experiments/stage1-objective-candidate-v2.json",
+    "evaluation": "configs/tasks/slurp/evaluation-protocol-candidate-v2.json",
+    "context": "configs/tasks/slurp/context-requirement-candidate-v2.json",
+    "status": "all_named_design_categories_have_current_candidates_semantic_admission_renderer_context_and_runtime_not_released",
+    "training_dispatch_allowed": false,
+    "reward": "configs/experiments/reward-contract-design-v3.json",
+    "reward_decision_record": "docs/research/110-fixed-capacity-process-reward.md",
+    "readout": "configs/tasks/slurp/evaluation-readout-layout-candidate-v2.json",
+    "readout_decision_record": "docs/research/111-semantic-readout-binding.md",
+    "FSC": "configs/tasks/fsc/transfer-protocol-v3.json",
+    "FSC_decision_record": "docs/research/114-fsc-semantic-transfer-migration.md"
+  },
+  "teacher_output_reliability_probe": {
+    "record": "docs/research/113-teacher-output-control-probe.md",
+    "launch": ".local/research/teacher-concise-output-v1/launch.json",
+    "requests": 6,
+    "status": "terminal4of6_complete_not_bulk_accepted",
+    "semantic_admission": 0,
+    "observed": {
+      "report": "docs/research/teacher-concise-output-observed-v1.json",
+      "report_sha256": "880e83e1d4227bde48149a9d9813638ea27e814ac1dfb85cf50387742733fe0e",
+      "verification": "docs/research/teacher-concise-output-observed-check-v1.json",
+      "decision_record": "docs/research/115-teacher-output-probe-observed.md",
+      "requests": 6,
+      "complete_requests": 4,
+      "length_empty_requests": 2,
+      "prior_complete_preserved": 3,
+      "prior_decisions_unchanged": 24,
+      "prior_failures_recovered": 1,
+      "reference_agreements": 5,
+      "reference_targets": 7,
+      "semantic_admission": 0,
+      "bulk_dispatch_allowed": false
+    }
+  },
+  "actor_input_diagnostic": {
+    "decision_record": "docs/research/116-semantic-actor-input-context.md",
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-actor-context-v1",
+    "result": "/mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-actor-context-v1/run/result.json",
+    "result_sha256": "846ec52993c64f136b086933d69a3294ebe82d41c125328c2f4ac7cdde14512c",
+    "verification": "docs/research/semantic-actor-context-check-v1.json",
+    "input_verification": "docs/research/semantic-actor-input-check-v1.json",
+    "requests": 68,
+    "per_arm": {
+      "Direct": {
+        "requests": 34,
+        "min_tokens": 6501,
+        "max_tokens": 30264,
+        "overflow": {
+          "8192": 28,
+          "16384": 26,
+          "32768": 0,
+          "65536": 0
+        }
+      },
+      "Q_input": {
+        "requests": 34,
+        "min_tokens": 6589,
+        "max_tokens": 30972,
+        "overflow": {
+          "8192": 28,
+          "16384": 26,
+          "32768": 0,
+          "65536": 0
+        }
+      }
+    },
+    "max_tokens": 30972,
+    "image": "sha256:fdd4a28bb7515717e9ff1988669b4ae7c24588091cf0b73f05abff1f6ff6f87b",
+    "fixed_training_image_used": false,
+    "context_accepted": false,
+    "training_dispatch_allowed": false,
+    "scope": "CPU diagnostic only; no model forward, full population, augmented audio, native-layout processor intervention, training-runtime or NPU acceptance."
+  },
+  "actor_block_input_diagnostic": {
+    "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-block-context-v1",
+    "requests": 34,
+    "result_sha256": "fba3e087a1ce62d814638f940855b98ddbaee97bc6f4a2f3faea030d4e556f46",
+    "per_arm": {
+      "Direct": {
+        "requests": 17,
+        "min_tokens": 6856,
+        "max_tokens": 27318,
+        "overflow": {
+          "8192": 14,
+          "16384": 12,
+          "32768": 0,
+          "65536": 0
+        }
+      },
+      "Q_input": {
+        "requests": 17,
+        "min_tokens": 6944,
+        "max_tokens": 28026,
+        "overflow": {
+          "8192": 14,
+          "16384": 13,
+          "32768": 0,
+          "65536": 0
+        }
+      }
+    },
+    "context_accepted": false,
+    "selected_for_main_task": false,
+    "training_dispatch_allowed": false,
+    "verification": "docs/research/semantic-block-context-check-v1.json",
+    "representation": "shared_blocks_v1",
+    "max_tokens": 28026,
+    "default_representation": "shared_rules_v1",
+    "decision": "Archive diagnostic; same context tier. Default unchanged; no further compression branches."
+  },
+  "alternative_reviewer_route_probe": {
+    "requests": 6,
+    "http_success": 6,
+    "strict_valid": 3,
+    "failures": {
+      "bare_array": 3
+    },
+    "reference_targets": 7,
+    "reference_agreements": 3,
+    "reference_missing": 3,
+    "reference_disagreements": [
+      {
+        "source_id": "1887",
+        "semantic_id": "music_genre",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 136827,
+      "completion_tokens": 3593,
+      "total_tokens": 140420
+    },
+    "semantic_admission": 0,
+    "bulk_dispatch_allowed": false,
+    "training_dispatch_allowed": false,
+    "model": "qwen-plus",
+    "model_identity": "provider_alias_only_no_upstream_revision_attestation",
+    "observation": "docs/research/qwen-plus-reviewer-route-observed-v1.json",
+    "verification": "docs/research/qwen-plus-reviewer-route-check-v1.json",
+    "decision": "Not admitted: three malformed envelopes and one reference disagreement. No salvage, automatic retry or bulk dispatch."
+  },
+  "quality_input_preparation": {
+    "root": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-quality-inputs-envelope-v1",
+    "manifest_sha256": "32d72acc36d082863f5bf7052cfdadb8491deec70b5ed24f0c530593abc42e0f",
+    "sources": 128,
+    "panels": 16,
+    "requests": 2048,
+    "decisions": 15360,
+    "full_quality_API_sent": false,
+    "semantic_admission": 0,
+    "training_dispatch_allowed": false,
+    "verification": "docs/research/semantic-quality-inputs-envelope-check-v1.json",
+    "collector": "tools/jev/collect_semantic_quality_pass.py",
+    "status": "inputs_verified_prompt_model_not_semantically_accepted_no_dispatch"
+  },
+  "envelope_contract_probe": {
+    "requests": 6,
+    "http_success": 6,
+    "strict_valid": 6,
+    "reference_targets": 7,
+    "reference_agreements": 2,
+    "reference_missing": 0,
+    "reference_disagreements": [
+      {
+        "source_id": "14835",
+        "semantic_id": "media_type",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "5274",
+        "semantic_id": "list_name",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "1887",
+        "semantic_id": "music_genre",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "2768",
+        "semantic_id": "playlist_name",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "2768",
+        "semantic_id": "song_name",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 137607,
+      "completion_tokens": 1875,
+      "total_tokens": 139482
+    },
+    "semantic_admission": 0,
+    "bulk_dispatch_allowed": false,
+    "training_dispatch_allowed": false,
+    "model": "qwen-plus",
+    "observation": "docs/research/qwen-envelope-contract-observed-v1.json",
+    "verification": "docs/research/qwen-envelope-contract-check-v1.json",
+    "paired_output": "docs/research/qwen-envelope-contract-paired-output-v1.json",
+    "status": "format_complete_but_semantic_calibration_failed",
+    "decision": "Do not release this prompt/model for full quality review; preserve original rules, parser, labels and default teacher."
+  },
+  "three_state_calibration": {
+    "profile": "configs/reviews/slurp-three-state-calibration-candidate-v1.json",
+    "status": "terminal_both_arms_failed_semantic_calibration",
+    "input_check": "docs/research/three-state-calibration-input-check-v1.json",
+    "metadata_check": "docs/research/three-state-original-metadata-check-v1.json",
+    "semantic_admission": 0,
+    "training_dispatch_allowed": false,
+    "observed": {
+      "observation": "docs/research/three-state-calibration-observed-v1.json",
+      "verification": "docs/research/three-state-calibration-observed-check-v1.json",
+      "triage": "configs/reviews/three-state-calibration-triage-v1.json",
+      "status": "terminal_both_arms_failed_semantic_calibration",
+      "complete_requests": 24,
+      "reference_agreement": {
+        "envelope": 7,
+        "envelope_three_state": 8
+      },
+      "targets_per_arm": 12,
+      "paired_decisions": 95,
+      "changed_paired_decisions": 13,
+      "usage": {
+        "envelope": {
+          "prompt_tokens": 160539,
+          "completion_tokens": 3581,
+          "total_tokens": 164120
+        },
+        "envelope_three_state": {
+          "prompt_tokens": 162771,
+          "completion_tokens": 3738,
+          "total_tokens": 166509
+        }
+      },
+      "first_observation_elapsed_seconds": 636.3562037944794,
+      "semantic_admission": 0,
+      "bulk_dispatch_allowed": false,
+      "training_dispatch_allowed": false,
+      "next_action": "No automatic repeat or prompt sweep. Resolve independent reviewer/adjudication route and full rule consumption; preserve ontology and all prior attempts."
+    }
+  },
+  "human_review_route": {
+    "root": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-quality-human-review-v1",
+    "manifest_sha256": "1cba1dc5971f4349d9ee458be1fced31850ed1793cf7e3b47ef07db03dadf2d8",
+    "sources": 128,
+    "panels": 16,
+    "requests": 2048,
+    "blank_decisions": 15360,
+    "reviewer_identity_unassigned": true,
+    "semantic_admission": 0,
+    "training_dispatch_allowed": false,
+    "verification": "docs/research/semantic-quality-human-review-check-v1.json",
+    "tool": "tools/jev/prepare_human_semantic_review.py",
+    "status": "material_complete_reviewer_unassigned_no_real_decisions",
+    "independent_review_certified": false,
+    "model_proposer_still_unaccepted": true
+  }
+}

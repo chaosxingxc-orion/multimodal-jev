@@ -1,0 +1,1608 @@
+{
+  "schema": "slurp-semantic-intent-catalog-candidate-v1",
+  "status": "complete_task_inventory_candidate_not_semantically_certified_or_training_frozen",
+  "training_dispatch_allowed": false,
+  "operator": "I_present",
+  "semantic_definition_count": 65,
+  "authored_cards": [
+    {
+      "semantic_id": "alarm_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request information about alarms or their configured state.",
+      "includes": [
+        "Listing, checking existence, times or descriptions of alarms."
+      ],
+      "excludes": [
+        "Creating, cancelling or silencing alone does not request information."
+      ],
+      "related_native_classes": [
+        "alarm_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "alarm_cancel",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request deleting, disabling or cancelling an alarm notification.",
+      "includes": [
+        "Removing one or all scheduled alarms."
+      ],
+      "excludes": [
+        "Muting sound without disabling an alarm is not cancellation."
+      ],
+      "related_native_classes": [
+        "alarm_remove"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "alarm_create",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request creating or scheduling an alarm notification.",
+      "includes": [
+        "Time, delay or explicitly directed conditional alarms, even without all parameters."
+      ],
+      "excludes": [
+        "Appointments alone and generic reminders without alarm evidence do not imply an alarm."
+      ],
+      "related_native_classes": [
+        "alarm_set"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_quieter",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a reduction in audio loudness while retaining audible output.",
+      "includes": [
+        "Quieter output or a lower target when the direction is established."
+      ],
+      "excludes": [
+        "Complete mute is distinct; an absolute level without known direction does not establish decrease."
+      ],
+      "related_native_classes": [
+        "audio_volume_down"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_silence",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request suppressing audible output.",
+      "includes": [
+        "Mute, zero volume, or directed silence/do-not-speak requests."
+      ],
+      "excludes": [
+        "Merely lowering nonzero volume or cancelling a scheduled alarm does not by itself request muting output."
+      ],
+      "related_native_classes": [
+        "audio_volume_mute"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_louder",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request increasing audio loudness.",
+      "includes": [
+        "Louder output or a higher target when direction is established."
+      ],
+      "excludes": [
+        "Speed increase or light brightness is not loudness; an absolute value alone need not imply increase."
+      ],
+      "related_native_classes": [
+        "audio_volume_up"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_level_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request the current audio volume level or mute status.",
+      "includes": [
+        "Read or verify an audio output setting."
+      ],
+      "excludes": [
+        "Changing settings or opening controls alone does not request current-state information."
+      ],
+      "related_native_classes": [
+        "audio_volume_other"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_level_adjust",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request setting or changing audio loudness, with or without a specified direction.",
+      "includes": [
+        "Absolute level, louder, quieter or zero volume; semantic overlap with directional/mute cards is permitted."
+      ],
+      "excludes": [
+        "Only inspecting volume or opening a settings interface without adjustment does not express adjustment."
+      ],
+      "related_native_classes": [
+        "audio_volume_other"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_controls_open",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request opening or displaying an audio-volume control interface.",
+      "includes": [
+        "Open volume settings or controls."
+      ],
+      "excludes": [
+        "Direct adjustment or current-level information alone does not imply an interface-opening request."
+      ],
+      "related_native_classes": [
+        "audio_volume_other"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "calendar_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request information about personal calendar events, reminders or availability.",
+      "includes": [
+        "Existing entries, schedules, free time and event details."
+      ],
+      "excludes": [
+        "Public event discovery and current clock time alone are distinct; adding an event does not imply a query."
+      ],
+      "related_native_classes": [
+        "calendar_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "calendar_cancel",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request removing or cancelling a personal calendar entry or reminder.",
+      "includes": [
+        "Deletion of an appointment, reminder or specified set of entries."
+      ],
+      "excludes": [
+        "Alarm removal and non-calendar list edits alone are outside this definition."
+      ],
+      "related_native_classes": [
+        "calendar_remove"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "calendar_create",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request creating, scheduling or repeating a personal calendar event or reminder.",
+      "includes": [
+        "Appointments, event reminders, and conventional do-not-let-me-forget constructions."
+      ],
+      "excludes": [
+        "Querying availability alone is not creation; a bare event mention can leave the act unresolved."
+      ],
+      "related_native_classes": [
+        "calendar_set"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "food_preparation_guidance",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a recipe or practical instructions for preparing food.",
+      "includes": [
+        "Recipe selection, preparation steps, ingredient substitution or quantities explicitly for preparation."
+      ],
+      "excludes": [
+        "Executing cooking, downloading an app, word definitions, nutrition facts or food-business assertions alone do not request preparation guidance."
+      ],
+      "related_native_classes": [
+        "cooking_query",
+        "cooking_recipe"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "time_zone_conversion",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a correspondence or difference between clock times in different time zones or places.",
+      "includes": [
+        "Hypothetical local-time conversion or time differences."
+      ],
+      "excludes": [
+        "Changing a configured zone alone is an operation rather than conversion information."
+      ],
+      "related_native_classes": [
+        "datetime_convert"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "time_zone_setting",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing a device or service time-zone setting.",
+      "includes": [
+        "Set the clock's configured time zone."
+      ],
+      "excludes": [
+        "Asking the time in another place does not request changing a setting."
+      ],
+      "related_native_classes": [
+        "datetime_convert"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "date_time_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a clock time, date, weekday or calendar-date fact.",
+      "includes": [
+        "Current or specified time/date, weekday of a date."
+      ],
+      "excludes": [
+        "A date as an operation argument alone is not a date query; time-zone conversion can overlap when an answer time is explicitly sought."
+      ],
+      "related_native_classes": [
+        "datetime_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "email_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request retrieving, reading, searching or monitoring email messages or mailbox state.",
+      "includes": [
+        "Received mail, unread count, message content or reply status."
+      ],
+      "excludes": [
+        "Sending mail and looking up a contact address alone are not mailbox retrieval."
+      ],
+      "related_native_classes": [
+        "email_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "email_compose_send",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request composing, sending or replying to an email.",
+      "includes": [
+        "Recipient/content may be incomplete; requesting a draft is included."
+      ],
+      "excludes": [
+        "Reading mail alone or another communication channel does not establish email composition or sending."
+      ],
+      "related_native_classes": [
+        "email_sendemail"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "social_greeting",
+      "operator": "I_present",
+      "act_policy": "greeting",
+      "definition": "Perform a social greeting or conventional phatic check-in addressed to the assistant.",
+      "includes": [
+        "Hello, good morning, or conventional how-are-you/what-is-up used as a greeting."
+      ],
+      "excludes": [
+        "A vocative name or attention cue alone is not a greeting; substantive identity/persona questions are separate."
+      ],
+      "related_native_classes": [
+        "general_greet"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "humor_request",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a joke or humorous material from the assistant.",
+      "includes": [
+        "A generic joke or joke on a specified topic."
+      ],
+      "excludes": [
+        "Merely mentioning a joke, greeting, or laughing does not request humor."
+      ],
+      "related_native_classes": [
+        "general_joke"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "assistant_persona_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request information about the addressed assistant's identity, experiences, feelings, preferences or imagined persona.",
+      "includes": [
+        "Who are you, a substantive persona question or an explicitly hypothetical personal question to the assistant."
+      ],
+      "excludes": [
+        "A conventional phatic greeting alone is not a substantive persona query; questions about a different person do not automatically qualify."
+      ],
+      "related_native_classes": [
+        "general_quirky"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "cleaning_device_operation",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request operating a cleaning device.",
+      "includes": [
+        "Start, stop or schedule an explicitly identified cleaner/vacuum."
+      ],
+      "excludes": [
+        "Generic cleaning advice or device-operation information alone does not request operating it."
+      ],
+      "related_native_classes": [
+        "iot_cleaning"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "cleaning_device_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request information or instructions about a cleaning device or its operation.",
+      "includes": [
+        "Current cleaner status, capabilities or how to use it."
+      ],
+      "excludes": [
+        "A command to activate alone does not request information; generic cleaning without device context does not establish the domain."
+      ],
+      "related_native_classes": [
+        "iot_cleaning"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "coffee_preparation_operation",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request preparing coffee through an expressed coffee-making operation or coffee-maker control.",
+      "includes": [
+        "Brew coffee now or schedule an identified coffee maker."
+      ],
+      "excludes": [
+        "Coffee recipes or commercial takeaway ordering alone do not request device preparation; unclear service-versus-appliance context remains unavailable."
+      ],
+      "related_native_classes": [
+        "iot_coffee"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "light_color_change",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing lighting color or color mode.",
+      "includes": [
+        "Set a color or cycle colors."
+      ],
+      "excludes": [
+        "Brightness adjustment or on/off alone does not establish color change."
+      ],
+      "related_native_classes": [
+        "iot_hue_lightchange"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "light_dimmer",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request reducing lighting brightness while retaining illumination.",
+      "includes": [
+        "Dim lighting or set an explicitly lower nonzero brightness."
+      ],
+      "excludes": [
+        "Switching off alone is distinct; an absolute value without a direction does not prove dimming."
+      ],
+      "related_native_classes": [
+        "iot_hue_lightdim"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "light_off",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching lighting off.",
+      "includes": [
+        "Explicit light deactivation or a pragmatically clear equivalent."
+      ],
+      "excludes": [
+        "Sleep statements or ambient-state assertions alone do not establish this act; dimming alone does not mean off."
+      ],
+      "related_native_classes": [
+        "iot_hue_lightoff"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "light_on",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching lighting on.",
+      "includes": [
+        "Explicit activation of lighting."
+      ],
+      "excludes": [
+        "Brightening alone does not imply turning on; darkness alone can leave the requested response ambiguous."
+      ],
+      "related_native_classes": [
+        "iot_hue_lighton"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "light_brighter",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request increasing lighting brightness.",
+      "includes": [
+        "Brighten or set an explicitly higher brightness."
+      ],
+      "excludes": [
+        "Activation alone does not mean increase of an already active level; absolute values without direction remain distinct."
+      ],
+      "related_native_classes": [
+        "iot_hue_lightup"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "outlet_off",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching off an explicitly identified power outlet, smart plug or its controlled supply.",
+      "includes": [
+        "Deactivate a socket or plug supply."
+      ],
+      "excludes": [
+        "An arbitrary appliance or lighting command does not by itself identify outlet control; brand recognition alone is not domain evidence."
+      ],
+      "related_native_classes": [
+        "iot_wemo_off"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "outlet_on",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching on an explicitly identified power outlet, smart plug or its controlled supply.",
+      "includes": [
+        "Activate a socket or plug supply."
+      ],
+      "excludes": [
+        "An arbitrary appliance command does not by itself identify outlet control; no native-label-based plug inference."
+      ],
+      "related_native_classes": [
+        "iot_wemo_on"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "list_create_add",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request creating a general-purpose list or adding an item to one.",
+      "includes": [
+        "Shopping/to-do lists and explicitly requested item addition."
+      ],
+      "excludes": [
+        "Commercial ordering, calendar entry creation, contact editing or media-library saving alone do not imply a general-list operation."
+      ],
+      "related_native_classes": [
+        "lists_createoradd"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "list_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request reading, searching or inspecting a general-purpose list or its contents.",
+      "includes": [
+        "List names, items, ordering or remaining tasks."
+      ],
+      "excludes": [
+        "Specialized calendar/contact/mailbox/media operations alone do not imply this general-list request."
+      ],
+      "related_native_classes": [
+        "lists_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "list_remove",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request deleting a general-purpose list or removing its items.",
+      "includes": [
+        "Delete a shopping list or listed item."
+      ],
+      "excludes": [
+        "Stopping playback, calendar cancellation or contact deletion alone are not general-list deletion."
+      ],
+      "related_native_classes": [
+        "lists_remove"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_positive_preference",
+      "operator": "I_present",
+      "act_policy": "preference",
+      "definition": "Express or explicitly register a favorable personal evaluation of music or a music-related referent.",
+      "includes": [
+        "Enjoyment, favorable assessment, favorite designation or explicit thumbs-up, with music domain evidence."
+      ],
+      "excludes": [
+        "Saving/downloading/playing alone, unsigned opinion storage or an uncalibrated numerical rating does not establish favorable polarity."
+      ],
+      "related_native_classes": [
+        "music_likeness"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_negative_preference",
+      "operator": "I_present",
+      "act_policy": "preference",
+      "definition": "Express or explicitly register an unfavorable personal evaluation of music or a music-related referent.",
+      "includes": [
+        "Dislike, an adverse quality judgment or explicit rejection supported by music context."
+      ],
+      "excludes": [
+        "Skipping, muting or stopping alone is not negative preference; not expressing dislike does not establish liking."
+      ],
+      "related_native_classes": [
+        "music_dislikeness"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_feedback_record",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request recording or registering a rating, evaluation or preference about music.",
+      "includes": [
+        "Save an expressed opinion, register stars/like/dislike or designate a favorite."
+      ],
+      "excludes": [
+        "A favorable/unfavorable statement without an expressed recording request does not itself request persistence; content saving alone is distinct."
+      ],
+      "related_native_classes": [
+        "music_likeness",
+        "music_dislikeness"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_content_save",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request saving, downloading or adding music content to a collection for later use.",
+      "includes": [
+        "Add a song to a playlist/library/catalogue/favorites, or explicitly save/download it."
+      ],
+      "excludes": [
+        "Remember an opinion alone is feedback storage, not content saving; saving content does not imply liking."
+      ],
+      "related_native_classes": [
+        "music_likeness"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request information about music, its creators, musical attributes or listening history.",
+      "includes": [
+        "Identify a song/artist, ask what played or inspect music collection content."
+      ],
+      "excludes": [
+        "Playback, setting changes or preference expression alone do not imply an information request."
+      ],
+      "related_native_classes": [
+        "music_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_playback_settings",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing a music playback mode or sound-shaping setting.",
+      "includes": [
+        "Shuffle, continuous repeat, equalizer or mode changes."
+      ],
+      "excludes": [
+        "Loudness alone, choosing a song or asking one additional replay do not establish a persistent mode change."
+      ],
+      "related_native_classes": [
+        "music_settings"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "news_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request reporting, news or updates on developing events.",
+      "includes": [
+        "Headlines or current developments on an expressed topic."
+      ],
+      "excludes": [
+        "Timeless facts, public-event recommendations or a social feed alone do not automatically establish news reporting."
+      ],
+      "related_native_classes": [
+        "news_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audiobook_playback",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request playback or navigation of an audiobook.",
+      "includes": [
+        "Start, resume or move within a spoken book."
+      ],
+      "excludes": [
+        "A book title or factual book question alone does not establish playback; medium must be expressed rather than externally inferred."
+      ],
+      "related_native_classes": [
+        "play_audiobook"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "game_participation",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request starting or participating in a game.",
+      "includes": [
+        "Open a game, initiate play or take a game turn."
+      ],
+      "excludes": [
+        "Factual questions about games or playing media do not by themselves request game participation."
+      ],
+      "related_native_classes": [
+        "play_game"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_playback",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request selecting, starting, resuming or navigating music playback.",
+      "includes": [
+        "Play a song/artist/playlist, skip a song, or replay once."
+      ],
+      "excludes": [
+        "Information, saving or preference alone is not playback; bare platform names do not establish this act."
+      ],
+      "related_native_classes": [
+        "play_music"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "podcast_playback",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request podcast playback or episode navigation.",
+      "includes": [
+        "Start/resume a podcast or move among its episodes."
+      ],
+      "excludes": [
+        "Generic go-back/episode references without podcast evidence can be ambiguous; other media are not inferred as podcasts."
+      ],
+      "related_native_classes": [
+        "play_podcasts"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "radio_playback",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request playback or selection of a radio station or radio program.",
+      "includes": [
+        "Tune a station or start a radio stream."
+      ],
+      "excludes": [
+        "A song request alone is not a station request; externally known station names without expressed medium can remain ambiguous."
+      ],
+      "related_native_classes": [
+        "play_radio"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "currency_information_conversion",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a currency exchange rate or monetary conversion across currencies.",
+      "includes": [
+        "Exchange rates or a converted amount."
+      ],
+      "excludes": [
+        "A price or ordinary arithmetic without currency exchange does not establish conversion."
+      ],
+      "related_native_classes": [
+        "qa_currency"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "concept_explanation",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a meaning, definition or conceptual explanation.",
+      "includes": [
+        "Explain a term or what a concept is."
+      ],
+      "excludes": [
+        "A specific factual property alone need not be definitional; no native-label precedence is used for overlapping requests."
+      ],
+      "related_native_classes": [
+        "qa_definition"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "factual_property_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request descriptive factual information about an entity, event or relation.",
+      "includes": [
+        "Who/where/when, factual properties, identity or existence; domain-specific factual requests may also qualify."
+      ],
+      "excludes": [
+        "Operation instructions, recommendations/preferences, hypothetical creative prompts or calculations alone are not automatically factual-property requests; this is not a residual catch-all."
+      ],
+      "related_native_classes": [
+        "qa_factoid"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "mathematical_answer",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a mathematical result or explanation of a mathematical rule.",
+      "includes": [
+        "Arithmetic computation or order-of-operations explanation."
+      ],
+      "excludes": [
+        "Numerals used as arguments alone do not request mathematics; another-domain operation's hidden calculation is not an expressed mathematical request."
+      ],
+      "related_native_classes": [
+        "qa_maths"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "market_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request stock or securities-market information.",
+      "includes": [
+        "Share prices, indices, futures quotes or market outlook."
+      ],
+      "excludes": [
+        "A company name or general corporate news alone does not establish a market request."
+      ],
+      "related_native_classes": [
+        "qa_stock"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "public_event_discovery",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request discovering or recommending public events or activities.",
+      "includes": [
+        "Concerts or activities for a supplied time/location."
+      ],
+      "excludes": [
+        "Personal calendar lookup alone is not public discovery; a venue alone need not be an event."
+      ],
+      "related_native_classes": [
+        "recommendation_events"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "venue_discovery",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request discovering, locating or recommending a place or venue to visit.",
+      "includes": [
+        "Restaurants, shops, hotels or a suitable/nearest venue."
+      ],
+      "excludes": [
+        "Route directions alone or transport-access-point lookup alone is not a venue recommendation/discovery request."
+      ],
+      "related_native_classes": [
+        "recommendation_locations"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "movie_discovery",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request film recommendations or available screening information.",
+      "includes": [
+        "Suggest films or find movies showing nearby."
+      ],
+      "excludes": [
+        "Starting playback or describing a film fact alone does not establish discovery/recommendation."
+      ],
+      "related_native_classes": [
+        "recommendation_movies"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "social_publish",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request publishing content on a social platform.",
+      "includes": [
+        "Post a status, tweet or public review."
+      ],
+      "excludes": [
+        "Social-content retrieval, email sending or quoted posting language alone does not request publication."
+      ],
+      "related_native_classes": [
+        "social_post"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "social_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request retrieving or monitoring social-platform activity.",
+      "includes": [
+        "Posts, likes, replies or social messages."
+      ],
+      "excludes": [
+        "Publishing alone does not imply retrieval; generic news or email without social-platform evidence is distinct."
+      ],
+      "related_native_classes": [
+        "social_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "prepared_food_order",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request placing a prepared-food delivery or takeaway order.",
+      "includes": [
+        "Initiate a meal purchase for delivery or pickup."
+      ],
+      "excludes": [
+        "Restaurant discovery, delivery availability or order tracking alone is not ordering."
+      ],
+      "related_native_classes": [
+        "takeaway_order"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "prepared_food_service_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request information about prepared-food delivery/takeaway service or an existing order.",
+      "includes": [
+        "Delivery options, availability, order status or arrival time."
+      ],
+      "excludes": [
+        "Placing an order alone does not request information; generic restaurant facts need explicit service relevance."
+      ],
+      "related_native_classes": [
+        "takeaway_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "taxi_ride_arrange",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request hiring or arranging a taxi or ride-hailing service.",
+      "includes": [
+        "A cab or explicitly taxi/ride-hailing pickup/destination request."
+      ],
+      "excludes": [
+        "Generic ride or journey desire without service evidence remains ambiguous; ticket purchase is distinct."
+      ],
+      "related_native_classes": [
+        "transport_taxi"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "road_traffic_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request road-traffic conditions or traffic-dependent delay information.",
+      "includes": [
+        "Congestion, road conditions and explicit traffic-sensitive travel time."
+      ],
+      "excludes": [
+        "Travel duration alone does not necessarily request traffic conditions; public transport timetables are distinct."
+      ],
+      "related_native_classes": [
+        "transport_traffic"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "weather_information",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request weather conditions, forecasts or explicitly weather-dependent advice.",
+      "includes": [
+        "Temperature/rain forecasts or clothing advice grounded in weather."
+      ],
+      "excludes": [
+        "A date/time alone or astronomy alone does not establish weather; no native-label-based domain inference."
+      ],
+      "related_native_classes": [
+        "weather_query"
+      ],
+      "coexistence": "Separate expressed acts may coexist. Exclusions apply to acts, not a veto on other clauses. No hierarchy closure or native-class precedence is inferred.",
+      "optimization_allowed": false
+    }
+  ],
+  "imported_cards": [
+    {
+      "semantic_id": "contact_record_modify",
+      "path": "configs/tasks/slurp/contact-semantic-presence-candidate-v1.json",
+      "card_sha256": "b28b8ab7e212ce234212dd3bf2e0a1dfeecd53293c72b87027d4d5e3a47648ba",
+      "related_native_classes": [
+        "email_addcontact"
+      ],
+      "act_policy": "request"
+    },
+    {
+      "semantic_id": "contact_information_lookup",
+      "path": "configs/tasks/slurp/contact-semantic-presence-candidate-v1.json",
+      "card_sha256": "558d111fdcf90ebfd4511722974d19ccec090a125394b11fbb8b31926772d525",
+      "related_native_classes": [
+        "email_querycontact"
+      ],
+      "act_policy": "request"
+    },
+    {
+      "semantic_id": "travel_information_lookup",
+      "path": "configs/tasks/slurp/transport-semantic-presence-candidate-v1.json",
+      "card_sha256": "91a69a1410479d99112ea3c3b1f53bb2c7912bf97fa1b2ecddff9145dc55fa2b",
+      "related_native_classes": [
+        "transport_query"
+      ],
+      "act_policy": "request"
+    },
+    {
+      "semantic_id": "transport_passage_acquire",
+      "path": "configs/tasks/slurp/transport-semantic-presence-candidate-v1.json",
+      "card_sha256": "cf2b312f44142796b5b54ad81f1efbd80a0f6edb315c361c3679d63336242d41",
+      "related_native_classes": [
+        "transport_ticket"
+      ],
+      "act_policy": "request"
+    }
+  ],
+  "policies": {
+    "configs/tasks/intent-request-semantics-candidate-v1.json": "4cb8698806311285a30c06cb1c9fe2f60ae3170efe37c52def8a6d5c872f4367",
+    "configs/tasks/intent-nonrequest-semantics-candidate-v1.json": "aae8d07f56f8be97d850c543d93f9e478a9692ba89804fade820acd82b8065c4"
+  },
+  "native_review_coverage": [
+    {
+      "native_class": "alarm_query",
+      "semantic_review_leads": [
+        "alarm_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "alarm_remove",
+      "semantic_review_leads": [
+        "alarm_cancel"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "alarm_set",
+      "semantic_review_leads": [
+        "alarm_create"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "audio_volume_down",
+      "semantic_review_leads": [
+        "audio_quieter"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "audio_volume_mute",
+      "semantic_review_leads": [
+        "audio_silence"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "audio_volume_other",
+      "semantic_review_leads": [
+        "audio_level_information",
+        "audio_level_adjust",
+        "audio_controls_open"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "audio_volume_up",
+      "semantic_review_leads": [
+        "audio_louder"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "calendar_query",
+      "semantic_review_leads": [
+        "calendar_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "calendar_remove",
+      "semantic_review_leads": [
+        "calendar_cancel"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "calendar_set",
+      "semantic_review_leads": [
+        "calendar_create"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "cooking_query",
+      "semantic_review_leads": [
+        "food_preparation_guidance"
+      ],
+      "disposition": "shared_preparation_semantics_not_native_label_merge",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "cooking_recipe",
+      "semantic_review_leads": [
+        "food_preparation_guidance"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "datetime_convert",
+      "semantic_review_leads": [
+        "time_zone_conversion",
+        "time_zone_setting"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "datetime_query",
+      "semantic_review_leads": [
+        "date_time_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "email_addcontact",
+      "semantic_review_leads": [
+        "contact_record_modify"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "email_query",
+      "semantic_review_leads": [
+        "email_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "email_querycontact",
+      "semantic_review_leads": [
+        "contact_information_lookup"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "email_sendemail",
+      "semantic_review_leads": [
+        "email_compose_send"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "general_greet",
+      "semantic_review_leads": [
+        "social_greeting"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "general_joke",
+      "semantic_review_leads": [
+        "humor_request"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "general_quirky",
+      "semantic_review_leads": [
+        "assistant_persona_information"
+      ],
+      "disposition": "heterogeneous_native_category; persona is only one review lead, evaluate every source under all registered semantics, not all-negative",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_cleaning",
+      "semantic_review_leads": [
+        "cleaning_device_operation",
+        "cleaning_device_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_coffee",
+      "semantic_review_leads": [
+        "coffee_preparation_operation"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_hue_lightchange",
+      "semantic_review_leads": [
+        "light_color_change"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_hue_lightdim",
+      "semantic_review_leads": [
+        "light_dimmer"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_hue_lightoff",
+      "semantic_review_leads": [
+        "light_off"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_hue_lighton",
+      "semantic_review_leads": [
+        "light_on"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_hue_lightup",
+      "semantic_review_leads": [
+        "light_brighter"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_wemo_off",
+      "semantic_review_leads": [
+        "outlet_off"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "iot_wemo_on",
+      "semantic_review_leads": [
+        "outlet_on"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "lists_createoradd",
+      "semantic_review_leads": [
+        "list_create_add"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "lists_query",
+      "semantic_review_leads": [
+        "list_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "lists_remove",
+      "semantic_review_leads": [
+        "list_remove"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "music_dislikeness",
+      "semantic_review_leads": [
+        "music_negative_preference",
+        "music_feedback_record"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "music_likeness",
+      "semantic_review_leads": [
+        "music_positive_preference",
+        "music_feedback_record",
+        "music_content_save"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "music_query",
+      "semantic_review_leads": [
+        "music_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "music_settings",
+      "semantic_review_leads": [
+        "music_playback_settings"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "news_query",
+      "semantic_review_leads": [
+        "news_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "play_audiobook",
+      "semantic_review_leads": [
+        "audiobook_playback"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "play_game",
+      "semantic_review_leads": [
+        "game_participation"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "play_music",
+      "semantic_review_leads": [
+        "music_playback"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "play_podcasts",
+      "semantic_review_leads": [
+        "podcast_playback"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "play_radio",
+      "semantic_review_leads": [
+        "radio_playback"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "qa_currency",
+      "semantic_review_leads": [
+        "currency_information_conversion"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "qa_definition",
+      "semantic_review_leads": [
+        "concept_explanation"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "qa_factoid",
+      "semantic_review_leads": [
+        "factual_property_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "qa_maths",
+      "semantic_review_leads": [
+        "mathematical_answer"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "qa_stock",
+      "semantic_review_leads": [
+        "market_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "recommendation_events",
+      "semantic_review_leads": [
+        "public_event_discovery"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "recommendation_locations",
+      "semantic_review_leads": [
+        "venue_discovery"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "recommendation_movies",
+      "semantic_review_leads": [
+        "movie_discovery"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "social_post",
+      "semantic_review_leads": [
+        "social_publish"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "social_query",
+      "semantic_review_leads": [
+        "social_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "takeaway_order",
+      "semantic_review_leads": [
+        "prepared_food_order"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "takeaway_query",
+      "semantic_review_leads": [
+        "prepared_food_service_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "transport_query",
+      "semantic_review_leads": [
+        "travel_information_lookup"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "transport_taxi",
+      "semantic_review_leads": [
+        "taxi_ride_arrange"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "transport_ticket",
+      "semantic_review_leads": [
+        "transport_passage_acquire"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "transport_traffic",
+      "semantic_review_leads": [
+        "road_traffic_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    },
+    {
+      "native_class": "weather_query",
+      "semantic_review_leads": [
+        "weather_information"
+      ],
+      "disposition": "review_routing_only_not_native_to_semantic_truth",
+      "labels_inferred": false
+    }
+  ],
+  "source_pins": {
+    "configs/tasks/slurp/intent-definition-candidates-v1.json": "bcb8d49663e3fb8f00bb00b6dc3a76443cd6127a8c006d2c6622fed9b40ffc33",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730"
+  },
+  "runtime_fields": [
+    "semantic_id_as_neutral_binding",
+    "act_policy",
+    "definition",
+    "includes",
+    "excludes",
+    "coexistence",
+    "all_semantic_fields_of_imported_cards"
+  ],
+  "offline_fields": [
+    "related_native_classes",
+    "native_review_coverage",
+    "source_pins",
+    "optimization_allowed"
+  ],
+  "truth_policy": "Every card must be judged from evidence; review leads never select runtime Q, infer negatives or prove class coverage.",
+  "overlap_policy": "Overlaps explicit; broad factual property and audio adjustment can coexist with specific cards. No automatic parent/child closure, semantic complement or one-hot projection. Per-family reward budget fixed independent of ontology size.",
+  "scope": "All60 native classes have review leads; finite semantic inventory is not exhaustive of every utterance or domain. Whole-population supervision and independent boundary review still required.",
+  "remaining": [
+    "semantic boundary review across overlapping authored cards",
+    "full-population annotation and independent disagreement review",
+    "non-request reference supervision",
+    "menus objective denominators and FSC semantic transfer migration",
+    "processor and runtime acceptance"
+  ]
+}

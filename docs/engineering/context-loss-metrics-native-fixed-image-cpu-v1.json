@@ -1,0 +1,54 @@
+{
+  "schema": "context-loss-metrics-native-fixed-image-cpu-v1",
+  "container_id": "56a4d6ad4cc4a99296670dc643670194b4b7de4e500b81004a33e19c1fa8ed2d",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-15T07:05:07.03476423Z",
+    "FinishedAt": "2026-11-15T07:06:18.37204851Z"
+  },
+  "source_files": 361,
+  "source_manifest_sha256": "99dd543bcfb0b5d5fd4f2986ce2450c2f9547a3b0677017b75e298c4767a6fae",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-loss-metrics-native-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "8886f259c0edc4a894e8d7ac9fc0410aa3942d30fe22a3ad46232068e388d3a0",
+    "run/junit.xml": "306ceec6ab26e65441cd9568569e3b0853c3d443b00a93fac76826be7b3b01d0",
+    "run/pytest.log": "4f705f09d760626eb1804101838c39680a0058f14910b28929a1dcec0649d7c0",
+    "package/FILES.json": "99dd543bcfb0b5d5fd4f2986ce2450c2f9547a3b0677017b75e298c4767a6fae",
+    "package/run.py": "de3c31233c11f7a782a23a50e8b435d8d145dacb2842dd49cadf3e0e8a03a4dd"
+  },
+  "counts": {
+    "tests": 16,
+    "failures": 12,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 1,
+    "started_unix": 1794726334.1483185,
+    "finished_unix": 1794726377.095276,
+    "source_manifest_sha256": "99dd543bcfb0b5d5fd4f2986ce2450c2f9547a3b0677017b75e298c4767a6fae",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-loss-metrics-native-cpu-v1/run/junit.xml",
+      "tests/test_context_loss_metrics_candidate.py",
+      "tests/test_context_loss_metrics_native_cpu.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual pinned verl GRPO/RLOO and mixed objective, extracted admitted registered_loss body, synthetic Final60 logits/G16, simulated microstep/rank reduction and one Adam update; no distributed actor/backbone/NPU/efficacy evidence."
+}

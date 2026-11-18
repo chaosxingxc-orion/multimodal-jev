@@ -21,10 +21,21 @@ MODE = 'jev_candidate_hybrid_v1'
 _active = ContextVar('jev_hybrid_active', default=None)
 
 
-def make_batch(items, *, stage, coefficient=0.):
+def make_batch(items, *, stage, coefficient=0., reduction='legacy_weight_mean',
+               algorithm='exact_marginal_legacy', kl_coefficient=0., reference_policy_id=None):
     from verl import DataProto
     if not items or stage not in ('instruction', 'task'):
         raise ValueError('nonempty explicit two-stage batch required')
+    sampled = algorithm in ('grpo_v1', 'rloo_v1')
+    if algorithm not in ('exact_marginal_legacy','grpo_v1','rloo_v1') or (sampled and stage != 'task'):
+        raise ValueError('registered task algorithm required')
+    if reduction not in ('legacy_weight_mean', 'real_request_mean') or (reduction == 'real_request_mean' and stage != 'instruction' and not sampled):
+        raise ValueError('registered instruction reduction required')
+    if sampled and reduction != 'real_request_mean':
+        raise ValueError('sampled task requires real-request reduction')
+    if (type(kl_coefficient) not in (int,float) or not math.isfinite(kl_coefficient) or kl_coefficient<0
+            or (kl_coefficient>0 and (not sampled or not isinstance(reference_policy_id,str) or not reference_policy_id))):
+        raise ValueError('sampled task and fixed reference identity required for KL')
     if (type(coefficient) not in (float, int) or not math.isfinite(coefficient) or coefficient < 0
             or (stage == 'instruction' and coefficient != 0)):
         raise ValueError('explicit nonnegative task-stage coefficient required')
@@ -41,6 +52,11 @@ def make_batch(items, *, stage, coefficient=0.):
         rw = p['request_weight']
         if type(rw) not in (int, float) or not math.isfinite(rw) or rw < 0:
             raise ValueError('finite nonnegative request weight required')
+        if reduction == 'real_request_mean':
+            real = item.get('real_request')
+            if type(real) is not bool or (not real and rw != 0):
+                raise ValueError('explicit real request and zero-weight padding required')
+            p['real_request'] = real
         # Synthetic distributions validate metadata only, never act as rollout.
         shapes = tuple(torch.full((1, len(c)), -math.log(len(c)), dtype=torch.float32) for c in p['candidates'])
         _, weight = supervised_numerator(shapes, p['targets'], p['supervised'], p['span_weights'], torch.tensor([rw]))
@@ -55,16 +71,39 @@ def make_batch(items, *, stage, coefficient=0.):
                    for v, s in zip(p['behavior'], shapes, strict=True)):
                 raise ValueError('authenticated CPU FP32 full candidate behavior required')
         payload.append(p)
+        p['algorithm'] = algorithm
+        if sampled:
+            from .span_policy import joint_logprobs
+            from .span_group_advantage import group_advantages
+            actions = item['actions']
+            if (actions.device.type != 'cpu' or actions.dtype != torch.long or actions.ndim != 3
+                    or actions.shape[0] != 1 or actions.shape[1] < 2 or actions.shape[2] != 1
+                    or len(p['candidates']) != 1 or not bool(p['supervised'].all())):
+                raise ValueError('simple Final complete CPU samples and supervision required')
+            p['actions'] = actions.detach().clone()
+            p['old_joint'] = joint_logprobs(p['behavior'], actions).detach()
+            rewards = (actions[:,:,0] == p['targets'][:,0,None]).float()
+            p['sampled_advantages'] = group_advantages(rewards, [p['request_id']], algorithm=algorithm)
+            p.update(kl_coefficient=kl_coefficient,reference_policy_id=reference_policy_id,
+                     reference_policy=item.get('reference_policy'))
+            if kl_coefficient>0 and item.get('reference_policy_id')!=reference_policy_id:
+                raise ValueError('fixed reference identity changed')
+            from .span_sampled_hybrid import reference_kl_numerator
+            reference_kl_numerator(p['behavior'],p['reference_policy'],torch.tensor([rw]),kl_coefficient)
     ids = [p['request_id'] for p in payload]; policies = {p['policy_id'] for p in payload}
     if len(ids) != len(set(ids)) or len(policies) != 1 or any(not isinstance(v, str) or not v for v in ids+list(policies)):
         raise ValueError('distinct request slots and one immutable policy identity required')
     total = sum(p['effective_weight'] for p in payload)
     if total <= 0:
         raise ValueError('positive global effective weight required')
+    real_count = sum(p['real_request'] for p in payload) if reduction == 'real_request_mean' else None
+    if real_count == 0:
+        raise ValueError('nonempty real request population required')
     width = max(sum(len(c) for c in p['candidates']) for p in payload)
     old = torch.zeros(len(payload), width)
     for i, p in enumerate(payload):
         p.update(global_rows=len(payload), global_weight=total, width=width, stage=stage, coefficient=float(coefficient))
+        p.update(reduction=reduction, global_real_requests=real_count)
         if stage == 'task':
             values = torch.cat(p['behavior'], -1)[0]; old[i, :len(values)] = values
     packed = np.empty(len(payload), dtype=object); packed[:] = payload
@@ -81,13 +120,23 @@ def make_batch(items, *, stage, coefficient=0.):
 
 def admit(batch, config):
     """All ranks reject malformed global normalization before model collectives."""
-    record = dict(error=None, ids=[], local_weight=0., signature=None)
+    record = dict(error=None, ids=[], local_weight=0., local_real_requests=0, signature=None)
     try:
         if len(batch) != config.ppo_mini_batch_size or batch.meta_info['temperature'] != 1.:
             raise ValueError('one complete local optimizer batch required')
         for i, p in enumerate(batch.non_tensor_batch['multi_modal_inputs']):
             if p['policy_id'] != config.jev_policy_id:
                 raise ValueError('stale policy')
+            reduction = p.get('reduction', 'legacy_weight_mean')
+            real_count = p.get('global_real_requests')
+            if reduction == 'real_request_mean':
+                if ((p['stage'] != 'instruction' and p.get('algorithm') not in ('grpo_v1','rloo_v1')) or type(p.get('real_request')) is not bool
+                        or type(real_count) is not int or real_count < 1
+                        or (not p['real_request'] and p['request_weight'] != 0)):
+                    raise ValueError('real request population changed')
+                record['local_real_requests'] += int(p['real_request'])
+            elif reduction != 'legacy_weight_mean' or real_count is not None:
+                raise ValueError('unknown loss reduction')
             # Validate zero-effective rows without demanding positive local mass.
             shapes = tuple(torch.full((1, len(c)), -math.log(len(c))) for c in p['candidates'])
             _, effective = supervised_numerator(shapes, p['targets'], p['supervised'], p['span_weights'],
@@ -100,13 +149,39 @@ def admit(batch, config):
                 values = torch.cat(p['behavior'], -1)[0]; old[:len(values)] = values
             elif p['stage'] != 'instruction' or p['behavior'] is not None or p['coefficient'] != 0:
                 raise ValueError('instruction transport changed')
+            algorithm=p.get('algorithm','exact_marginal_legacy')
+            if algorithm != config.get('jev_advantage_algorithm','exact_marginal_legacy'):
+                raise ValueError('configured hybrid algorithm differs')
+            group_size=0
+            if algorithm in ('grpo_v1','rloo_v1'):
+                from .span_policy import joint_logprobs
+                from .span_group_advantage import group_advantages
+                actions=p['actions'];group_size=actions.shape[1]
+                if (p['stage']!='task' or reduction!='real_request_mean' or len(p['candidates'])!=1
+                        or actions.ndim!=3 or actions.shape!=(1,group_size,1) or group_size<2
+                        or actions.device.type!='cpu' or not bool(p['supervised'].all())):
+                    raise ValueError('simple sampled task metadata changed')
+                old_joint=joint_logprobs(p['behavior'],actions)
+                rewards=(actions[:,:,0]==p['targets'][:,0,None]).float()
+                expected=group_advantages(rewards,[p['request_id']],algorithm=algorithm)
+                if not torch.equal(old_joint,p['old_joint']) or not torch.equal(expected,p['sampled_advantages']):
+                    raise ValueError('sampled actions or advantages changed')
+                if (p['kl_coefficient']!=config.get('jev_kl_coefficient',0.)
+                        or p['reference_policy_id']!=config.get('jev_reference_policy_id')):
+                    raise ValueError('fixed reference configuration changed')
+                from .span_sampled_hybrid import reference_kl_numerator
+                reference_kl_numerator(p['behavior'],p['reference_policy'],
+                                       torch.tensor([p['request_weight']]),p['kl_coefficient'])
+            elif algorithm!='exact_marginal_legacy':
+                raise ValueError('unknown hybrid algorithm')
             if (not torch.equal(batch.batch['old_log_probs'][i].cpu(), old)
                     or not torch.all(batch.batch['advantages'][i] == 0)
                     or not torch.all(batch.batch['response_mask'][i] == 1)
                     or not torch.equal(batch.batch['responses'][i].cpu(), torch.arange(p['width']))):
                 raise ValueError('hybrid transport changed')
             sig = (p['global_rows'], p['global_weight'], p['width'], p['stage'], p['coefficient'],
-                   p['policy_id'], len(batch), config.ppo_micro_batch_size_per_gpu)
+                   p['policy_id'], len(batch), config.ppo_micro_batch_size_per_gpu, reduction, real_count,
+                   algorithm,group_size,p.get('kl_coefficient',0.),p.get('reference_policy_id'))
             if record['signature'] is not None and record['signature'] != sig:
                 raise ValueError('inconsistent local metadata')
             record['signature'] = sig; record['ids'].append(p['request_id']); record['local_weight'] += p['effective_weight']
@@ -120,8 +195,11 @@ def admit(batch, config):
     if (len(signatures) != 1 or len(ids) != len(set(ids)) or len(ids) != sig[0]
             or not math.isclose(sum(p['local_weight'] for p in peers), sig[1], rel_tol=1e-7, abs_tol=1e-7)):
         raise ValueError('global hybrid population/denominator differs')
+    if sig[8] == 'real_request_mean' and sum(p['local_real_requests'] for p in peers) != sig[9]:
+        raise ValueError('global real request denominator differs')
     return dict(global_rows=len(ids), global_weight=sig[1], stage=sig[3], coefficient=sig[4],
-                rank_weights=[p['local_weight'] for p in peers])
+                rank_weights=[p['local_weight'] for p in peers], reduction=sig[8], global_real_requests=sig[9],
+                algorithm=sig[10],group_size=sig[11])
 
 
 def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_mode='token-mean',
@@ -132,22 +210,39 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
     if config.policy_loss.loss_mode != MODE or rollout_is_weights is not None or loss_agg_mode != 'token-mean':
         raise ValueError('unexpected hybrid loss dispatch')
     state['consumed'] = True
-    total = log_prob.sum()*0; ce = 0.; rl = 0.
+    total = log_prob.sum()*0; ce = 0.; rl = 0.; reference_kl = 0.
     for i, p in enumerate(state['payload']):
         start = 0; policy = []
         for c in p['candidates']:
             policy.append(log_prob[i:i+1, start:start+len(c)]); start += len(c)
         device = log_prob.device
+        if p.get('algorithm') in ('grpo_v1','rloo_v1'):
+            from .span_sampled_hybrid import loss as sampled_loss
+            value,metrics=sampled_loss(tuple(policy),p['actions'].to(device),p['old_joint'].to(device),
+                p['sampled_advantages'].to(device),p['targets'].to(device),p['supervised'].to(device),
+                p['span_weights'].to(device),torch.tensor([p['request_weight']],device=device),
+                torch.tensor([p['real_request']],dtype=torch.bool,device=device),
+                global_real_requests=p['global_real_requests'],coefficient=p['coefficient'],
+                world_size=dist.get_world_size(),clip_ratio=config.clip_ratio,
+                reference_policy=None if p['reference_policy'] is None else tuple(v.to(device) for v in p['reference_policy']),
+                kl_coefficient=p['kl_coefficient'])
+            total=total+value;ce+=metrics['ce'];rl+=metrics['rl']
+            reference_kl+=metrics['kl_coefficient']*metrics['kl']
+            continue
         value, metrics = loss(tuple(policy), p['targets'].to(device), p['supervised'].to(device),
             p['span_weights'].to(device), torch.tensor([p['request_weight']], device=device),
             stage=p['stage'], global_effective_weight=p['global_weight'], world_size=dist.get_world_size(),
             behavior=None if p['behavior'] is None else tuple(x.to(device) for x in p['behavior']),
-            coefficient=p['coefficient'], clip_ratio=config.clip_ratio)
+            coefficient=p['coefficient'], clip_ratio=config.clip_ratio,
+            real_request_mask=torch.tensor([p['real_request']], dtype=torch.bool, device=device)
+                if p.get('reduction') == 'real_request_mean' else None,
+            global_real_requests=p.get('global_real_requests'))
         total = total+value; ce += metrics['ce']; rl += metrics['rl']
     # Native update_policy divides by accumulation. Undo that division because
     # each microbatch already uses the common global request denominator.
     accumulation = config.ppo_mini_batch_size//config.ppo_micro_batch_size_per_gpu
-    return total*accumulation, {'jev/ce_contribution': ce, 'jev/rl_contribution': rl}
+    return total*accumulation, {'jev/ce_contribution': ce, 'jev/rl_contribution': rl,
+                                'jev/reference_kl_contribution': reference_kl}
 
 
 def build_actor(config, module, optimizer):

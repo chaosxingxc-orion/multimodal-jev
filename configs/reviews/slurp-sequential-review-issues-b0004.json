@@ -1,0 +1,86 @@
+{
+  "schema": "slurp-reference-review-issues-v1",
+  "review": "configs/reviews/slurp-full-slot-sequential-reference-b0004.json",
+  "review_sha256": "9161209594015815407dae729c78416e3f0900c72fa553b86dfdc79e3a6fbe9e",
+  "training_dispatch_allowed": false,
+  "issues": [
+    {
+      "source_id": "15684",
+      "definition_id": "app_name",
+      "quote": "tweet",
+      "rationale": "The verb identifies message form, but current named-application policy does not settle whether a conventional platform-specific verb alone counts as a named software reference.",
+      "reason_kind": "definition_boundary_platform_specific_verb"
+    },
+    {
+      "source_id": "3985",
+      "definition_id": "device_type",
+      "quote": "alarm",
+      "rationale": "Alarm can refer to an alert configuration or a physical alarm device; physical-equipment evidence is not established by setting one.",
+      "reason_kind": "input_alarm_alert_device_ambiguity"
+    },
+    {
+      "source_id": "15896",
+      "definition_id": "list_name",
+      "quote": "contacts",
+      "rationale": "Contacts may refer to an address-book collection or a general contact relation; whether this generic collection qualifies as list/task collection is not settled.",
+      "reason_kind": "definition_boundary_contact_collection"
+    },
+    {
+      "source_id": "1965",
+      "definition_id": "playlist_name",
+      "quote": "playlist of a r rehman songs released current year",
+      "rationale": "May identify a known collection or request an open selection defined by artist/year; no possession/title/history resolves the particular-reference requirement.",
+      "reason_kind": "input_playlist_reference_vs_open_selection"
+    },
+    {
+      "source_id": "8698",
+      "definition_id": "event_name",
+      "quote": "put me in",
+      "rationale": "Elliptical scheduling establishes participation but no event noun; current event rule does not settle whether this implicit appointment reference itself suffices.",
+      "reason_kind": "definition_boundary_elliptical_scheduled_event"
+    },
+    {
+      "source_id": "868",
+      "definition_id": "business_name",
+      "quote": "wemo",
+      "rationale": "Brand modifies device identity; current company definition does not settle brand-only modifier versus independently expressed company role.",
+      "reason_kind": "definition_boundary_device_brand_company"
+    },
+    {
+      "source_id": "6451",
+      "definition_id": "event_name",
+      "quote": "life goals",
+      "rationale": "Could denote planned activities or abstract aspirations; the fragment does not establish an event reference or its request relevance.",
+      "reason_kind": "input_fragment_goal_role_ambiguity"
+    },
+    {
+      "source_id": "6451",
+      "definition_id": "definition_word",
+      "quote": "life goals",
+      "rationale": "Could be a topic fragment, a meaning question or a requested list; no explicit conceptual-explanation relation is supplied.",
+      "reason_kind": "input_fragment_communicative_act_ambiguity"
+    },
+    {
+      "source_id": "3209",
+      "definition_id": "news_topic",
+      "quote": "new stuff on that subject",
+      "rationale": "Could request recent reporting or generic new information; subject is deictic, and the required news/development relation is not established.",
+      "reason_kind": "input_news_vs_generic_information"
+    },
+    {
+      "source_id": "3209",
+      "definition_id": "media_type",
+      "quote": "new stuff",
+      "rationale": "Stuff could be articles/content or nonmedia information/items; the input does not establish a content kind or source.",
+      "reason_kind": "input_generic_stuff_reference"
+    },
+    {
+      "source_id": "11017",
+      "definition_id": "list_name",
+      "quote": "leave to be done",
+      "rationale": "Could reference a to-do list or merely outstanding work, without a stated collection reference.",
+      "reason_kind": "input_tasks_vs_list_reference"
+    }
+  ],
+  "policy": "Retain unavailable; aggregate definition boundaries and input ambiguity separately. No automatic ontology edits or native-absence negatives."
+}

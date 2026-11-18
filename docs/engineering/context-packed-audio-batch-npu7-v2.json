@@ -1,0 +1,91 @@
+{
+  "container_id": "b6cd301fbdad6510ccc9f806824005f487caf3e9804996fa6285cec57b93b4f7",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T11:03:36.98163907Z",
+    "FinishedAt": "2026-11-14T11:04:08.75642505Z"
+  },
+  "files": {
+    "phase-0.log": "dfbb7882ed4f36c7cbc350ecdd7d3b9aba824466fc1e7b7b09ad02ad0530da9f",
+    "terminal.json": "e429c82a07e6cb83ff875e4cbf834f6d4495509bf141f8e984fb5d40fe0ffe22",
+    "config.json": "934d69228ce47034eea942d8c71884dbc9a13d5aa6cde1454fa9503364aa4236",
+    "run/hf-batch-batch.pt": "e09353bf9eee34951d7e5e8d96d2f174e02474a383984737bb44e4e4b35ac540",
+    "run/hf-serial-batch.pt": "568a6d2b78012517d0cfe68ab1c9630df37663430d22f823279e6b7fdc2e5fac",
+    "run/diagnostic-update.json": "f6be8a4c87877cc14c9ef6388515633c3f0bd3565b533e9a4a487b957d689cd3",
+    "run/hf-batch.json": "6460d49f630d74df65142deb1943e83019e18a689dc31dab5fed88e85f1230e7",
+    "run/batch-runtime.json": "1e8647c96a17b3930fa15935fdb3deaf7ae215e51758bcf19800c8037b5bd687",
+    "run/hf-terminal.json": "7aa9a8697124d4ef55527fdb5019e0d74c618f49b964d27e0c2905095060238c",
+    "run/hf.json": "9383b280e9f88bb183544e858b82f03377d2d39c98f45e1985865bb3330a96ac",
+    "run/diagnostic-update.pt": "893283c8104a8be4be1d99092c5640d2f735ca1b60d8e336656baa09d88dd509",
+    "run/progress.json": "97bdf88f62156438319b8dedfc191f3bedb31ca74a95d8c284b5a70f518ed3e0",
+    "run/hf_batch-terminal.json": "e9e219e58da3fa8581dbbd13ec4af9f9caf8f8104c08405aff835ca1393bb698",
+    "run/joint.json": "51153f1417c0d854756247a48b65eb6c2e1c5713296b877443da9b0bfa8eab69",
+    "run/hf-batch_row_head-batch.pt": "9c94e67a1f3d32598527c41184dcd37c3061558590c7000567e43e074471b415",
+    "run/adapter/adapter_model.safetensors": "a945632f0d0bdef540d3a9768b694c412dee10e76f4aa62a2382e39429b659eb",
+    "run/adapter/adapter_config.json": "f561c32c7c671a47731c00d78dfc6b7a9c38198ecc4f4c3a0c72826cf72cbde0",
+    "run/adapter/CONTEXT_POLICY.json": "d432d82f254a8ee36e6a32e052d2c834d9bf37b069eb607bca25a49327f2f55d",
+    "run/policy/execution.pt": "40a331060effa2718266ada63912cf5fd838933fb0a438c0b5948356e86dfd6a",
+    "run/policy/MANIFEST.json": "96b883731023f05353c7954edb4dec2870f62a70583e80bfac07efedaa7bf6ab",
+    "run/policy/processor/processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+    "run/policy/processor/tokenizer.json": "dfc31f2e73e91521a1f664ca198cffaaa123619c10b4638270b804565e4979c8",
+    "run/policy/processor/chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+    "run/policy/processor/tokenizer_config.json": "e2c2078a8c3e0394171ce4e82a76a8b38ced47cd20a34e5149ebb51198b19856"
+  },
+  "pins": 357,
+  "collection_sha256": "f168ee8d50cd48d49fa9031d3cac0bb4efeb64c207879733e2d13055fafd7ae0",
+  "training_dispatch_allowed": false,
+  "parity_admitted": false,
+  "updated_policy_checkpoint_recheck": {
+    "parameters": 128,
+    "master_bf16_export_exact": true,
+    "adam_step": 1,
+    "on_device_restore_probability_error": 0.0
+  },
+  "independent_probability_checks": {
+    "logit_max_error": 0.0009765625,
+    "probability_max_error": 0.00024312734603881836,
+    "gradient_max_error": 0.001953125,
+    "gradient_relative_l2": 0.0042088511399924755,
+    "timing": [
+      {
+        "mode": "serial",
+        "seconds": 2.4891723899927456,
+        "allocated": 7245200384,
+        "reserved": 7763656704,
+        "snapshot_sha256": "568a6d2b78012517d0cfe68ab1c9630df37663430d22f823279e6b7fdc2e5fac"
+      },
+      {
+        "mode": "batch",
+        "seconds": 1.1371122299897252,
+        "allocated": 12125299200,
+        "reserved": 13151240192,
+        "snapshot_sha256": "e09353bf9eee34951d7e5e8d96d2f174e02474a383984737bb44e4e4b35ac540"
+      },
+      {
+        "mode": "batch_row_head",
+        "seconds": 0.8690315099956933,
+        "allocated": 12117064704,
+        "reserved": 13151240192,
+        "snapshot_sha256": "9c94e67a1f3d32598527c41184dcd37c3061558590c7000567e43e074471b415"
+      }
+    ],
+    "training_dispatch_allowed": false,
+    "scope": "Two-request same-weight serial versus batch; raw differences, no parity/throughput promotion.",
+    "row_head": {
+      "logit_max_error": 0.0,
+      "probability_max_error": 0.0,
+      "gradient_relative_l2": 0.002663255203515291
+    }
+  },
+  "joint_policy_id": "67260b7896435319d1a187cb2168ab49eb7c754c826853741d27d0c46d078099",
+  "scope": "Joint snapshot and input identity verified; two real requests serial/batch forward/backward, no optimizer or admission."
+}

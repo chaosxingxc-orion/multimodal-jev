@@ -1,0 +1,118 @@
+{
+  "schema": "slurp-simple-true-batch-throughput-design-v2",
+  "status": "candidate_dp4_micro8_full_class_spread_stage1_running",
+  "training_dispatch_allowed": false,
+  "parent": "configs/experiments/slurp-simple-final-v1.json",
+  "global_batch": 128,
+  "dp_world_size": 4,
+  "target_microbatch_per_rank": 32,
+  "target_accumulation_per_rank": 1,
+  "capacity_sweep_microbatch_per_rank": [
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "preserve": [
+    "same_global_batch_requests_and_order",
+    "same_initial_parameters_optimizer_state_and_seed",
+    "class_weights_and_real_request_loss_denominator",
+    "BF16_execution_and_FP32_master_optimizer",
+    "current_running_snapshot_and_rc2_archive"
+  ],
+  "implementation_requirements": [
+    "one_backbone_forward_per_microbatch_instead_of_serial_per_request_graphs",
+    "correct_audio_feature_masks_and_audio_to_text_alignment",
+    "padding_aware_span_positions_and_position_ids",
+    "explicit_zero_weight_epoch_tail_padding",
+    "versioned_batch_compatible_runtime_profile"
+  ],
+  "acceptance": [
+    "single_vs_batched_candidate_probabilities_on_identical_requests",
+    "weighted_loss_gradients_and_next_optimizer_update_against_micro1_control",
+    "short_long_mixed_length_and_epoch_tail_inputs",
+    "actor_vs_vllm_policy_parity_before_RL_admission",
+    "warm_steady_state_end_to_end_requests_per_second",
+    "peak_allocated_reserved_and_device_memory_with_operational_headroom",
+    "checkpoint_export_reload_and_resume_update"
+  ],
+  "selection_rule": "Choose measured fastest accepted microbatch with memory headroom; 32 is a target, not a required minimum.",
+  "scope": "Design configuration only, not accepted by current production launcher. No global batch increase, attention kernel change, NPU benchmark or training promotion is implied.",
+  "evidence": {
+    "forward_probe": "docs/engineering/slurp-true-batch-packed-inner2-sweep-v1.json",
+    "requests": 32,
+    "microbatches_passed": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "maximum_logprob_error": 9.5367431640625e-07,
+    "scope": "candidate_single_vs_batch_inference_only",
+    "next_training_microbatches": [
+      8,
+      16,
+      32
+    ],
+    "production_promoted": false,
+    "backward_capacity_probe": "docs/engineering/slurp-true-batch-dp2-capacity-v1.json",
+    "micro32_backward": "device_out_of_memory_DP2_local32_no_activation_checkpointing",
+    "training_microbatch_focus": [
+      8,
+      16
+    ],
+    "gradient_repeatability": "deterministic_same_case_repeats_exact; cross_micro_trajectory_differs",
+    "deterministic_probe": "docs/engineering/slurp-true-batch-determinism-v1.json",
+    "post_update_cross_micro_probe": "docs/engineering/slurp-true-batch-update-dp2-v4-postupdate.json",
+    "post_update_cross_micro_max_logprob_error": 0.36202073097229004,
+    "interpretation": "Different optimizer trajectories are not same-checkpoint train/inference parity. Cross-micro equivalence failed; same-updated-checkpoint shape parity and vLLM validation remain required. No tolerance relaxation or production admission.",
+    "same_updated_policy_shape_probe": "docs/engineering/slurp-true-batch-update-dp2-v5-same-update-batch.json",
+    "same_updated_policy_shape_max_logprob_error": 9.5367431640625e-07,
+    "same_updated_policy_shape_argmax_changes": 0,
+    "updated_adapter_backend_probe": "docs/engineering/slurp-batch-updated-vllm-v2-parity.json",
+    "resident_vs_original_hf_max_logprob_error": 0.4416465759277344,
+    "resident_vs_original_hf_passed": false,
+    "candidate_reload_isolation": "docs/engineering/slurp-batch-updated-candidate-hf-v1-parity.json",
+    "resident_vs_candidate_reload_max_logprob_error": 0.0,
+    "candidate_reload_vs_original_hf_max_logprob_error": 0.45803213119506836,
+    "next_action": "Accepted step4 exact restore/checkpoint/HF-vLLM, full updates5..634 running934b106a. Inspect at >=600s; terminal state/complete selection required before RL.",
+    "original_hf_vllm_max_logprob_error": 9.5367431640625e-07,
+    "component_isolation": "docs/engineering/slurp-batch-updated-components-v1.json",
+    "attention_only_rollout_acceptance": "docs/engineering/slurp-batch-updated-attention-vllm-v1-parity.json",
+    "attention_only_rollout_max_logprob_error": 9.5367431640625e-07,
+    "fixed_base_native_lora_rollout_acceptance": "docs/engineering/slurp-batch-updated-fixed-base-vllm-v1-parity.json",
+    "fixed_base_native_lora_rollout_max_logprob_error": 9.5367431640625e-07,
+    "dp4_micro8_prefix": "docs/engineering/slurp-class-spread-batch-dp4-throughput-v1.json",
+    "dp4_micro8_checkpoint": "docs/engineering/slurp-class-spread-batch-dp4-checkpoint-v1.json",
+    "dp4_micro8_endpoint_parity": "docs/engineering/slurp-class-spread-batch-dp4-parity-v1.json",
+    "dp4_micro8_endpoint_adapter_id": "1b2b661483ceae5f78f40c2eaa179b861b4fa24cf6012668b5a00cc7ddb8e113",
+    "dp4_resume": "docs/engineering/slurp-class-spread-batch-dp4-restored-v1.json",
+    "dp4_step4_checkpoint": "docs/engineering/slurp-class-spread-batch-dp4-resume-checkpoint-v1.json",
+    "full_run_config": "configs/experiments/slurp-class-spread-batch-stage1-v1.json"
+  },
+  "length_aware_batching": {
+    "status": "researched_offline_full_schedule_simulation_only",
+    "guide": "docs/engineering/variable-length-bucketing-guide-v1.md",
+    "analysis": "docs/engineering/slurp-length-bucketing-analysis-v1.json",
+    "first_scope": "reorder_within_original_global128_preserve_population_labels_weights_and_joint_action_groups",
+    "candidate_microbatches": [
+      8,
+      16,
+      32
+    ],
+    "cost_dimensions": [
+      "actual_audio_frames",
+      "chunk_padded_audio_width",
+      "actual_model_input_tokens",
+      "rank_synchronization"
+    ],
+    "direct_enable_verl_dynamic_bsz": false,
+    "reason": "outer_transport_length_is_placeholder_and_loss_scaling_requires_adaptation",
+    "epoch_bucket_schedule_change": "new_version_after_capacity_and_rank_balance_measurements"
+  },
+  "class_spread_processor_acceptance": "docs/engineering/slurp-class-spread-processor-v1.json",
+  "class_spread_training_consumer_acceptance": "docs/engineering/slurp-class-spread-training-consumer-v1.json"
+}

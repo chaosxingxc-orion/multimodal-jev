@@ -1,0 +1,59 @@
+{
+  "schema": "minds-tools-fixed-image-cpu-v1",
+  "container_id": "3ed02eadfc34f3bbc368f4190b16ac0131ae1ac40296a2529addfc76c09b13d5",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T23:47:15.00539826Z",
+    "FinishedAt": "2026-11-14T23:48:15.44905957Z"
+  },
+  "source_files": 1121,
+  "source_manifest_sha256": "d2b268e8042d58374342b79f233b82aef682fe33740712f74e2ffc8e40226954",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/minds-tools-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "059d31885c733ac6b3d6370eb47333c845892f05a7afb949aa5abedd580336d5",
+    "run/junit.xml": "e548c2bd939bb6f938980e23b771ac3da3017e21c602b01d21e326bd3e6d1ccc",
+    "run/pytest.log": "71347ad97e69615146222a368f7e5f93423fe24b34efeb35638974958d7cb866",
+    "package/FILES.json": "d2b268e8042d58374342b79f233b82aef682fe33740712f74e2ffc8e40226954",
+    "package/run.py": "54499cae4c59c13d4bc842617760da566a9cbfdc7740d7fbad27ffe06218ad30"
+  },
+  "counts": {
+    "tests": 76,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794700062.0101173,
+    "finished_unix": 1794700094.0351655,
+    "source_manifest_sha256": "d2b268e8042d58374342b79f233b82aef682fe33740712f74e2ffc8e40226954",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/minds-tools-cpu-v1/run/junit.xml",
+      "tests/test_minds_audio_resampling.py",
+      "tests/test_minds_context_collector.py",
+      "tests/test_minds_context_experiment.py",
+      "tests/test_minds_context_inputs.py",
+      "tests/test_minds_context_package.py",
+      "tests/test_minds_context_pair.py",
+      "tests/test_minds_context_runtime.py",
+      "tests/test_minds_context_scoring.py",
+      "tests/test_minds_processor_duration.py"
+    ]
+  },
+  "scope": "CPU tool tests in fixed image; source/model/SSH fixtures are substitutes. Not NPU inference or transfer scores."
+}

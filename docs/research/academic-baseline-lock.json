@@ -293,13 +293,32 @@
         "precision": null,
         "max_output_tokens": null,
         "sampling_rate_hz": 16000,
-        "note": "Task-release settings verified statically, not actual model execution or proof of original historical training recipe. Initial batch1 proposed due to encoder wav_lens omission."
+        "note": "Task-release settings verified statically, not actual model execution or proof of original historical training recipe. Initial batch1 proposed due to encoder wav_lens omission.",
+        "batch_normalization_caveat": "Historical tagged wrapper normalizes over full waveform/feature shape including batch; retain initial batch1 and audit actual runtime wrapper. Algebraic stub confirms coupling, not actual HuBERT output parity."
       },
       "reference_role": "academic method or official publisher reference",
       "primary_table": "native dataset-specific or external reference; see comparison_scope",
       "historical_source_audit": "speechbrain-history-source-audit-v1.json",
       "inference_source_audit": "slurp-hubert-interface-audit-v1.json",
-      "parser_source_audit": "slurp-speechbrain-parser-audit-v1.json"
+      "parser_source_audit": "slurp-speechbrain-parser-audit-v1.json",
+      "historical_tag_recipe_audit": "docs/research/slurp-hubert-historical-recipe-audit-v2.json",
+      "historical_tag_recipe": {
+        "tag": "v0.5.11",
+        "commit": "d6bfe138a90dff3490f7196acbd9c62939289d46",
+        "historical_readme_intent": 87.54,
+        "historical_readme_slu_f1": 75.1,
+        "checkpoint_training_binding_verified": false,
+        "scope": "Recipe/source corroboration, not official weight retest or historical training reproduction"
+      },
+      "related_paper_audit": "docs/research/slurp-hubert-paper-source-audit-v1.json",
+      "related_paper_not_checkpoint_score": {
+        "version": "2111.02735v1",
+        "table": "Table2 PF-hbt-base",
+        "intent_accuracy": 87.51,
+        "SF_F1_as_named": 75.32,
+        "decoder_description_conflict": "paper GRU; checked release LSTM",
+        "scope": "Separate paper reference; does not replace published checkpoint87.54/75.10 or establish historical training binding."
+      }
     },
     {
       "id": "slurp-speechbrain-real-only",
@@ -3288,21 +3307,22 @@
     }
   ],
   "execution_policy": {
-    "basis": "Latest user instruction: multi-card LoRA data-parallel verl training, compare Qwen-ASR Jev with omni SLURP baselines.",
+    "basis": "Latest user order: task definition and design, then shared engineering and experiment configuration acceptance/freeze, then training.",
     "active_actor": "Local Qwen3-ASR-0.6B; direct audio and complete question template; single-pass typed Span readout.",
     "reference_actor": "Local frozen Qwen3-Omni-30B-A3B-Instruct",
     "priority": [
-      "finish existing runs and their evaluations",
-      "DP4 native resume and full HF-vLLM TP1 parity acceptance",
-      "continuous verl actor/rollout/checkpoint lifecycle",
-      "audited SLURP intent and no-intent slot-type benchmark; matched SFT and RL comparison"
+      "freeze task definitions, supervision admission, fixed Q menus, Final semantics and evaluation/loss/reward contracts",
+      "accept and freeze one shared runtime with independently accepted GRPO, RLOO-clipped and PPO-critic profiles",
+      "Stage1 instruction/definition consumption on full clean SLURP learning population",
+      "Stage2 RL with decaying classification CE; fixed-start improvement curves and registered step-wise ablations; frozen-weight FSC transfer"
     ],
-    "new_weight_training_dispatch": true,
+    "new_weight_training_dispatch": false,
     "dispatch_constraints": [
-      "only physical NPU4-7 on ssh npu",
-      "all four cards free and prerequisite gates pass",
-      "only audited labels admitted",
-      "do not restart cancelled single-card pair-reward queue"
+      "task, shared engineering and selected algorithm/config gates must pass before a separately versioned release permits dispatch",
+      "only physical NPU4-7 on ssh npu after resource availability check",
+      "supervision admitted under its explicit native or semantic contract; missing semantic labels never become false",
+      "no automatic continuation of old queues; no RL-versus-SFT contest",
+      "unaccepted critic profile does not block a separately accepted critic-free release"
     ],
     "training_parallelism": "FSDP FULL_SHARD data parallel world_size=4",
     "rollout_tensor_parallel_size": 1,
@@ -3310,9 +3330,11 @@
     "asr_to_text_model_dispatch": false,
     "reference_transcript_substitution_dispatch": false,
     "new_model_downloads": false,
-    "protocol": "experiments/slurp-asr-jev-dp4-lock-v1.md",
+    "protocol": "docs/research/23-task-engineering-rl-baseline-lock.md",
     "reference_lock": "docs/research/omni-slurp-jev-reference-lock-v1.json",
-    "scope": "Execution priority lock; not a claim that continuous verl trainer or full native-task benchmark is implemented."
+    "scope": "Design policy only, not an executable launcher gate or an accepted engineering release. No training dispatched by this revision.",
+    "algorithm_design": "configs/experiments/rl-baseline-design-v2.json",
+    "task_design": "configs/tasks/jev-task-design-v2.json"
   },
   "execution_policy_history": [
     {
@@ -3329,6 +3351,128 @@
       "new_model_downloads": false,
       "academic_cascade_results": "Literature references only; inclusion does not authorize local cascade execution.",
       "scope": "Execution applicability only; preserves historical reference results, identities and task protocols. Not a new experiment registration."
+    },
+    {
+      "basis": "Latest user instruction: multi-card LoRA data-parallel verl training, compare Qwen-ASR Jev with omni SLURP baselines.",
+      "active_actor": "Local Qwen3-ASR-0.6B; direct audio and complete question template; single-pass typed Span readout.",
+      "reference_actor": "Local frozen Qwen3-Omni-30B-A3B-Instruct",
+      "priority": [
+        "finish existing runs and their evaluations",
+        "DP4 native resume and full HF-vLLM TP1 parity acceptance",
+        "continuous verl actor/rollout/checkpoint lifecycle",
+        "audited SLURP intent and no-intent slot-type benchmark; matched SFT and RL comparison"
+      ],
+      "new_weight_training_dispatch": true,
+      "dispatch_constraints": [
+        "only physical NPU4-7 on ssh npu",
+        "all four cards free and prerequisite gates pass",
+        "only audited labels admitted",
+        "do not restart cancelled single-card pair-reward queue"
+      ],
+      "training_parallelism": "FSDP FULL_SHARD data parallel world_size=4",
+      "rollout_tensor_parallel_size": 1,
+      "precision": "BF16 base, LoRA execution/export and typed projection; FP32 masters/optimizer/loss allowed",
+      "asr_to_text_model_dispatch": false,
+      "reference_transcript_substitution_dispatch": false,
+      "new_model_downloads": false,
+      "protocol": "experiments/archive/raw/frozen-baselines/slurp-asr-jev-dp4-lock-v1.md",
+      "reference_lock": "docs/research/omni-slurp-jev-reference-lock-v1.json",
+      "scope": "Execution priority lock; not a claim that continuous verl trainer or full native-task benchmark is implemented."
+    }
+  ],
+  "local_observations": [
+    {
+      "id": "qwen3-omni-slurp-native-clean-v7-rescore-v1",
+      "dataset": "SLURP",
+      "population": "clean-v7 retained official TEST, 12991 recordings / 2947 sources",
+      "model": "local Qwen3-Omni-30B-A3B-Instruct frozen, historical native composite JSON protocol",
+      "evidence": "docs/engineering/omni-slurp-clean-native-rescore-v1-verified.json",
+      "protocol": "docs/engineering/qwen3-omni-native-slurp-test-protocol-v1.md",
+      "new_inference": false,
+      "joint_intent_correct": 5207,
+      "joint_intent_accuracy": 0.4008159495035024,
+      "official_slu_f1": 0.3143357048460962,
+      "malformed_retained": 5958,
+      "comparison_scope": "Native frozen prompt reference only, not task-trained SpeechBrain reproduction or matched semantic Jev benchmark",
+      "optimization_allowed": false,
+      "interpretation": "Exclusion-only rescore; denominator change is not algorithm improvement; no prompt or weight selection from TEST.",
+      "descriptive_uncertainty": {
+        "report": "/mnt/cephfs/xingchao/experiments/multimodal-jev/omni-clean-native-uncertainty-v1/report.json",
+        "report_sha256": "4d70ab7f1a2dba686769c24adac8ffd55efbf3dc21b4b94a99dcc1e114492285",
+        "independent_check": "docs/research/omni-clean-native-uncertainty-check-v1.json",
+        "intervals": {
+          "source_group": {
+            "correct": {
+              "estimate": 0.4008159495035024,
+              "numerator": 5207,
+              "denominator": 12991,
+              "clusters": 2947,
+              "cluster_key": "source_group",
+              "replicates": 2000,
+              "seed": 317,
+              "lower95": 0.38478181430138786,
+              "upper95": 0.41685993961532136,
+              "quantile_method": "linear",
+              "estimand": "recording-weighted fraction; resample whole clusters with replacement",
+              "degenerate": false,
+              "scope": "Post-hoc descriptive interval; not training-seed uncertainty or a significance test."
+            },
+            "malformed": {
+              "estimate": 0.45862520206296664,
+              "numerator": 5958,
+              "denominator": 12991,
+              "clusters": 2947,
+              "cluster_key": "source_group",
+              "replicates": 2000,
+              "seed": 317,
+              "lower95": 0.44560436124357267,
+              "upper95": 0.47216829876078903,
+              "quantile_method": "linear",
+              "estimand": "recording-weighted fraction; resample whole clusters with replacement",
+              "degenerate": false,
+              "scope": "Post-hoc descriptive interval; not training-seed uncertainty or a significance test."
+            }
+          },
+          "speaker_id": {
+            "correct": {
+              "estimate": 0.4008159495035024,
+              "numerator": 5207,
+              "denominator": 12991,
+              "clusters": 142,
+              "cluster_key": "speaker_id",
+              "replicates": 2000,
+              "seed": 317,
+              "lower95": 0.37953294565822426,
+              "upper95": 0.42220972082812447,
+              "quantile_method": "linear",
+              "estimand": "recording-weighted fraction; resample whole clusters with replacement",
+              "degenerate": false,
+              "scope": "Post-hoc descriptive interval; not training-seed uncertainty or a significance test."
+            },
+            "malformed": {
+              "estimate": 0.45862520206296664,
+              "numerator": 5958,
+              "denominator": 12991,
+              "clusters": 142,
+              "cluster_key": "speaker_id",
+              "replicates": 2000,
+              "seed": 317,
+              "lower95": 0.4319118253882972,
+              "upper95": 0.4866603123459823,
+              "quantile_method": "linear",
+              "estimand": "recording-weighted fraction; resample whole clusters with replacement",
+              "degenerate": false,
+              "scope": "Post-hoc descriptive interval; not training-seed uncertainty or a significance test."
+            }
+          }
+        },
+        "macro_recall_over_observed_classes": 0.4444673983997128,
+        "observed_gold_classes": 59,
+        "absent_native_classes": [
+          "cooking_query"
+        ],
+        "scope": "Frozen native TEST diagnostic. Source and speaker marginal cluster intervals are separate, not a joint cross-classified interval. No task/template/checkpoint selection."
+      }
     }
   ]
 }

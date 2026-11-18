@@ -1,0 +1,19 @@
+{
+  "schema": "local-operations-v3",
+  "output_directory": "${COLLECT_TRAJECTORY_PIPELINE_OUTPUT}",
+  "steps": [
+    {
+      "id": "collect",
+      "kind": "training_collection",
+      "config": "${WORKSPACE}/configs/portable/operations/training-collection.json",
+      "depends_on": []
+    },
+    {
+      "id": "trajectory",
+      "kind": "training_trajectory",
+      "config": "${WORKSPACE}/configs/portable/operations/training-trajectory.json",
+      "depends_on": ["collect"],
+      "collection_from": "collect"
+    }
+  ]
+}

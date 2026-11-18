@@ -1,0 +1,2544 @@
+{
+  "schema": "slurp-intent-definition-candidates-v1",
+  "training_dispatch_allowed": false,
+  "actor_input_policy": "definitions_only_never_reference_examples_counts_or_audit_findings",
+  "authoring_source_sha256": "d96e709f7e20fa72cd6373c8c7981dea7e7992f2c2e1e997e9bf12868d99d53c",
+  "cards": [
+    {
+      "semantic_id": "alarm_query",
+      "version": "candidate-v1",
+      "definition": "Request information about an alarm or the current alarm configuration.",
+      "includes": [
+        "List, confirm, or inspect an existing alarm and its time or description."
+      ],
+      "excludes": [
+        "Creating an alarm or deleting/disabling an alarm; inspecting calendar appointments."
+      ],
+      "neighbor_ids": [
+        "alarm_set",
+        "alarm_remove",
+        "calendar_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "5114",
+          "1484",
+          "4592",
+          "4530",
+          "5903"
+        ]
+      },
+      "support": {
+        "recordings": 777,
+        "source_groups": 103,
+        "source_utterances": 103
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "alarm_remove",
+      "version": "candidate-v1",
+      "definition": "Request cancellation, deletion, or disabling of an alarm.",
+      "includes": [
+        "Remove one alarm, a recurring alarm, or all alarms."
+      ],
+      "excludes": [
+        "Only checking alarms; turning off room lighting or audio output."
+      ],
+      "neighbor_ids": [
+        "alarm_query",
+        "alarm_set",
+        "audio_volume_mute"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "3537",
+          "918",
+          "1977",
+          "3249",
+          "4876"
+        ]
+      },
+      "support": {
+        "recordings": 332,
+        "source_groups": 61,
+        "source_utterances": 61
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "alarm_set",
+      "version": "candidate-v1",
+      "definition": "Request creation or scheduling of an alarm notification.",
+      "includes": [
+        "Set an alarm at a time, after a delay, or on a condition."
+      ],
+      "excludes": [
+        "Only checking or cancelling alarms; scheduling an appointment without alarm intent."
+      ],
+      "neighbor_ids": [
+        "alarm_query",
+        "alarm_remove",
+        "calendar_set"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "5161",
+          "3156",
+          "4655",
+          "8866",
+          "3765"
+        ]
+      },
+      "support": {
+        "recordings": 822,
+        "source_groups": 150,
+        "source_utterances": 150
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_down",
+      "version": "candidate-v1",
+      "definition": "Request a decrease in the loudness of audio output.",
+      "includes": [
+        "Make speakers or playback quieter, including a lower target level."
+      ],
+      "excludes": [
+        "Complete muting; unspecified adjustment with no recoverable decrease; dimming lights."
+      ],
+      "neighbor_ids": [
+        "audio_volume_mute",
+        "audio_volume_other",
+        "audio_volume_up",
+        "iot_hue_lightdim"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "3738",
+          "4071",
+          "750",
+          "3737",
+          "2706"
+        ]
+      },
+      "support": {
+        "recordings": 366,
+        "source_groups": 44,
+        "source_utterances": 44
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_mute",
+      "version": "candidate-v1",
+      "definition": "Request suppression of audible output or silence.",
+      "includes": [
+        "Mute, sound off, or set volume to zero."
+      ],
+      "excludes": [
+        "Merely lowering to a nonzero level; cancelling an alarm rather than silencing output."
+      ],
+      "neighbor_ids": [
+        "audio_volume_down",
+        "alarm_remove"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "2324",
+          "6066",
+          "954",
+          "3453",
+          "4499"
+        ]
+      },
+      "support": {
+        "recordings": 725,
+        "source_groups": 89,
+        "source_utterances": 89
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_other",
+      "version": "candidate-v1",
+      "definition": "Request inspection or adjustment of audio volume without a resolved increase, decrease, or mute operation.",
+      "includes": [
+        "Open volume controls or request an unspecified volume change."
+      ],
+      "excludes": [
+        "A clearly specified increase, decrease, or complete mute."
+      ],
+      "neighbor_ids": [
+        "audio_volume_down",
+        "audio_volume_up",
+        "audio_volume_mute",
+        "music_settings"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "4637",
+          "1434",
+          "4733",
+          "1066",
+          "2489"
+        ]
+      },
+      "support": {
+        "recordings": 104,
+        "source_groups": 11,
+        "source_utterances": 11
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "4637"
+          ],
+          "finding": "Directional decrease wording appears in other; precedence needs review.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_up",
+      "version": "candidate-v1",
+      "definition": "Request an increase in the loudness of audio output.",
+      "includes": [
+        "Make speakers or playback louder, including a higher target level."
+      ],
+      "excludes": [
+        "Light brightness increase; unspecified volume change; playback speed change."
+      ],
+      "neighbor_ids": [
+        "audio_volume_down",
+        "audio_volume_other",
+        "iot_hue_lightup"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "4341",
+          "1323",
+          "979",
+          "1299",
+          "4944"
+        ]
+      },
+      "support": {
+        "recordings": 666,
+        "source_groups": 83,
+        "source_utterances": 83
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "1299"
+          ],
+          "finding": "The isolated word slow does not establish a volume increase.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "calendar_query",
+      "version": "candidate-v1",
+      "definition": "Request information about personal calendar events, reminders, or schedule availability.",
+      "includes": [
+        "Inspect appointments, existing reminders, free time, or event details."
+      ],
+      "excludes": [
+        "Create/delete events; discover public events; request the current clock time alone."
+      ],
+      "neighbor_ids": [
+        "calendar_set",
+        "calendar_remove",
+        "recommendation_events",
+        "datetime_query",
+        "lists_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "7926",
+          "8566",
+          "7386",
+          "7743",
+          "8680"
+        ]
+      },
+      "support": {
+        "recordings": 1904,
+        "source_groups": 447,
+        "source_utterances": 447
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "calendar_remove",
+      "version": "candidate-v1",
+      "definition": "Request deletion or cancellation of a calendar event or reminder.",
+      "includes": [
+        "Remove an appointment, scheduled reminder, or a set of calendar events."
+      ],
+      "excludes": [
+        "Only inspect a schedule; delete an alarm or list item without calendar intent."
+      ],
+      "neighbor_ids": [
+        "calendar_query",
+        "calendar_set",
+        "alarm_remove",
+        "lists_remove"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "7237",
+          "7910",
+          "8087",
+          "8256",
+          "7284"
+        ]
+      },
+      "support": {
+        "recordings": 1030,
+        "source_groups": 244,
+        "source_utterances": 246
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "calendar_set",
+      "version": "candidate-v1",
+      "definition": "Request creation, scheduling, or repetition of a calendar event or reminder.",
+      "includes": [
+        "Add an appointment, recurring event, or scheduled reminder."
+      ],
+      "excludes": [
+        "Only retrieve a schedule or list; set a wake-up alarm without calendar intent."
+      ],
+      "neighbor_ids": [
+        "calendar_query",
+        "alarm_set",
+        "lists_createoradd",
+        "lists_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "8917",
+          "7750",
+          "8615",
+          "7575",
+          "7656"
+        ]
+      },
+      "support": {
+        "recordings": 2557,
+        "source_groups": 644,
+        "source_utterances": 646
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "7656"
+          ],
+          "finding": "Retrieve-today-list wording conflicts with the proposed creation operation.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "cooking_query",
+      "version": "candidate-v1",
+      "definition": "Candidate cooking-information category whose distinction from cooking_recipe is unresolved in admitted learning evidence.",
+      "includes": [
+        "Cooking questions represented by the two retained learning source utterances."
+      ],
+      "excludes": [
+        "No verified exclusive boundary with recipe requests or ingredient substitutions yet."
+      ],
+      "neighbor_ids": [
+        "cooking_recipe",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "13479",
+          "13488"
+        ]
+      },
+      "support": {
+        "recordings": 2,
+        "source_groups": 2,
+        "source_utterances": 2
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "13479",
+            "13488"
+          ],
+          "finding": "Only two source utterances; recipe and substitution requests overlap cooking_recipe.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "cooking_recipe",
+      "version": "candidate-v1",
+      "definition": "Request a recipe or practical food preparation guidance.",
+      "includes": [
+        "Cooking instructions, recipe selection, and ingredient substitutions seen in learning evidence."
+      ],
+      "excludes": [
+        "Ordering prepared food or asking for restaurant recommendations; overlap with cooking_query remains unresolved."
+      ],
+      "neighbor_ids": [
+        "cooking_query",
+        "takeaway_order",
+        "recommendation_locations"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "10059",
+          "10089",
+          "10079",
+          "10066",
+          "10155"
+        ]
+      },
+      "support": {
+        "recordings": 679,
+        "source_groups": 165,
+        "source_utterances": 165
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "10059"
+          ],
+          "finding": "Ingredient substitution overlaps the only cooking_query evidence; no validated exclusive boundary.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "datetime_convert",
+      "version": "candidate-v1",
+      "definition": "Request conversion between time zones or a change of time-zone setting.",
+      "includes": [
+        "Compare times across locations, compute a time difference, or change configured time zone."
+      ],
+      "excludes": [
+        "Only ask a date, weekday, or current time; currency conversion."
+      ],
+      "neighbor_ids": [
+        "datetime_query",
+        "qa_currency"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1662",
+          "4561",
+          "1503",
+          "3531",
+          "5616"
+        ]
+      },
+      "support": {
+        "recordings": 186,
+        "source_groups": 43,
+        "source_utterances": 43
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "datetime_query",
+      "version": "candidate-v1",
+      "definition": "Request a date, clock time, weekday, or calendar-date fact.",
+      "includes": [
+        "Ask what time/day it is or which weekday a date falls on."
+      ],
+      "excludes": [
+        "Inspect personal appointments; convert between time zones; ask weather for a date."
+      ],
+      "neighbor_ids": [
+        "datetime_convert",
+        "calendar_query",
+        "weather_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "463",
+          "3362",
+          "1347",
+          "5093",
+          "1273"
+        ]
+      },
+      "support": {
+        "recordings": 1515,
+        "source_groups": 278,
+        "source_utterances": 280
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "1347"
+          ],
+          "finding": "Isolated ordinal wording is insufficient to establish a date/time request.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "email_addcontact",
+      "version": "candidate-v1",
+      "definition": "Request creation or modification of a contact entry containing contact information.",
+      "includes": [
+        "Add an email address to contacts or change a stored contact address."
+      ],
+      "excludes": [
+        "Only retrieve contact details; send a message to the contact."
+      ],
+      "neighbor_ids": [
+        "email_querycontact",
+        "email_sendemail"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "16224",
+          "16865",
+          "15820",
+          "15919",
+          "16022"
+        ]
+      },
+      "support": {
+        "recordings": 139,
+        "source_groups": 43,
+        "source_utterances": 43
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "email_query",
+      "version": "candidate-v1",
+      "definition": "Request retrieval or inspection of email messages or mailbox state.",
+      "includes": [
+        "Read an email, check unread messages, or inspect received mail."
+      ],
+      "excludes": [
+        "Send/reply to mail; inspect address-book data rather than messages."
+      ],
+      "neighbor_ids": [
+        "email_sendemail",
+        "email_querycontact",
+        "social_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "16650",
+          "16011",
+          "16490",
+          "16552",
+          "16597"
+        ]
+      },
+      "support": {
+        "recordings": 1516,
+        "source_groups": 336,
+        "source_utterances": 340
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "email_querycontact",
+      "version": "candidate-v1",
+      "definition": "Request retrieval of information about a stored contact.",
+      "includes": [
+        "Look up an address, personal detail, or contact entry."
+      ],
+      "excludes": [
+        "Create/edit a contact; retrieve email message contents; ask public facts about a person."
+      ],
+      "neighbor_ids": [
+        "email_addcontact",
+        "email_query",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "17038",
+          "15976",
+          "16789",
+          "16292",
+          "16243"
+        ]
+      },
+      "support": {
+        "recordings": 418,
+        "source_groups": 104,
+        "source_utterances": 104
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "15976"
+          ],
+          "finding": "Adding a favorite contact is an apparent modification, not retrieval.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "email_sendemail",
+      "version": "candidate-v1",
+      "definition": "Request composition, sending, or replying to an email.",
+      "includes": [
+        "Send mail to a recipient or reply with specified content."
+      ],
+      "excludes": [
+        "Only read received mail; publish a social-network post."
+      ],
+      "neighbor_ids": [
+        "email_query",
+        "social_post"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "16059",
+          "15892",
+          "16727",
+          "16044",
+          "16536"
+        ]
+      },
+      "support": {
+        "recordings": 1051,
+        "source_groups": 277,
+        "source_utterances": 277
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "general_greet",
+      "version": "candidate-v1",
+      "definition": "Perform a greeting or a conventional social check-in with the assistant.",
+      "includes": [
+        "Hello, good morning, or a conventional how-are-you greeting."
+      ],
+      "excludes": [
+        "Request a joke or substantive assistant-persona conversation; greeting/quirky overlap needs review."
+      ],
+      "neighbor_ids": [
+        "general_quirky",
+        "general_joke"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "4804",
+          "3596",
+          "1101",
+          "1100",
+          "720"
+        ]
+      },
+      "support": {
+        "recordings": 122,
+        "source_groups": 18,
+        "source_utterances": 18
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "1100"
+          ],
+          "finding": "Conventional how-are-you wording overlaps general_quirky persona conversation.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "general_joke",
+      "version": "candidate-v1",
+      "definition": "Request that the assistant tell a joke or provide humorous material.",
+      "includes": [
+        "Ask for a joke generally or about a topic."
+      ],
+      "excludes": [
+        "A general greeting or conversation without a request for humor."
+      ],
+      "neighbor_ids": [
+        "general_greet",
+        "general_quirky"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "526",
+          "5508",
+          "6545",
+          "636",
+          "4274"
+        ]
+      },
+      "support": {
+        "recordings": 336,
+        "source_groups": 56,
+        "source_utterances": 56
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "general_quirky",
+      "version": "candidate-v1",
+      "definition": "Dataset-specific miscellaneous conversational category with a not-yet-verified closed boundary.",
+      "includes": [
+        "Assistant-persona conversation and miscellaneous utterances represented in learning data."
+      ],
+      "excludes": [
+        "Not a validated out-of-domain catch-all; overlaps with greetings and factual questions require review."
+      ],
+      "neighbor_ids": [
+        "general_greet",
+        "general_joke",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "6601",
+          "6441",
+          "13210",
+          "6409",
+          "6537"
+        ]
+      },
+      "support": {
+        "recordings": 1550,
+        "source_groups": 425,
+        "source_utterances": 425
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "6601",
+            "6441",
+            "6409",
+            "6537"
+          ],
+          "finding": "Heterogeneous fragments and assistant feelings; neither a complete semantic class nor validated OOD policy.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_cleaning",
+      "version": "candidate-v1",
+      "definition": "Request operation of a robot cleaner or assistance concerning that cleaning device.",
+      "includes": [
+        "Start a vacuum or ask about its operation, as represented in learning evidence."
+      ],
+      "excludes": [
+        "Generic smart-plug switching or unrelated cleaning advice without device context."
+      ],
+      "neighbor_ids": [
+        "iot_wemo_on",
+        "iot_wemo_off",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1574",
+          "5853",
+          "1060",
+          "2383",
+          "908"
+        ]
+      },
+      "support": {
+        "recordings": 348,
+        "source_groups": 76,
+        "source_utterances": 76
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "1060"
+          ],
+          "finding": "Operational question rather than activation; action-only semantics would exclude existing learning evidence.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_coffee",
+      "version": "candidate-v1",
+      "definition": "Request operation of a coffee maker or preparation of coffee by that device.",
+      "includes": [
+        "Start brewing now or schedule coffee preparation."
+      ],
+      "excludes": [
+        "Ask a cooking recipe, order cafe delivery, or switch an unrelated appliance."
+      ],
+      "neighbor_ids": [
+        "cooking_recipe",
+        "takeaway_order",
+        "iot_wemo_on"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "2751",
+          "4555",
+          "2286",
+          "5928",
+          "2731"
+        ]
+      },
+      "support": {
+        "recordings": 387,
+        "source_groups": 96,
+        "source_utterances": 97
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightchange",
+      "version": "candidate-v1",
+      "definition": "Request a change in lighting color or color mode.",
+      "includes": [
+        "Set a light color or cycle through colors."
+      ],
+      "excludes": [
+        "Only increase/decrease brightness or switch lighting on/off."
+      ],
+      "neighbor_ids": [
+        "iot_hue_lightdim",
+        "iot_hue_lightup",
+        "iot_hue_lighton",
+        "iot_hue_lightoff"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1961",
+          "899",
+          "1644",
+          "403",
+          "4028"
+        ]
+      },
+      "support": {
+        "recordings": 427,
+        "source_groups": 100,
+        "source_utterances": 100
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightdim",
+      "version": "candidate-v1",
+      "definition": "Request reduced lighting brightness while retaining illumination.",
+      "includes": [
+        "Dim lights or lower their brightness to a specified level."
+      ],
+      "excludes": [
+        "Completely turn lights off; change color alone; decrease audio volume."
+      ],
+      "neighbor_ids": [
+        "iot_hue_lightoff",
+        "iot_hue_lightup",
+        "iot_hue_lightchange",
+        "audio_volume_down"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1853",
+          "5046",
+          "2803",
+          "4740",
+          "1368"
+        ]
+      },
+      "support": {
+        "recordings": 396,
+        "source_groups": 61,
+        "source_utterances": 61
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightoff",
+      "version": "candidate-v1",
+      "definition": "Request that lighting be switched off.",
+      "includes": [
+        "Turn off a room light or all lights; indirect requests require sufficient evidence."
+      ],
+      "excludes": [
+        "Only dim lighting; switch an identified smart plug rather than lighting."
+      ],
+      "neighbor_ids": [
+        "iot_hue_lightdim",
+        "iot_hue_lighton",
+        "iot_wemo_off"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "3500",
+          "3597",
+          "2884",
+          "2188",
+          "3523"
+        ]
+      },
+      "support": {
+        "recordings": 680,
+        "source_groups": 130,
+        "source_utterances": 130
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "3597"
+          ],
+          "finding": "Sleep statement requires inferred lighting action not explicit in reference text.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lighton",
+      "version": "candidate-v1",
+      "definition": "Request that lighting be switched on.",
+      "includes": [
+        "Activate lights; indirect darkness complaints require an admitted interpretation."
+      ],
+      "excludes": [
+        "Increase already active lighting brightness; turn on an identified smart plug."
+      ],
+      "neighbor_ids": [
+        "iot_hue_lightup",
+        "iot_hue_lightoff",
+        "iot_wemo_on"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1889",
+          "1501",
+          "6175",
+          "3428",
+          "3896"
+        ]
+      },
+      "support": {
+        "recordings": 62,
+        "source_groups": 16,
+        "source_utterances": 16
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "6175",
+            "3428",
+            "3896"
+          ],
+          "finding": "Indirect darkness and high-setting requests blur activation versus brightness increase.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightup",
+      "version": "candidate-v1",
+      "definition": "Request increased lighting brightness.",
+      "includes": [
+        "Brighten lights or increase illumination intensity."
+      ],
+      "excludes": [
+        "Only activate lighting without a brightness change; raise audio volume."
+      ],
+      "neighbor_ids": [
+        "iot_hue_lighton",
+        "iot_hue_lightdim",
+        "audio_volume_up"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "3872",
+          "3427",
+          "1033",
+          "1089",
+          "2372"
+        ]
+      },
+      "support": {
+        "recordings": 281,
+        "source_groups": 63,
+        "source_utterances": 63
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_wemo_off",
+      "version": "candidate-v1",
+      "definition": "Request deactivation of a smart plug or its controlled power supply.",
+      "includes": [
+        "Switch off a Wemo socket or smart outlet."
+      ],
+      "excludes": [
+        "A lighting-only request with no plug-control evidence; conflicting on/off wording remains unresolved."
+      ],
+      "neighbor_ids": [
+        "iot_wemo_on",
+        "iot_hue_lightoff"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "5226",
+          "5857",
+          "4571",
+          "5442",
+          "4572"
+        ]
+      },
+      "support": {
+        "recordings": 168,
+        "source_groups": 41,
+        "source_utterances": 41
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "4571",
+            "4572"
+          ],
+          "finding": "Both off and on occur; unresolved intended polarity.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "iot_wemo_on",
+      "version": "candidate-v1",
+      "definition": "Request activation of a smart plug or its controlled power supply.",
+      "includes": [
+        "Switch on a Wemo socket or smart outlet."
+      ],
+      "excludes": [
+        "A lighting-only request; an arbitrary appliance command without evidence of plug control."
+      ],
+      "neighbor_ids": [
+        "iot_wemo_off",
+        "iot_hue_lighton",
+        "iot_cleaning",
+        "iot_coffee"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "5807",
+          "4847",
+          "191",
+          "4800",
+          "13541"
+        ]
+      },
+      "support": {
+        "recordings": 189,
+        "source_groups": 38,
+        "source_utterances": 38
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "5807",
+            "13541"
+          ],
+          "finding": "Advice and laundry command do not explicitly establish smart-plug activation.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "lists_createoradd",
+      "version": "candidate-v1",
+      "definition": "Request creation of a list or addition of items to a list.",
+      "includes": [
+        "Create a shopping/to-do list or append an item to an existing list."
+      ],
+      "excludes": [
+        "Only read/delete list content; place a commercial order without list intent."
+      ],
+      "neighbor_ids": [
+        "lists_query",
+        "lists_remove",
+        "calendar_set",
+        "takeaway_order"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "15122",
+          "11039",
+          "11210",
+          "10584",
+          "10951"
+        ]
+      },
+      "support": {
+        "recordings": 609,
+        "source_groups": 143,
+        "source_utterances": 143
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "15122"
+          ],
+          "finding": "Grocery-order wording lacks explicit list creation/addition.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "lists_query",
+      "version": "candidate-v1",
+      "definition": "Request retrieval or inspection of lists or their contents.",
+      "includes": [
+        "List available lists, read remaining tasks, or inspect item order."
+      ],
+      "excludes": [
+        "Add/remove list content; inspect calendar events rather than list items."
+      ],
+      "neighbor_ids": [
+        "lists_createoradd",
+        "lists_remove",
+        "calendar_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "10553",
+          "10822",
+          "10634",
+          "10921",
+          "10869"
+        ]
+      },
+      "support": {
+        "recordings": 673,
+        "source_groups": 149,
+        "source_utterances": 149
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "lists_remove",
+      "version": "candidate-v1",
+      "definition": "Request deletion of a list or removal of an item from a list.",
+      "includes": [
+        "Delete a shopping list or remove one listed task/item."
+      ],
+      "excludes": [
+        "Only inspect lists; cancel an appointment rather than remove a list entry."
+      ],
+      "neighbor_ids": [
+        "lists_createoradd",
+        "lists_query",
+        "calendar_remove"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "10507",
+          "10671",
+          "10977",
+          "11072",
+          "10432"
+        ]
+      },
+      "support": {
+        "recordings": 550,
+        "source_groups": 132,
+        "source_utterances": 132
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_dislikeness",
+      "version": "candidate-v1",
+      "definition": "Express or register a negative preference about music.",
+      "includes": [
+        "Dislike a song/artist or request that disliked music not be selected again."
+      ],
+      "excludes": [
+        "Merely reduce loudness or change playback mode without a negative preference."
+      ],
+      "neighbor_ids": [
+        "music_likeness",
+        "music_settings",
+        "audio_volume_down"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "949",
+          "3573",
+          "3113",
+          "143",
+          "3574"
+        ]
+      },
+      "support": {
+        "recordings": 69,
+        "source_groups": 11,
+        "source_utterances": 11
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "143"
+          ],
+          "finding": "Object of dislike requires context absent from isolated reference.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_likeness",
+      "version": "candidate-v1",
+      "definition": "Express or register a positive preference about music.",
+      "includes": [
+        "Like a song/artist, mark a favorite, or give positive musical feedback."
+      ],
+      "excludes": [
+        "Only request playback/repetition without preference evidence."
+      ],
+      "neighbor_ids": [
+        "music_dislikeness",
+        "music_settings",
+        "play_music"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "2659",
+          "2105",
+          "2406",
+          "1699",
+          "77"
+        ]
+      },
+      "support": {
+        "recordings": 405,
+        "source_groups": 96,
+        "source_utterances": 96
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "1699"
+          ],
+          "finding": "Positive preference and repeat command co-occur; primary-intent precedence unresolved.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_query",
+      "version": "candidate-v1",
+      "definition": "Request information about music or listening history.",
+      "includes": [
+        "Identify a song/writer or ask about music characteristics or prior listening."
+      ],
+      "excludes": [
+        "Start playback, change settings, or express preference without an information request."
+      ],
+      "neighbor_ids": [
+        "play_music",
+        "music_settings",
+        "music_likeness",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "2723",
+          "1935",
+          "5080",
+          "4898",
+          "1021"
+        ]
+      },
+      "support": {
+        "recordings": 546,
+        "source_groups": 124,
+        "source_utterances": 124
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "4898",
+            "1021"
+          ],
+          "finding": "Fragment or music discovery request; informational boundary needs review.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "music_settings",
+      "version": "candidate-v1",
+      "definition": "Request a music playback mode or sound-setting change.",
+      "includes": [
+        "Enable shuffle/repeat or change equalizer mode."
+      ],
+      "excludes": [
+        "Select content for playback; change volume alone; preference registration alone."
+      ],
+      "neighbor_ids": [
+        "play_music",
+        "music_likeness",
+        "audio_volume_other"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1161",
+          "153",
+          "1970",
+          "5067",
+          "930"
+        ]
+      },
+      "support": {
+        "recordings": 155,
+        "source_groups": 42,
+        "source_utterances": 42
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "news_query",
+      "version": "candidate-v1",
+      "definition": "Request news, current reporting, or updates on developing events.",
+      "includes": [
+        "Read headlines, news from a source, or updates on a topic."
+      ],
+      "excludes": [
+        "Retrieve a social feed, recommend events, or answer a non-news factual question."
+      ],
+      "neighbor_ids": [
+        "social_query",
+        "qa_factoid",
+        "recommendation_events"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "834",
+          "3102",
+          "1532",
+          "4889",
+          "2568"
+        ]
+      },
+      "support": {
+        "recordings": 1600,
+        "source_groups": 398,
+        "source_utterances": 398
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "play_audiobook",
+      "version": "candidate-v1",
+      "definition": "Request playback or navigation of an audiobook.",
+      "includes": [
+        "Start/resume a spoken book or change its playback position."
+      ],
+      "excludes": [
+        "Play music, podcasts, radio, or ask a fact about a book without playback intent."
+      ],
+      "neighbor_ids": [
+        "play_music",
+        "play_podcasts",
+        "play_radio",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "9805",
+          "9797",
+          "9704",
+          "9770",
+          "9806"
+        ]
+      },
+      "support": {
+        "recordings": 970,
+        "source_groups": 119,
+        "source_utterances": 119
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "9805",
+            "9806",
+            "9770"
+          ],
+          "finding": "Song/audiobook mixed cues and underspecified title require review.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "play_game",
+      "version": "candidate-v1",
+      "definition": "Request starting or participating in a game.",
+      "includes": [
+        "Open a game, play an interactive game, or initiate a game turn."
+      ],
+      "excludes": [
+        "Play media content or ask factual information about a game."
+      ],
+      "neighbor_ids": [
+        "play_music",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "10277",
+          "10280",
+          "10272",
+          "10306",
+          "10391"
+        ]
+      },
+      "support": {
+        "recordings": 419,
+        "source_groups": 95,
+        "source_utterances": 95
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "play_music",
+      "version": "candidate-v1",
+      "definition": "Request selection, starting, or navigation of music playback.",
+      "includes": [
+        "Play a song/artist/playlist or select the next music item."
+      ],
+      "excludes": [
+        "Only identify a song, register a preference, or change a playback mode."
+      ],
+      "neighbor_ids": [
+        "music_query",
+        "music_likeness",
+        "music_settings",
+        "play_radio",
+        "play_audiobook"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1240",
+          "3757",
+          "4919",
+          "2969",
+          "2574"
+        ]
+      },
+      "support": {
+        "recordings": 2298,
+        "source_groups": 518,
+        "source_utterances": 518
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "1240"
+          ],
+          "finding": "Platform name alone does not uniquely specify the requested operation.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "play_podcasts",
+      "version": "candidate-v1",
+      "definition": "Request playback or episode navigation of a podcast.",
+      "includes": [
+        "Start a podcast, resume it, or select another episode."
+      ],
+      "excludes": [
+        "Play an audiobook, song, or radio station; generic navigation needs context."
+      ],
+      "neighbor_ids": [
+        "play_audiobook",
+        "play_music",
+        "play_radio"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "11301",
+          "11397",
+          "3891",
+          "11413",
+          "11498"
+        ]
+      },
+      "support": {
+        "recordings": 644,
+        "source_groups": 146,
+        "source_utterances": 146
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "11397",
+            "3891"
+          ],
+          "finding": "Episode navigation or go back lacks a reliable media type in isolated reference.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "play_radio",
+      "version": "candidate-v1",
+      "definition": "Request playback or selection of a radio station or radio program.",
+      "includes": [
+        "Turn on radio, tune a station, or select a station-based stream."
+      ],
+      "excludes": [
+        "Select a particular song/podcast without station intent."
+      ],
+      "neighbor_ids": [
+        "play_music",
+        "play_podcasts",
+        "news_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "9322",
+          "9523",
+          "9328",
+          "9439",
+          "9348"
+        ]
+      },
+      "support": {
+        "recordings": 938,
+        "source_groups": 216,
+        "source_utterances": 216
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "9439"
+          ],
+          "finding": "Todays hits may refer to songs or a station; no explicit station cue.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "qa_currency",
+      "version": "candidate-v1",
+      "definition": "Request a currency exchange rate or conversion between currencies.",
+      "includes": [
+        "Look up an exchange rate or convert a monetary amount."
+      ],
+      "excludes": [
+        "Ask stock prices; arithmetic without currency exchange; time-zone conversion."
+      ],
+      "neighbor_ids": [
+        "qa_stock",
+        "qa_maths",
+        "datetime_convert"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "13849",
+          "13965",
+          "14005",
+          "13915",
+          "14234"
+        ]
+      },
+      "support": {
+        "recordings": 381,
+        "source_groups": 115,
+        "source_utterances": 115
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "qa_definition",
+      "version": "candidate-v1",
+      "definition": "Request the meaning, definition, or descriptive explanation of a term or concept.",
+      "includes": [
+        "Define a word or explain what a named concept is."
+      ],
+      "excludes": [
+        "Ask a specific factual attribute without a definitional purpose; broad descriptions may overlap."
+      ],
+      "neighbor_ids": [
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "13653",
+          "13094",
+          "13772",
+          "14379",
+          "14519"
+        ]
+      },
+      "support": {
+        "recordings": 763,
+        "source_groups": 216,
+        "source_utterances": 216
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "14379"
+          ],
+          "finding": "Description of a landmark overlaps general factoid interpretation.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "qa_factoid",
+      "version": "candidate-v1",
+      "definition": "Request general factual information outside more specific registered domains.",
+      "includes": [
+        "Ask who/where/when or factual attributes of public people, places, or objects."
+      ],
+      "excludes": [
+        "Definitions, arithmetic, finance, weather, news, or personal contact lookup when those purposes are explicit."
+      ],
+      "neighbor_ids": [
+        "qa_definition",
+        "qa_maths",
+        "qa_stock",
+        "weather_query",
+        "news_query",
+        "email_querycontact",
+        "general_quirky"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "14586",
+          "14359",
+          "14618",
+          "14305",
+          "13444"
+        ]
+      },
+      "support": {
+        "recordings": 1717,
+        "source_groups": 440,
+        "source_utterances": 440
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "qa_maths",
+      "version": "candidate-v1",
+      "definition": "Request arithmetic computation or a mathematical answer.",
+      "includes": [
+        "Compute a numeric operation or solve an arithmetic question."
+      ],
+      "excludes": [
+        "Currency exchange or stock quote requests; numerical wording alone is insufficient."
+      ],
+      "neighbor_ids": [
+        "qa_currency",
+        "qa_stock",
+        "datetime_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "14614",
+          "13193",
+          "15006",
+          "13311",
+          "12992"
+        ]
+      },
+      "support": {
+        "recordings": 226,
+        "source_groups": 58,
+        "source_utterances": 58
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "13193",
+            "15006",
+            "12992"
+          ],
+          "finding": "Incomplete expression or declarative equation; information request may be underdetermined.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "qa_stock",
+      "version": "candidate-v1",
+      "definition": "Request stock prices, market quotes, or stock-market information.",
+      "includes": [
+        "Ask a share price, index/futures quote, or market outlook."
+      ],
+      "excludes": [
+        "Currency exchange or general business news without stock-market intent."
+      ],
+      "neighbor_ids": [
+        "qa_currency",
+        "news_query",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "13640",
+          "13752",
+          "14182",
+          "14718",
+          "14362"
+        ]
+      },
+      "support": {
+        "recordings": 469,
+        "source_groups": 128,
+        "source_utterances": 128
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "recommendation_events",
+      "version": "candidate-v1",
+      "definition": "Request discovery or recommendations of public events or activities.",
+      "includes": [
+        "Find concerts, activities, or events in a location/time window."
+      ],
+      "excludes": [
+        "Inspect personal appointments; recommend a venue alone or a movie."
+      ],
+      "neighbor_ids": [
+        "calendar_query",
+        "recommendation_locations",
+        "recommendation_movies"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "11755",
+          "12077",
+          "8664",
+          "11848",
+          "11880"
+        ]
+      },
+      "support": {
+        "recordings": 634,
+        "source_groups": 159,
+        "source_utterances": 159
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "8664"
+          ],
+          "finding": "Public events wording overlaps calendar domain if personal/public scope is not fixed.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "recommendation_locations",
+      "version": "candidate-v1",
+      "definition": "Request discovery or recommendations of places or venues to visit.",
+      "includes": [
+        "Find a restaurant, shop, hotel, or other suitable local place."
+      ],
+      "excludes": [
+        "Track/order takeaway; query scheduled public events or film selections."
+      ],
+      "neighbor_ids": [
+        "recommendation_events",
+        "recommendation_movies",
+        "takeaway_query",
+        "takeaway_order"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "14199",
+          "12035",
+          "11806",
+          "12003",
+          "11676"
+        ]
+      },
+      "support": {
+        "recordings": 511,
+        "source_groups": 148,
+        "source_utterances": 148
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "14199"
+          ],
+          "finding": "Venue discovery and factual superlative can overlap factoid semantics.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "recommendation_movies",
+      "version": "candidate-v1",
+      "definition": "Request movie recommendations or information about available screenings.",
+      "includes": [
+        "Suggest a film or find movies currently showing nearby."
+      ],
+      "excludes": [
+        "Start non-film media playback; generic venue or public-event discovery."
+      ],
+      "neighbor_ids": [
+        "recommendation_events",
+        "recommendation_locations",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "11694",
+          "11670",
+          "11873",
+          "11870",
+          "11988"
+        ]
+      },
+      "support": {
+        "recordings": 185,
+        "source_groups": 56,
+        "source_utterances": 56
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "social_post",
+      "version": "candidate-v1",
+      "definition": "Request publication of content on a social platform.",
+      "includes": [
+        "Post a status, tweet, or public review."
+      ],
+      "excludes": [
+        "Read social activity/messages; send an email."
+      ],
+      "neighbor_ids": [
+        "social_query",
+        "email_sendemail"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "15484",
+          "15144",
+          "15430",
+          "15165",
+          "15636"
+        ]
+      },
+      "support": {
+        "recordings": 856,
+        "source_groups": 225,
+        "source_utterances": 225
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "social_query",
+      "version": "candidate-v1",
+      "definition": "Request retrieval or monitoring of social-platform activity.",
+      "includes": [
+        "Check posts, likes, replies, or social-network messages."
+      ],
+      "excludes": [
+        "Publish content; inspect email; retrieve general news without social-platform intent."
+      ],
+      "neighbor_ids": [
+        "social_post",
+        "email_query",
+        "news_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "15156",
+          "15195",
+          "15285",
+          "15162",
+          "15176"
+        ]
+      },
+      "support": {
+        "recordings": 378,
+        "source_groups": 91,
+        "source_utterances": 91
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "takeaway_order",
+      "version": "candidate-v1",
+      "definition": "Request placing an order for prepared food delivery or takeaway.",
+      "includes": [
+        "Order a meal or initiate a takeaway purchase."
+      ],
+      "excludes": [
+        "Only inspect delivery availability/status or recommend a restaurant."
+      ],
+      "neighbor_ids": [
+        "takeaway_query",
+        "recommendation_locations",
+        "lists_createoradd"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "1847",
+          "4575",
+          "3527",
+          "2764",
+          "877"
+        ]
+      },
+      "support": {
+        "recordings": 398,
+        "source_groups": 103,
+        "source_utterances": 103
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "3527"
+          ],
+          "finding": "Nearby pizza shops does not establish an order request.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "takeaway_query",
+      "version": "candidate-v1",
+      "definition": "Request information about takeaway service or an existing food order.",
+      "includes": [
+        "Check delivery availability, delivery options, order status, or arrival time."
+      ],
+      "excludes": [
+        "Place a new food order; ask general venue recommendations."
+      ],
+      "neighbor_ids": [
+        "takeaway_order",
+        "recommendation_locations"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "3275",
+          "3414",
+          "2845",
+          "4599",
+          "135"
+        ]
+      },
+      "support": {
+        "recordings": 393,
+        "source_groups": 97,
+        "source_utterances": 97
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "transport_query",
+      "version": "candidate-v1",
+      "definition": "Request transport schedules, routes, availability, or travel options.",
+      "includes": [
+        "Inspect train times or transport availability without a resolved purchase request."
+      ],
+      "excludes": [
+        "Book/buy tickets, hire a taxi, or ask road-traffic conditions; query/ticket boundary needs review."
+      ],
+      "neighbor_ids": [
+        "transport_ticket",
+        "transport_taxi",
+        "transport_traffic"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "12210",
+          "12434",
+          "12499",
+          "12280",
+          "12304"
+        ]
+      },
+      "support": {
+        "recordings": 684,
+        "source_groups": 178,
+        "source_utterances": 178
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "12280"
+          ],
+          "finding": "Ticket request wording overlaps transport_ticket.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "transport_taxi",
+      "version": "candidate-v1",
+      "definition": "Request arranging or booking a taxi or ride-hailing service.",
+      "includes": [
+        "Hail a cab or book a ride with pickup/destination/time details."
+      ],
+      "excludes": [
+        "Buy a public-transport ticket or merely query general travel options."
+      ],
+      "neighbor_ids": [
+        "transport_ticket",
+        "transport_query"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "12632",
+          "12631",
+          "12297",
+          "12330",
+          "12175"
+        ]
+      },
+      "support": {
+        "recordings": 411,
+        "source_groups": 83,
+        "source_utterances": 83
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "transport_ticket",
+      "version": "candidate-v1",
+      "definition": "Request purchase or booking of a transport ticket.",
+      "includes": [
+        "Reserve or buy train tickets with route, passenger, or time constraints."
+      ],
+      "excludes": [
+        "Only inspect schedules/availability; hire a taxi; query/ticket overlap needs review."
+      ],
+      "neighbor_ids": [
+        "transport_query",
+        "transport_taxi"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "12915",
+          "12389",
+          "12635",
+          "12590",
+          "12341"
+        ]
+      },
+      "support": {
+        "recordings": 548,
+        "source_groups": 104,
+        "source_utterances": 104
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "12635",
+            "12590"
+          ],
+          "finding": "Route search and explicit schedule question overlap transport_query.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "transport_traffic",
+      "version": "candidate-v1",
+      "definition": "Request road-traffic conditions or driving delay information.",
+      "includes": [
+        "Check congestion, road conditions, or traffic-dependent journey time."
+      ],
+      "excludes": [
+        "Inspect public-transport timetables, purchase tickets, or book a taxi."
+      ],
+      "neighbor_ids": [
+        "transport_query",
+        "transport_ticket",
+        "transport_taxi"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "12466",
+          "12259",
+          "12703",
+          "12687",
+          "12423"
+        ]
+      },
+      "support": {
+        "recordings": 402,
+        "source_groups": 97,
+        "source_utterances": 97
+      },
+      "unresolved_evidence": [],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "weather_query",
+      "version": "candidate-v1",
+      "definition": "Request weather conditions, forecasts, or weather-dependent practical advice.",
+      "includes": [
+        "Ask about rain, temperature, a forecast, or clothing suitability given weather."
+      ],
+      "excludes": [
+        "Ask the time/date alone or non-weather factual information."
+      ],
+      "neighbor_ids": [
+        "datetime_query",
+        "qa_factoid"
+      ],
+      "presence_policy": "I_class_under_exclusive_single_label_annotation_not_I_present",
+      "coexistence_policy": "one_native_class_per_query_does_not_assert_other_semantic_intents_absent",
+      "annotation_scope": "SLURP_official_clean_TRAIN_learning_only",
+      "source_references": {
+        "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+        "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+        "source_ids": [
+          "326",
+          "3612",
+          "6046",
+          "4916",
+          "4438"
+        ]
+      },
+      "support": {
+        "recordings": 1946,
+        "source_groups": 450,
+        "source_utterances": 450
+      },
+      "unresolved_evidence": [
+        {
+          "source_ids": [
+            "326"
+          ],
+          "finding": "Evening alone does not establish a weather query.",
+          "disposition": "review_required_not_relabelled_not_excluded"
+        }
+      ],
+      "review_status": "authored_draft_5_or_fewer_reference_examples_inspected_no_audio_review",
+      "optimization_allowed": false
+    }
+  ],
+  "scope": "60 candidate semantic cards, not finalized ontology or a relabelled dataset. Listed contradictions are triage findings, not verified annotation errors. No issue entry does not certify the class."
+}

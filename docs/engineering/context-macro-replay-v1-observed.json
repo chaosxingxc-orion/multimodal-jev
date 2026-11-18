@@ -1,0 +1,85 @@
+{
+  "status": "finite_dp2_replay_audited",
+  "updates": [
+    {
+      "algorithm": "dual_credit_grpo_floor_clipped_v1",
+      "arm": "joint",
+      "update": 1,
+      "checked_slots": 128,
+      "real_queries": 128,
+      "padding_slots": 0,
+      "branches": {
+        "ranking": {
+          "mean_weighted_reward": 0.9920633183792233,
+          "zero_signal_components": 7353,
+          "components": 7552
+        },
+        "existence": {
+          "mean_weighted_reward": 0.9533029380254447,
+          "zero_signal_components": 7114,
+          "components": 7680
+        }
+      },
+      "scope": "Independent recorded component/sample/reward/advantage audit; not model execution proof",
+      "slowest_rank_step_seconds": 89.95537994999904,
+      "changed_execution_tensors": {
+        "lora": 112,
+        "head": 12
+      },
+      "master_export": {
+        "exact_bf16_from_master_shards": true,
+        "rank_shards": 2,
+        "parameters": 128,
+        "numel": 6878209,
+        "completed_updates": 2,
+        "checkpoint_scopes": [
+          {
+            "tensors": 128,
+            "local_numel": {
+              "lora": 286720,
+              "head": 3152385
+            },
+            "base_model_saved": false,
+            "scope": "LoRA and Jev head only; base identity referenced separately"
+          },
+          {
+            "tensors": 128,
+            "local_numel": {
+              "lora": 286720,
+              "head": 3152384
+            },
+            "base_model_saved": false,
+            "scope": "LoRA and Jev head only; base identity referenced separately"
+          }
+        ],
+        "scope": "Original-parameter FSDP rank-order reconstruction; not a gradient correctness proof"
+      }
+    }
+  ],
+  "macros": [
+    {
+      "batch_id": "batch-00000000",
+      "rows": 128,
+      "policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+      "seconds": 17.295307649997994
+    },
+    {
+      "batch_id": "batch-00000001",
+      "rows": 128,
+      "policy_id": "6572ba1c555409306625a30e07fad9fb40fa44bd56e15a3916edabb3c36cfa14",
+      "seconds": 12.899262399994768
+    }
+  ],
+  "fresh_process_replay_verified": true,
+  "training_dispatch_allowed": false,
+  "scope": "Finite DP2 journal/export/activation audit and explicit replay result; no efficacy or sustained speed claim",
+  "files_sha256": "07d61399ef3ac8697c54e3b60c6213ec16a7038c4d2c4c03e6d79930a29dd118",
+  "transport_sha256": "4c5e8ad8d3c7ae7f6286d4c5706e449102d3cd2a0817f62c4af22dd20f70d161",
+  "containers": {
+    "service-0": "77aadc95c20592fe421712037421a679d5008a8a788010b94ac2ef88abb4f3d5",
+    "service-1": "2561e4e003b89f10252fa807bd95d7b49f259f5d577d0b1fb5c22e16f552612e",
+    "client": "fe42b1b6fae8916cd748076a3e05ec6e2808194c1888bb45b35600539f829b61",
+    "preflight": "2bf1f715b62dcacd146686460b6d1d8cd6d745daa34300ede0d340402738a389"
+  },
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c"
+}

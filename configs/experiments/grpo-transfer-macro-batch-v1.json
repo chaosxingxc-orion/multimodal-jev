@@ -1,0 +1,427 @@
+{
+  "schema": "jev-grpo-transfer-macro-batch-design-v1",
+  "status": "topology_batch_rule_revised_candidate_runtime_pending",
+  "training_dispatch_allowed": false,
+  "algorithm_family": "GRPO",
+  "source_dataset": "SLURP_clean_TRAIN",
+  "source_query_count": 40513,
+  "training_exposure": "source_only_no_target_labels_or_target_trajectories",
+  "initial_policy": "authenticated_common_Stage1_endpoint",
+  "evaluation": {
+    "source_selection": "fixed_SLURP_selection",
+    "source_test": "frozen_clean_TEST",
+    "zero_weight_adaptation_targets": [
+      "FSC",
+      "MINDS"
+    ],
+    "target_role": "held_out_transfer_evaluation_not_model_or_prompt_selection",
+    "checkpoint_pairs": [
+      "common_Stage1",
+      "source_selected_new_GRPO",
+      "fixed_endpoint_new_GRPO"
+    ],
+    "historical_GRPO_role": "secondary_reference_only_after_protocol_alignment",
+    "selection_rule": "source_only_predeclared_rule_before_target_inference",
+    "target_definitions": "frozen_from_task_ontology_not_target_gold_utterances",
+    "target_weight_updates": false,
+    "target_prompt_or_threshold_tuning": false,
+    "primary_metrics": [
+      "source_set_f1",
+      "per_target_native_accuracy",
+      "per_target_macro_f1"
+    ],
+    "required_metrics": [
+      "top1",
+      "set_f1",
+      "binary_nll",
+      "brier",
+      "false_accept",
+      "false_reject",
+      "prediction_coverage",
+      "cost"
+    ],
+    "cross_task_claim": "requires_new_decision_task_evidence_not_only_dataset_or_language_shift",
+    "aggregation": "per_dataset_and_per_language_first_no_pooled_claim",
+    "uncertainty": "paired_source_group_bootstrap_with_explicit_group_availability",
+    "success": "report_source_and_transfer_gains_separately_no_success_from_source_gain_alone",
+    "test_feedback": "no_training_design_feedback_from_held_out_target_scores"
+  },
+  "next_stage_validation": {
+    "priority": "simple_task_efficiency_quality_and_cross_dataset_transfer",
+    "acceptance_dimensions": {
+      "source_performance": "paired_common_Stage1_comparison_on_frozen_clean_TEST_after_source_only_selection",
+      "cross_dataset_transfer": "FSC_and_MINDS_separate_native_task_and_probability_quality_deltas",
+      "cross_task_transfer": "complex_tasks_deferred_not_current_phase_gate_only_claim_audited_simple_task_evidence",
+      "completion": "report_each_dimension_as_gain_tradeoff_regression_or_pending_never_substitute_one_for_another",
+      "engineering_only_results": "do_not_satisfy_any_quality_dimension",
+      "training_efficiency": "matched_complete_update_throughput_memory_and_cost_with_numerical_alignment"
+    },
+    "protocol_document": "docs/research/context-grpo-transfer-macro-batch-v1.md",
+    "transfer_contract": {
+      "model_input": "audio_plus_query_independent_task_specification_and_complete_candidate_definitions",
+      "model_output": "one_probability_per_configured_candidate",
+      "fixed_per_policy": [
+        "backbone",
+        "LoRA",
+        "shared_probability_head",
+        "processor",
+        "numerical_execution_protocol"
+      ],
+      "configurable_per_task": [
+        "task_question",
+        "candidate_definitions",
+        "candidate_count",
+        "predeclared_metric_mapping"
+      ],
+      "dataset_specific_head": false,
+      "target_gradient_updates": false,
+      "threshold_rule": "freeze_before_target_scoring_no_target_fit",
+      "cross_dataset_evidence": [
+        "FSC_native31",
+        "MINDS_native14"
+      ],
+      "cross_task_evidence": "not_required_for_current_simple_cross_dataset_phase_no_claim_from_dataset_shift_alone"
+    },
+    "formal_dispatch_requires": [
+      "audited_efficiency_configuration_selection_without_target_scores",
+      "predeclared_formal_update_budget_checkpoint_steps_and_training_seed",
+      "audited_macro_runtime_source_evaluation_integration",
+      "source_selected_policy_pair_and_fixed_endpoint_binding",
+      "per_target_population_definition_input_and_runtime_identity"
+    ],
+    "primary_comparison": "new_dual_credit_GRPO_minus_common_Stage1",
+    "historical_GRPO": "secondary_reference_only_compare_metrics_after_population_template_runtime_alignment",
+    "policies_per_target": [
+      "common_Stage1",
+      "source_selected_new_GRPO",
+      "fixed_endpoint_new_GRPO"
+    ],
+    "identical_policy_ids": "infer_once_reuse_authenticated_predictions_preserve_both_report_roles",
+    "source_selection": "complete_predeclared_SLURP_curve_set_f1_then_NLL_then_earlier_step",
+    "formal_budget": {
+      "status": "candidate_implementation_not_dispatched",
+      "epochs": 2,
+      "updates": 634,
+      "seed": 317,
+      "evaluation_steps": [
+        0,
+        64,
+        128,
+        192,
+        256,
+        320,
+        384,
+        448,
+        512,
+        576,
+        634
+      ],
+      "recovery_checkpoint_steps": [
+        64,
+        128,
+        192,
+        256,
+        320,
+        384,
+        448,
+        512,
+        576,
+        634
+      ],
+      "policy_export": "LoRA_and_shared_head_every_update_before_both_replica_ack",
+      "base_model_checkpoint": false,
+      "tail_steps": [
+        317,
+        634
+      ],
+      "tail_real_queries": 65,
+      "tail_padding_slots": 63,
+      "padding_weight": 0,
+      "global_loss_denominator": "real_query_count_not_padded_batch_size",
+      "schedule": "existing_full_coverage_uniform_source_schedule",
+      "difficulty_refresh": "subsequent_separate_source_only_experiment_not_silently_added_to_this_baseline"
+    },
+    "source_test": "frozen_clean_TEST_report_separately_from_selection",
+    "targets": [
+      {
+        "id": "FSC_native31",
+        "task": "exclusive_command_membership",
+        "population": "official_TEST_3793_recordings",
+        "primary": "top1_event_accuracy",
+        "secondary": [
+          "top1_macro_f1",
+          "query_macro_set_f1",
+          "exact_set",
+          "candidate_binary_nll",
+          "candidate_brier"
+        ],
+        "claim": "cross_dataset_same_decision_task",
+        "uncertainty_unit": "official_test_speaker",
+        "semantic_presence_claim": false
+      },
+      {
+        "id": "MINDS_native14",
+        "task": "exclusive_intent_membership",
+        "population": "frozen_local_upstream_TRAIN_8168_recordings_not_official_TEST",
+        "primary": "query_macro_set_f1",
+        "secondary": [
+          "top1_event_accuracy",
+          "top1_macro_f1",
+          "exact_set",
+          "candidate_binary_nll",
+          "candidate_brier"
+        ],
+        "strata": [
+          "14_language_varieties",
+          "equal_variety_mean",
+          "12_language_mean_English_varieties_pooled"
+        ],
+        "claim": "cross_domain_and_language_same_decision_task",
+        "uncertainty_unit": "unknown_report_descriptive_no_independent_speaker_claim",
+        "descriptor_protocol": "configs/tasks/minds14/native-descriptor-transfer-v1.json"
+      }
+    ],
+    "transfer_execution": "freeze_source_curve_selection_and_endpoint_before_target_inference_no_target_checkpoint_sweep",
+    "probability_quality": "report_NLL_and_Brier_deltas_separately_set_gain_with_calibration_loss_is_tradeoff",
+    "reporting": {
+      "required": [
+        "full_population_coverage",
+        "native_task_metric_delta",
+        "probability_quality_delta",
+        "improved_and_regressed_queries",
+        "per_class_support",
+        "runtime_and_device_hours"
+      ],
+      "dataset_pooling": false,
+      "negative_transfer": "retain_each_target_and_language_regression_no_best_target_claim",
+      "single_seed": "exploratory_paired_effect_not_seed_robust_conclusion",
+      "joint_conclusion": "source_only_gain_is_not_transfer_success_positive_point_estimate_is_not_significance"
+    },
+    "subsequent_algorithm_research": {
+      "current": "ranking_plus_existence_dual_credit_GRPO",
+      "ablation_candidates": [
+        "ranking_credit_only_same_auxiliary_loss",
+        "existence_credit_only_same_auxiliary_loss",
+        "joint_credit"
+      ],
+      "controls": "same_source_population_budget_initial_policy_seed_and_runtime",
+      "task_views": "source_only_truth_preserving_candidate_permutation_or_approved_definition_views",
+      "activation": "separate_preregistered_source_experiment_after_current_joint_baseline",
+      "target_feedback": "requires_independent_transfer_development_partition_and_new_unseen_evaluation_population"
+    },
+    "deferred_targets": [
+      {
+        "id": "SFC_function_applicability",
+        "task": "configured_function_applicability",
+        "population": "pending_independent_input_history_and_label_completeness_audit",
+        "primary": null,
+        "claim": "cross_task_only_after_supervision_semantics_admission",
+        "evaluation_dispatch_allowed": false,
+        "missing_call_is_negative": false,
+        "full_function_call_generation_claim": false,
+        "phase": "next_phase",
+        "current_phase_work_allowed": false
+      }
+    ]
+  },
+  "macro_batch": {
+    "initial_real_queries": 128,
+    "unit": "query_with_complete_candidate_panel",
+    "submission": "one_complete_manifest_per_policy_version",
+    "behavior_policy_versions": 1,
+    "group_size": 16,
+    "rollout_substeps_allowed": true,
+    "internal_forward": "bounded_true_batch_by_text_tokens_and_audio_frames",
+    "replica_count": 2,
+    "replica_parallelism": "TP1_each",
+    "sharding": "length_budget_balanced_whole_rollout_assignment",
+    "rollout_assignment": "one_rollout_owned_by_one_inference_replica_until_completion",
+    "rollout_unit": "label_free_query_sub_batch_with_complete_candidate_panels",
+    "cross_replica_query_or_group_split": false,
+    "rollout_dispatch": "replicas_process_different_rollouts_concurrently",
+    "inflight_rollout_migration": false,
+    "sampling_ownership": "all_G_actions_for_a_query_bound_to_its_single_replica_forward",
+    "result_release": "atomic_complete_batch_only",
+    "coverage_required": 1.0,
+    "unexpected_or_duplicate_request_ids": 0,
+    "partial_actor_consumption": false,
+    "partial_batch_drop_or_denominator_change": false,
+    "failure": "no_optimizer_step_preserve_batch_and_exact_handles",
+    "recovery": "reconcile_existing_same_policy_transaction_before_any_explicit_retry",
+    "behavior_reuse_across_policy_versions": false,
+    "actor_optimizer_steps_per_macro_batch": 1,
+    "next_batch_admission": "both_replicas_ack_same_new_LoRA_and_head_identity",
+    "receipt_fields": [
+      "batch_id",
+      "rollout_id",
+      "replica_id",
+      "policy_id",
+      "runtime_id",
+      "input_manifest_sha256",
+      "candidate_manifest_sha256",
+      "sampler_version",
+      "seed",
+      "expected_ids",
+      "result_hashes",
+      "completed_ids",
+      "timers"
+    ],
+    "trajectory_fields": [
+      "request_id",
+      "candidate_ids",
+      "prob",
+      "actual_logits",
+      "actions",
+      "old_log_probs",
+      "policy_id",
+      "seed"
+    ],
+    "label_boundary": "inference_input_label_free_reward_and_advantage_assembled_on_training_side"
+  },
+  "training": {
+    "dp": 2,
+    "global_batch": 128,
+    "initial_microbatch": 8,
+    "initial_accumulation": 8,
+    "capacity_candidates": [
+      {
+        "microbatch": 16,
+        "accumulation": 4
+      },
+      {
+        "microbatch": 32,
+        "accumulation": 2
+      }
+    ],
+    "execution_dtype": "bfloat16",
+    "master_optimizer_dtype": "float32",
+    "base_weights": "read_only_no_full_model_checkpoint_copies",
+    "sampling": "roundwise_TRAIN_difficulty_refresh_class_coverage_and_uniform_anchor",
+    "auxiliary_probability_target": "natural_TRAIN_distribution_uniform_auxiliary_stream_or_explicit_query_sampling_correction",
+    "source_semantic_views": "label_preserving_definition_and_order_variations_no_target_utterances",
+    "generated_text_reasoning": false,
+    "async_stale_policy": false,
+    "algorithm": "dual_credit_grpo_floor_clipped_v1",
+    "credit_arithmetic": "dual-credit-cpu-pair-fp64-v2",
+    "ranking_probability_dtype": "cpu_float64",
+    "existence_probability_dtype": "actual_backend_float32",
+    "native_loss_dtype": "float32"
+  },
+  "efficiency": {
+    "formal_capacity_selection": "explicit_study_kind: microbatch_requires_three_complete_arms; service_batch_requires_complete_micro8_batch4_and_batch32_pair; minimize_all100_complete_seconds_then_smaller_capacity",
+    "max_training_steps_per_comparison_arm": 100,
+    "step_unit": "completed_global_optimizer_update_including_both_replica_activation_ack",
+    "stop_at_step_limit": true,
+    "full_epoch_required": false,
+    "population": "same_predeclared_prefix_from_full_SLURP_TRAIN_schedule",
+    "engineering_acceptance": "retain_shorter_four_pass_inference_and_two_update_training_gates",
+    "timer_start": "macro_batch_submit_before_transport",
+    "timer_end": "actor_update_and_both_replica_activation_ack",
+    "include": [
+      "input_transport",
+      "queue_wait",
+      "reference_cache_misses",
+      "all_rollout_substeps",
+      "result_assembly",
+      "validation",
+      "actor",
+      "adapter_head_export_and_sync",
+      "scheduled_checkpoint"
+    ],
+    "report_separately": [
+      "startup",
+      "full_TRAIN_diagnostic_scan",
+      "cold_reference_build",
+      "warm_cache",
+      "evaluation"
+    ],
+    "metrics": [
+      "macro_batch_wall_seconds",
+      "queries_per_second",
+      "audio_seconds_per_second",
+      "nonzero_advantage_queries_per_second",
+      "peak_HBM",
+      "total_device_hours"
+    ],
+    "comparison_controls": [
+      "same_initial_policy",
+      "same_credit_arithmetic_and_algorithm",
+      "same_global_batch_and_query_order",
+      "same_reference_cache_condition",
+      "same_checkpoint_cadence",
+      "same_timer_boundaries"
+    ],
+    "historical_fp32_credit_runs": "context_only_not_isolated_engine_speed_comparison",
+    "observed_capacity_revision": {
+      "actor_microbatch8": "complete100_independently_audited",
+      "actor_microbatch16": "observed_NPU_OOM_under_current_runtime",
+      "actor_microbatch32": "not_executed_after_micro16_failure",
+      "service_batch32": "pending_capacity_probe_and_complete100_comparison",
+      "selection_templates": [
+        "configs/portable/operations/prepare-context-macro-formal.json",
+        "configs/portable/operations/prepare-context-service-selected-formal.json"
+      ],
+      "unmeasured_capacity_is_not_a_result": true,
+      "frozen_runtime_mutated": false
+    }
+  },
+  "runtime_gates": [
+    "complete_macro_batch_and_failure_semantics",
+    "actual_audio_two_replica_parity",
+    "DP2_global_gradient_normalization",
+    "LoRA_head_activation_on_both_replicas",
+    "fresh_process_resume",
+    "representative_cold_warm_end_to_end_throughput"
+  ],
+  "machine_bindings": "portable_runtime_templates_resolved_from_local_macros_only",
+  "current_phase_scope": {
+    "mode": "simple_tasks_only",
+    "priorities": [
+      "RL_end_to_end_training_efficiency",
+      "SLURP_task_quality_gain",
+      "FSC_MINDS_cross_dataset_transfer"
+    ],
+    "source_task": "single_audio_exclusive_intent_membership_full_clean_SLURP_TRAIN",
+    "full_source_population_preserved": true,
+    "complex_dataset_work_allowed": false,
+    "multi_audio_history_work_allowed": false,
+    "multi_step_decision_work_allowed": false,
+    "complex_tasks_are_current_phase_completion_dependencies": false,
+    "simple_cross_task_extension": "only_within_same_simple_interface_and_audited_labels_no_complex_dataset_expansion",
+    "deferred_to_next_phase": [
+      "SFC",
+      "Audio2Tool",
+      "multi_audio_conversation",
+      "multi_intent_composition",
+      "multi_step_reasoning"
+    ],
+    "scope_change_does_not_modify_frozen_running_packages": true
+  },
+  "batch_rule_revision": {
+    "priority": "supersedes_fixed_global128_DP2_formal634_and_padding_for_DP3_design",
+    "per_dp_replica_effective_batch": 64,
+    "dp_replicas_formula": "training_devices / (tensor_parallel * pipeline_parallel)",
+    "global_batch_formula": "64 * dp_replicas",
+    "inference_service_batch_candidates": [
+      32,
+      48
+    ],
+    "topology_candidates": [
+      {
+        "training_devices": 2,
+        "inference_instances": 2,
+        "derived_global_batch": 128
+      },
+      {
+        "training_devices": 3,
+        "inference_instances": 1,
+        "derived_global_batch": 192
+      }
+    ],
+    "efficiency_comparison": "queries_per_second_and_device_cost_not_equal_step_count_alone",
+    "quality_comparison": "matched_source_exposures_epochs_with_new_predeclared_checkpoint_schedule",
+    "historical_frozen_runs": "unchanged; fixed DP2 study remains valid within its declared scope",
+    "formal_budget_below": "historical_DP2_candidate_only; DP3_requires_424_updates_for_two_epochs_and_new_runtime_admission",
+    "plan_template": "configs/portable/operations/context-topology-batch-plan.json"
+  }
+}

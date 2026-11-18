@@ -1,0 +1,23 @@
+{
+  "container_id": "09d945a6d4772bf6fce4f7a0d78a2284191fd042f2bc7971ff790c0c04109b11",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-14T08:46:25.01647076Z",
+    "FinishedAt": "2026-11-14T08:46:59.62928379Z"
+  },
+  "remote_pins": {
+    "files": 334,
+    "mismatches": []
+  },
+  "collection_sha256": "073e2f3cdf1348999c804cdf8cb94cb3d33ca6556c45498a716b14a7734c9050",
+  "failure_log": "/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\nDrvMngGetConsoleLogLevel failed. (ret=4)\nTraceback (most recent call last):\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/cached-span-batches-cpu-v1/source/tools/jev/probe_cached_span_batches.py\", line 119, in <module>\n    atomic_json(args.output/'result.json', run(json.loads(args.config.read_text()), args.output))\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/cached-span-batches-cpu-v1/source/tools/jev/probe_cached_span_batches.py\", line 33, in run\n    rows, task, _ = load(config['release'], config['release_sha256'], 'learning', purpose='optimize')\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/cached-span-batches-cpu-v1/source/src/multimodal_jev/slurp_official_training.py\", line 228, in load\n    if file_hash(path) != digest:\n       ^^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/cached-span-batches-cpu-v1/source/src/multimodal_jev/baseline.py\", line 15, in file_hash\n    with Path(path).open('rb') as handle:\n         ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/python3.12.13/lib/python3.12/pathlib.py\", line 1013, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/home/xingchao/workspace/multimodal-jev/configs/reviews/slurp-intent-development-reference-audit-v1.json'\n[ERROR] 2026-11-14-08:46:58 (PID:71, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception\n"
+}

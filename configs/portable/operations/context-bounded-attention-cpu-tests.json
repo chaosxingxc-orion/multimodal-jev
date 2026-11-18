@@ -1,0 +1,24 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "tests": [
+    "tests/test_bounded_prefill_attention.py"
+  ],
+  "expected_tests": 4,
+  "scope": "CPU real causal-attention forward/backward and segment boundaries; no Ascend arithmetic or throughput admission.",
+  "support_files": [
+    "tools/reports/context_bounded_attention_probe.py",
+    "tools/reports/context_language_stage_probe.py",
+    "tools/reports/context_audio_stage_probe.py"
+  ],
+  "resources": {
+    "cpus": 4,
+    "memory_gib": 8
+  }
+}

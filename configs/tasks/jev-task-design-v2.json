@@ -1,0 +1,173 @@
+{
+  "schema": "jev-task-design-v2",
+  "status": "native_semantic_roles_resolved_dependent_menus_objectives_and_supervision_pending",
+  "training_dispatch_allowed": false,
+  "input_policy": {
+    "modality": "direct_audio",
+    "reference_transcript": "offline_review_only_never_actor_input",
+    "question_selection": "task_configuration_only_never_gold_or_query_topic",
+    "definitions": "separate_complete_native_category_menu_and_frozen_semantic_predicate_definitions_with_explicit_bindings",
+    "final_candidates": "complete_task_candidate_set",
+    "call": "single_forward_all_configured_spans",
+    "text_reasoning_generation": false,
+    "intent_as_input_to_slot_main_task": false
+  },
+  "operators": {
+    "I_class": {
+      "question": "Under the supplied exclusive intent annotation policy, does this query belong to the defined intent category?",
+      "truth": "membership_in_one_complete_exclusive_intent_label",
+      "output": "boolean",
+      "negative_admission": "other_class_only_if_exclusive_policy_and_definition_mapping_are_valid",
+      "datasets": [
+        "SLURP",
+        "FSC",
+        "MINDS-14"
+      ],
+      "slurp_role": "dataset_membership_reencoding_control_not_main_semantic_process; semantic-definition variant still needs validated mapping"
+    },
+    "I_present": {
+      "question": "Does this query express an intention satisfying the supplied definition?",
+      "truth": "defined_communicative_act_expressed_not_merely_topic_mention; request_cards_use_shared_request_policy_non_request_cards_require_separate_policies",
+      "output": "boolean",
+      "negative_admission": "explicit_absence_or_complete_multi_intent_annotation",
+      "datasets": [
+        "SLURP_new_semantic_layer_not_native_projection",
+        "MAC-SLU",
+        "SFC/SpokenFC"
+      ]
+    },
+    "S_present": {
+      "question": "Does this query express a semantic role of the supplied type under its stated presence policy?",
+      "truth": "contextual_role_evidence_under_type_definition",
+      "output": "boolean",
+      "presence_policy": "required_per_definition_explicit_filler_or_activated_role_allowing_unspecified_value",
+      "negative_admission": "reviewed_absence_or_complete_annotation_for_this_type_and_policy",
+      "datasets": [
+        "SLURP",
+        "MAC-SLU",
+        "SLUE-NER",
+        "SFC/SpokenFC"
+      ],
+      "note": "Cross-dataset operator reuse does not assert role definitions or presence policies are equivalent.",
+      "scope_policy": "configs/tasks/slurp/communication-scope-resolution-v2.json; expressed communicative content; not inferred intention or state truth"
+    },
+    "B_bound": {
+      "question": "Does a role of the supplied type serve an expressed intention satisfying the supplied intent definition?",
+      "truth": "exists_intent_instance_with_bound_role_not_cooccurrence",
+      "output": "boolean",
+      "negative_admission": "complete_binding_or_reviewed_pair_absence",
+      "datasets": [
+        "MAC-SLU",
+        "SFC/SpokenFC"
+      ],
+      "repeated_instances": "existential_type_relation_only_not_instance_resolution"
+    }
+  },
+  "tracks": {
+    "intent_atomic": {
+      "final": "I_class_or_I_present_as_separately_registered",
+      "credit": "final_only",
+      "purpose": "definition_conditioned_atomic_decision"
+    },
+    "slot_atomic": {
+      "final": "S_present",
+      "credit": "final_only",
+      "purpose": "definition_conditioned_role_presence"
+    },
+    "intent_structured": {
+      "final": "full_intent_choice_or_intent_set_per_dataset",
+      "process": [
+        "fixed_menu_I_present",
+        "admitted_fixed_menu_S_present"
+      ],
+      "purpose": "test independently supervised semantic Q effects on native intent Final"
+    },
+    "binding_structured": {
+      "final": "configured_intent_slot_relation_set",
+      "process": [
+        "I_present",
+        "S_present"
+      ],
+      "purpose": "test_binding_beyond_independent_presence",
+      "admission": "requires_reliable_binding_dataset"
+    },
+    "native_membership_control": {
+      "final": "native_intent_choice",
+      "process": [
+        "fixed_menu_I_class"
+      ],
+      "purpose": "optional redundancy control, not semantic existence evidence"
+    }
+  },
+  "definition_card_fields": [
+    "semantic_id",
+    "version",
+    "definition",
+    "includes",
+    "excludes",
+    "presence_policy",
+    "coexistence_policy",
+    "annotation_scope",
+    "source_references",
+    "review_status"
+  ],
+  "supervision_states": [
+    "positive",
+    "negative",
+    "unavailable",
+    "conflict"
+  ],
+  "unknown_policy": "not_a_main_task_label_without_independent_unknown_supervision",
+  "menu_policy": {
+    "atomic_training": "complete_audio_population_cross_fixed_definition_schedule_no_positive_based_menu_choice",
+    "structured_training": "fixed_menu_or_label_independent_rotation_same_schedule_across_arms",
+    "evaluation": "preregistered_menus_and_separate_final_metrics_per_menu_no_best_menu_selection",
+    "full_set_output": "requires_complete_one_call_schema_admission_otherwise_report_panel_conditioned_set_only",
+    "size": "set_after_task_token_budget_audit_not_assumed_8_is_globally_safe"
+  },
+  "loss_reward": {
+    "contract": "configs/experiments/reward-contract-design-v3.json",
+    "authority": "reward_formula_masks_CE_and_normalization_defined_only_in_referenced_contract",
+    "request_reduction": "each_real_query_has_fixed_outer_weight_no_candidate_count_multiplier",
+    "class_balance": "training_only_predeclared_definition_balancing_no_test_distribution_change"
+  },
+  "release_blockers": [
+    "complete_independent_semantic_intent_definitions_and_supervision; native_class_bijection_not_required",
+    "slot_presence_policy_and_negative_annotation_coverage",
+    "fixed_task_menus_and_source_level_coverage",
+    "definition_use_and_transfer_protocol_frozen",
+    "task_design_review_record"
+  ],
+  "supersedes": "configs/tasks/jev-task-design-v1.json; design only, historical runs unchanged",
+  "context_requirement": "configs/tasks/slurp/context-requirement-candidate-v2.json",
+  "evaluation_protocol": "configs/tasks/slurp/evaluation-protocol-candidate-v2.json",
+  "operator_interventions": "configs/tasks/definition-interventions-candidate-v1.json",
+  "native_slurp_label_identity": {
+    "key_fields": [
+      "scenario",
+      "action"
+    ],
+    "candidate_mapping": "official-clean-intent-v1/tasks.json#/intent/candidate_pairs",
+    "raw_intent_field": "provenance_only_not_unique_class_key",
+    "learning_mapping_audit": "docs/research/intent-namespace-independent-check-v2.json",
+    "semantic_truth": "requires_separate_definition_and_supervision_admission"
+  },
+  "stage1_objective": "configs/experiments/stage1-objective-candidate-v2.json",
+  "semantic_supervision_plan": "configs/tasks/slurp/semantic-supervision-plan-v1.json",
+  "process_final_relation": {
+    "status": "design_constraint_not_training_implementation",
+    "native_I_class": "deterministic_reencoding_of_same_Final_truth_not_independent_process_evidence",
+    "finite_I_all_false": "native_label_outside_fixed_menu_not_no_intent",
+    "slot_to_intent": "auxiliary_evidence_only_no_hard_candidate_pruning",
+    "cooccurrence_reward": "prohibited_without_independent_semantic_implication_or_relation_supervision",
+    "missing_native_slot": "not_semantic_absence_and_not_intent_impossibility",
+    "empirical_signature_bound": "applies_only_to_deterministic_signature_mapping_on_observed_population_not_audio_model",
+    "evidence": "docs/research/56-question-information-and-final-boundary.md",
+    "semantic_I_present": "overlapping evidence not one_hot_native_truth; no hard fold or inferred primary-intent priority"
+  },
+  "slot_definition_candidate": "configs/tasks/slurp/slot-consolidated-design-v14.json",
+  "native_semantic_resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+  "resolution_authority": "SLURP main process uses I_present; historical I_class menus/objectives are non-dispatchable migration inputs, not active defaults.",
+  "semantic_menu_design": "configs/tasks/slurp/menu-design-candidate-v3.json",
+  "fsc_transfer_protocol": "configs/tasks/fsc/transfer-protocol-v3.json"
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "slurp-slot-scope-migration-candidate-v1",
+  "training_dispatch_allowed": false,
+  "status": "working_assumption_scope_draft_not_task_freeze",
+  "scope": "request_relevant_role",
+  "definitions": "configs/tasks/slurp/type-definition-candidates-v2.json",
+  "policy": "configs/tasks/slurp/slot-presence-policy-candidate-v2.json",
+  "boundaries": "configs/tasks/slurp/type-boundary-rules-candidate-v3.json",
+  "reviews": "configs/reviews/slurp-slot-decision-reference-v2.tsv",
+  "source_level_rereview_reasons": {
+    "4181": "The clock reading and zone serve the requested conversion; full source contains no calendar expression.",
+    "4771": "The deictic zone serves the current time query; requested clock value is not supplied and no date is expressed.",
+    "15772": "The number field and person pronoun serve contact lookup; relevance is clear but pronoun type precedence remains unresolved.",
+    "15859": "The mailbox serves forwarding; email medium versus information field remains unresolved; no temporal expression is present.",
+    "9609": "The named station and application both serve playback; no time expression is present.",
+    "9231": "Pandora serves playback; whether radio identifies a station remains unresolved independently of relevance.",
+    "2229": "Nine am and CST/EST serve conversion; relevance does not repair native zone/place conflict.",
+    "226": "Floor is the cleaning target; relevance does not decide household/general-place precedence.",
+    "2904": "Floor is the cleaning target; native omission of household type and general-place ambiguity remain.",
+    "10205": "Rice is the recipe object; food/component precedence remains unresolved, not irrelevant background.",
+    "10006": "Rice is the preparation object; the existing food/native conflict and ingredient uncertainty remain.",
+    "5056": "The theme-song reference serves song identification but supplies no album-identifying role; conflict remains.",
+    "2911": "The CD/music reference is task relevant but does not establish a movie role; native movie conflict remains.",
+    "16876": "Susan and work number serve contact retrieval; requested field is not a supplied mailbox.",
+    "16976": "The address field serves contact lookup but no identifying address value is provided.",
+    "12590": "Train and Berkeley serve the schedule query; an actual time expression is not supplied."
+  },
+  "no_truth_auto_transfer": true,
+  "canonical_task_v2_unchanged": true,
+  "unresolved": [
+    "same-span type precedence",
+    "full-population semantic coverage",
+    "independent disagreement review",
+    "selection semantic annotation after definition freeze"
+  ]
+}

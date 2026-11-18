@@ -1,0 +1,195 @@
+{
+  "schema": "slurp-evaluation-protocol-candidate-v2",
+  "status": "semantic_menu_design_migrated_no_runtime_acceptance",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "selection": {
+    "release": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1",
+    "manifest_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "recordings": 9226,
+    "source_groups": 2146,
+    "role": "internal_source_disjoint_official_TRAIN_selection_not_official_DEV_or_TEST",
+    "scoring_population": "all_fixed_recordings_no_prediction_dependent_exclusions",
+    "full_checkpoint_evaluation": "canonical_transform_all17panels_Direct_Qinput_Qcredit",
+    "definition_diagnostics": "Full fixed population and17panels; order/rebinding diagnostic layouts and cost separately freeze before execution. No inherited I_class layout.",
+    "cost_note": "9226*17=156842 requests per arm; three canonical arms470526 per checkpoint. Three transforms if registered total1411578; no runtime acceptance.",
+    "no_union": "panel_Final_scores_report_separately_and_equal_panel_mean_no_vote_or_best_panel",
+    "question_order": "Explicit interleaved I_present/S_present then Final from semantic menu v3; ragged tails have no duplicate padding.",
+    "historical_design": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/selection-evaluation-design-v1/design.json",
+    "design": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-selection-evaluation-design-v1/report.json",
+    "menu_design": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-actor-menu-design-v1/report.json",
+    "design_sha256": "890fa62f8e7e30fb5513b8e9f1a3e6b50d68b93d641e4f4b20beecc0e806cf93",
+    "design_verification": "docs/research/semantic-selection-evaluation-design-check-v1.json",
+    "design_scope": "Complete canonical request identity schedule only; no model, semantic truth, scoring or context acceptance. Historical I_class request manifests are not current inputs."
+  },
+  "native_intent": {
+    "truth": "canonical_scenario_action_pair_in_frozen60_candidate_mapping",
+    "primary": "recording_accuracy_of_model_Final_on_natural_distribution_equal_panel_mean",
+    "secondary": [
+      "macro_F1_over_fixed60classes_zero_division0",
+      "macro_recall",
+      "per_class_recall_and_support",
+      "learning_defined_tail_classes",
+      "source_group_equal_accuracy",
+      "invalid_output_rate"
+    ],
+    "tail_definition": "classes_with_fewer_than100_learning_recordings_fixed_before_model_results",
+    "invalid": "count_wrong_in_accuracy_and_FN_for_gold_class; no fabricated_valid_prediction",
+    "class_namespace": "60_scenario_action_pairs_not_raw91_intent_strings",
+    "metric_arithmetic": {
+      "accuracy": "correct_Final / all_fixed_recordings, computed separately per panel then equal-panel mean",
+      "fixed_macro_f1": "mean over all60 classes of 2TP/(2TP+FP+FN); zero denominator maps to0",
+      "macro_recall": "mean TP/support over gold-supported classes only; absent-class recall=null; disclose supported-class count",
+      "source_equal_accuracy": "mean over source groups of within-group recording accuracy, separately per panel then equal-panel mean",
+      "invalid": "missing or noncanonical prediction is wrong and contributes one gold-class FN; never fabricated FP for another class"
+    }
+  },
+  "semantic_Q": {
+    "truth": "independently_versioned_positive_negative_only_unavailable_conflict_masked",
+    "metrics": [
+      "positive_class_F1_per_definition",
+      "macro_positive_F1_over_definitions_with_admitted_positive_support",
+      "positive_recall",
+      "false_positive_rate",
+      "balanced_accuracy_when_both_polarities_have_support",
+      "coverage_by_definition_polarity_and_panel",
+      "negative_failure_rate"
+    ],
+    "zero_support": "undefined_recall_or_FPR_report_null_with_denominator_no_silent_drop_or_zero_imputation",
+    "invalid": "counts_as_wrong_for_balanced_accuracy; positive_FN; negative_invalid_separate_from_FPR; always_report_validity",
+    "coverage": "fixed_across_methods_not_conditioned_on_prediction_success",
+    "native_projection": "separate_diagnostic_never_label_as_semantic_truth",
+    "operators": [
+      "I_present",
+      "S_present"
+    ],
+    "metric_arithmetic": {
+      "admitted_states": [
+        "positive",
+        "negative"
+      ],
+      "masked_states": [
+        "unavailable",
+        "conflict",
+        "unassessed"
+      ],
+      "valid_prediction": "typed boolean only; strings and integer0/1 are invalid; aliases must be decoded by frozen parser before this boundary",
+      "positive_recall": "TP / all admitted positives; invalid positive contributes FN",
+      "false_positive_rate": "FP / all admitted negatives including invalid negatives; null if no admitted negatives",
+      "negative_failure_rate": "(FP + invalid_negative) / all admitted negatives; must accompany FPR",
+      "specificity": "TN / all admitted negatives; invalid negative is not TN",
+      "balanced_accuracy": "0.5*(positive_recall+specificity); null unless both admitted polarities supported",
+      "positive_f1": "2TP/(2TP+FP+FN); zero denominator0 only if at least one admitted label; no admitted labels=null",
+      "macro_positive_f1": "equal definition mean within I_present and S_present separately over fixed admitted-positive-supported definitions; report denominator and IDs; no cross-family pooled headline",
+      "aggregation": "each definition occurs in one canonical panel; pool recordings for that definition, then macro over definitions, not mean of ragged-panel macro scores",
+      "validity": "report all-coordinate invalid rate and admitted-coordinate invalid rate separately; absence of predictions never changes coverage",
+      "undefined_denominators": "recall/FPR/specificity/failure/coverage/validity with zero denominator=null"
+    }
+  },
+  "slot_sets": {
+    "complete_panel": "EM_micro_and_macro_F1_only_where_all_panel_truth_is_admitted_report_complete_panel_coverage",
+    "partial": "masked_decision_metrics_only_no_complete_set_EM",
+    "no_full_set_claim": "panel_sets_not55type_one_call_output_or_official_SLU_F1",
+    "no_gold_intent_input": true,
+    "metric_arithmetic": {
+      "complete_population": "fixed per-panel recordings with every configured S_present truth positive or negative; independent of predictions",
+      "em": "all configured typed answers valid and equal truth; missing or invalid answer makes row wrong",
+      "micro_f1": "sum TP/FP/FN across configured types and complete rows before computing F1; all-zero denominator0 if complete rows exist, otherwise null",
+      "macro_f1": "equal mean of per-type positive F1 on complete rows for types with admitted positive support there; no positive-supported types=null",
+      "empty_gold_set": "nonempty slot schema with all-negative truth is an ordinary complete row; all-false valid output gets EM1, invalid output EM0",
+      "no_slot_panel": "schema with zero S_present questions is N/A, never perfect empty-set result",
+      "aggregation": "publish each panel and its complete coverage/support; no pooled55-type set score or undefined-panel imputation",
+      "partial_truth": "only per-decision masked metrics, no complete-set EM/F1 contribution"
+    }
+  },
+  "definition_tests": {
+    "candidate_order": "same_semantic_cards_and_symbols_different_positions",
+    "neutral_symbol_rebinding": "same_semantic_cards_and_positions_new_symbols_map_back_before_scoring",
+    "metrics": [
+      "both_original_and_transformed_correct",
+      "mapped_prediction_agreement",
+      "accuracy_delta",
+      "invalid_rate"
+    ],
+    "interpretation": "These test equivariance_only_not_semantic_definition_understanding",
+    "semantic_paraphrase": "requires_separate_equivalence_reviewed_cards_before_evaluation",
+    "semantic_change": "requires_independent_new_truth_no_gold_preserving_assumption",
+    "audio_controls": "silence_and_mismatched_audio_diagnostic_only_register_waveform_identity_and_no_target_answer_assumption",
+    "operator_paraphrase_and_complement": "configs/tasks/definition-interventions-candidate-v1.json; separate atomic diagnostic pending admission and cost",
+    "existing_encoder_gap": "Separate native aliases, semantic aliases and Span positions materialized in design-v2; production renderer/tokenizer/backend acceptance pending.",
+    "historical_readout_design": "configs/tasks/slurp/evaluation-readout-layout-candidate-v1.json",
+    "explicit_readout_design": "configs/tasks/slurp/evaluation-readout-layout-candidate-v2.json"
+  },
+  "statistics": {
+    "primary_delta": "terminal_RL_minus_same_seed_stage1_same_input_and_population",
+    "process_credit_delta": "Qcredit_minus_Qinput_same_algorithm_seed_checkpoint_budget_input_CE_masks",
+    "cluster": "source_group_all_recordings_panels_transforms_kept_together",
+    "bootstrap": {
+      "resamples": 10000,
+      "seed": 317,
+      "interval": "percentile95",
+      "paired": true
+    },
+    "point_estimate": "recording_weighted_ratio_recomputed_with_repeated_cluster_multiplicity",
+    "training_seeds": [
+      17,
+      29,
+      43
+    ],
+    "seed_reporting": "individual_seed_curves_mean_and_sample_SD; source_bootstrap_not_training_seed_uncertainty",
+    "multiple_comparisons": "all_preregistered_curves_pointwise_CIs_no_best_checkpoint_significance_claim",
+    "selection_warning": "selection_population_results_are_development_evidence_final_claim_requires_frozen_heldout_test_protocol"
+  },
+  "academic_comparison": {
+    "official_original_test": "13078_real_recordings_paper_protocol_separate_from_clean_or_semantic_release",
+    "clean_test": "versioned_clean_audio_and_labels_same_for_all_models_manifest_and_scorer_pending",
+    "speechbrain_hubert": "direct_audio_reference_real_plus_synthetic_training_author75.10SLUF1_87.54intent_not_local_reproduction",
+    "omni_history": "selected_cohorts_and_gold_intent_conditions_not_matched_primary_baseline",
+    "matched_omni": "same_audio_ontology_definitions_masks_no_gold_intent_native_generation_parser_recorded_invalids_in_denominator",
+    "full_SLU": "requires_entity_values_and_official_scorer_type_presence_cannot_substitute",
+    "reference_status": "existing_source_records_reused_not_new_paper_retrieval_or_model_execution"
+  },
+  "remaining_before_freeze": [
+    "semantic_supervision_release_and_definition_boundaries",
+    "actual_context_and_cost_acceptance_for_every_arm_and_transform",
+    "frozen_training_budget_and_numerical_checkpoint_ids",
+    "official_and_clean_test_manifests_and_scorer_versions",
+    "definition_paraphrase_and_semantic_change_test_truth",
+    "independent_scoring_implementation_acceptance",
+    "explicit_display_alias_readout_mapping_rendering_and_backend_acceptance"
+  ],
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "metric_and_schedule_design_migrated_renderer_scorer_and_supervision_pending",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created."
+  },
+  "supersedes": "configs/tasks/slurp/evaluation-protocol-candidate-v1.json",
+  "metric_reference_audit": {
+    "path": "docs/research/semantic-metric-contract-audit-v2.json",
+    "scope": "synthetic arithmetic; no real scorer integration or independent supervision admission",
+    "revision": "v2 clarifies undefined no-admitted-label F1; v1 synthetic evidence retained"
+  },
+  "prediction_ledger_contract": {
+    "status": "reference_contract_not_production_scorer_acceptance",
+    "identity": [
+      "request_id",
+      "recording_id",
+      "panel_id",
+      "arm",
+      "transform"
+    ],
+    "population": "exact frozen request schedule; no extra, duplicate or mismatched coordinates",
+    "completion": "every request must have an authenticated terminal completed or failed receipt; missing/pending is an incomplete run, never fabricated failure or silently skipped",
+    "failed_request": "explicit error and raw backend or transport evidence required; all configured outputs invalid even if partial output exists",
+    "completed_invalid_output": "receipt remains in denominator; completed does not imply valid or correct",
+    "raw_parser": "freeze version; reject duplicate JSON keys and ambiguous raw envelopes before building a map; preserve raw bytes and hash",
+    "span_mapping": "use registered arm/panel/transform positions and output_symbol maps; no label-name guessing, integer/bool coercion or cross-namespace interpretation",
+    "partial_span_map": "missing or invalid registered symbol invalidates that node; other valid nodes remain scoreable; schema-level unknown positions or non-map invalidates all nodes",
+    "direct": "only registered Final position; no process coordinates fabricated from native Final",
+    "supervision": "prediction coverage independent of semantic masks; native Final remains scored for all fixed recordings",
+    "integrity": "production reader must bind raw evidence to model/checkpoint, task, input/audio, registered readout and final metric protocol hashes; reference helper does not authenticate these",
+    "reference_tool": "tools/jev/audit_semantic_prediction_ledger.py",
+    "synthetic_audit": "docs/research/semantic-prediction-ledger-reference-audit-v1.json",
+    "layout_check": "docs/research/semantic-prediction-ledger-check-v1.json"
+  }
+}

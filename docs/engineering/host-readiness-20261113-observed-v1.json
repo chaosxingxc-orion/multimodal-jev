@@ -1,0 +1,83 @@
+{
+  "schema": "multimodal-jev-host-readiness-observed-v1",
+  "recorded_unix": 1794535437.0410094,
+  "trigger": "User reports175and181ready; immediate read-only verification allowed.",
+  "host175": {
+    "host": "100.100.135.175",
+    "direct_ssh": "banner_exchange_timeout_exit255",
+    "without_control_socket": "banner_exchange_timeout_exit255",
+    "via181": "banner_exchange_timeout_exit255",
+    "container_id": "2368b7443633e0ed4bc1ddf0c13a9b9c6fed2387e4d5adfc64a89019ab1189db",
+    "container_state": "unknown",
+    "restart_or_relaunch": false,
+    "next_regular_attempt_not_before": 1794536037.0410094
+  },
+  "host181": {
+    "host": "100.100.135.181",
+    "hostname": "A800I-03",
+    "ssh_verified": true,
+    "npu_model": "910B4-1",
+    "healthy_devices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "hbm_used_mb_in_device_order": [
+      61257,
+      61197,
+      61201,
+      61198,
+      61261,
+      61201,
+      61201,
+      61201
+    ],
+    "hbm_capacity_mb_per_device": 65536,
+    "running_containers": [
+      {
+        "id": "67033c0e4f44",
+        "name": "saea-a-instruct-shared-933f965-v1-v2"
+      },
+      {
+        "id": "7bd77aeb5e90",
+        "name": "saea-b-instruct-shared-933f965-v1-v2"
+      }
+    ],
+    "runtime_image_present": false,
+    "required_image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "npu_assignment_changed": false,
+    "services_stopped": false
+  },
+  "permission_repair": {
+    "observed_unix": 1794535385.3522317,
+    "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1",
+    "mode_before": "0o700",
+    "mode_after": "0o777",
+    "manifest_sha256_before_and_after": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "scope": "Directory access repair authorized by prior user instruction; no file contents or model/runtime settings changed."
+  },
+  "shared_read_check": {
+    "observed_unix": 1794535405.1358657,
+    "host": "npu2",
+    "command": [
+      "ssh",
+      "-o",
+      "BatchMode=yes",
+      "-o",
+      "ConnectTimeout=15",
+      "npu2",
+      "sha256sum /mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json /mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-selection-evaluation-design-v1/report.json /mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-fixed-image-context-v2/config.json"
+    ],
+    "exit_code": 0,
+    "stdout": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482  /mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json\n890fa62f8e7e30fb5513b8e9f1a3e6b50d68b93d641e4f4b20beecc0e806cf93  /mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-selection-evaluation-design-v1/report.json\n1744d7491e708c8d42dcdebf326ecb827a112bd802db664b8b0e65d684b777db  /mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-fixed-image-context-v2/config.json\n",
+    "stderr": "",
+    "cross_host_files_equal": true
+  },
+  "training_dispatch_allowed": false,
+  "scope": "Point-in-time host and shared-file observations, not engineering release or availability reservation. No production launch, service stop, alternate image, or task change."
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "jev-context-model-profile-1.7b-audit-v1",
+  "models": [
+    {
+      "role": "small",
+      "path": "${ASR_MODEL_0_6B}",
+      "expected_hidden_size": 1024,
+      "design": "${CONTEXT_DESIGN_CONFIG}"
+    },
+    {
+      "role": "large",
+      "path": "${ASR_MODEL_1_7B}",
+      "expected_hidden_size": 2048,
+      "design": "${CONTEXT_LARGE_DESIGN_CONFIG}"
+    }
+  ],
+  "lora": {
+    "rank": 4,
+    "alpha": 8,
+    "token_id": 151706,
+    "seed": 20261118
+  },
+  "seed": 20261118,
+  "output": "${MODEL_PROFILE_1_7B_OUTPUT}"
+}

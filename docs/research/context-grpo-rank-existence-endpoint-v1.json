@@ -1,0 +1,100 @@
+{
+  "schema": "context-rank-existence-endpoint-diagnostic-v1",
+  "algorithm": "grpo_v1",
+  "endpoints": [
+    {
+      "step": 0,
+      "policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+      "queries": 9226,
+      "candidates": 60,
+      "means": {
+        "pair_accuracy": 0.9857036304915732,
+        "pair_tie_fraction": 0.000183710736422858,
+        "positive_nll": 0.7952202125834025,
+        "negative_nll": 0.005582805142235557,
+        "positive_brier": 0.20289584212335085,
+        "negative_brier": 0.0012898595241130416,
+        "false_reject": 0.2551484933882506,
+        "false_accept_rate": 0.0015560299375016074,
+        "false_accept_count": 0.09180576631259484,
+        "positive_probability": 0.6935550139916155,
+        "hardest_negative_probability": 0.16241563526664088,
+        "candidate_binary_nll_reconstructed": 0.018743428599588337,
+        "candidate_brier_reconstructed": 0.004649959234100339
+      },
+      "infinite_nll_queries": {
+        "positive_nll": 0,
+        "negative_nll": 0
+      }
+    },
+    {
+      "step": 634,
+      "policy_id": "827afe1a716ba045fb13855e715345c945ccf23e49caa3d867b0ae02eea9007e",
+      "queries": 9226,
+      "candidates": 60,
+      "means": {
+        "pair_accuracy": 0.9837709935444047,
+        "pair_tie_fraction": 0.0004298831232294878,
+        "positive_nll": 1.4396160414146042,
+        "negative_nll": 0.02306578952545965,
+        "positive_brier": 0.1785207841324099,
+        "negative_brier": 0.002939923187441549,
+        "false_reject": 0.1826360286147843,
+        "false_accept_rate": 0.0029614170711364713,
+        "false_accept_count": 0.17472360719705182,
+        "positive_probability": 0.8189352952057004,
+        "hardest_negative_probability": 0.17244504655132178,
+        "candidate_binary_nll_reconstructed": 0.04667496039027873,
+        "candidate_brier_reconstructed": 0.005866270869857688
+      },
+      "infinite_nll_queries": {
+        "positive_nll": 0,
+        "negative_nll": 0
+      }
+    }
+  ],
+  "final_minus_initial": {
+    "pair_accuracy": -0.0019326369471684979,
+    "pair_tie_fraction": 0.0002461723868066298,
+    "positive_nll": 0.6443958288312017,
+    "negative_nll": 0.017482984383224095,
+    "positive_brier": -0.024375057990940946,
+    "negative_brier": 0.0016500636633285074,
+    "false_reject": -0.07251246477346626,
+    "false_accept_rate": 0.001405387133634864,
+    "false_accept_count": 0.08291784088445699,
+    "positive_probability": 0.12538028121408495,
+    "hardest_negative_probability": 0.010029411284680906,
+    "candidate_binary_nll_reconstructed": 0.02793153179069039,
+    "candidate_brier_reconstructed": 0.001216311635757349
+  },
+  "sources": {
+    "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-rl-grpo-arithmetic-v2-experiment/curve.json": "e94522003ac43b8a5fbf39a756b39895667e6da1a0c11696a05f84eea5369dc0",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/selection.jsonl": "f70a6abb4dcdcd36ab3804df7b577cca1fcc20db6f6523d19aa6518f1ed095e9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-rl-grpo-arithmetic-v2-experiment/step-0000/collected/evaluation/selection/predictions.json": "aba53eebf161d6eeb14940d4c55c07d25e28fa5a3fdc49cb84baff926bbca57d",
+    "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-rl-grpo-arithmetic-v2-experiment/step-0634/collected/evaluation/selection/predictions.json": "5677ef3a94665f84ea3e8190659649f17ec53aa12d8e19e546ae20c5aae19af2"
+  },
+  "implementation_sha256": "0cf61e740ee52b106321e38ad656669397fbf928d35ac0fec4e2aa57967fca71",
+  "ranking_tie_credit": 0.5,
+  "acceptance_threshold": 0.5,
+  "diagnostic_only": true,
+  "training_admitted": false,
+  "full_runtime_reaudited": false,
+  "scope": "Complete saved predictions bound to pinned curve and release; proper scores independently reconstructed. Pair accuracy is gold-versus-each-negative with half-credit ties, not top1 or calibration. No runtime rerun, causal attribution, seed uncertainty or semantic-presence claim.",
+  "config_provenance": {
+    "schema": "jev-resolved-config-v1",
+    "template_sha256": "8f322393bf7eaeb9dcbb8b3df009cfddafa037381d1e51b1c17751c2bd18f4ce",
+    "local_bindings_sha256": "c8a6bea75919f49429dd6ef7fc1266b78472464521b157c1eda53444cb08ed36",
+    "resolved_semantic_sha256": "88cc1ecb1e577b537f5864487a7fe029c4c874995536a6ef02aa3815090b2d17",
+    "macros_used": [
+      "DIAGNOSTIC_ALGORITHM",
+      "DIAGNOSTIC_CURVE",
+      "DIAGNOSTIC_CURVE_SHA256",
+      "DIAGNOSTIC_OUTPUT",
+      "DIAGNOSTIC_RELEASE",
+      "DIAGNOSTIC_RELEASE_SHA256"
+    ]
+  }
+}

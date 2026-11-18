@@ -1,0 +1,30 @@
+{
+  "status": "same_fixed_image_replicated_verified_by_raw_config_digest",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "observed_unix": 1794719016.3898883,
+  "source": "npu",
+  "target": "npu2",
+  "size": 24397019596,
+  "layers": 33,
+  "raw_target_config_sha256": "52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "exact_fields": [
+    "Id",
+    "Architecture",
+    "Os",
+    "Size",
+    "RootFS"
+  ],
+  "source_config_fields_equal": true,
+  "original_strict_finalizer": "failed Config object equality; preserved",
+  "explanation": "181 Docker inspect exposes additional legacy/default fields, while raw content-addressed image JSON hashes exactly to the original 175 image ID; all source-exposed Config fields and diff_ids equal",
+  "evidence": {
+    ".local/decision-objective-research/context-fixed-image-replication-181-v1-terminal.json": "c1080e6cb9942a3cc483aa26a9a5ff4dd4d7f7e5133007b43460a01afdeb258d",
+    ".local/decision-objective-research/context-fixed-image-replication-181-v1-target-inspect.json": "25bb90792c498ba2968cb33bb2a97276e24a92d34c1d9fea2264af95705ad501",
+    ".local/decision-objective-research/context-fixed-image-replication-181-v1-source.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".local/decision-objective-research/context-fixed-image-replication-181-v1-load.log": "bb462cf491969a1c366dce1bae6b1b5f07f9c501460d878562d80d995dcd9b0a",
+    ".local/decision-objective-research/context-fixed-image-replication-181-v1-finalizer.log": "ff49c84f6c7e616a2432eb11d5e299ecef00aec9deeea0c881ca582bf2b8028f",
+    ".local/decision-objective-research/context-fixed-image-raw-config-v2.json": "626a92a516a9bb764840e9d15b412a61ce5f4441577f2993e2f65e9c2ed1a35a",
+    ".local/decision-objective-research/context-fixed-image-config-shape-diagnostic-v1.json": "acf1e45112968fcab876b08027b0f59cc43f881d88c064472584c2b328367ef0"
+  },
+  "scope": "image content identity and config, not actual NPU/model runtime or device reservation"
+}

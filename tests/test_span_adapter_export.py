@@ -1,5 +1,6 @@
 import pytest
 from multimodal_jev.span_adapter_export import adapter_key, legacy_broken_key
+from multimodal_jev.span_adapter_export import checkpoint_export_key
 
 
 @pytest.mark.parametrize('projection', ['q_proj', 'v_proj'])
@@ -23,3 +24,11 @@ def test_native_and_peft_names_converge_without_losing_weight_separator(projecti
 def test_reject_unexpected_trainable_weights(name):
     with pytest.raises(ValueError):
         adapter_key(name)
+
+
+def test_current_export_verification_does_not_require_historical_defect():
+    key='base_model.model.model.language_model.layers.0.self_attn.q_proj.lora_A.weight'
+    assert checkpoint_export_key(key) == key
+    assert checkpoint_export_key(key, legacy_repair=True) == legacy_broken_key(key)
+    with pytest.raises(ValueError):
+        checkpoint_export_key(key, legacy_repair='false')

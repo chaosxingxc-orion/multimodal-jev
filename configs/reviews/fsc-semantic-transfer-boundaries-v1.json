@@ -1,0 +1,297 @@
+{
+  "schema": "fsc-semantic-transfer-boundaries-v1",
+  "source_csv_sha256": "df1b87b7122c7a9fa1555fda61ba45436c4bbb33428e1ea54adcc1c3c1317ea4",
+  "issues": [
+    {
+      "reference_id": "4104f016b508bfe6bff7af672613fc69ced2321b213a6b6752e192d1ed31446c",
+      "reference_text": "Volume max",
+      "issue_kind": "absolute_vs_relative",
+      "reason": "Native increase is not evidence of relative-increase semantic truth.",
+      "recordings": 99,
+      "native_triples": [
+        [
+          "increase",
+          "volume",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "0d978151f5b1f282cd026490995739b0a40f5b91d416036665d3ca3c28b9a53d",
+      "reference_text": "Volume mute",
+      "issue_kind": "silence_vs_relative",
+      "reason": "Native decrease conflicts with relative-retained-audio meaning, not necessarily native error.",
+      "recordings": 99,
+      "native_triples": [
+        [
+          "decrease",
+          "volume",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "43324e4f0a4467f81a0f23c7bf5f8a222d232a5e2504e8b8454073584df21d73",
+      "reference_text": "Open language settings",
+      "issue_kind": "tool_vs_execution",
+      "reason": "Opening settings is not a request to execute language change.",
+      "recordings": 86,
+      "native_triples": [
+        [
+          "change language",
+          "none",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "b4443d053033114984e9b3ac07231f384b173ce7bdd3bf108c77844103a4debb",
+      "reference_text": "Language settings",
+      "issue_kind": "fragment_or_tool",
+      "reason": "Fragment does not establish language-change execution.",
+      "recordings": 87,
+      "native_triples": [
+        [
+          "change language",
+          "none",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "ac2b6d4cf6762a65dfdb8b407c49d9bd8ef2bb8c0cb63b25d7cdf6084fcf9a48",
+      "reference_text": "Play",
+      "issue_kind": "missing_music_domain",
+      "reason": "Playback object is not supplied; native music cannot ground semantic domain.",
+      "recordings": 92,
+      "native_triples": [
+        [
+          "activate",
+          "music",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "090d383315a6fff16c6efe7b9e46138f5c196a63221e35a2cb8749f7dff25a5d",
+      "reference_text": "Resume",
+      "issue_kind": "missing_music_domain",
+      "reason": "Unspecified resumed activity need not be music.",
+      "recordings": 102,
+      "native_triples": [
+        [
+          "activate",
+          "music",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "858e335f9c32712ab01a675d1fe7dc7cf4d75e10f97703fb38c0add68a0ff188",
+      "reference_text": "Pause",
+      "issue_kind": "missing_music_domain",
+      "reason": "Unspecified paused activity need not be music.",
+      "recordings": 50,
+      "native_triples": [
+        [
+          "deactivate",
+          "music",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "dfb09e540c0a9e3087ea478c67aada6a420e030bee7bb440cb574cfd6ca2c48c",
+      "reference_text": "Stop",
+      "issue_kind": "missing_music_domain",
+      "reason": "Unspecified stopped activity need not be music.",
+      "recordings": 94,
+      "native_triples": [
+        [
+          "deactivate",
+          "music",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "d377d77bde3ff089c386b39f455780366f39e23160310e92773740b5537d04ec",
+      "reference_text": "Turn it up",
+      "issue_kind": "unresolved_referent",
+      "reason": "Relative direction is stated but audio/heating domain is not grounded.",
+      "recordings": 100,
+      "native_triples": [
+        [
+          "increase",
+          "volume",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "91b2e9ef428205de5af51b9383a1358dd1452e75a2cdc73060e2d430b544e8a0",
+      "reference_text": "Turn it down",
+      "issue_kind": "unresolved_referent",
+      "reason": "Relative direction is stated but domain is not grounded.",
+      "recordings": 94,
+      "native_triples": [
+        [
+          "decrease",
+          "volume",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "25d755c1f3fdff16ab7cf799ef6ac127fac7550d0cb2e69b32ce91a5eace855f",
+      "reference_text": "Too loud",
+      "issue_kind": "complaint_vs_request",
+      "reason": "An evaluation can pragmatically invite adjustment; shared policy does not assume a unique requested act.",
+      "recordings": 92,
+      "native_triples": [
+        [
+          "decrease",
+          "volume",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "a7486f334f4f482e398ec9bd3c453cf074884ddd598a794e6f16fcbf72fce063",
+      "reference_text": "I can't hear that",
+      "issue_kind": "complaint_vs_request",
+      "reason": "Statement alone does not uniquely establish increase rather than repetition/unmute/another remedy.",
+      "recordings": 91,
+      "native_triples": [
+        [
+          "increase",
+          "volume",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "310e570e8034f0caf9d7e22a29fa31e9f2f9ab08ac0851583bfc3783185d9102",
+      "reference_text": "Make it hotter",
+      "issue_kind": "unresolved_referent",
+      "reason": "Ambient heating versus another object/material requires semantic review.",
+      "recordings": 92,
+      "native_triples": [
+        [
+          "increase",
+          "heat",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "693e7188b58e0866766d5e089c7146c6327f9feea70ecd75b243c32ff0b2afc3",
+      "reference_text": "Make it cooler",
+      "issue_kind": "unresolved_referent",
+      "reason": "Ambient cooling versus another referent requires semantic review.",
+      "recordings": 90,
+      "native_triples": [
+        [
+          "decrease",
+          "heat",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "ee3658194f90cf91c452ce5f903b88105d93d968426f7573140ed3e7402a23ef",
+      "reference_text": "I need to practice my Chinese. Switch the language",
+      "issue_kind": "intra_utterance_target",
+      "reason": "Named language can ground the following request via within-utterance reference; not external context.",
+      "recordings": 89,
+      "native_triples": [
+        [
+          "change language",
+          "Chinese",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "bc2d7dc8eaed45ebc2d7a2592edde207769f614e703493874ebc62b14d49298e",
+      "reference_text": "Turn on the lights",
+      "issue_kind": "location_none",
+      "reason": "Unspecified room constraint; do not treat none as every room or semantic missing label.",
+      "recordings": 85,
+      "native_triples": [
+        [
+          "activate",
+          "lights",
+          "none"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    },
+    {
+      "reference_id": "780b88ee40e635dcb7102afd92f5331b33272806c58dc9cdabb34bf1eb67908c",
+      "reference_text": "Turn on the lights in the bedroom",
+      "issue_kind": "location_specific",
+      "reason": "Specific room must not automatically satisfy unspecified-room predicate.",
+      "recordings": 92,
+      "native_triples": [
+        [
+          "activate",
+          "lights",
+          "bedroom"
+        ]
+      ],
+      "semantic_value": null,
+      "status": "requires_separate_review_not_gold",
+      "optimization_allowed": false
+    }
+  ],
+  "scope": "Complete248 unique TRAIN references read;17 explicit issue exemplars are routing evidence, not exhaustive difficult subset or independent labels. No TEST accessed.",
+  "semantic_admission": 0
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "qwen3-asr-jev-token-extension-v1",
+  "decision_id": 151706,
+  "timestamp_reserved_id": 151705,
+  "original_tokenizer_preserved": true,
+  "files": {
+    "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf/config.json": "9eecf6f1b383e343889c2e6010e632590fa57d4bc678e151c7d6a160a0dfb04a",
+    "/mnt/cephfs/xingchao/models/Qwen__Qwen3-ASR-0.6B-hf/tokenizer.json": "fe1fad59be22a41ee293363fcf95fdedbc7c93f3b49270b1d2e18bd1399a7a05",
+    ".local/decision-objective-research/context-policy-reload-audio-cpu-v1-collected/run/policy/processor/tokenizer.json": "dfc31f2e73e91521a1f664ca198cffaaa123619c10b4638270b804565e4979c8"
+  },
+  "scope": "Tokenizer JSON extension and config reservations only; processor roundtrip, embedding row and runtime admission are separate.",
+  "embedding_initialization": {
+    "exact": true,
+    "source_token_ids": [
+      32,
+      33
+    ],
+    "method": "FP32 mean then BF16",
+    "marker": {
+      "shape": [
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "sha256": "4438ec9566dec9c50035048d3815e5a983f63e701535bb1012eded46209484a8"
+    },
+    "original_timestamp_row": {
+      "shape": [
+        1,
+        1024
+      ],
+      "dtype": "torch.bfloat16",
+      "sha256": "729303d4eb2fde27b7ddcd755dde5e647617ffa4318e5492e5742f339b33c4d3"
+    }
+  },
+  "source_policy_id": "9c671db727fea93e25f6e66878743e14b2630e7f0a5535e2484edf3f654cb0b1",
+  "registration_status": "candidate_verified_assets_runtime_admission_pending"
+}

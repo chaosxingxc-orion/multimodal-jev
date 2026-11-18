@@ -1,0 +1,63 @@
+{
+  "status": "candidate_no_training_promotion",
+  "population": 40513,
+  "selection": 9226,
+  "physical_devices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "baseline": {
+    "global_batch": 128,
+    "microbatch_per_rank": 1
+  },
+  "candidates": [
+    {
+      "global_batch": 128,
+      "microbatch_per_rank": 2
+    },
+    {
+      "global_batch": 256,
+      "microbatch_per_rank": 1
+    },
+    {
+      "global_batch": 256,
+      "microbatch_per_rank": 2
+    }
+  ],
+  "fixed": {
+    "seed": 317,
+    "lr": 0.0001,
+    "execution_dtype": "bfloat16",
+    "checkpoint_interval": 2,
+    "frozen_audit": "checkpoint",
+    "updates": 2
+  },
+  "selection_criteria": [
+    "finite gradients and BF16 hooks",
+    "exact BF16 export and Adam checkpoint acceptance",
+    "real requests per end-to-end second",
+    "allocated and reserved memory",
+    "candidate probability parity"
+  ],
+  "limitations": [
+    "two updates are capacity/throughput observations, not full-distribution stability or efficacy",
+    "global128 and256 have different optimizer trajectories; microbatch comparisons require same global size/input sequence",
+    "do not exhaust all candidates if memory evidence rules one out",
+    "no running snapshot changes"
+  ],
+  "observations_20261113": {
+    "global128_micro1_req_per_second": 1.88157,
+    "global128_micro2_req_per_second": 2.210907157510885,
+    "micro2_allocated_bytes": 30891355648,
+    "micro2_reserved_bytes": 64487424000,
+    "updates_per_probe": 2,
+    "promotion_allowed": false,
+    "micro1_independent_state_audit": "passed",
+    "micro1_cross_run_control": "failed_at_initial_artifact_identity; initial_weights_exact; target_modules_order_only; final_cross_run_state_comparison_not_executed",
+    "micro2_evidence": ".local/simple-final-v1/batch-g128-m2-summary.json",
+    "micro2_independent_state_audit": "passed; actual four-rank master reconstruction, BF16 export, CPU PEFT, durable commit,256supervision; all evidence file hashes verified",
+    "micro2_parity_status": "not_run_no_promotion"
+  }
+}

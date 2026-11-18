@@ -1,0 +1,65 @@
+{
+  "schema": "qwen-envelope-contract-independent-check-v1",
+  "report_sha256": "21cc7c545b1d60662583b0d1877d7adad801938c3f35f7931d62cf1c70f1d6a2",
+  "verifier_sha256": "f5ee524b35238839e8889195dcc52b260fae84f7c542155e18647bb8b9e7374b",
+  "requests": 6,
+  "http_success": 6,
+  "strict_valid": 6,
+  "failures": {},
+  "reference_targets": 7,
+  "reference_agreements": 2,
+  "reference_missing": 0,
+  "reference_disagreements": [
+    {
+      "source_id": "14835",
+      "semantic_id": "media_type",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false
+    },
+    {
+      "source_id": "5274",
+      "semantic_id": "list_name",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false
+    },
+    {
+      "source_id": "1887",
+      "semantic_id": "music_genre",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false
+    },
+    {
+      "source_id": "2768",
+      "semantic_id": "playlist_name",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false
+    },
+    {
+      "source_id": "2768",
+      "semantic_id": "song_name",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false
+    }
+  ],
+  "prior_decisions": 24,
+  "prior_decisions_equal": 13,
+  "prior_decisions_missing": 0,
+  "usage": {
+    "prompt_tokens": 137607,
+    "completion_tokens": 1875,
+    "total_tokens": 139482
+  },
+  "observed_unix": 1794530328.7308052,
+  "first_observation_utc": "2026-11-13T00:38:48.610549+00:00",
+  "first_observation_elapsed_seconds": 631.9727156162262,
+  "semantic_admission": 0,
+  "bulk_dispatch_allowed": false,
+  "training_dispatch_allowed": false,
+  "model_identity": "Provider alias only; no attested upstream revision.",
+  "scope": "Independent raw-body, terminal, usage and all output reconstruction. Reference agreement is not independent semantic accuracy; no array salvage."
+}

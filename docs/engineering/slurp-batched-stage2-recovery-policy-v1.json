@@ -1,0 +1,25 @@
+{
+  "status": "implemented_cpu_verified_not_npu_admitted",
+  "tests": {
+    "passed": 52,
+    "command": "PYTHONPATH=src python3 -m pytest -q tests/test_batched_stage2_recovery_policy.py tests/test_batched_stage2_training_audit.py tests/test_batched_stage2_resume.py tests/test_batched_stage2_resume_composition.py tests/test_batched_stage2_audit.py"
+  },
+  "files": {
+    "src/multimodal_jev/batched_stage2_recovery_policy.py": "072c8b2917c4fd144f934e7ba1ea139979a12d2b42bf3a438830575c59de800c",
+    "tools/jev/initialize_batched_stage2_actor.py": "a151fd1fd6f450aa636e011ff2200c69979e17e3614d46a98c121ccee477677a",
+    "tools/jev/verify_batched_stage2_training.py": "50c4758c8bf8762a5cbee106e9ebd915d8304a425b842b65d4e2291826fbaec9",
+    "tests/test_batched_stage2_recovery_policy.py": "2eada8e272ea79251db68caa446c3be82c4e03249f5444950af836f6afc6a755",
+    "tests/test_batched_stage2_training_audit.py": "166b9c320f5201d27acda5fa9a3e3db31d9e83d89ec7cd55d460392c69cd3fe0"
+  },
+  "scope": "Recompile accepted endpoint audio/input identities, G16 sampling and complete length permutation; single/micro restored probabilities vs old resident and vLLM endpoint before update; independent audit recomputes raw probabilities. CPU fixtures substitute model/audio/runtime; no actual Qwen NPU recovery claim.",
+  "original_rc2_files_unchanged": 1360,
+  "training_dispatch_allowed": false,
+  "remaining": [
+    "Final Stage1 terminal and full selection",
+    "Candidate resident switch",
+    "Real Qwen NPU RL update and restarted probability/next update",
+    "Resolve contrastive objective design before next formal configuration",
+    "Candidate release and launcher",
+    "Sustained RL learning and transfer"
+  ]
+}

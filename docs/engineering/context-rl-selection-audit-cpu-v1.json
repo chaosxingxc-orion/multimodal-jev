@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "kind": "local_CPU_and_existing_collected_weights",
+  "tests_latest": 23,
+  "tests_existing_entry_plan_curve": 44,
+  "full_synthetic_population": 9226,
+  "files": {
+    "tools/jev/audit_context_rl_selection.py": "805d9c64c75f062cc4d3d2826d8ac88ec6349e414c02c567834d79fa771e8acf",
+    "tools/jev/collect_context_rl_selection.py": "4aeed0bf740d0c5271f504620ffc34705ebc1b11f2d870eab62e78c498b343aa",
+    "tests/test_context_rl_selection_audit.py": "1ac014c46df2ffed961379cc83ae106b25d72b2962971e0be69e7875b1bfec2f",
+    "tests/test_context_rl_selection_collection.py": "5f5cefcdd2c22e24b4922bc8033112c264d9fb122b14948466718a3b6728c1ad"
+  },
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_selection_audit.py tests/test_context_rl_selection_collection.py",
+  "actual_weight_check": "docs/engineering/context-rl-selection-export-check-v1.json",
+  "actual_remote_collection_executed": false,
+  "formal_RL_selection_executed": false,
+  "scope": "Candidate read-only container transport and independent audit. CPU 9226 synthetic records use substituted model export/load; actual preexisting Stage1 export checked separately. Launcher and curve integration remain pending."
+}

@@ -1,0 +1,12 @@
+{
+  "status": "formal_training_audit_candidate_not_released",
+  "tests_passed": 45,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_training_audit.py tests/test_context_rl_group_audit.py tests/test_context_checkpoint_lifecycle.py",
+  "files": {
+    "tools/jev/audit_context_rl_training.py": "5db7022afef86385ffd1f9ba21d695f5b95cdcd6078b6d175e92e9188fcdb68c",
+    "tests/test_context_rl_training_audit.py": "cb744ae00a9e8bec61a5d900d15269a19068f46fe194520748a9693dbf4bd79a"
+  },
+  "scope": "CPU tests cover schedule/target binding, real Adam tensor validation, group audit, lifecycle audit and prefix rejection. Full634 orchestration not executed against formal RL artifacts; transport collector and release integration remain pending.",
+  "actual_checkpoint_helper_evidence": "docs/engineering/context-rl-training-checkpoint-real-v1.json",
+  "stage2_released": false
+}

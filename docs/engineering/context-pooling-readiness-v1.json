@@ -1,0 +1,25 @@
+{
+  "status": "fixed_image_cpu_adapter_tests_passed",
+  "implementation": [
+    "src/multimodal_jev/context_pooling.py",
+    "src/multimodal_jev/vllm_context_pooler.py"
+  ],
+  "evidence": "docs/engineering/context-pooling-cpu-v1.json",
+  "local_tests": {
+    "passed": 27,
+    "skipped_vllm_module": 1
+  },
+  "fixed_image_tests": {
+    "passed": 28,
+    "skipped": 0
+  },
+  "rc2_original_files_unchanged": 1360,
+  "training_dispatch_allowed": false,
+  "pending": [
+    "joint policy authentication and loading into vLLM worker",
+    "LoRA plus marker plus branch atomic switch",
+    "actual engine expanded audio hidden alignment",
+    "NPU probability parity and gradient/update/recovery",
+    "formal task reward and large-scale training"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "slurp-reference-review-issues-v1",
+  "review": "configs/reviews/slurp-full-slot-sequential-reference-b0003.json",
+  "review_sha256": "f7883aea429b623d93b7749283193c97122552517230508f12fbdef9f4cf690b",
+  "training_dispatch_allowed": false,
+  "issues": [
+    {
+      "source_id": "5641",
+      "definition_id": "music_descriptor",
+      "quote": "blue genre",
+      "rationale": "A genre is used as a selection criterion, but the broad descriptor definition and genre boundary do not explicitly settle whether the same genre-only expression also qualifies without another descriptive property.",
+      "reason_kind": "definition_boundary_genre_descriptor_overlap"
+    },
+    {
+      "source_id": "5313",
+      "definition_id": "media_type",
+      "quote": "radio",
+      "rationale": "Radio may mean broadcast content or the physical player; the shuffle command does not settle that referent.",
+      "reason_kind": "input_radio_medium_device_ambiguity"
+    },
+    {
+      "source_id": "5313",
+      "definition_id": "device_type",
+      "quote": "radio",
+      "rationale": "The reference may identify a radio device or broadcast medium; no hardware-specific evidence resolves it.",
+      "reason_kind": "input_radio_medium_device_ambiguity"
+    },
+    {
+      "source_id": "12767",
+      "definition_id": "place_name",
+      "quote": "ticket to",
+      "rationale": "The utterance stops after the destination preposition. It indicates an incomplete argument, not an identifying destination reference; reference completeness and semantic absence cannot be resolved from this fragment.",
+      "reason_kind": "input_incomplete_destination_expression"
+    },
+    {
+      "source_id": "12767",
+      "definition_id": "transport_descriptor",
+      "quote": "ticket to",
+      "rationale": "A generic ticket alone is insufficient; the unfinished to may begin routing qualification but expresses no completed route. Retain uncertainty rather than invent a qualifier.",
+      "reason_kind": "input_incomplete_route_expression"
+    },
+    {
+      "source_id": "36",
+      "definition_id": "transport_descriptor",
+      "quote": "car is ready",
+      "rationale": "Ready could denote journey/service readiness or a physical preparation/repair state. The utterance supplies no purpose that settles the transport-service property boundary.",
+      "reason_kind": "input_vehicle_readiness_domain_ambiguity"
+    },
+    {
+      "source_id": "2186",
+      "definition_id": "place_name",
+      "quote": "bed room",
+      "rationale": "The room locates a controlled device, but the current domestic-surface rule resolves cleaning targets and destinations without settling whether this control-location role is a venue.",
+      "reason_kind": "definition_boundary_domestic_control_location"
+    },
+    {
+      "source_id": "6203",
+      "definition_id": "person",
+      "quote": "i",
+      "rationale": "A human actor is expressed, but a standalone report supplies no explicit requested operation or message-payload instruction; relevance under current request scope remains unsettled.",
+      "reason_kind": "definition_boundary_standalone_report_scope"
+    },
+    {
+      "source_id": "6203",
+      "definition_id": "event_name",
+      "quote": "went",
+      "rationale": "A past visit is expressed, but standalone reporting versus request-relevant event content is not settled by the current scope rule.",
+      "reason_kind": "definition_boundary_standalone_report_scope"
+    },
+    {
+      "source_id": "6203",
+      "definition_id": "place_name",
+      "quote": "the park",
+      "rationale": "A venue is expressed as the destination of the reported visit, but there is no explicit request establishing task relevance.",
+      "reason_kind": "definition_boundary_standalone_report_scope"
+    }
+  ],
+  "policy": "Retain unavailable; batch triage distinguishes shared definition boundaries from input ambiguity. No automatic ontology edits or semantic admission."
+}

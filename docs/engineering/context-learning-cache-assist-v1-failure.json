@@ -1,0 +1,18 @@
+{
+  "container_id": "5fa4bed41269c385dd73360c6908cbfe3a02513edddb704c771df88f64bd5a69",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-14T13:21:40.14596318Z",
+    "FinishedAt": "2026-11-14T13:22:14.49792598Z"
+  },
+  "log": "/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\nDrvMngGetConsoleLogLevel failed. (ret=4)\n[ERROR] 2026-11-14-13:22:12 (PID:1, Device:-1, RankID:-1) ERR99999 UNKNOWN applicaiton exception\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n/usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n  @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\nTraceback (most recent call last):\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/context-learning-cache-assist-v1/run.py\", line 7, in <module>\n    result=run(c,r/'run');terminal=dict(exit_code=0,recordings=result['recordings'])\n           ^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/context-learning-cache-assist-v1/prepare_context_cache_assist_v1.py\", line 25, in run\n    require_training_storage(out);torch.set_num_threads(1)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/data/xingchao/multimodal-jev/simple-final-v1/context-learning-cache-v1/source/src/multimodal_jev/local_runtime_storage.py\", line 67, in require_training_storage\n    raise ValueError('Explicit local cache paths required before training: ' + ', '.join(missing))\nValueError: Explicit local cache paths required before training: TRITON_CACHE_DIR\n",
+  "reason": "missing TRITON_CACHE_DIR before any input processing; original full cache unaffected"
+}

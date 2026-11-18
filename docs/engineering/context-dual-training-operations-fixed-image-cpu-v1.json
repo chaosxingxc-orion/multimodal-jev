@@ -1,0 +1,56 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "914f287ab193ee3bdde48c611ab441972ba5f962ea7b96e1e0eb34a8f0a7f78f",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T02:43:01.04301992Z",
+    "FinishedAt": "2026-11-16T02:43:59.87545529Z"
+  },
+  "source_files": 410,
+  "source_manifest_sha256": "40c4d50ab0a71a45b06e1438155a57c9700614cf9dc4511f69749ac612fcda15",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-training-operations-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "c04aaf84963a6eeb51d167817242e037e2ad4dccaa647bef972cfd1f1837ac0b",
+    "run/junit.xml": "d620e5572feccdcdbe298cb2f97b0b72407cef70f34305597c5c5e4a28d32ef1",
+    "run/pytest.log": "6d40008fc742d2ab603fed8a22dba58bf951fed31ae64b05ade908e8bfd2e14d",
+    "package/FILES.json": "40c4d50ab0a71a45b06e1438155a57c9700614cf9dc4511f69749ac612fcda15",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 42,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794797008.048933,
+    "finished_unix": 1794797038.5872927,
+    "source_manifest_sha256": "40c4d50ab0a71a45b06e1438155a57c9700614cf9dc4511f69749ac612fcda15",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-training-operations-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_training_operations.py",
+      "tests/test_context_dual_probe_operations.py",
+      "tests/test_context_dual_throughput_pair.py",
+      "tests/test_context_dual_throughput_compare.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Finite DP4 operations, idle-window lease enforcement, exact-handle launch ambiguity and matched training timer/checkpoint comparisons. Synthetic data and mocked remote operations; no NPU execution or speed evidence."
+}

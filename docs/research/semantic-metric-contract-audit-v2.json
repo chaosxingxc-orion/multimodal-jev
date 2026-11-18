@@ -1,0 +1,191 @@
+{
+  "schema": "semantic-metric-contract-audit-v2",
+  "cases": {
+    "native_fixed_vs_supported_macro": {
+      "recordings": 3,
+      "accuracy": 0.3333333333333333,
+      "invalid_rate": 0.3333333333333333,
+      "per_class": {
+        "a": {
+          "support": 2,
+          "predicted": 2,
+          "correct": 1,
+          "f1": 0.5,
+          "recall": 0.5
+        },
+        "b": {
+          "support": 1,
+          "predicted": 0,
+          "correct": 0,
+          "f1": 0.0,
+          "recall": 0.0
+        },
+        "c": {
+          "support": 0,
+          "predicted": 0,
+          "correct": 0,
+          "f1": 0.0,
+          "recall": null
+        }
+      },
+      "macro_f1_fixed": 0.16666666666666666,
+      "macro_f1_supported": 0.25,
+      "macro_recall_supported": 0.25,
+      "supported_classes": 2,
+      "source_equal_accuracy": 0.25
+    },
+    "invalid_binary_outputs": {
+      "counts": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "tn": 0,
+        "invalid_positive": 1,
+        "invalid_negative": 1,
+        "invalid_all": 2,
+        "positive": 1,
+        "negative": 1,
+        "unavailable": 0,
+        "conflict": 0,
+        "unassessed": 0
+      },
+      "coordinates": 2,
+      "admitted": 2,
+      "coverage": 1.0,
+      "positive_recall": 0.0,
+      "false_positive_rate": 0.0,
+      "negative_failure_rate": 1.0,
+      "specificity": 0.0,
+      "balanced_accuracy": 0.0,
+      "positive_f1": 0.0,
+      "invalid_rate_all": 1.0,
+      "invalid_rate_admitted": 1.0
+    },
+    "partially_supervised_panel": {
+      "configured_definitions": 2,
+      "recordings": 1,
+      "decision_metrics": {
+        "s1": {
+          "counts": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "invalid_positive": 0,
+            "invalid_negative": 0,
+            "invalid_all": 0,
+            "positive": 1,
+            "negative": 0,
+            "unavailable": 0,
+            "conflict": 0,
+            "unassessed": 0
+          },
+          "coordinates": 1,
+          "admitted": 1,
+          "coverage": 1.0,
+          "positive_recall": 1.0,
+          "false_positive_rate": null,
+          "negative_failure_rate": null,
+          "specificity": null,
+          "balanced_accuracy": null,
+          "positive_f1": 1.0,
+          "invalid_rate_all": 0.0,
+          "invalid_rate_admitted": 0.0
+        },
+        "s2": {
+          "counts": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "invalid_positive": 0,
+            "invalid_negative": 0,
+            "invalid_all": 0,
+            "positive": 0,
+            "negative": 0,
+            "unavailable": 0,
+            "conflict": 0,
+            "unassessed": 1
+          },
+          "coordinates": 1,
+          "admitted": 0,
+          "coverage": 0.0,
+          "positive_recall": null,
+          "false_positive_rate": null,
+          "negative_failure_rate": null,
+          "specificity": null,
+          "balanced_accuracy": null,
+          "positive_f1": null,
+          "invalid_rate_all": 0.0,
+          "invalid_rate_admitted": null
+        }
+      },
+      "complete_recordings": 0,
+      "complete_coverage": 0.0,
+      "complete_set_em": null,
+      "complete_invalid_rate": null,
+      "complete_micro_positive_f1": null,
+      "complete_macro_positive_f1": null,
+      "complete_supported_definitions": 0,
+      "inapplicable_no_slot_schema": false
+    },
+    "missing_empty_panel_prediction": {
+      "configured_definitions": 1,
+      "recordings": 1,
+      "decision_metrics": {
+        "s1": {
+          "counts": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "tn": 0,
+            "invalid_positive": 0,
+            "invalid_negative": 1,
+            "invalid_all": 1,
+            "positive": 0,
+            "negative": 1,
+            "unavailable": 0,
+            "conflict": 0,
+            "unassessed": 0
+          },
+          "coordinates": 1,
+          "admitted": 1,
+          "coverage": 1.0,
+          "positive_recall": null,
+          "false_positive_rate": 0.0,
+          "negative_failure_rate": 1.0,
+          "specificity": 0.0,
+          "balanced_accuracy": null,
+          "positive_f1": 0.0,
+          "invalid_rate_all": 1.0,
+          "invalid_rate_admitted": 1.0
+        }
+      },
+      "complete_recordings": 1,
+      "complete_coverage": 1.0,
+      "complete_set_em": 0.0,
+      "complete_invalid_rate": 1.0,
+      "complete_micro_positive_f1": 0.0,
+      "complete_macro_positive_f1": null,
+      "complete_supported_definitions": 0,
+      "inapplicable_no_slot_schema": false
+    },
+    "no_slot_panel": {
+      "configured_definitions": 0,
+      "recordings": 1,
+      "decision_metrics": {},
+      "complete_recordings": 0,
+      "complete_coverage": null,
+      "complete_set_em": null,
+      "complete_invalid_rate": null,
+      "complete_micro_positive_f1": null,
+      "complete_macro_positive_f1": null,
+      "complete_supported_definitions": 0,
+      "inapplicable_no_slot_schema": true
+    }
+  },
+  "implementation_sha256": "a86b19841fef66c372065a7a7deb552aab729f3fd9e06dd8f208527effd24689",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "scope": "Synthetic metric arithmetic only; no dataset labels, predictions, scorer integration, statistical CI, or admission."
+}

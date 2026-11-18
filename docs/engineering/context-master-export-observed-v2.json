@@ -1,0 +1,67 @@
+{
+  "exact_bf16_from_master_shards": true,
+  "rank_shards": 4,
+  "parameters": 128,
+  "numel": 6878209,
+  "completed_updates": 634,
+  "checkpoint_scopes": [
+    {
+      "tensors": 128,
+      "local_numel": {
+        "lora": 143360,
+        "head": 1576193
+      },
+      "base_model_saved": false,
+      "scope": "LoRA and Jev head only; base identity referenced separately"
+    },
+    {
+      "tensors": 128,
+      "local_numel": {
+        "lora": 143360,
+        "head": 1576193
+      },
+      "base_model_saved": false,
+      "scope": "LoRA and Jev head only; base identity referenced separately"
+    },
+    {
+      "tensors": 128,
+      "local_numel": {
+        "lora": 143360,
+        "head": 1576193
+      },
+      "base_model_saved": false,
+      "scope": "LoRA and Jev head only; base identity referenced separately"
+    },
+    {
+      "tensors": 128,
+      "local_numel": {
+        "lora": 143360,
+        "head": 1576190
+      },
+      "base_model_saved": false,
+      "scope": "LoRA and Jev head only; base identity referenced separately"
+    }
+  ],
+  "scope": "Actual committed FP32 shards reproduce BF16 execution; no gradient, speed or efficacy claim",
+  "files": {
+    "/srv/multimodal-jev-xingchao/collections/context-rl-grpo-arithmetic-v2/collection/run/rank-0/checkpoint-0634.pt": "4ebe3bfb66b0b2eb2c9ddf88d19b13a347b54cbeed03ca939b952ae776a4cd18",
+    "/srv/multimodal-jev-xingchao/collections/context-rl-grpo-arithmetic-v2/collection/run/rank-1/checkpoint-0634.pt": "76e5050820335f57aab38452a221da223c17169f2ead2e8014da23e6770ecd11",
+    "/srv/multimodal-jev-xingchao/collections/context-rl-grpo-arithmetic-v2/collection/run/rank-2/checkpoint-0634.pt": "9d0a650cdf1c93dc78e90b77e5a8bfd72656d04da639b9a27f970c55eb1fd9a9",
+    "/srv/multimodal-jev-xingchao/collections/context-rl-grpo-arithmetic-v2/collection/run/rank-3/checkpoint-0634.pt": "baf873ac9aedfdec54574df7cd42147e969a17d9cd37763a2d9e039a7ba27ccb",
+    "/srv/multimodal-jev-xingchao/collections/context-rl-grpo-arithmetic-v2/collection/run/execution-0634.pt": "d70d2f0403882165e191764bebc8ec92df9f7aa14c1b2a85a9ff6c1abe0defbd",
+    "/srv/multimodal-jev-xingchao/collections/context-rl-grpo-arithmetic-v2/collection/run/checkpoint-0634-committed.json": "5daea4e8ee511078495f79858d01e69ec42bf3e066a78aecd1b023889d7bbd0a"
+  },
+  "implementation_sha256": "0fbd46960e22c1c6912085bbff99815dc1d22ce736e2f00214f55f56dfd1075a",
+  "config_provenance": {
+    "schema": "jev-resolved-config-v1",
+    "template_sha256": "b76c721c3ca7286a6826cfa4d0bcd46287b97655c70eeb9121e0be2040164520",
+    "local_bindings_sha256": "bd3a43fede94188c05eb24c88d7960684d7f3de4c60c26cd64875706d3afd8a4",
+    "resolved_semantic_sha256": "df782c9a6fe1f175ef88ee1ea692cba935f6704303cccdbbd54ef383bef5a329",
+    "macros_used": [
+      "CHECKPOINT_COMMIT_SHA256",
+      "CHECKPOINT_RUN_ROOT",
+      "CHECKPOINT_STEP",
+      "MASTER_EXPORT_AUDIT_REPORT"
+    ]
+  }
+}

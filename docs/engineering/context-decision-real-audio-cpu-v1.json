@@ -1,0 +1,356 @@
+{
+  "container_id": "0360ca927b7e935e23fa84c825ee9a70ac043d3d0801617d863cb1cd095a6b16",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T09:01:28.98747706Z",
+    "FinishedAt": "2026-11-14T09:08:18.8997805Z"
+  },
+  "physical_devices": [],
+  "remote_pins": {
+    "files": 338,
+    "mismatches": []
+  },
+  "collection_sha256": "0ff59139fb9bb499c1b68713fd54785c1aec63059fed3646e0b0ab3e55e8a40c",
+  "result": {
+    "records": [
+      {
+        "audio_id": "slurp:audio-1497270079.flac",
+        "audio_sha256": "3eeea30f9ab5aec4159c79dbb3195b481cd55099584ce02cbe45ac9ca6aa8e9b",
+        "request": {
+          "audio": "/mnt/cephfs/xingchao/datasets/slurp/slurp_real/audio-1497270079.flac",
+          "questions": [
+            {
+              "id": "request",
+              "definition": "An actionable request asks a system to perform an action.",
+              "question": "Does the audio contain an actionable request under this definition?"
+            },
+            {
+              "id": "alarm",
+              "definition": "The alarm tool creates or changes a timed alarm; calendar events are excluded.",
+              "question": "Does the audio express a request within the alarm tool definition?"
+            },
+            {
+              "id": "final",
+              "definition": "The caller allows the alarm tool only for actionable alarm requests.",
+              "question": "Is the alarm tool applicable under the supplied caller rule?"
+            }
+          ],
+          "requirements": [
+            "Judge each supplied definition from the audio. Do not infer labels from question order."
+          ],
+          "history": [],
+          "version": "jev-audio-context-applicability-v1"
+        },
+        "request_sha256": "dfc6853e38233187ee83516936f7e7eeef54782b3ca988d835e3c479948b2280",
+        "audio_receipt": {
+          "config": {
+            "preemphasis": 0.0,
+            "trim_threshold_dbfs": null,
+            "trim_frame_ms": 20.0,
+            "trim_margin_ms": 100.0,
+            "target_rms_dbfs": null,
+            "max_gain_db": 12.0,
+            "peak_limit": 0.99,
+            "speed_factor": 1.0,
+            "version": "jev-waveform-v1"
+          },
+          "sample_rate": 16000,
+          "input_samples": 41979,
+          "output_samples": 41979,
+          "input_waveform_sha256": "acfc84134fa645c92f996f86264573c38a06b38804974cad09dd3af8d27f8a71",
+          "output_waveform_sha256": "acfc84134fa645c92f996f86264573c38a06b38804974cad09dd3af8d27f8a71",
+          "retained_original_interval": [
+            0,
+            41979
+          ],
+          "applied_gain": 1.0,
+          "speed_changes_pitch": false,
+          "internal_silence_removed": false
+        },
+        "tokens": 239,
+        "positions": [
+          [
+            220,
+            228,
+            236
+          ]
+        ],
+        "input_ids": {
+          "shape": [
+            1,
+            239
+          ],
+          "dtype": "torch.int64",
+          "sha256": "569f744ec1b745cc5a0cf878ff5b6b2f6633b38fa128f2d7b10d98424bbe4142"
+        },
+        "one_backbone_forward": true,
+        "probabilities": [
+          [
+            0.47353553771972656,
+            0.5841525793075562,
+            0.5588085651397705
+          ]
+        ],
+        "snapshot_sha256": "8ba19772e1d001cb412fc8eb396a7d8997e01aef068c6166f98e63b3130ffff3",
+        "gradients": {
+          "backbone.language_model.layers.0.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.0.self_attn.q_proj.lora_B.default.weight": 0.14223580062389374,
+          "backbone.language_model.layers.0.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.0.self_attn.v_proj.lora_B.default.weight": 0.8591221570968628,
+          "backbone.language_model.layers.1.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.1.self_attn.q_proj.lora_B.default.weight": 0.10207333415746689,
+          "backbone.language_model.layers.1.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.1.self_attn.v_proj.lora_B.default.weight": 0.34832751750946045,
+          "backbone.language_model.layers.2.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.2.self_attn.q_proj.lora_B.default.weight": 0.12023650109767914,
+          "backbone.language_model.layers.2.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.2.self_attn.v_proj.lora_B.default.weight": 0.7848637104034424,
+          "backbone.language_model.layers.3.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.3.self_attn.q_proj.lora_B.default.weight": 0.19598418474197388,
+          "backbone.language_model.layers.3.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.3.self_attn.v_proj.lora_B.default.weight": 0.4642431437969208,
+          "backbone.language_model.layers.4.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.4.self_attn.q_proj.lora_B.default.weight": 0.1890251636505127,
+          "backbone.language_model.layers.4.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.4.self_attn.v_proj.lora_B.default.weight": 0.46056264638900757,
+          "backbone.language_model.layers.5.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.5.self_attn.q_proj.lora_B.default.weight": 0.22000713646411896,
+          "backbone.language_model.layers.5.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.5.self_attn.v_proj.lora_B.default.weight": 0.472852498292923,
+          "backbone.language_model.layers.6.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.6.self_attn.q_proj.lora_B.default.weight": 0.18560925126075745,
+          "backbone.language_model.layers.6.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.6.self_attn.v_proj.lora_B.default.weight": 0.3994462490081787,
+          "backbone.language_model.layers.7.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.7.self_attn.q_proj.lora_B.default.weight": 0.21744924783706665,
+          "backbone.language_model.layers.7.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.7.self_attn.v_proj.lora_B.default.weight": 0.3465336263179779,
+          "backbone.language_model.layers.8.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.8.self_attn.q_proj.lora_B.default.weight": 0.22148354351520538,
+          "backbone.language_model.layers.8.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.8.self_attn.v_proj.lora_B.default.weight": 0.2520228624343872,
+          "backbone.language_model.layers.9.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.9.self_attn.q_proj.lora_B.default.weight": 0.20051048696041107,
+          "backbone.language_model.layers.9.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.9.self_attn.v_proj.lora_B.default.weight": 0.699457585811615,
+          "backbone.language_model.layers.10.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.10.self_attn.q_proj.lora_B.default.weight": 0.19154736399650574,
+          "backbone.language_model.layers.10.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.10.self_attn.v_proj.lora_B.default.weight": 0.3519963324069977,
+          "backbone.language_model.layers.11.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.11.self_attn.q_proj.lora_B.default.weight": 0.20328886806964874,
+          "backbone.language_model.layers.11.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.11.self_attn.v_proj.lora_B.default.weight": 0.40192991495132446,
+          "backbone.language_model.layers.12.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.12.self_attn.q_proj.lora_B.default.weight": 0.17337705194950104,
+          "backbone.language_model.layers.12.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.12.self_attn.v_proj.lora_B.default.weight": 0.3577365279197693,
+          "backbone.language_model.layers.13.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.13.self_attn.q_proj.lora_B.default.weight": 0.26244214177131653,
+          "backbone.language_model.layers.13.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.13.self_attn.v_proj.lora_B.default.weight": 0.3545852303504944,
+          "backbone.language_model.layers.14.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.14.self_attn.q_proj.lora_B.default.weight": 0.6696141958236694,
+          "backbone.language_model.layers.14.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.14.self_attn.v_proj.lora_B.default.weight": 0.5834820866584778,
+          "backbone.language_model.layers.15.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.15.self_attn.q_proj.lora_B.default.weight": 0.2378457486629486,
+          "backbone.language_model.layers.15.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.15.self_attn.v_proj.lora_B.default.weight": 0.3563332259654999,
+          "backbone.language_model.layers.16.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.16.self_attn.q_proj.lora_B.default.weight": 0.24573729932308197,
+          "backbone.language_model.layers.16.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.16.self_attn.v_proj.lora_B.default.weight": 0.30200546979904175,
+          "backbone.language_model.layers.17.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.17.self_attn.q_proj.lora_B.default.weight": 0.18585561215877533,
+          "backbone.language_model.layers.17.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.17.self_attn.v_proj.lora_B.default.weight": 0.5160375237464905,
+          "backbone.language_model.layers.18.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.18.self_attn.q_proj.lora_B.default.weight": 0.21943025290966034,
+          "backbone.language_model.layers.18.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.18.self_attn.v_proj.lora_B.default.weight": 0.2956361770629883,
+          "backbone.language_model.layers.19.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.19.self_attn.q_proj.lora_B.default.weight": 0.31473419070243835,
+          "backbone.language_model.layers.19.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.19.self_attn.v_proj.lora_B.default.weight": 0.3677724003791809,
+          "backbone.language_model.layers.20.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.20.self_attn.q_proj.lora_B.default.weight": 0.4103432297706604,
+          "backbone.language_model.layers.20.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.20.self_attn.v_proj.lora_B.default.weight": 0.3481239080429077,
+          "backbone.language_model.layers.21.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.21.self_attn.q_proj.lora_B.default.weight": 0.24216629564762115,
+          "backbone.language_model.layers.21.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.21.self_attn.v_proj.lora_B.default.weight": 0.29554620385169983,
+          "backbone.language_model.layers.22.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.22.self_attn.q_proj.lora_B.default.weight": 0.261451780796051,
+          "backbone.language_model.layers.22.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.22.self_attn.v_proj.lora_B.default.weight": 0.2586039900779724,
+          "backbone.language_model.layers.23.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.23.self_attn.q_proj.lora_B.default.weight": 0.13651366531848907,
+          "backbone.language_model.layers.23.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.23.self_attn.v_proj.lora_B.default.weight": 0.18292967975139618,
+          "backbone.language_model.layers.24.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.24.self_attn.q_proj.lora_B.default.weight": 0.15721449255943298,
+          "backbone.language_model.layers.24.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.24.self_attn.v_proj.lora_B.default.weight": 0.4501059651374817,
+          "backbone.language_model.layers.25.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.25.self_attn.q_proj.lora_B.default.weight": 0.1416783630847931,
+          "backbone.language_model.layers.25.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.25.self_attn.v_proj.lora_B.default.weight": 0.2534964382648468,
+          "backbone.language_model.layers.26.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.26.self_attn.q_proj.lora_B.default.weight": 0.13080257177352905,
+          "backbone.language_model.layers.26.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.26.self_attn.v_proj.lora_B.default.weight": 0.3021727502346039,
+          "backbone.language_model.layers.27.self_attn.q_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.27.self_attn.q_proj.lora_B.default.weight": 0.10845980048179626,
+          "backbone.language_model.layers.27.self_attn.v_proj.lora_A.default.weight": 0.0,
+          "backbone.language_model.layers.27.self_attn.v_proj.lora_B.default.weight": 0.23996707797050476,
+          "decision_head.context_norm.weight": 0.00141138827893883,
+          "decision_head.context_norm.bias": 0.0020116944797337055,
+          "decision_head.attention.in_proj_weight": 0.06538262218236923,
+          "decision_head.attention.in_proj_bias": 0.002804117277264595,
+          "decision_head.attention.out_proj.weight": 0.07494992017745972,
+          "decision_head.attention.out_proj.bias": 0.0048142727464437485,
+          "decision_head.ffn_norm.weight": 0.0010698132682591677,
+          "decision_head.ffn_norm.bias": 0.0010327431373298168,
+          "decision_head.ffn.0.weight": 0.05772160738706589,
+          "decision_head.ffn.0.bias": 0.0018370174802839756,
+          "decision_head.ffn.2.weight": 0.05000448226928711,
+          "decision_head.ffn.2.bias": 0.004813481122255325,
+          "decision_head.output_norm.weight": 0.2252667397260666,
+          "decision_head.output_norm.bias": 0.23287536203861237,
+          "decision_head.projection.weight": 12.509469032287598,
+          "decision_head.projection.bias": 0.3984375
+        },
+        "exact_branch_reload": true,
+        "seconds": 149.77049731000443
+      },
+      {
+        "audio_id": "slurp:audio-1497621480-headset.flac",
+        "audio_sha256": "d7b188b5ffb9f46ad8d1ff8d2d746453386b32732a560251954af37e3880b826",
+        "request": {
+          "audio": "/mnt/cephfs/xingchao/datasets/slurp/slurp_real/audio-1497621480-headset.flac",
+          "questions": [
+            {
+              "id": "request",
+              "definition": "An actionable request asks a system to perform an action.",
+              "question": "Does the audio contain an actionable request under this definition?"
+            },
+            {
+              "id": "alarm",
+              "definition": "The alarm tool creates or changes a timed alarm; calendar events are excluded.",
+              "question": "Does the audio express a request within the alarm tool definition?"
+            },
+            {
+              "id": "final",
+              "definition": "The caller allows the alarm tool only for actionable alarm requests.",
+              "question": "Is the alarm tool applicable under the supplied caller rule?"
+            }
+          ],
+          "requirements": [
+            "Judge each supplied definition from the audio. Do not infer labels from question order."
+          ],
+          "history": [],
+          "version": "jev-audio-context-applicability-v1"
+        },
+        "request_sha256": "26aca0039ebc0063d356f68babe1dc025be945c60af4c16b6a2ba521f0f2eca8",
+        "audio_receipt": {
+          "config": {
+            "preemphasis": 0.0,
+            "trim_threshold_dbfs": null,
+            "trim_frame_ms": 20.0,
+            "trim_margin_ms": 100.0,
+            "target_rms_dbfs": null,
+            "max_gain_db": 12.0,
+            "peak_limit": 0.99,
+            "speed_factor": 1.0,
+            "version": "jev-waveform-v1"
+          },
+          "sample_rate": 16000,
+          "input_samples": 373760,
+          "output_samples": 373760,
+          "input_waveform_sha256": "9c4e86de3e0cc10c29938051cb61791a9e91445163e603e65651d3ee03bdba14",
+          "output_waveform_sha256": "9c4e86de3e0cc10c29938051cb61791a9e91445163e603e65651d3ee03bdba14",
+          "retained_original_interval": [
+            0,
+            373760
+          ],
+          "applied_gain": 1.0,
+          "speed_changes_pitch": false,
+          "internal_silence_removed": false
+        },
+        "tokens": 509,
+        "positions": [
+          [
+            490,
+            498,
+            506
+          ]
+        ],
+        "input_ids": {
+          "shape": [
+            1,
+            509
+          ],
+          "dtype": "torch.int64",
+          "sha256": "f8fa9b1a7c4e5e1cabc4769aa2782fd325268063de25382ca33c5d57503d8edc"
+        },
+        "one_backbone_forward": true,
+        "probabilities": [
+          [
+            0.4859045743942261,
+            0.5727227926254272,
+            0.5392258763313293
+          ]
+        ],
+        "snapshot_sha256": "0f3c6f2c6d270e10a92eb1d40e26fd428094b2e68c94161be88b9ce68ed6cf53",
+        "gradients": null,
+        "exact_branch_reload": true,
+        "seconds": 218.52452736000123
+      }
+    ],
+    "branch_sha256": "a66abf73b04882c5acf20a324c6ec13b1cb44f5bbbb22fb2b23fd43c40ced8d3",
+    "token_initialization": {
+      "token_id": 151706,
+      "before": {
+        "shape": [
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "729303d4eb2fde27b7ddcd755dde5e647617ffa4318e5492e5742f339b33c4d3"
+      },
+      "after": {
+        "shape": [
+          1024
+        ],
+        "dtype": "torch.bfloat16",
+        "sha256": "4438ec9566dec9c50035048d3815e5a983f63e701535bb1012eded46209484a8"
+      },
+      "method": "frozen_mean_A_B_test_only"
+    },
+    "training_dispatch_allowed": false,
+    "scope": "Actual audio CPU forward with one-layer context head; arbitrary diagnostic derivative through fresh LoRA, no optimizer update, no gold labels, no calibrated/task gain/NPU/vLLM claims. Placeholder tokenizer and frozen marker row are test-only, not production registration."
+  },
+  "independent_recheck": [
+    {
+      "audio_id": "slurp:audio-1497270079.flac",
+      "exact_probability_recheck": true,
+      "finite_head_and_input_gradient": true
+    },
+    {
+      "audio_id": "slurp:audio-1497621480-headset.flac",
+      "exact_probability_recheck": true,
+      "finite_head_and_input_gradient": true
+    }
+  ],
+  "scope": "Independent collected real-hidden head recheck; backbone LoRA gradients observed remotely only. No optimizer, task gain, production token or NPU/vLLM acceptance."
+}

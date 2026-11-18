@@ -1,0 +1,3428 @@
+{
+  "schema": "context-credit-repeated-sampling-v1",
+  "repeats": 512,
+  "group_size": 16,
+  "random_dtype": "float64_CPU; newly drawn diagnostic samples, not archived action replay",
+  "seed_base": 170041,
+  "torch_version": "2.10.0+cpu",
+  "actor_update": 74,
+  "sources": {
+    ".local/decision-objective-research/context-arithmetic-formal-live-v13-raw.json": "6d79f460dacb19142b83d33ba80fdf0972bb3ef46e91ee08eea99fd614e43958",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.jsonl": "481703c7a6aeb696c652124eccd5533f81d5cefc67ff12d59c0920318df6bbbe",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    ".local/decision-objective-research/context-full-learning-schedule-v1/MANIFEST.json": "d9cd5832aa160df46a4c10a2051ff12c352d2a2609e2cffd6901267b28a814f6",
+    ".local/decision-objective-research/context-full-learning-schedule-v1/epoch-0.json": "92fc4f63ec4ce207495e78fe043a1d65c03d35e18e238ad32a465d3755aafece",
+    ".local/decision-objective-research/context-learning-cache-v1-collected/independent.jsonl": "e95689c8633cb676bff926d4704cb8a6d07fa19d7c95fa541af74dcc7cf88567",
+    "docs/engineering/context-learning-cache-v1.json": "4b97af73d330e29b2b3d193b6a09914ecc34c8a7d335399f9654f3db6a7fb3ac",
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/analyze_context_live_reward_support.py": "31c28c729f95ec744fc0252b7f0e84a0a177b90f35e34b9704c252cb29cd4e00",
+    "tools/jev/context_reward_signal.py": "88059df7ae86db05f4de1802d7d053933c2cf7f104288e427877b5cbca352cd3",
+    "tools/reports/analyze_context_action_diversity.py": "906755de0dfbc0a57d7260699ebf8eb2f0ce17b039c088f59959a6c296a919fd",
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/replay_context_reward_groups.py": "979c19d4be79111526b2ee5eee37f267c99c52b597d9b84b4180c9cfaf49dd63",
+    "src/multimodal_jev/context_rollout_batch.py": "b929188f2ddacc1d31ebe89a63142d7023e4a6163b0d17f6bd17208cb206915e",
+    "src/multimodal_jev/span_group_advantage.py": "e99a2ae80edbb1005b5f875bf1114dda8307afd2d2f9529a5a0b6f987f57f8a5",
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/analyze_context_credit_resampling.py": "025fc1067e0fedbf512cb5c2447bf1e3abdd07a5429065f16dbae5697aa1b72d",
+    "tools/reports/analyze_context_counterfactual_credit.py": "d7bdc0cb5dd297062dda76dac88231e14bc0564138599f113163350203ffa230"
+  },
+  "seconds": 7.372588559985161,
+  "strata": {
+    "all": {
+      "queries": 128,
+      "methods": {
+        "rloo": {
+          "mse": 0.0002482658931795728,
+          "variance_trace_population": 0.0002477200330367288,
+          "empirical_mean_error_squared": 5.458601428440271e-07,
+          "zero_fraction": 0.876708984375,
+          "exact_squared_norm": 0.0012673384443108377
+        },
+        "local_expectation": {
+          "mse": 3.237539054144758e-07,
+          "variance_trace_population": 3.2339592144843647e-07,
+          "empirical_mean_error_squared": 3.5798396603932816e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.0012673384443108377
+        }
+      },
+      "queries_with_lower_LEG_mse": 128
+    },
+    "threshold_correct": {
+      "queries": 98,
+      "methods": {
+        "rloo": {
+          "mse": 0.00020125696805279114,
+          "variance_trace_population": 0.00020079403483062687,
+          "empirical_mean_error_squared": 4.629332221641172e-07,
+          "zero_fraction": 0.889030612244898,
+          "exact_squared_norm": 0.0011234553776409797
+        },
+        "local_expectation": {
+          "mse": 7.433118985211401e-08,
+          "variance_trace_population": 7.43002589190865e-08,
+          "empirical_mean_error_squared": 3.0930933027503787e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.0011234553776409797
+        }
+      },
+      "queries_with_lower_LEG_mse": 98
+    },
+    "threshold_wrong": {
+      "queries": 30,
+      "methods": {
+        "rloo": {
+          "mse": 0.0004018283819270599,
+          "variance_trace_population": 0.0004010116271766617,
+          "empirical_mean_error_squared": 8.167547503983989e-07,
+          "zero_fraction": 0.8364583333333333,
+          "exact_squared_norm": 0.00173735646209904
+        },
+        "local_expectation": {
+          "mse": 1.1385347762515247e-06,
+          "variance_trace_population": 1.1371084190443134e-06,
+          "empirical_mean_error_squared": 1.4263572072112886e-09,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.00173735646209904
+        }
+      },
+      "queries_with_lower_LEG_mse": 30
+    }
+  },
+  "queries": [
+    {
+      "request_id": "slurp:audio-1495371320-headset.flac::epoch0-batch73-slot0",
+      "source_group": "slurp-clean:926a6d8a0c921dbadd21adb38459a1bb0a8b1848bfd8b13b64043309866aea83",
+      "threshold_exact_set": true,
+      "seed": 170041,
+      "expected_F1": 0.9997187194028184,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 5.333533160400141e-08,
+          "mse_standard_error": 8.782155821831813e-25,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 5.333533160400139e-08,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 5.333533160400139e-08
+        },
+        "local_expectation": {
+          "mse": 1.5785230615225032e-16,
+          "mse_standard_error": 2.1810719921767244e-33,
+          "variance_trace_population": 2.977058587458074e-42,
+          "empirical_mean_error_squared": 1.578523061522398e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.333533160400139e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1488970226.flac::epoch0-batch73-slot1",
+      "source_group": "slurp-clean:de33e46124ae06393ae894d3a514c283d868bb79e29f173f7cbdfef1d113b20f",
+      "threshold_exact_set": true,
+      "seed": 170042,
+      "expected_F1": 0.9997276477661006,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 2.2768831407173152e-05,
+          "mse_standard_error": 1.3085077431635996e-05,
+          "variance_trace_population": 2.275407314300537e-05,
+          "empirical_mean_error_squared": 1.4758264167784929e-08,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 6.032956834979317e-08
+        },
+        "local_expectation": {
+          "mse": 3.345636056133841e-15,
+          "mse_standard_error": 1.8965569087395134e-15,
+          "variance_trace_population": 3.3004918002474666e-15,
+          "empirical_mean_error_squared": 4.51442558863707e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.032956834979317e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498572968.flac::epoch0-batch73-slot2",
+      "source_group": "slurp-clean:7a1bb66f68501e528c998c64769f89b19d977cf253b76be008ae9d48c5ee0d06",
+      "threshold_exact_set": false,
+      "seed": 170043,
+      "expected_F1": 0.0267323028042261,
+      "gold_probability": 0.052618954330682755,
+      "methods": {
+        "rloo": {
+          "mse": 0.0006742895934142852,
+          "mse_standard_error": 5.211916402073746e-05,
+          "variance_trace_population": 0.0006724760569172142,
+          "empirical_mean_error_squared": 1.8135364970708022e-06,
+          "zero_fraction": 0.427734375,
+          "exact_squared_norm": 0.0006415656820236314
+        },
+        "local_expectation": {
+          "mse": 3.864523850709333e-07,
+          "mse_standard_error": 2.0779864001506337e-08,
+          "variance_trace_population": 3.8578434342206395e-07,
+          "empirical_mean_error_squared": 6.680416488693436e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.0006415656820236314
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502896146.flac::epoch0-batch73-slot3",
+      "source_group": "slurp-clean:f918b7d62db21e7a3c15137d151da4873201435b1aad3b4604d719dd234bffea",
+      "threshold_exact_set": true,
+      "seed": 170044,
+      "expected_F1": 0.8263072061430997,
+      "gold_probability": 0.8267117738723755,
+      "methods": {
+        "rloo": {
+          "mse": 0.003995999830367086,
+          "mse_standard_error": 0.00021069881379951255,
+          "variance_trace_population": 0.003978778410840917,
+          "empirical_mean_error_squared": 1.72214195261691e-05,
+          "zero_fraction": 0.037109375,
+          "exact_squared_norm": 0.02050320443416061
+        },
+        "local_expectation": {
+          "mse": 1.3791595478595387e-07,
+          "mse_standard_error": 4.6575282109008365e-08,
+          "variance_trace_population": 1.373633510157143e-07,
+          "empirical_mean_error_squared": 5.526037702402548e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.02050320443416061
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490287489.flac::epoch0-batch73-slot4",
+      "source_group": "slurp-clean:96f0e3ba877553f72e7cfcb36577cad047ec5e96f8d4737e10bf3950e81d6797",
+      "threshold_exact_set": false,
+      "seed": 170045,
+      "expected_F1": 0.00031999881313264005,
+      "gold_probability": 0.0005193048855289817,
+      "methods": {
+        "rloo": {
+          "mse": 7.346377730668981e-06,
+          "mse_standard_error": 5.520135874937488e-06,
+          "variance_trace_population": 7.311997958171507e-06,
+          "empirical_mean_error_squared": 3.4379772497468426e-08,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 1.0329903355131485e-07
+        },
+        "local_expectation": {
+          "mse": 5.174169161939773e-08,
+          "mse_standard_error": 3.7212046674080516e-08,
+          "variance_trace_population": 5.14139614106944e-08,
+          "empirical_mean_error_squared": 3.277302087033189e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.0329903355131485e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490801779-headset.flac::epoch0-batch73-slot5",
+      "source_group": "slurp-clean:462225d18e998e4bffd3b69df4aaa251d0708889b78397cb10f5a3b48a260b0c",
+      "threshold_exact_set": true,
+      "seed": 170046,
+      "expected_F1": 0.999599619926213,
+      "gold_probability": 0.9997219443321228,
+      "methods": {
+        "rloo": {
+          "mse": 2.6206495593062683e-06,
+          "mse_standard_error": 1.4611748705328494e-06,
+          "variance_trace_population": 2.5381644566853834e-06,
+          "empirical_mean_error_squared": 8.248510262088477e-08,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 8.487230338836173e-08
+        },
+        "local_expectation": {
+          "mse": 2.2474083068159473e-13,
+          "mse_standard_error": 1.2886822065461965e-13,
+          "variance_trace_population": 2.24406170506587e-13,
+          "empirical_mean_error_squared": 3.346601750077631e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 8.487230338836173e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490369990-headset.flac::epoch0-batch73-slot6",
+      "source_group": "slurp-clean:8e7e24687e7a199d478c46463edf87b6795a8730ec730a1a6e379a8ee18320a9",
+      "threshold_exact_set": true,
+      "seed": 170047,
+      "expected_F1": 0.9987751149233348,
+      "gold_probability": 0.9993928670883179,
+      "methods": {
+        "rloo": {
+          "mse": 3.2609309800415504e-05,
+          "mse_standard_error": 1.3232196647214022e-05,
+          "variance_trace_population": 3.2538521436997394e-05,
+          "empirical_mean_error_squared": 7.078836341810856e-08,
+          "zero_fraction": 0.97265625,
+          "exact_squared_norm": 4.957958197413538e-07
+        },
+        "local_expectation": {
+          "mse": 8.02937628078636e-12,
+          "mse_standard_error": 2.443070201816528e-12,
+          "variance_trace_population": 7.987603472530918e-12,
+          "empirical_mean_error_squared": 4.1772808255435263e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.957958197413538e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502308482-headset.flac::epoch0-batch73-slot7",
+      "source_group": "slurp-clean:5d4646407c184d8c6f869e9d916d41b169895f2df6e8d939395a0b2d235bc632",
+      "threshold_exact_set": true,
+      "seed": 170048,
+      "expected_F1": 0.9997313272766732,
+      "gold_probability": 0.9998511075973511,
+      "methods": {
+        "rloo": {
+          "mse": 1.6904477214488662e-05,
+          "mse_standard_error": 1.078954611379791e-05,
+          "variance_trace_population": 1.689129405551486e-05,
+          "empirical_mean_error_squared": 1.3183158973798504e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 2.4549566433101153e-08
+        },
+        "local_expectation": {
+          "mse": 8.210999395254751e-14,
+          "mse_standard_error": 4.0942969259182285e-14,
+          "variance_trace_population": 8.206174752839923e-14,
+          "empirical_mean_error_squared": 4.8246424148056265e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.4549566433101153e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1500388309-headset.flac::epoch0-batch73-slot8",
+      "source_group": "slurp-clean:d14e508e7782fb3df11ef203bcce992cb1d94fe3f146be1a25fec9b7f5eb0ff1",
+      "threshold_exact_set": true,
+      "seed": 170049,
+      "expected_F1": 0.9990217949577026,
+      "gold_probability": 0.9991704225540161,
+      "methods": {
+        "rloo": {
+          "mse": 5.436878004653728e-05,
+          "mse_standard_error": 1.956199554877163e-05,
+          "variance_trace_population": 5.4367714458041736e-05,
+          "empirical_mean_error_squared": 1.0655884955581261e-09,
+          "zero_fraction": 0.982421875,
+          "exact_squared_norm": 6.923038361074657e-07
+        },
+        "local_expectation": {
+          "mse": 1.4611870523435599e-12,
+          "mse_standard_error": 8.242649225965719e-13,
+          "variance_trace_population": 1.4580494516717501e-12,
+          "empirical_mean_error_squared": 3.137600671810481e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.923038361074657e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501696398.flac::epoch0-batch73-slot9",
+      "source_group": "slurp-clean:e31c7d3c352aad89d9e5f51b629fef584516cba9060838a38d67701f1706e0dd",
+      "threshold_exact_set": true,
+      "seed": 170050,
+      "expected_F1": 0.9994914802907497,
+      "gold_probability": 0.9997040629386902,
+      "methods": {
+        "rloo": {
+          "mse": 3.2010597374619294e-05,
+          "mse_standard_error": 1.510952728627512e-05,
+          "variance_trace_population": 3.19679578145345e-05,
+          "empirical_mean_error_squared": 4.263956008479715e-08,
+          "zero_fraction": 0.98828125,
+          "exact_squared_norm": 1.1129639895639706e-07
+        },
+        "local_expectation": {
+          "mse": 8.728472359530312e-13,
+          "mse_standard_error": 3.7219905984335617e-13,
+          "variance_trace_population": 8.71093734846073e-13,
+          "empirical_mean_error_squared": 1.7535011069579015e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.1129639895639706e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490365813-headset.flac::epoch0-batch73-slot10",
+      "source_group": "slurp-clean:47c75587b2c13cb4b048b886dc3c63f389b398aec6954c931185a6fce10e4801",
+      "threshold_exact_set": true,
+      "seed": 170051,
+      "expected_F1": 0.999761046471256,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 3.120073566371445e-05,
+          "mse_standard_error": 1.5128973101981555e-05,
+          "variance_trace_population": 3.112521436479355e-05,
+          "empirical_mean_error_squared": 7.552129892091132e-08,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 4.688612090857221e-08
+        },
+        "local_expectation": {
+          "mse": 4.0230516861968114e-14,
+          "mse_standard_error": 3.967974257850009e-14,
+          "variance_trace_population": 4.021328137513852e-14,
+          "empirical_mean_error_squared": 1.7235486829582634e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.688612090857221e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497270947-headset.flac::epoch0-batch73-slot11",
+      "source_group": "slurp-clean:457761201de6acb5205c2be9b838bfcf9caa75762b459488c7cff72335b90813",
+      "threshold_exact_set": true,
+      "seed": 170052,
+      "expected_F1": 0.9997446362650049,
+      "gold_probability": 0.9997965693473816,
+      "methods": {
+        "rloo": {
+          "mse": 1.7356552204018167e-06,
+          "mse_standard_error": 1.196617896431988e-06,
+          "variance_trace_population": 1.6921096377902553e-06,
+          "empirical_mean_error_squared": 4.3545582611560664e-08,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 4.1724184209542964e-08
+        },
+        "local_expectation": {
+          "mse": 7.072291676249599e-14,
+          "mse_standard_error": 4.986516888269373e-14,
+          "variance_trace_population": 7.067431310221616e-14,
+          "empirical_mean_error_squared": 4.8603660279893887e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.1724184209542964e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1489151147.flac::epoch0-batch73-slot12",
+      "source_group": "slurp-clean:ba7c1c7d6cc8e25b39a346cc206d80e0f39f0c61f8f568086cbd4415e67570da",
+      "threshold_exact_set": false,
+      "seed": 170053,
+      "expected_F1": 1.7854138782872817e-05,
+      "gold_probability": 2.4300241420860402e-05,
+      "methods": {
+        "rloo": {
+          "mse": 3.205012181752954e-10,
+          "mse_standard_error": 0.0,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 3.205012181752954e-10,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 3.205012181752954e-10
+        },
+        "local_expectation": {
+          "mse": 2.461081397916577e-12,
+          "mse_standard_error": 4.301625614036688e-14,
+          "variance_trace_population": 7.135616748295178e-13,
+          "empirical_mean_error_squared": 1.747519723087059e-12,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.205012181752954e-10
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497269843-headset.flac::epoch0-batch73-slot13",
+      "source_group": "slurp-clean:bdd0bdecaaad388b9437cc91ab0bd0af8bce23be8d17545d403e2af1fb98dd45",
+      "threshold_exact_set": true,
+      "seed": 170054,
+      "expected_F1": 0.9998042629315429,
+      "gold_probability": 0.999841570854187,
+      "methods": {
+        "rloo": {
+          "mse": 2.5210812822883915e-08,
+          "mse_standard_error": 0.0,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 2.5210812822883915e-08,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 2.5210812822883915e-08
+        },
+        "local_expectation": {
+          "mse": 3.9930399931887856e-17,
+          "mse_standard_error": 5.452679980441811e-34,
+          "variance_trace_population": 2.8236164056145064e-43,
+          "empirical_mean_error_squared": 3.9930399931888096e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.5210812822883915e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490262096-headset.flac::epoch0-batch73-slot14",
+      "source_group": "slurp-clean:6018caa0d3bb6ac2a5d239fc5b28645a87dd235895c027aba760f660de854827",
+      "threshold_exact_set": true,
+      "seed": 170055,
+      "expected_F1": 0.9997486167317666,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 1.5199384951958495e-05,
+          "mse_standard_error": 1.0699547620662423e-05,
+          "variance_trace_population": 1.519918441772462e-05,
+          "empirical_mean_error_squared": 2.0053423387567435e-10,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 5.3112110027331425e-08
+        },
+        "local_expectation": {
+          "mse": 2.1542890521989617e-16,
+          "mse_standard_error": 1.351963542534461e-16,
+          "variance_trace_population": 1.9223710069613935e-16,
+          "empirical_mean_error_squared": 2.3191804523756776e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.3112110027331425e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1434541407-headset.flac::epoch0-batch73-slot15",
+      "source_group": "slurp-clean:a41e2a35f58b7a119c529932b350c6cb7fabb2529056e834b4b7d59082ee5f60",
+      "threshold_exact_set": true,
+      "seed": 170056,
+      "expected_F1": 0.9996330513724527,
+      "gold_probability": 0.9996849298477173,
+      "methods": {
+        "rloo": {
+          "mse": 1.774673942532437e-05,
+          "mse_standard_error": 1.076350750327152e-05,
+          "variance_trace_population": 1.773734887440999e-05,
+          "empirical_mean_error_squared": 9.390550914389805e-09,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 9.938027796896467e-08
+        },
+        "local_expectation": {
+          "mse": 2.5500954136232396e-13,
+          "mse_standard_error": 1.451772588615555e-13,
+          "variance_trace_population": 2.5452076225855146e-13,
+          "empirical_mean_error_squared": 4.88779103772592e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 9.938027796896467e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490370163.flac::epoch0-batch73-slot16",
+      "source_group": "slurp-clean:0ad158d8e99d855871491819592e08931ef0cf5ccc528b34ef6eda7288f612a5",
+      "threshold_exact_set": false,
+      "seed": 170057,
+      "expected_F1": 0.0015018827907796292,
+      "gold_probability": 0.002251847181469202,
+      "methods": {
+        "rloo": {
+          "mse": 4.9464753112481285e-05,
+          "mse_standard_error": 1.2023792664030683e-05,
+          "variance_trace_population": 4.93875550635067e-05,
+          "empirical_mean_error_squared": 7.719804897456202e-08,
+          "zero_fraction": 0.970703125,
+          "exact_squared_norm": 2.245507410751768e-06
+        },
+        "local_expectation": {
+          "mse": 1.3408231316963562e-10,
+          "mse_standard_error": 2.1074112738683845e-11,
+          "variance_trace_population": 1.336195410791251e-10,
+          "empirical_mean_error_squared": 4.627720905104611e-13,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.245507410751768e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1499695659.flac::epoch0-batch73-slot17",
+      "source_group": "slurp-clean:0d106baadcbf99530e2d0a5c98a55ea4b00d2578501d6ac0e94005cf8013d85d",
+      "threshold_exact_set": true,
+      "seed": 170058,
+      "expected_F1": 0.9976974689249387,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 5.727165474499005e-05,
+          "mse_standard_error": 1.2171316377385753e-05,
+          "variance_trace_population": 5.7266442864029455e-05,
+          "empirical_mean_error_squared": 5.21188096057017e-09,
+          "zero_fraction": 0.90234375,
+          "exact_squared_norm": 3.456232424949292e-06
+        },
+        "local_expectation": {
+          "mse": 8.674741989561003e-11,
+          "mse_standard_error": 3.8560536412949693e-11,
+          "variance_trace_population": 8.674726545149874e-11,
+          "empirical_mean_error_squared": 1.544441112995851e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.456232424949292e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1504195236.flac::epoch0-batch73-slot18",
+      "source_group": "slurp-clean:58fbb3df6930e3f466192a1f3478b1527ab366b7bae1d5eb94714f9683b7ed7f",
+      "threshold_exact_set": true,
+      "seed": 170059,
+      "expected_F1": 0.9988814205252047,
+      "gold_probability": 0.999373733997345,
+      "methods": {
+        "rloo": {
+          "mse": 3.869020035400536e-05,
+          "mse_standard_error": 1.5101022885430387e-05,
+          "variance_trace_population": 3.866685761345757e-05,
+          "empirical_mean_error_squared": 2.3342740547794834e-08,
+          "zero_fraction": 0.97265625,
+          "exact_squared_norm": 5.139856362312722e-07
+        },
+        "local_expectation": {
+          "mse": 7.706563667259453e-12,
+          "mse_standard_error": 2.193882460025261e-12,
+          "variance_trace_population": 7.699554681734173e-12,
+          "empirical_mean_error_squared": 7.008985525279293e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.139856362312722e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497886091.flac::epoch0-batch73-slot19",
+      "source_group": "slurp-clean:633121c7417ce94ce602f322e4cd054d592c2e6ffc67255f1acbcc26d3c01e49",
+      "threshold_exact_set": true,
+      "seed": 170060,
+      "expected_F1": 0.9997258237808213,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 3.0338233606916417e-05,
+          "mse_standard_error": 1.5094496689311062e-05,
+          "variance_trace_population": 3.0279159545898438e-05,
+          "empirical_mean_error_squared": 5.907406101799573e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 6.023071805040259e-08
+        },
+        "local_expectation": {
+          "mse": 1.4558217453252633e-15,
+          "mse_standard_error": 6.99037668855282e-16,
+          "variance_trace_population": 1.4039909029674521e-15,
+          "empirical_mean_error_squared": 5.183084235781474e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.023071805040259e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501753871-headset.flac::epoch0-batch73-slot20",
+      "source_group": "slurp-clean:1f22bb3c5156dd452b0660ca22e182038e8a15bd7f413116f2a3c7b70007a8a5",
+      "threshold_exact_set": true,
+      "seed": 170061,
+      "expected_F1": 0.9994592488550937,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 1.4322953732849631e-05,
+          "mse_standard_error": 7.913027178760892e-06,
+          "variance_trace_population": 1.4313393168979224e-05,
+          "empirical_mean_error_squared": 9.560563870406016e-09,
+          "zero_fraction": 0.982421875,
+          "exact_squared_norm": 1.2346042593278593e-07
+        },
+        "local_expectation": {
+          "mse": 1.0459598026970087e-12,
+          "mse_standard_error": 6.148729200325314e-13,
+          "variance_trace_population": 1.0451118392391432e-12,
+          "empirical_mean_error_squared": 8.479634578671691e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.2346042593278593e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1504194964-headset.flac::epoch0-batch73-slot21",
+      "source_group": "slurp-clean:874fb8adb4be8b460f548b16ee2d1ca9f6978090b8c2dfc9a73201b881a2ea4a",
+      "threshold_exact_set": true,
+      "seed": 170062,
+      "expected_F1": 0.9983525418963075,
+      "gold_probability": 0.999595582485199,
+      "methods": {
+        "rloo": {
+          "mse": 6.3030075954036e-05,
+          "mse_standard_error": 1.7545587113430083e-05,
+          "variance_trace_population": 6.29808137446274e-05,
+          "empirical_mean_error_squared": 4.926220940860143e-08,
+          "zero_fraction": 0.939453125,
+          "exact_squared_norm": 1.5870639798977066e-06
+        },
+        "local_expectation": {
+          "mse": 6.09029470738991e-11,
+          "mse_standard_error": 2.4059168466781503e-11,
+          "variance_trace_population": 6.084621549750934e-11,
+          "empirical_mean_error_squared": 5.67315763895729e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.5870639798977066e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501767272.flac::epoch0-batch73-slot22",
+      "source_group": "slurp-clean:65b40cf8e8b388aa3bba0e161bcb7a6f5f8fb8c7bb5b600e8edd894c3e6d9818",
+      "threshold_exact_set": true,
+      "seed": 170063,
+      "expected_F1": 0.9978458421413754,
+      "gold_probability": 0.9989012479782104,
+      "methods": {
+        "rloo": {
+          "mse": 4.976094125960469e-05,
+          "mse_standard_error": 1.5141460376996384e-05,
+          "variance_trace_population": 4.9373742974834674e-05,
+          "empirical_mean_error_squared": 3.871982847700046e-07,
+          "zero_fraction": 0.94921875,
+          "exact_squared_norm": 1.4060893206849405e-06
+        },
+        "local_expectation": {
+          "mse": 3.7145210978750154e-11,
+          "mse_standard_error": 7.4154937209475e-12,
+          "variance_trace_population": 3.700887413924371e-11,
+          "empirical_mean_error_squared": 1.3633683950643918e-13,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.4060893206849405e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490194741-headset.flac::epoch0-batch73-slot23",
+      "source_group": "slurp-clean:b018a020967d345bbec602603200f0666d3e2aabdae02592ed512d9923922fbe",
+      "threshold_exact_set": true,
+      "seed": 170064,
+      "expected_F1": 0.999708135170748,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 3.7907948220386326e-05,
+          "mse_standard_error": 1.6859544125556074e-05,
+          "variance_trace_population": 3.777444362640381e-05,
+          "empirical_mean_error_squared": 1.3350459398250997e-07,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 6.043931065984911e-08
+        },
+        "local_expectation": {
+          "mse": 9.871101085990648e-15,
+          "mse_standard_error": 4.32892110603974e-15,
+          "variance_trace_population": 9.716290515602098e-15,
+          "empirical_mean_error_squared": 1.5481057038859196e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.043931065984911e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1499691168-headset.flac::epoch0-batch73-slot24",
+      "source_group": "slurp-clean:720f96b66286eca4822670b497c40f93e8164144bd77da9e8594d99da4701551",
+      "threshold_exact_set": true,
+      "seed": 170065,
+      "expected_F1": 0.9997941247296739,
+      "gold_probability": 0.9998204708099365,
+      "methods": {
+        "rloo": {
+          "mse": 3.122207331763994e-05,
+          "mse_standard_error": 1.5146950419134773e-05,
+          "variance_trace_population": 3.112521436479361e-05,
+          "empirical_mean_error_squared": 9.685895284632448e-08,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 3.223670387945848e-08
+        },
+        "local_expectation": {
+          "mse": 2.787846091874332e-14,
+          "mse_standard_error": 2.72721558844993e-14,
+          "variance_trace_population": 2.7869868999016783e-14,
+          "empirical_mean_error_squared": 8.591919726547711e-18,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.223670387945848e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498569093-headset.flac::epoch0-batch73-slot25",
+      "source_group": "slurp-clean:09b9b6671ae410b4d4e5d553f028988dba3e2d90a5736fd23099767aad7a264f",
+      "threshold_exact_set": true,
+      "seed": 170066,
+      "expected_F1": 0.9993434431863011,
+      "gold_probability": 0.9994115829467773,
+      "methods": {
+        "rloo": {
+          "mse": 3.19849737972764e-05,
+          "mse_standard_error": 1.4968942865751406e-05,
+          "variance_trace_population": 3.196795781453449e-05,
+          "empirical_mean_error_squared": 1.7015982741907615e-08,
+          "zero_fraction": 0.98828125,
+          "exact_squared_norm": 3.4702250208891026e-07
+        },
+        "local_expectation": {
+          "mse": 6.262509951402709e-13,
+          "mse_standard_error": 4.1493942220532887e-13,
+          "variance_trace_population": 6.261885105903335e-13,
+          "empirical_mean_error_squared": 6.248454993649449e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.4702250208891026e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490954753-headset.flac::epoch0-batch73-slot26",
+      "source_group": "slurp-clean:feb664b36563923c01361330f73c84e8eae0f421f51f5dd1fe89091c8dbfd106",
+      "threshold_exact_set": false,
+      "seed": 170067,
+      "expected_F1": 0.0013231435144089576,
+      "gold_probability": 0.002396730938926339,
+      "methods": {
+        "rloo": {
+          "mse": 3.0073955298728338e-05,
+          "mse_standard_error": 8.6206918302267e-06,
+          "variance_trace_population": 2.973608028741528e-05,
+          "empirical_mean_error_squared": 3.3787501131305826e-07,
+          "zero_fraction": 0.9765625,
+          "exact_squared_norm": 1.749689410907983e-06
+        },
+        "local_expectation": {
+          "mse": 1.1786217834634329e-07,
+          "mse_standard_error": 3.0932454653409297e-08,
+          "variance_trace_population": 1.1674856967895377e-07,
+          "empirical_mean_error_squared": 1.1136086673894981e-09,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.749689410907983e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498645067.flac::epoch0-batch73-slot27",
+      "source_group": "slurp-clean:8a96c12c71fd23166aafdf36f385226bb1936f164972b33578152ffecce9a717",
+      "threshold_exact_set": true,
+      "seed": 170068,
+      "expected_F1": 0.9997040408040216,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 1.604638913900846e-05,
+          "mse_standard_error": 1.0730656028470897e-05,
+          "variance_trace_population": 1.6045239236619762e-05,
+          "empirical_mean_error_squared": 1.149902388699884e-09,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 5.3487195063035153e-08
+        },
+        "local_expectation": {
+          "mse": 5.133091736894087e-14,
+          "mse_standard_error": 4.531497823901082e-14,
+          "variance_trace_population": 5.1297489423690614e-14,
+          "empirical_mean_error_squared": 3.342794525023711e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.3487195063035153e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501691202.flac::epoch0-batch73-slot28",
+      "source_group": "slurp-clean:c71cda41c76bf926c7c57843d33579f507f8bc1e5b94b85c6db4fba317b3f82f",
+      "threshold_exact_set": true,
+      "seed": 170069,
+      "expected_F1": 0.9989655385436592,
+      "gold_probability": 0.9995121955871582,
+      "methods": {
+        "rloo": {
+          "mse": 5.456554152161236e-05,
+          "mse_standard_error": 1.705211850208313e-05,
+          "variance_trace_population": 5.452334880828857e-05,
+          "empirical_mean_error_squared": 4.219271332378654e-08,
+          "zero_fraction": 0.951171875,
+          "exact_squared_norm": 3.289593207052654e-07
+        },
+        "local_expectation": {
+          "mse": 9.33745860816024e-12,
+          "mse_standard_error": 1.9644480768827134e-12,
+          "variance_trace_population": 9.30797121003806e-12,
+          "empirical_mean_error_squared": 2.948739812219486e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.289593207052654e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497862669.flac::epoch0-batch73-slot29",
+      "source_group": "slurp-clean:eb7145e8fb04013a3209f9cdc0d52023a9c51e8297180d0a4e53970058817410",
+      "threshold_exact_set": true,
+      "seed": 170070,
+      "expected_F1": 0.9996685541490917,
+      "gold_probability": 0.9997387528419495,
+      "methods": {
+        "rloo": {
+          "mse": 1.6892783702019056e-05,
+          "mse_standard_error": 1.0750957324825402e-05,
+          "variance_trace_population": 1.688798268636066e-05,
+          "empirical_mean_error_squared": 4.801015658394895e-09,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 6.888326549004057e-08
+        },
+        "local_expectation": {
+          "mse": 1.269699457424437e-13,
+          "mse_standard_error": 8.245177100226618e-14,
+          "variance_trace_population": 1.26958502836707e-13,
+          "empirical_mean_error_squared": 1.1442905736796058e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.888326549004057e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502893022.flac::epoch0-batch73-slot30",
+      "source_group": "slurp-clean:e03a4a8dfef332fd43c6c7ad95c4ec5346c5d2ea90e96d2bcc8a618a37bfa8d6",
+      "threshold_exact_set": true,
+      "seed": 170071,
+      "expected_F1": 0.9996056311619366,
+      "gold_probability": 0.9996540546417236,
+      "methods": {
+        "rloo": {
+          "mse": 8.511423711292437e-06,
+          "mse_standard_error": 7.590673325636985e-06,
+          "variance_trace_population": 8.460548188951283e-06,
+          "empirical_mean_error_squared": 5.0875522341156236e-08,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 1.1983100497966322e-07
+        },
+        "local_expectation": {
+          "mse": 1.0322285400227457e-13,
+          "mse_standard_error": 1.0105260662642005e-13,
+          "variance_trace_population": 1.031984409806249e-13,
+          "empirical_mean_error_squared": 2.4413021649549948e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.1983100497966322e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498564812.flac::epoch0-batch73-slot31",
+      "source_group": "slurp-clean:5e777a20af13f792f5351860dbce12bb5b0bd4035e198e48638a0bc378495239",
+      "threshold_exact_set": true,
+      "seed": 170072,
+      "expected_F1": 0.9961012378651645,
+      "gold_probability": 0.9983515739440918,
+      "methods": {
+        "rloo": {
+          "mse": 0.00015901610881897062,
+          "mse_standard_error": 2.8101377278287825e-05,
+          "variance_trace_population": 0.00015896512034498605,
+          "empirical_mean_error_squared": 5.098847398457944e-08,
+          "zero_fraction": 0.865234375,
+          "exact_squared_norm": 5.570802740882038e-06
+        },
+        "local_expectation": {
+          "mse": 5.116490358441071e-10,
+          "mse_standard_error": 8.131418538131736e-11,
+          "variance_trace_population": 5.115814384245847e-10,
+          "empirical_mean_error_squared": 6.759741952226757e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.570802740882038e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498564352.flac::epoch0-batch73-slot32",
+      "source_group": "slurp-clean:3bc453ca3aa9a23b6ae19f667ef8a6881473743e33cb1a0865fa7f9e7114af91",
+      "threshold_exact_set": true,
+      "seed": 170073,
+      "expected_F1": 0.9997104705591537,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 9.069073656621886e-07,
+          "mse_standard_error": 8.464000268102092e-07,
+          "variance_trace_population": 8.460548188951297e-07,
+          "empirical_mean_error_squared": 6.08525467670586e-08,
+          "zero_fraction": 0.998046875,
+          "exact_squared_norm": 6.050733885198701e-08
+        },
+        "local_expectation": {
+          "mse": 5.107301680285456e-14,
+          "mse_standard_error": 5.092819707592058e-14,
+          "variance_trace_population": 5.104697732105635e-14,
+          "empirical_mean_error_squared": 2.6039481798217645e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.050733885198701e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1434542143-headset.flac::epoch0-batch73-slot33",
+      "source_group": "slurp-clean:ab73a39072b3068422a17934bd90c537cadf71c866437328865f0390ff97843f",
+      "threshold_exact_set": true,
+      "seed": 170074,
+      "expected_F1": 0.9994536803394843,
+      "gold_probability": 0.9998089075088501,
+      "methods": {
+        "rloo": {
+          "mse": 1.0971635103525388e-05,
+          "mse_standard_error": 2.9864213185842007e-06,
+          "variance_trace_population": 1.0915928416781948e-05,
+          "empirical_mean_error_squared": 5.570668674343603e-08,
+          "zero_fraction": 0.974609375,
+          "exact_squared_norm": 7.54527782890135e-08
+        },
+        "local_expectation": {
+          "mse": 9.105531685689383e-13,
+          "mse_standard_error": 2.6099180478439445e-13,
+          "variance_trace_population": 9.091489448113646e-13,
+          "empirical_mean_error_squared": 1.4042237575747468e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 7.54527782890135e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502891888.flac::epoch0-batch73-slot34",
+      "source_group": "slurp-clean:b016ec10d2128f3eec11e1d4bb1a540c7b829e9e202336aa9b23eafbfd004f75",
+      "threshold_exact_set": false,
+      "seed": 170075,
+      "expected_F1": 0.6649613977661736,
+      "gold_probability": 0.9969245791435242,
+      "methods": {
+        "rloo": {
+          "mse": 0.00010659644350378592,
+          "mse_standard_error": 1.6899456720526696e-05,
+          "variance_trace_population": 0.00010642936384236363,
+          "empirical_mean_error_squared": 1.670796614223205e-07,
+          "zero_fraction": 0.91796875,
+          "exact_squared_norm": 4.333111264684584e-06
+        },
+        "local_expectation": {
+          "mse": 1.2571377481665323e-10,
+          "mse_standard_error": 2.6571779872209997e-11,
+          "variance_trace_population": 1.256363910932458e-10,
+          "empirical_mean_error_squared": 7.738372340737758e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.333111264684584e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490288756.flac::epoch0-batch73-slot35",
+      "source_group": "slurp-clean:6b95e2c592c639c137fa40e30aa45433c017729de96f7ac661ec992efccd2510",
+      "threshold_exact_set": true,
+      "seed": 170076,
+      "expected_F1": 0.9997160013837483,
+      "gold_probability": 0.9998089075088501,
+      "methods": {
+        "rloo": {
+          "mse": 1.1008601447902306e-05,
+          "mse_standard_error": 7.762164545928941e-06,
+          "variance_trace_population": 1.0998712645636654e-05,
+          "empirical_mean_error_squared": 9.888802265652055e-09,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 3.7367222998850386e-08
+        },
+        "local_expectation": {
+          "mse": 1.3531645137913505e-13,
+          "mse_standard_error": 6.429263138485392e-14,
+          "variance_trace_population": 1.3513729496487065e-13,
+          "empirical_mean_error_squared": 1.7915641426435133e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.7367222998850386e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501768475.flac::epoch0-batch73-slot36",
+      "source_group": "slurp-clean:f615c6acd34a599b258206d72c9b3411a2c606419f54da9b30749ba1657b94d9",
+      "threshold_exact_set": false,
+      "seed": 170077,
+      "expected_F1": 0.1413926565623327,
+      "gold_probability": 0.19930799305438995,
+      "methods": {
+        "rloo": {
+          "mse": 0.0030561054466461206,
+          "mse_standard_error": 0.00015150555909786115,
+          "variance_trace_population": 0.0030503646661469964,
+          "empirical_mean_error_squared": 5.7407804991239995e-06,
+          "zero_fraction": 0.0234375,
+          "exact_squared_norm": 0.012873422907212181
+        },
+        "local_expectation": {
+          "mse": 3.259338029129661e-05,
+          "mse_standard_error": 1.4728651147765223e-06,
+          "variance_trace_population": 3.255389121112501e-05,
+          "empirical_mean_error_squared": 3.948908017161177e-08,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.012873422907212181
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1500979562.flac::epoch0-batch73-slot37",
+      "source_group": "slurp-clean:77e1e6e95b7c4ad3c7f951eefc0a91a0ea164624e76b2b7896322b038ff3d95f",
+      "threshold_exact_set": true,
+      "seed": 170078,
+      "expected_F1": 0.9996640063756498,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 3.287323633433214e-05,
+          "mse_standard_error": 1.5155010821343255e-05,
+          "variance_trace_population": 3.2807389895121254e-05,
+          "empirical_mean_error_squared": 6.584643921087814e-08,
+          "zero_fraction": 0.986328125,
+          "exact_squared_norm": 6.212454946819955e-08
+        },
+        "local_expectation": {
+          "mse": 2.12729669376058e-13,
+          "mse_standard_error": 9.282048435846323e-14,
+          "variance_trace_population": 2.1259810565574749e-13,
+          "empirical_mean_error_squared": 1.3156372031056787e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.212454946819955e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490264430-headset.flac::epoch0-batch73-slot38",
+      "source_group": "slurp-clean:fde206f19882966bf1498cb36edb74907774c943c770570648702779ae5ba40b",
+      "threshold_exact_set": true,
+      "seed": 170079,
+      "expected_F1": 0.9995533382849212,
+      "gold_probability": 0.9996429681777954,
+      "methods": {
+        "rloo": {
+          "mse": 1.8212617259471309e-06,
+          "mse_standard_error": 1.19497340676201e-06,
+          "variance_trace_population": 1.692109637790255e-06,
+          "empirical_mean_error_squared": 1.2915208815687605e-07,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 1.2966232251045362e-07
+        },
+        "local_expectation": {
+          "mse": 2.2007433929220486e-13,
+          "mse_standard_error": 1.54472172389624e-13,
+          "variance_trace_population": 2.197661384788963e-13,
+          "empirical_mean_error_squared": 3.0820081330836343e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.2966232251045362e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490109418.flac::epoch0-batch73-slot39",
+      "source_group": "slurp-clean:b97b908ae5422e382a9e60227be50e923149c9e3ef5606bd46c8b8a5629b924b",
+      "threshold_exact_set": true,
+      "seed": 170080,
+      "expected_F1": 0.9996250486456891,
+      "gold_probability": 0.9997219443321228,
+      "methods": {
+        "rloo": {
+          "mse": 1.7737528896635807e-05,
+          "mse_standard_error": 1.0775518343082565e-05,
+          "variance_trace_population": 1.7734037505255805e-05,
+          "empirical_mean_error_squared": 3.491391380008465e-09,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 8.051170929184637e-08
+        },
+        "local_expectation": {
+          "mse": 2.513828335985559e-13,
+          "mse_standard_error": 1.2091687026409622e-13,
+          "variance_trace_population": 2.5133031358673996e-13,
+          "empirical_mean_error_squared": 5.2520011815772094e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 8.051170929184637e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490184093.flac::epoch0-batch73-slot40",
+      "source_group": "slurp-clean:7a8c085e935cd5382d3b188780dfaa19a7ac2cf2ad82a81a8cd9e64a7fe1e3ac",
+      "threshold_exact_set": true,
+      "seed": 170081,
+      "expected_F1": 0.999511985223513,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 1.8599196015034705e-05,
+          "mse_standard_error": 1.0821417764352143e-05,
+          "variance_trace_population": 1.8580092324150937e-05,
+          "empirical_mean_error_squared": 1.910369088376563e-08,
+          "zero_fraction": 0.98828125,
+          "exact_squared_norm": 8.321752123901764e-08
+        },
+        "local_expectation": {
+          "mse": 8.03337408033364e-13,
+          "mse_standard_error": 3.6512726706350643e-13,
+          "variance_trace_population": 8.026838224009303e-13,
+          "empirical_mean_error_squared": 6.535856324339317e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 8.321752123901764e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490286078-headset.flac::epoch0-batch73-slot41",
+      "source_group": "slurp-clean:731472c80d7fa904767b7a7dd573c5b82a8e5abf6e67df436f494e108063d32b",
+      "threshold_exact_set": true,
+      "seed": 170082,
+      "expected_F1": 0.9996691283077063,
+      "gold_probability": 0.9997387528419495,
+      "methods": {
+        "rloo": {
+          "mse": 6.845906263850552e-08,
+          "mse_standard_error": 0.0,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 6.845906263850552e-08,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 6.845906263850552e-08
+        },
+        "local_expectation": {
+          "mse": 3.633448695454191e-16,
+          "mse_standard_error": 4.362143984353449e-33,
+          "variance_trace_population": 7.438792897868291e-42,
+          "empirical_mean_error_squared": 3.6334486954540067e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.845906263850552e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1489673688.flac::epoch0-batch73-slot42",
+      "source_group": "slurp-clean:5a9705b0964f49f681e5c1f713dac96741240e17ea90b4bb34e3ad25bd0469e5",
+      "threshold_exact_set": true,
+      "seed": 170083,
+      "expected_F1": 0.9998211242133581,
+      "gold_probability": 0.999841570854187,
+      "methods": {
+        "rloo": {
+          "mse": 8.727849611158737e-07,
+          "mse_standard_error": 8.476815456729725e-07,
+          "variance_trace_population": 8.460548188951278e-07,
+          "empirical_mean_error_squared": 2.6730142220745684e-08,
+          "zero_fraction": 0.998046875,
+          "exact_squared_norm": 2.5103415442903863e-08
+        },
+        "local_expectation": {
+          "mse": 2.1263310027497618e-14,
+          "mse_standard_error": 2.125237396123528e-14,
+          "variance_trace_population": 2.125282697577502e-14,
+          "empirical_mean_error_squared": 1.048305172261101e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.5103415442903863e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1499688925-headset.flac::epoch0-batch73-slot43",
+      "source_group": "slurp-clean:ca4f1aaadaa197027178d3ed11789c2c7aa916a31059bc186f6b1cbac752d8af",
+      "threshold_exact_set": true,
+      "seed": 170084,
+      "expected_F1": 0.9997029631295133,
+      "gold_probability": 0.9998313188552856,
+      "methods": {
+        "rloo": {
+          "mse": 9.312110605376147e-06,
+          "mse_standard_error": 7.67824386173557e-06,
+          "variance_trace_population": 9.306603007846407e-06,
+          "empirical_mean_error_squared": 5.507597529740701e-09,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 3.437330657798458e-08
+        },
+        "local_expectation": {
+          "mse": 1.0595437774639038e-13,
+          "mse_standard_error": 6.21407540854302e-14,
+          "variance_trace_population": 1.0586156536430465e-13,
+          "empirical_mean_error_squared": 9.281238208567178e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.437330657798458e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501752064.flac::epoch0-batch73-slot44",
+      "source_group": "slurp-clean:be3f1e181eb59dfc4c8bc00e94adaa8b8d7e328c385a97fffc13004748bc9753",
+      "threshold_exact_set": true,
+      "seed": 170085,
+      "expected_F1": 0.7128146411566133,
+      "gold_probability": 0.7130321860313416,
+      "methods": {
+        "rloo": {
+          "mse": 0.0024764596681103018,
+          "mse_standard_error": 0.00018281709835191688,
+          "variance_trace_population": 0.002475103220821899,
+          "empirical_mean_error_squared": 1.3564472884027375e-06,
+          "zero_fraction": 0.001953125,
+          "exact_squared_norm": 0.041842700878960734
+        },
+        "local_expectation": {
+          "mse": 1.7640694091950656e-07,
+          "mse_standard_error": 7.673746840441217e-08,
+          "variance_trace_population": 1.7597433763199316e-07,
+          "empirical_mean_error_squared": 4.326032875138959e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.041842700878960734
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1499697816.flac::epoch0-batch73-slot45",
+      "source_group": "slurp-clean:dc4d43e98c3637fc925e522a4ea1bee8bcc9b6286552f44973d015e764779595",
+      "threshold_exact_set": true,
+      "seed": 170086,
+      "expected_F1": 0.9995254248274911,
+      "gold_probability": 0.999555766582489,
+      "methods": {
+        "rloo": {
+          "mse": 7.718232260679208e-06,
+          "mse_standard_error": 7.520990577304625e-06,
+          "variance_trace_population": 7.614493370056156e-06,
+          "empirical_mean_error_squared": 1.0373889062304856e-07,
+          "zero_fraction": 0.998046875,
+          "exact_squared_norm": 1.9724168337454413e-07
+        },
+        "local_expectation": {
+          "mse": 8.453177936246744e-16,
+          "mse_standard_error": 6.437700955811863e-16,
+          "variance_trace_population": 6.525673588404424e-16,
+          "empirical_mean_error_squared": 1.9275043478422383e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.9724168337454413e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490367772-headset.flac::epoch0-batch73-slot46",
+      "source_group": "slurp-clean:10168121ef3ab87763dd44c39ab2fc4a92f4b4603db91bc7bc00ad137eb6d2fa",
+      "threshold_exact_set": true,
+      "seed": 170087,
+      "expected_F1": 0.9997922004841283,
+      "gold_probability": 0.9998313188552856,
+      "methods": {
+        "rloo": {
+          "mse": 3.038142668120811e-05,
+          "mse_standard_error": 1.5131827515793614e-05,
+          "variance_trace_population": 3.0279159545898424e-05,
+          "empirical_mean_error_squared": 1.0226713530968555e-07,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 2.8542006261001196e-08
+        },
+        "local_expectation": {
+          "mse": 3.0952732049873906e-15,
+          "mse_standard_error": 1.518976813083954e-15,
+          "variance_trace_population": 3.0444378136637365e-15,
+          "empirical_mean_error_squared": 5.083539132365399e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.8542006261001196e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501408034.flac::epoch0-batch73-slot47",
+      "source_group": "slurp-clean:5fa3a07b842e02059ff20025e2f989d61014f105b22ef84d02ca54e24feefefe",
+      "threshold_exact_set": true,
+      "seed": 170088,
+      "expected_F1": 0.9975814003960743,
+      "gold_probability": 0.9996429681777954,
+      "methods": {
+        "rloo": {
+          "mse": 5.7800689533257216e-05,
+          "mse_standard_error": 1.1842061466239807e-05,
+          "variance_trace_population": 5.777657767872751e-05,
+          "empirical_mean_error_squared": 2.411185452969516e-08,
+          "zero_fraction": 0.892578125,
+          "exact_squared_norm": 4.204542810026476e-06
+        },
+        "local_expectation": {
+          "mse": 8.273516185281571e-11,
+          "mse_standard_error": 4.4703254900249246e-11,
+          "variance_trace_population": 8.272766443616479e-11,
+          "empirical_mean_error_squared": 7.497416650990384e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.204542810026476e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490202235-headset.flac::epoch0-batch73-slot48",
+      "source_group": "slurp-clean:46a1949651612f94795805d9e0e6afcdbbc86d52c267bbde589b630d09aa0fb3",
+      "threshold_exact_set": false,
+      "seed": 170089,
+      "expected_F1": 0.6665699672647784,
+      "gold_probability": 0.9997219443321228,
+      "methods": {
+        "rloo": {
+          "mse": 7.806616240549308e-06,
+          "mse_standard_error": 3.839120330372209e-06,
+          "variance_trace_population": 7.792893383238055e-06,
+          "empirical_mean_error_squared": 1.3722857311254655e-08,
+          "zero_fraction": 0.986328125,
+          "exact_squared_norm": 5.8249582658022635e-08
+        },
+        "local_expectation": {
+          "mse": 5.936697102300185e-13,
+          "mse_standard_error": 2.4414579965699083e-13,
+          "variance_trace_population": 5.909626971648591e-13,
+          "empirical_mean_error_squared": 2.7070130651592628e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.8249582658022635e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490201841-headset.flac::epoch0-batch73-slot49",
+      "source_group": "slurp-clean:cdcece2f507718407efc5c773444b3c59fe1bd4cf15bedb5c272b578de949d4d",
+      "threshold_exact_set": true,
+      "seed": 170090,
+      "expected_F1": 0.9981484679868424,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 3.8758241995363456e-05,
+          "mse_standard_error": 9.067043513137077e-06,
+          "variance_trace_population": 3.874226116839747e-05,
+          "empirical_mean_error_squared": 1.5980826965979233e-08,
+          "zero_fraction": 0.927734375,
+          "exact_squared_norm": 2.387483312249032e-06
+        },
+        "local_expectation": {
+          "mse": 2.8474602732341444e-11,
+          "mse_standard_error": 1.8730020036275972e-11,
+          "variance_trace_population": 2.8439877629960425e-11,
+          "empirical_mean_error_squared": 3.472510238099534e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.387483312249032e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498757579.flac::epoch0-batch73-slot50",
+      "source_group": "slurp-clean:64136028b7b9ea38caec5b5aeb1b4c0501653f53a1120fb6a11e5b0d045b42cf",
+      "threshold_exact_set": false,
+      "seed": 170091,
+      "expected_F1": 0.015896082027818947,
+      "gold_probability": 0.01590639166533947,
+      "methods": {
+        "rloo": {
+          "mse": 0.000931459259418448,
+          "mse_standard_error": 8.329292210581755e-05,
+          "variance_trace_population": 0.0009311083290312024,
+          "empirical_mean_error_squared": 3.5093038724525374e-07,
+          "zero_fraction": 0.763671875,
+          "exact_squared_norm": 0.00024471073880402136
+        },
+        "local_expectation": {
+          "mse": 2.4749501474632783e-09,
+          "mse_standard_error": 6.674520989313376e-10,
+          "variance_trace_population": 2.468676110745676e-09,
+          "empirical_mean_error_squared": 6.2740367176036364e-12,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.00024471073880402136
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1500418041-headset.flac::epoch0-batch73-slot51",
+      "source_group": "slurp-clean:99f30f2e498d752278083ea2fc606400527693b3c0021cb818ac54f517d91883",
+      "threshold_exact_set": true,
+      "seed": 170092,
+      "expected_F1": 0.9997541338516021,
+      "gold_probability": 0.9998089075088501,
+      "methods": {
+        "rloo": {
+          "mse": 1.0159727203045184e-05,
+          "mse_standard_error": 7.717834660505171e-06,
+          "variance_trace_population": 1.0149346457587344e-05,
+          "empirical_mean_error_squared": 1.0380745457841791e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 3.691420918730756e-08
+        },
+        "local_expectation": {
+          "mse": 9.671512493788199e-14,
+          "mse_standard_error": 5.3920394541188505e-14,
+          "variance_trace_population": 9.654842527179343e-14,
+          "empirical_mean_error_squared": 1.666996660885058e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.691420918730756e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501691464.flac::epoch0-batch73-slot52",
+      "source_group": "slurp-clean:f06c4185878a4b126c8e384a580d80c96e3bce3ee15defc4cc00c04bb9169379",
+      "threshold_exact_set": true,
+      "seed": 170093,
+      "expected_F1": 0.9987002549874123,
+      "gold_probability": 0.999312162399292,
+      "methods": {
+        "rloo": {
+          "mse": 5.43220550774062e-05,
+          "mse_standard_error": 1.692812467752641e-05,
+          "variance_trace_population": 5.429817570580378e-05,
+          "empirical_mean_error_squared": 2.3879371602425632e-08,
+          "zero_fraction": 0.951171875,
+          "exact_squared_norm": 7.552981416061419e-07
+        },
+        "local_expectation": {
+          "mse": 2.053312380573857e-11,
+          "mse_standard_error": 5.193603433635641e-12,
+          "variance_trace_population": 2.051327410004421e-11,
+          "empirical_mean_error_squared": 1.9849705694352546e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 7.552981416061419e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502199535-headset.flac::epoch0-batch73-slot53",
+      "source_group": "slurp-clean:c28e42d96b947502d9ff5405e01a869aeeff5aec51e2bca638f1b3bf1fe4cf30",
+      "threshold_exact_set": true,
+      "seed": 170094,
+      "expected_F1": 0.9997013275849627,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 1.5199423120711941e-05,
+          "mse_standard_error": 1.069441307304925e-05,
+          "variance_trace_population": 1.519918441772461e-05,
+          "empirical_mean_error_squared": 2.387029873295601e-10,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 6.041874113322287e-08
+        },
+        "local_expectation": {
+          "mse": 3.781371485610162e-15,
+          "mse_standard_error": 2.5338757425885946e-15,
+          "variance_trace_population": 3.609253696946622e-15,
+          "empirical_mean_error_squared": 1.721177886635397e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.041874113322287e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497360272.flac::epoch0-batch73-slot54",
+      "source_group": "slurp-clean:04787f89e0312f930a303d3a7f4425389a8883a8a5b0384ef93cec9fe72a0b96",
+      "threshold_exact_set": false,
+      "seed": 170095,
+      "expected_F1": 0.00967124605865505,
+      "gold_probability": 0.014503579586744308,
+      "methods": {
+        "rloo": {
+          "mse": 0.0003497901744356608,
+          "mse_standard_error": 3.340477341052552e-05,
+          "variance_trace_population": 0.0003486878489270623,
+          "empirical_mean_error_squared": 1.1023255085985059e-06,
+          "zero_fraction": 0.81640625,
+          "exact_squared_norm": 9.084305581647178e-05
+        },
+        "local_expectation": {
+          "mse": 3.510847766196417e-08,
+          "mse_standard_error": 2.3129182465551863e-09,
+          "variance_trace_population": 3.506503149536596e-08,
+          "empirical_mean_error_squared": 4.344616659821857e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 9.084305581647178e-05
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497269855-headset.flac::epoch0-batch73-slot55",
+      "source_group": "slurp-clean:2e22edc8b8e1d141868ac31bc505435709680c6765874f83fb281e54eb7084ac",
+      "threshold_exact_set": true,
+      "seed": 170096,
+      "expected_F1": 0.9996506597013594,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 1.0166551203761686e-05,
+          "mse_standard_error": 7.711845661746499e-06,
+          "variance_trace_population": 1.0152657826741529e-05,
+          "empirical_mean_error_squared": 1.3893377020159704e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 4.896794836250273e-08
+        },
+        "local_expectation": {
+          "mse": 1.4586875088155085e-13,
+          "mse_standard_error": 7.586569854815431e-14,
+          "variance_trace_population": 1.4584613276446871e-13,
+          "empirical_mean_error_squared": 2.2618117082077493e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.896794836250273e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498482900-headset.flac::epoch0-batch73-slot56",
+      "source_group": "slurp-clean:f394518b0f5467f78f666b6c5ebb60542e015a1d38447b4f8f6c44de9dc08df7",
+      "threshold_exact_set": false,
+      "seed": 170097,
+      "expected_F1": 0.00033230815153132147,
+      "gold_probability": 0.00033535013790242374,
+      "methods": {
+        "rloo": {
+          "mse": 3.037130381633097e-05,
+          "mse_standard_error": 1.5086107799643712e-05,
+          "variance_trace_population": 3.034684393141005e-05,
+          "empirical_mean_error_squared": 2.445988492091942e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 1.1035768468831624e-07
+        },
+        "local_expectation": {
+          "mse": 8.54613874908074e-10,
+          "mse_standard_error": 4.120410847870601e-10,
+          "variance_trace_population": 8.539506847383235e-10,
+          "empirical_mean_error_squared": 6.63190169750959e-13,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.1035768468831624e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501690477.flac::epoch0-batch73-slot57",
+      "source_group": "slurp-clean:f4d2e82dfd9bd3e20794557d772f8f0e2bd3a11b1d6bc9f97523e1c151b2749f",
+      "threshold_exact_set": false,
+      "seed": 170098,
+      "expected_F1": 0.6662308653984809,
+      "gold_probability": 0.9992445707321167,
+      "methods": {
+        "rloo": {
+          "mse": 2.0954216237277866e-05,
+          "mse_standard_error": 8.10517347601562e-06,
+          "variance_trace_population": 2.0952688323126895e-05,
+          "empirical_mean_error_squared": 1.5279141509776618e-09,
+          "zero_fraction": 0.986328125,
+          "exact_squared_norm": 2.591942207551964e-07
+        },
+        "local_expectation": {
+          "mse": 7.495650292341105e-13,
+          "mse_standard_error": 4.911882382724207e-13,
+          "variance_trace_population": 7.491294189743779e-13,
+          "empirical_mean_error_squared": 4.3561025972056983e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.591942207551964e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494512045.flac::epoch0-batch73-slot58",
+      "source_group": "slurp-clean:dc7cfdd435b83b430d0000393bfdb7f8589fbb588f234b1c17676a6c113c6d64",
+      "threshold_exact_set": false,
+      "seed": 170099,
+      "expected_F1": 0.001284571464894124,
+      "gold_probability": 0.0019267346942797303,
+      "methods": {
+        "rloo": {
+          "mse": 2.7101110999292125e-05,
+          "mse_standard_error": 8.938668732462538e-06,
+          "variance_trace_population": 2.6702880859375014e-05,
+          "empirical_mean_error_squared": 3.98230139917107e-07,
+          "zero_fraction": 0.984375,
+          "exact_squared_norm": 1.6437712898547341e-06
+        },
+        "local_expectation": {
+          "mse": 1.0487252622266925e-11,
+          "mse_standard_error": 4.7386864953232936e-12,
+          "variance_trace_population": 1.0468467223265175e-11,
+          "empirical_mean_error_squared": 1.8785399001743657e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.6437712898547341e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498573126.flac::epoch0-batch73-slot59",
+      "source_group": "slurp-clean:1929782a3f9938600439b85b25f2a8ae55fc1de95d28e1ee1f2621d82105d202",
+      "threshold_exact_set": true,
+      "seed": 170100,
+      "expected_F1": 0.99968943900676,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 1.60493565871316e-05,
+          "mse_standard_error": 1.0735530913035607e-05,
+          "variance_trace_population": 1.6045239236619735e-05,
+          "empirical_mean_error_squared": 4.117350511872124e-09,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 4.860324341096583e-08
+        },
+        "local_expectation": {
+          "mse": 6.95350340745416e-14,
+          "mse_standard_error": 4.645899086287391e-14,
+          "variance_trace_population": 6.940117052289815e-14,
+          "empirical_mean_error_squared": 1.3386355164342416e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.860324341096583e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1492779393-headset.flac::epoch0-batch73-slot60",
+      "source_group": "slurp-clean:418fee92fc411839d45753cf3c15a35ac6d901297553948dc36b1b3071cff399",
+      "threshold_exact_set": true,
+      "seed": 170101,
+      "expected_F1": 0.8243287267447449,
+      "gold_probability": 0.8244619369506836,
+      "methods": {
+        "rloo": {
+          "mse": 0.003765915663748002,
+          "mse_standard_error": 0.00019928227749770614,
+          "variance_trace_population": 0.0037504782352918457,
+          "empirical_mean_error_squared": 1.543742845615637e-05,
+          "zero_fraction": 0.033203125,
+          "exact_squared_norm": 0.02093840877657186
+        },
+        "local_expectation": {
+          "mse": 5.3111883777787016e-08,
+          "mse_standard_error": 3.021731329288114e-08,
+          "variance_trace_population": 5.307881584049507e-08,
+          "empirical_mean_error_squared": 3.3067937291916394e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.02093840877657186
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502196168.flac::epoch0-batch73-slot61",
+      "source_group": "slurp-clean:e7f8ffffaa2a9fc63dcb49530816bae12513e3813bdde7d883632a7a4e2956a8",
+      "threshold_exact_set": false,
+      "seed": 170102,
+      "expected_F1": 0.5662465171663045,
+      "gold_probability": 0.8499711751937866,
+      "methods": {
+        "rloo": {
+          "mse": 0.0018264753725819767,
+          "mse_standard_error": 9.301883537185082e-05,
+          "variance_trace_population": 0.001826236737363132,
+          "empirical_mean_error_squared": 2.386352188446513e-07,
+          "zero_fraction": 0.06640625,
+          "exact_squared_norm": 0.007217307703055165
+        },
+        "local_expectation": {
+          "mse": 1.0848342323187325e-07,
+          "mse_standard_error": 2.152088912889775e-08,
+          "variance_trace_population": 1.0842956933054658e-07,
+          "empirical_mean_error_squared": 5.38539013264285e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.007217307703055165
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498575979.flac::epoch0-batch73-slot62",
+      "source_group": "slurp-clean:141d76e6c3876da325c85ff11c92a38ecb0cc6b6a97ee7968ada2c6861c9a789",
+      "threshold_exact_set": true,
+      "seed": 170103,
+      "expected_F1": 0.9997348930814443,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 1.5199411513632342e-05,
+          "mse_standard_error": 1.0699548711734897e-05,
+          "variance_trace_population": 1.5199184417724613e-05,
+          "empirical_mean_error_squared": 2.270959077284836e-10,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 5.3137127179650664e-08
+        },
+        "local_expectation": {
+          "mse": 6.585727606253256e-16,
+          "mse_standard_error": 4.181037945174411e-16,
+          "variance_trace_population": 5.948665418364364e-16,
+          "empirical_mean_error_squared": 6.370621878888952e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.3137127179650664e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494416008-headset.flac::epoch0-batch73-slot63",
+      "source_group": "slurp-clean:98e4acd46a68c552a6f28613298c44274573e6103714420fea460cd689550029",
+      "threshold_exact_set": true,
+      "seed": 170104,
+      "expected_F1": 0.9998025652227913,
+      "gold_probability": 0.999868631362915,
+      "methods": {
+        "rloo": {
+          "mse": 1.7581402834016618e-08,
+          "mse_standard_error": 2.9273852739439372e-25,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 1.758140283401661e-08,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 1.758140283401661e-08
+        },
+        "local_expectation": {
+          "mse": 9.064701276430962e-17,
+          "mse_standard_error": 1.6358039941325435e-33,
+          "variance_trace_population": 1.2863219253269658e-41,
+          "empirical_mean_error_squared": 9.064701276430041e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.758140283401661e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1500036253-headset.flac::epoch0-batch73-slot64",
+      "source_group": "slurp-clean:86458c4e5821720b02d16b455e2f75bf7cf824d4046a21144b80ad7e6cd70374",
+      "threshold_exact_set": true,
+      "seed": 170105,
+      "expected_F1": 0.9996544575724851,
+      "gold_probability": 0.9998313188552856,
+      "methods": {
+        "rloo": {
+          "mse": 1.85748447867593e-05,
+          "mse_standard_error": 1.0841643717728637e-05,
+          "variance_trace_population": 1.8563535478379975e-05,
+          "empirical_mean_error_squared": 1.1309308379321889e-08,
+          "zero_fraction": 0.98828125,
+          "exact_squared_norm": 3.964380541822152e-08
+        },
+        "local_expectation": {
+          "mse": 2.773233028909407e-13,
+          "mse_standard_error": 1.3059968081933858e-13,
+          "variance_trace_population": 2.7728562882871464e-13,
+          "empirical_mean_error_squared": 3.767406222601494e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.964380541822152e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501766558.flac::epoch0-batch73-slot65",
+      "source_group": "slurp-clean:2f22ba4790bcdcf783b1573c321c1f35b01b170c50ad5e9ab9e0d33f72120f75",
+      "threshold_exact_set": true,
+      "seed": 170106,
+      "expected_F1": 0.9998057455975413,
+      "gold_probability": 0.9998511075973511,
+      "methods": {
+        "rloo": {
+          "mse": 7.615409718007385e-06,
+          "mse_standard_error": 7.593050908289958e-06,
+          "variance_trace_population": 7.614493370056151e-06,
+          "empirical_mean_error_squared": 9.163479512343153e-10,
+          "zero_fraction": 0.998046875,
+          "exact_squared_norm": 2.2358809717428053e-08
+        },
+        "local_expectation": {
+          "mse": 1.5587602956917618e-15,
+          "mse_standard_error": 1.5050892211962688e-15,
+          "variance_trace_population": 1.511888698601307e-15,
+          "empirical_mean_error_squared": 4.687159709044536e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.2358809717428053e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497884159.flac::epoch0-batch73-slot66",
+      "source_group": "slurp-clean:cd8ac7b5278604b90c6f79b774d3888a0391c7991892671413d8945de564ffa6",
+      "threshold_exact_set": false,
+      "seed": 170107,
+      "expected_F1": 0.00028704129857252947,
+      "gold_probability": 0.00043055706191807985,
+      "methods": {
+        "rloo": {
+          "mse": 1.3458894451336847e-05,
+          "mse_standard_error": 6.668624500615772e-06,
+          "variance_trace_population": 1.3457404242621529e-05,
+          "empirical_mean_error_squared": 1.4902087153145411e-09,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 8.232178049116109e-08
+        },
+        "local_expectation": {
+          "mse": 2.8605543026467017e-12,
+          "mse_standard_error": 7.634878372460486e-13,
+          "variance_trace_population": 2.8570475357935256e-12,
+          "empirical_mean_error_squared": 3.5067668531708865e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 8.232178049116109e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490007074-headset.flac::epoch0-batch73-slot67",
+      "source_group": "slurp-clean:ecaca9afb33354fa1c5543a8f658c41b8df3a421056fa06f08967ff4393b34fb",
+      "threshold_exact_set": true,
+      "seed": 170108,
+      "expected_F1": 0.9996104077186646,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 2.784620894555391e-05,
+          "mse_standard_error": 1.322928578945731e-05,
+          "variance_trace_population": 2.782709068722195e-05,
+          "empirical_mean_error_squared": 1.911825833195535e-08,
+          "zero_fraction": 0.982421875,
+          "exact_squared_norm": 6.593147745546769e-08
+        },
+        "local_expectation": {
+          "mse": 4.784481751068503e-13,
+          "mse_standard_error": 1.5921832445713303e-13,
+          "variance_trace_population": 4.774720858014342e-13,
+          "empirical_mean_error_squared": 9.760893054153546e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.593147745546769e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502891328.flac::epoch0-batch73-slot68",
+      "source_group": "slurp-clean:ff3baff66075748fb9e8270656f1a8d1346da0e9e20d4850e465dd819fee0aca",
+      "threshold_exact_set": true,
+      "seed": 170109,
+      "expected_F1": 0.9849847343384186,
+      "gold_probability": 0.9996849298477173,
+      "methods": {
+        "rloo": {
+          "mse": 0.0002775687842667927,
+          "mse_standard_error": 2.065532469563687e-05,
+          "variance_trace_population": 0.0002774539994604794,
+          "empirical_mean_error_squared": 1.147848063131544e-07,
+          "zero_fraction": 0.466796875,
+          "exact_squared_norm": 0.00019670994693766412
+        },
+        "local_expectation": {
+          "mse": 8.571569331022172e-09,
+          "mse_standard_error": 3.3598910564603434e-09,
+          "variance_trace_population": 8.53528430022262e-09,
+          "empirical_mean_error_squared": 3.628503079953476e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.00019670994693766412
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502198894.flac::epoch0-batch73-slot69",
+      "source_group": "slurp-clean:707b717a2de9f0071c19a8c410d82ad3be9bfe0d4e85a03dfb98a68741aac3d8",
+      "threshold_exact_set": true,
+      "seed": 170110,
+      "expected_F1": 0.9995125111899128,
+      "gold_probability": 0.9996429681777954,
+      "methods": {
+        "rloo": {
+          "mse": 1.3436783794200778e-07,
+          "mse_standard_error": 2.3419082191551498e-24,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 1.3436783794200773e-07,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 1.3436783794200773e-07
+        },
+        "local_expectation": {
+          "mse": 3.5029799287723585e-15,
+          "mse_standard_error": 1.7448575937413795e-32,
+          "variance_trace_population": 5.2198367796099436e-43,
+          "empirical_mean_error_squared": 3.5029799287723577e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.3436783794200773e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501157144-headset.flac::epoch0-batch73-slot70",
+      "source_group": "slurp-clean:19254e46ee9086ae039312606b8dbbb1df2baf9739bd530889ee8f1cc6f8fc62",
+      "threshold_exact_set": true,
+      "seed": 170111,
+      "expected_F1": 0.9996934436413498,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 2.615990491781326e-05,
+          "mse_standard_error": 1.3188357773593473e-05,
+          "variance_trace_population": 2.6134981049431692e-05,
+          "empirical_mean_error_squared": 2.492386838156284e-08,
+          "zero_fraction": 0.986328125,
+          "exact_squared_norm": 5.415261574259089e-08
+        },
+        "local_expectation": {
+          "mse": 2.0901598696977405e-13,
+          "mse_standard_error": 9.297164870459852e-14,
+          "variance_trace_population": 2.0855724075170524e-13,
+          "empirical_mean_error_squared": 4.587462180690449e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.415261574259089e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502310074.flac::epoch0-batch73-slot71",
+      "source_group": "slurp-clean:1ed3f88e0064892ce7f7f37704911184ca738e44673befa3db05d812db84793a",
+      "threshold_exact_set": true,
+      "seed": 170112,
+      "expected_F1": 0.9881584944573644,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 0.00019946628686278795,
+          "mse_standard_error": 1.5352731068752683e-05,
+          "variance_trace_population": 0.00019884291254443896,
+          "empirical_mean_error_squared": 6.23374318348996e-07,
+          "zero_fraction": 0.580078125,
+          "exact_squared_norm": 0.00012406311773000402
+        },
+        "local_expectation": {
+          "mse": 2.592601858447295e-09,
+          "mse_standard_error": 1.3800590823615658e-09,
+          "variance_trace_population": 2.5918366575724532e-09,
+          "empirical_mean_error_squared": 7.652008748412462e-13,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.00012406311773000402
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1500979063.flac::epoch0-batch73-slot72",
+      "source_group": "slurp-clean:e45d2f7f6fabf216abb321d0e4e4cff5ee1440f1e60afe37cc0254ecf2b944f9",
+      "threshold_exact_set": true,
+      "seed": 170113,
+      "expected_F1": 0.9988077388539808,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 3.138151950281929e-05,
+          "mse_standard_error": 1.1454945075337518e-05,
+          "variance_trace_population": 3.134544984793957e-05,
+          "empirical_mean_error_squared": 3.6069654879714906e-08,
+          "zero_fraction": 0.962890625,
+          "exact_squared_norm": 6.615265964767426e-07
+        },
+        "local_expectation": {
+          "mse": 1.3675950908958833e-11,
+          "mse_standard_error": 6.683153722744384e-12,
+          "variance_trace_population": 1.366927603694286e-11,
+          "empirical_mean_error_squared": 6.67487201596319e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.615265964767426e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498564654-headset.flac::epoch0-batch73-slot73",
+      "source_group": "slurp-clean:7f77ea61d28ffa0c4760fb8b944c6419372fad32f264cd8bffabaca12e8ef36c",
+      "threshold_exact_set": true,
+      "seed": 170114,
+      "expected_F1": 0.9975757156989423,
+      "gold_probability": 0.9995827078819275,
+      "methods": {
+        "rloo": {
+          "mse": 7.670892375043358e-05,
+          "mse_standard_error": 1.8756376235400705e-05,
+          "variance_trace_population": 7.626083162095808e-05,
+          "empirical_mean_error_squared": 4.4809212947548166e-07,
+          "zero_fraction": 0.9140625,
+          "exact_squared_norm": 2.8706079365985254e-06
+        },
+        "local_expectation": {
+          "mse": 1.8765123775337948e-10,
+          "mse_standard_error": 5.1153121824993745e-11,
+          "variance_trace_population": 1.869793678349309e-10,
+          "empirical_mean_error_squared": 6.718699184473306e-13,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.8706079365985254e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497437085-headset.flac::epoch0-batch73-slot74",
+      "source_group": "slurp-clean:e27b4fd0a3b084a6ae838781da0364bee05a66f4e41eec3573984b26fda764f1",
+      "threshold_exact_set": true,
+      "seed": 170115,
+      "expected_F1": 0.9990057258610218,
+      "gold_probability": 0.9990890026092529,
+      "methods": {
+        "rloo": {
+          "mse": 3.553145928340262e-05,
+          "mse_standard_error": 1.4894119863375364e-05,
+          "variance_trace_population": 3.534224298265246e-05,
+          "empirical_mean_error_squared": 1.8921630075017298e-07,
+          "zero_fraction": 0.98046875,
+          "exact_squared_norm": 8.311973822933682e-07
+        },
+        "local_expectation": {
+          "mse": 4.2911521835790666e-12,
+          "mse_standard_error": 1.7046833484221272e-12,
+          "variance_trace_population": 4.269496899993104e-12,
+          "empirical_mean_error_squared": 2.1655283585962324e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 8.311973822933682e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1495370654-headset.flac::epoch0-batch73-slot75",
+      "source_group": "slurp-clean:e29cf777307c3757addf3f9e34832bf164514001fcb83de7161192b125b799b1",
+      "threshold_exact_set": true,
+      "seed": 170116,
+      "expected_F1": 0.999462512564894,
+      "gold_probability": 0.9997040629386902,
+      "methods": {
+        "rloo": {
+          "mse": 2.0246780257924815e-05,
+          "mse_standard_error": 1.0855001518721608e-05,
+          "variance_trace_population": 2.0242399639553486e-05,
+          "empirical_mean_error_squared": 4.380618371319549e-09,
+          "zero_fraction": 0.984375,
+          "exact_squared_norm": 1.3103507186941288e-07
+        },
+        "local_expectation": {
+          "mse": 1.1845232448172019e-12,
+          "mse_standard_error": 5.13841128412368e-13,
+          "variance_trace_population": 1.1844528472089427e-12,
+          "empirical_mean_error_squared": 7.039760825698172e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.3103507186941288e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1488984084.flac::epoch0-batch73-slot76",
+      "source_group": "slurp-clean:e003ddda93741dfe41e5c59d0a81585a2763707a72ac1cce8b7ed077644031df",
+      "threshold_exact_set": true,
+      "seed": 170117,
+      "expected_F1": 0.9995966496603944,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 4.261700468658588e-06,
+          "mse_standard_error": 1.8714022261497133e-06,
+          "variance_trace_population": 4.210405879550516e-06,
+          "empirical_mean_error_squared": 5.129458910807498e-08,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 6.068519427531331e-08
+        },
+        "local_expectation": {
+          "mse": 2.2815967933796063e-13,
+          "mse_standard_error": 1.0266509549486205e-13,
+          "variance_trace_population": 2.2721229038289011e-13,
+          "empirical_mean_error_squared": 9.473889550703721e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.068519427531331e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501767299.flac::epoch0-batch73-slot77",
+      "source_group": "slurp-clean:ce25a24a6756b4b4c8271251425f6359e3ca168263bab1222086467dadc3b7bc",
+      "threshold_exact_set": false,
+      "seed": 170118,
+      "expected_F1": 0.6653750131402987,
+      "gold_probability": 0.9979493021965027,
+      "methods": {
+        "rloo": {
+          "mse": 5.718728460584021e-05,
+          "mse_standard_error": 1.2592836659774377e-05,
+          "variance_trace_population": 5.717823902765917e-05,
+          "empirical_mean_error_squared": 9.045578181039222e-09,
+          "zero_fraction": 0.955078125,
+          "exact_squared_norm": 1.8827590471134433e-06
+        },
+        "local_expectation": {
+          "mse": 2.2070915270538e-11,
+          "mse_standard_error": 7.992387591580885e-12,
+          "variance_trace_population": 2.2038436429724468e-11,
+          "empirical_mean_error_squared": 3.2478840813526855e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.8827590471134433e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490193015-headset.flac::epoch0-batch73-slot78",
+      "source_group": "slurp-clean:a95c56b99fd2edb6d43bfba29eccb5395ac337006d8b428034919b9631a09881",
+      "threshold_exact_set": true,
+      "seed": 170119,
+      "expected_F1": 0.9997310005043273,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 1.5199499297063026e-05,
+          "mse_standard_error": 1.06995490212068e-05,
+          "variance_trace_population": 1.519918441772462e-05,
+          "empirical_mean_error_squared": 3.148793384047343e-10,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 5.32244725221334e-08
+        },
+        "local_expectation": {
+          "mse": 2.008402967812676e-15,
+          "mse_standard_error": 1.356161170952956e-15,
+          "variance_trace_population": 1.9294714575883567e-15,
+          "empirical_mean_error_squared": 7.893151022431624e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.32244725221334e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501777787.flac::epoch0-batch73-slot79",
+      "source_group": "slurp-clean:268cc87e257f860e6cd2516b6be9825b5e8e2e65b08d743efb14e3b69dac242c",
+      "threshold_exact_set": true,
+      "seed": 170120,
+      "expected_F1": 0.9638577106557766,
+      "gold_probability": 0.9993928670883179,
+      "methods": {
+        "rloo": {
+          "mse": 0.000432103324531794,
+          "mse_standard_error": 2.2455595665101877e-05,
+          "variance_trace_population": 0.000431690964801812,
+          "empirical_mean_error_squared": 4.1235972998206836e-07,
+          "zero_fraction": 0.142578125,
+          "exact_squared_norm": 0.0008849715398701793
+        },
+        "local_expectation": {
+          "mse": 1.2563924203465896e-07,
+          "mse_standard_error": 1.7281030514272084e-08,
+          "variance_trace_population": 1.255871334893127e-07,
+          "empirical_mean_error_squared": 5.21085453462284e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.0008849715398701793
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501759075.flac::epoch0-batch73-slot80",
+      "source_group": "slurp-clean:46e447e7253420c4c990aadd6c406f57f775fa979dc11fdd656acebe01a506dd",
+      "threshold_exact_set": true,
+      "seed": 170121,
+      "expected_F1": 0.9997120584407942,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 2.4470613592575517e-05,
+          "mse_standard_error": 1.3146034617544373e-05,
+          "variance_trace_population": 2.4446182780795615e-05,
+          "empirical_mean_error_squared": 2.4430811779909247e-08,
+          "zero_fraction": 0.990234375,
+          "exact_squared_norm": 4.764834175236252e-08
+        },
+        "local_expectation": {
+          "mse": 9.878928613434699e-14,
+          "mse_standard_error": 5.787395955067347e-14,
+          "variance_trace_population": 9.87673428555333e-14,
+          "empirical_mean_error_squared": 2.194327881361335e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.764834175236252e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1495734874-headset.flac::epoch0-batch73-slot81",
+      "source_group": "slurp-clean:a6b001298ef88d9b935683d8918687b9e9fef03d180000a3da526df5c25625ce",
+      "threshold_exact_set": true,
+      "seed": 170122,
+      "expected_F1": 0.9996094403936533,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 2.3625666863661414e-05,
+          "mse_standard_error": 1.3121494797450105e-05,
+          "variance_trace_population": 2.36001279619005e-05,
+          "empirical_mean_error_squared": 2.553890176092959e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 5.3179392318548917e-08
+        },
+        "local_expectation": {
+          "mse": 1.8963596390706666e-13,
+          "mse_standard_error": 9.336297875732134e-14,
+          "variance_trace_population": 1.888001332296921e-13,
+          "empirical_mean_error_squared": 8.358306773743534e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.3179392318548917e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501759106-headset.flac::epoch0-batch73-slot82",
+      "source_group": "slurp-clean:f6e1500f3384720cf6a2c5dd96f4bd2edad055a9f3b4969850a4928aef83451b",
+      "threshold_exact_set": true,
+      "seed": 170123,
+      "expected_F1": 0.9995890892386317,
+      "gold_probability": 0.9996646642684937,
+      "methods": {
+        "rloo": {
+          "mse": 2.360333994954005e-05,
+          "mse_standard_error": 1.3071780632707555e-05,
+          "variance_trace_population": 2.3600127961900507e-05,
+          "empirical_mean_error_squared": 3.2119876395605095e-09,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 1.1302160285723669e-07
+        },
+        "local_expectation": {
+          "mse": 1.1156632289011545e-13,
+          "mse_standard_error": 9.616142181038867e-14,
+          "variance_trace_population": 1.1142933009433182e-13,
+          "empirical_mean_error_squared": 1.3699279578355384e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.1302160285723669e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494420119-headset.flac::epoch0-batch73-slot83",
+      "source_group": "slurp-clean:ef18c3fc8d482ed53c2a7d455413e6e98d0ae846dae08208fc2a47cef8fdbeb1",
+      "threshold_exact_set": true,
+      "seed": 170124,
+      "expected_F1": 0.8061729388432743,
+      "gold_probability": 0.8140528202056885,
+      "methods": {
+        "rloo": {
+          "mse": 0.004117503339533683,
+          "mse_standard_error": 0.00021580678237750688,
+          "variance_trace_population": 0.0041172223620944545,
+          "empirical_mean_error_squared": 2.809774392288028e-07,
+          "zero_fraction": 0.0234375,
+          "exact_squared_norm": 0.02252786683380379
+        },
+        "local_expectation": {
+          "mse": 5.405016285618156e-06,
+          "mse_standard_error": 4.126643505498348e-07,
+          "variance_trace_population": 5.404813661437986e-06,
+          "empirical_mean_error_squared": 2.026241801704364e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.02252786683380379
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502199887-headset.flac::epoch0-batch73-slot84",
+      "source_group": "slurp-clean:c449fedec9b1f018f87d1e879a638261a4855ffca7874304d7fd0b9fea744f44",
+      "threshold_exact_set": true,
+      "seed": 170125,
+      "expected_F1": 0.9996104792428068,
+      "gold_probability": 0.9996849298477173,
+      "methods": {
+        "rloo": {
+          "mse": 1.6894296221850025e-05,
+          "mse_standard_error": 1.0732156548022151e-05,
+          "variance_trace_population": 1.6887982686360676e-05,
+          "empirical_mean_error_squared": 6.313535489348969e-09,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 1.0145114104595145e-07
+        },
+        "local_expectation": {
+          "mse": 2.022699574379703e-13,
+          "mse_standard_error": 1.205387149430162e-13,
+          "variance_trace_population": 2.022374148097326e-13,
+          "empirical_mean_error_squared": 3.2542628237660495e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.0145114104595145e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1489151080.flac::epoch0-batch73-slot85",
+      "source_group": "slurp-clean:40f353d9e939a0bfd1045026e1986a6753dd2bffc04198d553c7721fa1c253f5",
+      "threshold_exact_set": false,
+      "seed": 170126,
+      "expected_F1": 3.2229995054284994e-05,
+      "gold_probability": 4.832563718082383e-05,
+      "methods": {
+        "rloo": {
+          "mse": 3.386635172344472e-06,
+          "mse_standard_error": 3.3855964999697277e-06,
+          "variance_trace_population": 3.384219275580513e-06,
+          "empirical_mean_error_squared": 2.4158967639574855e-09,
+          "zero_fraction": 0.998046875,
+          "exact_squared_norm": 1.0386723747274992e-09
+        },
+        "local_expectation": {
+          "mse": 6.258152543708683e-13,
+          "mse_standard_error": 6.191492177898166e-13,
+          "variance_trace_population": 6.253094071821738e-13,
+          "empirical_mean_error_squared": 5.058471886939542e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.0386723747274992e-09
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1496266285.flac::epoch0-batch73-slot86",
+      "source_group": "slurp-clean:050d938abb83f488989ecc4a9b42fae6a9e241b4fd3f0b99e8b8595ec2320370",
+      "threshold_exact_set": true,
+      "seed": 170127,
+      "expected_F1": 0.9993624703563307,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 2.6164672245854952e-05,
+          "mse_standard_error": 1.1082125018741126e-05,
+          "variance_trace_population": 2.6141603787740087e-05,
+          "empirical_mean_error_squared": 2.3068458114891948e-08,
+          "zero_fraction": 0.970703125,
+          "exact_squared_norm": 8.437485463213105e-08
+        },
+        "local_expectation": {
+          "mse": 1.5418776414470756e-12,
+          "mse_standard_error": 4.4194895433230893e-13,
+          "variance_trace_population": 1.5404713169229593e-12,
+          "empirical_mean_error_squared": 1.4063245241157425e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 8.437485463213105e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494548324-headset.flac::epoch0-batch73-slot87",
+      "source_group": "slurp-clean:ea054a41ef1a99135b71650be6b654e1e4fe01b24e8e4368ef7d80d97512d69c",
+      "threshold_exact_set": true,
+      "seed": 170128,
+      "expected_F1": 0.9997243966727859,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 1.6046753484282653e-05,
+          "mse_standard_error": 1.0730700440163521e-05,
+          "variance_trace_population": 1.6045239236619752e-05,
+          "empirical_mean_error_squared": 1.5142476629014286e-09,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 5.324953903683843e-08
+        },
+        "local_expectation": {
+          "mse": 4.7469863193664744e-14,
+          "mse_standard_error": 4.506504344185277e-14,
+          "variance_trace_population": 4.746871870590254e-14,
+          "empirical_mean_error_squared": 1.1444877622031769e-18,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.324953903683843e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490201975-headset.flac::epoch0-batch73-slot88",
+      "source_group": "slurp-clean:ac1889f6243da1ecd4a11bb4f1cae5370240325304d95e0a4f45569540755aa6",
+      "threshold_exact_set": true,
+      "seed": 170129,
+      "expected_F1": 0.9742664073143522,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 0.00032500597071869717,
+          "mse_standard_error": 1.834020751668244e-05,
+          "variance_trace_population": 0.000324664012885388,
+          "empirical_mean_error_squared": 3.4195783330910466e-07,
+          "zero_fraction": 0.259765625,
+          "exact_squared_norm": 0.0005455062241220146
+        },
+        "local_expectation": {
+          "mse": 9.336606473662764e-09,
+          "mse_standard_error": 4.6508849074076814e-09,
+          "variance_trace_population": 9.324111695527083e-09,
+          "empirical_mean_error_squared": 1.2494778135620143e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.0005455062241220146
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1504192969.flac::epoch0-batch73-slot89",
+      "source_group": "slurp-clean:11f2bcbd883dd7ef71cd843cff4a195669d3445df7b9b171d5234359e78a8b9b",
+      "threshold_exact_set": true,
+      "seed": 170130,
+      "expected_F1": 0.9991242321124755,
+      "gold_probability": 0.99935382604599,
+      "methods": {
+        "rloo": {
+          "mse": 3.3894030777328695e-05,
+          "mse_standard_error": 1.5085047678756043e-05,
+          "variance_trace_population": 3.386224493568325e-05,
+          "empirical_mean_error_squared": 3.1785841645421665e-08,
+          "zero_fraction": 0.984375,
+          "exact_squared_norm": 4.507690344556966e-07
+        },
+        "local_expectation": {
+          "mse": 3.165655295156115e-12,
+          "mse_standard_error": 1.2446182171374219e-12,
+          "variance_trace_population": 3.1649960540406283e-12,
+          "empirical_mean_error_squared": 6.592411154852414e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.507690344556966e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494513351-headset.flac::epoch0-batch73-slot90",
+      "source_group": "slurp-clean:2505fc7b564535fbfcb019d430e26bd96436d55b3c1beba0e5fc822126acaf44",
+      "threshold_exact_set": true,
+      "seed": 170131,
+      "expected_F1": 0.9996644149391128,
+      "gold_probability": 0.9997695088386536,
+      "methods": {
+        "rloo": {
+          "mse": 1.85851008263666e-05,
+          "mse_standard_error": 1.0822482221260992e-05,
+          "variance_trace_population": 1.858009232415094e-05,
+          "empirical_mean_error_squared": 5.008502215659563e-09,
+          "zero_fraction": 0.98828125,
+          "exact_squared_norm": 5.4691767672483636e-08
+        },
+        "local_expectation": {
+          "mse": 2.1103032514513455e-13,
+          "mse_standard_error": 9.423543659939161e-14,
+          "variance_trace_population": 2.1084729484409775e-13,
+          "empirical_mean_error_squared": 1.8303030103686969e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.4691767672483636e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498645572.flac::epoch0-batch73-slot91",
+      "source_group": "slurp-clean:e0e58539258d43687988ba868aa45c660feb3cc68d6a0fc391190df84a4711c2",
+      "threshold_exact_set": false,
+      "seed": 170132,
+      "expected_F1": 1.6019397599259455e-06,
+      "gold_probability": 2.1233786355878692e-06,
+      "methods": {
+        "rloo": {
+          "mse": 2.589317130909017e-12,
+          "mse_standard_error": 1.7867341759911726e-29,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 2.5893171309090173e-12,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 2.5893171309090173e-12
+        },
+        "local_expectation": {
+          "mse": 3.0347383104520046e-14,
+          "mse_standard_error": 4.846584644748624e-16,
+          "variance_trace_population": 7.22374715659414e-15,
+          "empirical_mean_error_squared": 2.3123635947925905e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.5893171309090173e-12
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1504195368-headset.flac::epoch0-batch73-slot92",
+      "source_group": "slurp-clean:258163fd2a97a6e901dfaab0dbe7fa9e0392f69b9009a56a49c3faf10df3eda1",
+      "threshold_exact_set": true,
+      "seed": 170133,
+      "expected_F1": 0.9994123271358359,
+      "gold_probability": 0.9996540546417236,
+      "methods": {
+        "rloo": {
+          "mse": 3.537290151982373e-05,
+          "mse_standard_error": 1.5165790938771776e-05,
+          "variance_trace_population": 3.534224298265245e-05,
+          "empirical_mean_error_squared": 3.065853717128492e-08,
+          "zero_fraction": 0.98046875,
+          "exact_squared_norm": 1.310332421933293e-07
+        },
+        "local_expectation": {
+          "mse": 1.0359086491553882e-12,
+          "mse_standard_error": 3.2460925066576446e-13,
+          "variance_trace_population": 1.0355984929866705e-12,
+          "empirical_mean_error_squared": 3.101561687180169e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.310332421933293e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497883927.flac::epoch0-batch73-slot93",
+      "source_group": "slurp-clean:1ce14aee1231154f4fc508a0d3ea1e8e032ed3c1766e34b6ea54d7c413f5e54c",
+      "threshold_exact_set": false,
+      "seed": 170134,
+      "expected_F1": 0.000536319650012779,
+      "gold_probability": 0.0008040859247557819,
+      "methods": {
+        "rloo": {
+          "mse": 1.3501658911490344e-05,
+          "mse_standard_error": 6.587817605280403e-06,
+          "variance_trace_population": 1.345740424262153e-05,
+          "empirical_mean_error_squared": 4.425466886881183e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 2.8717653492634253e-07
+        },
+        "local_expectation": {
+          "mse": 1.32180289163778e-11,
+          "mse_standard_error": 3.9040316067964285e-12,
+          "variance_trace_population": 1.3194224490682121e-11,
+          "empirical_mean_error_squared": 2.3804425695676823e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.8717653492634253e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490108927.flac::epoch0-batch73-slot94",
+      "source_group": "slurp-clean:2cdc75f12e6b8e8011c9201bffeff743f3c7c8d6407a0f843d46822c704da966",
+      "threshold_exact_set": true,
+      "seed": 170135,
+      "expected_F1": 0.9995768860639102,
+      "gold_probability": 0.9997965693473816,
+      "methods": {
+        "rloo": {
+          "mse": 1.5233865027224497e-05,
+          "mse_standard_error": 7.971895928157493e-06,
+          "variance_trace_population": 1.5215741263495554e-05,
+          "empirical_mean_error_squared": 1.8123763728939605e-08,
+          "zero_fraction": 0.98046875,
+          "exact_squared_norm": 5.0055578305089376e-08
+        },
+        "local_expectation": {
+          "mse": 4.904550731003297e-13,
+          "mse_standard_error": 1.5411287752343334e-13,
+          "variance_trace_population": 4.894471820495937e-13,
+          "empirical_mean_error_squared": 1.0078910507343665e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.0055578305089376e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494418345.flac::epoch0-batch73-slot95",
+      "source_group": "slurp-clean:3e42f9ea31c42e0eb65602401003dd5c43004041d1ca687890b26ce4e1e65017",
+      "threshold_exact_set": true,
+      "seed": 170136,
+      "expected_F1": 0.999715505129235,
+      "gold_probability": 0.9998089075088501,
+      "methods": {
+        "rloo": {
+          "mse": 9.313537442079642e-06,
+          "mse_standard_error": 7.672914123050527e-06,
+          "variance_trace_population": 9.306603007846403e-06,
+          "empirical_mean_error_squared": 6.9344342332430295e-09,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 4.058107304248527e-08
+        },
+        "local_expectation": {
+          "mse": 1.0056385232989074e-13,
+          "mse_standard_error": 5.795743787908919e-14,
+          "variance_trace_population": 1.0054712956246971e-13,
+          "empirical_mean_error_squared": 1.672276742106537e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.058107304248527e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490288981-headset.flac::epoch0-batch73-slot96",
+      "source_group": "slurp-clean:83267db229d68354965060a15ac9fe6bab9fd18c2200f67c2c52408b9b178dfe",
+      "threshold_exact_set": true,
+      "seed": 170137,
+      "expected_F1": 0.983645465409633,
+      "gold_probability": 0.998498797416687,
+      "methods": {
+        "rloo": {
+          "mse": 0.00037952058044352435,
+          "mse_standard_error": 3.180903943641898e-05,
+          "variance_trace_population": 0.0003782084326685209,
+          "empirical_mean_error_squared": 1.3121477750034797e-06,
+          "zero_fraction": 0.4453125,
+          "exact_squared_norm": 0.00018739132935532125
+        },
+        "local_expectation": {
+          "mse": 2.7480278352677065e-08,
+          "mse_standard_error": 5.635741758332467e-09,
+          "variance_trace_population": 2.744637832612611e-08,
+          "empirical_mean_error_squared": 3.3900026550965925e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.00018739132935532125
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1499266848.flac::epoch0-batch73-slot97",
+      "source_group": "slurp-clean:a4cc2c09b701db642a1348c0d67d008b8d4285a70d223cd0d8b71d8ea11da99c",
+      "threshold_exact_set": false,
+      "seed": 170138,
+      "expected_F1": 0.6651942954275145,
+      "gold_probability": 0.9960545301437378,
+      "methods": {
+        "rloo": {
+          "mse": 0.00014388631700064765,
+          "mse_standard_error": 1.8025736651256465e-05,
+          "variance_trace_population": 0.00014372401767306865,
+          "empirical_mean_error_squared": 1.6229932757900172e-07,
+          "zero_fraction": 0.83984375,
+          "exact_squared_norm": 8.59641401671681e-06
+        },
+        "local_expectation": {
+          "mse": 1.007661189973044e-09,
+          "mse_standard_error": 1.0907716514681462e-10,
+          "variance_trace_population": 1.0065281365687694e-09,
+          "empirical_mean_error_squared": 1.1330534042742056e-12,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 8.59641401671681e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502462095.flac::epoch0-batch73-slot98",
+      "source_group": "slurp-clean:99249405892de7687f34281cd2e00b38d3a7b0d4b394db13bd3a74597303eb5f",
+      "threshold_exact_set": false,
+      "seed": 170139,
+      "expected_F1": 0.6521540672580275,
+      "gold_probability": 0.9719924330711365,
+      "methods": {
+        "rloo": {
+          "mse": 0.0007373285213688088,
+          "mse_standard_error": 4.2638189640326616e-05,
+          "variance_trace_population": 0.0007347604485205664,
+          "empirical_mean_error_squared": 2.5680728482422974e-06,
+          "zero_fraction": 0.46875,
+          "exact_squared_norm": 0.00035148195384093723
+        },
+        "local_expectation": {
+          "mse": 1.1113629461559089e-07,
+          "mse_standard_error": 9.02134529110372e-09,
+          "variance_trace_population": 1.1019370518921533e-07,
+          "empirical_mean_error_squared": 9.425894263753292e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.00035148195384093723
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501753329-headset.flac::epoch0-batch73-slot99",
+      "source_group": "slurp-clean:9b524d24fffb31bfefd309ed9557fccf9f24c268978c5b2e29964187e3483401",
+      "threshold_exact_set": true,
+      "seed": 170140,
+      "expected_F1": 0.9996072745829542,
+      "gold_probability": 0.999783456325531,
+      "methods": {
+        "rloo": {
+          "mse": 2.9543577442097642e-05,
+          "mse_standard_error": 1.3288104122389253e-05,
+          "variance_trace_population": 2.9509266217549614e-05,
+          "empirical_mean_error_squared": 3.431122454804249e-08,
+          "zero_fraction": 0.978515625,
+          "exact_squared_norm": 5.210140937194797e-08
+        },
+        "local_expectation": {
+          "mse": 4.912743781957138e-13,
+          "mse_standard_error": 1.4649037817913472e-13,
+          "variance_trace_population": 4.896775677878451e-13,
+          "empirical_mean_error_squared": 1.5968104078695379e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.210140937194797e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1496265442-headset.flac::epoch0-batch73-slot100",
+      "source_group": "slurp-clean:4b6b038bd79026626ade305520fcf69558aaec5a4a16cfea82ec49633c7ca9f4",
+      "threshold_exact_set": true,
+      "seed": 170141,
+      "expected_F1": 0.9997335990365785,
+      "gold_probability": 0.9998204708099365,
+      "methods": {
+        "rloo": {
+          "mse": 1.7276557148253636e-06,
+          "mse_standard_error": 1.1968436292297559e-06,
+          "variance_trace_population": 1.6921096377902563e-06,
+          "empirical_mean_error_squared": 3.5546077035106234e-08,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 3.340492841084949e-08
+        },
+        "local_expectation": {
+          "mse": 5.86332145821943e-14,
+          "mse_standard_error": 4.118579784301492e-14,
+          "variance_trace_population": 5.86009240138196e-14,
+          "empirical_mean_error_squared": 3.229056837462794e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.340492841084949e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490704981-headset.flac::epoch0-batch73-slot101",
+      "source_group": "slurp-clean:238c78ca6390cc3970c67af783749183bc055a7d8b1f79de108f1f1e8d3043ee",
+      "threshold_exact_set": false,
+      "seed": 170142,
+      "expected_F1": 0.6650892401681212,
+      "gold_probability": 0.9973683953285217,
+      "methods": {
+        "rloo": {
+          "mse": 6.755926210353902e-05,
+          "mse_standard_error": 1.3385915368983069e-05,
+          "variance_trace_population": 6.749977668126429e-05,
+          "empirical_mean_error_squared": 5.9485422274724974e-08,
+          "zero_fraction": 0.94140625,
+          "exact_squared_norm": 3.176054829265485e-06
+        },
+        "local_expectation": {
+          "mse": 5.499415814928514e-11,
+          "mse_standard_error": 1.3752006124236486e-11,
+          "variance_trace_population": 5.491170276928656e-11,
+          "empirical_mean_error_squared": 8.245537999861518e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.176054829265485e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1505407624.flac::epoch0-batch73-slot102",
+      "source_group": "slurp-clean:c4f3d0cb22b438031c303ad03ada5e2d38f00daf0136a45305ba554dc14340ed",
+      "threshold_exact_set": true,
+      "seed": 170143,
+      "expected_F1": 0.9995213872875012,
+      "gold_probability": 0.999595582485199,
+      "methods": {
+        "rloo": {
+          "mse": 9.388592824148421e-06,
+          "mse_standard_error": 7.6219067600818215e-06,
+          "variance_trace_population": 9.306603007846412e-06,
+          "empirical_mean_error_squared": 8.198981630199954e-08,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 1.6398659248468528e-07
+        },
+        "local_expectation": {
+          "mse": 2.821334761674105e-13,
+          "mse_standard_error": 1.9547355945579812e-13,
+          "variance_trace_population": 2.8207718926009463e-13,
+          "empirical_mean_error_squared": 5.628690731617523e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.6398659248468528e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1499090282-headset.flac::epoch0-batch73-slot103",
+      "source_group": "slurp-clean:06ad59f993e2e498f3ff560e4818ee58df6a9d4a556cc3382604905fedc00236",
+      "threshold_exact_set": true,
+      "seed": 170144,
+      "expected_F1": 0.9997357263735369,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 4.5477196294204244e-05,
+          "mse_standard_error": 1.8450478521247144e-05,
+          "variance_trace_population": 4.5239925384521484e-05,
+          "empirical_mean_error_squared": 2.37270909682742e-07,
+          "zero_fraction": 0.98828125,
+          "exact_squared_norm": 6.019552050512037e-08
+        },
+        "local_expectation": {
+          "mse": 4.740515903485825e-16,
+          "mse_standard_error": 1.8356030064211709e-16,
+          "variance_trace_population": 4.504764928320274e-16,
+          "empirical_mean_error_squared": 2.357509751655517e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.019552050512037e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501690292.flac::epoch0-batch73-slot104",
+      "source_group": "slurp-clean:acf5952adc1175ea4955d21b5fac100f7696c0e6bff908718bff878df222103c",
+      "threshold_exact_set": false,
+      "seed": 170145,
+      "expected_F1": 6.0179421876010974e-05,
+      "gold_probability": 9.028038766700774e-05,
+      "methods": {
+        "rloo": {
+          "mse": 1.0146765120260208e-05,
+          "mse_standard_error": 5.844675634942881e-06,
+          "variance_trace_population": 1.0112921396891287e-05,
+          "empirical_mean_error_squared": 3.3843723368922444e-08,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 3.6209090888806103e-09
+        },
+        "local_expectation": {
+          "mse": 4.528422436396807e-13,
+          "mse_standard_error": 2.490413198655869e-13,
+          "variance_trace_population": 4.5138815567828194e-13,
+          "empirical_mean_error_squared": 1.4540879613989982e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.6209090888806103e-09
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498570499.flac::epoch0-batch73-slot105",
+      "source_group": "slurp-clean:251b1f2efb2f7cf3ae553c37075e96c7d8fe806b329f8864030239c2fc2df762",
+      "threshold_exact_set": true,
+      "seed": 170146,
+      "expected_F1": 0.982659581032001,
+      "gold_probability": 0.9998204708099365,
+      "methods": {
+        "rloo": {
+          "mse": 0.0002954876486074134,
+          "mse_standard_error": 1.681989040871449e-05,
+          "variance_trace_population": 0.0002926919048215136,
+          "empirical_mean_error_squared": 2.7957437858998184e-06,
+          "zero_fraction": 0.39453125,
+          "exact_squared_norm": 0.00026090882626543174
+        },
+        "local_expectation": {
+          "mse": 2.9956395322882285e-09,
+          "mse_standard_error": 2.0815816556561298e-09,
+          "variance_trace_population": 2.9899741660277926e-09,
+          "empirical_mean_error_squared": 5.6653662604363726e-12,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.00026090882626543174
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501692356.flac::epoch0-batch73-slot106",
+      "source_group": "slurp-clean:58f23d3e47b6f0377f9300a8798953248522f58800d01dbbcf911f90408626d6",
+      "threshold_exact_set": false,
+      "seed": 170147,
+      "expected_F1": 4.6906432928222136e-05,
+      "gold_probability": 7.031184213701636e-05,
+      "methods": {
+        "rloo": {
+          "mse": 2.1999052933538026e-09,
+          "mse_standard_error": 0.0,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 2.1999052933538026e-09,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 2.1999052933538026e-09
+        },
+        "local_expectation": {
+          "mse": 5.0710175733317353e-14,
+          "mse_standard_error": 1.3314051349843438e-14,
+          "variance_trace_population": 4.9464991355465876e-14,
+          "empirical_mean_error_squared": 1.2451843778514046e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.1999052933538026e-09
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1497866251-headset.flac::epoch0-batch73-slot107",
+      "source_group": "slurp-clean:6f1137540fa5d34d30287ba65dffdb093bc5ea0632a9f84e883a8c5460bc1a4e",
+      "threshold_exact_set": true,
+      "seed": 170148,
+      "expected_F1": 0.9641231450246245,
+      "gold_probability": 0.9997219443321228,
+      "methods": {
+        "rloo": {
+          "mse": 0.0004447691313647132,
+          "mse_standard_error": 2.2067984810765306e-05,
+          "variance_trace_population": 0.000444726369999073,
+          "empirical_mean_error_squared": 4.276136564005747e-08,
+          "zero_fraction": 0.173828125,
+          "exact_squared_norm": 0.0010086510983064118
+        },
+        "local_expectation": {
+          "mse": 9.675319813486344e-09,
+          "mse_standard_error": 7.84135699010019e-09,
+          "variance_trace_population": 9.647328228795152e-09,
+          "empirical_mean_error_squared": 2.7991584691220556e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.0010086510983064118
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494420939-headset.flac::epoch0-batch73-slot108",
+      "source_group": "slurp-clean:6e32bc5b03ab4d239b1eff1de30de5007f906dda41e8f720240bbf6481496a60",
+      "threshold_exact_set": false,
+      "seed": 170149,
+      "expected_F1": 3.023581691025844e-05,
+      "gold_probability": 4.539787187241018e-05,
+      "methods": {
+        "rloo": {
+          "mse": 9.141231087954383e-10,
+          "mse_standard_error": 1.3722118471612207e-26,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 9.141231087954386e-10,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 9.141231087954386e-10
+        },
+        "local_expectation": {
+          "mse": 2.878736208233613e-14,
+          "mse_standard_error": 4.593508034813914e-15,
+          "variance_trace_population": 2.7173176598092908e-14,
+          "empirical_mean_error_squared": 1.6141854842432681e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 9.141231087954386e-10
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1504198126.flac::epoch0-batch73-slot109",
+      "source_group": "slurp-clean:e8e2d0f438b9250fa9c7df887200ee1ad3eda41f155cbe85b0bb0786da2a2e58",
+      "threshold_exact_set": true,
+      "seed": 170150,
+      "expected_F1": 0.9475273421249465,
+      "gold_probability": 0.9965165853500366,
+      "methods": {
+        "rloo": {
+          "mse": 0.0008385707621373569,
+          "mse_standard_error": 4.561431102268812e-05,
+          "variance_trace_population": 0.0008375846714149285,
+          "empirical_mean_error_squared": 9.860907224283306e-07,
+          "zero_fraction": 0.076171875,
+          "exact_squared_norm": 0.0010453485682300429
+        },
+        "local_expectation": {
+          "mse": 1.3246089950843163e-06,
+          "mse_standard_error": 9.159402982951181e-08,
+          "variance_trace_population": 1.3229690449944764e-06,
+          "empirical_mean_error_squared": 1.6399500898394754e-09,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.0010453485682300429
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1494421586.flac::epoch0-batch73-slot110",
+      "source_group": "slurp-clean:181abdbe298c7b411e00951a053c8f5b18948a63bd2cf475a5f3c80f8a4a0bf1",
+      "threshold_exact_set": false,
+      "seed": 170151,
+      "expected_F1": 0.001402493856437325,
+      "gold_probability": 0.002115703420713544,
+      "methods": {
+        "rloo": {
+          "mse": 3.376961144356694e-05,
+          "mse_standard_error": 9.97064342784887e-06,
+          "variance_trace_population": 3.342563723340442e-05,
+          "empirical_mean_error_squared": 3.439742101624976e-07,
+          "zero_fraction": 0.98046875,
+          "exact_squared_norm": 1.9587768517843383e-06
+        },
+        "local_expectation": {
+          "mse": 2.0417812815788573e-09,
+          "mse_standard_error": 5.114445445427782e-10,
+          "variance_trace_population": 2.023362373459515e-09,
+          "empirical_mean_error_squared": 1.841890811934256e-11,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.9587768517843383e-06
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502216579.flac::epoch0-batch73-slot111",
+      "source_group": "slurp-clean:614c38a4fe853d409710a29b6c7559f5d0d794d8aa95ca462fba2cdd56b7ca73",
+      "threshold_exact_set": false,
+      "seed": 170152,
+      "expected_F1": 0.22651131565115334,
+      "gold_probability": 0.2267836481332779,
+      "methods": {
+        "rloo": {
+          "mse": 0.0038500303772088587,
+          "mse_standard_error": 0.00025166506582184996,
+          "variance_trace_population": 0.00383905961189741,
+          "empirical_mean_error_squared": 1.0970765311449365e-05,
+          "zero_fraction": 0.02734375,
+          "exact_squared_norm": 0.03067482231224626
+        },
+        "local_expectation": {
+          "mse": 7.451308724116043e-07,
+          "mse_standard_error": 1.5023557919501497e-07,
+          "variance_trace_population": 7.450074754739897e-07,
+          "empirical_mean_error_squared": 1.233969376152933e-10,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 0.03067482231224626
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501150780.flac::epoch0-batch73-slot112",
+      "source_group": "slurp-clean:bd89baa77d426e0fa64afdfdcc57d0c4ee5badfcf358219d80528692d7b94e7d",
+      "threshold_exact_set": true,
+      "seed": 170153,
+      "expected_F1": 0.9996845470378611,
+      "gold_probability": 0.9997219443321228,
+      "methods": {
+        "rloo": {
+          "mse": 2.3609669991588922e-05,
+          "mse_standard_error": 1.3095885469293571e-05,
+          "variance_trace_population": 2.3600127961900513e-05,
+          "empirical_mean_error_squared": 9.542029688413688e-09,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 7.739465831136189e-08
+        },
+        "local_expectation": {
+          "mse": 6.854245670962728e-14,
+          "mse_standard_error": 6.552467386436029e-14,
+          "variance_trace_population": 6.854028574257061e-14,
+          "empirical_mean_error_squared": 2.1709670566681676e-18,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 7.739465831136189e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501763706-headset.flac::epoch0-batch73-slot113",
+      "source_group": "slurp-clean:00f8e682a4a43a7b17a67fb761c373cbb29abcb0b97c72ce0254a989cfeaf705",
+      "threshold_exact_set": false,
+      "seed": 170154,
+      "expected_F1": 2.2143822003357455e-05,
+      "gold_probability": 3.321419353596866e-05,
+      "methods": {
+        "rloo": {
+          "mse": 4.903162839148052e-10,
+          "mse_standard_error": 0.0,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 4.903162839148052e-10,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 4.903162839148052e-10
+        },
+        "local_expectation": {
+          "mse": 3.733968067817077e-15,
+          "mse_standard_error": 1.8592052692598206e-15,
+          "variance_trace_population": 3.7112471817289214e-15,
+          "empirical_mean_error_squared": 2.2720886088147716e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.903162839148052e-10
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502195477-headset.flac::epoch0-batch73-slot114",
+      "source_group": "slurp-clean:a7b97cb6d144150ccc28b1b5ab32e69ca4b79aaa8d5b91d5d97b9cbbcdd46131",
+      "threshold_exact_set": true,
+      "seed": 170155,
+      "expected_F1": 0.9997099298093255,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 3.0338382735100994e-05,
+          "mse_standard_error": 1.5094498588135515e-05,
+          "variance_trace_population": 3.0279159545898438e-05,
+          "empirical_mean_error_squared": 5.9223189202543085e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 6.037603738868062e-08
+        },
+        "local_expectation": {
+          "mse": 5.992002077135175e-15,
+          "mse_standard_error": 2.918694423698005e-15,
+          "variance_trace_population": 5.864779720681425e-15,
+          "empirical_mean_error_squared": 1.2722235645375066e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.037603738868062e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1498757177.flac::epoch0-batch73-slot115",
+      "source_group": "slurp-clean:8b435d558b3aba569ec181ff6a126c9d1a6cc3d19d6dc324e4bbcb6b01bef1bb",
+      "threshold_exact_set": true,
+      "seed": 170156,
+      "expected_F1": 0.999641932701724,
+      "gold_probability": 0.9997219443321228,
+      "methods": {
+        "rloo": {
+          "mse": 2.615646661178162e-06,
+          "mse_standard_error": 1.4617648301017206e-06,
+          "variance_trace_population": 2.534853087531195e-06,
+          "empirical_mean_error_squared": 8.079357364696734e-08,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 7.883026180747895e-08
+        },
+        "local_expectation": {
+          "mse": 1.9890862708976536e-13,
+          "mse_standard_error": 1.1424590899095747e-13,
+          "variance_trace_population": 1.9865231230739461e-13,
+          "empirical_mean_error_squared": 2.5631478237066295e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 7.883026180747895e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1504190415-headset.flac::epoch0-batch73-slot116",
+      "source_group": "slurp-clean:2f3af2c6eb79435c71153a9626362c95ba203fefde509a787f89a0ec281f60d8",
+      "threshold_exact_set": true,
+      "seed": 170157,
+      "expected_F1": 0.9997172459784315,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 2.27688065849436e-05,
+          "mse_standard_error": 1.3085078508889815e-05,
+          "variance_trace_population": 2.275407314300537e-05,
+          "empirical_mean_error_squared": 1.4733441938224933e-08,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 6.030287659960234e-08
+        },
+        "local_expectation": {
+          "mse": 2.806210234869226e-15,
+          "mse_standard_error": 1.5627871205410525e-15,
+          "variance_trace_population": 2.721442589079926e-15,
+          "empirical_mean_error_squared": 8.476764578929936e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.030287659960234e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490009259-headset.flac::epoch0-batch73-slot117",
+      "source_group": "slurp-clean:50640397834dd96448c33f780d62cda0c3fcabdb498e351de99e79e635fb514b",
+      "threshold_exact_set": true,
+      "seed": 170158,
+      "expected_F1": 0.999251529426006,
+      "gold_probability": 0.9995272159576416,
+      "methods": {
+        "rloo": {
+          "mse": 3.949382341874509e-05,
+          "mse_standard_error": 1.6770700729698374e-05,
+          "variance_trace_population": 3.946655326419407e-05,
+          "empirical_mean_error_squared": 2.7270154551037358e-08,
+          "zero_fraction": 0.986328125,
+          "exact_squared_norm": 2.4374183866968143e-07
+        },
+        "local_expectation": {
+          "mse": 1.2044316674721959e-12,
+          "mse_standard_error": 4.461353542643899e-13,
+          "variance_trace_population": 1.1958822363461663e-12,
+          "empirical_mean_error_squared": 8.549431126029166e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.4374183866968143e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502376294.flac::epoch0-batch73-slot118",
+      "source_group": "slurp-clean:9e956c024de8fe62edb9dccdebaeb1bd6201c929507183d8983b872e43b8d3a0",
+      "threshold_exact_set": true,
+      "seed": 170159,
+      "expected_F1": 0.9997402049871267,
+      "gold_probability": 0.9997965693473816,
+      "methods": {
+        "rloo": {
+          "mse": 4.5520190841248564e-05,
+          "mse_standard_error": 1.8475442225503634e-05,
+          "variance_trace_population": 4.523992538452148e-05,
+          "empirical_mean_error_squared": 2.8026545672708153e-07,
+          "zero_fraction": 0.98828125,
+          "exact_squared_norm": 4.174035640897117e-08
+        },
+        "local_expectation": {
+          "mse": 1.7314879147213962e-14,
+          "mse_standard_error": 6.969617650257889e-15,
+          "variance_trace_population": 1.7101996307394326e-14,
+          "empirical_mean_error_squared": 2.1288283981960344e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.174035640897117e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490193351-headset.flac::epoch0-batch73-slot119",
+      "source_group": "slurp-clean:301f6482d32ff304994763c40448077ac28072bb7dd0d89e9da1e8618ec2734d",
+      "threshold_exact_set": true,
+      "seed": 170160,
+      "expected_F1": 0.9997500226699938,
+      "gold_probability": 0.999841570854187,
+      "methods": {
+        "rloo": {
+          "mse": 9.309597130024745e-06,
+          "mse_standard_error": 7.681002288330209e-06,
+          "variance_trace_population": 9.306603007846396e-06,
+          "empirical_mean_error_squared": 2.994122178351582e-09,
+          "zero_fraction": 0.994140625,
+          "exact_squared_norm": 2.667860778666164e-08
+        },
+        "local_expectation": {
+          "mse": 5.800875678201114e-14,
+          "mse_standard_error": 3.443782839834739e-14,
+          "variance_trace_population": 5.800118367837364e-14,
+          "empirical_mean_error_squared": 7.573103637492486e-18,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 2.667860778666164e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490967884-headset.flac::epoch0-batch73-slot120",
+      "source_group": "slurp-clean:d743908c9f49825d7e3d04817761293825cc51f749fdf107672d220388bdbc97",
+      "threshold_exact_set": true,
+      "seed": 170161,
+      "expected_F1": 0.9995565064914352,
+      "gold_probability": 0.999595582485199,
+      "methods": {
+        "rloo": {
+          "mse": 1.6920365829688676e-05,
+          "mse_standard_error": 1.0702123688078595e-05,
+          "variance_trace_population": 1.6891294055514874e-05,
+          "empirical_mean_error_squared": 2.9071774173802718e-08,
+          "zero_fraction": 0.9921875,
+          "exact_squared_norm": 1.635677261344036e-07
+        },
+        "local_expectation": {
+          "mse": 2.7929739178125005e-13,
+          "mse_standard_error": 1.9540795206838501e-13,
+          "variance_trace_population": 2.790040023770018e-13,
+          "empirical_mean_error_squared": 2.933894042494194e-16,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.635677261344036e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1490372070-headset.flac::epoch0-batch73-slot121",
+      "source_group": "slurp-clean:a933299593a3b4016c3d022645744d63b400de351c1307e45ef4ac8391a17b41",
+      "threshold_exact_set": true,
+      "seed": 170162,
+      "expected_F1": 0.999175838938939,
+      "gold_probability": 0.9995694756507874,
+      "methods": {
+        "rloo": {
+          "mse": 5.2008638936847055e-05,
+          "mse_standard_error": 1.845253544889077e-05,
+          "variance_trace_population": 5.1915645599365234e-05,
+          "empirical_mean_error_squared": 9.299333748181945e-08,
+          "zero_fraction": 0.97265625,
+          "exact_squared_norm": 3.1878439647388027e-07
+        },
+        "local_expectation": {
+          "mse": 7.302634864226977e-12,
+          "mse_standard_error": 2.4825380148805342e-12,
+          "variance_trace_population": 7.292684495118271e-12,
+          "empirical_mean_error_squared": 9.950369108676337e-15,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 3.1878439647388027e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1502374715-headset.flac::epoch0-batch73-slot122",
+      "source_group": "slurp-clean:386235093f3d85f1d9644084751b9ae87ded969311748e8f4d5937f5292c8676",
+      "threshold_exact_set": true,
+      "seed": 170163,
+      "expected_F1": 0.99880357570436,
+      "gold_probability": 0.999595582485199,
+      "methods": {
+        "rloo": {
+          "mse": 3.5430302850864664e-05,
+          "mse_standard_error": 1.3349331143247628e-05,
+          "variance_trace_population": 3.534555435180665e-05,
+          "empirical_mean_error_squared": 8.474849905801416e-08,
+          "zero_fraction": 0.96484375,
+          "exact_squared_norm": 5.361714652548664e-07
+        },
+        "local_expectation": {
+          "mse": 1.544532413982121e-11,
+          "mse_standard_error": 5.24983725470636e-12,
+          "variance_trace_population": 1.5434935258980047e-11,
+          "empirical_mean_error_squared": 1.0388880841155624e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 5.361714652548664e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501698467.flac::epoch0-batch73-slot123",
+      "source_group": "slurp-clean:47bfe243366c5d89fdb5cbdd13104fa57860a245f184605aa6e8ea86a3d71f76",
+      "threshold_exact_set": false,
+      "seed": 170164,
+      "expected_F1": 1.2618661684489588e-05,
+      "gold_probability": 1.8925147742265835e-05,
+      "methods": {
+        "rloo": {
+          "mse": 1.5922460031230244e-10,
+          "mse_standard_error": 1.1435098726343505e-27,
+          "variance_trace_population": 0.0,
+          "empirical_mean_error_squared": 1.5922460031230241e-10,
+          "zero_fraction": 1.0,
+          "exact_squared_norm": 1.5922460031230241e-10
+        },
+        "local_expectation": {
+          "mse": 1.210809440312878e-15,
+          "mse_standard_error": 5.996016243695639e-16,
+          "variance_trace_population": 1.2049344621034574e-15,
+          "empirical_mean_error_squared": 5.87497820942059e-18,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 1.5922460031230241e-10
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501754278.flac::epoch0-batch73-slot124",
+      "source_group": "slurp-clean:f1266d629fd394bef4605a287220de0c169ab03114f01e6b229078324fce824e",
+      "threshold_exact_set": true,
+      "seed": 170165,
+      "expected_F1": 0.9997302177124487,
+      "gold_probability": 0.9997546076774597,
+      "methods": {
+        "rloo": {
+          "mse": 1.5199222530392467e-05,
+          "mse_standard_error": 1.0694410627704397e-05,
+          "variance_trace_population": 1.519918441772461e-05,
+          "empirical_mean_error_squared": 3.811266786069e-11,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 6.022161244240746e-08
+        },
+        "local_expectation": {
+          "mse": 5.940906895189542e-16,
+          "mse_standard_error": 3.9238057212294073e-16,
+          "variance_trace_population": 5.58229618258226e-16,
+          "empirical_mean_error_squared": 3.5861071260728487e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 6.022161244240746e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501687730.flac::epoch0-batch73-slot125",
+      "source_group": "slurp-clean:395a8d6445c80985093d76a56226bd80a77097a6556b91919b1c79feb03ef0b6",
+      "threshold_exact_set": true,
+      "seed": 170166,
+      "expected_F1": 0.9997702086733518,
+      "gold_probability": 0.9997965693473816,
+      "methods": {
+        "rloo": {
+          "mse": 1.5200869832096033e-05,
+          "mse_standard_error": 1.0708877712928228e-05,
+          "variance_trace_population": 1.5199184417724608e-05,
+          "empirical_mean_error_squared": 1.6854143714289807e-09,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 4.138931745686504e-08
+        },
+        "local_expectation": {
+          "mse": 3.9833962596474444e-16,
+          "mse_standard_error": 2.6008653861118965e-16,
+          "variance_trace_population": 3.6958206235294016e-16,
+          "empirical_mean_error_squared": 2.875756361180433e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.138931745686504e-08
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio--1504198506.flac::epoch0-batch73-slot126",
+      "source_group": "slurp-clean:7c1651d313bfb2df0fd456012d7f1abbd2fff8802d224949f10762f8b7bec6f5",
+      "threshold_exact_set": true,
+      "seed": 170167,
+      "expected_F1": 0.9989279705184011,
+      "gold_probability": 0.9991440773010254,
+      "methods": {
+        "rloo": {
+          "mse": 7.664451536024448e-05,
+          "mse_standard_error": 2.327835718840597e-05,
+          "variance_trace_population": 7.649593883090555e-05,
+          "empirical_mean_error_squared": 1.485765293389525e-07,
+          "zero_fraction": 0.9765625,
+          "exact_squared_norm": 7.587293958802534e-07
+        },
+        "local_expectation": {
+          "mse": 3.3759674705982888e-12,
+          "mse_standard_error": 1.0964100101304957e-12,
+          "variance_trace_population": 3.3594726219569713e-12,
+          "empirical_mean_error_squared": 1.649484864133193e-14,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 7.587293958802534e-07
+        }
+      }
+    },
+    {
+      "request_id": "slurp:audio-1501694795.flac::epoch0-batch73-slot127",
+      "source_group": "slurp-clean:2f301e834de9cdcbcb1a09515157d0938aab882bf7f47d984c00e63de5af1b18",
+      "threshold_exact_set": false,
+      "seed": 170168,
+      "expected_F1": 0.00021002038007716383,
+      "gold_probability": 0.00031503872014582157,
+      "methods": {
+        "rloo": {
+          "mse": 6.757420329677746e-06,
+          "mse_standard_error": 4.742400789217928e-06,
+          "variance_trace_population": 6.755193074544275e-06,
+          "empirical_mean_error_squared": 2.2272551334742376e-09,
+          "zero_fraction": 0.99609375,
+          "exact_squared_norm": 4.408077309964822e-08
+        },
+        "local_expectation": {
+          "mse": 2.420369120291049e-13,
+          "mse_standard_error": 1.0704446717152325e-13,
+          "variance_trace_population": 2.4195798307341864e-13,
+          "empirical_mean_error_squared": 7.892895568650287e-17,
+          "zero_fraction": 0.0,
+          "exact_squared_norm": 4.408077309964822e-08
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Fixed previously selected TRAIN128 snapshot, not population/generalization evidence.",
+    "Raw expected reward/output-logit derivatives; not actor gradients or GRPO normalized objective.",
+    "MSE, finite-sample empirical variance and empirical mean error are distinct; finite mean error is not estimator bias.",
+    "RLOO and LEG use paired G16 samples; reward computation budgets differ; no speed comparison.",
+    "New FP64 random draws are mathematical diagnostics, not formal FP32 sampler parity.",
+    "No optimizer, NPU, heldout evaluation, new dispatch or runtime mutation."
+  ]
+}

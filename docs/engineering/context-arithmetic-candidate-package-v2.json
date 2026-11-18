@@ -1,0 +1,35 @@
+{
+  "status": "bounded_NPU_acceptance_running_not_formal_release",
+  "cpu_tests": {
+    "passed": 48,
+    "seconds": 4.15
+  },
+  "package_manifest_sha256": "b9225abcd02749598abe2682d9b7f6666bb96403792b9280c2d9ed1390fc3b7e",
+  "source_policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+  "changes": [
+    "versioned_actor_probability_log_path",
+    "checkpoint_arithmetic_identity",
+    "bounded_two_update_engineering_config",
+    "checkpoint_each_update_for_replay"
+  ],
+  "unchanged": [
+    "full_Stage1_source_reference",
+    "model_forward",
+    "LoRA_head",
+    "reward_advantage_surrogate",
+    "data_order",
+    "global128_micro8_DP4",
+    "BF16_execution_FP32_loss",
+    "parity_thresholds"
+  ],
+  "files": {
+    "tools/reports/context_probability_policy_v2.py": "ac72d64a6d1a6bd82617ad246a1f52c5ce714d33954094b6843fa311ce04bd16",
+    "tools/reports/prepare_context_arithmetic_candidate.py": "96762b3d29c82657c643372179bb173a8ee14dc8dc1e0f12dbf65be81cee228a",
+    "tools/reports/audit_context_arithmetic_candidate.py": "71913a699962d1f89efa58293ce1ad3cf00f18e7b19969182db0e611b1c029e5",
+    "tests/test_context_probability_policy_v2.py": "2df004ca34e5590eec275b210d6d6615d07708f9c0277afe5d8e18c1e2aa1b13",
+    ".local/decision-objective-research/launch_context_arithmetic_prefix_v2.py": "7ded1314620fb9dd25b980c3f75f08efda57ade70ab5ba49d33cc1b51d95c505",
+    ".local/decision-objective-research/continue_context_arithmetic_acceptance_v2.py": "33f35dfa77bd04553d9c6ac89c161e382493e6502b0a69b36044e93d8ab4a885"
+  },
+  "launch": ".local/decision-objective-research/context-arithmetic-grpo-prefix-v2-launch.json",
+  "scope": "CPU unit audits and versioned package; no assertion of NPU update or recovery completion."
+}

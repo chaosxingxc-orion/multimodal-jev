@@ -1,0 +1,497 @@
+{
+  "schema": "jev-binding-node-credit-audit-v1",
+  "nodes": [
+    "I",
+    "S",
+    "B"
+  ],
+  "old_probabilities": [
+    {
+      "exact": "3/10",
+      "value": 0.3
+    },
+    {
+      "exact": "2/5",
+      "value": 0.4
+    },
+    {
+      "exact": "1/5",
+      "value": 0.2
+    }
+  ],
+  "cases": {
+    "final_B_correct_only": {
+      "expected_reward": {
+        "exact": "1/5",
+        "value": 0.2
+      },
+      "nodes": [
+        {
+          "gradient": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "conditional_gradient": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "centered_score_variance": {
+            "exact": "21/625",
+            "value": 0.0336
+          },
+          "conditional_score_variance": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "conditional_advantage_false": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "conditional_advantage_true": {
+            "exact": "0",
+            "value": 0.0
+          }
+        },
+        {
+          "gradient": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "conditional_gradient": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "centered_score_variance": {
+            "exact": "24/625",
+            "value": 0.0384
+          },
+          "conditional_score_variance": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "conditional_advantage_false": {
+            "exact": "0",
+            "value": 0.0
+          },
+          "conditional_advantage_true": {
+            "exact": "0",
+            "value": 0.0
+          }
+        },
+        {
+          "gradient": {
+            "exact": "4/25",
+            "value": 0.16
+          },
+          "conditional_gradient": {
+            "exact": "4/25",
+            "value": 0.16
+          },
+          "centered_score_variance": {
+            "exact": "36/625",
+            "value": 0.0576
+          },
+          "conditional_score_variance": {
+            "exact": "36/625",
+            "value": 0.0576
+          },
+          "conditional_advantage_false": {
+            "exact": "-1/5",
+            "value": -0.2
+          },
+          "conditional_advantage_true": {
+            "exact": "4/5",
+            "value": 0.8
+          }
+        }
+      ]
+    },
+    "supervised_additive_gold111": {
+      "expected_reward": {
+        "exact": "27/100",
+        "value": 0.27
+      },
+      "nodes": [
+        {
+          "gradient": {
+            "exact": "21/1000",
+            "value": 0.021
+          },
+          "conditional_gradient": {
+            "exact": "21/1000",
+            "value": 0.021
+          },
+          "centered_score_variance": {
+            "exact": "861/25000",
+            "value": 0.03444
+          },
+          "conditional_score_variance": {
+            "exact": "21/62500",
+            "value": 0.000336
+          },
+          "conditional_advantage_false": {
+            "exact": "-3/100",
+            "value": -0.03
+          },
+          "conditional_advantage_true": {
+            "exact": "7/100",
+            "value": 0.07
+          }
+        },
+        {
+          "gradient": {
+            "exact": "3/125",
+            "value": 0.024
+          },
+          "conditional_gradient": {
+            "exact": "3/125",
+            "value": 0.024
+          },
+          "centered_score_variance": {
+            "exact": "39/1000",
+            "value": 0.039
+          },
+          "conditional_score_variance": {
+            "exact": "3/31250",
+            "value": 9.6e-05
+          },
+          "conditional_advantage_false": {
+            "exact": "-1/25",
+            "value": -0.04
+          },
+          "conditional_advantage_true": {
+            "exact": "3/50",
+            "value": 0.06
+          }
+        },
+        {
+          "gradient": {
+            "exact": "4/25",
+            "value": 0.16
+          },
+          "conditional_gradient": {
+            "exact": "4/25",
+            "value": 0.16
+          },
+          "centered_score_variance": {
+            "exact": "729/12500",
+            "value": 0.05832
+          },
+          "conditional_score_variance": {
+            "exact": "36/625",
+            "value": 0.0576
+          },
+          "conditional_advantage_false": {
+            "exact": "-1/5",
+            "value": -0.2
+          },
+          "conditional_advantage_true": {
+            "exact": "4/5",
+            "value": 0.8
+          }
+        }
+      ]
+    },
+    "consistency_only": {
+      "expected_reward": {
+        "exact": "103/125",
+        "value": 0.824
+      },
+      "nodes": [
+        {
+          "gradient": {
+            "exact": "21/1250",
+            "value": 0.0168
+          },
+          "conditional_gradient": {
+            "exact": "21/1250",
+            "value": 0.0168
+          },
+          "centered_score_variance": {
+            "exact": "40341/1562500",
+            "value": 0.02581824
+          },
+          "conditional_score_variance": {
+            "exact": "84/390625",
+            "value": 0.00021504
+          },
+          "conditional_advantage_false": {
+            "exact": "-3/125",
+            "value": -0.024
+          },
+          "conditional_advantage_true": {
+            "exact": "7/125",
+            "value": 0.056
+          }
+        },
+        {
+          "gradient": {
+            "exact": "9/625",
+            "value": 0.0144
+          },
+          "conditional_gradient": {
+            "exact": "9/625",
+            "value": 0.0144
+          },
+          "centered_score_variance": {
+            "exact": "12786/390625",
+            "value": 0.03273216
+          },
+          "conditional_score_variance": {
+            "exact": "27/781250",
+            "value": 3.456e-05
+          },
+          "conditional_advantage_false": {
+            "exact": "-3/125",
+            "value": -0.024
+          },
+          "conditional_advantage_true": {
+            "exact": "9/250",
+            "value": 0.036
+          }
+        },
+        {
+          "gradient": {
+            "exact": "-88/625",
+            "value": -0.1408
+          },
+          "conditional_gradient": {
+            "exact": "-88/625",
+            "value": -0.1408
+          },
+          "centered_score_variance": {
+            "exact": "22704/390625",
+            "value": 0.05812224
+          },
+          "conditional_score_variance": {
+            "exact": "17424/390625",
+            "value": 0.04460544
+          },
+          "conditional_advantage_false": {
+            "exact": "22/125",
+            "value": 0.176
+          },
+          "conditional_advantage_true": {
+            "exact": "-88/125",
+            "value": -0.704
+          }
+        }
+      ]
+    },
+    "all_three_correct_gold111": {
+      "expected_reward": {
+        "exact": "3/125",
+        "value": 0.024
+      },
+      "nodes": [
+        {
+          "gradient": {
+            "exact": "21/1250",
+            "value": 0.0168
+          },
+          "conditional_gradient": {
+            "exact": "21/1250",
+            "value": 0.0168
+          },
+          "centered_score_variance": {
+            "exact": "17241/1562500",
+            "value": 0.01103424
+          },
+          "conditional_score_variance": {
+            "exact": "84/390625",
+            "value": 0.00021504
+          },
+          "conditional_advantage_false": {
+            "exact": "-3/125",
+            "value": -0.024
+          },
+          "conditional_advantage_true": {
+            "exact": "7/125",
+            "value": 0.056
+          }
+        },
+        {
+          "gradient": {
+            "exact": "9/625",
+            "value": 0.0144
+          },
+          "conditional_gradient": {
+            "exact": "9/625",
+            "value": 0.0144
+          },
+          "centered_score_variance": {
+            "exact": "3186/390625",
+            "value": 0.00815616
+          },
+          "conditional_score_variance": {
+            "exact": "27/781250",
+            "value": 3.456e-05
+          },
+          "conditional_advantage_false": {
+            "exact": "-3/125",
+            "value": -0.024
+          },
+          "conditional_advantage_true": {
+            "exact": "9/250",
+            "value": 0.036
+          }
+        },
+        {
+          "gradient": {
+            "exact": "12/625",
+            "value": 0.0192
+          },
+          "conditional_gradient": {
+            "exact": "12/625",
+            "value": 0.0192
+          },
+          "centered_score_variance": {
+            "exact": "5604/390625",
+            "value": 0.01434624
+          },
+          "conditional_score_variance": {
+            "exact": "324/390625",
+            "value": 0.00082944
+          },
+          "conditional_advantage_false": {
+            "exact": "-3/125",
+            "value": -0.024
+          },
+          "conditional_advantage_true": {
+            "exact": "12/125",
+            "value": 0.096
+          }
+        }
+      ]
+    }
+  },
+  "consistency_truth_table": [
+    {
+      "action": [
+        0,
+        0,
+        0
+      ],
+      "consistent": 1,
+      "gold111_correct": false
+    },
+    {
+      "action": [
+        0,
+        0,
+        1
+      ],
+      "consistent": 0,
+      "gold111_correct": false
+    },
+    {
+      "action": [
+        0,
+        1,
+        0
+      ],
+      "consistent": 1,
+      "gold111_correct": false
+    },
+    {
+      "action": [
+        0,
+        1,
+        1
+      ],
+      "consistent": 0,
+      "gold111_correct": false
+    },
+    {
+      "action": [
+        1,
+        0,
+        0
+      ],
+      "consistent": 1,
+      "gold111_correct": false
+    },
+    {
+      "action": [
+        1,
+        0,
+        1
+      ],
+      "consistent": 0,
+      "gold111_correct": false
+    },
+    {
+      "action": [
+        1,
+        1,
+        0
+      ],
+      "consistent": 1,
+      "gold111_correct": false
+    },
+    {
+      "action": [
+        1,
+        1,
+        1
+      ],
+      "consistent": 1,
+      "gold111_correct": true
+    }
+  ],
+  "frozen_old_credit_away_from_old": {
+    "new_probabilities": [
+      {
+        "exact": "3/5",
+        "value": 0.6
+      },
+      {
+        "exact": "7/10",
+        "value": 0.7
+      },
+      {
+        "exact": "1/2",
+        "value": 0.5
+      }
+    ],
+    "reward": "all_three_correct_gold111",
+    "marginal_unclipped_gradient": [
+      {
+        "exact": "12/625",
+        "value": 0.0192
+      },
+      {
+        "exact": "63/5000",
+        "value": 0.0126
+      },
+      {
+        "exact": "3/100",
+        "value": 0.03
+      }
+    ],
+    "current_expected_reward_gradient": [
+      {
+        "exact": "21/250",
+        "value": 0.084
+      },
+      {
+        "exact": "63/1000",
+        "value": 0.063
+      },
+      {
+        "exact": "21/200",
+        "value": 0.105
+      }
+    ],
+    "equivalent": false
+  },
+  "method": "Exact Fraction enumeration; independent Bernoulli logits; no clipping, GRPO normalization, CE, KL or neural parameters.",
+  "limitations": [
+    "Conditional credit preserves the expected on-policy score gradient and reduces each coordinate estimator variance versus the same centered-reward estimator.",
+    "This does not prove smaller shared-parameter total gradient variance or higher model accuracy.",
+    "Frozen old conditional advantages with marginal ratios generally cease to match interacting reward gradients away from old policy, even before clipping.",
+    "Consistency has no gold correctness information; all-false is consistent.",
+    "B implies I and S only when definition scopes align; reverse implication is not assumed."
+  ],
+  "training_dispatch_allowed": false
+}

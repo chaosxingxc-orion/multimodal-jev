@@ -1,0 +1,16 @@
+{
+  "status": "independent_group_audit_candidate",
+  "tests_initial_suite": 32,
+  "tests_final_group_module": 15,
+  "test_commands": [
+    "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_group_audit.py tests/test_context_rollout_audit.py tests/test_context_online_batches.py",
+    "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_group_audit.py"
+  ],
+  "files": {
+    "tools/jev/context_rl_group_audit.py": "9864faed249bb5cd6caadd7637c49ad69a13e447beb22026a093199d333a4f86",
+    "tests/test_context_rl_group_audit.py": "af676018af4596460690b789c5f44bdc081e42c43aeebc1791ae89f9b5151e0d"
+  },
+  "real_evidence": "docs/engineering/context-rl-group-real-check-v1.json",
+  "scope": "Independent G16 set-F1, GRPO/RLOO estimator, sampled-action and joint-likelihood checks. CPU synthetic online records; real historical128-per-algorithm formula comparison separately verified. Formal634 collector integration still pending.",
+  "stage2_released": false
+}

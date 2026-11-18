@@ -1,0 +1,54 @@
+{
+  "schema": "slurp-communication-scope-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/communication-scope-candidate-v1.json",
+  "rule_sha256": "7ee0575e276d94d5cef8f8767389ba01801ec976d05fbda884b24eb5c4e6913d",
+  "review": "configs/reviews/slurp-communication-scope-reference-v1.json",
+  "review_sha256": "2ea42284d3f472abea198a6587998497bcb47324b0a459cd7839caba9b55108d",
+  "cohort_sources": {
+    "general_quirky": 425,
+    "music_likeness": 96,
+    "music_dislikeness": 11
+  },
+  "cohort_recordings": {
+    "general_quirky": 1550,
+    "music_likeness": 405,
+    "music_dislikeness": 69
+  },
+  "review_sources": 37,
+  "scope_proposal_counts": {
+    "true": 32,
+    "unavailable": 5
+  },
+  "discourse_counts": {
+    "standalone_assertion": 10,
+    "standalone_preference": 7,
+    "underspecified_reference": 3,
+    "bare_fragment": 2,
+    "state_with_possible_implicit_request": 3,
+    "explicit_request_and_related_statement": 9,
+    "explicit_payload": 3
+  },
+  "recording_bindings": 198,
+  "unique_recordings": 198,
+  "migration_impact": {
+    "type_cards_requiring_scope_alignment": 55,
+    "policy_cards_requiring_scope_alignment": 55,
+    "boundary_rules_requiring_scope_alignment": 89,
+    "full_population_type_coordinates": 505560,
+    "existing_reference_coordinates_requiring_contract_comparison": 2962,
+    "existing_reference_assessments": 3913,
+    "actual_semantic_label_changes": null,
+    "interpretation": "Global contract impact upper scope, not a count of changed truth values. Rule-dependent reference migration required; no automatic polarity change."
+  },
+  "admitted": 0,
+  "current_ontology_unchanged": true,
+  "source_metadata_and_full_learning_binding_reconstructed": true,
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v1/music_dislikeness.jsonl": "136a0399518f61274280fcc801bb3383a57b70b432c6e0cb952b92b26208b662",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v1/review-recording-bindings.jsonl": "3e7bc627b8d0b2a548cfd7c0ba078671ba69449a05a18e2c9de5246184f9f4aa",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v1/music_likeness.jsonl": "15bc400a98a716a82121a779c61797ee420bbb60f961e38349b03463dfef1de9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v1/general_quirky.jsonl": "905ac3ba5d294541ced141ec6f63d77eaacb718e11a9494f4ace661c6011b30e"
+  },
+  "scope": "Same-author candidate content-scope judgments, not slot labels, independent semantic review, listening or model evidence."
+}

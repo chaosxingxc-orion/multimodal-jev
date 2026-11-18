@@ -1,0 +1,78 @@
+{
+  "container_id": "edce0b65097b9b5275b55789b8f8d01f2369be3a6254104836f15477cc338400",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T11:01:57.9348067Z",
+    "FinishedAt": "2026-11-14T11:02:28.01990153Z"
+  },
+  "files": {
+    "phase-0.log": "381c5f29f758240accebf4fc43bc1520b6d510895e8135b3a41f678ba26f39c9",
+    "terminal.json": "9660c1498233f21a160ff9ae7146058fa117baaa854fc8e357e7c79573ce137d",
+    "config.json": "79c116bc4d7ccf7e294b7a6971f5e9d9f82686fb9145d85044ea5ab46d72d54f",
+    "run/hf-batch-batch.pt": "67b8cbb54498ca55e37e79924280765a5a1aa84fa721420234a030d5799651b2",
+    "run/hf-serial-batch.pt": "b9b5a1f1a14e3203d32dc810662f573b224578113b93c612e8763c5f8213ee39",
+    "run/diagnostic-update.json": "f6be8a4c87877cc14c9ef6388515633c3f0bd3565b533e9a4a487b957d689cd3",
+    "run/hf-batch.json": "ee8c600202aba9e512f3331be991e871d586febbb88cae83f8d25f0891086a28",
+    "run/batch-runtime.json": "1e8647c96a17b3930fa15935fdb3deaf7ae215e51758bcf19800c8037b5bd687",
+    "run/hf-terminal.json": "7aa9a8697124d4ef55527fdb5019e0d74c618f49b964d27e0c2905095060238c",
+    "run/hf.json": "9383b280e9f88bb183544e858b82f03377d2d39c98f45e1985865bb3330a96ac",
+    "run/diagnostic-update.pt": "893283c8104a8be4be1d99092c5640d2f735ca1b60d8e336656baa09d88dd509",
+    "run/progress.json": "e03110640da9350f082bb28123c6ac2e4933a67ef838689a17f8741969b29b0d",
+    "run/hf_batch-terminal.json": "465e1743322169c211efcf07f01a000f468b430cef5385fad1bae39b00469c32",
+    "run/joint.json": "51153f1417c0d854756247a48b65eb6c2e1c5713296b877443da9b0bfa8eab69",
+    "run/adapter/adapter_model.safetensors": "a945632f0d0bdef540d3a9768b694c412dee10e76f4aa62a2382e39429b659eb",
+    "run/adapter/adapter_config.json": "f561c32c7c671a47731c00d78dfc6b7a9c38198ecc4f4c3a0c72826cf72cbde0",
+    "run/adapter/CONTEXT_POLICY.json": "d432d82f254a8ee36e6a32e052d2c834d9bf37b069eb607bca25a49327f2f55d",
+    "run/policy/execution.pt": "40a331060effa2718266ada63912cf5fd838933fb0a438c0b5948356e86dfd6a",
+    "run/policy/MANIFEST.json": "96b883731023f05353c7954edb4dec2870f62a70583e80bfac07efedaa7bf6ab",
+    "run/policy/processor/processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+    "run/policy/processor/tokenizer.json": "dfc31f2e73e91521a1f664ca198cffaaa123619c10b4638270b804565e4979c8",
+    "run/policy/processor/chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+    "run/policy/processor/tokenizer_config.json": "e2c2078a8c3e0394171ce4e82a76a8b38ced47cd20a34e5149ebb51198b19856"
+  },
+  "pins": 357,
+  "collection_sha256": "0e45d31c11c7111f30e1077ea9bbd2a7d0fc70c91151db82dcf22ca9e13f21c4",
+  "training_dispatch_allowed": false,
+  "parity_admitted": false,
+  "updated_policy_checkpoint_recheck": {
+    "parameters": 128,
+    "master_bf16_export_exact": true,
+    "adam_step": 1,
+    "on_device_restore_probability_error": 0.0
+  },
+  "independent_probability_checks": {
+    "logit_max_error": 0.0009765625,
+    "probability_max_error": 0.00024312734603881836,
+    "gradient_max_error": 0.001953125,
+    "gradient_relative_l2": 0.004092913120985031,
+    "timing": [
+      {
+        "mode": "serial",
+        "seconds": 2.4726899700035574,
+        "allocated": 7245200384,
+        "reserved": 7763656704,
+        "snapshot_sha256": "b9b5a1f1a14e3203d32dc810662f573b224578113b93c612e8763c5f8213ee39"
+      },
+      {
+        "mode": "batch",
+        "seconds": 1.180854320002254,
+        "allocated": 12125299200,
+        "reserved": 13151240192,
+        "snapshot_sha256": "67b8cbb54498ca55e37e79924280765a5a1aa84fa721420234a030d5799651b2"
+      }
+    ],
+    "training_dispatch_allowed": false,
+    "scope": "Two-request same-weight serial versus batch; raw differences, no parity/throughput promotion."
+  },
+  "joint_policy_id": "67260b7896435319d1a187cb2168ab49eb7c754c826853741d27d0c46d078099",
+  "scope": "Joint snapshot and input identity verified; two real requests serial/batch forward/backward, no optimizer or admission."
+}

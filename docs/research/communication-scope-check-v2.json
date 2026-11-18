@@ -1,0 +1,62 @@
+{
+  "schema": "slurp-communication-scope-check-v2",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/communication-scope-resolution-v2.json",
+  "rule_sha256": "43ff7de94646c5bbe06d322bb95409e966ad6634d2f6c52729876e93bf8a3cde",
+  "review": "configs/reviews/slurp-communication-scope-slot-reference-v2.json",
+  "review_sha256": "f51ce75cbbec9a02938378afa77c3da3f09eb1727ce8b295f23826cb66b591aa",
+  "scope_review": "configs/reviews/slurp-communication-scope-reference-v2.json",
+  "scope_review_sha256": "7c6a2ef1bef0a06cee5cb1fa62b785f661e1d50efd4ee4df89333996738168b9",
+  "unique_read_sources": 581,
+  "cohort_counts": {
+    "general_quirky": 425,
+    "music_likeness": 96,
+    "music_dislikeness": 11,
+    "mixed": 7,
+    "payload": 45
+  },
+  "scope_review_sources": 49,
+  "scope_bindings": 253,
+  "review_coordinates": 33,
+  "review_sources": 18,
+  "proposal_counts": {
+    "true": 24,
+    "false": 5,
+    "null": 4
+  },
+  "recording_bindings": 215,
+  "unique_recordings": 122,
+  "admitted": 0,
+  "all_active_field_deltas_reconstructed": true,
+  "old_scope_exclusion_absent_from_active_fields": true,
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v12.json",
+    "sha256": "107a19aafacd5a6cdab7b0c1c7a15736d53392636604151f2dfec72958a6bae1",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v14.json": "7e52b6c3734b40b848cd3c5b8d31f38f10adea024d9a196282af51c72d9031a7",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v14.json": "7d066c1823def346e3f567c70a0a73aa6fcd90d38ad491453bd6a0c6b022107f",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v15.json": "1ee7f93df6fe2a97963bba08d1fe92dbc197323a9b4df71f28d18a981ad44dcd"
+    },
+    "changed_cards": 55,
+    "changed_policies": 55,
+    "changed_boundaries": 89
+  },
+  "pins": {
+    "configs/tasks/slurp/communication-scope-resolution-v2.json": "43ff7de94646c5bbe06d322bb95409e966ad6634d2f6c52729876e93bf8a3cde",
+    "configs/reviews/slurp-communication-scope-slot-reference-v2.json": "f51ce75cbbec9a02938378afa77c3da3f09eb1727ce8b295f23826cb66b591aa",
+    "configs/reviews/slurp-communication-scope-reference-v2.json": "7c6a2ef1bef0a06cee5cb1fa62b785f661e1d50efd4ee4df89333996738168b9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v10/report.json": "ff6c6725939a15a6def30dd550a99292014457b3c1adc650383272e419692f16",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/mixed-sources.jsonl": "4cfb1b06bc6aae74a1c3ab6473594180fde21ad58bc6e6e3b1152e0a5a96457f",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/review-recording-bindings.jsonl": "1dd0df095ebb52c9d3ed901ba8ce8d41bf2df3be1b5296f572c01e23dfb6afda",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/music_likeness-sources.jsonl": "15bc400a98a716a82121a779c61797ee420bbb60f961e38349b03463dfef1de9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/music_dislikeness-sources.jsonl": "136a0399518f61274280fcc801bb3383a57b70b432c6e0cb952b92b26208b662",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/summary.json": "e341bc481ce18ccb9e3bbaedca5e7eaff631fddcb25805404e53e97691194267",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/general_quirky-sources.jsonl": "905ac3ba5d294541ced141ec6f63d77eaacb718e11a9494f4ace661c6011b30e",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/scope-recording-bindings.jsonl": "751108788df789346c2d584bc26e26c3166721f592b5caeb3a795079a3562cf8",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/payload-sources.jsonl": "5702a4f78b3464b9f9dee07ae8952b9ffd1a0c6499828c7369a6bc4e24277752"
+  },
+  "scope": "Independent metadata/binding and exact-delta reconstruction, not independent semantic adjudication or audio listening."
+}

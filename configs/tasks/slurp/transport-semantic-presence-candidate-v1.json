@@ -1,0 +1,49 @@
+{
+  "schema": "slurp-transport-semantic-presence-candidate-v1",
+  "status": "separate_I_present_design_and_reference_review_not_training_release",
+  "training_dispatch_allowed": false,
+  "request_policy": "configs/tasks/intent-request-semantics-candidate-v1.json",
+  "cards": [
+    {
+      "semantic_id": "travel_information_lookup",
+      "operator": "I_present",
+      "definition": "The query requests information or guidance about a journey, route, travel service, transport ticket or its acquisition procedure.",
+      "includes": [
+        "Directions, route planning, journey distance/duration, departure/arrival times, service availability, fares and available travel options.",
+        "Searching or displaying ticket information, and asking how or where to obtain transport tickets, when an informational purpose is expressed.",
+        "Transport access points such as a station, and journey departure advice. Missing destinations or times do not invalidate a clear information request."
+      ],
+      "excludes": [
+        "Purchasing/reserving alone does not imply a separate information request; only explicitly expressed lookup counts.",
+        "Opening a map/tool or displaying a geographic map without journey/route information, and standalone venue discovery/location without travel access or route purpose.",
+        "An unresolved search-versus-acquisition request remains unavailable; do not force find me a ticket into one interpretation."
+      ],
+      "coexistence": "Explicit booking and information requests can both be present. A purchase clause does not veto a separate availability query.",
+      "native_related_label": "transport_query",
+      "native_mapping_status": "related_operation_not_equivalent_exclusive_class",
+      "optimization_allowed": false
+    },
+    {
+      "semantic_id": "transport_passage_acquire",
+      "operator": "I_present",
+      "definition": "The query requests obtaining, purchasing, paying for or reserving a transport ticket, seat or booked passage on a transport service.",
+      "includes": [
+        "An explicit purchase/reservation/payment instruction or a directed request for a transport ticket, including want/need a ticket constructions without a competing informational reading.",
+        "Booking a train ride, return journey or seat even without the word ticket; omitted route/time/value arguments do not erase the operation.",
+        "A clearly directed conditional acquisition request is present without asserting condition truth or execution."
+      ],
+      "excludes": [
+        "Asking ticket prices, availability, methods or purchase locations alone; opening a ticket app alone; reading ticket information alone.",
+        "A generic wish to travel or leave is not sufficient evidence for booking. A ride with no service/ticket evidence may mean taxi hiring and remains unavailable for this definition.",
+        "Generic event tickets without transport evidence; no external identity lookup of a platform or title is used to supply a missing domain."
+      ],
+      "ambiguity": "Find/get/search phrasing and can I purchase may denote information, permission or acquisition; use the full expression and retain unresolved interpretations rather than assigning by native class or a verb list.",
+      "coexistence": "A separately requested information lookup does not cancel an acquisition request.",
+      "native_related_label": "transport_ticket",
+      "native_mapping_status": "related_operation_not_equivalent_exclusive_class",
+      "optimization_allowed": false
+    }
+  ],
+  "supervision": "Fresh proposals under these definitions and the unchanged shared request policy; no automatic inheritance of old definition-fit truth.",
+  "scope": "Complete 282-source native query/ticket cohort, with cross-domain rule comparison to contacts. Not exhaustive semantic annotation of all 40513 learning recordings or proof of cross-dataset model transfer."
+}

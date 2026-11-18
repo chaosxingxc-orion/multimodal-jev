@@ -1,0 +1,21 @@
+{
+  "schema": "configured-context-training-schedule-v1",
+  "release": "${SLURP_RELEASE}",
+  "release_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+  "ledger": "${SCHEDULE_INPUT_LEDGER}",
+  "ledger_sha256": "${SCHEDULE_INPUT_LEDGER_SHA256}",
+  "profile": {
+    "seed": 317,
+    "epochs": 2,
+    "global_batch": 128,
+    "world_size": 4,
+    "microbatch": 8,
+    "split": "learning",
+    "coverage": "full_without_replacement",
+    "class_order": "class_spread",
+    "length_grouping": "within_global_batch",
+    "padding_weight": 0,
+    "oversampling": false
+  },
+  "output_directory": "${SCHEDULE_OUTPUT}"
+}

@@ -15,6 +15,8 @@ def main():
     p.add_argument('--manifest-sha256', required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--global-batch', type=int, default=128)
+    p.add_argument('--task-mode', choices=['instruction_views', 'direct_final'], default='instruction_views')
+    p.add_argument('--class-weighting', choices=['natural', 'sqrt_cap4'], default='natural')
     a = p.parse_args()
     if a.output.exists():
         raise FileExistsError('immutable schedule already exists')
@@ -25,7 +27,8 @@ def main():
     a.output.mkdir(parents=True)
     reports = []
     for epoch in range(2):
-        batches, report = epoch_schedule(rows, seed=317, epoch=epoch, global_batch=a.global_batch, world_size=4)
+        batches, report = epoch_schedule(rows, seed=317, epoch=epoch, global_batch=a.global_batch, world_size=4,
+                                        task_mode=a.task_mode, class_weighting=a.class_weighting)
         for batch in batches:
             for slot in batch:
                 request, target, binding = example(by_id[slot['id']], task, slot['view'], slot['variant'])
@@ -40,6 +43,8 @@ def main():
         unique_recordings=len(rows), total_nonpadding_recording_uses=len(rows)*2,
         train_source_groups=manifest['counts']['learning']['source_groups'],
         stage='instruction', objective='candidate-normalized-masked-CE',
+        task_mode=a.task_mode, class_weighting=a.class_weighting,
+        loss_reduction='real_request_mean' if a.task_mode == 'direct_final' else 'legacy_weight_mean',
         NPU_preflight_passed=False, training_dispatched=False,
         input_contract='audio plus input-only questions; targets outside backbone; fixed source-independent view/binding schedule',
         pins={str(Path(__file__)):file_hash(__file__),

@@ -1,0 +1,54 @@
+{
+  "source_files": {
+    ".local/decision-objective-research/context-engine-updated-audio-npu7-v3-collected/run/hf.json": "9383b280e9f88bb183544e858b82f03377d2d39c98f45e1985865bb3330a96ac",
+    ".local/decision-objective-research/context-engine-updated-audio-npu7-v3-collected/run/vllm.json": "197e4e3a227ababa513593b64345aae171e7b51690f69105e7276c993ac2b301"
+  },
+  "rows": [
+    {
+      "id": "slurp:audio-1497270079.flac",
+      "max_probability_error": 0.008534252643585205,
+      "mean_probability_error": 0.0039982418219248455,
+      "hf_probability_range": [
+        0.48840540647506714,
+        0.5841525197029114
+      ],
+      "vllm_probability_range": [
+        0.4942629337310791,
+        0.5903069376945496
+      ],
+      "max_binary_logprob_error": 0.020569887151184352,
+      "factorized_kl_hf_to_vllm": 0.0023962223288281903,
+      "maximum_action_log_ratio": 0.44438756115587486,
+      "minimum_action_log_ratio": -0.5239962667294138,
+      "half_threshold_disagreements": 0,
+      "hf_argmax": 59,
+      "vllm_argmax": 59,
+      "hf_seconds": 0.21308168000541627,
+      "vllm_seconds": 4.14055675000418
+    },
+    {
+      "id": "slurp:audio-1497621480-headset.flac",
+      "max_probability_error": 0.01041567325592041,
+      "mean_probability_error": 0.004366879165172577,
+      "hf_probability_range": [
+        0.4711015820503235,
+        0.5614553093910217
+      ],
+      "vllm_probability_range": [
+        0.47755417227745056,
+        0.5688949227333069
+      ],
+      "max_binary_logprob_error": 0.022851957606930373,
+      "factorized_kl_hf_to_vllm": 0.002985035436123995,
+      "maximum_action_log_ratio": 0.5017857979549217,
+      "minimum_action_log_ratio": -0.5500333759180729,
+      "half_threshold_disagreements": 1,
+      "hf_argmax": 50,
+      "vllm_argmax": 50,
+      "hf_seconds": 0.296674979996169,
+      "vllm_seconds": 0.13887424000131432
+    }
+  ],
+  "parity_admitted": false,
+  "scope": "Two real-audio requests only. Factorized Bernoulli KL/log-ratio describe exploration distributions, not semantic independence. No task metric or steady-state throughput."
+}

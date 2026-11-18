@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "c122a31fa37a7e558f34f2dd82040b6b537ea48c6948b3dbbcdb1db871d358d3",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T08:50:39.74350143Z",
+    "FinishedAt": "2026-11-16T08:53:34.2866782Z"
+  },
+  "source_files": 370,
+  "source_manifest_sha256": "8ce94b37b0b0f56a8bacde455e4b150e41d513bca687d8fcc826819e22af1d9f",
+  "collection": "/srv/multimodal-jev-xingchao/operations/macro-dp2-rank64-cpu-v1/context-macro-dp2-rank64-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "1397048bf6a0f3ad6935a53fe705f541fe937597191eb6dfdf7d303617092a47",
+    "run/junit.xml": "de762de8ad47d2960c23fbadd9b8d56a4586b89ea0423187ed34e4c720a9fb06",
+    "run/pytest.log": "92a67e873b122bcc2bec38cb617cf6322c259e8f8ba1f40c1d82a69d9826077d",
+    "package/FILES.json": "8ce94b37b0b0f56a8bacde455e4b150e41d513bca687d8fcc826819e22af1d9f",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 4,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794819066.669947,
+    "finished_unix": 1794819212.7499344,
+    "source_manifest_sha256": "8ce94b37b0b0f56a8bacde455e4b150e41d513bca687d8fcc826819e22af1d9f",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-macro-dp2-rank64-cpu-v1/run/junit.xml",
+      "tests/test_context_macro_actor_dp_resume.py",
+      "tests/test_context_dual_credit_native.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "CPU native verl DP2 global128/micro8,16,32 exact fresh replay plus FP64 ranking numerics and FP32 loss; synthetic logits, not NPU evidence."
+}

@@ -1,0 +1,851 @@
+{
+  "schema": "fsc-semantic-presence-definitions-candidate-v1",
+  "status": "31_independent_command_predicates_not_native_projection",
+  "training_dispatch_allowed": false,
+  "cards": [
+    {
+      "semantic_id": "fsc_presence_00",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching on a lamp.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "activate",
+        "object": "lamp",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_01",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching on lights.",
+      "location_constraint": "The matching request explicitly targets the bedroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "bedroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_02",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching on lights.",
+      "location_constraint": "The matching request explicitly targets the kitchen; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "kitchen"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_03",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching on lights.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_04",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching on lights.",
+      "location_constraint": "The matching request explicitly targets the bathroom or washroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "activate",
+        "object": "lights",
+        "location": "washroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_05",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request starting or resuming music playback; music domain must be expressed.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "activate",
+        "object": "music",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_06",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request physically fetching or bringing juice to the speaker or stated destination; searching information, ordering delivery or merely mentioning the object does not automatically express fetching.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "bring",
+        "object": "juice",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_07",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request physically fetching or bringing newspaper to the speaker or stated destination; searching information, ordering delivery or merely mentioning the object does not automatically express fetching.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "bring",
+        "object": "newspaper",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_08",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request physically fetching or bringing shoes to the speaker or stated destination; searching information, ordering delivery or merely mentioning the object does not automatically express fetching.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "bring",
+        "object": "shoes",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_09",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request physically fetching or bringing socks to the speaker or stated destination; searching information, ordering delivery or merely mentioning the object does not automatically express fetching.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "bring",
+        "object": "socks",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_10",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing the device/system language setting to Chinese. Opening language settings or asking how to switch is not execution of a language change.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "change language",
+        "object": "Chinese",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_11",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing the device/system language setting to English. Opening language settings or asking how to switch is not execution of a language change.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "change language",
+        "object": "English",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_12",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing the device/system language setting to German. Opening language settings or asking how to switch is not execution of a language change.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "change language",
+        "object": "German",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_13",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing the device/system language setting to Korean. Opening language settings or asking how to switch is not execution of a language change.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "change language",
+        "object": "Korean",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_14",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request changing the device/system language setting, with no target language expressed in that request. Opening language settings or asking how to switch is not execution of a language change.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "change language",
+        "object": "none",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_15",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching off a lamp.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "deactivate",
+        "object": "lamp",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_16",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching off lights.",
+      "location_constraint": "The matching request explicitly targets the bedroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "bedroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_17",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching off lights.",
+      "location_constraint": "The matching request explicitly targets the kitchen; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "kitchen"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_18",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching off lights.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_19",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request switching off lights.",
+      "location_constraint": "The matching request explicitly targets the bathroom or washroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "For this task lamp and general lights are distinct stated referent categories; do not automatically close the taxonomy from lamp to lights. Ambiguous scope remains unavailable.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "deactivate",
+        "object": "lights",
+        "location": "washroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_20",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request stopping or pausing music playback; music domain must be expressed.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "deactivate",
+        "object": "music",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_21",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative decrease in heating or ambient temperature, not cooling food or an absolute setting without direction.",
+      "location_constraint": "The matching request explicitly targets the bedroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "bedroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_22",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative decrease in heating or ambient temperature, not cooling food or an absolute setting without direction.",
+      "location_constraint": "The matching request explicitly targets the kitchen; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "kitchen"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_23",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative decrease in heating or ambient temperature, not cooling food or an absolute setting without direction.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_24",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative decrease in heating or ambient temperature, not cooling food or an absolute setting without direction.",
+      "location_constraint": "The matching request explicitly targets the bathroom or washroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "decrease",
+        "object": "heat",
+        "location": "washroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_25",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative decrease in audible output loudness while retaining sound; mute/zero is not this act and an ungrounded turn it down leaves the domain unresolved.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "decrease",
+        "object": "volume",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_26",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative increase in heating or ambient temperature, not cooking a material or an absolute setting without direction.",
+      "location_constraint": "The matching request explicitly targets the bedroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "bedroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_27",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative increase in heating or ambient temperature, not cooking a material or an absolute setting without direction.",
+      "location_constraint": "The matching request explicitly targets the kitchen; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "kitchen"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_28",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative increase in heating or ambient temperature, not cooking a material or an absolute setting without direction.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_29",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative increase in heating or ambient temperature, not cooking a material or an absolute setting without direction.",
+      "location_constraint": "The matching request explicitly targets the bathroom or washroom; another room or unresolved room does not satisfy this location-specific predicate.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "increase",
+        "object": "heat",
+        "location": "washroom"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    },
+    {
+      "semantic_id": "fsc_presence_30",
+      "operator": "I_present",
+      "act_policy": "request",
+      "definition": "Request a relative increase in audible output loudness; absolute maximum alone, unmute alone, or an ungrounded turn it up does not establish this request.",
+      "location_constraint": "The matching request leaves its room unspecified in the utterance. This is an explicit scope constraint, not a wildcard over rooms and not a claim that the real device has no location.",
+      "object_constraint": "The operation referent/domain must be established in the utterance, not supplied by native labels or hidden environment.",
+      "includes": [
+        "Clear operation requests with missing execution parameters may match when their domain and act are established.",
+        "Task-level conventional elliptical commands can express requests; a bare ambiguous fragment is not resolved from native membership."
+      ],
+      "excludes": [
+        "A fact, complaint, recommendation, quoted payload or merely opening a tool does not automatically perform the requested operation.",
+        "Negated/prohibited acts do not satisfy the affirmative predicate; separately expressed matching requests may coexist."
+      ],
+      "multi_request": "Evaluate per expressed request. A room-specific request and a distinct room-unspecified request may both match their cards; no whole-utterance veto or primary-intent priority.",
+      "target_language_policy": "For language-change cards, explicit named language or clear within-utterance anaphoric target is required; object none means no target expressed, never all languages. Ambiguous target is unavailable.",
+      "truth": "positive matching evidence; negative reviewed clear absence; unavailable genuine semantic ambiguity; unassessed/conflict never false",
+      "related_native_values": {
+        "action": "increase",
+        "object": "volume",
+        "location": "none"
+      },
+      "native_equivalence": false,
+      "optimization_allowed": false,
+      "review_status": "task_definition_candidate_pending_independent_annotation"
+    }
+  ],
+  "request_policy": "configs/tasks/intent-request-semantics-candidate-v1.json",
+  "source_train_csv": "/mnt/cephfs/xingchao/datasets/fsc/extracted/fluent_speech_commands_dataset/data/train_data.csv",
+  "source_train_sha256": "df1b87b7122c7a9fa1555fda61ba45436c4bbb33428e1ea54adcc1c3c1317ea4",
+  "source_records": 23132,
+  "distinct_train_references": 248,
+  "test_examples_used": false,
+  "scope": "Definitions authored using complete TRAIN reference inventory. No target feedback optimization or per-sample actor routing. No claim of untouched target task; historical FSC experiments exist."
+}

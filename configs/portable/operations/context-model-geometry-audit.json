@@ -1,0 +1,21 @@
+{
+  "schema": "jev-context-model-geometry-audit-v1",
+  "models": [
+    {
+      "role": "small",
+      "path": "${ASR_MODEL_0_6B}",
+      "expected_hidden_size": 1024
+    },
+    {
+      "role": "large",
+      "path": "${ASR_MODEL_1_7B}",
+      "expected_hidden_size": 2048
+    }
+  ],
+  "design": "${CONTEXT_DESIGN_CONFIG}",
+  "source_roots": [
+    "${CONTEXT_SOURCE_ROOT}",
+    "${CONTEXT_TOOL_ROOT}"
+  ],
+  "output": "${GEOMETRY_OUTPUT}"
+}

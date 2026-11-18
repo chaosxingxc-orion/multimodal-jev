@@ -1,0 +1,37 @@
+{
+  "schema": "context-attribute-trainer-bridge-candidate-v1",
+  "observed_unix": 1794713811.3951762,
+  "training_dispatch_allowed": false,
+  "local_checks": {
+    "training_candidate": 9,
+    "candidate_plus_schedule_before_runtime_test": 21,
+    "frame_auditor": 10
+  },
+  "changes": [
+    "reuse exact bounded DP4 trainer via seven checked substitutions",
+    "authenticate complete native TRAIN targets against source before prefetch",
+    "bind new arm and schedule contract into existing collective optimizer restore",
+    "bind attribute native actor and input/session adapters",
+    "keep original continuous update export activation and restore blocks"
+  ],
+  "files": {
+    "tools/reports/context_attribute_training_candidate.py": "61fd944531af68a59eb9c08b78a849979dae5b59b8c515294e2eca2358246124",
+    "tests/test_context_attribute_training_candidate.py": "548cebc2b5eb287d712a7faed44abaad3881fde91475c13c2ede47d8136c8bc1",
+    "tests/test_context_attribute_training_input_integration.py": "2a08e64da69c17c410471c0d025febe39c11ee645b52eccf620a47a13911ffde",
+    "tools/reports/verify_context_attribute_population_v2.py": "67135a5f2d672d75e75da8210b370f21d1aa6e953f51eb8a041ee894a442365e",
+    "tools/reports/prepare_context_attribute_schedule_v2.py": "7acf8e711e7ac9d0373767d170e1d96577c6b762fc5e882fb9fbcb99f1c7ad89"
+  },
+  "pins_verified": {
+    "context-rl-grpo-arithmetic-v2-driver.json": 1078,
+    "context-attribute-population-cpu-v1-driver-pins.json": 1073,
+    "context-attribute-selection-processor-cpu-v1-driver-pins.json": 1092
+  },
+  "fixed_image_v1": "exit1: 32 passed, 3 test floating-point comparison failures, 1 deselected; original package retained",
+  "fixed_image_v2_container": "9be44ee3a69aee24052f860214a829a1e94d9898f65c98ca2aba7fedb20c2da9",
+  "remaining": [
+    "TRAIN full input audit then v2 audit and schedule publication",
+    "real Qwen/NPU probability and continuous/new-process restore acceptance"
+  ],
+  "limits": "Derived trainer not executed with real Qwen; local wiring used synthetic schedule manifest; no new training dispatch or efficacy evidence",
+  "fixed_image_v2_result": "exit0/nonOOM, 46 passed/0 skipped, 1 explicitly deselected; independently collected"
+}

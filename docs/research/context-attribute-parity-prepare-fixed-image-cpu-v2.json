@@ -1,0 +1,55 @@
+{
+  "schema": "context-attribute-parity-prepare-fixed-image-cpu-v2",
+  "container_id": "a4914383e18752857c05b62aeff3a8fbbe77fa1590cfe91c3935216f2b5b54e9",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 2,
+    "Error": "",
+    "StartedAt": "2026-11-15T02:53:04.74043872Z",
+    "FinishedAt": "2026-11-15T02:54:03.20461485Z"
+  },
+  "source_files": 408,
+  "source_manifest_sha256": "1fbe3dc73cf2c89b488915a43e2d893ae0c37bc6ad3f082b7247841175554856",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-parity-prepare-cpu-v2-collected",
+  "files": {
+    "package/probe-config.json": "ed670d4efc92afba068be9066ab44bc6623b8260139556a047cdc7dabb462de4",
+    "run/terminal.json": "30093efa7b060241cb42b8aee462b501fcbce9949c3d74462267476c1e490813",
+    "run/junit.xml": "ff045750ca5d78d21a76ce17ac549a388593da950d757fb4a9d82a2505b290c9",
+    "run/pytest.log": "1f1b42a5696e9de08203290ad01bd9eef5845697cdc31c6a76af612e038919c2",
+    "package/FILES.json": "1fbe3dc73cf2c89b488915a43e2d893ae0c37bc6ad3f082b7247841175554856",
+    "package/run.py": "0bd534efa4ff6ff1547bdc7bcc3a43e71c6c75d758e3b098e6d0321c4864d998"
+  },
+  "counts": {
+    "tests": 1,
+    "failures": 0,
+    "errors": 1,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 2,
+    "started_unix": 1794711212.0551841,
+    "finished_unix": 1794711241.7553134,
+    "source_manifest_sha256": "1fbe3dc73cf2c89b488915a43e2d893ae0c37bc6ad3f082b7247841175554856",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-parity-prepare-cpu-v2/run/junit.xml",
+      "tests/test_context_attribute_parity_v2.py",
+      "tests/test_context_attribute_parity_pair_v2.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Frozen Stage1 policy/adapter authentication and actual six compact requests prepared with BF16 cache. Comparator and lifecycle tests include actual frozen score identity code with an engine substitute; no Qwen forward, NPU or efficacy proof."
+}

@@ -6,6 +6,7 @@ No targets or supervision enter the input artifact.
 """
 import argparse
 import json
+import math
 from pathlib import Path
 import time
 from multimodal_jev.baseline import atomic_json, file_hash
@@ -25,40 +26,64 @@ def run(config, output):
     for path, digest in config['pins'].items():
         if file_hash(path) != digest:
             raise ValueError('input dependency changed')
-    rows, task, release = load(config['release'], config['release_sha256'], 'learning', purpose='optimize')
+    selection = config.get('population_mode') == 'full_selection'
+    if config.get('population_mode', 'prefix') not in ('prefix', 'full_selection'):
+        raise ValueError('known input population required')
+    rows, task, release = load(config['release'], config['release_sha256'],
+        'selection' if selection else 'learning', purpose='evaluate' if selection else 'optimize')
     population = {r['id']: r for r in rows}
-    schedule = json.loads(Path(config['epoch_file']).read_text())
-    if (schedule['report']['global_batch'] != 128 or schedule['report']['epoch'] != 0
+    if selection:
+        if config.get('task_mode') != 'direct_final':
+            raise ValueError('full selection requires direct native Final')
+        schedule = None
+        batches = [[dict(id=row['id'], padding=False, weight=1., view='direct', variant='native')]
+                   for row in rows]
+        expected_count = len(rows)
+    else:
+        schedule = json.loads(Path(config['epoch_file']).read_text())
+        if (schedule['report']['global_batch'] != 128 or schedule['report']['epoch'] != 0
             or content_hash(schedule['batches']) != schedule['report']['batches_sha256']):
-        raise ValueError('full-data epoch0 global128 schedule required')
+            raise ValueError('full-data epoch0 global128 schedule required')
+        batches = schedule['batches'][:2]
+        expected_count = 256
     processor = Qwen3ASRProcessor.from_pretrained(config['model'], local_files_only=True)
     records = []
-    for step, batch in enumerate(schedule['batches'][:2]):
+    for step, batch in enumerate(batches):
         for index, slot in enumerate(batch):
-            if slot['padding'] or slot['weight'] != 1.:
+            if (slot['padding'] or type(slot['weight']) not in (int, float)
+                    or not math.isfinite(slot['weight']) or slot['weight'] <= 0
+                    or (config.get('task_mode') != 'direct_final' and slot['weight'] != 1.)):
                 raise ValueError('first two complete source batches required')
+            if config.get('task_mode') == 'direct_final' and (slot['view'],slot['variant']) != ('direct','native'):
+                raise ValueError('simple baseline input changed')
             row = population[slot['id']]
             if file_hash(row['audio']) != row['audio_sha256']:
                 raise ValueError('audio changed')
-            request, _, _ = example(row, task, slot['view'], slot['variant'])
+            if selection:
+                from multimodal_jev.slurp_intent_structure import compile_intent
+                request = compile_intent(row['audio'], task, 'D')
+            else:
+                request, _, _ = example(row, task, slot['view'], slot['variant'])
             audio, receipt = load_audio(row['audio'], return_receipt=True)
             inputs, positions = encode_span_request(processor, request, audio)
             length = inputs['input_ids'].shape[-1]
             if length > 4096:
                 raise ValueError('input overflow; never truncate')
-            uid = f'{row["id"]}::epoch0-batch{step}-slot{index}'
+            uid = row['id'] if selection else f'{row["id"]}::epoch0-batch{step}-slot{index}'
             records.append(dict(id=uid, recording_id=row['id'], batch=step, slot=index,
                 view=slot['view'], variant=slot['variant'], request=request.model_input(),
                 audio_sha256=row['audio_sha256'], audio_processing=receipt, input_tokens=length,
                 positions=positions.tolist(), candidate_mapping=span_labels(processor.tokenizer, request.questions),
                 **{k: tensor_identity(inputs[k]) for k in ('input_ids','input_features','input_features_mask')}))
-        atomic_json(output/'progress.json', dict(completed=len(records), total=256, updated_unix=time.time()))
-    if len(records) != 256 or len({r['recording_id'] for r in records}) != 256:
-        raise ValueError('all 256 distinct scheduled sources required')
-    return dict(passed=True, recordings=256, requests=256, records=records,
-        release_sha256=config['release_sha256'], epoch_sha256=file_hash(config['epoch_file']),
+        if not selection or (step+1) % 128 == 0:
+            atomic_json(output/'progress.json', dict(completed=len(records), total=expected_count, updated_unix=time.time()))
+    if len(records) != expected_count or len({r['recording_id'] for r in records}) != expected_count:
+        raise ValueError('all distinct population sources required')
+    return dict(passed=True, recordings=expected_count, requests=expected_count, records=records,
+        population_mode='full_selection' if selection else 'prefix',
+        release_sha256=config['release_sha256'], epoch_sha256=None if selection else file_hash(config['epoch_file']),
         maximum_input_tokens=max(r['input_tokens'] for r in records),
-        scope='Actual processor on all first two full-schedule batches; independent label-free parity population, not an efficacy subset.')
+        scope='Actual processor on complete declared population; label-free input artifact, no model execution or task metrics.')
 
 
 if __name__=='__main__':

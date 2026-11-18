@@ -1,0 +1,74 @@
+{
+  "results": [
+    {
+      "rank": 0,
+      "world_size": 1,
+      "tied": true,
+      "torch_version": "2.10.0+cpu",
+      "updates": 1,
+      "passed": false,
+      "error": "AssertionError(\"as_params=True type(prim_param)=<class 'torch.Tensor'>\")"
+    },
+    {
+      "rank": 0,
+      "world_size": 1,
+      "tied": false,
+      "torch_version": "2.10.0+cpu",
+      "updates": 2,
+      "passed": true
+    },
+    {
+      "rank": 0,
+      "world_size": 2,
+      "tied": true,
+      "torch_version": "2.10.0+cpu",
+      "updates": 2,
+      "passed": true
+    },
+    {
+      "rank": 1,
+      "world_size": 2,
+      "tied": true,
+      "torch_version": "2.10.0+cpu",
+      "updates": 2,
+      "passed": true
+    },
+    {
+      "rank": 0,
+      "world_size": 2,
+      "tied": false,
+      "torch_version": "2.10.0+cpu",
+      "updates": 2,
+      "passed": true
+    },
+    {
+      "rank": 1,
+      "world_size": 2,
+      "tied": false,
+      "torch_version": "2.10.0+cpu",
+      "updates": 2,
+      "passed": true
+    }
+  ],
+  "scope": "CPU PyTorch 2.10.0 FP32 controlled frozen shared-root/trainable-child reproduction. Shared DP1 fails on second update, untied DP1 and shared/untied DP2 finish two updates; no assertion suppressed or production workaround applied. NPU DP2 candidate still requires independent verification.",
+  "reproducer": "tools/jev/diagnose_fsdp_frozen_shared_cpu.py",
+  "reproducer_sha256": "982ff1e0779b165fdcaac90d07e0536b3f9b88d801458a89be50c9b699d5e5d2",
+  "files": {
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp1-tied0/rank-0.json": "ba1e74389dd1212219f7ff6adfd79fa281614cfa58638a43e5da544b3bd31856",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp1-tied0/rank-0.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp1-tied1/init": "fbce8a7566759311d809b53accffde2e0683dfd5cffaf790d39f16beaaa5598c",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp1-tied1/rank-0.json": "12c32dea2062460d8b8998acbf5d56441a3cc93c1b051bebde7bdbd609a0e574",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp1-tied1/rank-0.log": "31fe53baaf280eba6685cc52d70640cab552e02636444bd834570047b0c96a2e",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied0/rank-0.json": "dc2f716096b02145b1bf047805056b01c615b5bebcd369c736e04a5a669c1f69",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied0/rank-0.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied0/rank-1.json": "59762161d0c6fe7a96268d7ac858363491880bed11fc6e444622fdfc472f9535",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied0/rank-1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied1/rank-0.json": "4efc2340476216d79d8455213168f2162c38ddffb6de15f217f3d54ae138cba4",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied1/rank-0.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied1/rank-1.json": "d4b7317c7956e29052ffd538f52d7c187929471f3a7f91466304e9006488f50e",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/dp2-tied1/rank-1.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".local/simple-final-v1/fsdp-frozen-shared-cpu-v1/result.json": "f65836870e40020699b90124481e8e89cbd9aa4d4b4156dabe517754fc694df6"
+  },
+  "image_flat_param_sha256": "437cf9321b0237d0e8a3637915860bf9e11b8e3de6056d3fce7e4acaa62a821a",
+  "local_flat_param_identical_to_image": true
+}

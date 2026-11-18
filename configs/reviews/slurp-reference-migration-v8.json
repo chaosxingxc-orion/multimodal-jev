@@ -1,0 +1,72 @@
+{
+  "schema": "slurp-reference-migration-config-v8",
+  "training_dispatch_allowed": false,
+  "base_workpack": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2",
+  "package": "configs/tasks/slurp/slot-consolidated-design-v9.json",
+  "boundary_reviews": [
+    {
+      "receipt": "docs/research/news-topic-boundary-check-v1.json",
+      "single_type": "news_topic"
+    },
+    {
+      "receipt": "docs/research/event-role-boundary-check-v1.json",
+      "single_type": "event_name"
+    },
+    {
+      "receipt": "docs/research/work-reference-boundary-check-v1.json"
+    },
+    {
+      "receipt": "docs/research/property-role-boundary-check-v1.json"
+    },
+    {
+      "receipt": "docs/research/attribute-relation-boundary-check-v1.json"
+    },
+    {
+      "receipt": "docs/research/owner-channel-boundary-check-v1.json"
+    },
+    {
+      "receipt": "docs/research/role-boundary-convergence-check-v1.json"
+    },
+    {
+      "receipt": "docs/research/collection-role-check-v1.json"
+    }
+  ],
+  "expected_source_count": 9192,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/report.json": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+    "configs/tasks/slurp/slot-consolidated-design-v7.json": "e72139e9d9de803547dd6616b5e56bd2ef36eb2456579ef46d74f918485c385d",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0001.json": "0d0881fce282edb582bf193e7fbbecc93649e8a6e1542bc22ca9203f6310a6b6",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0001-v2.json": "c2dba4bf744da932e0a2a83b8387b49e625f23f50e53a0647dab6fb18fcb13c7",
+    "configs/tasks/slurp/type-definition-candidates-v9.json": "fda0ee0eb7e4a2bfb7894ec99684434abf1d185cf0d4e217bd6e2293c9696f71",
+    "configs/tasks/slurp/slot-presence-policy-candidate-v9.json": "4704304f085dd413ece1218eb8a76c565d83945816f484b7a6b92c9ee4d81a84",
+    "configs/tasks/slurp/type-boundary-rules-candidate-v10.json": "76c93419a4094fcbaa1972b090a18e0bbc9bcca69bd6437ccfa60646fe14c461",
+    "docs/research/news-topic-boundary-check-v1.json": "0780c51e38d42bcb05beb8619429ae8ecca455f3998be6c2e4ebdeda50a56648",
+    "docs/research/event-role-boundary-check-v1.json": "202439aa4e04468223837b1dd05a2432cc2c0ec20e4030f80d13a8e50b7f7cf0",
+    "docs/research/work-reference-boundary-check-v1.json": "3f7c414be7f713308e1f44e8625778d9e211dad4b24b2e10c2c7c87c4b95c736",
+    "docs/research/property-role-boundary-check-v1.json": "08cd2c4941d89578b3cfa2f260081973b1297459ee1d85793fc0537197e82aeb",
+    "docs/research/attribute-relation-boundary-check-v1.json": "38ee8aed32c756e25fc9623e985b96a040b412fa78d1080eb415adb19154073a",
+    "docs/research/owner-channel-boundary-check-v1.json": "1bac34338d3517c31bd178d273db60601f0a68ef7729d657503b42e1819c7fc1",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0002.json": "075fcfc090ea22e38c1b71c5649612633f1fb157aeff0d1ec45e4de0bfe71613",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0003.json": "f7883aea429b623d93b7749283193c97122552517230508f12fbdef9f4cf690b",
+    "configs/tasks/slurp/slot-consolidated-design-v8.json": "895ad9f080483cc6e31b1525bef9ff0f2cf1794e0c695da60ddb968d921cb807",
+    "docs/research/role-boundary-convergence-check-v1.json": "7ad2e38746a389ef4bfe45d7e7fd568fde10ae82a8860ce15806037a3ab85e62",
+    "configs/tasks/slurp/type-definition-candidates-v10.json": "81fec3bbdabb5fc5cee81544464639be6c6183d4ae81ce77eea01beda5b3b2a0",
+    "configs/tasks/slurp/slot-presence-policy-candidate-v10.json": "0f333ef00d997fc7c8a1dc7fd1beb0c5cedc0c4207a739818cd85e05f0b113f3",
+    "configs/tasks/slurp/type-boundary-rules-candidate-v11.json": "78589452d7ce9bff8bb8dde1a5679acb653b7cb700ddb2cfad8ca3679a5ed7b3",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0004.json": "9161209594015815407dae729c78416e3f0900c72fa553b86dfdc79e3a6fbe9e",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0005.json": "33964551360b1d1790f66959d0c0660ab6361685932f0b0c923291a640dd8b66",
+    "configs/tasks/slurp/slot-consolidated-design-v9.json": "243ccf163f054323af6d573ef1e550788e54d66c767405d75cd9d7af827e2b33",
+    "docs/research/collection-role-check-v1.json": "227fd4952867bcc6cdc7fef539598e2dd927dee46092dc0e6ccfbcab13ca7b52",
+    "configs/tasks/slurp/type-definition-candidates-v11.json": "4a8128561f0674f0bb79e92e5806a516e7a1caa3b1cbb15ab5c66f28574c9fe7",
+    "configs/tasks/slurp/slot-presence-policy-candidate-v11.json": "892260833250a9ed0b390bda20a8d829a769bf37e3b6aceb59d766860fa1bae3",
+    "configs/tasks/slurp/type-boundary-rules-candidate-v12.json": "032f709ae02a3101f1f47750f166f84b4d3a6a3898813fa3296a74d759365cd8"
+  },
+  "sequential_reviews": [
+    "configs/reviews/slurp-full-slot-sequential-reference-b0001.json",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0001-v2.json",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0002.json",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0003.json",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0004.json",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0005.json"
+  ]
+}

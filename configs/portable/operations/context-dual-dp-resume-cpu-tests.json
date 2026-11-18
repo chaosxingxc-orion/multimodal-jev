@@ -1,0 +1,21 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "context-dual-dp-resume-cpu-v1",
+  "tests": [
+    "tests/test_context_dual_actor_dp_resume.py",
+    "tests/test_context_dual_actor_candidate.py"
+  ],
+  "expected_tests": 14,
+  "scope": "Real 4-rank Gloo/DDP native verl two updates and fresh-process step2 replay on synthetic logits; FP32 CPU, not audio/BF16 FSDP/NPU/real engine activation.",
+  "support_files": [
+    "tools/reports/context_dual_actor_candidate.py",
+    "tools/reports/context_probability_policy_v2.py",
+    "tools/jev/probe_span_native_actor_dp_cpu.py"
+  ]
+}

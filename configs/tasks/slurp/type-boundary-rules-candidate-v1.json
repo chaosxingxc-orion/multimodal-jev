@@ -1,0 +1,629 @@
+{
+  "schema": "slurp-type-boundary-rules-candidate-v1",
+  "training_dispatch_allowed": false,
+  "evidence_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/type-boundary-evidence-v1/report.json",
+  "evidence_sha256": "151d93623c537b248520d5d96061377538fe17784db4fd05b3466ca9c9cf87f5",
+  "authoring_sha256": "6316be018d50f4061d5c54c73009b8172e6e2e92a0ba4e0d8af5e2314206c668",
+  "rule_application": "task_level_shared_rules_never_query_topic_selection_or_posthoc_answer_override",
+  "rules": [
+    {
+      "types": [
+        "date",
+        "general_frequency"
+      ],
+      "shared_rule": "Distinguish calendar anchoring or a bounded calendar period from a recurrence rule. Use the function of the expression in context, not a weekday keyword alone.",
+      "coexistence_rule": "A recurrence can be anchored to a calendar period; distinct evidence can support both types.",
+      "unresolved_constraint": "Mondays and weekly receive both types across contexts; do not impose a global lexical mapping or claim exhaustive precedence.",
+      "evidence_source_ids": [
+        "2839",
+        "4425",
+        "6743",
+        "6824",
+        "6915",
+        "7003",
+        "7363",
+        "8354",
+        "8437",
+        "8603"
+      ],
+      "coannotated_source_utterances": 15,
+      "shared_normalized_fillers": 6,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "date",
+        "timeofday"
+      ],
+      "shared_rule": "Distinguish the calendar day or period from a part of a day. A combined expression may express both aspects.",
+      "coexistence_rule": "Tomorrow morning can separately express a date and a day part.",
+      "unresolved_constraint": "Tonight is annotated under either type; same-expression dual labelling or precedence requires a frozen annotation convention.",
+      "evidence_source_ids": [
+        "1514",
+        "5375",
+        "5723",
+        "8497",
+        "8625",
+        "10787",
+        "11890",
+        "12701",
+        "12847"
+      ],
+      "coannotated_source_utterances": 75,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "time",
+        "timeofday"
+      ],
+      "shared_rule": "Distinguish a clock time, duration or offset from a named day part.",
+      "coexistence_rule": "A specified hour and its day part can both be present.",
+      "unresolved_constraint": "Night appears under both labels; broadening time to all temporal expressions would erase the intended boundary.",
+      "evidence_source_ids": [
+        "721",
+        "3663",
+        "4466",
+        "4735",
+        "6718",
+        "7172",
+        "8450",
+        "8473",
+        "12462",
+        "15107"
+      ],
+      "coannotated_source_utterances": 39,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "time",
+        "time_zone"
+      ],
+      "shared_rule": "Distinguish a clock/duration expression from the standard or zone used to interpret a clock reading.",
+      "coexistence_rule": "Seven pm and PST support different types within one request.",
+      "unresolved_constraint": "Asking the time does not supply a clock value; a zone name does not imply an independently expressed time value.",
+      "evidence_source_ids": [
+        "4180",
+        "4181",
+        "4771",
+        "5775",
+        "6837",
+        "16093"
+      ],
+      "coannotated_source_utterances": 4,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "artist_name",
+        "person"
+      ],
+      "shared_rule": "Use expressed performer/creator role as evidence for artist_name; a person's identity alone does not settle the dataset person-versus-artist convention.",
+      "coexistence_rule": "Different person references may serve different roles; absence of observed coannotation is not an exclusivity rule.",
+      "unresolved_constraint": "Artist names also occur in factoid contexts. Music topic alone cannot resolve all native assignments, nor establish person absence.",
+      "evidence_source_ids": [
+        "474",
+        "1112",
+        "2072",
+        "2105",
+        "5385",
+        "7405",
+        "13657",
+        "13879",
+        "15005",
+        "16342"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 6,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "audiobook_author",
+        "person"
+      ],
+      "shared_rule": "Use an authorship relation to the referenced book as evidence for audiobook_author. Separate that relation from an ordinary personal reference.",
+      "coexistence_rule": "An author and another person can be mentioned together; no global exclusivity is justified.",
+      "unresolved_constraint": "Only four learning source utterances carry author annotations; same-span person/author precedence remains unverified.",
+      "evidence_source_ids": [
+        "5222",
+        "9667",
+        "9870",
+        "15810"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "business_name",
+        "place_name"
+      ],
+      "shared_rule": "Distinguish an identified business or organization from a location reference; a named business can also function as a destination.",
+      "coexistence_rule": "Business identity and geographic location can be separately expressed in the same request.",
+      "unresolved_constraint": "Walmart is assigned either label; venue role alone may not determine native annotation. Do not use capitalisation or brand lookup as a label rule.",
+      "evidence_source_ids": [
+        "2268",
+        "3740",
+        "5407",
+        "7931",
+        "12029",
+        "12061",
+        "12122",
+        "12421",
+        "13899",
+        "15150",
+        "15151"
+      ],
+      "coannotated_source_utterances": 4,
+      "shared_normalized_fillers": 4,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "house_place",
+        "place_name"
+      ],
+      "shared_rule": "Distinguish an area or surface treated as domestic activity space from a geographic location or destination.",
+      "coexistence_rule": "Separate domestic and geographic references may coexist; no coannotation in this population does not prove exclusivity.",
+      "unresolved_constraint": "Near-equivalent clean-the-floor requests receive different labels; this needs annotation adjudication, not an invented role distinction.",
+      "evidence_source_ids": [
+        "29",
+        "226",
+        "2904",
+        "3237",
+        "3415",
+        "5980",
+        "9465",
+        "12239",
+        "15054"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 4,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "food_type",
+        "ingredient"
+      ],
+      "shared_rule": "Distinguish a food or dish under discussion from a material explicitly serving as an input or substitute in preparation.",
+      "coexistence_rule": "Chicken used to make a dish or cream used to make butter can support separate ingredient and food expressions.",
+      "unresolved_constraint": "Rice in nearly equivalent cooking requests receives different labels; an input/output rule is a semantic candidate, not a complete reconstruction of native gold.",
+      "evidence_source_ids": [
+        "2362",
+        "9960",
+        "9974",
+        "9985",
+        "9997",
+        "10005",
+        "10006",
+        "10148",
+        "10205",
+        "10207",
+        "10227",
+        "10239"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 3,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "drink_type",
+        "ingredient"
+      ],
+      "shared_rule": "Distinguish a beverage reference from a material serving an ingredient role in preparation.",
+      "coexistence_rule": "Distinct expressions can name a beverage and one of its ingredients; shared substance identity does not imply mutual exclusion.",
+      "unresolved_constraint": "Water differs by context, while other preparation objects use food_type. Whole-ontology precedence needs review before negatives are inferred.",
+      "evidence_source_ids": [
+        "9995",
+        "10035",
+        "10084",
+        "10184",
+        "10939",
+        "11195"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "app_name",
+        "radio_name"
+      ],
+      "shared_rule": "Distinguish the application or service providing access from the station or tuning reference being accessed.",
+      "coexistence_rule": "A station played through an application provides evidence for both roles.",
+      "unresolved_constraint": "A platform-only expression must not be assumed to contain a separately identified station; station existence still follows the type definition.",
+      "evidence_source_ids": [
+        "9271",
+        "9467",
+        "9477",
+        "9608",
+        "9609",
+        "11165"
+      ],
+      "coannotated_source_utterances": 5,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "app_name",
+        "transport_agency"
+      ],
+      "shared_rule": "Distinguish software access from the organization or service providing a journey.",
+      "coexistence_rule": "A provider accessed via a separately named application can express both roles.",
+      "unresolved_constraint": "A service can also be an app. Uber labelled transport_agency does not establish app_name absence; native same-brand precedence remains unresolved.",
+      "evidence_source_ids": [
+        "9231",
+        "9467",
+        "12480",
+        "12849"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "music_descriptor",
+        "playlist_name"
+      ],
+      "shared_rule": "Distinguish a property selecting music from an expression identifying a playlist collection.",
+      "coexistence_rule": "A descriptor and a playlist reference can coexist, including descriptive words within a playlist name under an admitted span policy.",
+      "unresolved_constraint": "Descriptive titles and genre words overlap; do not force one label from syntax or the presence of the word playlist alone.",
+      "evidence_source_ids": [
+        "627",
+        "1712",
+        "1964",
+        "2356",
+        "2941",
+        "5311"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    },
+    {
+      "types": [
+        "email_address",
+        "personal_info"
+      ],
+      "shared_rule": "Distinguish an email-address identifying expression from a requested or stated personal-information field or attribute.",
+      "coexistence_rule": "A field name and its stated address can both be expressed.",
+      "unresolved_constraint": "A requested contact field need not include its value; conversely an address does not by itself express every possible contact-field type.",
+      "evidence_source_ids": [
+        "15768",
+        "15793",
+        "15859",
+        "16185"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false
+    }
+  ],
+  "other_declared_pairs": [
+    [
+      "alarm_type",
+      "event_name"
+    ],
+    [
+      "alarm_type",
+      "time"
+    ],
+    [
+      "app_name",
+      "business_name"
+    ],
+    [
+      "app_name",
+      "device_type"
+    ],
+    [
+      "app_name",
+      "media_type"
+    ],
+    [
+      "artist_name",
+      "audiobook_author"
+    ],
+    [
+      "artist_name",
+      "color_type"
+    ],
+    [
+      "artist_name",
+      "song_name"
+    ],
+    [
+      "audiobook_author",
+      "audiobook_name"
+    ],
+    [
+      "audiobook_name",
+      "media_type"
+    ],
+    [
+      "audiobook_name",
+      "movie_name"
+    ],
+    [
+      "audiobook_name",
+      "song_name"
+    ],
+    [
+      "business_name",
+      "business_type"
+    ],
+    [
+      "business_name",
+      "game_name"
+    ],
+    [
+      "business_name",
+      "podcast_name"
+    ],
+    [
+      "business_name",
+      "sport_type"
+    ],
+    [
+      "business_name",
+      "transport_agency"
+    ],
+    [
+      "business_type",
+      "order_type"
+    ],
+    [
+      "business_type",
+      "place_name"
+    ],
+    [
+      "change_amount",
+      "date"
+    ],
+    [
+      "change_amount",
+      "time"
+    ],
+    [
+      "coffee_type",
+      "cooking_type"
+    ],
+    [
+      "coffee_type",
+      "drink_type"
+    ],
+    [
+      "cooking_type",
+      "food_type"
+    ],
+    [
+      "cooking_type",
+      "ingredient"
+    ],
+    [
+      "cooking_type",
+      "time"
+    ],
+    [
+      "currency_name",
+      "place_name"
+    ],
+    [
+      "date",
+      "time"
+    ],
+    [
+      "definition_word",
+      "food_type"
+    ],
+    [
+      "definition_word",
+      "person"
+    ],
+    [
+      "definition_word",
+      "place_name"
+    ],
+    [
+      "device_type",
+      "transport_type"
+    ],
+    [
+      "device_type",
+      "weather_descriptor"
+    ],
+    [
+      "drink_type",
+      "food_type"
+    ],
+    [
+      "email_address",
+      "person"
+    ],
+    [
+      "email_folder",
+      "list_name"
+    ],
+    [
+      "event_name",
+      "meal_type"
+    ],
+    [
+      "event_name",
+      "movie_name"
+    ],
+    [
+      "event_name",
+      "news_topic"
+    ],
+    [
+      "event_name",
+      "person"
+    ],
+    [
+      "event_name",
+      "sport_type"
+    ],
+    [
+      "food_type",
+      "meal_type"
+    ],
+    [
+      "food_type",
+      "order_type"
+    ],
+    [
+      "game_name",
+      "game_type"
+    ],
+    [
+      "general_frequency",
+      "time"
+    ],
+    [
+      "joke_type",
+      "news_topic"
+    ],
+    [
+      "joke_type",
+      "person"
+    ],
+    [
+      "list_name",
+      "playlist_name"
+    ],
+    [
+      "media_type",
+      "playlist_name"
+    ],
+    [
+      "media_type",
+      "radio_name"
+    ],
+    [
+      "media_type",
+      "song_name"
+    ],
+    [
+      "movie_name",
+      "movie_type"
+    ],
+    [
+      "movie_name",
+      "music_album"
+    ],
+    [
+      "movie_name",
+      "song_name"
+    ],
+    [
+      "music_album",
+      "playlist_name"
+    ],
+    [
+      "music_album",
+      "song_name"
+    ],
+    [
+      "music_descriptor",
+      "music_genre"
+    ],
+    [
+      "music_descriptor",
+      "player_setting"
+    ],
+    [
+      "music_genre",
+      "playlist_name"
+    ],
+    [
+      "music_genre",
+      "radio_name"
+    ],
+    [
+      "news_topic",
+      "person"
+    ],
+    [
+      "news_topic",
+      "place_name"
+    ],
+    [
+      "person",
+      "personal_info"
+    ],
+    [
+      "person",
+      "relation"
+    ],
+    [
+      "personal_info",
+      "relation"
+    ],
+    [
+      "place_name",
+      "time_zone"
+    ],
+    [
+      "place_name",
+      "transport_descriptor"
+    ],
+    [
+      "player_setting",
+      "podcast_descriptor"
+    ],
+    [
+      "playlist_name",
+      "song_name"
+    ],
+    [
+      "podcast_descriptor",
+      "podcast_name"
+    ],
+    [
+      "transport_agency",
+      "transport_name"
+    ],
+    [
+      "transport_agency",
+      "transport_type"
+    ],
+    [
+      "transport_descriptor",
+      "transport_name"
+    ],
+    [
+      "transport_descriptor",
+      "transport_type"
+    ],
+    [
+      "transport_name",
+      "transport_type"
+    ]
+  ]
+}

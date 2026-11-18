@@ -1,0 +1,52 @@
+{
+  "schema": "slurp-shared-annotation-teacher-probe-v1",
+  "intent": {
+    "schema": "slurp-semantic-teacher-single-probe-v1",
+    "report_sha256": "aef7555a2d86ce423cf19790df9fcf3448e9b3d85210935ab2348244d5c84cec",
+    "executor_sha256": "c9f9bbd333f038955945db82d946cb2757bafbc340b1a8ca476f52f3ab406bd4",
+    "messages_sha256": "d7b26872b9d98adc0864b6cf0f9c96959156746565f5877178a914e8165ee9a6",
+    "review_id": "a91d8292ccf01f6011cc460ac26da7bec7ff838b89d3e32b049647a63e0edb16",
+    "panel_id": "S_present-05",
+    "question_ids": [
+      "playlist_name",
+      "podcast_descriptor",
+      "podcast_name",
+      "radio_name",
+      "relation",
+      "song_name",
+      "sport_type",
+      "time"
+    ],
+    "max_requests": 1,
+    "max_tokens": 4096,
+    "total_timeout_seconds": 180,
+    "automatic_retry": false,
+    "semantic_admission": 0,
+    "prior_labels_supplied": false,
+    "purpose": "Longest JSON input transport/context and explicit response-format probe; not full annotation or accuracy evaluation."
+  },
+  "API_sent": true,
+  "request_count": 1,
+  "automatic_retry": false,
+  "provider_model": "glm-5.3-flash",
+  "state": "http_error",
+  "http_status": 400,
+  "error_code": "400001",
+  "error_type": "invalid_request_error",
+  "error_message": "The request is invalid: the request was rejected by an internal MaaS component. Please check the request body, required fields, and request format.",
+  "usage": null,
+  "elapsed_seconds": 3.256934919860214,
+  "completed_annotations": 0,
+  "semantic_admission": 0,
+  "private_evidence": "/home/xingchao/workspace/multimodal-jev/.local/research/shared-annotation-v1/teacher-probe",
+  "evidence_hashes": {
+    "intent.json": "6002dcbdcaa409f2da6da2dd12aedfb151ffb2c2b5eb8d0fa53dab66f0459154",
+    "launch.json": "628f47a6b55ebba183c107da9f1bcd66117559b9d28de71f315c85f794bc64f9",
+    "terminal.json": "42f17292b8c877fe81de3e1042001bdee4c844ede92b9691fbee32d32427ce94",
+    "response/result.json": "df27ab9f54976858b249f73dc45b00e1495dea8fb340ab1412b7026a3acd09fb",
+    "response/http-error-body.bin": "d16974103aecda7f698bc1b3e4fdcbadb26214952c3beb47b2ac5784d891a1ff",
+    "response/request.json": "76ae3ad0a0c010ba590f80c5dd0883f4c576976450c637bd5127de79343a8d78"
+  },
+  "conclusion": "Transport reached provider; generic internal MaaS rejection gives no context-limit, token-count or semantic-comprehension evidence. No identical retry, no bulk dispatch.",
+  "next": "Bounded minimal-request control to distinguish interface compatibility from annotation payload; retain current failed request unchanged."
+}

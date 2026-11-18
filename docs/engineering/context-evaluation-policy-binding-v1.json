@@ -1,0 +1,30 @@
+{
+  "source_policy_id": "54711002bd4ee832eb2f8456660cb437be9bdaf09614acc7fc28c390d4a855ac",
+  "inference_policy_id": "54711002bd4ee832eb2f8456660cb437be9bdaf09614acc7fc28c390d4a855ac",
+  "same_serialized_policy_id": true,
+  "exact_execution_tensors": 129,
+  "processor_exact": true,
+  "contract_exact": true,
+  "source_container": "1bec47078c3a19020c04f3739c00cd86f0fce132c447d43f281af847c88e0e68",
+  "evaluation_container": "f6dc19cb9481aad30ed033f348140ee358837020e608bc445a61e5f2bebb3bf7",
+  "bindings": {
+    "source": {
+      "proof": "docs/engineering/context-admitted-prefix-npu-v1.json",
+      "proof_sha256": "3083aea83fdf7d83bd0601c1cc2240cbfae26202b36e838d5189792553de9173",
+      "collection": ".local/decision-objective-research/context-admitted-prefix-npu-v1-collected",
+      "policy_relative_path": "run/policy-0002",
+      "policy_id": "54711002bd4ee832eb2f8456660cb437be9bdaf09614acc7fc28c390d4a855ac"
+    },
+    "evaluation": {
+      "proof": "docs/engineering/context-resident-switch-npu-v2.json",
+      "proof_sha256": "bddfd0080e27a152c3e5c1dadb82b8e0dd4552ac3b78a7b96e42cf0da440f1b8",
+      "collection": ".local/decision-objective-research/context-resident-switch-npu-v2-collected",
+      "policy_relative_path": "b/policy",
+      "policy_id": "54711002bd4ee832eb2f8456660cb437be9bdaf09614acc7fc28c390d4a855ac"
+    }
+  },
+  "manifest_sha256": "da87a4493aa6aad98d2e16fba1546908dc24e1cdcfac123d38bb38e347901bd5",
+  "scope": "Collected policy equivalence only. No prediction relabeling, full selection, continuous training, checkpoint selection or research dispatch admission.",
+  "wrong_step_rejected": "tensor differs: execution/backbone.language_model.layers.0.self_attn.q_proj.lora_A.default.weight",
+  "tool_sha256": "4abbe1a2e028cb8a84d98a30a9319b5d73f61cb0f1f05c778c834be8cfd87c24"
+}

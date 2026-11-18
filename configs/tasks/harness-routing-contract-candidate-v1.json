@@ -1,0 +1,60 @@
+{
+  "schema": "jev-harness-routing-contract-candidate-v1",
+  "status": "task_design_and_offline_supervision_audit_only",
+  "training_dispatch_allowed": false,
+  "purpose": "Test whether direct-audio decisions follow caller-supplied routing rules and changing candidate availability.",
+  "input": {
+    "evidence": "original_audio",
+    "ontology": "complete_official_clean_intent_schema_unchanged",
+    "caller_policy": "explicit_candidate_to_ontology_acceptance_table",
+    "availability": "caller_declared_authoritative_boolean_per_candidate",
+    "candidate_ids": "opaque_request_local_identifiers",
+    "candidate_selection": "policy_configuration_and_registered_seed_only_no_gold_or_query_topic",
+    "forward": "one_call_all_configured_spans_no_text_generation"
+  },
+  "truth": {
+    "acceptable": "candidate.enabled AND native_gold_event IN candidate.accepts",
+    "multiple_acceptable": "all_matching_candidates_are_valid_no_fabricated_preference",
+    "no_route": "no_enabled_candidate_accepts_the_gold_event_under_this_declared_routing_policy",
+    "unknown": "not_derived_from_no_route_or_missing_supervision",
+    "execution_success": "unavailable_no_environment_outcome_labels",
+    "scope": "Deterministic routing on the official exclusive intent event; not semantic intent-presence annotation."
+  },
+  "outputs": {
+    "candidate_applicability": "one_boolean_span_per_supplied_candidate",
+    "final": "choice_over_supplied_candidate_ids_plus_explicit_no_route",
+    "final_supervision": "acceptable_set_or_single_no_route",
+    "dependencies": "final_may_use_preconfigured_candidate_spans_as_latent_context_no_discrete_feedback",
+    "harness_action": "validate_availability_then_resolve_multiple_valid_candidates_using_declared_cost_or_tie_break"
+  },
+  "policy_families": [
+    {"id": "partition6", "routes": 6, "mapping": "sha256_ranked_ontology_round_robin", "enabled": "all", "overlap": false},
+    {"id": "partition12", "routes": 12, "mapping": "sha256_ranked_ontology_round_robin", "enabled": "all", "overlap": false},
+    {"id": "overlap6", "routes": 6, "mapping": "partition6_plus_adjacent_route", "enabled": "all", "overlap": true},
+    {"id": "availability6", "routes": 6, "mapping": "partition6", "enabled": "even_route_indices", "overlap": false}
+  ],
+  "loss_design": {
+    "ranking": "valid_vs_invalid_only_never_rank_two_valid_candidates_without_preference_evidence",
+    "set_objective": "maximize_total_probability_of_valid_set_is_candidate_not_calibration_of_within_set_probabilities",
+    "applicability": "proper_scoring_of_independent_boolean_truth_candidate",
+    "rl_reward": "final_membership_in_valid_set; explicit_no_route_only_when_set_empty",
+    "process_credit": "same_rule_projection_as_final_not_independent_evidence; budget_not_yet_frozen",
+    "normalization": "fixed_per_original_query_budget_across_policy_views_and_spans",
+    "status": "not_frozen_not_integrated"
+  },
+  "evaluation": {
+    "paired_views": ["candidate_order_permutation", "candidate_id_rebinding", "route_rule_reassignment", "availability_change"],
+    "metrics": ["acceptable_set_hit", "candidate_applicability_macro_F1", "no_route_precision_recall", "invalid_route_rate", "paired_both_correct", "correct_response_to_policy_change", "policy_family_transfer"],
+    "split": "original_source_groups_remain_isolated; unseen_policy_maps_and_families_separately_registered",
+    "transfer": "reuse_routing_operator_with_dataset_specific_official_event_ontology; not_assert_same_label_meaning",
+    "not_claimed": ["tool_execution_success", "semantic_unknown_detection", "general_agent_competence", "genuine_multi_intent_understanding"]
+  },
+  "remaining_before_training": [
+    "compare_routing_task_with_semantic_definition_consumption_and_register_final_scope",
+    "freeze_policy_family_and_view_schedule_without_gold_routing",
+    "one_forward_full_audio_processor_and_context_budget_validation",
+    "set_supervision_and_score_semantics_supported_by_actor_and_rollout",
+    "freeze_loss_reward_and_view_weights",
+    "NPU_probability_gradient_restore_and_harness_evaluation_acceptance"
+  ]
+}

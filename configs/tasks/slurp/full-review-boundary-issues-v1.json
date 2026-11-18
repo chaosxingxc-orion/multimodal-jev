@@ -1,0 +1,141 @@
+{
+  "schema": "slurp-full-review-boundary-issues-v1",
+  "training_dispatch_allowed": false,
+  "definition_changes_applied": true,
+  "review": "configs/reviews/slurp-full-slot-sequential-reference-b0001.json",
+  "review_sha256": "0d0881fce282edb582bf193e7fbbecc93649e8a6e1542bc22ca9203f6310a6b6",
+  "issues": [
+    {
+      "id": "event_argument_vs_requested_action",
+      "types": [
+        "event_name"
+      ],
+      "problem": "Definition includes activity/occurrence but does not distinguish a represented event argument from the verb implementing the current assistant task.",
+      "examples": [
+        "867",
+        "9877",
+        "11334",
+        "14587",
+        "15420",
+        "9475"
+      ],
+      "candidate_rule": "Count an event/activity when the utterance refers to it as an object of scheduling, reminder, query, report or message content. A bare verb that only specifies the current assistant operation does not alone create an event role. Past events may count when explicitly represented as query/report subjects.",
+      "status": "task_rule_selected_and_consolidated_pending_supervision_migration",
+      "resolution": "configs/tasks/slurp/event-role-boundary-resolution-v1.json",
+      "package": "configs/tasks/slurp/slot-consolidated-design-v3.json"
+    },
+    {
+      "id": "news_vs_generic_information",
+      "types": [
+        "news_topic"
+      ],
+      "problem": "The words news or information admit almost every factual query and leave scope unclear.",
+      "examples": [
+        "12647",
+        "13862",
+        "17101",
+        "14833",
+        "2346",
+        "1842",
+        "14587",
+        "3805"
+      ],
+      "candidate_rule": "Require an expressed news/report/update context before assigning a news subject; a bare general factual, mailbox or weather query does not automatically create news_topic. Decide explicitly whether non-news informational subject matter is intended as a separate operator.",
+      "status": "task_rule_selected_and_consolidated_pending_supervision_migration",
+      "resolution": "configs/tasks/slurp/news-topic-boundary-resolution-v1.json",
+      "package": "configs/tasks/slurp/slot-consolidated-design-v2.json"
+    },
+    {
+      "id": "identifying_reference_specificity",
+      "types": [
+        "audiobook_name",
+        "podcast_name",
+        "song_name"
+      ],
+      "problem": "Name/title and identifying reference wording have inconsistent specificity requirements.",
+      "examples": [
+        "11334",
+        "9877"
+      ],
+      "candidate_rule": "Distinguish reference to a specific work from a generic medium/category or unconstrained request for any matching item; explicitly decide whether possessive/deictic references without a title suffice, and apply the same rule across work types.",
+      "status": "task_rule_selected_for7_types_pending_supervision_migration",
+      "resolution": "configs/tasks/slurp/work-reference-boundary-resolution-v1.json",
+      "package": "configs/tasks/slurp/slot-consolidated-design-v4.json"
+    },
+    {
+      "id": "requested_property_vs_expressed_filler",
+      "types": [
+        "general_frequency",
+        "time",
+        "transport_descriptor",
+        "weather_descriptor"
+      ],
+      "problem": "Some type cards accept property names while explicit_filler wording rejects required but unstated values; interrogative role expressions are not consistently specified.",
+      "examples": [
+        "12647",
+        "2346",
+        "3805"
+      ],
+      "candidate_rule": "Record per type whether an explicitly named property or interrogative role expression itself meets the definition; never infer presence from a task normally requiring that property.",
+      "status": "task_rule_selected_for4_types_pending_supervision_migration",
+      "resolution": "configs/tasks/slurp/property-role-boundary-resolution-v1.json",
+      "package": "configs/tasks/slurp/slot-consolidated-design-v5.json"
+    },
+    {
+      "id": "attribute_relation_and_definition_target",
+      "types": [
+        "personal_info",
+        "relation",
+        "definition_word"
+      ],
+      "problem": "Personal attributes versus relational designations, and meaning requests versus arbitrary property requests, remain broad.",
+      "examples": [
+        "13862",
+        "14833",
+        "14587"
+      ],
+      "candidate_rule": "Separate requested concept meaning from arbitrary facts about an entity; assess social relations and personal attributes independently using expressed evidence, without generic factual-question closure.",
+      "status": "task_rule_selected_for3_types_pending_supervision_migration",
+      "resolution": "configs/tasks/slurp/attribute-relation-boundary-resolution-v1.json",
+      "package": "configs/tasks/slurp/slot-consolidated-design-v6.json"
+    }
+  ],
+  "policy": "Previously registered five rule families plus human-owner/content-channel boundaries have selected versions. Rating attachment remains input ambiguity; full current-rule annotation/admission is incomplete. No automatic historical label admission.",
+  "remaining_after_current_rule_rereview": [
+    {
+      "id": "content_owner_person_role",
+      "source_id": "9877",
+      "type": "person",
+      "quote": "my audiobook",
+      "status": "task_rule_selected_pending_supervision_migration",
+      "question": "Does a possessive identifying a work establish a task-relevant human participant, independently of first-person grammar?",
+      "resolution": "configs/tasks/slurp/owner-channel-boundary-resolution-v1.json",
+      "package": "configs/tasks/slurp/slot-consolidated-design-v7.json"
+    },
+    {
+      "id": "publication_channel_media_role",
+      "source_id": "15420",
+      "type": "media_type",
+      "quote": "twitter",
+      "status": "task_rule_selected_pending_supervision_migration",
+      "question": "Does a named publication channel also establish media_type when its access-application role is explicit?",
+      "resolution": "configs/tasks/slurp/owner-channel-boundary-resolution-v1.json",
+      "package": "configs/tasks/slurp/slot-consolidated-design-v7.json"
+    },
+    {
+      "id": "rating_attachment",
+      "source_id": "11334",
+      "type": "music_descriptor",
+      "quote": "rating of above four star",
+      "status": "input_ambiguity_mask",
+      "question": "Rating of podcast versus its songs is not settled by the utterance; do not invent a precedence rule or use native labels."
+    }
+  ],
+  "subsequent_batch_issues": {
+    "batch2": "configs/reviews/slurp-sequential-review-issues-b0002.json",
+    "batch3": "configs/reviews/slurp-sequential-review-issues-b0003.json",
+    "descriptor_domestic_resolution": "configs/tasks/slurp/role-boundary-convergence-resolution-v1.json",
+    "package": "configs/tasks/slurp/slot-consolidated-design-v8.json",
+    "standalone_report_scope": "unresolved; no global scope revision or native-intent-based admission"
+  }
+}

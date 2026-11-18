@@ -1,0 +1,38 @@
+{
+  "schema": "jev-context-parallel-execution-measurement-v1",
+  "probes": [
+    "release_reuse",
+    "candidate_binding"
+  ],
+  "release": "${SLURP_RELEASE}",
+  "role": "learning",
+  "purpose": "optimize",
+  "sample_rows": 512,
+  "cpu_grid": [
+    {
+      "cpu_workers": 4,
+      "window": 8,
+      "chunk": 1,
+      "min_parallel": 16
+    },
+    {
+      "cpu_workers": 4,
+      "window": 8,
+      "chunk": 16,
+      "min_parallel": 16
+    },
+    {
+      "cpu_workers": 4,
+      "window": 8,
+      "chunk": 32,
+      "min_parallel": 16
+    },
+    {
+      "cpu_workers": 8,
+      "window": 16,
+      "chunk": 16,
+      "min_parallel": 16
+    }
+  ],
+  "output": "${PARALLEL_OUTPUT}"
+}

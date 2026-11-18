@@ -1,0 +1,64 @@
+{
+  "schema": "simple-stage1-closed-prefix-diagnostic-v1",
+  "through_update": 269,
+  "rank_logs": 1068,
+  "closed_log_snapshot_sha256": "6261627ba2a5c1a6fb257d5d277192e2025158f79456f7d2a9f7516da386b79a",
+  "sources": {
+    "tools/jev/train_slurp_instruction_npu.py": "e243c380b3ca19fadc372869a63d087541f18ae3163e6c5c6136134d83c41b92",
+    "src/multimodal_jev/span_hybrid_actor.py": "946409cbc7984377243e2567a1dd4cecbb6ea37be21d82d02ad29cb8eacdb796",
+    "src/multimodal_jev/span_hybrid_objective.py": "18e4731bf28d6490fd3f3ffa43f7deac5b7b193280114888df2b1a6250931f2b"
+  },
+  "all": {
+    "first_update": 3,
+    "last_update": 269,
+    "updates": 267,
+    "weighted_ce_mean": 1.529407102653,
+    "weighted_ce_median": 0.9225140975913746,
+    "gradient_norm_mean": 7.971039230903883,
+    "max_rank_update_seconds_mean": 60.91968162138591,
+    "peak_allocated_GiB": 17.86185932159424
+  },
+  "first32": {
+    "first_update": 3,
+    "last_update": 34,
+    "updates": 32,
+    "weighted_ce_mean": 5.5456604616192635,
+    "weighted_ce_median": 5.580589730292559,
+    "gradient_norm_mean": 6.730006635189056,
+    "max_rank_update_seconds_mean": 61.55740809031249,
+    "peak_allocated_GiB": 16.242186069488525
+  },
+  "last32": {
+    "first_update": 238,
+    "last_update": 269,
+    "updates": 32,
+    "weighted_ce_mean": 0.37073964188997266,
+    "weighted_ce_median": 0.3719487689274956,
+    "gradient_norm_mean": 6.165168449282646,
+    "max_rank_update_seconds_mean": 60.43353133562505,
+    "peak_allocated_GiB": 17.86185932159424
+  },
+  "log_completion_intervals": {
+    "mean_seconds": 71.97439097730737,
+    "median_seconds": 68.1120001077652,
+    "scope": "File-mtime completion cadence, not instrumented step latency; remote clock and metadata behavior may affect it"
+  },
+  "reduction": "sum all 128 world-size-scaled per-request CE contributions / 4 ranks; class weights retained; denominator128",
+  "assertions": {
+    "full_closed_prefix": true,
+    "finite_nonnegative_CE": true,
+    "finite_positive_gradients": true,
+    "rl_and_reference_kl_zero": true,
+    "local_pg_loss_matches_ce_sum": true
+  },
+  "limitations": [
+    "Different learning batches across windows, not paired evaluation",
+    "No training accuracy/probability ledger in these logs; cannot infer accuracy from weighted CE",
+    "No detailed preparation/export/audit timing in this immutable snapshot; cannot attribute overhead precisely",
+    "Not an independent checkpoint or NPU lifecycle acceptance",
+    "Not RL efficacy or held-out generalization"
+  ],
+  "training_configuration_changed": false,
+  "new_model_inference": false,
+  "implementation_sha256": "67acb5e420e30bcf950a7dbbf70ce9a9129c47aa9d89e588ba76cc649d429a93"
+}

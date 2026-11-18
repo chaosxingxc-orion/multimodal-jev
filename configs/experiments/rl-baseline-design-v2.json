@@ -1,0 +1,265 @@
+{
+  "schema": "jev-rl-baseline-design-v2",
+  "status": "design_registered_engineering_not_locked",
+  "training_dispatch_allowed": false,
+  "required_order": [
+    "task_and_q_definition_frozen",
+    "engineering_and_experiment_config_accepted",
+    "training"
+  ],
+  "runtime_candidate": {
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "verl_commit": "e9405d70b77d56a23e72bb2e40a17b906856e913",
+    "verl_core_algos_sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+    "model": "Qwen3-ASR-0.6B",
+    "physical_devices": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "actor_parallelism": "FSDP_FULL_SHARD_DP4",
+    "rollout_parallelism": "vLLM_TP1",
+    "execution_dtype": "bfloat16",
+    "optimizer_master_dtype": "float32",
+    "lora": {
+      "rank": 4,
+      "alpha": 8,
+      "dropout": 0,
+      "targets": "language_q_v"
+    }
+  },
+  "common_policy_contract": {
+    "input": "audio_plus_frozen_task_definitions_and_fixed_Q_menu",
+    "action": "one_complete_typed_span_assignment",
+    "distribution": "product_of_categorical_span_policies_given_same_input",
+    "action_logprob": "sum_of_active_span_logprobs",
+    "transition_steps": 1,
+    "generation": false,
+    "sampling_temperature": 1.0,
+    "samples_per_request": 16,
+    "request_normalization": "mean_over_real_requests_then_mean_over_action_samples",
+    "loss_reduction_contract": {
+      "status": "task_objective_specification_not_runtime_implementation",
+      "actor_loss": "sum_real_requests w_x * [mean_G clipped_policy_loss_xg + lambda_t * CE_x + beta * exact_joint_KL_x] / N_real",
+      "critic_loss": "sum_real_requests w_x * mean_G clipped_value_loss_xg / N_real_when_present",
+      "weights": "frozen_population_mean_one_weights_applied_after_profile_advantage_normalization_never_batch_renormalized",
+      "sample_independent_terms": "CE_and_exact_KL_once_per_request; if_broadcast_to_G_samples_the_sample_reduction_must_be_mean_not_sum",
+      "padding": "explicit_real_request_mask_zeroes_all_terms_and_excludes_padding_from_N_real; do_not_infer_padding_from_supervision_or_reward",
+      "missing_process_supervision": "mask_process_reward_and_CE_only; retain_real_request_denominator_and_configured_action_KL",
+      "distributed": "same_global_N_real_for_all_ranks_and_microbatches_of_one_optimizer_update; with_mean_gradient_collective_local_numerator_times_world_size_divided_by_N_real; accumulate_by_sum_without_extra_microbatch_mean",
+      "optimizer_epochs": "advantage_and_old_policy_remain_frozen_per_behavior_batch; reduction_counts_each_optimizer_minibatch_real_requests_not_its_weight_sum",
+      "legacy_incompatibility": "span_hybrid_actor.make_batch_uses_sum_effective_weights_and_span_hybrid_objective.loss_rejects_local_weight_above_denominator; cannot_fix_by_only_substituting_N_real",
+      "evidence": "docs/research/request-loss-reduction-audit-v1.json"
+    },
+    "ppo_clip_ratio": 0.2,
+    "dual_clip": null,
+    "optimizer_epochs_per_behavior_batch": 2,
+    "shuffle_seed": 317,
+    "reference_kl": {
+      "type": "exact_sum_of_marginal_KL_policy_to_fixed_stage1_reference",
+      "coefficient": 0.01
+    },
+    "task_stage_ce": {
+      "start": 1.0,
+      "end": 0.1,
+      "decay_fraction": 0.8,
+      "schedule": "cosine",
+      "unit": "global_optimizer_update",
+      "weights_and_masks": "configs/experiments/reward-contract-design-v3.json#/ce",
+      "note": "Schedule candidate; family weights are authoritative in reward contract."
+    },
+    "outer_class_weighting": "configs/tasks/slurp/balance-policy-candidate-v1.json; task candidate, not implemented",
+    "note": "Registered initial comparison design; numerical settings require task-finalization and engineering acceptance before release lock. No task-specific reward inferred here.",
+    "action_membership": {
+      "baseline": "all configured valid output coordinates, including coordinates with masked or zero reward; padding is excluded",
+      "reward_mask_is_not_action_mask": true,
+      "same_input_reward_ablation": "Q-input and Q-credit keep the same action-coordinate membership and exact KL contract",
+      "partial_supervision": "A missing process label masks its reward/CE term; it does not silently remove that coordinate from joint ratio or KL.",
+      "cross_menu_caveat": "Direct vs Q-input changes joint clipping and total KL geometry as well as input structure and compute."
+    }
+  },
+  "profiles": {
+    "ppo_critic_v1": {
+      "advantage": "masked_whiten_of_one_step_return_minus_detached_V_of_input",
+      "verl_reference": "compute_gae_advantage_return",
+      "gamma": 1.0,
+      "gae_lambda": 1.0,
+      "actor_objective": "clipped_joint_action_PPO",
+      "critic": "separate_learner_value_head_on_audio_task_input_not_sampled_answers",
+      "critic_loss": "return_regression_with_value_clipping",
+      "status": "not_integrated_not_accepted",
+      "extra_advantage_normalization": false,
+      "advantage_normalization": {
+        "source": "pinned_verl_compute_gae_advantage_return_calls_masked_whiten",
+        "formula": "(A-mean_valid(A))/sqrt(unbiased_var_valid(A)+1e-8)",
+        "scope": "once_per_complete_behavior_batch_of_real_requests_times_G_before_DP_split_and_optimizer_epochs; padding_excluded",
+        "returns": "unwhitened_return_for_critic",
+        "extra_normalization": false,
+        "status": "source_verified_integration_not_accepted"
+      },
+      "source_audit": "docs/research/rl-source-normalization-audit-v1.json",
+      "design_correction": "Earlier raw R-V description omitted whitening in the pinned referenced function. This correction changes no implemented or running trainer."
+    },
+    "grpo_v1": {
+      "advantage": "group_reward_minus_group_mean_divided_by_sample_std_plus_1e-6",
+      "verl_reference": "compute_grpo_outcome_advantage",
+      "norm_adv_by_std_in_grpo": true,
+      "actor_objective": "clipped_joint_action_surrogate",
+      "critic": null,
+      "status": "not_integrated_not_accepted"
+    },
+    "rloo_v1": {
+      "advantage": "reward_minus_mean_reward_of_other_samples_same_request",
+      "verl_reference": "compute_rloo_outcome_advantage",
+      "actor_objective": "clipped_joint_action_surrogate",
+      "critic": null,
+      "note": "RLOO advantage with PPO clipping; explicitly distinguish from an unclipped REINFORCE-RLOO implementation.",
+      "status": "not_integrated_not_accepted",
+      "extra_advantage_normalization": false
+    },
+    "jev_exact_marginal_legacy": {
+      "advantage": "w_j_times_indicator_correct_minus_old_gold_probability",
+      "actor_objective": "old_policy_quadrature_of_marginal_clipped_surrogates",
+      "dual_clip": 3.0,
+      "critic": null,
+      "scope": "additive_rewards_only",
+      "status": "existing_custom_diagnostic_not_a_standard_algorithm_baseline"
+    }
+  },
+  "stepwise_extensions": {
+    "status": "design_only_after_common_profiles_accepted",
+    "first_factor": "outcome_only_vs_fixed_budget_supervised_Q_credit",
+    "second_factor": "shared_joint_advantage_vs_per_node_conditional_credit",
+    "conditional_advantage": "E_old[R_given_input_and_node_action]-E_old[R_given_input]",
+    "no_temporal_GAE_over_parallel_spans": true,
+    "missing_supervision": "mask_never_false",
+    "process_budget": 0.2,
+    "per_component_std_normalization": false,
+    "reward_schema": "configs/experiments/reward-contract-design-v3.json",
+    "process_denominator": "fixed_capacity4_per_family_not_ragged_panel_count_or_supervision_count",
+    "empty_or_missing": "no_budget_redistribution",
+    "clipping_geometry": {
+      "evidence": "docs/research/joint-span-clipping-audit-v1.json",
+      "status": "exact_policy_design_audit_not_training_integration",
+      "candidate_id": "jev_reward_support_marginalized_clip_v1",
+      "scope": "separate diagnostic objective; Final-only factorized reward can marginalize irrelevant auxiliary actions before clipping",
+      "not_equivalent_to_standard_joint_clip": true,
+      "reward_dependent_masks": "must not silently change action support between reward ablation arms",
+      "conditional_credit": "for interacting rewards use explicitly defined factor/conditional objectives; additive toy does not establish general equivalence",
+      "kl_control": "retain joint-sum KL in common profiles; family-budgeted KL is a separately registered experiment, never silently average by Q count",
+      "required_metrics": [
+        "joint ratio outside interval",
+        "sign-dependent surrogate saturation",
+        "Final marginal ratio",
+        "per-family KL and joint KL",
+        "valid action count",
+        "reward-supervised action count"
+      ]
+    },
+    "group_signal_diagnostics": {
+      "evidence": "docs/research/group-credit-sparsity-audit-v1.json",
+      "required_statistics": [
+        "Final all-wrong group fraction",
+        "Final all-correct group fraction",
+        "Final mixed group fraction",
+        "total reward constant fraction",
+        "process-only variable groups",
+        "per-family marginal gold probabilities",
+        "Final and process gradient diagnostics"
+      ],
+      "population_reduction": "Estimate constant-group expectations per request p(x)^G+(1-p(x))^G, then average with declared population weights; do not substitute dataset mean accuracy for p(x).",
+      "phase_policy": "First establish the registered Final-only RL curve from the fixed Stage1 start; compare fixed process-reward arms from the same start. No unregistered within-run reward switching.",
+      "adaptive_process_enablement": false,
+      "coefficient_warning": "Shrinking a nonzero process coefficient may be largely canceled by GRPO group standardization in Final-constant groups.",
+      "group_size_policy": "Keep G16 candidate unchanged; G32 is only mechanism sensitivity here, not a newly selected training setting. Do not silently resample or discard constant-Final groups.",
+      "stage1_gate": "Record actual per-request probability and semantic competence at Stage1 exit; no numerical competence gate inferred from toy probabilities.",
+      "scope": "One process Bernoulli and gold-vs-rest Final, old=current; no claim about full panel or shared-backbone gradient budgets."
+    },
+    "interacting_reward_credit": {
+      "evidence": "docs/research/binding-node-credit-audit-v1.json",
+      "status": "algebra_verified_design_only_no_runtime_change",
+      "on_policy_identity": "E[A_j(a_j)*grad_log_pi_j] = E[(R-E[R])*grad_log_pi_j] for factorized policy and exact conditional expectation under the same policy",
+      "variance_scope": "per independent-logit coordinate versus same centered reward baseline; not shared-parameter total covariance guarantee",
+      "old_policy_surrogate": "Freeze old probabilities and credits; marginal ratios define a separate local surrogate, not exact interacting current-policy expected reward away from old",
+      "interaction_scope": "For R=sum_f r_f(a_neighborhood), compute conditional credits within each registered small factor support and sum; no claim of tractable full joint enumeration",
+      "consistency_reward": "disabled_in_common_profiles; implication validity is diagnostic, not gold correctness",
+      "required_controls": [
+        "same Final and process reward across credit estimators",
+        "same CE KL sampling and update budget",
+        "on-policy expected gradient check",
+        "off-policy surrogate discrepancy and clipping reported",
+        "shared-backbone Final/process gradient and actual Final curves"
+      ],
+      "no_algorithm_equivalence_claim": true
+    },
+    "semantic_reward_revision": "v3 fixed capacity per menu-v3; standard GRPO/RLOO/PPO advantages and joint clipping unchanged; no training integration."
+  },
+  "supersedes": "configs/experiments/rl-baseline-design-v1.json; historical runs unchanged",
+  "task_contract": "configs/tasks/jev-task-design-v2.json",
+  "reward_contract": "configs/experiments/reward-contract-design-v3.json",
+  "context_requirement": "configs/tasks/slurp/context-requirement-candidate-v2.json",
+  "release_gate": {
+    "task_frozen": false,
+    "engineering_accepted": false,
+    "experiment_config_frozen": false,
+    "design_is_not_launcher_config": true,
+    "unresolved_before_task_freeze": [
+      "independent_semantic_supervision_admission_and_quality_gate_for_full_population",
+      "complete_output_annotation_route_and_independent_reviewer_execution",
+      "admitted_polarity_coverage_and_final_class_balance_weights",
+      "joint_review_of_current_menu_stage1_stage2_readout_evaluation_and_FSC_candidates",
+      "current_complete_semantic_input_representation_and_context_budget_not_yet_accepted"
+    ],
+    "unresolved_before_engineering_release": [
+      "actor_and_critic_learning_rates_and_schedules",
+      "effective_batch_and_memory_budget",
+      "critic_architecture_optimizer_and_value_clipping",
+      "total_updates_seeds_and_evaluation_checkpoints",
+      "predeclared_numeric_acceptance_tolerances",
+      "all_input_context_validation",
+      "resident_actor_reload_vllm_parity",
+      "standard_profiles_save_resume_and_old_ref_synchronization",
+      "profile_advantage_normalization_global_batch_and_DP_invariance",
+      "fixed_population_weighted_RL_CE_KL_real_request_reduction_with_padding_G_replication_and_microbatch_gradient_acceptance",
+      "memory_feasible_shared_actor_rollout_attention_for_frozen_context_with_renewed_probability_and_lifecycle_acceptance",
+      "host_ceph_kernel_remediation_and_local_durable_hot_storage_capacity_archive_restore_acceptance"
+    ],
+    "release_identity": [
+      "code_commit",
+      "image_digest",
+      "model_identity",
+      "dataset_manifest_sha256",
+      "task_config_sha256",
+      "reward_config_sha256",
+      "algorithm_config_sha256",
+      "acceptance_evidence"
+    ],
+    "change_policy": "No hot edits to running snapshots; engineering fixes require new version and affected acceptance checks; preserve version boundaries in curves."
+  },
+  "release_policy": {
+    "shared_runtime_releases": 1,
+    "initial_primary_profile": "grpo_v1",
+    "comparison_profile": "rloo_v1",
+    "value_reference_profile": "ppo_critic_v1",
+    "acceptance": "shared_runtime_and_task_gates_plus_each_selected_profile_gate",
+    "unaccepted_profile": "not_dispatchable; optional critic integration does not invalidate an accepted critic-free release",
+    "selection_basis": "implementation convergence, not observed superiority",
+    "frozen_run_mutation": "forbidden; fixes require a new version and affected acceptance evidence",
+    "scope": "design decision only; no profile is accepted by this registration"
+  },
+  "decision_record": "docs/research/61-baseline-convergence-and-context-gap.md",
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "current_dependent_design_candidates_registered_semantic_admission_renderer_and_runtime_pending",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created.",
+    "current_design_records": [
+      "docs/research/109-semantic-menu-and-objective-migration.md",
+      "docs/research/110-fixed-capacity-process-reward.md",
+      "docs/research/111-semantic-readout-binding.md",
+      "docs/research/114-fsc-semantic-transfer-migration.md"
+    ]
+  },
+  "semantic_menu_design": "configs/tasks/slurp/menu-design-candidate-v3.json",
+  "runtime_storage_policy": "docs/engineering/runtime-storage-policy.md"
+}

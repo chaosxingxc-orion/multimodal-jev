@@ -30,6 +30,8 @@ def adapter_layout(path):
 
 
 def create_engine(config, targets):
+    from .local_ipc import require_local_ipc
+    require_local_ipc()
     import torch
     from vllm import LLM
     from .vllm_spans import register_span_model
@@ -50,13 +52,12 @@ def create_engine(config, targets):
 class ResidentSpanRollout:
     def __init__(self, config, initial_adapter):
         from .span_runtime_profile import install_rollout_profile
-        if config['max_model_len'] != 4096 or config['physical_devices'] != [4]:
-            raise ValueError('fixed TP1 physical NPU4 and context4096 required')
-        if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*')) != ['davinci4']:
-            raise ValueError('isolated physical NPU4 required')
+        from .span_device_scope import validate_tp1
+        validate_tp1(config)
         if checkpoint_identity(config['model'])[0] != config['base_id']:
             raise ValueError('base identity differs')
         self.config = {k: config[k] for k in ('model','base_id','runtime_profile','max_model_len')}
+        self.config['physical_devices'] = list(config['physical_devices'])
         self.targets = adapter_layout(initial_adapter)
         self.slots = {}; self.phase = 'starting'
         self.engine = create_engine(config, self.targets)
@@ -73,6 +74,20 @@ class ResidentSpanRollout:
         never part of this interface. Returned parity is not training admission:
         caller must authenticate reference provenance, process exits and states.
         """
+        if reference is None:
+            raise ValueError('independent reference required for evaluate; use rollout for behavior collection')
+        return self._run(config, compiled, reference, progress)
+
+    def rollout(self, config, compiled, progress=None):
+        """Collect behavior without an extra HF pass; actor checks it before update.
+
+        Runtime/profile and exports must already be accepted by the caller.
+        This reports execution, not HF parity or permission to train. Labels
+        remain outside compiled input and no target-dependent sampling occurs.
+        """
+        return self._run(config, compiled, None, progress)
+
+    def _run(self, config, compiled, reference, progress):
         if self.phase != 'ready':
             raise ValueError('ready resident rollout required; no retry after failure')
         self.phase = 'evaluating'
@@ -92,12 +107,13 @@ class ResidentSpanRollout:
         adapter = config['adapter']; adapter_id = config['adapter_id']
         if checkpoint_identity(adapter)[0] != adapter_id or adapter_layout(adapter) != self.targets:
             raise ValueError('immutable adapter identity or layout differs')
-        if (reference.get('passed') is not True or reference['base_id'] != config['base_id']
+        if reference is not None and (reference.get('passed') is not True or reference['base_id'] != config['base_id']
                 or reference['adapter_id'] != adapter_id):
             raise ValueError('reference policy identity differs')
-        refs = {r['id']: r for r in reference['records']}
+        refs = None if reference is None else {r['id']: r for r in reference['records']}
         count = config['population']['requests']
-        if type(count) is not int or count < 1 or len(refs) != count or len(reference['records']) != count:
+        if (type(count) is not int or count < 1
+                or (refs is not None and (len(refs) != count or len(reference['records']) != count))):
             raise ValueError('complete distinct reference population required')
         if adapter_id not in self.slots:
             self.slots[adapter_id] = len(self.slots)+1
@@ -106,10 +122,10 @@ class ResidentSpanRollout:
         rows = []; seen = set()
         for row,batch,positions,candidates,rid,identity,processor in compiled:
             uid = row['id']
-            if uid in seen or uid not in refs:
+            if uid in seen or (refs is not None and uid not in refs) or len(seen)>=count:
                 raise ValueError('duplicate or unexpected input')
-            ref = refs[uid]
-            if ref['request_id'] != rid or ref['request_identity'] != identity:
+            ref = None if refs is None else refs[uid]
+            if ref is not None and (ref['request_id'] != rid or ref['request_identity'] != identity):
                 raise ValueError('policy-bound request identity differs')
             serialized = json.dumps(identity, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
             if (hashlib.sha256(serialized).hexdigest() != rid
@@ -141,12 +157,16 @@ class ResidentSpanRollout:
             if result.prompt_token_ids != ids:
                 raise ValueError('expanded input differs')
             logp = [p.tolist() for p in unpack_candidate_logits(result.outputs.data,candidates)]
-            parity = compare_span_policies(ref['candidate_logprobs'],logp)
-            if not parity['passed']:
+            # This also checks finite normalized distributions without using
+            # labels; a self comparison is never reported as backend parity.
+            valid = compare_span_policies(logp,logp)
+            if not valid['passed']:raise ValueError('invalid rollout distribution')
+            parity = None if ref is None else compare_span_policies(ref['candidate_logprobs'],logp)
+            if parity is not None and not parity['passed']:
                 raise ValueError('resident full-candidate parity failed')
             rows.append(dict(id=uid,request_id=rid,request_identity=identity,candidate_logprobs=logp,parity=parity))
             if progress is not None: progress(len(rows),count)
-        if seen != refs.keys():
+        if len(seen)!=count or (refs is not None and seen != refs.keys()):
             raise ValueError('incomplete input population')
         worker = self.engine.llm_engine.collective_rpc('inspect_jev_span_lora')
         if (len(worker) != 1 or worker[0]['registered_adapter_ids'] != [slot]
@@ -158,7 +178,7 @@ class ResidentSpanRollout:
         if checkpoint_identity(adapter)[0] != adapter_id:
             raise ValueError('adapter changed during evaluation')
         return dict(passed=True,base_id=config['base_id'],adapter_id=adapter_id,slot=slot,
-                    backend='vllm',worker=worker,records=rows)
+                    backend='vllm',worker=worker,records=rows,reference_compared=reference is not None)
 
     def close(self):
         if self.phase == 'closed': return

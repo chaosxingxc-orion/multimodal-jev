@@ -1,0 +1,64 @@
+{
+  "schema": "context-current-schedule-geometry-v1",
+  "unix": 1794723196.115241,
+  "sources": {
+    ".local/decision-objective-research/context-full-learning-schedule-v1/MANIFEST.json": "d9cd5832aa160df46a4c10a2051ff12c352d2a2609e2cffd6901267b28a814f6",
+    "docs/engineering/context-learning-cache-v1.json": "4b97af73d330e29b2b3d193b6a09914ecc34c8a7d335399f9654f3db6a7fb3ac",
+    ".local/decision-objective-research/context-learning-cache-v1-collected/independent.jsonl": "e95689c8633cb676bff926d4704cb8a6d07fa19d7c95fa541af74dcc7cf88567",
+    "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/analyze_current_schedule_geometry_v1.py": "89abe758092f30cde5e5fd93e5963b695ea33039fd11e3bb51941ed567e7abde",
+    ".local/decision-objective-research/context-full-learning-schedule-v1/epoch-0.json": "92fc4f63ec4ce207495e78fe043a1d65c03d35e18e238ad32a465d3755aafece",
+    ".local/decision-objective-research/context-full-learning-schedule-v1/epoch-1.json": "6a0243c3440d593b7016fd17c3e028b21045ebf694a49e79f97ebecea535d41b"
+  },
+  "comparisons": [
+    {
+      "micro": 8,
+      "accumulation": 4,
+      "global_batch": 128,
+      "world_size": 4,
+      "forward_groups_all_ranks": 10144,
+      "real_query_exposures": 81026,
+      "input_token_padding_fraction": 0.001252000141436449,
+      "processor_feature_padding_fraction": 0.07461390750122565,
+      "input_token_slots": 230548696,
+      "processor_feature_slots": 29371200,
+      "maximum_single_microbatch_token_slots": 24832,
+      "maximum_single_microbatch_feature_slots": 19200
+    },
+    {
+      "micro": 16,
+      "accumulation": 2,
+      "global_batch": 128,
+      "world_size": 4,
+      "forward_groups_all_ranks": 5072,
+      "real_query_exposures": 81026,
+      "input_token_padding_fraction": 0.004695776549797137,
+      "processor_feature_padding_fraction": 0.24463904575570283,
+      "input_token_slots": 231346400,
+      "processor_feature_slots": 35982400,
+      "maximum_single_microbatch_token_slots": 49664,
+      "maximum_single_microbatch_feature_slots": 38400
+    },
+    {
+      "micro": 32,
+      "accumulation": 1,
+      "global_batch": 128,
+      "world_size": 4,
+      "forward_groups_all_ranks": 2536,
+      "real_query_exposures": 81026,
+      "input_token_padding_fraction": 0.011565051317216968,
+      "processor_feature_padding_fraction": 0.4313299243438672,
+      "input_token_slots": 232954176,
+      "processor_feature_slots": 47795200,
+      "maximum_single_microbatch_token_slots": 99328,
+      "maximum_single_microbatch_feature_slots": 76800
+    }
+  ],
+  "grouping": "preserve existing32rows_per_rank_order; merge adjacent micro8 blocks for16/32; global membership/order unchanged",
+  "limits": [
+    "Processor shape arithmetic only; no new tensors/model/device run.",
+    "Input padding counts are not attention FLOPs or peak memory; packed attention can skip padding and head runs per request.",
+    "Processor feature padding is not waveform padding or valid-frame compute.",
+    "Zero-weight tail slots still execute and count toward geometry; real query exposures unchanged.",
+    "No NPU capacity/throughput or numerical parity claim; formal micro8 config unchanged."
+  ]
+}

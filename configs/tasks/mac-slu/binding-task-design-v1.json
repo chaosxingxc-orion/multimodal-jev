@@ -1,0 +1,88 @@
+{
+  "schema": "mac-slu-binding-task-design-v1",
+  "status": "structurally_supported_pending_definition_and_supervision_admission",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "role": "SLURP_source_only_frozen_weight_transfer_extension_not_current_training_population",
+  "native_release": "/mnt/cephfs/xingchao/datasets/mac-slu-spans-train-16k-v1",
+  "evidence": "docs/research/mac-slu-binding-information-check-v1.json",
+  "input": {
+    "modality": "direct_audio",
+    "question_selection": "fixed_task_menu_or_label_independent_panel_never_target_frame_subset",
+    "reference_query_split_sens_and_frame_ids": "audit_and_targets_only_never_actor_input",
+    "call": "single_forward_all_configured_spans_no_discrete_answer_refill",
+    "definitions": "independent_complete_semantic_cards_required_not_intent_names_alone"
+  },
+  "operators": {
+    "I_present": {
+      "key": [
+        "domain",
+        "intent"
+      ],
+      "truth": "at_least_one_expressed_intent_instance_satisfies_definition"
+    },
+    "S_present": {
+      "key": [
+        "domain",
+        "role"
+      ],
+      "truth": "at_least_one_expressed_role_under_its_domain_specific_definition_and_presence_policy",
+      "namespaces": "same_role_string_in_different_domains_not_automatically_equivalent"
+    },
+    "B_bound": {
+      "key": [
+        "domain",
+        "intent",
+        "role"
+      ],
+      "truth": "at_least_one_instance_of_defined_intent_has_a_bound_role_of_defined_type",
+      "not_recoverable_from": "I_and_S_cooccurrence_alone",
+      "repeated_instances": "existential_union_only_no_instance_identity_count_or_value_matching"
+    }
+  },
+  "final": {
+    "task": "configured_binding_panel_boolean_vector",
+    "direct": "B_outputs_only",
+    "q_input": "fixed_I_and_S_auxiliary_questions_plus_same_B_outputs",
+    "q_credit": "same_input_as_q_input_with_reliable_process_credit_if_separately_authorized_adaptation",
+    "rules": "no_external_AND_product_or_rule_repair_of_Final",
+    "full_set_metric": "only_when_every_configured_binding_truth_is_admitted_no_multi_panel_union_claim"
+  },
+  "supervision": {
+    "explicit_native_edges": "positive_proposals_not_automatic_new_semantic_certification",
+    "unannotated_edges": "unavailable_unless_explicit_absence_or_completeness_review",
+    "empty_semantics_or_instances": "unresolved_not_all_false",
+    "positive_implication": "B_implies_I_and_S_only_under_aligned_definitions_and_presence_scope",
+    "reverse_implication": "I_and_S_do_not_imply_B",
+    "current_status": "no_new_semantic_labels_admitted_no_native_relabelling"
+  },
+  "evaluation": {
+    "native": "retain_official_metrics_separate_from_derived_typed_relation_metrics",
+    "binding": "positive_F1_recall_false_positive_rate_with_explicit_negative_coverage",
+    "panel": "complete_panel_EM_only_with_complete_truth_otherwise_masked_decision_metrics_and_coverage",
+    "complexity_slices": [
+      "multiple_distinct_intents",
+      "same_I_S_signature_different_native_binding",
+      "repeated_same_intent_instances",
+      "empty_annotation_containers"
+    ],
+    "slice_use": "offline_reporting_only_not_input_question_routing",
+    "test_policy": "freeze_definitions_and_SLURP_checkpoint_before_external_test_no_target_result_based_selection",
+    "transfer_claim": "new_B_operator_and_language_shift_separate_from_same_operator_FSC_transfer"
+  },
+  "remaining_before_task_freeze": [
+    "semantic_intent_cards_and_role_presence_policies",
+    "native_empty_container_meaning_and_negative_completeness",
+    "fixed_panels_with_full_ontology_coverage_and_context_budget",
+    "heldout_population_identity_audio_and_supervision_acceptance",
+    "native_and_derived_scoring_protocol_and_cost_budget"
+  ],
+  "reward_design": {
+    "status": "design_only_not_target_training_authorization",
+    "final": "supervised_binding_correctness_or_fully_admitted_panel_EM",
+    "process": "independently_admitted_I_S_correctness_with_fixed_family_budgets",
+    "implication_consistency": "diagnostic_only_no_positive_reward_no_candidate_repair",
+    "reason": "all_false_satisfies_B_implies_I_and_S_without_identifying_correct_bindings",
+    "evidence": "docs/research/59-binding-reward-and-node-credit.md"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schema": "three-state-reviewer-calibration-candidate-v1",
+  "status": "terminal_both_arms_failed_semantic_calibration",
+  "task_rules_changed": false,
+  "actor_changed": false,
+  "model": "qwen-plus",
+  "model_identity": "provider_alias_no_upstream_revision_attestation",
+  "data_root": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/three-state-calibration-v1",
+  "data_report_sha256": "9ac7580990dbeb4dfc757709f26b93ab2ff2774b7e2b4e57ed15ca7cf9a07755",
+  "plan": ".local/research/three-state-calibration-v1/prepared/plan.json",
+  "plan_sha256": "1efd10c81cbe480eb13d1611fdf204da374913de3b2a739b2fc764a48b70fa44",
+  "input_check": "docs/research/three-state-calibration-input-check-v1.json",
+  "metadata_check": "docs/research/three-state-original-metadata-check-v1.json",
+  "arms": [
+    "envelope",
+    "envelope_three_state"
+  ],
+  "three_state_directive": "\nThree-state decision semantics: Evaluate presence in the supplied utterance under the supplied definition, not whether a real-world value could be resolved. Use positive when the utterance supplies the defined role or communicative act. Use negative when reviewing the complete utterance establishes that the defined role or act is absent or explicitly excluded by the definition. Use unavailable only when genuine ambiguity about role, sense, reference, attachment or intended act prevents deciding this predicate from the supplied input. An unknown referent value does not by itself make an already identifiable role unavailable; absence of an expressed role does not become unavailable merely because no value was provided. Do not default every unmentioned type to unavailable, and do not force ambiguous inputs to negative. Native annotation omission and an unreviewed item are not evidence of absence. Each status must agree with its evidence rationale. Apply all original task-specific scope, overlap and boundary rules; these meanings do not replace them.",
+  "cases_per_family_and_status": 2,
+  "requests_per_arm": 12,
+  "total_requests": 24,
+  "max_tokens_per_request": 4096,
+  "maximum_completion_tokens": 98304,
+  "concurrency": 2,
+  "automatic_retry": false,
+  "criteria": "Every scheduled request retained. Report exact reference agreement per family/status, three-state confusion and paired changes. Candidate transport requires all12 complete. Candidate semantic eligibility requires all12 reference targets consistent, including all4 unavailable and all4 positive; this narrow gate is not independent accuracy or bulk release.",
+  "session_id": 91568,
+  "started_unix": 1794530707.7099957,
+  "next_ordinary_observation_not_before": 1794531307.7099957,
+  "semantic_admission": 0,
+  "bulk_dispatch_allowed": false,
+  "training_dispatch_allowed": false,
+  "observed": {
+    "observation": "docs/research/three-state-calibration-observed-v1.json",
+    "verification": "docs/research/three-state-calibration-observed-check-v1.json",
+    "triage": "configs/reviews/three-state-calibration-triage-v1.json",
+    "status": "terminal_both_arms_failed_semantic_calibration",
+    "complete_requests": 24,
+    "reference_agreement": {
+      "envelope": 7,
+      "envelope_three_state": 8
+    },
+    "targets_per_arm": 12,
+    "paired_decisions": 95,
+    "changed_paired_decisions": 13,
+    "usage": {
+      "envelope": {
+        "prompt_tokens": 160539,
+        "completion_tokens": 3581,
+        "total_tokens": 164120
+      },
+      "envelope_three_state": {
+        "prompt_tokens": 162771,
+        "completion_tokens": 3738,
+        "total_tokens": 166509
+      }
+    },
+    "first_observation_elapsed_seconds": 636.3562037944794,
+    "semantic_admission": 0,
+    "bulk_dispatch_allowed": false,
+    "training_dispatch_allowed": false,
+    "next_action": "No automatic repeat or prompt sweep. Resolve independent reviewer/adjudication route and full rule consumption; preserve ontology and all prior attempts."
+  }
+}

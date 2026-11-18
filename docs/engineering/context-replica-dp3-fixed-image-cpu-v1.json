@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "2119b2dc13ff71cc4a3168418f9ff2e789f7f3feb4baf69dd29c0045b61cc7ad",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T12:06:21.47414425Z",
+    "FinishedAt": "2026-11-16T12:11:44.6454155Z"
+  },
+  "source_files": 372,
+  "source_manifest_sha256": "2be3fe64c15cc9cc5ce5f1cfd03c694a19c5c3bfdafe0886996b3079f6bc9e39",
+  "collection": "/srv/multimodal-jev-xingchao/operations/replica-dp3-cpu-v1/context-replica-dp3-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "2be5491b453405d4568276a17c707c352fd5c26e11d8b548d859e67e027cc82a",
+    "run/junit.xml": "77ce2b8f66b26c9fbe5f0663e3fd1b39041f5259f9b4e2d8b9c5892a47b93e6e",
+    "run/pytest.log": "e53afcc2e6a2446bfba36bf17e8c8c5b423d812718a63e3a7fa9e4d5f5f74eb9",
+    "package/FILES.json": "2be3fe64c15cc9cc5ce5f1cfd03c694a19c5c3bfdafe0886996b3079f6bc9e39",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 5,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794830808.497743,
+    "finished_unix": 1794831103.2608473,
+    "source_manifest_sha256": "2be3fe64c15cc9cc5ce5f1cfd03c694a19c5c3bfdafe0886996b3079f6bc9e39",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-replica-dp3-cpu-v1/run/junit.xml",
+      "tests/test_context_replica_actor_dp3_resume.py",
+      "tests/test_context_dual_credit_native.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Real CPU native verl DP3 local64/global192 micro16/32, full192 and one-real tail, gradient and fresh-process replay. Synthetic FP32 logits; not BF16/audio/NPU evidence."
+}

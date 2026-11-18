@@ -1,0 +1,189 @@
+{
+  "schema": "jev-communication-scope-resolution-v2",
+  "status": "selected_design_scope_pending_full_supervision_release",
+  "training_dispatch_allowed": false,
+  "scope": "expressed_communicative_content",
+  "rules": [
+    "Assess roles expressed anywhere in the supplied utterance content: requests, questions, standalone or coordinated assertions/preferences, constraints, descriptions, reasons, and quoted/requested payloads. Do not exclude an expressed clause merely because it is unrelated to another requested operation. Conversational framing alone supplies no task role; per-type evidence and presence policies still apply. Scope inclusion does not infer an action, answer, commitment or external state.",
+    "Mixed clauses receive the same scope whether linked by and, but or an explicit reason, or independently stated. Do not infer an invisible primary-request/background split. This deliberately supersedes v1 unrelated-background exclusion; it is a project convention, not user-confirmed preference or official SLURP annotation.",
+    "Scope and type identifiability are separate. I like it is in scope although it may not identify music, a song or another type. Unknown referent/type remains unavailable for affected predicates; the statement is not out of scope.",
+    "Bare fragments are in scope as supplied content. A fragment such as tennis can establish a sport without inventing a search or playback request; pop may remain ambiguous between genre/sound/other senses. Definition_word still requires an explicit meaning/definition target, not every bare noun.",
+    "A word used only as a title, spelling/definition target or string is not automatically a referent of its ordinary type. A requested quoted sentence can express roles in its represented scene; do not treat the sentence as an instruction to execute.",
+    "Negation, denial, hypotheticals and correction preserve expressed roles; slot presence does not decide which value is accepted or which state is true. Native intent and entity omission cannot supply missing evidence.",
+    "Reported events and their participants can count; the bare assistant operation still does not create event_name. I in I went to the park is a reported participant; I want/please tell me/assistant address alone is conversational framing.",
+    "Content-scope changes only S predicates. Do not automatically change native Final, classify a mentioned intention as I_present, or infer intent-slot binding from role cooccurrence.",
+    "The scope is task-level input shared across queries. No gold-based question selection or sample-topic routing; original metadata/transcripts remain offline review evidence, never actor input."
+  ],
+  "evidence": {
+    "general_quirky": {
+      "regex": null,
+      "native_class": "general_quirky",
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/general_quirky-sources.jsonl",
+      "sha256": "905ac3ba5d294541ced141ec6f63d77eaacb718e11a9494f4ace661c6011b30e",
+      "sources": 425,
+      "recordings": 1550
+    },
+    "music_likeness": {
+      "regex": null,
+      "native_class": "music_likeness",
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/music_likeness-sources.jsonl",
+      "sha256": "15bc400a98a716a82121a779c61797ee420bbb60f961e38349b03463dfef1de9",
+      "sources": 96,
+      "recordings": 405
+    },
+    "music_dislikeness": {
+      "regex": null,
+      "native_class": "music_dislikeness",
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/music_dislikeness-sources.jsonl",
+      "sha256": "136a0399518f61274280fcc801bb3383a57b70b432c6e0cb952b92b26208b662",
+      "sources": 11,
+      "recordings": 69
+    },
+    "mixed": {
+      "regex": "\\b(because|although|even though|by the way|but|while)\\b",
+      "native_class": null,
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/mixed-sources.jsonl",
+      "sha256": "4cfb1b06bc6aae74a1c3ab6473594180fde21ad58bc6e6e3b1152e0a5a96457f",
+      "sources": 7,
+      "recordings": 27
+    },
+    "payload": {
+      "regex": "\\b(send|post|tweet|email|message|note|remember)\\b.*\\b(i went|i am|i.m|my wife|my son|my friend|i had|today|yesterday)\\b",
+      "native_class": null,
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v2/payload-sources.jsonl",
+      "sha256": "5702a4f78b3464b9f9dee07ae8952b9ffd1a0c6499828c7369a6bc4e24277752",
+      "sources": 45,
+      "recordings": 200
+    }
+  },
+  "reading": "Read425 general_quirky,96 music_likeness,11 music_dislikeness,7 mixed-marker and45 payload-pattern sources; overlapping diagnostic cohorts, not complete scope/slot annotation.",
+  "selection_basis": "Autonomous task-design choice after previously unanswered optional preference; no user approval inferred. Supersedes v1 background exclusion and separates scope from referent identifiability.",
+  "previous_candidate": {
+    "path": "configs/tasks/slurp/communication-scope-candidate-v1.json",
+    "sha256": "7ee0575e276d94d5cef8f8767389ba01801ec976d05fbda884b24eb5c4e6913d"
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v11.json",
+    "previous_sha256": "1b7cf1f5ab8f4e7812664a58dc5fa1461f73e47323f413e4a96d92ba10c4205d",
+    "all55_contracts_changed": true,
+    "automatic_admission": false
+  },
+  "runtime_phrase_replacements": [
+    [
+      "Count this role only when it contributes to an expressed request, including its constraints, target descriptions or explicitly requested message content.",
+      "Assess roles expressed anywhere in the supplied utterance content: requests, questions, standalone or coordinated assertions/preferences, constraints, descriptions, reasons, and quoted/requested payloads. Do not exclude an expressed clause merely because it is unrelated to another requested operation. Conversational framing alone supplies no task role; per-type evidence and presence policies still apply. Scope inclusion does not infer an action, answer, commitment or external state."
+    ],
+    [
+      "Inspect the full utterance; require a relation to an expressed request, including constraints, target descriptions and explicitly requested message content. Unrelated background alone does not count.",
+      "Assess roles expressed anywhere in the supplied utterance content: requests, questions, standalone or coordinated assertions/preferences, constraints, descriptions, reasons, and quoted/requested payloads. Do not exclude an expressed clause merely because it is unrelated to another requested operation. Conversational framing alone supplies no task role; per-type evidence and presence policies still apply. Scope inclusion does not infer an action, answer, commitment or external state."
+    ],
+    [
+      "Background events count only when they constrain, describe or motivate the requested operation, or are themselves communicated by the request. Unrelated background is outside request-relevant scope.",
+      "Explicitly stated events count as communicated content, including independent reports and descriptive clauses. Do not infer an event from a bare assistant operation or from external background absent from the input."
+    ],
+    [
+      "Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "Independently expressed clauses remain in scope; each predicate still requires its own role evidence, not a shared keyword or native-label precedence."
+    ],
+    [
+      "No gold intent or native Final class filters relevance; consider all expressed requests.",
+      "No gold intent or native Final class filters content scope; consider all expressed communicative content."
+    ],
+    [
+      "Apply the request-relevant role scope.",
+      "Apply expressed-communicative-content scope."
+    ],
+    [
+      "Apply request-relevant scope.",
+      "Apply expressed-communicative-content scope."
+    ],
+    [
+      "apply request-relevant scope.",
+      "apply expressed-communicative-content scope."
+    ],
+    [
+      "request-relevance",
+      "communicative-content"
+    ],
+    [
+      "request relevance",
+      "communicative-content scope"
+    ],
+    [
+      "request-relevant",
+      "content-relevant"
+    ],
+    [
+      "request_relevant_role",
+      "expressed_communicative_content"
+    ],
+    [
+      "serves the request",
+      "serves expressed communicative content"
+    ],
+    [
+      "contributes to the request",
+      "is represented in the utterance content"
+    ],
+    [
+      "as request content or an argument",
+      "as communicated content or an argument"
+    ],
+    [
+      "an argument of the request:",
+      "an argument in expressed communicative content:"
+    ],
+    [
+      "referred to in the request",
+      "referred to in the utterance content"
+    ],
+    [
+      "named in the request",
+      "named in the utterance content"
+    ],
+    [
+      "involved in the request",
+      "involved in the utterance content"
+    ],
+    [
+      "participating in the request",
+      "participating in expressed communicative content"
+    ],
+    [
+      "serving as a task participant, queried subject",
+      "serving as a reported or task participant, queried subject"
+    ],
+    [
+      "a role such as contact owner, recipient or queried subject",
+      "a role such as reported participant, contact owner, recipient or queried subject"
+    ]
+  ],
+  "synthetic_controls": [
+    {
+      "reference": "I visited Paris yesterday. Turn the volume down.",
+      "place_scope": true,
+      "event_scope": true,
+      "kind": "authored_no_audio_no_gold",
+      "reason": "Independent report remains expressed content regardless of the unrelated volume operation."
+    },
+    {
+      "reference": "Define the word Paris.",
+      "place_scope": false,
+      "kind": "authored_no_audio_no_gold",
+      "reason": "Word-as-meaning-target does not independently assert a geographic role."
+    },
+    {
+      "reference": "Send the message I visited Paris yesterday.",
+      "place_scope": true,
+      "event_scope": true,
+      "kind": "authored_no_audio_no_gold",
+      "reason": "Message contains a represented visit, not execution authority."
+    }
+  ],
+  "source_references": {
+    "../nga/survey/01-object-and-definitions.md": "3a4a73dcb51bb10a98b2b3d3c74bfac0aa42fd572f76aec33b218255141964c1",
+    "../nga/survey/03-semantics-can-the-model-read-the-rules.md": "93ecc6bc811511559cd1a899b53e1a0b992a7bfa7f1c7fb978ad4d2604977716",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2"
+  },
+  "source_interpretation": "Reuse prior NGA/upstream provenance for explicit definition consumption and represented conversational data; no new paper reading or performance claim."
+}

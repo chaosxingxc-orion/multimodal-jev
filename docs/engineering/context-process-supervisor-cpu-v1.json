@@ -1,0 +1,11 @@
+{
+  "status": "candidate_cpu_verified_not_dispatched",
+  "files": {
+    "tools/jev/context_process_supervisor.py": "f02c8d89536f1c7e8ea50a851a6f41f2e905d512c976f98c064fc1ba123aeaa2",
+    "tests/test_context_process_supervisor.py": "31f9d91be9ba8d9496b2bcd3b4c92cf645e72c9483878e602d424ff856b12637"
+  },
+  "tests": 8,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_process_supervisor.py",
+  "scope": "Real CPU subprocess and Unix socket lifecycle only. No NPU topology, actual engine co-residency, model numerical equivalence, continuous RL or restore admission.",
+  "frozen_files_verified": 364
+}

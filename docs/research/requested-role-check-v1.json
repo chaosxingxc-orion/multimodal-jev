@@ -1,0 +1,99 @@
+{
+  "schema": "slurp-requested-role-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/requested-role-boundary-resolution-v1.json",
+  "rule_sha256": "1a5e33073a5c990d8d528b454235b68fb21c2afce3e3b3fc2cb9493a2955bd39",
+  "review": "configs/reviews/slurp-requested-role-boundary-v1.json",
+  "review_sha256": "3624b6af7edcb87c412496e7198ee12eda78e2d280201fd6032bb9cdefab675e",
+  "cohort_counts": {
+    "calendar": 129,
+    "creator": 104,
+    "native_artist": 177,
+    "book_author": 14
+  },
+  "unique_read_sources": 411,
+  "review_coordinates": 48,
+  "review_sources": 43,
+  "proposal_counts": {
+    "true": 24,
+    "null": 11,
+    "false": 13
+  },
+  "recording_bindings": 281,
+  "unique_recordings": 246,
+  "native_disagreements": 19,
+  "first_batch_rereview": [],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v8/report.json": "9f37e3af595ae2dfd28684dadff411ced4ff586aa65740c3653f16aac51a0f59",
+    "configs/tasks/slurp/requested-role-boundary-resolution-v1.json": "1a5e33073a5c990d8d528b454235b68fb21c2afce3e3b3fc2cb9493a2955bd39",
+    "configs/reviews/slurp-requested-role-boundary-v1.json": "3624b6af7edcb87c412496e7198ee12eda78e2d280201fd6032bb9cdefab675e"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/review-recording-bindings.jsonl": "4635f9adc9cc0b973fd1db4c06bb8641dc4a548775af28d116440ebed54865a7",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/creator-sources.jsonl": "8aed32bbf159937b93c914908770ecd54c73919ffdf839021df6ad1af434ccd3",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/summary.json": "598450c309ab668e8dbac04d8f3868803d901812a2b1ba79f836e255686d9ede",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/native_artist-sources.jsonl": "5308bc27bca2f0ce95f5eed74d18b474065a6131d15b0e5356982fda8f2b9ad1",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/book_author-sources.jsonl": "ee28b4a7899e3ea609cec3a53f885447560ea7f49a131f5dd343718706e6ef07",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/calendar-sources.jsonl": "ff433438f35b6e0f4060dd23859bd7ece286a492803e2c726a4741b60840e8a3"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v10.json",
+    "sha256": "0fe8e53da998e866f6b18f0ea31ba628a671569e61a8ffffb089e0ae9eda55e1",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v12.json": "954f99b77ab7df12f2392c2509d0a893d58eadefc9be6efdd6d7b65412846a3c",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v12.json": "b45f6d9a9c1c00b1c64930d7f71a29718edaedc53898462d9330e511552ef4a5",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v13.json": "e4f3cf9df040aa8d13ee3ea89a20affc3be177d40c4fb8ee77b58e89c1e374bd"
+    },
+    "unchanged_cards": 52,
+    "changed_semantic_types": [
+      "artist_name",
+      "audiobook_author",
+      "date"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "artist_name",
+        "audiobook_author"
+      ],
+      [
+        "artist_name",
+        "color_type"
+      ],
+      [
+        "artist_name",
+        "person"
+      ],
+      [
+        "artist_name",
+        "song_name"
+      ],
+      [
+        "audiobook_author",
+        "audiobook_name"
+      ],
+      [
+        "audiobook_author",
+        "person"
+      ],
+      [
+        "change_amount",
+        "date"
+      ],
+      [
+        "date",
+        "general_frequency"
+      ],
+      [
+        "date",
+        "time"
+      ],
+      [
+        "date",
+        "timeofday"
+      ]
+    ]
+  },
+  "scope": "Metadata, full learning source membership and binding reconstruction independent of workpack bindings; same-author reference judgments, no independent semantic certification, listening or optimization admission."
+}

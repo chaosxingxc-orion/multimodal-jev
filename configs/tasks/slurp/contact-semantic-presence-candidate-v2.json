@@ -1,0 +1,48 @@
+{
+  "schema": "slurp-contact-semantic-presence-candidate-v2",
+  "status": "separate_I_present_design_and_reference_review_not_training_release",
+  "training_dispatch_allowed": false,
+  "request_policy": "configs/tasks/intent-request-semantics-candidate-v1.json",
+  "cards": [
+    {
+      "semantic_id": "contact_record_modify",
+      "operator": "I_present",
+      "definition": "The query requests creating or updating an address-book contact entry or its fields.",
+      "includes": [
+        "Add a contact, save an address as a contact, edit a contact field or register a contact as a favorite.",
+        "A clear creation/update request without all field values, including an explicitly directed conditional addition."
+      ],
+      "excludes": [
+        "Retrieval alone, sending messages or placing calls alone, and contact backup/export alone do not request contact creation/update.",
+        "Contact deletion is outside this creation/update definition; do not extend the operation family implicitly."
+      ],
+      "coexistence": "An additional lookup or message request does not cancel an independently expressed contact creation/update request.",
+      "native_related_label": "email_addcontact",
+      "native_mapping_status": "related_operation_not_equivalent_exclusive_class",
+      "optimization_allowed": false,
+      "ambiguity": "Generic add-email wording with an unresolved message-versus-address sense or contact-entry destination is unavailable, not positive or automatically negative. Explicitly adding an email account or a message outside a contact record is negative; add an email to contacts is positive even without its value. This clarifies the existing request-policy distinction between missing parameters and unresolved domain/act."
+    },
+    {
+      "semantic_id": "contact_information_lookup",
+      "operator": "I_present",
+      "definition": "The query requests retrieving, displaying, searching or verifying contact-channel/address information, or information explicitly from an address-book contact record or collection.",
+      "includes": [
+        "Phone/pager numbers, email addresses, residential/postal addresses and associated dialing/area codes; checking a supplied contact detail is included.",
+        "Explicit contact record/list lookup, existence, count or attributes, even when the value has not been supplied or the person is referred to indirectly.",
+        "A separately requested lookup or contact-list check preceding addition, including a conditional workflow."
+      ],
+      "excludes": [
+        "Sending or dialing alone, adding/editing alone, general personal facts without a contact-record source, communication history without an explicit contact-record source, and instructions about how to use the lookup feature alone.",
+        "Selecting a contact without a display/information request does not by itself request lookup. Ambiguous person/location/message references remain unavailable when they can reasonably denote a lookup target."
+      ],
+      "stored_record_requirement": "Explicit storage is required for arbitrary personal attributes, but not for a clearly requested contact-channel/address detail. The task does not assert the data is already stored or obtainable.",
+      "coexistence": "An additional creation/update or communication request does not veto this request when independently expressed.",
+      "native_related_label": "email_querycontact",
+      "native_mapping_status": "related_operation_not_equivalent_exclusive_class",
+      "optimization_allowed": false
+    }
+  ],
+  "supervision": "Fresh reference proposals bound to this policy and these cards; old definition-fit labels remain historical and are not implicitly migrated.",
+  "scope": "Full 147-source native contact cohort is a contrastive rule study, not a replacement for full 40513-recording training or a globally exhaustive semantic set.",
+  "prior": "configs/tasks/slurp/contact-semantic-presence-candidate-v1.json"
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "native-attribute-prob-task-candidate-v1",
+  "status": "full_TRAIN_targets_audited_initial_rendering_exceeds_current_context",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "dataset": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/slurp-native-attribute-prob-candidate-v1",
+  "dataset_manifest_sha256": "d98db48e619a83e7eceb308da13f257a6cc3cfa4bf701f3f17022ff99a07a482",
+  "semantics": "membership_of_exclusive_benchmark_assigned_event",
+  "operator": "is_assigned_event_in_defined_group",
+  "candidate_menu": "all_18_scenario_46_action_and_60_Final_groups_identical_for_every_audio",
+  "model_input": "direct_audio_plus_shared_event_catalog_and_fixed_group_memberships",
+  "output": "one_independent_probability_per_group",
+  "evidence_class": "deterministic_Final_label_projection_not_independent_semantic_process_gold",
+  "arms": {
+    "direct": {
+      "questions": "Final60",
+      "reward": "Final_set_F1"
+    },
+    "q_input": {
+      "questions": "scenario18_action46_Final60",
+      "reward": "Final_set_F1"
+    },
+    "q_credit": {
+      "questions": "same_as_q_input",
+      "reward": "Final_set_F1_plus_lambda_mean(scenario_set_F1,action_set_F1)"
+    }
+  },
+  "controls": [
+    "same_Final_auxiliary_losses",
+    "no_process_auxiliary_loss_in_these_three_arms",
+    "same_task_catalog_and_Final_definitions",
+    "same_audio_order_and_exposure",
+    "report_actual_NPU_time_and_input_tokens",
+    "new_Direct_required_due_to_new_rendering"
+  ],
+  "process_reward": {
+    "lambda": null,
+    "status": "not_frozen_not_dispatchable",
+    "normalization": "equal_family_weight_not_per_bit_accuracy",
+    "missing_truth": "mask_and_report_coverage_never_false",
+    "grpo_caution": "small_lambda_does_not_bound_standardized_advantage_when_Final_reward_constant"
+  },
+  "final_decision": "Final_head_direct_output_no_attribute_OR_AND_repair",
+  "metrics": [
+    "Final_set_F1_at_0.5",
+    "Final_top1_accuracy",
+    "Final_exact_set",
+    "Final_NLL",
+    "Final_Brier",
+    "process_family_set_F1",
+    "Final_by_native_structural_ambiguity",
+    "actual_NPU_seconds"
+  ],
+  "cross_dataset": "same_membership_operator_can_accept_dataset_defined_groups; matching_attribute_names_does_not_establish_semantic_equivalence",
+  "remaining": [
+    "context_input_budget_and_representation_freeze",
+    "complete_selection_protocol_without_TEST_tuning",
+    "process_reward_weight_and_budget_freeze",
+    "new_engineering_identity_and_finite_acceptance"
+  ],
+  "scope": "Native decomposition control complements semantic Q research; does not replace it or change live GRPO",
+  "processor_evidence": "docs/research/context-attribute-processor-fixed-image-cpu-v1.json",
+  "context_observation": {
+    "direct_tokens": [
+      4546,
+      4573,
+      4843
+    ],
+    "q_input_tokens": [
+      8086,
+      8113,
+      8383
+    ],
+    "audio_anchors": "shortest_median_longest_TRAIN",
+    "current_4096_supported": false,
+    "full_population_executed": false,
+    "decision": "revise_redundant_representation_before_new_capacity_admission_no_truncation"
+  }
+}

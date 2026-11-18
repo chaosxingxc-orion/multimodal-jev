@@ -1,0 +1,148 @@
+{
+  "schema": "minds14-native-descriptor-transfer-v1",
+  "status": "task_protocol_frozen_runtime_pending",
+  "input_preparation_allowed": true,
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "task_semantics": "exclusive_event",
+  "descriptor_mode": "native_label_underscore_to_space_only",
+  "candidates": [
+    {
+      "id": "abroad",
+      "definition": "abroad"
+    },
+    {
+      "id": "address",
+      "definition": "address"
+    },
+    {
+      "id": "app_error",
+      "definition": "app error"
+    },
+    {
+      "id": "atm_limit",
+      "definition": "atm limit"
+    },
+    {
+      "id": "balance",
+      "definition": "balance"
+    },
+    {
+      "id": "business_loan",
+      "definition": "business loan"
+    },
+    {
+      "id": "card_issues",
+      "definition": "card issues"
+    },
+    {
+      "id": "cash_deposit",
+      "definition": "cash deposit"
+    },
+    {
+      "id": "direct_debit",
+      "definition": "direct debit"
+    },
+    {
+      "id": "freeze",
+      "definition": "freeze"
+    },
+    {
+      "id": "high_value_payment",
+      "definition": "high value payment"
+    },
+    {
+      "id": "joint_account",
+      "definition": "joint account"
+    },
+    {
+      "id": "latest_transactions",
+      "definition": "latest transactions"
+    },
+    {
+      "id": "pay_bill",
+      "definition": "pay bill"
+    }
+  ],
+  "requirements": [
+    "Use the complete spoken request as evidence for every supplied question.",
+    "Use the supplied candidate definitions; do not assume an unspoken value or role.",
+    "Fill the provided typed spans in one forward pass without generating text."
+  ],
+  "population": {
+    "recordings": 8168,
+    "split": "all_local_upstream_train",
+    "official_test": false,
+    "assets_manifest_sha256": "0ed2d25fb3f669b9040071da7d939909e6a9d40f85023b4de57654df4abf4152",
+    "audio_verification_sha256": "0115cdfd3cf282d86f3632d7ba8e5c7a800b6efa17408b4a61e9ca71d4ecca39",
+    "inventory": {
+      "path": "docs/research/minds-local-audio-audit-v1.json",
+      "sha256": "d022f32e4a7a362495d3911d35fd44fa90933a544a51236f505be138740c2a37"
+    }
+  },
+  "input_policy": {
+    "audio": "direct_original_audio_shared_raw_16k_preprocessing",
+    "menu": "all14_every_record",
+    "candidate_order": "upstream_ClassLabel",
+    "history": [],
+    "definition_language": "English",
+    "renderer": "existing_context_decision_contract_including_English_system_prefix",
+    "transcript": false,
+    "gold": false,
+    "language_id": false,
+    "source_path": false,
+    "gold_based_menu": false,
+    "max_tokens": 4096,
+    "overlength": "report_failure_no_truncation_no_silent_population_exclusion"
+  },
+  "policies": {
+    "initial": "completed_SLURP_Stage1_step634",
+    "selected": "GRPO_checkpoint_chosen_only_by_complete_SLURP_selection_curve",
+    "same_source_pair_as": "fsc_and_slurp_clean_test",
+    "target_tuning": false,
+    "target_checkpoint_selection": false
+  },
+  "evaluation": {
+    "set_threshold": 0.5,
+    "top1_tie_rule": "first_in_fixed_candidate_order",
+    "primary": "recording_weighted_query_macro_set_f1_and_paired_delta",
+    "secondary": [
+      "top1_event_accuracy",
+      "top1_macro_f1",
+      "exact_set",
+      "candidate_binary_nll",
+      "candidate_brier",
+      "empty_rate",
+      "multiple_rate"
+    ],
+    "strata": [
+      "each_of_14_language_varieties",
+      "14_variety_equal_weight_metric_mean",
+      "12_language_equal_weight_metric_mean_with_English_varieties_pooled_by_recording"
+    ],
+    "scoring": "reuse_ContextEventMetrics_full14_candidates",
+    "incomplete_output": "no_complete_population_score_keep_failure_counts",
+    "calibration": "native14_probability_metrics_not_numerically_pooled_with_SLURP60_or_FSC31",
+    "uncertainty": "paired_descriptive_single_run_no_speaker_disjoint_or_population_significance_claim"
+  },
+  "target_exposure": [
+    "full_audio_decode_and_metadata_inventory",
+    "label_names_and_class_counts_reviewed",
+    "project_authored_provisional_cards_exist_but_are_not_used",
+    "no_target_transcript_reads_or_model_scoring"
+  ],
+  "limitations": [
+    "Native-label descriptor diagnostic; original collection boundaries are unavailable.",
+    "Does not complete the separate semantic-definition or complex-Q generalization objective.",
+    "Not official TEST, original paper split reproduction, or AudioJev672 subset reproduction.",
+    "No proof of absence from backbone pretraining or speaker/semantic overlap.",
+    "English instruction prefix is inherited identically for every language; no oracle language hint."
+  ],
+  "runtime_required": [
+    "full_actual_processor_receipts",
+    "14_candidate_HF_vLLM_pair_parity",
+    "source_only_policy_binding",
+    "independent_actual_inference_audit"
+  ],
+  "queue": "prepare_only_do_not_preempt_current_SLURP_RL_FSC_TEST"
+}

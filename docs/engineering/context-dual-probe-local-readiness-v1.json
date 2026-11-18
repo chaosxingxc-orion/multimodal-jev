@@ -1,0 +1,32 @@
+{
+  "schema": "dual-probe-local-readiness-v1",
+  "status": "prepared_not_launched",
+  "tests": {
+    "local_measurement_and_existing_auditor": 32,
+    "local_runner_binding": 3,
+    "failures": 0
+  },
+  "test_scope": "CPU fixture measurements and subprocess failure path; no model/NPU timing or training gain",
+  "source_sha256": {
+    "tools/reports/context_dual_measurement_candidate.py": "a3d4295366665ec9389b8c2210fa907ad3d2cff8befc09782b61d198ea5ae495",
+    "tools/reports/run_context_dual_probe_candidate.py": "7f3d92eb0320d4479b669976508018930ff85176e3b25f1423ca15a7a555fb9d",
+    "tools/reports/prepare_context_dual_probe_candidate.py": "c2d8d26b785755feb7681afa5c94bf7e10e4fcf657dfdd3d4ce42255d136016b",
+    "tests/test_context_dual_measurement_candidate.py": "b6b5d2130a2beee2343294fda881543f3973bc9f029948c4cb58dc15b647ed0e",
+    "tests/test_context_dual_probe_candidate.py": "ae3e72bc9a91f71febcfa04b66ebc56b7e2273ea3984ae444e2f37257f73dec3",
+    "configs/portable/operations/context-dual-probe-prepare.json": "78f37cc179a74133e2ff335c1caa386606d9d71fc7fbe3c990e88cdb72e510dd"
+  },
+  "package_files": 1095,
+  "package_manifest_sha256": "3691b50a8c0d3fa8f3f41f91bccf2635fe30e1acb858ac0e51f3fd30d49582f1",
+  "parent_manifest_sha256": "6d228b2c573d2e4c25e6a95952281002ed094327efb7270bbf29fe8cd3ef6564",
+  "input_sha256": "4b8791ee0abfe3c40613c24e80737f89630e56321f8f8e14c2cce28237cc9234",
+  "complete_payload_pins_verified": true,
+  "parent_unchanged": true,
+  "training_dispatch_allowed": false,
+  "pending": [
+    "existing queue completion and exclusive lease",
+    "macro-aware launch/collection adapter",
+    "real-audio independent audit",
+    "full TRAIN ranking saturation coverage",
+    "dual actor integration and nonzero update/resume"
+  ]
+}

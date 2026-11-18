@@ -1,0 +1,57 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "b6c23e1df9d117ead41427b082d3cc5734ed592a600f86fd4ca1b892bc1c41a6",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T12:25:38.62825024Z",
+    "FinishedAt": "2026-11-16T12:26:42.58446453Z"
+  },
+  "source_files": 398,
+  "source_manifest_sha256": "df1c1c3c7803ca8b15a0c659607b8101fb2e749e18f3235351cfd23cc1fc77a9",
+  "collection": "/srv/multimodal-jev-xingchao/operations/replica-integration-cpu-v1/context-replica-integration-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "01dee94836faeaba081f29a5c3efca8a4e307f277ddc39d28f993272b233b8fc",
+    "run/junit.xml": "8b16e551be6e07a09816ff36ee6d79540cbd226d9ea4bb4ebc5de96736678847",
+    "run/pytest.log": "c3b1d45fe843b4ce4b0398bbb87f520dc6679802f30c0b8c0f8684651d8e7df7",
+    "package/FILES.json": "df1c1c3c7803ca8b15a0c659607b8101fb2e749e18f3235351cfd23cc1fc77a9",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 44,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794831965.428101,
+    "finished_unix": 1794832000.8592088,
+    "source_manifest_sha256": "df1c1c3c7803ca8b15a0c659607b8101fb2e749e18f3235351cfd23cc1fc77a9",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-replica-integration-cpu-v1/run/junit.xml",
+      "tests/test_context_replica_trainer_candidate.py",
+      "tests/test_context_replica_schedule.py",
+      "tests/test_context_replica_macro_transport.py",
+      "tests/test_context_replica_macro_rollout.py",
+      "tests/test_context_topology_batch_plan.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Fixed image candidate trainer generation, topology/schedule reconstruction, real socket macro192 with service32/48 and failure semantics. Model/activation substitutes; not NPU or audio parity."
+}

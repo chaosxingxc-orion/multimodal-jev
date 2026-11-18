@@ -1,0 +1,26 @@
+{
+  "status": "prepared_only_no_dispatch",
+  "files_verified": 372,
+  "manifest_sha256": "87a141b776bbc8c32284cdc341165e3e5b5f44cba58db8e009146b4a72843c4b",
+  "changed_files": [
+    "config.json",
+    "service-config.json",
+    "source/tools/jev/train_context_online_candidate.py"
+  ],
+  "cpu_tests": 37,
+  "expected_recovery_updates": [
+    2
+  ],
+  "expected_policy_exports": [
+    1,
+    2
+  ],
+  "scope": "Bounded same-container checkpoint-frequency candidate; no actual NPU execution, no automatic dispatch, no Stage2 release",
+  "test_command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_checkpoint_package.py tests/test_context_checkpoint_lifecycle.py tests/test_context_checkpoint_runtime.py tests/test_context_rollout_session.py",
+  "test_scope": "CPU transformed publication blocks; interval1 vs interval64 every-step weights and final four-rank simulated Adam exact; FSDP, communication, export and engine receipts mocked; no NPU result",
+  "candidate_sources": {
+    "tools/jev/prepare_context_checkpoint_package.py": "dc13e34648a1f9f194a128e50b08babd74a0e25f246d27a15c236627dd08c03a",
+    "tests/test_context_checkpoint_package.py": "49326e239e9630bab52566ca778948b2413b50f1a51e2c46bebf273511eb6838",
+    "tests/test_context_checkpoint_runtime.py": "37c21e75f0aa3df89a54b75c347dfc0a92c947ea34f32033df280d52dd0ac94a"
+  }
+}

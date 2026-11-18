@@ -1,0 +1,47 @@
+{
+  "schema": "context-decision-head-candidate-v1",
+  "status": "two_input_aligned_engine_exact_packed_batch_forward_exact_with_row_head_dp_pending",
+  "training_dispatch_allowed": false,
+  "backbone": "Qwen3-ASR-0.6B",
+  "branch": {
+    "hidden_size": 1024,
+    "num_heads": 8,
+    "ffn_size": 1024,
+    "residual_scale": 0.1,
+    "layers": 1,
+    "position_encoding": "inherited_backbone_states_no_extra_branch_encoding",
+    "dropout": 0.0,
+    "readout": "decision_marker_itself",
+    "attention_scope": "same_request_valid_causal_prefix_including_marker"
+  },
+  "output": {
+    "field": "prob",
+    "meaning": "candidate_applicability_given_audio_history_and_definition",
+    "activation": "sigmoid",
+    "normalize_across_candidates": false,
+    "calibration_verified": false
+  },
+  "execution_dtype": "bfloat16",
+  "probability_and_loss_dtype": "float32",
+  "optimizer_master_dtype": "float32",
+  "token_id": null,
+  "production_loss": null,
+  "pending": [
+    "production_token_and_runtime_contract_freeze",
+    "representative_population_actor_vllm_parity",
+    "batched_NPU_same_policy_probability_and_gradient_characterization",
+    "native_verl_distributed_head_lora_update_and_restore",
+    "joint_policy_switch_and_rollout_lifecycle",
+    "task_action_reward_contract_and_full_data_training"
+  ],
+  "evidence": {
+    "full_processor_population": "docs/engineering/context-population-preflight-cpu-v1.json",
+    "updated_policy": "docs/engineering/context-updated-audio-npu7-hf-v1.json",
+    "native_backbone_gap": "docs/engineering/context-hidden-gap-v1.json",
+    "aligned_two_request_hidden_and_probability": "docs/engineering/context-aligned-hidden-gap-v1.json",
+    "eager_batch_capacity_failure": "docs/engineering/context-real-audio-batch-npu7-v1.json",
+    "packed_batch_diagnostic": "docs/engineering/context-packed-audio-batch-npu7-v1.json",
+    "packed_batch_head_isolation": "docs/engineering/context-packed-audio-batch-npu7-v2.json"
+  },
+  "diagnostic_token_id": 151706
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "slurp-intent-presence-reference-inventory-spec-v2",
+  "catalog": "configs/tasks/slurp/semantic-intent-catalog-candidate-v4.json",
+  "learning": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.jsonl",
+  "targets": "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/source-bundles-v1/learning.targets.jsonl",
+  "metadata": "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/metadata/train.jsonl",
+  "expected_recordings": 40513,
+  "expected_sources": 9192,
+  "packages": [
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/contact-semantic-presence-reference-v1/report.json",
+      "sha256": "7757882522489f420f0f7be433585fb06fc8a0979ad3a842ec4855d4f8a5bd35",
+      "definitions": "configs/tasks/slurp/contact-semantic-presence-candidate-v1.json"
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/transport-semantic-presence-reference-v1/report.json",
+      "sha256": "0224b6a2f8544fe94f15f2710b229a285ab01996f606d7d8ff9a5d02e811ce1b",
+      "definitions": "configs/tasks/slurp/transport-semantic-presence-candidate-v1.json"
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/audio-intent-boundary-reference-v1/report.json",
+      "sha256": "fe89ea5b0ab7f8c13aee114623e1c26845e86d5d0142536405883641c86b8a19",
+      "definitions": "configs/tasks/slurp/semantic-intent-catalog-candidate-v2.json"
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/factual-intent-boundary-reference-v1/report.json",
+      "sha256": "2f1652d99f634b2333f9a7c881739c915601214cc035113f246182eb9bbb4d5c",
+      "definitions": "configs/tasks/slurp/semantic-intent-catalog-candidate-v3.json"
+    },
+    {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-music-boundary-reference-v1/report.json",
+      "sha256": "a41e0e067a29bcb314f23ab23d843620f9fb951157c7106049dfe9b9dc9c292d",
+      "definitions": "configs/tasks/slurp/semantic-intent-catalog-candidate-v4.json"
+    }
+  ],
+  "pins": {
+    "configs/tasks/slurp/semantic-intent-catalog-candidate-v3.json": "a7493f073f892a56d7aedae356ba16a8fe49b46adac702b5ca9bbfb555225997",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.jsonl": "481703c7a6aeb696c652124eccd5533f81d5cefc67ff12d59c0920318df6bbbe",
+    "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/source-bundles-v1/MANIFEST.json": "48041016c45878dc30076728083cb88bede25c46efe44a08bd65e3ae80cda621",
+    "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/source-bundles-v1/learning.targets.jsonl": "6a99b09e9174d9d1f13dc688abd74fde1c6b7e97fda5c512df75e3965e28b717",
+    "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/metadata/train.jsonl": "1ad58f688d54deace851e484116d4b51b15ffcf9d099f95a453a6c5879bfaab1",
+    "configs/tasks/slurp/semantic-intent-catalog-candidate-v4.json": "4a182598d78617c4360904274157ed76681fd45b72d24b40b69a1472cc7e540b"
+  },
+  "training_dispatch_allowed": false
+}

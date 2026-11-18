@@ -1,5 +1,12 @@
 # FSC完整迁移矩阵执行队列
 
+> 2026-11-13状态更正：本页控制器启动/等待描述为历史记录。已沿v1→v7核对两条替代链，
+> v7在转向全量SLURP两阶段训练时被显式停止，原PID均不存在；旧矩阵根目录当前不存在，
+> 没有完整迁移比较结果。不得重启取消队列或把旧progress当作存活证据。
+> 见[状态核对收据](fsc-history-reconciliation-v1.json)。SpeechBrain原3793预测hash仍一致，
+> 已有3774/3793分数保留；此次未重新评分或执行推理。
+
+
 2026-11-12 06:00 UTC。后台控制器`fsc-dqp-transfer-matrix-controller-v1`已启动，PID3565864，实际argv与启动收据一致，首次状态`waiting_training_queue`，精确等待低学习率控制器PID3563851。完整资源顺序为D12→Q12→P12→低学习率D12→FSC七策略评测。等待不占NPU，每600秒核验一次，前序失败或进程消失无终态则记录错误并停止，不重新派发已有任务。
 
 配置SHA256 `5c23928a10b554a469206579d4c07c248d141ff002b949c84ce0f703dc890e73`，源码清单SHA256 `52894e172a486dd01ee8117bf36a7405a9e9b24d1c73f1bc9bb9fd0ce18a39d5`。共享根目录`/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-dqp-transfer-matrix-controller-v1`。启动收据见同名前缀`-launch.json`。

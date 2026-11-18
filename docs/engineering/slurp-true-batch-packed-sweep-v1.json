@@ -1,0 +1,58 @@
+{
+  "passed": false,
+  "audited": true,
+  "requests": 32,
+  "results": [
+    {
+      "microbatch": 1,
+      "passed": true,
+      "maximum_logprob_error": 0.0,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 4.054803970183073,
+      "maximum_allocated_bytes": 4692058112,
+      "maximum_reserved_bytes": 5049942016
+    },
+    {
+      "microbatch": 2,
+      "passed": true,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 6.853426111985788,
+      "maximum_allocated_bytes": 4696633856,
+      "maximum_reserved_bytes": 5049942016
+    },
+    {
+      "microbatch": 4,
+      "passed": true,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 10.412300177764788,
+      "maximum_allocated_bytes": 4706208768,
+      "maximum_reserved_bytes": 5247074304
+    },
+    {
+      "microbatch": 8,
+      "passed": false,
+      "maximum_logprob_error": 0.2682156562805176,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 12.310740683781194,
+      "maximum_allocated_bytes": 4725757440,
+      "maximum_reserved_bytes": 5463080960
+    }
+  ],
+  "training_promotion": false,
+  "scope": "Raw inference probabilities independently rescored; timing/memory are recorded telemetry, not independently measured. No backward, full-data stability, FSDP or direct vLLM proof.",
+  "container_id": "84b93c32f0f61ab8193b77dc3226c41de2b7e537c0cc727ef1b3c0c42393d01f",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_and_dependency_files_verified": 318,
+  "raw_sha256": {
+    "inputs.json": "a95500686e353728138354dbdf02efd7acb02918ae22ade6b6355f27bea2f7d9",
+    "serial.json": "56589ba65acc26b08bf038a0656d0593e4041454c0f457d8704a5cfa34c505f2",
+    "result.json": "0deb2d48c9e8c189aafe6b566cc7ef1b31aa033f982e04ef453ff35444f7f6db",
+    "micro-01.json": "ee5b0e3ecc7a090a665dd4366f268263317a334b397dafdfa3b4082e8e5023ce",
+    "micro-02.json": "7eb30d8bacf97220d2455b96deb1d706e223d381cbfeb679e8b01d3d39f82cca",
+    "micro-04.json": "497ab3ada9e17ce2b249472cd0605b79d84bb8fe93d4f4bb1d056e5ed64c0ff7",
+    "micro-08.json": "f4b7ff488ab3c9b84ef92e5d7e6956ddf9b757c352699148733c51d9a7772b1e"
+  },
+  "config_sha256": "a6f81a26345a766b8042180cd7151ab0ecd8d1c239690a0b624d51599456c076"
+}

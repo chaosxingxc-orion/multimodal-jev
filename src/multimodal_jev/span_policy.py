@@ -37,16 +37,17 @@ def joint_logprobs(candidate_logprobs, actions):
     return torch.stack(selected,-1).sum(-1)
 
 
-def verl_joint_loss(old_joint_logprobs, new_joint_logprobs, rewards, request_ids, clip_ratio=0.2):
+def verl_joint_loss(old_joint_logprobs, new_joint_logprobs, rewards, request_ids, clip_ratio=0.2,
+                    *, algorithm='grpo_v1'):
     """Use verl GRPO and PPO on one whole-tuple action per response.
 
     request_ids must identify exact input/policy/sampling configuration, not a
     source recording shared by different question templates. Caller must bind
     rollout artifacts and validate HF/vLLM parity before updates are admitted.
     """
-    import numpy as np
     from omegaconf import OmegaConf
-    from verl.trainer.ppo.core_algos import compute_grpo_outcome_advantage, compute_policy_loss_vanilla
+    from verl.trainer.ppo.core_algos import compute_policy_loss_vanilla
+    from .span_group_advantage import group_advantages
     if (old_joint_logprobs.ndim != 2 or old_joint_logprobs.shape != new_joint_logprobs.shape or
             rewards.shape != old_joint_logprobs.shape or old_joint_logprobs.shape[1]<2 or
             len(request_ids)!=old_joint_logprobs.shape[0] or len(set(request_ids))!=len(request_ids)):
@@ -55,11 +56,8 @@ def verl_joint_loss(old_joint_logprobs, new_joint_logprobs, rewards, request_ids
         raise ValueError('finite joint policy and rewards required')
     if old_joint_logprobs.requires_grad or rewards.requires_grad:
         raise ValueError('rollout policy and reward must be detached')
-    size = old_joint_logprobs.shape[1]
     mask=torch.ones_like(rewards.reshape(-1,1))
-    uid=np.array([u for u in request_ids for _ in range(size)],dtype=object)
-    advantages,_=compute_grpo_outcome_advantage(rewards.reshape(-1,1),mask,uid,
-                                              norm_adv_by_std_in_grpo=True)
+    advantages=group_advantages(rewards,request_ids,algorithm=algorithm).reshape(-1,1)
     config=OmegaConf.create({'clip_ratio':clip_ratio,'clip_ratio_low':None,'clip_ratio_high':None,
                             'clip_ratio_c':3.0,'global_batch_info':{}})
     return compute_policy_loss_vanilla(old_joint_logprobs.reshape(-1,1),new_joint_logprobs.reshape(-1,1),

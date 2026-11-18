@@ -1,0 +1,17 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "context-dual-credit-native-cpu-v1",
+  "tests": [
+    "tests/test_context_dual_credit.py",
+    "tests/test_context_dual_credit_native.py",
+    "tests/test_context_candidate_objective.py"
+  ],
+  "expected_tests": 29,
+  "scope": "Actual pinned verl CPU surrogate and dual-credit tests; synthetic logits; DP reduction is algebraic simulation. No Qwen/NPU/actor integration or efficacy evidence."
+}

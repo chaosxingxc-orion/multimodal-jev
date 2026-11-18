@@ -1,0 +1,34 @@
+{
+  "status": "candidate_entrypoints_and_real_inputs_prepared_not_npu_admitted",
+  "input_manifest": ".local/decision-objective-research/context-transport-audio128-v2/MANIFEST.json",
+  "input_manifest_sha256": "5669c4f41c462d2f11a947d6f8544b79872278a8dc1212877ed5e6f3d15efe27",
+  "input_sha256": "4b8791ee0abfe3c40613c24e80737f89630e56321f8f8e14c2cce28237cc9234",
+  "rows": 128,
+  "token_range": [
+    2808,
+    2911
+  ],
+  "source_pins": {
+    "tools/reports/serve_context_transport_candidate.py": "40f010d658a6edb86f2dc310214e1b0c4f3229265255422bdca934639a1a0088",
+    "tools/reports/measure_context_transport_candidate.py": "01ab74ec3795e85d86ee24987480394cdafe4402be43848b7767d411a56b730c",
+    "tools/reports/context_bulk_rpc_candidate.py": "9768f9ba92e4bdb945afa7398520142b9146ad5547cd2c5977060e37f4105bb3",
+    "tools/reports/context_bulk_session_candidate.py": "90780249ab9556e01c44fcf3aa6e0b4da5fc4009c1b715440a1b54899d9c0586"
+  },
+  "fixed_image_cpu": "docs/research/context-transport-tools-fixed-image-cpu-v1.json",
+  "host181_observation": {
+    "image_present": false,
+    "all_eight_devices_occupied": true,
+    "containers": [
+      "ff04dadaea5d",
+      "c29bf0a000a7"
+    ],
+    "scope": "single read-only observation, not device health or ownership adjudication"
+  },
+  "dispatch": false,
+  "pending": [
+    "exclusive available NPU with fixed image",
+    "bounded two-protocol real-model measurement and independent collection",
+    "actor/session integration if measured benefit warrants"
+  ],
+  "scope": "Engineering throughput candidate only; does not replace GRPO/RLOO, TEST or transfer outcomes"
+}

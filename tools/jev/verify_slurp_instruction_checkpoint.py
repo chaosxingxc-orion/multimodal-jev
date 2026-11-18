@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent prefix-v1 state audit and lossless PEFT naming repair, CPU only.
+"""Independent terminal instruction state audit and optional legacy naming repair.
 
 Keep original checkpoints and exports immutable. Reconstruct every FP32 master
 from the four single-Linear FSDP shards, verify BF16 values against the original,
@@ -19,11 +19,13 @@ def run(config, output):
     from safetensors.torch import load_file, save_file
     from peft import PeftModel
     from multimodal_jev.asr import load_runtime
-    from multimodal_jev.span_adapter_export import adapter_key, legacy_broken_key
+    from multimodal_jev.span_adapter_export import adapter_key
     from multimodal_jev.policy_identity import checkpoint_identity
     from multimodal_jev.slurp_official_training import load, example
     from multimodal_jev.slurp_training import content_hash
     from multimodal_jev.audio_policy import load_audio
+    from multimodal_jev.slurp_instruction_resume import authenticate, load_full_schedule
+    from multimodal_jev.slurp_instruction_audit import completed_range, input_policy_id, verify_rank_report
     if list(Path('/dev').glob('davinci[0-9]*')):
         raise ValueError('CPU-only checkpoint audit required')
     torch.set_num_threads(4)
@@ -42,46 +44,87 @@ def run(config, output):
     for p, h in old['pins'].items():
         if file_hash(p) != h:
             raise ValueError('training dependency changed: '+p)
-    if old['updates'] != 2 or old['global_batch'] != 128:
-        raise ValueError('specific two-update prefix repair required')
+    if old.get('start_update', 0):
+        authenticate(old)
+        batches, epoch_updates, _ = load_full_schedule(old)
+        if config.get('legacy_export_repair', True) or not config.get('require_durable_commit', False):
+            raise ValueError('continuation requires current export and durable commit')
+    else:
+        epoch = json.loads(Path(old['epoch_file']).read_text())
+        if content_hash(epoch['batches']) != epoch['report']['batches_sha256']:
+            raise ValueError('epoch changed')
+        batches = [(0, i, slots) for i, slots in enumerate(epoch['batches'])]
+        epoch_updates = [len(batches)]
+    start_update, updates, (next_epoch, next_batch) = completed_range(old, epoch_updates)
     files = {str(p): file_hash(p) for p in (root/'config.json',root/'launch.json',Path(config['training_observed']))}
+    if config.get('require_durable_commit', False):
+        commit_path = root/'run'/f'checkpoint-{updates:04d}-committed.json'
+        commit = json.loads(commit_path.read_text())
+        expected = {f'rank-{rank}/checkpoint-{updates:04d}.pt' for rank in range(4)}
+        if (commit['updates'] != updates or commit['world_size'] != 4 or set(commit['files']) != expected
+                or commit['adapter_id'] != checkpoint_identity(root/'run'/f'adapter-step{updates:04d}')[0]):
+            raise ValueError('complete durable checkpoint commit required')
+        for relative, digest in commit['files'].items():
+            if file_hash(root/'run'/relative) != digest:
+                raise ValueError('committed checkpoint bytes changed')
+        files[str(commit_path)] = file_hash(commit_path)
     rows, task, _ = load(old['release'],old['release_sha256'],'learning',purpose='optimize')
     population = {r['id']:r for r in rows}
-    epoch = json.loads(Path(old['epoch_file']).read_text())
-    if content_hash(epoch['batches']) != epoch['report']['batches_sha256']:
-        raise ValueError('epoch changed')
+    identities = {}
+    def identity(path):
+        path = Path(path)
+        if path not in identities:
+            value, assets = checkpoint_identity(path)
+            identities[path] = value
+            files.update({str(path/k): h for k,h in assets.items()})
+        return identities[path]
+    audio_receipts = {}
+    real_records = 0
     # Reconstruct supervision and input metadata without trusting rank reports.
-    for step in range(2):
+    for step in range(start_update, updates):
         p = root/'run'/f'batch-{step:04d}.json';batch = json.loads(p.read_text()); files[str(p)] = file_hash(p)
-        slots = epoch['batches'][step]
-        if len(batch['records']) != 128 or len(slots) != 128:
+        epoch_index, batch_index, slots = batches[step]
+        if len(batch['records']) != old['global_batch'] or len(slots) != old['global_batch']:
             raise ValueError('complete scheduled batch required')
         for index,(slot,record) in enumerate(zip(slots,batch['records'],strict=True)):
             row = population[slot['id']]
             request, target, _ = example(row,task,slot['view'],slot['variant'])
-            if file_hash(row['audio']) != row['audio_sha256']:
-                raise ValueError('training audio changed')
-            _, receipt = load_audio(row['audio'], return_receipt=True)
-            expected = dict(id=row['id'],request_id=f'{row["id"]}::epoch0-batch{step}-slot{index}',
+            if row['id'] not in audio_receipts:
+                if file_hash(row['audio']) != row['audio_sha256']:
+                    raise ValueError('training audio changed')
+                _, receipt = load_audio(row['audio'], return_receipt=True)
+                audio_receipts[row['id']] = receipt
+            receipt = audio_receipts[row['id']]
+            expected = dict(id=row['id'],request_id=f'{row["id"]}::epoch{epoch_index}-batch{batch_index}-slot{index}',
                 view=slot['view'],variant=slot['variant'],weight=slot['weight'],
                 input_sha256=content_hash(request.model_input()),audio_receipt=receipt,
                 targets=target['targets'],span_weights=target['span_weights'])
             if any(record.get(k) != v for k,v in expected.items()):
                 raise ValueError('batch supervision or inputs differ')
-        original = root/'run'/f'adapter-step{step:04d}'
-        if batch['policy_id'] != old['base_id']+':'+checkpoint_identity(original)[0]:
+            if (type(record.get('input_tokens')) is not int
+                    or not 0 < record['input_tokens'] <= old['context_limit']):
+                raise ValueError('complete untruncated input length required')
+            real_records += not slot['padding']
+        if batch['policy_id'] != input_policy_id(old, root, step, epoch_updates, identity):
             raise ValueError('batch behavior identity differs')
-    updates = 2
     original = root/'run'/f'adapter-step{updates:04d}'
     original_id, original_files = checkpoint_identity(original)
     files.update({str(original/k):h for k,h in original_files.items()})
     exported = load_file(str(original/'adapter_model.safetensors'))
     states = []
     for rank in range(4):
+        rank_root = root/'run'/f'rank-{rank}'
+        report_path = rank_root/'result.json'; terminal_path = rank_root/'terminal.json'
+        report = json.loads(report_path.read_text())
+        verify_rank_report(report, json.loads(terminal_path.read_text()), old,
+                           rank=rank, epoch_updates=epoch_updates, adapter_id=original_id)
+        if report['initial_adapter_id'] != identity(Path(old['initial_adapter']) if start_update else root/'run/adapter-step0000'):
+            raise ValueError('rank initial adapter differs')
+        files.update({str(p): file_hash(p) for p in (report_path, terminal_path)})
         p = root/'run'/f'rank-{rank}'/f'checkpoint-{updates:04d}.pt'
         files[str(p)] = file_hash(p)
         state = torch.load(p,map_location='cpu',weights_only=True)
-        if any(state.get(k) != v for k,v in dict(world_size=4,rank=rank,updates=2,epoch=0,next_batch=2,
+        if any(state.get(k) != v for k,v in dict(world_size=4,rank=rank,updates=updates,epoch=next_epoch,next_batch=next_batch,
             schedule_sha256=old['schedule_sha256'],release_sha256=old['release_sha256'],adapter_id=original_id).items()):
             raise ValueError('rank state lineage differs')
         if len(state['names']) != 112 or len(set(state['names'])) != 112 or set(state['parameters']) != set(state['names']):
@@ -97,7 +140,7 @@ def run(config, output):
             master=state['parameters'][n]; adam=optimizer['state'][i]
             if master.ndim!=1 or master.dtype!=torch.float32 or not torch.isfinite(master).all():
                 raise ValueError('finite flat FP32 master shard required')
-            if set(adam) != {'step','exp_avg','exp_avg_sq'} or adam['step'].dtype!=torch.float32 or adam['step'].numel()!=1 or adam['step'].item()!=2:
+            if set(adam) != {'step','exp_avg','exp_avg_sq'} or adam['step'].dtype!=torch.float32 or adam['step'].numel()!=1 or adam['step'].item()!=updates:
                 raise ValueError('exact Adam step required')
             for key in ('exp_avg','exp_avg_sq'):
                 if adam[key].shape!=master.shape or adam[key].dtype!=torch.float32 or not torch.isfinite(adam[key]).all():
@@ -109,11 +152,13 @@ def run(config, output):
         raise ValueError('cross-rank name order differs')
     repaired = {}; sub_bf16 = 0
     for name in states[0]['names']:
-        key=adapter_key(name,native=True); broken=legacy_broken_key(key)
-        if broken not in exported or key in repaired:
-            raise ValueError('expected one-to-one known export defect')
+        from multimodal_jev.span_adapter_export import checkpoint_export_key
+        key=adapter_key(name,native=True)
+        source_key=checkpoint_export_key(key,legacy_repair=config.get('legacy_export_repair', True))
+        if source_key not in exported or key in repaired:
+            raise ValueError('expected one-to-one declared export layout')
         master=torch.cat([s['parameters'][name] for s in states])
-        old_tensor=exported[broken]
+        old_tensor=exported[source_key]
         if master.numel()!=old_tensor.numel() or old_tensor.dtype!=torch.bfloat16:
             raise ValueError('single-Linear shard reconstruction size/dtype differs')
         value=master.reshape(old_tensor.shape).to(torch.bfloat16)
@@ -123,7 +168,7 @@ def run(config, output):
         repaired[key]=value.contiguous()
     if len(exported)!=len(repaired):
         raise ValueError('unexpected export tensor')
-    adapter=output/'adapter-step0002';adapter.mkdir()
+    adapter=output/f'adapter-step{updates:04d}';adapter.mkdir()
     save_file(repaired,str(adapter/'adapter_model.safetensors'))
     (adapter/'adapter_model.safetensors').chmod(0o644)
     shutil.copyfile(original/'adapter_config.json',adapter/'adapter_config.json')
@@ -135,10 +180,14 @@ def run(config, output):
     if actual.keys()!=repaired.keys() or any(actual[k].dtype!=torch.bfloat16 or not torch.equal(actual[k],v) for k,v in repaired.items()):
         raise ValueError('actual PEFT reload lost or changed LoRA tensors')
     files.update({str(adapter/k):h for k,h in adapter_files.items()})
-    return dict(passed=True,training_root=str(root),updates=2,exact_master_export=True,
+    return dict(passed=True,training_root=str(root),updates=updates,executed_updates=updates-start_update,
+        start_update=start_update,epoch=next_epoch,next_batch=next_batch,exact_master_export=True,
         exact_peft_reload=True,adapter=str(adapter),adapter_id=adapter_id,original_adapter_id=original_id,
-        tensors=112,ranks=4,sub_bf16_master_elements=sub_bf16,supervision_records_verified=256,files=files,
-        scope='Exact FP32 master reconstruction, Adam structure/cursor, BF16 export naming repair and actual CPU PEFT tensor reload. No resident output parity, cross-backend gate, or efficacy claim.')
+        tensors=112,ranks=4,sub_bf16_master_elements=sub_bf16,
+        supervision_records_verified=(updates-start_update)*old['global_batch'],real_supervision_records_verified=real_records,files=files,
+        legacy_export_repair=config.get('legacy_export_repair', True),
+        durable_commit_verified=config.get('require_durable_commit', False),
+        scope='Exact FP32 master reconstruction, Adam structure/cursor, declared BF16 export layout and actual CPU PEFT tensor reload. No resident output parity, cross-backend gate, or efficacy claim.')
 
 
 if __name__=='__main__':

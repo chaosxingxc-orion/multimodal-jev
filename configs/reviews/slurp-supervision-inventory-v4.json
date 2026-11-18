@@ -1,0 +1,43 @@
+{
+  "schema": "slurp-supervision-inventory-input-v4",
+  "training_dispatch_allowed": false,
+  "sources": [
+    {
+      "id": "cooking_recipe_fit",
+      "kind": "intent_fit",
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/cooking-definition-fit-v1/report.json",
+      "sha256": "0e9f15add50857bab7ba3befa37467a65e2ab9ca0c10303d704a584306d6a69e"
+    },
+    {
+      "id": "email_addcontact_fit",
+      "kind": "intent_fit",
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/contact-email_addcontact-fit-v1/report.json",
+      "sha256": "629f52dc2b70f7afc948ad69a1ebd1a20989256d5ccdb3d328fcec0cb6667786"
+    },
+    {
+      "id": "email_querycontact_fit",
+      "kind": "intent_fit",
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/contact-email_querycontact-fit-v1/report.json",
+      "sha256": "a1f9c33c4ee75320a4cb37c08c8fc5530e45cab4e54ce4e79d853b54464e84f1"
+    },
+    {
+      "id": "slot_reference",
+      "kind": "slot",
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/slot-reference-consolidated-v1/report.json",
+      "sha256": "48e9c0c24c1781f8d9fc344bac2cf918d7040006cc837c775a03aa1d8efd9c2b"
+    },
+    {
+      "id": "transport_query_fit",
+      "kind": "intent_fit",
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/transport_query-fit-v1/report.json",
+      "sha256": "ccef446b0eae25eddf795dfe1f116d06f658a9d17bbcd5d64b501ccc3629829f"
+    },
+    {
+      "id": "transport_ticket_fit",
+      "kind": "intent_fit",
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/transport_ticket-fit-v1/report.json",
+      "sha256": "d89fe8b46aef9cb62377f7c3503cb27f277e23ad7f880aa71255261ad5379f8d"
+    }
+  ],
+  "scope": "request_relevant_role_working_assumption"
+}

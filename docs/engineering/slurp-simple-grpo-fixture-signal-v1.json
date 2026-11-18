@@ -1,0 +1,85 @@
+{
+  "schema": "simple-grpo-closed-two-update-signal-v1",
+  "updates": [
+    {
+      "requests": 128,
+      "samples": 2048,
+      "correct_samples": 30,
+      "all_wrong_groups": 109,
+      "all_correct_groups": 0,
+      "mixed_reward_groups": 19,
+      "mixed_group_request_weight": 31.11088585384682,
+      "real_request_weight": 181.1015367333769,
+      "mixed_fraction": 0.1484375,
+      "correct_draw_fraction": 0.0146484375,
+      "correct_draw_count_histogram": {
+        "0": 109,
+        "1": 14,
+        "2": 3,
+        "3": 1,
+        "7": 1
+      },
+      "weighted_contributions": {
+        "jev/ce_contribution": 7.69247445371002,
+        "jev/rl_contribution": -1.1641532182693481e-10,
+        "jev/reference_kl_contribution": -6.677351810369104e-11
+      },
+      "maximum_rank_gradient_norm": 24.84954261779785,
+      "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:b347b175f7c3418049cd8cda9f85facdd81901e56ed8af6035ccd846eec45136",
+      "reference_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:b347b175f7c3418049cd8cda9f85facdd81901e56ed8af6035ccd846eec45136",
+      "update": 1
+    },
+    {
+      "requests": 128,
+      "samples": 2048,
+      "correct_samples": 29,
+      "all_wrong_groups": 106,
+      "all_correct_groups": 0,
+      "mixed_reward_groups": 22,
+      "mixed_group_request_weight": 32.35268988867239,
+      "real_request_weight": 175.5393357705783,
+      "mixed_fraction": 0.171875,
+      "correct_draw_fraction": 0.01416015625,
+      "correct_draw_count_histogram": {
+        "0": 106,
+        "1": 15,
+        "2": 7
+      },
+      "weighted_contributions": {
+        "jev/ce_contribution": 6.904589796438813,
+        "jev/rl_contribution": 1.979060471057892e-09,
+        "jev/reference_kl_contribution": 0.0013255589664913714
+      },
+      "maximum_rank_gradient_norm": 13.09847640991211,
+      "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97",
+      "reference_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:b347b175f7c3418049cd8cda9f85facdd81901e56ed8af6035ccd846eec45136",
+      "update": 2
+    }
+  ],
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.jsonl": "481703c7a6aeb696c652124eccd5533f81d5cefc67ff12d59c0920318df6bbbe",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    "/home/xingchao/workspace/multimodal-jev/.local/simple-final-v1/sampled-npu-grpo_v1-audit-verified.json": "f7b45d24cc89716bcc3f33be137d3b1d10a0d200bb58540589a02c69f7f61a61",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-v2/run/rl-inputs.json": "ba0ed5fba9c84066664cf0763e25e0afaf5e97e908d72d27a0e77fa08ec5d204",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-v2/run/rl-rank-0/result.json": "cc532e0b679804426c1fff6a82a57f79706da8b9fae0b739ffff2a8e4b10b270",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-v2/run/rl-rank-1/result.json": "e5497744c1b0878b7ba1a02558cff2c8e0d71356627d8e892d33206d831ac1dc",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-v2/run/rl-rank-2/result.json": "0a0f379f0f0b867a50c33992ac25ea340bbaed9eb18026dfee820ae0416a3a9f",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-v2/run/rl-rank-3/result.json": "2fa97d85e2df0db3838945cfd1b0e451eef2a8c5971e0d1c56d6131c90ba6e64",
+    "/home/xingchao/workspace/multimodal-jev/.local/simple-final-v1/sampled-npu-grpo_v1-continue-audit-verified.json": "d253f6e32a4da5c735b0f45c98b89024ca07c5c1a4ffc6b8477b9ff2e93c0bcd",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-inputs.json": "1fdfa5f4e55fb740eabd2e680847e326a5f522e71f3954b18275396fb3a186a9",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-0/result.json": "70bf607cdbb59467bb1fefb2fe0b8c0b0c8ca3c23174554e03ce89e46ea9beb7",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-1/result.json": "dff9da5212fd1353fc19b320c4c0164d064c0743133b0fb75db2990671805607",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-2/result.json": "47f4be5705ee0495cc5d4a079f295d23757efb5a75a8e8307da3ec08fbb4561d",
+    "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-3/result.json": "76749cd6e1eb8760e7abfc0b9f13319b6ea90dd9c119ed75f2ee02db71ec6958"
+  },
+  "implementation_sha256": "356d9795bca16a7fffb71f1d73a10175e4c6d7b0a2dbcee04e08494afb9806f9",
+  "scope": "Recorded G16 draws joined to frozen learning targets and authenticated closed audit bytes; first-update independent audit counts reproduced. Different batches and policies, two-step CE fixture initialization; not final Stage1, continuous trainer, RL efficacy or isolated RL gradients.",
+  "algorithm_or_config_changed": false,
+  "new_inference": false,
+  "metric_reduction": "Sum per-microbatch contributions across four ranks /4. CE is before lambda; reference_KL already includes beta. Total gradient does not isolate RL contribution.",
+  "verified_metric_source_hashes": {
+    "src/multimodal_jev/span_sampled_hybrid.py": "1ee8f43af58b433fd2ae895033e3e3015549dc3a7d56ab6a96066216f00d0981",
+    "src/multimodal_jev/span_hybrid_actor.py": "946409cbc7984377243e2567a1dd4cecbb6ea37be21d82d02ad29cb8eacdb796"
+  }
+}

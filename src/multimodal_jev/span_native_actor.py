@@ -16,7 +16,7 @@ from .span_actor_update import admit_actor
 ACTOR_SHA256 = '207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce'
 
 
-def make_batch(items, group_size):
+def make_batch(items, group_size, *, algorithm='grpo_v1'):
     """Build actual DataProto; derive GRPO advantages before any slicing.
 
     Each item supplies prepared input tensors, positions, candidate IDs, one
@@ -24,7 +24,7 @@ def make_batch(items, group_size):
     gold-review admission are the caller's responsibility.
     """
     from verl import DataProto
-    from verl.trainer.ppo.core_algos import compute_grpo_outcome_advantage
+    from .span_group_advantage import group_advantages
     if type(group_size) is not int or group_size < 2 or not items:
         raise ValueError('nonempty complete fixed-size request groups required')
     rows=[]; old=[]; rewards=[]; uids=[]; policies=set(); seen=set()
@@ -52,7 +52,8 @@ def make_batch(items, group_size):
     if len(policies)!=1:raise ValueError('one immutable behavior policy per update required')
     old=torch.stack(old).reshape(-1,1);rewards=torch.stack(rewards).reshape(-1,1)
     mask=torch.ones_like(rewards)
-    advantages,_=compute_grpo_outcome_advantage(rewards,mask,np.array(uids,dtype=object),norm_adv_by_std_in_grpo=True)
+    advantages=group_advantages(rewards.reshape(-1,group_size),uids[::group_size],
+                                algorithm=algorithm).reshape(-1,1)
     # Transport placeholders are never passed to the backbone. The full exact
     # encoded audio prompt resides in multi_modal_inputs, retained by native
     # DataProto.select/split. responses stores sample ordinal, not token IDs.
@@ -62,7 +63,8 @@ def make_batch(items, group_size):
     return DataProto.from_dict(tensors=dict(responses=ordinals,response_mask=mask,
         input_ids=torch.zeros_like(ordinals),attention_mask=torch.ones_like(ordinals),position_ids=torch.zeros_like(ordinals),
         old_log_probs=old,advantages=advantages),non_tensors={'multi_modal_inputs':payload},
-        meta_info=dict(temperature=1.,micro_batch_size=group_size,use_dynamic_bsz=False,pad_token_id=0))
+        meta_info=dict(temperature=1.,micro_batch_size=group_size,use_dynamic_bsz=False,pad_token_id=0,
+                       jev_advantage_algorithm=algorithm))
 
 
 def typed_forward(actor, micro_batch, temperature, calculate_entropy=False):
@@ -122,5 +124,7 @@ def build_actor(config,module,optimizer=None):
         def update_policy(self,data):
             if len(data)!=self.config.ppo_mini_batch_size:
                 raise ValueError('exactly one full native minibatch required')
+            if data.meta_info.get('jev_advantage_algorithm','grpo_v1') != self.config.get('jev_advantage_algorithm','grpo_v1'):
+                raise ValueError('configured group advantage differs from behavior batch')
             return super().update_policy(data)
     return NativeTypedSpanActor(config,module,optimizer)

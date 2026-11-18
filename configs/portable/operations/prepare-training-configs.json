@@ -1,0 +1,20 @@
+{
+  "schema": "local-operations-v1",
+  "output_directory": "${OPERATIONS_OUTPUT}",
+  "steps": [
+    {
+      "id": "actor_config",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/training/context-grpo-actor-v1.json",
+      "output": "${OPERATIONS_OUTPUT}/configs/actor.json",
+      "depends_on": []
+    },
+    {
+      "id": "service_config",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/training/context-grpo-service-v1.json",
+      "output": "${OPERATIONS_OUTPUT}/configs/service.json",
+      "depends_on": ["actor_config"]
+    }
+  ]
+}

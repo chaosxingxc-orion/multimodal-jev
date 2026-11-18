@@ -21,10 +21,8 @@ register_span_model()
 def validate(config):
     for path,digest in config['pins'].items():
         if file_hash(path)!=digest:raise ValueError('input asset changed: '+path)
-    if config['physical_devices']!=[4] or config['max_model_len']!=4096:
-        raise ValueError('fixed physical NPU4 TP1 and context4096 required')
-    if sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=['davinci4']:
-        raise ValueError('isolated physical NPU4 required')
+    from multimodal_jev.span_device_scope import validate_tp1
+    validate_tp1(config)
     artifact=json.loads(Path(config['inputs']).read_text())
     population=config.get('population',{'recordings':4,'requests':44})
     if (set(population)!={'recordings','requests'} or any(type(n)!=int or n<1 for n in population.values())
@@ -36,30 +34,8 @@ def validate(config):
 
 
 def prepared(config,artifact):
-    from transformers import Qwen3ASRProcessor
-    from multimodal_jev.audio_policy import load_audio
-    from multimodal_jev.span_contract import SpanRequest,SpanQuestion,encode_span_request,span_labels
-    from multimodal_jev.task_schema import DecisionSchema
-    from multimodal_jev.span_request_identity import tensor_identity,bind_span_request
-    from multimodal_jev.policy_identity import checkpoint_identity
-    processor=Qwen3ASRProcessor.from_pretrained(config['model'],local_files_only=True)
-    base_id=checkpoint_identity(config['model'])[0];adapter_id=checkpoint_identity(config['adapter'])[0]
-    if base_id!=config['base_id'] or adapter_id!=config['adapter_id']:raise ValueError('execution policy changed')
-    for row in artifact['records']:
-        raw=row['request'];request=SpanRequest(raw['audio'],tuple(SpanQuestion(q['id'],DecisionSchema.from_dict(q['schema']))
-            for q in raw['questions']),raw['final_id'],tuple(raw['requirements']))
-        if file_hash(request.audio)!=row['audio_sha256']:raise ValueError('audio bytes changed')
-        audio,receipt=load_audio(request.audio,return_receipt=True)
-        batch,positions=encode_span_request(processor,request,audio)
-        mapping=span_labels(processor.tokenizer,request.questions)
-        if (receipt!=row['audio_processing'] or positions.tolist()!=row['positions']
-                or json.loads(json.dumps(mapping))!=row['candidate_mapping']):raise ValueError('CPU input identity differs')
-        for name in ('input_ids','input_features','input_features_mask'):
-            if tensor_identity(batch[name])!=row[name]:raise ValueError('encoded input changed: '+name)
-        if batch['input_ids'].shape[-1]>config['max_model_len']:raise ValueError('full input exceeds engine context')
-        candidates=[m['token_ids'] for m in mapping]
-        rid,identity=bind_span_request(request,receipt,batch,positions,candidates,base_id+':'+adapter_id)
-        yield row,batch,positions,candidates,rid,identity,processor
+    from multimodal_jev.simple_prepared_inputs import prepared as render
+    return render(config,artifact)
 
 
 def phase(config,output,backend):
@@ -145,6 +121,8 @@ def phase(config,output,backend):
 
 
 def run(config,output):
+    from multimodal_jev.local_ipc import require_local_ipc
+    atomic_json(output/'ipc-storage.json',require_local_ipc())
     artifact=validate(config)
     for backend in ('hf','vllm'):
         c={**config,'pins':dict(config['pins'])}

@@ -1,0 +1,107 @@
+{
+  "schema": "context-formal-failure-evidence-v1",
+  "container_id": "19f100b20fd744d966cc744fb6023dda797ef0f5b02d78afa21055bffff3654b",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-14T21:11:10.18391554Z",
+    "FinishedAt": "2026-11-14T21:16:24.81791005Z"
+  },
+  "source_policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+  "completed_optimizer_updates": 0,
+  "terminal": {
+    "passed": false,
+    "actor_started": true,
+    "forced_cleanup": false,
+    "actor_exit_code": 1,
+    "close_error": "FileNotFoundError(2, 'No such file or directory')",
+    "service_exit_code": 0,
+    "child_exit_codes": [
+      0,
+      1
+    ],
+    "finished_unix": 1794690984.767689
+  },
+  "behavior_bounds": {
+    "probability_max_abs": 2e-07,
+    "binary_logprob_max_abs": 2e-06
+  },
+  "rank_parity": [
+    {
+      "passed": true,
+      "probability_max_abs": 6.734991261914125e-08,
+      "binary_logprob_max_abs": 9.5367431640625e-07,
+      "joint_logratio_abs_bound": 4.470591875360697e-06,
+      "threshold_flips": 0
+    },
+    {
+      "passed": false,
+      "probability_max_abs": 8.497067255711088e-08,
+      "binary_logprob_max_abs": 4.0531158447265625e-06,
+      "joint_logratio_abs_bound": 4.05437890549365e-06,
+      "threshold_flips": 0
+    },
+    {
+      "passed": true,
+      "probability_max_abs": 6.880024072675184e-08,
+      "binary_logprob_max_abs": 9.5367431640625e-07,
+      "joint_logratio_abs_bound": 4.292192897992209e-06,
+      "threshold_flips": 0
+    },
+    {
+      "passed": true,
+      "probability_max_abs": 5.189729074261962e-08,
+      "binary_logprob_max_abs": 1.9073486328125e-06,
+      "joint_logratio_abs_bound": 4.972288706994732e-06,
+      "threshold_flips": 0
+    }
+  ],
+  "files": {
+    ".local/decision-objective-research/context-baseline-sequence-v4/grpo_v1-experiment/training-collected/config.json": "479730575ba753d5f96556de87a689912a667acfd40fbb92057ae18c17183103",
+    ".local/decision-objective-research/context-baseline-sequence-v4/grpo_v1-experiment/training-collected/supervision/actor.log": "80724561dc66b6a51189b83d5528d9c4655c24f4ab89e196172bf1b6709f8278",
+    ".local/decision-objective-research/context-baseline-sequence-v4/grpo_v1-experiment/training-collected/supervision/service.log": "eda752490f370ec7ec607fe9790cd1e78b7252f140a255b9f7f3e79e1af53e8f",
+    ".local/decision-objective-research/context-baseline-sequence-v4/grpo_v1-experiment/training-collected/supervision/terminal.json": "9bed3c1ad006e4009be65c92719e505a6d685921fd97a981cfe8cd667116ae33",
+    ".local/decision-objective-research/context-baseline-sequence-v4/grpo_v1-experiment/training-collected/run/batch-0000.json": "1aeacfa3206d70271689aa3e30d39fe9048dda799b3e39cd5851486b78e1e24d",
+    ".local/decision-objective-research/context-baseline-sequence-v4/grpo_v1-experiment/training-collected/run/rollout-0000.json": "4e47d92f7118d2d8b9a72f462537848cea2d6b87b2f7b3ae37f2fb2a621253e2"
+  },
+  "lock_verification": {
+    "lock_id": "2ece49811d1e11eabc75f3e95e73ef532bda3fe9f16e9a399da7725ad0d95bfc",
+    "verified_files": 364,
+    "stage2_released": false,
+    "scope": "File and contract identity only; no added runtime or efficacy evidence"
+  },
+  "diagnosis": {
+    "status": "CPU_reproduction_NPU_confirmation_pending",
+    "actor": "FP32 logsigmoid(-z), logsigmoid(z) on NPU",
+    "rollout": "CPU FP32 log1p(-p), log(p) from actual FP32 NPU sigmoid probability",
+    "example": {
+      "batch_index": 72,
+      "candidate_index": 22,
+      "candidate_id": "iot_coffee",
+      "archived_probability": 0.9790356755256653,
+      "inferred_bf16_logit": 3.84375,
+      "stable_log_false": -3.8649370670318604,
+      "behavior_log_false": -3.8649330139160156,
+      "gap": 4.0531158447265625e-06
+    },
+    "qualification": "Logit is inferred in CPU reconstruction, not yet measured NPU replay. No evidence of OOM or image corruption."
+  },
+  "disposition": {
+    "formal_run": "terminal_failure_no_blind_restart",
+    "downstream": "original sequence/comparison/FSC/reference drivers no longer live",
+    "frozen_files": "unchanged",
+    "next": "same-source same-input diagnostic; version any numerical repair and validate affected update/recovery path"
+  },
+  "cpu_tests": {
+    "passed": 51,
+    "seconds": 5.01,
+    "scope": "probability arithmetic plus TEST input/processor/runtime local tests; not actual NPU diagnostic or TEST inference"
+  }
+}

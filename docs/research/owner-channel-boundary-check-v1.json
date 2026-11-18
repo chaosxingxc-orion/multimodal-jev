@@ -1,0 +1,110 @@
+{
+  "schema": "slurp-owner-channel-boundary-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/owner-channel-boundary-resolution-v1.json",
+  "rule_sha256": "ab0e2bfc7468f0641434260359112115a631a424e62bae6034ef67856bf350b4",
+  "review": "configs/reviews/slurp-owner-channel-boundary-v1.json",
+  "review_sha256": "66557a46682bd54ff1e96e9a9985a8f825b21c99957733a7490b324b3bac8b0a",
+  "owner_sources": 278,
+  "owner_recordings": 1357,
+  "platform_sources": 155,
+  "unique_read_sources": 433,
+  "review_coordinates": 35,
+  "review_sources": 33,
+  "proposal_counts": {
+    "true": 20,
+    "false": 10,
+    "null": 5
+  },
+  "recording_bindings": 172,
+  "unique_recordings": 162,
+  "native_disagreements": 15,
+  "first_batch_rereview": [],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v1/report.json": "0caac43d49264896d12274167aa74245a94bed67047d2c1c65256ff627960fa2",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "configs/tasks/slurp/owner-channel-boundary-resolution-v1.json": "ab0e2bfc7468f0641434260359112115a631a424e62bae6034ef67856bf350b4",
+    "configs/reviews/slurp-owner-channel-boundary-v1.json": "66557a46682bd54ff1e96e9a9985a8f825b21c99957733a7490b324b3bac8b0a"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/owner-channel-boundary-evidence-v1/review-recording-bindings.jsonl": "b972dc7fca1e4ddaeac2e0a9fad243c69051967abbbff418b24a0bcbcbb9a517",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/owner-channel-boundary-evidence-v1/owner-sources.jsonl": "5e9ede750cca32905273e2ea14b5f95b4f077ee96f449d7246e6f5d7156dbdd3",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/owner-channel-boundary-evidence-v1/summary.json": "8efdabdd7243a946ec100e29ffb1388b675d6d17e274168615de9180ad68014a",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/owner-channel-boundary-evidence-v1/platform-sources.jsonl": "a113291f3c87ce4a8286d89476833d7c2f5ae32ef4705f4e5bc4df2aedb34d8c"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v7.json",
+    "sha256": "e72139e9d9de803547dd6616b5e56bd2ef36eb2456579ef46d74f918485c385d",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v9.json": "fda0ee0eb7e4a2bfb7894ec99684434abf1d185cf0d4e217bd6e2293c9696f71",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v9.json": "4704304f085dd413ece1218eb8a76c565d83945816f484b7a6b92c9ee4d81a84",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v10.json": "76c93419a4094fcbaa1972b090a18e0bbc9bcca69bd6437ccfa60646fe14c461"
+    },
+    "unchanged_cards": 53,
+    "changed_semantic_types": [
+      "media_type",
+      "person"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "app_name",
+        "media_type"
+      ],
+      [
+        "artist_name",
+        "person"
+      ],
+      [
+        "audiobook_author",
+        "person"
+      ],
+      [
+        "audiobook_name",
+        "media_type"
+      ],
+      [
+        "definition_word",
+        "person"
+      ],
+      [
+        "email_address",
+        "person"
+      ],
+      [
+        "event_name",
+        "person"
+      ],
+      [
+        "joke_type",
+        "person"
+      ],
+      [
+        "media_type",
+        "playlist_name"
+      ],
+      [
+        "media_type",
+        "radio_name"
+      ],
+      [
+        "media_type",
+        "song_name"
+      ],
+      [
+        "news_topic",
+        "person"
+      ],
+      [
+        "person",
+        "personal_info"
+      ],
+      [
+        "person",
+        "relation"
+      ]
+    ]
+  },
+  "scope": "Metadata, full learning source membership and binding reconstruction independent of workpack bindings; same-author reference judgments, no independent semantic certification, listening or optimization admission."
+}

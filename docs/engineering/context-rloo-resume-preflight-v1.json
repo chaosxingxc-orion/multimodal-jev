@@ -1,0 +1,96 @@
+{
+  "container_id": "256bca125e1fa5aad25830c98be70c18175d2b254cbdfdb22615c04785ee4193",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T03:35:53.64010671Z",
+    "FinishedAt": "2026-11-16T03:36:28.39862622Z"
+  },
+  "result": {
+    "passed": true,
+    "admission": {
+      "release_id": "ff76239fc021fae104a8ed0cebe022a3e90e9e45c547604c934c13393599eb21",
+      "scope": "Runtime package identity; independent publication audits remain required",
+      "binary_policy_arithmetic": "context-bernoulli-probability-cpu-log-v2",
+      "recovery_step": 64,
+      "finite_prefix_only": true
+    },
+    "native_adapter": {
+      "complete_context_policy": false,
+      "files": {
+        "adapter_config.json": "f561c32c7c671a47731c00d78dfc6b7a9c38198ecc4f4c3a0c72826cf72cbde0",
+        "adapter_model.safetensors": "24a3899f483aaa1397c0e00122b1321b31f2d45524fe2cf3bcf4d7e78b316808"
+      },
+      "policy_id": "5775542ea83de87fbc244760b62cb0d8f51b9f26ae87d0fc1b245d7b395b0fef",
+      "schema": "context-native-adapter-v1"
+    },
+    "restored": [
+      {
+        "exact_masters": true,
+        "exact_adam": true,
+        "completed_updates": 64
+      },
+      {
+        "exact_masters": true,
+        "exact_adam": true,
+        "completed_updates": 64
+      },
+      {
+        "exact_masters": true,
+        "exact_adam": true,
+        "completed_updates": 64
+      },
+      {
+        "exact_masters": true,
+        "exact_adam": true,
+        "completed_updates": 64
+      }
+    ],
+    "policy_id": "5775542ea83de87fbc244760b62cb0d8f51b9f26ae87d0fc1b245d7b395b0fef",
+    "package_sha256": "bf436f9a7a312bbdd485a2fa33a4a83da4f5a8e18e56e2f4dad9bd4c3228d1d8",
+    "dependency_files": 433,
+    "started_unix": 1794800153.87877,
+    "finished_unix": 1794800186.9662712,
+    "torch_version": "2.10.0+cpu",
+    "npu_training_executed": false,
+    "full_resume_released": false,
+    "scope": "Actual immutable host assets and native adapter tensors validated in CPU-only fixed image"
+  },
+  "config_provenance": {
+    "schema": "jev-resolved-config-v1",
+    "template_sha256": "68b155e08b1adfcb43a6d8c8641df019f7c5788c989bb3e7838ef7a9b86b7490",
+    "local_bindings_sha256": "c1b33a5a9b2b34fd03bad273147109fbf83ded6b70ed8cf9b5dfdfed9f882b64",
+    "resolved_semantic_sha256": "dc76992d31ef14f3ad99c17d9e6bb8777dda08d2a498fcec3dd26abcaacc9eb2",
+    "macros_used": [
+      "ASCEND_DRIVER_ROOT",
+      "RESUME_PACKAGE",
+      "RESUME_PACKAGE_SHA256",
+      "RESUME_PREFLIGHT_OUTPUT",
+      "RESUME_PREFLIGHT_REMOTE_ROOT",
+      "RESUME_PREFLIGHT_REPORT",
+      "RESUME_PREFLIGHT_TAG",
+      "SHARED_READONLY_ROOT",
+      "TRAIN_HOST"
+    ]
+  },
+  "files": {
+    "inspect.json": "28e134b4d733fdc1d18842529b94a38f6f2a9b83730d8ebbae651e6c05409768",
+    "attempt.json": "0da0cd6a49f7d188265f4094a8cb58dfd3136f6c5bfc39882e3e6cdaae201112",
+    "stdout.log": "34f1ef0079b0e85a2ca99a06c0f020681b6f972acd8f336f8ada637fead7fac8",
+    "start.json": "71829164734dd2960df353b8bd6ef8a945325c3ecb058e089de9c04d41655246",
+    "result.json": "f4ef66093e32b9479831d75e821f4e44f3aabc30e374c0caf9d7dc8c3fbc6924",
+    "launch.json": "c502930df05d0ef1dcca0f264c77275333fa505fb15b3c8705ae43b3b7b99e92",
+    "package.tar": "16cc4698719419aa5ddba01fa94bceac62f623b5d3d7fb74d9ed11ea7adb2672",
+    "wait.json": "afedae16189648fd843633780b27c36ddd41a05dc55d8d1e5b0e0912cbe4aeb0",
+    "check.py": "698bc6dba2d3428df86ea18eb9e2c99a2527eae2637bf902f521111c34262844"
+  },
+  "scope": "Actual fixed-image CPU recovery preflight; no NPU model execution or speed claim"
+}

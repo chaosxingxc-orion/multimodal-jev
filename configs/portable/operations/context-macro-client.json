@@ -1,0 +1,13 @@
+{
+  "schema": "jev-macro-client-v1",
+  "attempt_id": "${MACRO_ATTEMPT_ID}",
+  "journal_root": "${MACRO_JOURNAL_ROOT}",
+  "runtime_identity": "${DUAL_RUNTIME_IDENTITY}",
+  "replicas": [
+    {"socket": "${ROLLOUT_0_SOCKET}", "exchange": "${ROLLOUT_0_EXCHANGE}"},
+    {"socket": "${ROLLOUT_1_SOCKET}", "exchange": "${ROLLOUT_1_EXCHANGE}"}
+  ],
+  "timeout_seconds": 900,
+  "rollout_queries": 32,
+  "max_queries": 128
+}

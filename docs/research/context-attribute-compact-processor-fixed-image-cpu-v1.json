@@ -1,0 +1,55 @@
+{
+  "schema": "context-attribute-compact-processor-fixed-image-cpu-v1",
+  "container_id": "491f123b5fd286365126d22561dfdc658b4de884656641eba37edbb491969e6c",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T01:05:51.10495407Z",
+    "FinishedAt": "2026-11-15T01:06:30.85826169Z"
+  },
+  "source_files": 1082,
+  "source_manifest_sha256": "7b136371a8806a36823bdec35548fa44987369f7ad259786ddfb7db14f26b88f",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-compact-processor-cpu-v1-collected",
+  "files": {
+    "run/result.json": "c69ed671660b7fdf1e2cdc2d963fd5786ccf570a5d0ac1682c0d8a1839a65009",
+    "run/terminal.json": "642ce839f7639c5821696f32f0909deee44dc3d129059e5826f64ec48971b5b5",
+    "run/junit.xml": "59effbb7b0e1ba3f1176aee9330666e193ff1c3bb07f15788d8d756055ad3188",
+    "run/pytest.log": "71ecb10af0dc97863ff60498992fbcccdbb753eee4a93dfe998a0535c3bf7eda",
+    "package/FILES.json": "7b136371a8806a36823bdec35548fa44987369f7ad259786ddfb7db14f26b88f",
+    "package/run.py": "710740734e42879122cd103ce98be57d17e2f1996190a48bfaeaa2d924b5667f"
+  },
+  "counts": {
+    "tests": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794704783.65105,
+    "finished_unix": 1794704788.8890493,
+    "source_manifest_sha256": "7b136371a8806a36823bdec35548fa44987369f7ad259786ddfb7db14f26b88f",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-compact-processor-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_candidate.py",
+      "tests/test_context_attribute_compact_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual CPU processor for native attribute candidate on three real TRAIN audio anchors, plus compiler unit tests. No NPU model, task score or full population context admission."
+}

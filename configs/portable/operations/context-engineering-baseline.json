@@ -1,0 +1,22 @@
+{
+  "schema": "context-engineering-baseline-v1",
+  "probes": [
+    "release_load",
+    "release_inventory",
+    "candidate_path"
+  ],
+  "release": "${SLURP_RELEASE}",
+  "role": "learning",
+  "purpose": "optimize",
+  "inventory_root": "${SLURP_RELEASE}",
+  "inventory_max_files": 8,
+  "inventory_repeats": 3,
+  "io_workers": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "sample_rows": 512,
+  "output": "${BASELINE_OUTPUT}"
+}

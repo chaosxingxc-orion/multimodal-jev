@@ -1,0 +1,57 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "45bb484735fd958e6308335dea4d6f3a78c8ae0c4d34b42635a8a5278ab58f50",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T04:31:33.23866663Z",
+    "FinishedAt": "2026-11-16T04:32:31.85441151Z"
+  },
+  "source_files": 1232,
+  "source_manifest_sha256": "34f13fd070be8d28217d137a931af4dc5b920ad247319795be9c7a4220df859f",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-arithmetic-resume-tools-cpu-v2-collected",
+  "files": {
+    "run/terminal.json": "7ac8018de31b25f939aad01b58af2299e5d62524df4f40e33216e4c4c46cb84a",
+    "run/junit.xml": "ce628819fd3646ef97dca1a8544c43581a424c9e2d1863fef69d476c57ccf4f3",
+    "run/pytest.log": "b88acf6bec19c1e1f90e8ac5b9ab2fabc3ec8d825d07b169fd18285d881539f5",
+    "package/FILES.json": "34f13fd070be8d28217d137a931af4dc5b920ad247319795be9c7a4220df859f",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 59,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794803520.337,
+    "finished_unix": 1794803550.4507432,
+    "source_manifest_sha256": "34f13fd070be8d28217d137a931af4dc5b920ad247319795be9c7a4220df859f",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-arithmetic-resume-tools-cpu-v2/run/junit.xml",
+      "tests/test_context_arithmetic_resume.py",
+      "tests/test_arithmetic_resume_environment.py",
+      "tests/test_context_arithmetic_resume_operations.py",
+      "tests/test_context_arithmetic_resume_audit.py",
+      "tests/test_context_following_reference.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "CPU recovery admission, explicit launch mounts/refusals, saved-group and terminal comparison fixtures. No actual NPU recovery, full archive integration or throughput acceptance."
+}

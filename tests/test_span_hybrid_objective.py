@@ -60,3 +60,29 @@ def test_bad_masks_weights_and_behavior_are_rejected():
         loss(p, y, mask, w, rw, stage='task', global_effective_weight=3.)
     with pytest.raises(ValueError):
         loss(p, y, torch.ones_like(mask), w, rw, stage='instruction', global_effective_weight=4.)
+
+
+def test_real_request_mean_preserves_heavy_singleton_and_padding_gradients():
+    z = torch.zeros(3, 2, dtype=torch.float64, requires_grad=True)
+    p = (z.log_softmax(-1),)
+    y = torch.ones(3, 1, dtype=torch.long)
+    mask = torch.ones_like(y, dtype=torch.bool)
+    sw = torch.ones(3, 1, dtype=torch.float64)
+    rw = torch.tensor([.5, 1.5, 0.], dtype=torch.float64)
+    real = torch.tensor([True, True, False])
+    expected = -(p[0][:2, 1]*rw[:2]).sum()/2
+    parts = []
+    for i in range(3):
+        v, _ = loss((p[0][i:i+1],), y[i:i+1], mask[i:i+1], sw[i:i+1], rw[i:i+1],
+            stage='instruction', global_effective_weight=2., world_size=3,
+            real_request_mask=real[i:i+1], global_real_requests=2)
+        parts.append(v)
+    assert torch.allclose(torch.autograd.grad(sum(parts)/3, z, retain_graph=True)[0],
+                          torch.autograd.grad(expected, z, retain_graph=True)[0])
+    v, _ = loss((p[0][1:2],), y[1:2], mask[1:2], sw[1:2], rw[1:2],
+        stage='instruction', global_effective_weight=1.5,
+        real_request_mask=real[1:2], global_real_requests=1)
+    assert torch.allclose(v, -1.5*p[0][1, 1])
+    with pytest.raises(ValueError, match='padding'):
+        loss(p, y, mask, sw, torch.ones(3, dtype=torch.float64), stage='instruction',
+             global_effective_weight=3., real_request_mask=real, global_real_requests=2)

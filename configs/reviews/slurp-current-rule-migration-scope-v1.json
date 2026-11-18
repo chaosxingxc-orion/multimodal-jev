@@ -1,0 +1,5597 @@
+{
+  "schema": "slurp-current-rule-migration-scope-v1",
+  "training_dispatch_allowed": false,
+  "current_package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/ontology.json": "ea6a398fdd02ab44cdae27a7a4347482511786311a72a3cc726792ee2384d8cd",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/report.json": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+    "configs/tasks/slurp/slot-consolidated-design-v6.json": "dd4bf750f1858a96f8376de39d418f0da6df2b1f71a8b3c11d4f21d438bec5ad",
+    "configs/tasks/slurp/type-definition-candidates-v8.json": "2d310a0f7ca24432124f96142e2869893cb5a0401f62ffc6f435e733ce3128c3",
+    "configs/tasks/slurp/slot-presence-policy-candidate-v8.json": "12bf40de8a08143f3669a609aae352c7dec6f77ca23d7d48e5083734115da70c",
+    "configs/tasks/slurp/type-boundary-rules-candidate-v9.json": "72cf2851c7907755b19ce62bd9b8753be2973e0da7c0503e2729bb22d99eec1f"
+  },
+  "comparison": "Only declared runtime semantic fields compared; policy definition_ref changes alone do not imply semantic changes. Every incident changed rule makes its type require explicit rereview.",
+  "population_sources": 9192,
+  "types": 55,
+  "total_source_type_coordinates": 505560,
+  "own_changed_types": 16,
+  "affected_types_including_incident_boundaries": 42,
+  "affected_source_type_coordinates": 386064,
+  "unchanged_runtime_types": 13,
+  "unchanged_does_not_imply_prior_semantic_admission": true,
+  "records": [
+    {
+      "definition_id": "alarm_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "alarm_type",
+          "event_name"
+        ],
+        [
+          "alarm_type",
+          "time"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "app_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "artist_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "artist_name",
+          "song_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "audiobook_author",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "audiobook_author",
+          "audiobook_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "audiobook_name",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "audiobook_author",
+          "audiobook_name"
+        ],
+        [
+          "audiobook_name",
+          "media_type"
+        ],
+        [
+          "audiobook_name",
+          "movie_name"
+        ],
+        [
+          "audiobook_name",
+          "song_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "business_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "business_name",
+          "game_name"
+        ],
+        [
+          "business_name",
+          "podcast_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "business_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "change_amount",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "change_amount",
+          "time"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "coffee_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "color_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "cooking_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "cooking_type",
+          "time"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "currency_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "date",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "date",
+          "general_frequency"
+        ],
+        [
+          "date",
+          "time"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "definition_word",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "definition_word",
+          "food_type"
+        ],
+        [
+          "definition_word",
+          "person"
+        ],
+        [
+          "definition_word",
+          "place_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "device_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "device_type",
+          "weather_descriptor"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "drink_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "email_address",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "email_address",
+          "personal_info"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "email_folder",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "event_name",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "alarm_type",
+          "event_name"
+        ],
+        [
+          "event_name",
+          "meal_type"
+        ],
+        [
+          "event_name",
+          "movie_name"
+        ],
+        [
+          "event_name",
+          "news_topic"
+        ],
+        [
+          "event_name",
+          "person"
+        ],
+        [
+          "event_name",
+          "sport_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "food_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "definition_word",
+          "food_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "game_name",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "business_name",
+          "game_name"
+        ],
+        [
+          "game_name",
+          "game_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "game_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "game_name",
+          "game_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "general_frequency",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "date",
+          "general_frequency"
+        ],
+        [
+          "general_frequency",
+          "time"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "house_place",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "ingredient",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "joke_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "joke_type",
+          "news_topic"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "list_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "list_name",
+          "playlist_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "meal_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "event_name",
+          "meal_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "media_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "audiobook_name",
+          "media_type"
+        ],
+        [
+          "media_type",
+          "playlist_name"
+        ],
+        [
+          "media_type",
+          "song_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "movie_name",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "audiobook_name",
+          "movie_name"
+        ],
+        [
+          "event_name",
+          "movie_name"
+        ],
+        [
+          "movie_name",
+          "movie_type"
+        ],
+        [
+          "movie_name",
+          "music_album"
+        ],
+        [
+          "movie_name",
+          "song_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "movie_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "movie_name",
+          "movie_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "music_album",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "movie_name",
+          "music_album"
+        ],
+        [
+          "music_album",
+          "playlist_name"
+        ],
+        [
+          "music_album",
+          "song_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "music_descriptor",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "music_descriptor",
+          "playlist_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "music_genre",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "music_genre",
+          "playlist_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "news_topic",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "event_name",
+          "news_topic"
+        ],
+        [
+          "joke_type",
+          "news_topic"
+        ],
+        [
+          "news_topic",
+          "person"
+        ],
+        [
+          "news_topic",
+          "place_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "order_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "person",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "definition_word",
+          "person"
+        ],
+        [
+          "event_name",
+          "person"
+        ],
+        [
+          "news_topic",
+          "person"
+        ],
+        [
+          "person",
+          "personal_info"
+        ],
+        [
+          "person",
+          "relation"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "personal_info",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "email_address",
+          "personal_info"
+        ],
+        [
+          "person",
+          "personal_info"
+        ],
+        [
+          "personal_info",
+          "relation"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "place_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "definition_word",
+          "place_name"
+        ],
+        [
+          "news_topic",
+          "place_name"
+        ],
+        [
+          "place_name",
+          "transport_descriptor"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "player_setting",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "playlist_name",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "list_name",
+          "playlist_name"
+        ],
+        [
+          "media_type",
+          "playlist_name"
+        ],
+        [
+          "music_album",
+          "playlist_name"
+        ],
+        [
+          "music_descriptor",
+          "playlist_name"
+        ],
+        [
+          "music_genre",
+          "playlist_name"
+        ],
+        [
+          "playlist_name",
+          "song_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "podcast_descriptor",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "podcast_descriptor",
+          "podcast_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "podcast_name",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "business_name",
+          "podcast_name"
+        ],
+        [
+          "podcast_descriptor",
+          "podcast_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "radio_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "relation",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "person",
+          "relation"
+        ],
+        [
+          "personal_info",
+          "relation"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "song_name",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "artist_name",
+          "song_name"
+        ],
+        [
+          "audiobook_name",
+          "song_name"
+        ],
+        [
+          "media_type",
+          "song_name"
+        ],
+        [
+          "movie_name",
+          "song_name"
+        ],
+        [
+          "music_album",
+          "song_name"
+        ],
+        [
+          "playlist_name",
+          "song_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "sport_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "event_name",
+          "sport_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "time",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "alarm_type",
+          "time"
+        ],
+        [
+          "change_amount",
+          "time"
+        ],
+        [
+          "cooking_type",
+          "time"
+        ],
+        [
+          "date",
+          "time"
+        ],
+        [
+          "general_frequency",
+          "time"
+        ],
+        [
+          "time",
+          "time_zone"
+        ],
+        [
+          "time",
+          "timeofday"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "time_zone",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "time",
+          "time_zone"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "timeofday",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "time",
+          "timeofday"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "transport_agency",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [],
+      "semantic_rereview_required": false,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "transport_descriptor",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "place_name",
+          "transport_descriptor"
+        ],
+        [
+          "transport_descriptor",
+          "transport_name"
+        ],
+        [
+          "transport_descriptor",
+          "transport_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "transport_name",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "transport_descriptor",
+          "transport_name"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "transport_type",
+      "own_definition_changed": false,
+      "own_policy_changed": false,
+      "changed_incident_boundaries": [
+        [
+          "transport_descriptor",
+          "transport_type"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    },
+    {
+      "definition_id": "weather_descriptor",
+      "own_definition_changed": true,
+      "own_policy_changed": true,
+      "changed_incident_boundaries": [
+        [
+          "device_type",
+          "weather_descriptor"
+        ]
+      ],
+      "semantic_rereview_required": true,
+      "automatic_admission_allowed": false
+    }
+  ],
+  "first_batch_recheck_coordinates": [
+    {
+      "source_id": "12647",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "place_name",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "time",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "device_type",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "867",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "event_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "event_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "person",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "time",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "media_type",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "song_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "media_type",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "person",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "event_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "person",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "relation",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "date",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "event_name",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "person",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "7195",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "event_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "place_name",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "time",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "date",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "place_name",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "date",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "event_name",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "person",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "time",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "8806",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "person",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "business_name",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "media_type",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "event_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "media_type",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "person",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "time",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "date",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "event_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "alarm_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "artist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "audiobook_author",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "audiobook_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "business_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "change_amount",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "cooking_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "date",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "definition_word",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "device_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "email_address",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "event_name",
+      "prior_proposal_state": "unavailable",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "food_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "game_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "game_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "general_frequency",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "joke_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "list_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "meal_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "media_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "movie_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "movie_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "music_album",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "music_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "music_genre",
+      "prior_proposal_state": "positive",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "news_topic",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "person",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "personal_info",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "place_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "playlist_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "podcast_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "podcast_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "relation",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "song_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "sport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "time",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "time_zone",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "timeofday",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "transport_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "transport_name",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "transport_type",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "weather_descriptor",
+      "prior_proposal_state": "negative",
+      "current_admission": "pending",
+      "automatic_admission_allowed": false
+    }
+  ],
+  "scope": "Migration impact inventory only; not generated labels, completed annotation, admission or a smaller training population."
+}

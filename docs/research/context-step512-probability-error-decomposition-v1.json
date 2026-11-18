@@ -1,0 +1,3681 @@
+{
+  "sources": {
+    "docs/research/context-committed-step512-reward-support-v1.json": "2ea8e4c054f4d140baf18b6a84c14a540875a332776933ee0140397cae7dfc68",
+    ".local/decision-objective-research/context-committed-step512-signal-input-v1.json": "3dbe7734a613e8cbc13343c2c82fb7f02bda8ecbbf340d0726afb6383433b5c2",
+    "docs/engineering/context-arithmetic-step512-independent-v1.json": "c23e86df4630c0d7346df1fdbc688232477fb74be2d6c68f2016f1b12f2c24a9",
+    "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/analyze_step512_probability_errors_v1.py": "3d8e5a1122c4423df5a79bf7f72df03845cd836b8923e8d5f4f54e28fd992bda"
+  },
+  "queries": 128,
+  "actor_update": 512,
+  "behavior_update": 511,
+  "summary": {
+    "reference": {
+      "mean_nll": 0.01642155661879671,
+      "positive_nll_contribution": 0.011283173832791317,
+      "negative_nll_contribution": 0.0051383827860053775,
+      "gold_below_001_queries": 4,
+      "wrong_above_099_queries": 0,
+      "outcomes": {
+        "exact": {
+          "queries": 98,
+          "mean_nll": 0.005254700311822968,
+          "fraction_of_total_nll": 0.2449907776485963,
+          "f1_contribution_to_batch_mean": 0.765625
+        },
+        "empty": {
+          "queries": 20,
+          "mean_nll": 0.051537383489685715,
+          "fraction_of_total_nll": 0.49037471642888975,
+          "f1_contribution_to_batch_mean": 0.0
+        },
+        "gold_plus_extras": {
+          "queries": 2,
+          "mean_nll": 0.019195132572066557,
+          "fraction_of_total_nll": 0.01826403875106676,
+          "f1_contribution_to_batch_mean": 0.010416666666666666
+        },
+        "wrong_nonempty": {
+          "queries": 8,
+          "mean_nll": 0.0647325852136849,
+          "fraction_of_total_nll": 0.2463704671714466,
+          "f1_contribution_to_batch_mean": 0.0
+        }
+      }
+    },
+    "behavior": {
+      "mean_nll": 0.04539384869711253,
+      "positive_nll_contribution": 0.027315396114585482,
+      "negative_nll_contribution": 0.018078452582527032,
+      "gold_below_001_queries": 20,
+      "wrong_above_099_queries": 14,
+      "outcomes": {
+        "exact": {
+          "queries": 104,
+          "mean_nll": 5.952238062601469e-05,
+          "fraction_of_total_nll": 0.0010653851930760216,
+          "f1_contribution_to_batch_mean": 0.8125
+        },
+        "empty": {
+          "queries": 9,
+          "mean_nll": 0.15874284922328935,
+          "fraction_of_total_nll": 0.2458836804186316,
+          "f1_contribution_to_batch_mean": 0.0
+        },
+        "gold_plus_extras": {
+          "queries": 3,
+          "mean_nll": 0.17291061228425023,
+          "fraction_of_total_nll": 0.08927624759144728,
+          "f1_contribution_to_batch_mean": 0.015625
+        },
+        "wrong_nonempty": {
+          "queries": 12,
+          "mean_nll": 0.32140040214857857,
+          "fraction_of_total_nll": 0.663774686796845,
+          "f1_contribution_to_batch_mean": 0.0
+        }
+      }
+    }
+  },
+  "outcome_transitions": {
+    "wrong_nonempty->wrong_nonempty": 6,
+    "exact->exact": 96,
+    "empty->wrong_nonempty": 6,
+    "empty->exact": 6,
+    "wrong_nonempty->exact": 1,
+    "gold_plus_extras->exact": 1,
+    "empty->empty": 8,
+    "gold_plus_extras->gold_plus_extras": 1,
+    "exact->gold_plus_extras": 1,
+    "wrong_nonempty->gold_plus_extras": 1,
+    "exact->empty": 1
+  },
+  "nll_increased_queries": 24,
+  "nll_decreased_queries": 104,
+  "details": [
+    {
+      "id": "slurp:audio-1495370922-headset.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.08911032032399688,
+        "positive_nll_contribution": 0.05681076109586515,
+        "negative_nll_contribution": 0.032299559228131734,
+        "gold_probability": 0.03308597952127457,
+        "largest_wrong_probability": 0.8322367072105408,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.36772381362394996,
+        "positive_nll_contribution": 0.20416674653608027,
+        "negative_nll_contribution": 0.16355706708786968,
+        "gold_probability": 4.785094461112749e-06,
+        "largest_wrong_probability": 0.9999452829360962,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.2786134932999531
+    },
+    {
+      "id": "slurp:audio--1504192660-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.010054476054969575,
+        "positive_nll_contribution": 0.00891934379556354,
+        "negative_nll_contribution": 0.001135132259406036,
+        "gold_probability": 0.5855752229690552,
+        "largest_wrong_probability": 0.039048291742801666,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.0886369646033819e-06,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 6.296748805050417e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 1.221907587023452e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.010053387418004971
+    },
+    {
+      "id": "slurp:audio-1501687902-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.023669817300161832,
+        "positive_nll_contribution": 0.015046013969630127,
+        "negative_nll_contribution": 0.008623803330531706,
+        "gold_probability": 0.4054487347602844,
+        "largest_wrong_probability": 0.3015677034854889,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.30051566399286633,
+        "positive_nll_contribution": 0.13073570235812487,
+        "negative_nll_contribution": 0.16977996163474143,
+        "gold_probability": 0.0003920417802873999,
+        "largest_wrong_probability": 0.999962329864502,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.2768458466927045
+    },
+    {
+      "id": "slurp:audio-1502302314.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0006216688486974709,
+        "positive_nll_contribution": 0.0003423647272186827,
+        "negative_nll_contribution": 0.0002793041214787882,
+        "gold_probability": 0.9796676635742188,
+        "largest_wrong_probability": 0.0120537793263793,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.3842810262525522e-06,
+        "positive_nll_contribution": 8.046821295550405e-07,
+        "negative_nll_contribution": 5.795988966975117e-07,
+        "gold_probability": 0.9999517202377319,
+        "largest_wrong_probability": 1.221907587023452e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0006202845676712184
+    },
+    {
+      "id": "slurp:audio--1504198529-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.006799376070458335,
+        "positive_nll_contribution": 0.004141174825818341,
+        "negative_nll_contribution": 0.0026582012446399943,
+        "gold_probability": 0.7799928784370422,
+        "largest_wrong_probability": 0.04084571450948715,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.1204890381202564e-05,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 1.0577042963945563e-05,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 0.000191104321856983,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.006788171180077132
+    },
+    {
+      "id": "slurp:audio-1501152406-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0010008821330386294,
+        "positive_nll_contribution": 0.0006844983930016613,
+        "negative_nll_contribution": 0.00031638374003696817,
+        "gold_probability": 0.9597620368003845,
+        "largest_wrong_probability": 0.014063628390431404,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 5.882526717969586e-07,
+        "positive_nll_contribution": 3.576317056380055e-07,
+        "negative_nll_contribution": 2.306209661589531e-07,
+        "gold_probability": 0.9999785423278809,
+        "largest_wrong_probability": 1.9947297005273867e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0010002938803668324
+    },
+    {
+      "id": "slurp:audio-1497024764-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.004261664191605642,
+        "positive_nll_contribution": 0.001064552357619539,
+        "negative_nll_contribution": 0.003197111833986103,
+        "gold_probability": 0.9381240010261536,
+        "largest_wrong_probability": 0.16885694861412048,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.0156473719412053e-06,
+        "positive_nll_contribution": 6.675853914135078e-07,
+        "negative_nll_contribution": 3.4806198052769733e-07,
+        "gold_probability": 0.9999599456787109,
+        "largest_wrong_probability": 5.771919859398622e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.004260648544233701
+    },
+    {
+      "id": "slurp:audio-1490106469.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0013398610870012325,
+        "positive_nll_contribution": 0.000605510027900307,
+        "negative_nll_contribution": 0.0007343510591009255,
+        "gold_probability": 0.9643214344978333,
+        "largest_wrong_probability": 0.01640303246676922,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.311765877306319e-06,
+        "positive_nll_contribution": 6.675853914135078e-07,
+        "negative_nll_contribution": 6.441804858928111e-07,
+        "gold_probability": 0.9999599456787109,
+        "largest_wrong_probability": 6.14417513133958e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0013385493211239261
+    },
+    {
+      "id": "slurp:audio-1501766828.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0011810934276411387,
+        "positive_nll_contribution": 0.0009720080296119867,
+        "negative_nll_contribution": 0.00020908539802915203,
+        "gold_probability": 0.9433475732803345,
+        "largest_wrong_probability": 0.005384938325732946,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.2347010378729315e-06,
+        "positive_nll_contribution": 8.046821295550405e-07,
+        "negative_nll_contribution": 4.300189083178908e-07,
+        "gold_probability": 0.9999517202377319,
+        "largest_wrong_probability": 7.411279511870816e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0011798587266032658
+    },
+    {
+      "id": "slurp:audio-1488639025.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0014567791668421144,
+        "positive_nll_contribution": 0.0009008987150029377,
+        "negative_nll_contribution": 0.0005558804518391766,
+        "gold_probability": 0.9473810195922852,
+        "largest_wrong_probability": 0.023689471185207367,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.0832531747159733e-06,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 5.944879208836261e-07,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 1.7778551409719512e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0014556959136673984
+    },
+    {
+      "id": "slurp:audio-1497864181.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0036070697210503224,
+        "positive_nll_contribution": 0.0016951161579325466,
+        "negative_nll_contribution": 0.0019119535631177758,
+        "gold_probability": 0.9032942056655884,
+        "largest_wrong_probability": 0.053403329104185104,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.1056525280066778e-06,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 6.466904439083376e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 6.14417513133958e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0036059640685223156
+    },
+    {
+      "id": "slurp:audio-1502099641.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.005086837399203451,
+        "positive_nll_contribution": 0.001064552357619539,
+        "negative_nll_contribution": 0.004022285041583912,
+        "gold_probability": 0.9381240010261536,
+        "largest_wrong_probability": 0.19436782598495483,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.2814783474589214e-06,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 8.225162633605813e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 2.014569145103451e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0050855559208559924
+    },
+    {
+      "id": "slurp:audio--1505406179-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.00279336635711598,
+        "positive_nll_contribution": 0.0009287136431694188,
+        "negative_nll_contribution": 0.001864652713946561,
+        "gold_probability": 0.9458012580871582,
+        "largest_wrong_probability": 0.04336579889059067,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.6979422509295742e-06,
+        "positive_nll_contribution": 1.172265905836757e-06,
+        "negative_nll_contribution": 5.256763450928171e-07,
+        "gold_probability": 0.999929666519165,
+        "largest_wrong_probability": 7.889262633398175e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.00279166841486505
+    },
+    {
+      "id": "slurp:audio-1498572717-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.001608910378001228,
+        "positive_nll_contribution": 0.00048080233484490913,
+        "negative_nll_contribution": 0.0011281080431563189,
+        "gold_probability": 0.971563994884491,
+        "largest_wrong_probability": 0.020964240655303,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.1234683686648766e-06,
+        "positive_nll_contribution": 6.675853914135078e-07,
+        "negative_nll_contribution": 4.558829772513687e-07,
+        "gold_probability": 0.9999599456787109,
+        "largest_wrong_probability": 7.411279511870816e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0016077869096325632
+    },
+    {
+      "id": "slurp:audio-1501764161.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0024679135712241925,
+        "positive_nll_contribution": 0.0016951161579325466,
+        "negative_nll_contribution": 0.0007727974132916458,
+        "gold_probability": 0.9032942056655884,
+        "largest_wrong_probability": 0.01912403665482998,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.752528335700701e-06,
+        "positive_nll_contribution": 9.119760156159802e-07,
+        "negative_nll_contribution": 8.405523200847207e-07,
+        "gold_probability": 0.9999452829360962,
+        "largest_wrong_probability": 9.516251338936854e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.002466161042888492
+    },
+    {
+      "id": "slurp:audio-1497868253-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.00660074636833014,
+        "positive_nll_contribution": 0.004750036432946231,
+        "negative_nll_contribution": 0.001850709935383909,
+        "gold_probability": 0.7520126104354858,
+        "largest_wrong_probability": 0.07159119844436646,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 3.42667969603551e-06,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 2.7988322787785086e-06,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 7.031184213701636e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0065973196886341045
+    },
+    {
+      "id": "slurp:audio-1499267658-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.008061669703408797,
+        "positive_nll_contribution": 0.005562831071495918,
+        "negative_nll_contribution": 0.0024988386319128794,
+        "gold_probability": 0.7162185907363892,
+        "largest_wrong_probability": 0.09401018172502518,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.3632972266702045e-06,
+        "positive_nll_contribution": 4.311458404293108e-07,
+        "negative_nll_contribution": 9.321513862408937e-07,
+        "gold_probability": 0.9999741315841675,
+        "largest_wrong_probability": 2.7535690605873242e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.008060306406182128
+    },
+    {
+      "id": "slurp:audio-1434541435.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.051990430976684966,
+        "positive_nll_contribution": 0.03499091215087824,
+        "negative_nll_contribution": 0.016999518825806727,
+        "gold_probability": 0.1225232183933258,
+        "largest_wrong_probability": 0.36931508779525757,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 4.222841882174392e-06,
+        "positive_nll_contribution": 1.172265905836757e-06,
+        "negative_nll_contribution": 3.0505759763376347e-06,
+        "gold_probability": 0.999929666519165,
+        "largest_wrong_probability": 4.832563718082383e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.05198620813480279
+    },
+    {
+      "id": "slurp:audio-1490019273-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.005784636753093034,
+        "positive_nll_contribution": 0.0007735533077224482,
+        "negative_nll_contribution": 0.005011083445370586,
+        "gold_probability": 0.954647421836853,
+        "largest_wrong_probability": 0.18126320838928223,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.2752426219714343e-06,
+        "positive_nll_contribution": 9.119760156159802e-07,
+        "negative_nll_contribution": 1.3632666063554543e-06,
+        "gold_probability": 0.9999452829360962,
+        "largest_wrong_probability": 1.5689549400121905e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.005782361510471063
+    },
+    {
+      "id": "slurp:audio-1501777311-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.024695230549814394,
+        "positive_nll_contribution": 0.019888511777831182,
+        "negative_nll_contribution": 0.004806718771983213,
+        "gold_probability": 0.30321574211120605,
+        "largest_wrong_probability": 0.1550784856081009,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.5475329536299855e-05,
+        "positive_nll_contribution": 5.251996621853271e-06,
+        "negative_nll_contribution": 2.0223332914446586e-05,
+        "gold_probability": 0.9996849298477173,
+        "largest_wrong_probability": 0.0006462032906711102,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.024669755220278092
+    },
+    {
+      "id": "slurp:audio-1498564593-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0010871087448575808,
+        "positive_nll_contribution": 0.0003995769426714219,
+        "negative_nll_contribution": 0.000687531802186159,
+        "gold_probability": 0.9763104915618896,
+        "largest_wrong_probability": 0.010986942797899246,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.3664831936692925e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 8.45927833379022e-07,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 6.540437425428536e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0010857422616639115
+    },
+    {
+      "id": "slurp:audio-1501689368-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.003142585470442684,
+        "positive_nll_contribution": 0.0028287839499757956,
+        "negative_nll_contribution": 0.00031380152046688855,
+        "gold_probability": 0.8438951373100281,
+        "largest_wrong_probability": 0.01032815221697092,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.0321950365220053e-06,
+        "positive_nll_contribution": 4.311458404293108e-07,
+        "negative_nll_contribution": 6.010491960926944e-07,
+        "gold_probability": 0.9999741315841675,
+        "largest_wrong_probability": 8.398072168347426e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0031415532754061623
+    },
+    {
+      "id": "slurp:audio-1490182965-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.010452917531591138,
+        "positive_nll_contribution": 0.00856070981939682,
+        "negative_nll_contribution": 0.0018922077121943193,
+        "gold_probability": 0.5983121991157532,
+        "largest_wrong_probability": 0.04336579889059067,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.07561115648416e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 5.212787416424446e-07,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 8.398072168347426e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.010451841920434654
+    },
+    {
+      "id": "slurp:audio-1495732650-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.010099579984529088,
+        "positive_nll_contribution": 0.0008738943409337864,
+        "negative_nll_contribution": 0.009225685643595301,
+        "gold_probability": 0.9489172697067261,
+        "largest_wrong_probability": 0.16451646387577057,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 3.994452454448513e-06,
+        "positive_nll_contribution": 7.112972724180304e-07,
+        "negative_nll_contribution": 3.283155182030483e-06,
+        "gold_probability": 0.9999573230743408,
+        "largest_wrong_probability": 7.484622619813308e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.010095585532074638
+    },
+    {
+      "id": "slurp:audio-1498573183-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.010495422094642616,
+        "positive_nll_contribution": 0.008745271913762788,
+        "negative_nll_contribution": 0.0017501501808798276,
+        "gold_probability": 0.5917232036590576,
+        "largest_wrong_probability": 0.042087726294994354,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 4.506449699362817e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 3.985894339072547e-06,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 7.9673009167891e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.010490915644943253
+    },
+    {
+      "id": "slurp:audio-1497867626.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0010483168636624216,
+        "positive_nll_contribution": 0.0008606899316659274,
+        "negative_nll_contribution": 0.0001876269319964942,
+        "gold_probability": 0.949669361114502,
+        "largest_wrong_probability": 0.007345826830714941,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.401685684795277e-07,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 1.812064843811875e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 1.003014176603756e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.001047676695093942
+    },
+    {
+      "id": "slurp:audio-1495371125.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.026615194657854415,
+        "positive_nll_contribution": 0.01567315304352488,
+        "negative_nll_contribution": 0.010942041614329535,
+        "gold_probability": 0.3904758393764496,
+        "largest_wrong_probability": 0.3363310694694519,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.1312807594969891,
+        "positive_nll_contribution": 0.111479094491188,
+        "negative_nll_contribution": 0.019801665005801113,
+        "gold_probability": 0.0012448432389646769,
+        "largest_wrong_probability": 0.6951311230659485,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.1046655648391347
+    },
+    {
+      "id": "slurp:audio-1501773676-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.008652921908127284,
+        "positive_nll_contribution": 0.005489341092513248,
+        "negative_nll_contribution": 0.003163580815614037,
+        "gold_probability": 0.7193836569786072,
+        "largest_wrong_probability": 0.10521054267883301,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.6703846221774505e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 1.116052207335735e-06,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 1.4738982827111613e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.008651251523505108
+    },
+    {
+      "id": "slurp:audio-1501155272.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.001208596077384199,
+        "positive_nll_contribution": 0.0007735533077224482,
+        "negative_nll_contribution": 0.00043504276966175085,
+        "gold_probability": 0.954647421836853,
+        "largest_wrong_probability": 0.015424552373588085,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 9.407118458055699e-07,
+        "positive_nll_contribution": 5.900964295669661e-07,
+        "negative_nll_contribution": 3.5061541623860383e-07,
+        "gold_probability": 0.9999645948410034,
+        "largest_wrong_probability": 1.6536896509933285e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0012076553655383934
+    },
+    {
+      "id": "slurp:audio-1497025504-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0015308288050285095,
+        "positive_nll_contribution": 0.0012380520713033418,
+        "negative_nll_contribution": 0.0002927767337251677,
+        "gold_probability": 0.9284088015556335,
+        "largest_wrong_probability": 0.009708477184176445,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 7.476965552418107e-07,
+        "positive_nll_contribution": 3.576317056380055e-07,
+        "negative_nll_contribution": 3.9006484960380516e-07,
+        "gold_probability": 0.9999785423278809,
+        "largest_wrong_probability": 4.785094461112749e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0015300811084732677
+    },
+    {
+      "id": "slurp:audio-1501753494-headset.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.049205941256972176,
+        "positive_nll_contribution": 0.02099251879818575,
+        "negative_nll_contribution": 0.028213422458786427,
+        "gold_probability": 0.28378137946128845,
+        "largest_wrong_probability": 0.7287483215332031,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.2473105479696026e-05,
+        "positive_nll_contribution": 1.1467904492052966e-05,
+        "negative_nll_contribution": 1.100520098764306e-05,
+        "gold_probability": 0.999312162399292,
+        "largest_wrong_probability": 0.0004728544445242733,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.04918346815149248
+    },
+    {
+      "id": "slurp:audio-1494607552-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0012390132009724314,
+        "positive_nll_contribution": 0.0007975294313756554,
+        "negative_nll_contribution": 0.000441483769596776,
+        "gold_probability": 0.9532750844955444,
+        "largest_wrong_probability": 0.01065251138061285,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 8.588329525650447e-07,
+        "positive_nll_contribution": 3.794872253538233e-07,
+        "negative_nll_contribution": 4.793457272112214e-07,
+        "gold_probability": 0.9999772310256958,
+        "largest_wrong_probability": 6.14417513133958e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0012381543680198663
+    },
+    {
+      "id": "slurp:audio-1490356672-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.01379602362747175,
+        "positive_nll_contribution": 0.0022267687101898063,
+        "negative_nll_contribution": 0.011569254917281942,
+        "gold_probability": 0.8749346137046814,
+        "largest_wrong_probability": 0.42250463366508484,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.306057580513521e-06,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 5.6782101632565195e-06,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 0.00024536947603337467,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.013789717569891235
+    },
+    {
+      "id": "slurp:audio--1504193004-headset.flac",
+      "reference": {
+        "outcome": "gold_plus_extras",
+        "nll": 0.01664887166739029,
+        "positive_nll_contribution": 0.0009573631069697177,
+        "negative_nll_contribution": 0.015691508560420574,
+        "gold_probability": 0.9441768527030945,
+        "largest_wrong_probability": 0.5688949227333069,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.6666666666666666,
+        "selected_count": 2
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 3.266295388579135e-06,
+        "positive_nll_contribution": 1.1007354546082548e-06,
+        "negative_nll_contribution": 2.16555993397088e-06,
+        "gold_probability": 0.9999339580535889,
+        "largest_wrong_probability": 7.484622619813308e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.01664560537200171
+    },
+    {
+      "id": "slurp:audio-1498572501-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0008957006753526206,
+        "positive_nll_contribution": 0.0003934546609215869,
+        "negative_nll_contribution": 0.0005022460144310338,
+        "gold_probability": 0.976669192314148,
+        "largest_wrong_probability": 0.025565214455127716,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 9.8484608698583e-07,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 4.305136721441147e-07,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 9.516251338936854e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0008947158292656348
+    },
+    {
+      "id": "slurp:audio-1497864802.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.013756710295290648,
+        "positive_nll_contribution": 0.01093368605559162,
+        "negative_nll_contribution": 0.002823024239699028,
+        "gold_probability": 0.5189118981361389,
+        "largest_wrong_probability": 0.09138210117816925,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.168362655157479e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 1.6478072948672085e-06,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 4.006369272246957e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.01375454193263549
+    },
+    {
+      "id": "slurp:audio--1504195133-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0009413915043908453,
+        "positive_nll_contribution": 0.000302499274534646,
+        "negative_nll_contribution": 0.0006388922298561992,
+        "gold_probability": 0.9820137619972229,
+        "largest_wrong_probability": 0.01912403665482998,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.7817354129214534e-06,
+        "positive_nll_contribution": 5.900964295669661e-07,
+        "negative_nll_contribution": 2.1916389833544875e-06,
+        "gold_probability": 0.9999645948410034,
+        "largest_wrong_probability": 0.00010889690747717395,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0009386097689779238
+    },
+    {
+      "id": "slurp:audio-1488987465.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0010281389444846737,
+        "positive_nll_contribution": 0.0007276945639100376,
+        "negative_nll_contribution": 0.00030044438057463623,
+        "gold_probability": 0.957277774810791,
+        "largest_wrong_probability": 0.0060975621454417706,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.383889527600804e-06,
+        "positive_nll_contribution": 6.675853914135078e-07,
+        "negative_nll_contribution": 7.163041361872962e-07,
+        "gold_probability": 0.9999599456787109,
+        "largest_wrong_probability": 7.889262633398175e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0010267550549570728
+    },
+    {
+      "id": "slurp:audio-1490018097-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.004793859201548943,
+        "positive_nll_contribution": 0.004346022308493073,
+        "negative_nll_contribution": 0.0004478368930558694,
+        "gold_probability": 0.7704647779464722,
+        "largest_wrong_probability": 0.017442485317587852,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.6213070820317802e-06,
+        "positive_nll_contribution": 3.576317056380055e-07,
+        "negative_nll_contribution": 1.2636753763937747e-06,
+        "gold_probability": 0.9999785423278809,
+        "largest_wrong_probability": 4.006369272246957e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.004792237894466911
+    },
+    {
+      "id": "slurp:audio-1490104433-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.004412760509772537,
+        "positive_nll_contribution": 0.0012952149227161498,
+        "negative_nll_contribution": 0.0031175455870563872,
+        "gold_probability": 0.9252300262451172,
+        "largest_wrong_probability": 0.10230471193790436,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 8.334496333786306e-07,
+        "positive_nll_contribution": 4.311458404293108e-07,
+        "negative_nll_contribution": 4.023037929493198e-07,
+        "gold_probability": 0.9999741315841675,
+        "largest_wrong_probability": 4.2228334677929524e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.004411927060139158
+    },
+    {
+      "id": "slurp:audio-1490706142-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0007883414031771413,
+        "positive_nll_contribution": 0.0005607610437789506,
+        "negative_nll_contribution": 0.00022758035939819066,
+        "gold_probability": 0.9669140577316284,
+        "largest_wrong_probability": 0.0038244836032390594,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.1851159835124951e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 6.307835686707796e-07,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 1.221907587023452e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0007871562871936288
+    },
+    {
+      "id": "slurp:audio-1502099481.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.007271996606653761,
+        "positive_nll_contribution": 0.004913874609779235,
+        "negative_nll_contribution": 0.002358121996874526,
+        "gold_probability": 0.7446563243865967,
+        "largest_wrong_probability": 0.10970576852560043,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 7.88673848776567e-07,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 3.2971176467822674e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 5.42221869181958e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.007271207932804984
+    },
+    {
+      "id": "slurp:audio-1489151913.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0013012332784526734,
+        "positive_nll_contribution": 0.0003531199388914447,
+        "negative_nll_contribution": 0.0009481133395612287,
+        "gold_probability": 0.9790356755256653,
+        "largest_wrong_probability": 0.04401864856481552,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.3035426345738874e-06,
+        "positive_nll_contribution": 7.112972724180304e-07,
+        "negative_nll_contribution": 5.922453621558571e-07,
+        "gold_probability": 0.9999573230743408,
+        "largest_wrong_probability": 6.540437425428536e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0012999297358180996
+    },
+    {
+      "id": "slurp:audio--1506079677.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.006368485211584743,
+        "positive_nll_contribution": 0.0038903307299829283,
+        "negative_nll_contribution": 0.002478154481601814,
+        "gold_probability": 0.7918210625648499,
+        "largest_wrong_probability": 0.06278920918703079,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.5985137333234516e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 1.077958373033181e-06,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 1.6701422282494605e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.006366886697851419
+    },
+    {
+      "id": "slurp:audio-1502197938.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.02538185285804412,
+        "positive_nll_contribution": 0.015534635242705376,
+        "negative_nll_contribution": 0.00984721761533874,
+        "gold_probability": 0.3937346339225769,
+        "largest_wrong_probability": 0.2018132209777832,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.5008975270723578e-05,
+        "positive_nll_contribution": 3.841962141942922e-06,
+        "negative_nll_contribution": 1.1167013128780655e-05,
+        "gold_probability": 0.9997695088386536,
+        "largest_wrong_probability": 0.0001398220774717629,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.025366843882773396
+    },
+    {
+      "id": "slurp:audio-1490104699-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0040778203745398985,
+        "positive_nll_contribution": 0.0029321062095971104,
+        "negative_nll_contribution": 0.0011457141649427879,
+        "gold_probability": 0.8386797308921814,
+        "largest_wrong_probability": 0.01640303246676922,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.9068136073549555e-06,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 1.4478515232566154e-06,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 1.0783312973217107e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.004075913560932544
+    },
+    {
+      "id": "slurp:audio-1502101777-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.010296024398535957,
+        "positive_nll_contribution": 0.0032400026553674314,
+        "negative_nll_contribution": 0.007056021743168525,
+        "gold_probability": 0.8233283758163452,
+        "largest_wrong_probability": 0.27202457189559937,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.6196370792158505e-06,
+        "positive_nll_contribution": 8.583289862456755e-07,
+        "negative_nll_contribution": 1.7613080929701751e-06,
+        "gold_probability": 0.9999485015869141,
+        "largest_wrong_probability": 2.2827996872365475e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.01029340476145674
+    },
+    {
+      "id": "slurp:audio-1498564943.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.12085904297286865,
+        "positive_nll_contribution": 0.10939852151710155,
+        "negative_nll_contribution": 0.011460521455767087,
+        "gold_probability": 0.0014103585854172707,
+        "largest_wrong_probability": 0.18359363079071045,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.19377226487619242,
+        "positive_nll_contribution": 0.1937501490564986,
+        "negative_nll_contribution": 2.211581969383307e-05,
+        "gold_probability": 8.939696272136644e-06,
+        "largest_wrong_probability": 0.0002611903182696551,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.07291322190332378
+    },
+    {
+      "id": "slurp:audio-1499697422.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0007352352767589956,
+        "positive_nll_contribution": 0.00048080233484490913,
+        "negative_nll_contribution": 0.0002544329419140864,
+        "gold_probability": 0.971563994884491,
+        "largest_wrong_probability": 0.00857748556882143,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.394307631914281e-07,
+        "positive_nll_contribution": 3.576317056380055e-07,
+        "negative_nll_contribution": 2.8179905755342265e-07,
+        "gold_probability": 0.9999785423278809,
+        "largest_wrong_probability": 2.561282371971174e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0007345958459958041
+    },
+    {
+      "id": "slurp:audio-1490284015-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0038554508245771486,
+        "positive_nll_contribution": 0.0017987429089055618,
+        "negative_nll_contribution": 0.002056707915671587,
+        "gold_probability": 0.8976953029632568,
+        "largest_wrong_probability": 0.044680871069431305,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.25033185469535e-06,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 6.224844374383489e-07,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 1.4738982827111613e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0038542004927224534
+    },
+    {
+      "id": "slurp:audio-1502894935-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.03554891069568912,
+        "positive_nll_contribution": 0.02392965446611887,
+        "negative_nll_contribution": 0.011619256229570248,
+        "gold_probability": 0.23792988061904907,
+        "largest_wrong_probability": 0.4598037600517273,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.460888130420215e-06,
+        "positive_nll_contribution": 7.112972724180304e-07,
+        "negative_nll_contribution": 1.7495908580021847e-06,
+        "gold_probability": 0.9999573230743408,
+        "largest_wrong_probability": 4.539787187241018e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0355464498075587
+    },
+    {
+      "id": "slurp:audio-1502311517.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.015038048673122317,
+        "positive_nll_contribution": 0.0073516435521441695,
+        "negative_nll_contribution": 0.007686405120978147,
+        "gold_probability": 0.6433292627334595,
+        "largest_wrong_probability": 0.1859472095966339,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.756740247660945e-06,
+        "positive_nll_contribution": 6.675853914135078e-07,
+        "negative_nll_contribution": 1.089154856247437e-06,
+        "gold_probability": 0.9999599456787109,
+        "largest_wrong_probability": 1.221907587023452e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.015036291932874656
+    },
+    {
+      "id": "slurp:audio-1492783321.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.009150117372454553,
+        "positive_nll_contribution": 0.0073516435521441695,
+        "negative_nll_contribution": 0.0017984738203103833,
+        "gold_probability": 0.6433292627334595,
+        "largest_wrong_probability": 0.04146227240562439,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 0.005260378460544809,
+        "positive_nll_contribution": 0.005256146513738264,
+        "negative_nll_contribution": 4.2319468065448114e-06,
+        "gold_probability": 0.729519784450531,
+        "largest_wrong_probability": 9.610241977497935e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0038897389119097433
+    },
+    {
+      "id": "slurp:audio-1494549074.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0017345406095062416,
+        "positive_nll_contribution": 0.00103279345794839,
+        "negative_nll_contribution": 0.0007017471515578516,
+        "gold_probability": 0.9399133324623108,
+        "largest_wrong_probability": 0.01912403665482998,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.024952489211231e-06,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 1.3971050719542298e-06,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 3.53562536474783e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0017325156570170304
+    },
+    {
+      "id": "slurp:audio-1490371278-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0008888707843934838,
+        "positive_nll_contribution": 0.0007276945639100376,
+        "negative_nll_contribution": 0.00016117622048344627,
+        "gold_probability": 0.957277774810791,
+        "largest_wrong_probability": 0.004468384198844433,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 9.177528153850736e-07,
+        "positive_nll_contribution": 7.112972724180304e-07,
+        "negative_nll_contribution": 2.0645554296704323e-07,
+        "gold_probability": 0.9999573230743408,
+        "largest_wrong_probability": 8.851569646139978e-07,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0008879530315780988
+    },
+    {
+      "id": "slurp:audio-1499690084-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0005326520358137258,
+        "positive_nll_contribution": 0.0003995769426714219,
+        "negative_nll_contribution": 0.00013307509314230392,
+        "gold_probability": 0.9763104915618896,
+        "largest_wrong_probability": 0.002396730938926339,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.2157198037213189e-06,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 7.269545498889716e-07,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 1.5689549400121905e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0005314363160100044
+    },
+    {
+      "id": "slurp:audio-1489672603.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0015069545228134221,
+        "positive_nll_contribution": 0.001130931234351115,
+        "negative_nll_contribution": 0.000376023288462307,
+        "gold_probability": 0.9343951344490051,
+        "largest_wrong_probability": 0.01590639166533947,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 7.076813254254212e-07,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 2.48719241327081e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 3.7266393064783188e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0015062468414879966
+    },
+    {
+      "id": "slurp:audio-1490200412-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.004938156647961993,
+        "positive_nll_contribution": 0.0027485435251239226,
+        "negative_nll_contribution": 0.0021896131228380704,
+        "gold_probability": 0.847967803478241,
+        "largest_wrong_probability": 0.09534946829080582,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.506240235486225e-06,
+        "positive_nll_contribution": 4.311458404293108e-07,
+        "negative_nll_contribution": 1.0750943950569142e-06,
+        "gold_probability": 0.9999741315841675,
+        "largest_wrong_probability": 3.321419353596866e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.004936650407726507
+    },
+    {
+      "id": "slurp:audio-1500980448.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.06132392898493777,
+        "positive_nll_contribution": 0.05230140320902132,
+        "negative_nll_contribution": 0.009022525775916456,
+        "gold_probability": 0.04336579889059067,
+        "largest_wrong_probability": 0.21733753383159637,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.18706872995636079,
+        "positive_nll_contribution": 0.1833336112591932,
+        "negative_nll_contribution": 0.0037351186971675966,
+        "gold_probability": 1.6701422282494605e-05,
+        "largest_wrong_probability": 0.200557678937912,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.12574480097142302
+    },
+    {
+      "id": "slurp:audio-1501758981.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.0757775064928548,
+        "positive_nll_contribution": 0.0669691653716989,
+        "negative_nll_contribution": 0.008808341121155886,
+        "gold_probability": 0.01798621006309986,
+        "largest_wrong_probability": 0.19072403013706207,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.20836254282334393,
+        "positive_nll_contribution": 0.20833339534440828,
+        "negative_nll_contribution": 2.9147478935646425e-05,
+        "gold_probability": 3.7266393064783188e-06,
+        "largest_wrong_probability": 0.001325022429227829,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.13258503633048913
+    },
+    {
+      "id": "slurp:audio-1497862818.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0019531641188232983,
+        "positive_nll_contribution": 0.0017722879479796908,
+        "negative_nll_contribution": 0.00018087617084360758,
+        "gold_probability": 0.8991213440895081,
+        "largest_wrong_probability": 0.004755199886858463,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 7.615140381185411e-07,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 2.72748784286194e-07,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 1.6536896509933285e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0019524026047851798
+    },
+    {
+      "id": "slurp:audio-1501758423.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0015582741616409525,
+        "positive_nll_contribution": 0.0012013012461662635,
+        "negative_nll_contribution": 0.0003569729154746889,
+        "gold_probability": 0.9304582476615906,
+        "largest_wrong_probability": 0.013636835850775242,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 9.194712390443354e-07,
+        "positive_nll_contribution": 4.311458404293108e-07,
+        "negative_nll_contribution": 4.883253986150245e-07,
+        "gold_probability": 0.9999741315841675,
+        "largest_wrong_probability": 1.0129991096619051e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0015573546904019081
+    },
+    {
+      "id": "slurp:audio-1490110337-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0038978707049169203,
+        "positive_nll_contribution": 0.0024127795460866337,
+        "negative_nll_contribution": 0.0014850911588302868,
+        "gold_probability": 0.8652240633964539,
+        "largest_wrong_probability": 0.031143832951784134,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.515230351085605e-06,
+        "positive_nll_contribution": 5.900964295669661e-07,
+        "negative_nll_contribution": 1.925133921518639e-06,
+        "gold_probability": 0.9999645948410034,
+        "largest_wrong_probability": 2.4300241420860402e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0038953554745658346
+    },
+    {
+      "id": "slurp:audio--1504193039-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.005135921763752229,
+        "positive_nll_contribution": 0.0016454533814284375,
+        "negative_nll_contribution": 0.003490468382323791,
+        "gold_probability": 0.9059898257255554,
+        "largest_wrong_probability": 0.14706452190876007,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.7460131599870996e-06,
+        "positive_nll_contribution": 8.046821295550405e-07,
+        "negative_nll_contribution": 1.941331030432059e-06,
+        "gold_probability": 0.9999517202377319,
+        "largest_wrong_probability": 6.205049430718645e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.005133175750592241
+    },
+    {
+      "id": "slurp:audio-1490108215-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.01881821732594543,
+        "positive_nll_contribution": 0.007913580611077532,
+        "negative_nll_contribution": 0.010904636714867898,
+        "gold_probability": 0.6220002174377441,
+        "largest_wrong_probability": 0.35220175981521606,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 3.1035379817055823e-06,
+        "positive_nll_contribution": 5.900964295669661e-07,
+        "negative_nll_contribution": 2.5134415521386164e-06,
+        "gold_probability": 0.9999645948410034,
+        "largest_wrong_probability": 9.028038766700774e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.018815113787963723
+    },
+    {
+      "id": "slurp:audio-1497880794-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.006239107304160978,
+        "positive_nll_contribution": 0.0020242399087588483,
+        "negative_nll_contribution": 0.00421486739540213,
+        "gold_probability": 0.8856314420700073,
+        "largest_wrong_probability": 0.09401018172502518,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.2753955537656362e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 7.210631389239209e-07,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 9.516251338936854e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.006237831908607213
+    },
+    {
+      "id": "slurp:audio--1504197722-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.005007319756984997,
+        "positive_nll_contribution": 0.0030606395794275628,
+        "negative_nll_contribution": 0.0019466801775574346,
+        "gold_probability": 0.8322367072105408,
+        "largest_wrong_probability": 0.055005285888910294,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.444775073755978e-06,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 9.858129896576378e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 2.1444948288262822e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.005005874981911241
+    },
+    {
+      "id": "slurp:audio-1497435127.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0015942699779109381,
+        "positive_nll_contribution": 0.0006537596150687164,
+        "negative_nll_contribution": 0.0009405103628422219,
+        "gold_probability": 0.961533784866333,
+        "largest_wrong_probability": 0.021948253735899925,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.4775265967027762e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 9.569712364125056e-07,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 2.014569145103451e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0015927924513142353
+    },
+    {
+      "id": "slurp:audio-1497882505.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.02507080622756963,
+        "positive_nll_contribution": 0.02343583541640707,
+        "negative_nll_contribution": 0.0016349708111625593,
+        "gold_probability": 0.24508501589298248,
+        "largest_wrong_probability": 0.03622005507349968,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.12449588142671633,
+        "positive_nll_contribution": 0.12448867505024895,
+        "negative_nll_contribution": 7.206376467378253e-06,
+        "gold_probability": 0.0005703156930394471,
+        "largest_wrong_probability": 0.00012339458044152707,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.0994250751991467
+    },
+    {
+      "id": "slurp:audio-1501698133.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.004658549359237327,
+        "positive_nll_contribution": 0.0014823243600019945,
+        "negative_nll_contribution": 0.003176224999235333,
+        "gold_probability": 0.9149009585380554,
+        "largest_wrong_probability": 0.10521054267883301,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.946357866435149e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 1.392025451593434e-06,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 2.014569145103451e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.004656603001370892
+    },
+    {
+      "id": "slurp:audio-1501752712-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0017458923319533491,
+        "positive_nll_contribution": 0.0007735533077224482,
+        "negative_nll_contribution": 0.0009723390242309008,
+        "gold_probability": 0.954647421836853,
+        "largest_wrong_probability": 0.03514484688639641,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.3853522466752251e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 8.310198318335099e-07,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 1.7778551409719512e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.001744506979706674
+    },
+    {
+      "id": "slurp:audio-1490021462-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0010138502188095698,
+        "positive_nll_contribution": 0.0008222320206671453,
+        "negative_nll_contribution": 0.0001916181981424245,
+        "gold_probability": 0.9518632292747498,
+        "largest_wrong_probability": 0.00806199200451374,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 5.437665204038829e-07,
+        "positive_nll_contribution": 3.357762145819746e-07,
+        "negative_nll_contribution": 2.0799030582190825e-07,
+        "gold_probability": 0.9999798536300659,
+        "largest_wrong_probability": 1.370957193103095e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.001013306452289166
+    },
+    {
+      "id": "slurp:audio-1490194186.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.010639053431535433,
+        "positive_nll_contribution": 0.005544381414802318,
+        "negative_nll_contribution": 0.0050946720167331155,
+        "gold_probability": 0.7170118689537048,
+        "largest_wrong_probability": 0.07585817575454712,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 3.2985317539085027e-06,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 2.8097665000761557e-06,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 3.321419353596866e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.010635754899781524
+    },
+    {
+      "id": "slurp:audio-1498566154.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.003607775820001177,
+        "positive_nll_contribution": 0.0006638514010200852,
+        "negative_nll_contribution": 0.0029439244189810917,
+        "gold_probability": 0.9609517455101013,
+        "largest_wrong_probability": 0.07055959850549698,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.5425619234299886e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 9.88229508588273e-07,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 1.7778551409719512e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.003606233258077747
+    },
+    {
+      "id": "slurp:audio-1495378597-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0009687145517935584,
+        "positive_nll_contribution": 0.0004121052270733496,
+        "negative_nll_contribution": 0.0005566093247202087,
+        "gold_probability": 0.9755768775939941,
+        "largest_wrong_probability": 0.01065251138061285,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.657552131329503e-06,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 1.1985900472311628e-06,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 2.2827996872365475e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0009670569996622289
+    },
+    {
+      "id": "slurp:audio-1501766546.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.014326850711954017,
+        "positive_nll_contribution": 0.0055076358817230265,
+        "negative_nll_contribution": 0.00881921483023099,
+        "gold_probability": 0.7185944318771362,
+        "largest_wrong_probability": 0.37387579679489136,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.4402603555023169e-06,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 9.514951016699697e-07,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 2.1444948288262822e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.014325410451598514
+    },
+    {
+      "id": "slurp:audio-1501686072.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.062332613516292476,
+        "positive_nll_contribution": 0.03183706796328204,
+        "negative_nll_contribution": 0.03049554555301043,
+        "gold_probability": 0.14804720878601074,
+        "largest_wrong_probability": 0.6834195256233215,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.3489411370014364,
+        "positive_nll_contribution": 0.1781253807049753,
+        "negative_nll_contribution": 0.17081575629646112,
+        "gold_probability": 2.2827996872365475e-05,
+        "largest_wrong_probability": 0.9999645948410034,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.28660852348514393
+    },
+    {
+      "id": "slurp:audio-1498484012-headset.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.033767963548472536,
+        "positive_nll_contribution": 0.017266255140891935,
+        "negative_nll_contribution": 0.0165017084075806,
+        "gold_probability": 0.35488009452819824,
+        "largest_wrong_probability": 0.5869964361190796,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.33020616252617974,
+        "positive_nll_contribution": 0.17083392124485572,
+        "negative_nll_contribution": 0.15937224128132402,
+        "gold_probability": 3.53562536474783e-05,
+        "largest_wrong_probability": 0.999929666519165,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.2964381989777072
+    },
+    {
+      "id": "slurp:audio-1502896911.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0021369940921862427,
+        "positive_nll_contribution": 0.0019946612040496175,
+        "negative_nll_contribution": 0.00014233288813662518,
+        "gold_probability": 0.8872045874595642,
+        "largest_wrong_probability": 0.0038244836032390594,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.545964914600983e-07,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 1.6583123762775114e-07,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 7.338210252783028e-07,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0021363394956947826
+    },
+    {
+      "id": "slurp:audio-1501686363-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.005328599747374445,
+        "positive_nll_contribution": 0.0031491611942297804,
+        "negative_nll_contribution": 0.0021794385531446647,
+        "gold_probability": 0.8278281688690186,
+        "largest_wrong_probability": 0.04672496020793915,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 3.1018540244880595e-06,
+        "positive_nll_contribution": 7.569961796836707e-07,
+        "negative_nll_contribution": 2.344857844804389e-06,
+        "gold_probability": 0.9999545812606812,
+        "largest_wrong_probability": 3.321419353596866e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.005325497893349957
+    },
+    {
+      "id": "slurp:audio-1501151238.flac",
+      "reference": {
+        "outcome": "gold_plus_extras",
+        "nll": 0.021741393476742827,
+        "positive_nll_contribution": 0.001017260841675934,
+        "negative_nll_contribution": 0.020724132635066894,
+        "gold_probability": 0.9407896995544434,
+        "largest_wrong_probability": 0.7106282711029053,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.6666666666666666,
+        "selected_count": 2
+      },
+      "behavior": {
+        "outcome": "gold_plus_extras",
+        "nll": 0.17290116869162608,
+        "positive_nll_contribution": 3.159076112192191e-07,
+        "negative_nll_contribution": 0.17290085278401487,
+        "gold_probability": 0.9999810457229614,
+        "largest_wrong_probability": 0.9999687671661377,
+        "gold_below_001": false,
+        "wrong_above_099": true,
+        "set_f1": 0.6666666666666666,
+        "selected_count": 2
+      },
+      "nll_delta": 0.15115977521488325
+    },
+    {
+      "id": "slurp:audio-1501694827-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.00718522540564875,
+        "positive_nll_contribution": 0.000614870680157203,
+        "negative_nll_contribution": 0.006570354725491547,
+        "gold_probability": 0.9637799859046936,
+        "largest_wrong_probability": 0.29421496391296387,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "gold_plus_extras",
+        "nll": 0.17707202125086124,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 0.17707153248560742,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 0.9999756813049316,
+        "gold_below_001": false,
+        "wrong_above_099": true,
+        "set_f1": 0.6666666666666666,
+        "selected_count": 2
+      },
+      "nll_delta": 0.1698867958452125
+    },
+    {
+      "id": "slurp:audio--1504198455-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.008691839864837625,
+        "positive_nll_contribution": 0.0067025030466734735,
+        "negative_nll_contribution": 0.001989336818164151,
+        "gold_probability": 0.66888028383255,
+        "largest_wrong_probability": 0.03963883966207504,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.2974055321916268e-06,
+        "positive_nll_contribution": 6.675853914135078e-07,
+        "negative_nll_contribution": 6.29820140778119e-07,
+        "gold_probability": 0.9999599456787109,
+        "largest_wrong_probability": 8.398072168347426e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.008690542459305433
+    },
+    {
+      "id": "slurp:audio-1498485900.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.004270446195483344,
+        "positive_nll_contribution": 0.0029321062095971104,
+        "negative_nll_contribution": 0.0013383399858862338,
+        "gold_probability": 0.8386797308921814,
+        "largest_wrong_probability": 0.04603390395641327,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.280259321104386e-06,
+        "positive_nll_contribution": 7.112972724180304e-07,
+        "negative_nll_contribution": 5.689620486863556e-07,
+        "gold_probability": 0.9999573230743408,
+        "largest_wrong_probability": 1.221907587023452e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.004269165936162239
+    },
+    {
+      "id": "slurp:audio-1494421516-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0012426391777968693,
+        "positive_nll_contribution": 0.0008222320206671453,
+        "negative_nll_contribution": 0.0004204071571297239,
+        "gold_probability": 0.9518632292747498,
+        "largest_wrong_probability": 0.007815889082849026,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.1264235169798347e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 6.058681566895642e-07,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 1.0129991096619051e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0012415127542798894
+    },
+    {
+      "id": "slurp:audio-1490195924-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.002222427190484243,
+        "positive_nll_contribution": 0.0005522101047861206,
+        "negative_nll_contribution": 0.0016702170856981223,
+        "gold_probability": 0.9674102663993835,
+        "largest_wrong_probability": 0.08035746961832047,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 3.071770645291862e-06,
+        "positive_nll_contribution": 7.112972724180304e-07,
+        "negative_nll_contribution": 2.3604733728738314e-06,
+        "gold_probability": 0.9999573230743408,
+        "largest_wrong_probability": 9.610241977497935e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.002219355419838951
+    },
+    {
+      "id": "slurp:audio-1501764427-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.016844603646709352,
+        "positive_nll_contribution": 0.00559988490535732,
+        "negative_nll_contribution": 0.011244718741352031,
+        "gold_probability": 0.7146280407905579,
+        "largest_wrong_probability": 0.4139508903026581,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.5033884708474478e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 9.828331105571774e-07,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 2.93115390377352e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.016843100258238503
+    },
+    {
+      "id": "slurp:audio-1492784000.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.003499112934243767,
+        "positive_nll_contribution": 0.001720478414674251,
+        "negative_nll_contribution": 0.001778634519569516,
+        "gold_probability": 0.9019206762313843,
+        "largest_wrong_probability": 0.09268777817487717,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.0458006829869176e-06,
+        "positive_nll_contribution": 3.794872253538233e-07,
+        "negative_nll_contribution": 1.6663134576330945e-06,
+        "gold_probability": 0.9999772310256958,
+        "largest_wrong_probability": 7.031184213701636e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.00349706713356078
+    },
+    {
+      "id": "slurp:audio-1490194949.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0071450911042272545,
+        "positive_nll_contribution": 0.00661672454584461,
+        "negative_nll_contribution": 0.0005283665583826444,
+        "gold_probability": 0.672331690788269,
+        "largest_wrong_probability": 0.012821214273571968,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 8.452209992303504e-06,
+        "positive_nll_contribution": 9.119760156159802e-07,
+        "negative_nll_contribution": 7.540233976687524e-06,
+        "gold_probability": 0.9999452829360962,
+        "largest_wrong_probability": 0.0001398220774717629,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.007136638894234951
+    },
+    {
+      "id": "slurp:audio-1497881483.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.012787150615992627,
+        "positive_nll_contribution": 0.0032400026553674314,
+        "negative_nll_contribution": 0.009547147960625196,
+        "gold_probability": 0.8233283758163452,
+        "largest_wrong_probability": 0.4234580397605896,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.7500807133401108e-06,
+        "positive_nll_contribution": 5.900964295669661e-07,
+        "negative_nll_contribution": 1.1599842837731447e-06,
+        "gold_probability": 0.9999645948410034,
+        "largest_wrong_probability": 4.2647468944778666e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.012785400535279287
+    },
+    {
+      "id": "slurp:audio-1501774719.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.06359170293748422,
+        "positive_nll_contribution": 0.040352335402882036,
+        "negative_nll_contribution": 0.023239367534602175,
+        "gold_probability": 0.08882029354572296,
+        "largest_wrong_probability": 0.729519784450531,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.36560978388661886,
+        "positive_nll_contribution": 0.1927084925604325,
+        "negative_nll_contribution": 0.17290129132618637,
+        "gold_probability": 9.516251338936854e-06,
+        "largest_wrong_probability": 0.9999687671661377,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.3020180809491346
+    },
+    {
+      "id": "slurp:audio-1490182809-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0006947180082003261,
+        "positive_nll_contribution": 0.000466213753944614,
+        "negative_nll_contribution": 0.00022850425425571217,
+        "gold_probability": 0.9724147915840149,
+        "largest_wrong_probability": 0.00407013762742281,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 9.677642318010035e-07,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 4.789989779686564e-07,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 4.495181656238856e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0006937502439685251
+    },
+    {
+      "id": "slurp:audio-1499690624.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.015362505921727556,
+        "positive_nll_contribution": 0.010681298257895568,
+        "negative_nll_contribution": 0.004681207663831987,
+        "gold_probability": 0.526829719543457,
+        "largest_wrong_probability": 0.13939638435840607,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.538230967317584e-06,
+        "positive_nll_contribution": 2.189621111669131e-06,
+        "negative_nll_contribution": 4.348609855648453e-06,
+        "gold_probability": 0.999868631362915,
+        "largest_wrong_probability": 6.60521473037079e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.015355967690760239
+    },
+    {
+      "id": "slurp:audio-1499691933.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0007580273068317112,
+        "positive_nll_contribution": 0.0003586194126856486,
+        "negative_nll_contribution": 0.00039940789414606264,
+        "gold_probability": 0.9787126779556274,
+        "largest_wrong_probability": 0.008847354911267757,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 8.666283095778213e-07,
+        "positive_nll_contribution": 4.887652538323471e-07,
+        "negative_nll_contribution": 3.778630557454741e-07,
+        "gold_probability": 0.9999706745147705,
+        "largest_wrong_probability": 3.7266393064783188e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0007571606785221333
+    },
+    {
+      "id": "slurp:audio-1488985873.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0022854419220521057,
+        "positive_nll_contribution": 0.0014386299638611618,
+        "negative_nll_contribution": 0.0008468119581909441,
+        "gold_probability": 0.917302668094635,
+        "largest_wrong_probability": 0.03622005507349968,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 7.623300461276785e-07,
+        "positive_nll_contribution": 4.311458404293108e-07,
+        "negative_nll_contribution": 3.311842056983677e-07,
+        "gold_probability": 0.9999741315841675,
+        "largest_wrong_probability": 1.9947297005273867e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.002284679592005978
+    },
+    {
+      "id": "slurp:audio-1434542138.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.08851703023175185,
+        "positive_nll_contribution": 0.0772459306436655,
+        "negative_nll_contribution": 0.011271099588086345,
+        "gold_probability": 0.009708477184176445,
+        "largest_wrong_probability": 0.29828691482543945,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.19793134183361005,
+        "positive_nll_contribution": 0.1979167820571382,
+        "negative_nll_contribution": 1.4559776471857906e-05,
+        "gold_probability": 6.962256520637311e-06,
+        "largest_wrong_probability": 0.00033535013790242374,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.1094143116018582
+    },
+    {
+      "id": "slurp:audio-1494416265.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.03655583548295154,
+        "positive_nll_contribution": 0.012553301123280744,
+        "negative_nll_contribution": 0.024002534359670796,
+        "gold_probability": 0.47085830569267273,
+        "largest_wrong_probability": 0.7549149990081787,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "gold_plus_extras",
+        "nll": 0.16875864691026343,
+        "positive_nll_contribution": 2.056487113710301e-06,
+        "negative_nll_contribution": 0.16875659042314972,
+        "gold_probability": 0.9998766183853149,
+        "largest_wrong_probability": 0.9999599456787109,
+        "gold_below_001": false,
+        "wrong_above_099": true,
+        "set_f1": 0.6666666666666666,
+        "selected_count": 2
+      },
+      "nll_delta": 0.13220281142731188
+    },
+    {
+      "id": "slurp:audio-1492784206-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.010207679803003246,
+        "positive_nll_contribution": 0.0055076358817230265,
+        "negative_nll_contribution": 0.00470004392128022,
+        "gold_probability": 0.7185944318771362,
+        "largest_wrong_probability": 0.06954174488782883,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 0.000655290701794347,
+        "positive_nll_contribution": 0.0006537596150687164,
+        "negative_nll_contribution": 1.5310867256306703e-06,
+        "gold_probability": 0.961533784866333,
+        "largest_wrong_probability": 2.7535690605873242e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.009552389101208899
+    },
+    {
+      "id": "slurp:audio-1502194743.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.013115617022999536,
+        "positive_nll_contribution": 0.008315022140401,
+        "negative_nll_contribution": 0.004800594882598536,
+        "gold_probability": 0.6071974039077759,
+        "largest_wrong_probability": 0.2267836481332779,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.02053221463452532,
+        "positive_nll_contribution": 0.02052882779993106,
+        "negative_nll_contribution": 3.386834594262785e-06,
+        "gold_probability": 0.29178744554519653,
+        "largest_wrong_probability": 0.00010229985491605476,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.007416597611525785
+    },
+    {
+      "id": "slurp:audio-1496265798.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.00886331613029472,
+        "positive_nll_contribution": 0.005826589616460215,
+        "negative_nll_contribution": 0.0030367265138345053,
+        "gold_probability": 0.7049732804298401,
+        "largest_wrong_probability": 0.11596072465181351,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 2.1603861327691074e-06,
+        "positive_nll_contribution": 1.3272496033411699e-06,
+        "negative_nll_contribution": 8.331365294279374e-07,
+        "gold_probability": 0.9999203681945801,
+        "largest_wrong_probability": 1.0129991096619051e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.008861155744161952
+    },
+    {
+      "id": "slurp:audio-1501151886-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0014668861261576463,
+        "positive_nll_contribution": 0.000495840686523627,
+        "negative_nll_contribution": 0.0009710454396340193,
+        "gold_probability": 0.970687747001648,
+        "largest_wrong_probability": 0.03514484688639641,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 5.982129507691625e-07,
+        "positive_nll_contribution": 3.357762145819746e-07,
+        "negative_nll_contribution": 2.6243673618718785e-07,
+        "gold_probability": 0.9999798536300659,
+        "largest_wrong_probability": 1.8738753624347737e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0014662879132068772
+    },
+    {
+      "id": "slurp:audio-1494420804.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.00943179546041419,
+        "positive_nll_contribution": 0.004056014699126186,
+        "negative_nll_contribution": 0.005375780761288003,
+        "gold_probability": 0.7839885354042053,
+        "largest_wrong_probability": 0.23091977834701538,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.4130187231812529e-06,
+        "positive_nll_contribution": 4.589620840983402e-07,
+        "negative_nll_contribution": 9.540566390829127e-07,
+        "gold_probability": 0.9999724626541138,
+        "largest_wrong_probability": 2.93115390377352e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.009430382441691008
+    },
+    {
+      "id": "slurp:audio-1501685903-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.032548183868040426,
+        "positive_nll_contribution": 0.028891043073745196,
+        "negative_nll_contribution": 0.003657140794295229,
+        "gold_probability": 0.1766716092824936,
+        "largest_wrong_probability": 0.09009299427270889,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 5.128834364018941e-06,
+        "positive_nll_contribution": 6.675853914135078e-07,
+        "negative_nll_contribution": 4.461248972605433e-06,
+        "gold_probability": 0.9999599456787109,
+        "largest_wrong_probability": 0.00014883848780300468,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0325430550336764
+    },
+    {
+      "id": "slurp:audio-1501151669-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0007894458876327861,
+        "positive_nll_contribution": 0.000495840686523627,
+        "negative_nll_contribution": 0.0002936052011091591,
+        "gold_probability": 0.970687747001648,
+        "largest_wrong_probability": 0.0120537793263793,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.756652035844286e-07,
+        "positive_nll_contribution": 4.053165128769732e-07,
+        "negative_nll_contribution": 2.7034869070745546e-07,
+        "gold_probability": 0.9999756813049316,
+        "largest_wrong_probability": 2.561282371971174e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0007887702224292017
+    },
+    {
+      "id": "slurp:audio-1502111864.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0016640848645787937,
+        "positive_nll_contribution": 0.00031687836968084034,
+        "negative_nll_contribution": 0.0013472064948979534,
+        "gold_probability": 0.9811668992042542,
+        "largest_wrong_probability": 0.07477004826068878,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.1227732875056112e-06,
+        "positive_nll_contribution": 5.900964295669661e-07,
+        "negative_nll_contribution": 5.326768579386451e-07,
+        "gold_probability": 0.9999645948410034,
+        "largest_wrong_probability": 1.5689549400121905e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0016629620912912881
+    },
+    {
+      "id": "slurp:audio--1505404994.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.000707663671607058,
+        "positive_nll_contribution": 0.0004734543243039785,
+        "negative_nll_contribution": 0.00023420934730307956,
+        "gold_probability": 0.9719924330711365,
+        "largest_wrong_probability": 0.00912563782185316,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.207143144039126e-07,
+        "positive_nll_contribution": 4.311458404293108e-07,
+        "negative_nll_contribution": 1.895684739746018e-07,
+        "gold_probability": 0.9999741315841675,
+        "largest_wrong_probability": 1.6536896509933285e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0007070429572926541
+    },
+    {
+      "id": "slurp:audio-1502894970-headset.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.10865563906338051,
+        "positive_nll_contribution": 0.07776178466891431,
+        "negative_nll_contribution": 0.030893854394466198,
+        "gold_probability": 0.00941259041428566,
+        "largest_wrong_probability": 0.8187368512153625,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.414576839310578,
+        "positive_nll_contribution": 0.24062500886295562,
+        "negative_nll_contribution": 0.17395183044762236,
+        "gold_probability": 5.368750066736538e-07,
+        "largest_wrong_probability": 0.9999706745147705,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.3059212002471975
+    },
+    {
+      "id": "slurp:audio-1502377429.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.012304473533866093,
+        "positive_nll_contribution": 0.007563000834873224,
+        "negative_nll_contribution": 0.004741472698992869,
+        "gold_probability": 0.6352224349975586,
+        "largest_wrong_probability": 0.20561502873897552,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 6.954841830288585e-06,
+        "positive_nll_contribution": 3.3908557906718152e-06,
+        "negative_nll_contribution": 3.5639860396167704e-06,
+        "gold_probability": 0.9997965693473816,
+        "largest_wrong_probability": 8.481104305246845e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.012297518692035806
+    },
+    {
+      "id": "slurp:audio--1506079754.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.028908442432799147,
+        "positive_nll_contribution": 0.022849472769420533,
+        "negative_nll_contribution": 0.006058969663378613,
+        "gold_probability": 0.2538610100746155,
+        "largest_wrong_probability": 0.200557678937912,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 4.345851832458991e-06,
+        "positive_nll_contribution": 2.056487113710301e-06,
+        "negative_nll_contribution": 2.2893647187486896e-06,
+        "gold_probability": 0.9998766183853149,
+        "largest_wrong_probability": 6.60521473037079e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.02890409658096669
+    },
+    {
+      "id": "slurp:audio-1501751851-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.06845733501365657,
+        "positive_nll_contribution": 0.06161643008701618,
+        "negative_nll_contribution": 0.00684090492664039,
+        "gold_probability": 0.024798160418868065,
+        "largest_wrong_probability": 0.10970576852560043,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.2916793128645733,
+        "positive_nll_contribution": 0.16562580579386577,
+        "negative_nll_contribution": 0.12605350707070756,
+        "gold_probability": 4.832563718082383e-05,
+        "largest_wrong_probability": 0.999480664730072,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.22322197785091674
+    },
+    {
+      "id": "slurp:audio-1502375132-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.00556005684847387,
+        "positive_nll_contribution": 0.0014386299638611618,
+        "negative_nll_contribution": 0.004121426884612709,
+        "gold_probability": 0.917302668094635,
+        "largest_wrong_probability": 0.16885694861412048,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 8.424602169526085e-07,
+        "positive_nll_contribution": 4.053165128769732e-07,
+        "negative_nll_contribution": 4.371437040756353e-07,
+        "gold_probability": 0.9999756813049316,
+        "largest_wrong_probability": 8.398072168347426e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.005559214388256918
+    },
+    {
+      "id": "slurp:audio-1498574040-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0028861716771768063,
+        "positive_nll_contribution": 0.0005035313337635013,
+        "negative_nll_contribution": 0.002382640343413305,
+        "gold_probability": 0.9702399373054504,
+        "largest_wrong_probability": 0.1225232183933258,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.411036406754024e-06,
+        "positive_nll_contribution": 3.576317056380055e-07,
+        "negative_nll_contribution": 1.0534047011160185e-06,
+        "gold_probability": 0.9999785423278809,
+        "largest_wrong_probability": 3.53562536474783e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.002884760640770052
+    },
+    {
+      "id": "slurp:audio-1501157074-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.06998612209992007,
+        "positive_nll_contribution": 0.06288742378330445,
+        "negative_nll_contribution": 0.007098698316615618,
+        "gold_probability": 0.022977370768785477,
+        "largest_wrong_probability": 0.2925952970981598,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.31979844469674745,
+        "positive_nll_contribution": 0.15937617203138083,
+        "negative_nll_contribution": 0.16042227266536663,
+        "gold_probability": 7.031184213701636e-05,
+        "largest_wrong_probability": 0.9999339580535889,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.2498123225968274
+    },
+    {
+      "id": "slurp:audio-1490367437-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.003434395258360405,
+        "positive_nll_contribution": 0.001965489223524765,
+        "negative_nll_contribution": 0.0014689060348356397,
+        "gold_probability": 0.8887588381767273,
+        "largest_wrong_probability": 0.042722199112176895,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.2891320534698422e-06,
+        "positive_nll_contribution": 4.053165128769732e-07,
+        "negative_nll_contribution": 8.838155405928689e-07,
+        "gold_probability": 0.9999756813049316,
+        "largest_wrong_probability": 2.4300241420860402e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.003433106126306935
+    },
+    {
+      "id": "slurp:audio-1489671499-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0017345130584355125,
+        "positive_nll_contribution": 0.0006537596150687164,
+        "negative_nll_contribution": 0.001080753443366796,
+        "gold_probability": 0.961533784866333,
+        "largest_wrong_probability": 0.04535258188843727,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.7441149445303506e-06,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 1.1162675272733494e-06,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 2.4300241420860402e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0017327689434909822
+    },
+    {
+      "id": "slurp:audio-1500036525.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.012888327307864541,
+        "positive_nll_contribution": 0.008379144687345234,
+        "negative_nll_contribution": 0.0045091826205193065,
+        "gold_probability": 0.6048657894134521,
+        "largest_wrong_probability": 0.16026602685451508,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.4516770401918254e-06,
+        "positive_nll_contribution": 5.543324148417154e-07,
+        "negative_nll_contribution": 8.9734462535011e-07,
+        "gold_probability": 0.9999667406082153,
+        "largest_wrong_probability": 1.4738982827111613e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.012886875630824348
+    },
+    {
+      "id": "slurp:audio-1490956349-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.004641780301547744,
+        "positive_nll_contribution": 0.0026897433746851792,
+        "negative_nll_contribution": 0.001952036926862565,
+        "gold_probability": 0.8509647250175476,
+        "largest_wrong_probability": 0.02931223064661026,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.7921302646736375e-06,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 1.1642828474166364e-06,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 1.3846004549122881e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0046399881712830705
+    },
+    {
+      "id": "slurp:audio-1497368554.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.023087194791522714,
+        "positive_nll_contribution": 0.017308284778635837,
+        "negative_nll_contribution": 0.005778910012886878,
+        "gold_probability": 0.35398629307746887,
+        "largest_wrong_probability": 0.15713684260845184,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.12836440470246516,
+        "positive_nll_contribution": 0.1260503233207619,
+        "negative_nll_contribution": 0.0023140813817032566,
+        "gold_probability": 0.0005193048855289817,
+        "largest_wrong_probability": 0.12940272688865662,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.10527720991094244
+    },
+    {
+      "id": "slurp:audio-1490956732-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.06498476015155977,
+        "positive_nll_contribution": 0.06136252050853777,
+        "negative_nll_contribution": 0.003622239643021993,
+        "gold_probability": 0.02517884224653244,
+        "largest_wrong_probability": 0.15002882480621338,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.1489763005541466,
+        "positive_nll_contribution": 0.14896052223550657,
+        "negative_nll_contribution": 1.577831864003035e-05,
+        "gold_probability": 0.00013135180051904172,
+        "largest_wrong_probability": 0.00033535013790242374,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.08399154040258683
+    },
+    {
+      "id": "slurp:audio-1500036262.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.03973342046013249,
+        "positive_nll_contribution": 0.027615462735945603,
+        "negative_nll_contribution": 0.012117957724186888,
+        "gold_probability": 0.19072403013706207,
+        "largest_wrong_probability": 0.4627158045768738,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.3385297725548757,
+        "positive_nll_contribution": 0.16875066753638077,
+        "negative_nll_contribution": 0.1697791050184949,
+        "gold_probability": 4.006369272246957e-05,
+        "largest_wrong_probability": 0.999962329864502,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.2987963520947432
+    },
+    {
+      "id": "slurp:audio-1501752707.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0008779924960328289,
+        "positive_nll_contribution": 0.0004121052270733496,
+        "negative_nll_contribution": 0.00046588726895947926,
+        "gold_probability": 0.9755768775939941,
+        "largest_wrong_probability": 0.007815889082849026,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.172811300755483e-06,
+        "positive_nll_contribution": 3.576317056380055e-07,
+        "negative_nll_contribution": 8.151795951174775e-07,
+        "gold_probability": 0.9999785423278809,
+        "largest_wrong_probability": 1.4738982827111613e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0008768196847320735
+    },
+    {
+      "id": "slurp:audio-1490106743.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.012319299935643603,
+        "positive_nll_contribution": 0.00797529095129406,
+        "negative_nll_contribution": 0.004344008984349543,
+        "gold_probability": 0.6197014451026917,
+        "largest_wrong_probability": 0.07369627058506012,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 8.507443767837769e-06,
+        "positive_nll_contribution": 1.247770604076995e-06,
+        "negative_nll_contribution": 7.259673163760774e-06,
+        "gold_probability": 0.9999251365661621,
+        "largest_wrong_probability": 0.00011591934890020639,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.012310792491875765
+    },
+    {
+      "id": "slurp:audio-1434539868-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.012676078504249583,
+        "positive_nll_contribution": 0.0007975294313756554,
+        "negative_nll_contribution": 0.011878549072873928,
+        "gold_probability": 0.9532750844955444,
+        "largest_wrong_probability": 0.4742659330368042,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.389540900048837e-05,
+        "positive_nll_contribution": 6.278474172570011e-07,
+        "negative_nll_contribution": 1.326756158323137e-05,
+        "gold_probability": 0.999962329864502,
+        "largest_wrong_probability": 0.0007321813027374446,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.012662183095249096
+    },
+    {
+      "id": "slurp:audio-1499266667-headset.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.09203181591771514,
+        "positive_nll_contribution": 0.08292796340884993,
+        "negative_nll_contribution": 0.009103852508865211,
+        "gold_probability": 0.006903837900608778,
+        "largest_wrong_probability": 0.3674972355365753,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "empty",
+        "nll": 0.21918196220224345,
+        "positive_nll_contribution": 0.21562504010262964,
+        "negative_nll_contribution": 0.003556922099613796,
+        "gold_probability": 2.406102339591598e-06,
+        "largest_wrong_probability": 0.1919327825307846,
+        "gold_below_001": true,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "nll_delta": 0.1271501462845283
+    },
+    {
+      "id": "slurp:audio-1488560954.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.0011268896713661804,
+        "positive_nll_contribution": 0.000809789069536052,
+        "negative_nll_contribution": 0.00031710060183012833,
+        "gold_probability": 0.9525741338729858,
+        "largest_wrong_probability": 0.011331753805279732,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 1.0650321924325027e-06,
+        "positive_nll_contribution": 5.205553602902705e-07,
+        "negative_nll_contribution": 5.444768321422322e-07,
+        "gold_probability": 0.9999687671661377,
+        "largest_wrong_probability": 1.221907587023452e-05,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.0011258246391737479
+    },
+    {
+      "id": "slurp:audio-1494606857-headset.flac",
+      "reference": {
+        "outcome": "exact",
+        "nll": 0.006851753634151878,
+        "positive_nll_contribution": 0.006426992013508633,
+        "negative_nll_contribution": 0.0004247616206432451,
+        "gold_probability": 0.6800292134284973,
+        "largest_wrong_probability": 0.007577241398394108,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "exact",
+        "nll": 8.113531477309807e-07,
+        "positive_nll_contribution": 3.794872253538233e-07,
+        "negative_nll_contribution": 4.3186592237715745e-07,
+        "gold_probability": 0.9999772310256958,
+        "largest_wrong_probability": 6.540437425428536e-06,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 1.0,
+        "selected_count": 1
+      },
+      "nll_delta": -0.006850942281004147
+    },
+    {
+      "id": "slurp:audio-1496230087-headset.flac",
+      "reference": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.07464066557992892,
+        "positive_nll_contribution": 0.05857644726251487,
+        "negative_nll_contribution": 0.01606421831741405,
+        "gold_probability": 0.029760096222162247,
+        "largest_wrong_probability": 0.5722447633743286,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.33855976293110746,
+        "positive_nll_contribution": 0.1729171868944038,
+        "negative_nll_contribution": 0.16564257603670363,
+        "gold_probability": 3.120191104244441e-05,
+        "largest_wrong_probability": 0.9999517202377319,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.2639190973511785
+    },
+    {
+      "id": "slurp:audio-1492781579.flac",
+      "reference": {
+        "outcome": "empty",
+        "nll": 0.051560643110136556,
+        "positive_nll_contribution": 0.03408043039682121,
+        "negative_nll_contribution": 0.01748021271331535,
+        "gold_probability": 0.12940272688865662,
+        "largest_wrong_probability": 0.4335017800331116,
+        "gold_below_001": false,
+        "wrong_above_099": false,
+        "set_f1": 0.0,
+        "selected_count": 0
+      },
+      "behavior": {
+        "outcome": "wrong_nonempty",
+        "nll": 0.30938337289702034,
+        "positive_nll_contribution": 0.17604209853131186,
+        "negative_nll_contribution": 0.13334127436570847,
+        "gold_probability": 2.586742994026281e-05,
+        "largest_wrong_probability": 0.9996646642684937,
+        "gold_below_001": true,
+        "wrong_above_099": true,
+        "set_f1": 0.0,
+        "selected_count": 1
+      },
+      "nll_delta": 0.2578227297868838
+    }
+  ],
+  "scope": "Same authenticated TRAIN128 batch only. Outcome strata are policy-dependent; no heldout calibration, causal attribution, temporal trend or changed decision threshold."
+}

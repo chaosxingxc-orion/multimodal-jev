@@ -13,7 +13,11 @@ def admit_rank_batch(batch, config, process_group=None):
     summary = dict(error=None, requests=[], policy=config.jev_policy_id,
                    group_size=config.jev_group_size,
                    rows=len(batch), micro=config.ppo_micro_batch_size_per_gpu)
+    summary['algorithm'] = batch.meta_info.get('jev_advantage_algorithm','grpo_v1')
     try:
+        if (summary['algorithm'] not in ('grpo_v1','rloo_v1')
+                or summary['algorithm'] != config.get('jev_advantage_algorithm','grpo_v1')):
+            raise ValueError('configured group advantage differs from behavior batch')
         size=config.jev_group_size
         micro=config.ppo_micro_batch_size_per_gpu
         if (type(size) is not int or size<2 or type(micro) is not int or micro<1
@@ -47,7 +51,7 @@ def admit_rank_batch(batch, config, process_group=None):
     dist.all_gather_object(gathered,summary,group=process_group)
     errors=[(rank,row['error']) for rank,row in enumerate(gathered) if row['error']]
     if errors:raise ValueError(f'collective typed batch admission failed: {errors}')
-    shapes={(row['rows'],row['group_size'],row['micro'],row['policy']) for row in gathered}
+    shapes={(row['rows'],row['group_size'],row['micro'],row['policy'],row['algorithm']) for row in gathered}
     if len(shapes)!=1:
         raise ValueError('equal complete groups, microbatches and policy required on all ranks')
     ids=[uid for row in gathered for uid in row['requests']]

@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "branch": "historical_single_final_categorical_CE",
+  "role": "selection",
+  "release_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+  "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:ab3f095d6df5c144e83d68ab6af562bb15a97f32703806177981c4dd80e5114f",
+  "updates": 634,
+  "metrics": {
+    "hf": {
+      "recordings": 9226,
+      "correct": 7599,
+      "accuracy": 0.823650552785606,
+      "macro_F1_fixed60": 0.7957055222981502,
+      "macro_recall_supported": 0.8100406059514378
+    },
+    "vllm": {
+      "recordings": 9226,
+      "correct": 7599,
+      "accuracy": 0.823650552785606,
+      "macro_F1_fixed60": 0.7957055222981502,
+      "macro_recall_supported": 0.8100406059514378
+    }
+  },
+  "argmax_disagreements": 0,
+  "reported_maximum_logprob_error": 1.9073486328125e-06,
+  "source_result": ".local/simple-final-v1/class-spread-batch-dp4-selection-finalize-v1-collected/result.json",
+  "source_result_sha256": "13ceeaecaf4723cd3ce631215ced15c10c2509ba832c721b03ece4ac2d02f869",
+  "backend_proof_sha256": "f4f203083888599dda78711a94d13195dfa26f6f3708796cc680f371f15ec795",
+  "finalization_proof_sha256": "52be8a007e0c6370c9ff260e634081b7285a658c299b9a130cdbb5872430a6ce",
+  "scope": "Independent scalar confusion-count recomputation from full authenticated predictions. Historical categorical branch only, not new probability head, RL gain, official TEST or comparable Omni benchmark."
+}

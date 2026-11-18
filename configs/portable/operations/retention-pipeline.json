@@ -1,0 +1,12 @@
+{
+  "schema": "local-operations-v4",
+  "output_directory": "${RETENTION_PIPELINE_OUTPUT}",
+  "steps": [
+    {
+      "id": "retention",
+      "kind": "retention_plan",
+      "config": "${WORKSPACE}/configs/portable/operations/artifact-retention.json",
+      "depends_on": []
+    }
+  ]
+}

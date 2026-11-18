@@ -1,0 +1,55 @@
+{
+  "schema": "jev-sfc-native-call-set-transfer-design-v1",
+  "status": "deferred_by_user_to_next_phase",
+  "task_id": "SFC_native_called_function_set",
+  "semantics": "membership_in_official_current_turn_called_function_set",
+  "input": [
+    "ordered_user_audio",
+    "supplied_assistant_history",
+    "complete_dynamic_functions_and_parameter_schemas",
+    "environment"
+  ],
+  "candidate_source": "published_input_definitions_never_gold",
+  "output": "independent_prob_per_function",
+  "probability_normalization_across_candidates": false,
+  "target_projection": "set_of_function_names_in_official_current_turn_call_list",
+  "missing_argument_NAN_cancels_membership": false,
+  "semantic_applicability_completeness_claim": false,
+  "full_call_generation_claim": false,
+  "interactive_execution_claim": false,
+  "weight_training_data": "SLURP_only",
+  "target_weight_updates": false,
+  "target_threshold_fit": false,
+  "target_prompt_selection": false,
+  "exposure": "historical_SFC_prompt_research_and_current_TRAIN_schema_audit_must_be_disclosed",
+  "evaluation_splits": [
+    "test_id",
+    "test_ood"
+  ],
+  "primary_metrics": [
+    "function_set_exact_match",
+    "query_macro_set_f1"
+  ],
+  "secondary_metrics": [
+    "active_micro_precision",
+    "active_micro_recall",
+    "active_micro_f1",
+    "query_macro_binary_nll",
+    "query_macro_brier",
+    "false_accept",
+    "false_reject",
+    "conversation_both_correct",
+    "population_coverage"
+  ],
+  "strata": [
+    "official_split",
+    "level",
+    "stage",
+    "candidate_count"
+  ],
+  "uncertainty_unit": "source_conversation",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "guide": "docs/research/sfc-native-call-set-transfer-admission-v1.md",
+  "current_phase_work_allowed": false
+}

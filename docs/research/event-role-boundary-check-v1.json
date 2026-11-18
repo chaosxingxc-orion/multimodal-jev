@@ -1,0 +1,132 @@
+{
+  "schema": "slurp-event-role-boundary-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/event-role-boundary-resolution-v1.json",
+  "rule_sha256": "eb9fc16d3c66e44ee1dbef6fc3b29efa1550d3f597e903067dc8640815f4546f",
+  "review": "configs/reviews/slurp-event-role-boundary-reference-v1.json",
+  "review_sha256": "9708edee5e940b959c51d76fa5491b6e636dc0ce88562f657111fc4e04bfdd68",
+  "cohort_sources": 778,
+  "cohort_recordings": 3091,
+  "cohort_native_classes": 24,
+  "review_sources": 44,
+  "proposal_counts": {
+    "true": 30,
+    "false": 12,
+    "null": 2
+  },
+  "recording_bindings": 180,
+  "unique_recordings": 180,
+  "native_agreement": {
+    "disagree": 4,
+    "agree": 38,
+    "unassessed": 2
+  },
+  "first_batch_changed_proposals": [
+    {
+      "source_id": "12647",
+      "old_proposal": null,
+      "new_proposal": true,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    },
+    {
+      "source_id": "867",
+      "old_proposal": null,
+      "new_proposal": false,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    },
+    {
+      "source_id": "11334",
+      "old_proposal": null,
+      "new_proposal": false,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    },
+    {
+      "source_id": "9877",
+      "old_proposal": null,
+      "new_proposal": false,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    },
+    {
+      "source_id": "1842",
+      "old_proposal": null,
+      "new_proposal": true,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    },
+    {
+      "source_id": "14587",
+      "old_proposal": null,
+      "new_proposal": true,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    },
+    {
+      "source_id": "15420",
+      "old_proposal": null,
+      "new_proposal": false,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    },
+    {
+      "source_id": "9475",
+      "old_proposal": null,
+      "new_proposal": false,
+      "change_kind": "rule_revision_reference_rereview",
+      "admitted": false
+    }
+  ],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/report.json": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "configs/tasks/slurp/event-role-boundary-resolution-v1.json": "eb9fc16d3c66e44ee1dbef6fc3b29efa1550d3f597e903067dc8640815f4546f",
+    "configs/reviews/slurp-event-role-boundary-reference-v1.json": "9708edee5e940b959c51d76fa5491b6e636dc0ce88562f657111fc4e04bfdd68"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/event-role-boundary-evidence-v1/sources.jsonl": "63a3e3b66806691c873ddbde26009a1ce80cad07e8ba49fb199c39e7f5f10478",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/event-role-boundary-evidence-v1/review-recording-bindings.jsonl": "5dbba428dfd2a753e1f3a308863297980f617b8c7747f1f50aef60a0f73a453d",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/event-role-boundary-evidence-v1/first-batch-migration.json": "1015f598e6c2bccf6ee1aec0723efd2e4479d1e16592830454b770582aea23ed"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v3.json",
+    "sha256": "0708b51ca0b9f9c0779b8379b2dbfb628e1697ed0d1f123561d6c58194ab8f87",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v5.json": "ee01eee9135c176e0e893711918f176e7ef39a150f1dbab7236bd9df90394886",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v5.json": "af19b061c319e72e115f8bfbd5e4bb10fc8fdd57d77c4284f417d8b3009ec8c6",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v6.json": "cbc959e3f883df3c5d8b8bd783f9a25ddf7329678ed8a628d2acc8889b52d59c"
+    },
+    "unchanged_cards": 54,
+    "changed_semantic_type": "event_name",
+    "changed_boundary_pairs": [
+      [
+        "alarm_type",
+        "event_name"
+      ],
+      [
+        "event_name",
+        "meal_type"
+      ],
+      [
+        "event_name",
+        "movie_name"
+      ],
+      [
+        "event_name",
+        "news_topic"
+      ],
+      [
+        "event_name",
+        "person"
+      ],
+      [
+        "event_name",
+        "sport_type"
+      ]
+    ]
+  },
+  "scope": "Full native-event learning cohort/reference identity and all review/recording bindings reconstructed. Semantic proposals are same-agent reference review, not independent semantic certification, listening or training admission."
+}

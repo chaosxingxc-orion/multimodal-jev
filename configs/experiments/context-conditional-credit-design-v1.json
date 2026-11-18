@@ -1,0 +1,38 @@
+{
+  "schema": "context-conditional-credit-design-v1",
+  "status": "offline_candidate_not_runtime_admitted",
+  "training_dispatch_allowed": false,
+  "algorithm_id": "bernoulli_conditional_integration_onpolicy_v1",
+  "objective": "unnormalized_expected_set_F1",
+  "initial_scope": "simple_60_independent_Bernoulli_bits_complete_singleton_truth",
+  "sampling": "G16 complete actions from detached current behavior; reuse other bits for each node",
+  "counterfactual": "reward_pair[b,g,j,v]=R(a[b,g] with bit j set to v)",
+  "loss": "-mean_b sum_j p_theta[b,j]*stopgrad(mean_g(reward_pair[b,g,j,1]-reward_pair[b,g,j,0]))",
+  "gradient_scope": "unbiased raw reward gradient only at theta=behavior under factorized sampling; scalar loss is not negative expected reward",
+  "reduction": "sum_nodes_mean_queries_mean_samples; never divide by node_count; runtime padded rows require original zero-weight exposure handling",
+  "updates_per_behavior_batch": 1,
+  "on_policy_guard": "exact current versus detached behavior probability equality in offline helper; production must additionally bind policy/input/action identities and existing parity contract",
+  "normalization": "none",
+  "ratio_or_clip": "none; not named GRPO/RLOO/PPO",
+  "auxiliary": "same Stage1 reference KL0.01 and Final ranking/binaryNLL cosine0.3_to0.1 as simple baseline",
+  "prospective_matching": "same Stage1 initial policy, TRAIN40513, schedule, global128, G16, two_epochs634, fixed11_selection_points",
+  "comparison": "compare raw reward gradient scale primarily with matched RLOO-clipped; same step0/full curve and Final_NLL_Brier_cost required",
+  "no_extra_audio_forward": true,
+  "reward_compute_cost": "up to 2*N*G scores/query; singleton F1 permits algebraic differences; report measured overhead before runtime release",
+  "truth_contract": "complete scoreable truth only; do not fabricate missing labels or process annotations",
+  "limits": [
+    "Does not remove p*(1-p) saturation",
+    "Nonzero signal does not establish heldout improvement",
+    "Additive independent process rewards have no direct raw expected gradient into Final output coordinates",
+    "One optimizer update without clipping does not bound policy movement; post-update KL must be measured",
+    "Exact singleton expectation is an offline oracle, not silently substituted into this sampled algorithm"
+  ],
+  "runtime_gaps": [
+    "original behavior/action/input provenance and reward-pair authentication",
+    "DP query weighting, padding, microbatch and accumulation parity",
+    "BF16 execution to differentiable reward objective integration without violating arithmetic-v2",
+    "real NPU continuous update, export, new-process restore and rollout parity",
+    "full selection and transfer efficacy"
+  ],
+  "dispatch_order": "after existing simple baseline closure; preserve Direct/Q-input/Q-credit standard algorithm controls; no automatic dispatch"
+}

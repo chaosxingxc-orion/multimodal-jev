@@ -1,0 +1,35 @@
+{
+  "schema": "slurp-balance-policy-candidate-v1",
+  "status": "objective_design_pending_semantic_supervision_and_schedule_freeze",
+  "training_dispatch_allowed": false,
+  "population": "all_admitted_learning_recordings_once_per_declared_sweep_no_tail_only_subset",
+  "outer_weight": {
+    "selected_candidate": "sqrt_cap4",
+    "formula": "raw_c=min(4,sqrt(N/(C*n_c))); w_c=raw_c/mean_learning_recording(raw_gold_class)",
+    "frequency_source": "frozen_learning_population_only_recompute_after_versioned_population_change",
+    "scope": "same_request_weight_applied_outside_advantage_normalization_to_RL_CE_and_KL_across_comparison_arms",
+    "critic": "same_request_weight_in_value_regression_when_present",
+    "runtime_reduction": "fixed_population_mean_weight_one; average_weighted_losses_over_real_requests_without_batch_weight_renormalization",
+    "no_repeat_or_drop": true,
+    "cap_note": "cap4_before_normalization_observed_max4.349844536896604",
+    "evaluation": "natural_distribution_metrics_primary_macro_and_tail_metrics_also_reported_no_test_reweighting"
+  },
+  "question_selection": "compile_complete_or_rotating_panels_before_gold_lookup_never_balance_by_choosing_positive_questions",
+  "binary_balance": {
+    "stage1_candidate": "configs/experiments/stage1-objective-candidate-v2.json;65I/55S semantic denominators,cap8 polarity CE, pending admission",
+    "required_before_freeze": "per_definition_positive_and_negative_semantic_admission_counts; normalization_and_family_coefficients; no_native_absence_as_negative",
+    "zero_support": "report_unavailable_no_pseudocount_or_claimed_learning_support",
+    "stage2": "reward-contract-design-v3 fixed per-question.025 for current17panel schedule; no inverse-frequency reward or Stage1 polarity weights silently carried over",
+    "scope": "proposal_not_implemented_and_not_admitted",
+    "historical_membership_finding": "outer_intent_class_weights_do_not_change_complete_I_positive_fraction_1_over_60",
+    "finding": "For current I_present65 ontology, positive rates are not1/60 or1/65; compute only from admitted semantic labels. Historical1/60 is I_class-only."
+  },
+  "rejected_defaults": [
+    "inverse_frequency_class_weights_without_concentration_audit",
+    "per_query_gold_positive_question_selection",
+    "claiming_class_interleaving_alone_balances_epoch_objective",
+    "positive_Q_oversampling_without_disclosing_changed_menu_distribution",
+    "accuracy_only_for_rare_positive_binary_Q"
+  ],
+  "evidence": "docs/research/full-population-balance-check-v2.json"
+}

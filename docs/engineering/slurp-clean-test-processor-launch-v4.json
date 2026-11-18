@@ -1,0 +1,74 @@
+{
+  "status": "v4_launched_pending_full_result",
+  "checked_unix": 1794690440.7837832,
+  "launch": ".local/decision-objective-research/slurp-clean-test-processor-cpu-v4-launch.json",
+  "launch_sha256": "ce4358e0a66668c1e2d835a49d007e35af9334fad6ca9a6a46b4b41d285ac1c7",
+  "container_id": "2c92b7a103e0beb9005a89e3ed001cddaf7a8dea29e33d393f2458686729dc70",
+  "state_at_launch": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1155426,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T21:05:52.82281963Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "cpu_limit": 2,
+  "memory_gb": 8,
+  "npu_devices": [],
+  "model_weights_mounted": false,
+  "processor_assets_exact_to_completed_stage1": 4,
+  "actual_label_free_requests_reconstructed": 12991,
+  "tests": {
+    "passed": 29,
+    "seconds": 4.07,
+    "scope": "Request/population rejection tests, actual cache tensor checks and a 513-row synthetic full run across two progress writes. Processor and population substituted in cache/run tests; real image full execution pending."
+  },
+  "tool_sha256": "c575ac3a20c2215c5593a1748ecd52ecd8c4c5c347f0d796433284dae2c68571",
+  "test_sha256": "81fdb71b7b0046ad698f09c27a319b77181f0e92c97ca7820eb969133a7d385c",
+  "baseline_lock": {
+    "lock_id": "2ece49811d1e11eabc75f3e95e73ef532bda3fe9f16e9a399da7725ad0d95bfc",
+    "verified_files": 364,
+    "stage2_released": false,
+    "scope": "File and contract identity only; no added runtime or efficacy evidence"
+  },
+  "queued_dependencies": [
+    {
+      "path": ".local/decision-objective-research/context-baseline-sequence-v3-spec.json",
+      "verified_files": 507
+    },
+    {
+      "path": ".local/decision-objective-research/context-baseline-comparison-v5-pins.json",
+      "verified_files": 510
+    },
+    {
+      "path": ".local/decision-objective-research/fsc-context-experiment-v1-queue-pins.json",
+      "verified_files": 1071
+    },
+    {
+      "path": ".local/decision-objective-research/fsc-context-reference-v1-queue-pins.json",
+      "verified_files": 1102
+    }
+  ],
+  "failures_preserved": [
+    {
+      "version": 1,
+      "reason": "CPU launch lacked read-only Ascend driver library mount; failed before dataset processing."
+    },
+    {
+      "version": 2,
+      "reason": "Qwen3ASRProcessor first imported from concurrent worker factories; moved lazy import to main thread as in existing FSC preflight."
+    },
+    {
+      "version": 3,
+      "reason": "Progress accidentally used immutable commit_json; second write at 512 failed. Replaced with established atomic_json for progress only; cache/final fsync unchanged."
+    }
+  ],
+  "verification": "Driver waits on exact container; successful terminal followed by fresh-process full cache/receipt verification. Not completed yet.",
+  "scope": "Input-only engineering; no target annotations parsed, no inference/TEST score, no added SLURP RL gate."
+}

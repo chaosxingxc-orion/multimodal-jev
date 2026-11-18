@@ -1,0 +1,55 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "08bab7f868d7f5774f14ba75790feb91114fc9ab22d13d863d5fa367a312d177",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T02:55:07.07967078Z",
+    "FinishedAt": "2026-11-16T02:56:05.33494236Z"
+  },
+  "source_files": 417,
+  "source_manifest_sha256": "ecd7c29ee745d706335a72d4e0f48c716cd9cfd4ca36cd8ed3fadd9134cad122",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-replay-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "de2adfb9c3d08f29834e9342cccb593fd68705be63a6b9146a814c47c0503070",
+    "run/junit.xml": "7ee0ce9847a09150c787a86d8dbeb0b24065799a0e2e9a30ec46b1642e5e116a",
+    "run/pytest.log": "cdfc54df5fec12df62e563c63d2cb15589b900f9f016d94db13e65320ac50fc1",
+    "package/FILES.json": "ecd7c29ee745d706335a72d4e0f48c716cd9cfd4ca36cd8ed3fadd9134cad122",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 19,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794797734.0915718,
+    "finished_unix": 1794797763.9448023,
+    "source_manifest_sha256": "ecd7c29ee745d706335a72d4e0f48c716cd9cfd4ca36cd8ed3fadd9134cad122",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-replay-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_replay.py",
+      "tests/test_context_dual_training_operations.py",
+      "tests/test_context_dual_training_audit.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Synthetic audited replay package construction, immutable runtime/reference, parent shard binding and common launcher contracts. No actual NPU replay or full collected-run acceptance."
+}

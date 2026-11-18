@@ -1,0 +1,23 @@
+{
+  "schema": "semantic-prediction-ledger-reference-audit-v1",
+  "request_file": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-selection-evaluation-design-v1/requests.jsonl",
+  "request_file_sha256": "d7dccb6b719df343b6ee378113225dd7fbfe8349795b95a45d376ef1ba819f9d",
+  "implementation_sha256": "3ca4f266bf7e15435d68a84e5dd9981598a49fbb7ee560e95180098a53fc56db",
+  "full_synthetic_failure_population": {
+    "requests": 470526,
+    "completed": 0,
+    "failed": 470526,
+    "terminal_coverage": 1.0
+  },
+  "rejected_invalid_fixtures": {
+    "missing": "incomplete terminal coverage; do not fabricate failures",
+    "duplicate": "duplicate terminal receipt",
+    "unknown": "unknown or mismatched request coordinate",
+    "wrong_panel": "unknown or mismatched request coordinate",
+    "pending": "pending or unknown status is not a terminal failure"
+  },
+  "semantic_admission": 0,
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "scope": "Synthetic terminal coverage reference on the real request roster; no actual inference, prediction receipts, raw parser authentication or scorer acceptance."
+}

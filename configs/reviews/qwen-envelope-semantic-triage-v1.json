@@ -1,0 +1,67 @@
+{
+  "schema": "qwen-envelope-semantic-triage-v1",
+  "report_sha256": "21cc7c545b1d60662583b0d1877d7adad801938c3f35f7931d62cf1c70f1d6a2",
+  "requests": 6,
+  "total_decisions": 48,
+  "status_counts": {
+    "negative": 25,
+    "unavailable": 21,
+    "positive": 2
+  },
+  "issues": [
+    {
+      "source_id": "14835",
+      "semantic_id": "media_type",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false,
+      "teacher_rationale": "No content format (e.g., news, podcast, video) or explicit media source/channel is expressed; 'stock price' is financial data, not media content.",
+      "diagnosis": "Rationale describes absence or an excluded role but status is unavailable. Current rules reserve unavailable for genuine ambiguity.",
+      "disposition": "Independent review pending; do not remap unavailable to negative globally."
+    },
+    {
+      "source_id": "5274",
+      "semantic_id": "list_name",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false,
+      "teacher_rationale": "'My pop playlist' expresses a music playlist, not a general item/task/event/contact collection; playlist_name is a specialized role distinct from list_name per ontology rules R18–R22.",
+      "diagnosis": "Rationale describes absence or an excluded role but status is unavailable. Current rules reserve unavailable for genuine ambiguity.",
+      "disposition": "Independent review pending; do not remap unavailable to negative globally."
+    },
+    {
+      "source_id": "1887",
+      "semantic_id": "music_genre",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false,
+      "teacher_rationale": "'That last song' refers to a specific track without naming or implying a genre; no stylistic category is expressed in the utterance.",
+      "diagnosis": "Rationale describes absence or an excluded role but status is unavailable. Current rules reserve unavailable for genuine ambiguity.",
+      "disposition": "Independent review pending; do not remap unavailable to negative globally."
+    },
+    {
+      "source_id": "2768",
+      "semantic_id": "playlist_name",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false,
+      "teacher_rationale": "No expressed title, name or particular identifying reference to a music playlist collection; 'jazz music' is a genre/category, not a named playlist.",
+      "diagnosis": "Rationale describes absence or an excluded role but status is unavailable. Current rules reserve unavailable for genuine ambiguity.",
+      "disposition": "Independent review pending; do not remap unavailable to negative globally."
+    },
+    {
+      "source_id": "2768",
+      "semantic_id": "song_name",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false,
+      "teacher_rationale": "No expressed title, name or particular identifying reference to a song or individual track; 'jazz music' is a genre, not a specific song.",
+      "diagnosis": "Rationale describes absence or an excluded role but status is unavailable. Current rules reserve unavailable for genuine ambiguity.",
+      "disposition": "Independent review pending; do not remap unavailable to negative globally."
+    }
+  ],
+  "semantic_admission": 0,
+  "independent_adjudication": false,
+  "rule_revision_required_by_this_triage": false,
+  "scope": "Author diagnosis of status/rationale mismatch on known calibration targets. Not independent correctness certification; no changed labels or denominators."
+}

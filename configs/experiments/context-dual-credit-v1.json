@@ -1,0 +1,93 @@
+{
+  "schema": "jev-dual-credit-design-v1",
+  "status": "task_design_fixed_runtime_not_admitted",
+  "training_dispatch_allowed": false,
+  "task": {
+    "input": "audio_and_candidate_definitions",
+    "output": "shared_context_head_independent_sigmoid_probabilities",
+    "truth": "benchmark_event_membership_not_semantic_presence",
+    "training_population": 40513,
+    "selection_population": 9226,
+    "missing_labels": "reject_current_complete_truth_training_contract",
+    "threshold": 0.5
+  },
+  "algorithm": {
+    "primary": "dual_credit_rloo_clipped_v1",
+    "alternative": "dual_credit_grpo_floor_clipped_v1",
+    "group_size": 16,
+    "updates_per_behavior_batch": 1,
+    "ratio_scope": "individual_pair_or_candidate_binary_action",
+    "clip_ratio": 0.2,
+    "dual_clip_c": 3.0,
+    "ranking": {
+      "distribution": "sigmoid((z_i-z_j)/temperature)",
+      "temperature": 1.0,
+      "pairs": "all_known_positive_negative_pairs_canonical_identity_orientation",
+      "reward": "one_if_sampled_preference_matches_labels_else_zero",
+      "reduction": "mean_pairs_then_mean_real_queries",
+      "weight": 0.5
+    },
+    "existence": {
+      "distribution": "sigmoid(z_j)",
+      "reward": "one_if_binary_action_matches_label_else_zero",
+      "reduction": "half_mean_positive_plus_half_mean_negative_per_query; if_one_side_empty_use_full_weight_other_side",
+      "weight": 0.5
+    },
+    "rloo": "component_reward_minus_mean_other_samples_same_query_same_component",
+    "grpo": {
+      "centering": "component_sample_mean",
+      "std": "population_std_with_floor",
+      "std_floor": 0.25,
+      "scope": "separate named adaptation; not native GRPO equivalence"
+    },
+    "normalization": "no_post_merge_whitening; zero_signal_components_retained",
+    "sampling": "independent_keyed_cpu_generators_per_query_update_branch_component; retain_all_G_actions",
+    "probability_arithmetic": "FP32_actual_sampler_probability_then_CPU_log_log1p; reject_endpoints",
+    "reference_kl": "sum_candidate_Bernoulli_KL_once_per_query",
+    "kl_coefficient": 0.01,
+    "supervised_ranking_coefficient": 0.1,
+    "binary_nll_coefficient": 0.3,
+    "auxiliary_schedule": "constant; new_version_not_matched_to_old_decay"
+  },
+  "training": {
+    "source": "same_authenticated_full_Stage1_endpoint",
+    "optimizer_reset": true,
+    "epochs": 2,
+    "updates": 634,
+    "global_batch": 128,
+    "actor_microbatch": 8,
+    "dp": 4,
+    "accumulation": 4,
+    "execution_dtype": "bfloat16",
+    "optimizer_dtype": "float32",
+    "learning_rate": 0.0001,
+    "seed": 317,
+    "schedule": "existing_full_coverage_class_spread_length_grouped",
+    "arms": ["ranking_only", "existence_only", "joint"],
+    "arm_rule": "disable_other_RL_branch_only; keep_active_weight_0.5_and_all_auxiliary_terms_identical; no_renormalization",
+    "initial_runtime_algorithm": "dual_credit_rloo_clipped_v1",
+    "grpo_dispatch": "only_after_same_runtime_acceptance_and_separate_experiment_release"
+  },
+  "evaluation": {
+    "checkpoints": [0,64,128,192,256,320,384,448,512,576,634],
+    "selection_rule": "highest_set_f1_then_lowest_binary_nll_then_earliest_step",
+    "fixed_endpoint": 634,
+    "metrics": ["set_f1", "top1_accuracy", "pairwise_ranking_accuracy", "exact_set", "false_accept", "false_reject", "binary_nll", "brier", "positive_negative_scores", "risk_coverage"],
+    "joint_success": "fixed_endpoint_set_f1_delta_lower95_gt0_and_top1_delta_lower95_ge0_and_NLL_Brier_delta_upper95_le0",
+    "interval": "paired_source_group_bootstrap_2000_seed317_pointwise; not_joint_coverage_or_seed_variance",
+    "synergy_claim": "requires_joint_vs_both_single_branch_matched_comparisons; no_claim_from_baseline_gain_alone",
+    "test_and_transfer": "frozen_selected_policy_no_target_tuning",
+    "complex_training_admitted": false
+  },
+  "efficiency": {
+    "priority": ["bulk_RPC_and_true_vLLM_batching", "authenticated_shared_fixed_reference", "prefetch_and_bulk_tensor_transport"],
+    "initial_rollout_batch_queries": 4,
+    "initial_rollout_token_budget": 16384,
+    "behavior_cache_across_updates": false,
+    "async_stale_policy": false,
+    "optimization_release_budget": "one_integrated_candidate_then_one_acceptance_cycle; failure_fix_only_against_identified_cause",
+    "promotion": "at_least_1.25x_same_workload_end_to_end_training_throughput_and_all_parity_recovery_checks_pass",
+    "reference_accounting": "report_cold_build_and_warm_reuse_separately"
+  },
+  "runtime_gates": ["branch_probability_and_reward_gradient_CPU", "real_audio_serial_batch_parity", "real_verl_DP_update_and_global_reduction", "nonzero_adapter_head_activation", "fresh_process_resume", "end_to_end_time_and_memory", "immutable_package_and_macro_bindings"]
+}

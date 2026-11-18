@@ -1,0 +1,109 @@
+{
+  "schema": "slurp-simple-final-v1",
+  "status": "full_stage1_running_base_selection_verified",
+  "priority": "current_user_simple_mode",
+  "task": {
+    "input": "direct_audio_plus_fixed_native60_menu",
+    "output": "one_typed_intent_Final",
+    "view": "direct",
+    "variant": "native",
+    "new_semantic_supervision_required": false,
+    "release": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1",
+    "release_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "learning": 40513,
+    "selection": 9226
+  },
+  "runtime": {
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "model": "Qwen3-ASR-0.6B",
+    "host": "175",
+    "physical_devices": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "actor": "verl_FSDP_DP4",
+    "rollout": "vllm_TP1",
+    "execution_dtype": "bfloat16",
+    "optimizer_dtype": "float32",
+    "lora_rank": 4,
+    "lora_alpha": 8,
+    "dropout": 0,
+    "targets": "language_q_v",
+    "hot_root": "/data/xingchao/multimodal-jev/simple-final-v1",
+    "shared_mounts": "read_only"
+  },
+  "stage1": {
+    "epochs": 2,
+    "global_batch": 128,
+    "microbatch_per_rank": 1,
+    "accumulation_per_rank": 32,
+    "updates_per_epoch": 317,
+    "total_updates": 634,
+    "lr": 0.0001,
+    "seed": 317,
+    "class_weighting": "sqrt_cap4_frozen_full_learning_mean_one",
+    "loss_reduction": "real_request_mean",
+    "padding": "explicit_zero_weight_excluded_from_count",
+    "schedule_sha256": "fc36b3afdf367bad6a5f0530a8743cb44b630592e2c778c3046130e3c1adf200",
+    "context_limit_candidate": 4096,
+    "context_limit": 4096
+  },
+  "evaluation": {
+    "population": "full_fixed_selection_9226",
+    "view": "direct",
+    "variant": "native",
+    "metrics": [
+      "accuracy",
+      "macro_F1_fixed60",
+      "macro_recall_supported",
+      "per_class_support_recall",
+      "invalid_rate"
+    ],
+    "checkpoints": [
+      "base",
+      "stage1_terminal"
+    ],
+    "rl_checkpoint_schedule": "slurp-simple-sampled-rl-v1.json:budget_candidate.selection_updates",
+    "test_feedback": false
+  },
+  "stage2": {
+    "primary": "grpo_v1",
+    "comparison": "rloo_v1",
+    "optional": "ppo_critic_v1",
+    "reward": "Final_correctness_0_or_1",
+    "process_reward": 0,
+    "ce": "decaying_CE_retained",
+    "status": "GRPO_two_NPU_fixture_updates_accepted_continuous_lifecycle_and_formal_release_pending"
+  },
+  "release_policy": {
+    "shared_runtime": 1,
+    "configuration_changes": "authorized_before_freeze_record_versions_and_evidence",
+    "running_snapshot_mutation": false
+  },
+  "gates": {
+    "full_processor": true,
+    "fixed_image_tests": true,
+    "resident_reload_vllm_parity": true,
+    "dp_gradient_and_resume": true,
+    "full_selection_scorer": true,
+    "checkpoint_master_export_peft_reload": true,
+    "prefix_hf_vllm_parity": true
+  },
+  "training_dispatched": true,
+  "gate_scopes": {
+    "dp_gradient_and_resume": "Four-rank CPU synthetic FP32 gradient/update checks; original two-update NPU checkpoint masters/Adam restored exactly and resident FSDP probabilities independently verified on256 inputs. Not terminal634 or RL NPU acceptance.",
+    "fixed_image_tests": "89 tests passed on immutable prefix snapshot; later scorer/verifier and permission edits have separate local tests",
+    "checkpoint_master_export_peft_reload": "Original two-update checkpoint: four-rank master/Adam/durable commit, CPU PEFT112 tensors exact, HF/vLLM and recovered resident FSDP probability checks passed. Terminal634 requires its own audit.",
+    "prefix_hf_vllm_parity": "Actual256 fixed prefix inputs, independent raw probabilities/input/master evidence checked; resident FSDP and full selection efficacy separate",
+    "full_processor": "Actual fixed-image processor exited0; independent all81026 scheduled uses/40513 unique inputs verified, longest2249 tokens, no truncation",
+    "resident_reload_vllm_parity": "Original256 prefix requests: recovered NPU FSDP vs HF maxlogp0 and independent HF/vLLM maxlogp9.536743e-7; not all future policies/inputs",
+    "full_selection_scorer": "Actual full9226 base inference exited0, fixed-image30tests and authenticated scorer passed, independent raw-probability metrics recomputed"
+  },
+  "engineering_prefix_dispatched": true,
+  "engineering_prefix_receipt": "docs/engineering/slurp-simple-final-v1-progress.json",
+  "full_training_dispatched": true,
+  "prefix_completed_updates": 2,
+  "continuation_receipt": "docs/engineering/slurp-simple-final-v1-progress.json"
+}

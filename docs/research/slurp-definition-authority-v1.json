@@ -1,0 +1,53 @@
+{
+  "schema": "slurp-definition-authority-audit-v1",
+  "date": "2026-11-12",
+  "official_commit": "8eb16545762be97ace75334109d73824217311f1",
+  "tree_truncated": false,
+  "tree_blob_count": 25,
+  "sources": {
+    "tree.json": "https://api.github.com/repos/pswietojanski/slurp/git/trees/8eb16545762be97ace75334109d73824217311f1?recursive=1",
+    "util.py": "https://raw.githubusercontent.com/pswietojanski/slurp/8eb16545762be97ace75334109d73824217311f1/scripts/evaluation/util.py",
+    "evaluate.py": "https://raw.githubusercontent.com/pswietojanski/slurp/8eb16545762be97ace75334109d73824217311f1/scripts/evaluation/evaluate.py",
+    "anthology.xml": "https://raw.githubusercontent.com/acl-org/acl-anthology/master/data/xml/2020.emnlp.xml",
+    "slurp.pdf": "https://aclanthology.org/2020.emnlp-main.588.pdf"
+  },
+  "artifacts": {
+    "anthology.xml": {
+      "local_path": ".local/research/slurp-definition-authority-v1/anthology.xml",
+      "bytes": 1401398,
+      "sha256": "9d8e812a342ea02212cf3f20d91cf889f1c0c10e9abd1d1af8ffabe4af783b7b"
+    },
+    "evaluate.py": {
+      "local_path": ".local/research/slurp-definition-authority-v1/evaluate.py",
+      "bytes": 5269,
+      "sha256": "88c86ea55c646962537cba2b5f53fddc95e49431c9e9353b32eeeb0afea2a650"
+    },
+    "slurp.pdf": {
+      "local_path": ".local/research/slurp-definition-authority-v1/slurp.pdf",
+      "bytes": 3558,
+      "sha256": "46c3239a8f7ab13646b85ab1c72924b2c64381a6c6b6e1fa575b1155c49e33e8"
+    },
+    "tree.json": {
+      "local_path": ".local/research/slurp-definition-authority-v1/tree.json",
+      "bytes": 10181,
+      "sha256": "67cdc7f84fa4728f910b95933479ee1b6b598661f79d728949174dff9233ecd7"
+    },
+    "util.py": {
+      "local_path": ".local/research/slurp-definition-authority-v1/util.py",
+      "bytes": 4406,
+      "sha256": "92c42ed926d2bf131913433e6238bac3b3c93da714802d9ecb53a380a13fbc27"
+    }
+  },
+  "findings": {
+    "category_authority": "No standalone category-boundary guide located in this fixed repository tree; no claim about other sources.",
+    "intent_gold": "scenario_action pair, not raw intent string",
+    "entities": "native type and lowercased token-span filler; not our type-presence-only metric",
+    "missing_predictions": "evaluation skips missing IDs and warns; require external full-population identity gate",
+    "duplicate_predictions": "load_predictions overwrites earlier duplicate ID; require uniqueness before loading",
+    "pdf": "download returned 3558-byte HTML, pdftotext failed; full paper not read",
+    "xml": "paper 588 metadata and abstract only; no detailed category boundary authority",
+    "candidate_conflicts": "104 recordings in 23 groups are candidate-definition mismatches, not certified native annotation errors"
+  },
+  "method": "repository tree and source inspection; no official scorer execution or audio review",
+  "training_dispatch_allowed": false
+}

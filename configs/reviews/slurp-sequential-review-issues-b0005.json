@@ -1,0 +1,93 @@
+{
+  "schema": "slurp-reference-review-issues-v1",
+  "review": "configs/reviews/slurp-full-slot-sequential-reference-b0005.json",
+  "review_sha256": "33964551360b1d1790f66959d0c0660ab6361685932f0b0c923291a640dd8b66",
+  "training_dispatch_allowed": false,
+  "issues": [
+    {
+      "source_id": "14772",
+      "definition_id": "personal_info",
+      "quote": "everything you know about bob dean",
+      "rationale": "May seek biographical/contact attributes or arbitrary facts involving the person; no explicit attribute field settles the current policy.",
+      "reason_kind": "input_unspecified_person_information"
+    },
+    {
+      "source_id": "13534",
+      "definition_id": "device_type",
+      "quote": "door",
+      "rationale": "Door may be a controllable appliance/system or an ordinary structural object; physical-device scope is not settled by the bare open command.",
+      "reason_kind": "definition_boundary_structural_object_device"
+    },
+    {
+      "source_id": "13534",
+      "definition_id": "house_place",
+      "quote": "door",
+      "rationale": "A door may be a household surface or a non-domestic structural object; domestic/activity-place role is not established.",
+      "reason_kind": "input_door_domestic_surface_role"
+    },
+    {
+      "source_id": "17089",
+      "definition_id": "list_name",
+      "quote": "contacts",
+      "rationale": "May name an address-book collection; current list/task-collection boundary does not settle contacts.",
+      "reason_kind": "definition_boundary_contact_collection"
+    },
+    {
+      "source_id": "17089",
+      "definition_id": "person",
+      "quote": "contacts",
+      "rationale": "Could denote human contacts, organization contacts or collection records; the bare lookup does not identify a supported human role.",
+      "reason_kind": "input_contact_record_vs_human_reference"
+    },
+    {
+      "source_id": "6019",
+      "definition_id": "device_type",
+      "quote": "alarm",
+      "rationale": "Sent alarm likely denotes an alert rather than equipment; the input does not establish a physical alarm-device referent.",
+      "reason_kind": "input_alarm_alert_device_ambiguity"
+    },
+    {
+      "source_id": "4441",
+      "definition_id": "color_type",
+      "quote": "romantic",
+      "rationale": "Romantic can describe color, dimness or scene mood; no chromatic value/property settles a color role.",
+      "reason_kind": "input_lighting_mood_color_ambiguity"
+    },
+    {
+      "source_id": "4037",
+      "definition_id": "weather_descriptor",
+      "quote": "sandle",
+      "rationale": "The fragment may refer to footwear, but does not establish a weather-related need rather than shopping or another use.",
+      "reason_kind": "input_footwear_weather_role_ambiguity"
+    },
+    {
+      "source_id": "7472",
+      "definition_id": "time",
+      "quote": "for clock",
+      "rationale": "Malformed clock phrase may attempt a clock time, but does not establish a readable time/property request; do not correct it to four oclock.",
+      "reason_kind": "input_malformed_clock_expression"
+    },
+    {
+      "source_id": "7472",
+      "definition_id": "device_type",
+      "quote": "alarm",
+      "rationale": "Generic alarm-setting may refer to an alert or device; physical referent is not established.",
+      "reason_kind": "input_alarm_alert_device_ambiguity"
+    },
+    {
+      "source_id": "1634",
+      "definition_id": "device_type",
+      "quote": "alarms",
+      "rationale": "Could denote alarm configurations or physical alarms; showing them does not settle a physical device role.",
+      "reason_kind": "input_alarm_alert_device_ambiguity"
+    },
+    {
+      "source_id": "117",
+      "definition_id": "song_name",
+      "quote": "what music is this",
+      "rationale": "This may identify an individual current track or a broader musical work/style; the required song work type is not settled by music alone.",
+      "reason_kind": "input_music_track_vs_other_reference"
+    }
+  ],
+  "policy": "Retain unavailable, separate definition and input issues. Do not infer physical device from generic alarm or correct malformed reference using native labels."
+}

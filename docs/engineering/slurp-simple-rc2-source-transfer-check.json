@@ -1,0 +1,31 @@
+{
+  "schema": "simple-rc2-source-transfer-check-v1",
+  "passed": true,
+  "checked_unix": 1794598389.6429296,
+  "container_id": "1680ac442df4f4065ae1cf7f9e8f0d3935b966b59bf1fd9f312d01debe7aa9a1",
+  "source_config_files": 1360,
+  "archive_sha256": "a630ddaa1af2257eb86936720a7b6992042d1869dc88112aa6e39451330c9b86",
+  "runner_sha256": "7e20bf8070b96173264a436f5eec62ce710b231cc6b613a1b8f1a2c8b5266daf",
+  "same_local_archive_remote_source": true,
+  "configuration_unchanged_from_rc1": true,
+  "added": [
+    "src/multimodal_jev/simple_fixture_resume.py",
+    "tests/test_simple_fixture_resume.py",
+    "tools/jev/probe_simple_continuous_resume_update.py"
+  ],
+  "changed": [
+    "src/multimodal_jev/simple_stage2_release.py",
+    "tests/test_resident_train_launch_preflight.py",
+    "tests/test_simple_resident_train_audit.py",
+    "tests/test_simple_stage2_release.py",
+    "tools/jev/launch_simple_resident_train.py",
+    "tools/jev/probe_simple_continuous_restore.py",
+    "tools/jev/probe_simple_resident_train.py",
+    "tools/jev/verify_simple_resident_train.py"
+  ],
+  "removed": [],
+  "test_inventory_count": 304,
+  "collector": ".local/simple-final-v1/collect_stage2_release_candidate_rc2.py",
+  "collector_sha256": "d631c44159da0a5eefc0b4bcd5e5d2bb3739768a1afa6528f521c5846a73e930",
+  "scope": "Immutable source/archive/runner only. No process inspection, log read, CPU outcome, NPU acceptance or formal release."
+}

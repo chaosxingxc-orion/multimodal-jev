@@ -1,0 +1,54 @@
+{
+  "schema": "context-attribute-metrics-tools-fixed-image-cpu-v1",
+  "container_id": "40181840903c3424c5373c64b2fa8f4993885827e36cab013510007f72f7e84a",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T02:14:11.55178806Z",
+    "FinishedAt": "2026-11-15T02:17:41.94059244Z"
+  },
+  "source_files": 382,
+  "source_manifest_sha256": "2bd0ab075245af29e9cce668746eede53bd303401f022c3c01a3f420c0b4ab87",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-metrics-tools-cpu-v1-collected",
+  "files": {
+    "run/controls.json": "ec0f4bdd9a6bf7e8ad9f6c0b5550f1a029947c8e28a3318674935e63dfe9c133",
+    "run/terminal.json": "b58e08a46a5e22f9db0a1d5fc2ccfe8bf334ddacc8d2ed9b3fd04452b64d6ecb",
+    "run/junit.xml": "232dd3a280f26fed5637264f1963b8d5d6e50aa58d426e1032b60a9465d3fda7",
+    "run/pytest.log": "6f85ca01317a4882299d40fe1c71bd33cb068be9c6c2c062e198802f44e97c2a",
+    "package/FILES.json": "2bd0ab075245af29e9cce668746eede53bd303401f022c3c01a3f420c0b4ab87",
+    "package/run.py": "49c0ee42cf8d8c29d32bab285d7dadd019ccb6edec37af1341cb6630cf5c1127"
+  },
+  "counts": {
+    "tests": 10,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794708878.9765158,
+    "finished_unix": 1794709060.41596,
+    "source_manifest_sha256": "2bd0ab075245af29e9cce668746eede53bd303401f022c3c01a3f420c0b4ab87",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-metrics-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_metrics_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Full9226 native selection scoring with four synthetic probability controls and analytic F1/NLL expectations; fixed Final-only checkpoint selection unit checks. No model inference or efficacy proof."
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "slurp-semantic-menu-design-candidate-v3",
+  "status": "full_semantic_schedule_candidate_context_and_supervision_pending",
+  "training_dispatch_allowed": false,
+  "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-actor-menu-design-v1/report.json",
+  "report_sha256": "9d3c7e072b702dcea8c4968c80abc85c5a92db5a2dd2f09a64862922f7eb2d01",
+  "panels": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-actor-menu-design-v1/panels.json",
+  "native_menu": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-actor-menu-design-v1/native-menu.json",
+  "ontology": {
+    "intent": "configs/tasks/slurp/semantic-intent-catalog-candidate-v5.json",
+    "slot": "configs/tasks/slurp/slot-consolidated-design-v14.json"
+  },
+  "operators": [
+    "I_present",
+    "S_present"
+  ],
+  "arms": [
+    "Direct",
+    "Q_input",
+    "Q_credit"
+  ],
+  "panels_per_audio": 17,
+  "counts": {
+    "native_Final": 60,
+    "I_present": 65,
+    "S_present": 55,
+    "occurrences_per_predicate_per_sweep": 1
+  },
+  "knowledge": "Complete native60 descriptor menu plus selected panel semantic definitions and all required shared/incident boundary rules, identical in Direct/Q_input/Q_credit for that panel.",
+  "selection": "All fixed panels for every audio, independent of native/semantic labels and reference text.",
+  "stage2_schedule": "Complete fixed17 panels per declared sweep; identical audio/panel order across Q_input and Q_credit; global optimizer-update budget must be frozen separately.",
+  "missing": "No removal of action coordinates because reward/CE is masked; no implicit false.",
+  "context": "Four per family is inherited candidate width, not accepted context. Changing width requires recompiling schedule,objective and evaluation counts.",
+  "supersedes": "configs/tasks/slurp/menu-design-candidate-v2.json for main semantic track; old I_class rotating menus are historical only",
+  "scope": "Design schedule only, not actor input renderer or executable training config."
+}

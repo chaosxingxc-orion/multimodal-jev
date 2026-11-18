@@ -1,0 +1,21 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "context-dual-actor-cpu-v1",
+  "tests": [
+    "tests/test_context_dual_actor_candidate.py",
+    "tests/test_context_dual_credit_native.py"
+  ],
+  "expected_tests": 15,
+  "scope": "Pinned native verl CPU actor update with real one-rank Gloo/DDP and synthetic logits; no real audio/Qwen/NPU or four-rank recovery claim.",
+  "support_files": [
+    "tools/reports/context_dual_actor_candidate.py",
+    "tools/reports/context_probability_policy_v2.py",
+    "tools/jev/probe_span_native_actor_dp_cpu.py"
+  ]
+}

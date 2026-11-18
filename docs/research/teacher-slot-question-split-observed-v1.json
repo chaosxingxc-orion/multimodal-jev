@@ -1,0 +1,95 @@
+{
+  "schema": "slurp-slot-question-split-observed-v1",
+  "plan_sha256": "370f0b7afe266498ad073ac81aa118e4e660bb484198e6cbc3982201f86176aa",
+  "terminal_sha256": "dfaa497e00b6adc227f68e7f12d6827aa4d0f1d02e5301bb05d90d7c9c097ab3",
+  "request_delta": "Only user wire questions changed; system, entire ontology, reference, response schema and service parameters identical.",
+  "requests": 2,
+  "complete_requests": 1,
+  "complete_decisions": 4,
+  "expected_decisions": 8,
+  "total_prompt_tokens": 43480,
+  "total_completion_tokens": 5135,
+  "receipts": [
+    {
+      "part": 0,
+      "question_ids": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author"
+      ],
+      "http_status": 200,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 1039,
+        "completion_tokens_details": {
+          "reasoning_tokens": 799
+        },
+        "prompt_tokens": 21740,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 22779
+      },
+      "elapsed_seconds": 20.371666880324483,
+      "content_characters": 991,
+      "structure_valid": true,
+      "request_sha256": "b55fc7296774e3908680f4746b6a86c268096abb031fd63a4832d1a23f2c76ea",
+      "result_sha256": "114f6e08de86c6005895d7ddef45117cf8d9115afae8089ad37d1bfdd1371818",
+      "decisions": [
+        {
+          "id": "alarm_type",
+          "status": "negative",
+          "rationale": "No alarm kind, purpose, or category is expressed anywhere; the utterance concerns only taxi booking, a pickup, and a flight arrival."
+        },
+        {
+          "id": "app_name",
+          "status": "negative",
+          "rationale": "No application or software service is named or referenced as the means of performing the activity; 'book a taxi' names no app and AA is an airline, not software."
+        },
+        {
+          "id": "artist_name",
+          "status": "negative",
+          "rationale": "Shelley Hennessey is expressed only as a pickup passenger; no singing, song creation, musical performance, or song/music-by relation is expressed."
+        },
+        {
+          "id": "audiobook_author",
+          "status": "negative",
+          "rationale": "'Book' functions only as a travel-booking verb introducing transport, which supplies no book-author relation; no audiobook work or author role is expressed."
+        }
+      ],
+      "representation": "json_fence"
+    },
+    {
+      "part": 1,
+      "question_ids": [
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount"
+      ],
+      "http_status": 200,
+      "finish_reason": "length",
+      "usage": {
+        "completion_tokens": 4096,
+        "completion_tokens_details": {
+          "reasoning_tokens": 4096
+        },
+        "prompt_tokens": 21740,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 25836
+      },
+      "elapsed_seconds": 56.19733430026099,
+      "content_characters": 0,
+      "structure_valid": false,
+      "request_sha256": "838d0bbe67749e6b017f3768fc3e93dbaa942be72de6894773f5cfea472ab5ab",
+      "result_sha256": "ae4d0b3e7e0e2348ad18a183c2a2abb507a572f232b60be8781f084b9fe600d8"
+    }
+  ],
+  "semantic_admission": 0,
+  "bulk_dispatch_allowed": false,
+  "training_dispatch_allowed": false,
+  "conclusion": "One4-question half completed, other exhausted4096 reasoning tokens. Splitting did not resolve full-panel completion. Single stochastic comparison cannot isolate causal question effects or validate semantic accuracy."
+}

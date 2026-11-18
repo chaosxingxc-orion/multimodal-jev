@@ -1,0 +1,449 @@
+{
+  "schema": "simple-base-probability-diagnostic-v1",
+  "recordings": 9226,
+  "role": "TRAIN_internal_selection_not_official_TEST",
+  "classes": [
+    "alarm_query",
+    "alarm_remove",
+    "alarm_set",
+    "audio_volume_down",
+    "audio_volume_mute",
+    "audio_volume_other",
+    "audio_volume_up",
+    "calendar_query",
+    "calendar_remove",
+    "calendar_set",
+    "cooking_query",
+    "cooking_recipe",
+    "datetime_convert",
+    "datetime_query",
+    "email_addcontact",
+    "email_query",
+    "email_querycontact",
+    "email_sendemail",
+    "general_greet",
+    "general_joke",
+    "general_quirky",
+    "iot_cleaning",
+    "iot_coffee",
+    "iot_hue_lightchange",
+    "iot_hue_lightdim",
+    "iot_hue_lightoff",
+    "iot_hue_lighton",
+    "iot_hue_lightup",
+    "iot_wemo_off",
+    "iot_wemo_on",
+    "lists_createoradd",
+    "lists_query",
+    "lists_remove",
+    "music_dislikeness",
+    "music_likeness",
+    "music_query",
+    "music_settings",
+    "news_query",
+    "play_audiobook",
+    "play_game",
+    "play_music",
+    "play_podcasts",
+    "play_radio",
+    "qa_currency",
+    "qa_definition",
+    "qa_factoid",
+    "qa_maths",
+    "qa_stock",
+    "recommendation_events",
+    "recommendation_locations",
+    "recommendation_movies",
+    "social_post",
+    "social_query",
+    "takeaway_order",
+    "takeaway_query",
+    "transport_query",
+    "transport_taxi",
+    "transport_ticket",
+    "transport_traffic",
+    "weather_query"
+  ],
+  "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:62a274b6a59546f5b8bf22cd83c65db5775894b0dfce79b3f98721d6ccb93b26",
+  "release_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+  "original_prediction_sha256": "07bee1048824a8beb590510420b603b25e35d63f7d9814795f38286e482e1854",
+  "normalization_residual_max": 2.210037561845013e-07,
+  "top1_counts": {
+    "qa_definition": 9226
+  },
+  "topk_accuracy": {
+    "1": 0.01669195751138088,
+    "3": 0.03370908302623022,
+    "5": 0.06861044873184478,
+    "10": 0.1275742466941253
+  },
+  "gold_probability": {
+    "mean": 0.015055697211421583,
+    "minimum": 3.300452243636151e-07,
+    "median": 0.0012512058647119223,
+    "p10": 9.579284488994057e-05,
+    "p90": 0.015517578510254391,
+    "maximum": 0.7337398364095404
+  },
+  "gold_negative_log_probability": {
+    "mean": 6.5846238399462695,
+    "minimum": 0.30960075950708954,
+    "median": 6.683647529449463,
+    "p10": 4.165782252943576,
+    "p90": 9.253322969471373,
+    "maximum": 14.924036148349385
+  },
+  "entropy_nats": {
+    "mean": 2.0063192267373116,
+    "minimum": 1.1212547554080978,
+    "median": 2.008855336710746,
+    "p10": 1.7736697614325758,
+    "p90": 2.235149268472193,
+    "maximum": 2.6325795265705803
+  },
+  "max_probability": {
+    "mean": 0.5562767332339893,
+    "minimum": 0.34723356550373086,
+    "median": 0.5561597279034012,
+    "p10": 0.4881471057175776,
+    "p90": 0.6246565618041777,
+    "maximum": 0.7908412775997385
+  },
+  "input_variation": {
+    "mean_distribution_entropy_nats": 2.028956397936128,
+    "mean_KL_to_mean_distribution_nats": 0.02263717119881599,
+    "maximum_class_probability_range": 0.4436077120960077,
+    "unique_probability_rows": 9226
+  },
+  "expected_G16": {
+    "assumption": "16 independent with-replacement categorical draws at temperature1 from each recorded input distribution",
+    "mixed_group_probability": {
+      "mean": 0.09308204990177525,
+      "minimum": 5.2807105184182745e-06,
+      "median": 0.01983252436223265,
+      "p10": 0.0015315848571499924,
+      "p90": 0.22137657193790095,
+      "maximum": 0.9999694823799856
+    },
+    "all_wrong_group_probability_mean": 0.9069142044929109,
+    "all_correct_group_probability_mean": 3.7456053136358963e-06,
+    "expected_correct_draws_per_input": 0.24089115538274533,
+    "uniform60_mixed_group_probability": 0.23579094348302576
+  },
+  "per_class": {
+    "alarm_query": {
+      "support": 138,
+      "mean_gold_probability": 0.010358768128108523,
+      "expected_mixed_G16_fraction": 0.15274198802256525
+    },
+    "alarm_remove": {
+      "support": 83,
+      "mean_gold_probability": 0.0008399142919485715,
+      "expected_mixed_G16_fraction": 0.013348396958131184
+    },
+    "alarm_set": {
+      "support": 229,
+      "mean_gold_probability": 0.0007964427522973579,
+      "expected_mixed_G16_fraction": 0.012657520419123356
+    },
+    "audio_volume_down": {
+      "support": 59,
+      "mean_gold_probability": 0.00021509333697341968,
+      "expected_mixed_G16_fraction": 0.0034356827457700024
+    },
+    "audio_volume_mute": {
+      "support": 212,
+      "mean_gold_probability": 4.2602490190049416e-05,
+      "expected_mixed_G16_fraction": 0.0006813867120794046
+    },
+    "audio_volume_other": {
+      "support": 39,
+      "mean_gold_probability": 0.002704978885320385,
+      "expected_mixed_G16_fraction": 0.04237165118463615
+    },
+    "audio_volume_up": {
+      "support": 157,
+      "mean_gold_probability": 0.001572551620560171,
+      "expected_mixed_G16_fraction": 0.02481405014622265
+    },
+    "calendar_query": {
+      "support": 528,
+      "mean_gold_probability": 0.0005839504428576867,
+      "expected_mixed_G16_fraction": 0.00929913481961915
+    },
+    "calendar_remove": {
+      "support": 260,
+      "mean_gold_probability": 0.034426630480953374,
+      "expected_mixed_G16_fraction": 0.41925306349713887
+    },
+    "calendar_set": {
+      "support": 641,
+      "mean_gold_probability": 0.0005424237043985977,
+      "expected_mixed_G16_fraction": 0.00863840478113949
+    },
+    "cooking_query": {
+      "support": 2,
+      "mean_gold_probability": 0.0007578006404648866,
+      "expected_mixed_G16_fraction": 0.012055749946810412
+    },
+    "cooking_recipe": {
+      "support": 122,
+      "mean_gold_probability": 0.00638819883392659,
+      "expected_mixed_G16_fraction": 0.09718067568702175
+    },
+    "datetime_convert": {
+      "support": 29,
+      "mean_gold_probability": 0.01904198073400855,
+      "expected_mixed_G16_fraction": 0.2572431244067079
+    },
+    "datetime_query": {
+      "support": 271,
+      "mean_gold_probability": 0.00587940989266107,
+      "expected_mixed_G16_fraction": 0.08987360289008582
+    },
+    "email_addcontact": {
+      "support": 51,
+      "mean_gold_probability": 2.9351654564645817e-05,
+      "expected_mixed_G16_fraction": 0.00046951547808157963
+    },
+    "email_query": {
+      "support": 288,
+      "mean_gold_probability": 0.00036385555007231426,
+      "expected_mixed_G16_fraction": 0.005804433671183535
+    },
+    "email_querycontact": {
+      "support": 97,
+      "mean_gold_probability": 2.098364806828599e-06,
+      "expected_mixed_G16_fraction": 3.3573013741393276e-05
+    },
+    "email_sendemail": {
+      "support": 256,
+      "mean_gold_probability": 0.0033063201092084736,
+      "expected_mixed_G16_fraction": 0.05130209901679392
+    },
+    "general_greet": {
+      "support": 48,
+      "mean_gold_probability": 0.012573460723337088,
+      "expected_mixed_G16_fraction": 0.18236616081980847
+    },
+    "general_joke": {
+      "support": 135,
+      "mean_gold_probability": 0.0008344583291252956,
+      "expected_mixed_G16_fraction": 0.013259229257949373
+    },
+    "general_quirky": {
+      "support": 353,
+      "mean_gold_probability": 0.00018210702542727474,
+      "expected_mixed_G16_fraction": 0.0029090534672056305
+    },
+    "iot_cleaning": {
+      "support": 70,
+      "mean_gold_probability": 0.0007279375156663366,
+      "expected_mixed_G16_fraction": 0.011579220036822276
+    },
+    "iot_coffee": {
+      "support": 148,
+      "mean_gold_probability": 0.0004391847657529613,
+      "expected_mixed_G16_fraction": 0.007001997195024676
+    },
+    "iot_hue_lightchange": {
+      "support": 67,
+      "mean_gold_probability": 9.473481437793202e-05,
+      "expected_mixed_G16_fraction": 0.0015145471435051867
+    },
+    "iot_hue_lightdim": {
+      "support": 112,
+      "mean_gold_probability": 0.0015736670565354301,
+      "expected_mixed_G16_fraction": 0.024848031594529123
+    },
+    "iot_hue_lightoff": {
+      "support": 99,
+      "mean_gold_probability": 3.4928070203273264e-05,
+      "expected_mixed_G16_fraction": 0.000558664268061505
+    },
+    "iot_hue_lighton": {
+      "support": 10,
+      "mean_gold_probability": 0.01622267383300848,
+      "expected_mixed_G16_fraction": 0.22772010819144844
+    },
+    "iot_hue_lightup": {
+      "support": 68,
+      "mean_gold_probability": 0.002312253260018287,
+      "expected_mixed_G16_fraction": 0.03630826330174743
+    },
+    "iot_wemo_off": {
+      "support": 24,
+      "mean_gold_probability": 0.0062129455860364695,
+      "expected_mixed_G16_fraction": 0.09435011749998451
+    },
+    "iot_wemo_on": {
+      "support": 15,
+      "mean_gold_probability": 0.011133332155974346,
+      "expected_mixed_G16_fraction": 0.16314496198705877
+    },
+    "lists_createoradd": {
+      "support": 129,
+      "mean_gold_probability": 0.0020344186985085696,
+      "expected_mixed_G16_fraction": 0.03198170142843778
+    },
+    "lists_query": {
+      "support": 215,
+      "mean_gold_probability": 0.006284960282754187,
+      "expected_mixed_G16_fraction": 0.0954650900117582
+    },
+    "lists_remove": {
+      "support": 170,
+      "mean_gold_probability": 0.007884684449624221,
+      "expected_mixed_G16_fraction": 0.11840727063841061
+    },
+    "music_dislikeness": {
+      "support": 13,
+      "mean_gold_probability": 0.00014735075069413037,
+      "expected_mixed_G16_fraction": 0.0023547832465083364
+    },
+    "music_likeness": {
+      "support": 71,
+      "mean_gold_probability": 0.0003190271649978889,
+      "expected_mixed_G16_fraction": 0.005089019814201723
+    },
+    "music_query": {
+      "support": 116,
+      "mean_gold_probability": 0.0028419504959901064,
+      "expected_mixed_G16_fraction": 0.04400261951002138
+    },
+    "music_settings": {
+      "support": 32,
+      "mean_gold_probability": 0.0027624231689933566,
+      "expected_mixed_G16_fraction": 0.04314433285262974
+    },
+    "news_query": {
+      "support": 384,
+      "mean_gold_probability": 0.0011672940967375476,
+      "expected_mixed_G16_fraction": 0.018500813985011102
+    },
+    "play_audiobook": {
+      "support": 221,
+      "mean_gold_probability": 0.02806746557278192,
+      "expected_mixed_G16_fraction": 0.36098922871367045
+    },
+    "play_game": {
+      "support": 59,
+      "mean_gold_probability": 0.06809327324290097,
+      "expected_mixed_G16_fraction": 0.6717508704587027
+    },
+    "play_music": {
+      "support": 440,
+      "mean_gold_probability": 0.00032963230677572,
+      "expected_mixed_G16_fraction": 0.005257909844481767
+    },
+    "play_podcasts": {
+      "support": 236,
+      "mean_gold_probability": 0.0013120034329927998,
+      "expected_mixed_G16_fraction": 0.02075768468187114
+    },
+    "play_radio": {
+      "support": 221,
+      "mean_gold_probability": 9.84357467020178e-06,
+      "expected_mixed_G16_fraction": 0.00015747628753357465
+    },
+    "qa_currency": {
+      "support": 101,
+      "mean_gold_probability": 0.003529345901660881,
+      "expected_mixed_G16_fraction": 0.05484111626542693
+    },
+    "qa_definition": {
+      "support": 154,
+      "mean_gold_probability": 0.5532039455073866,
+      "expected_mixed_G16_fraction": 0.9997672231418031
+    },
+    "qa_factoid": {
+      "support": 336,
+      "mean_gold_probability": 0.010358233220950447,
+      "expected_mixed_G16_fraction": 0.15273731939996832
+    },
+    "qa_maths": {
+      "support": 81,
+      "mean_gold_probability": 0.0011425783580370358,
+      "expected_mixed_G16_fraction": 0.018070629907922138
+    },
+    "qa_stock": {
+      "support": 73,
+      "mean_gold_probability": 0.0036774657410081095,
+      "expected_mixed_G16_fraction": 0.05709701848708936
+    },
+    "recommendation_events": {
+      "support": 162,
+      "mean_gold_probability": 0.005196613253660444,
+      "expected_mixed_G16_fraction": 0.07961431504325486
+    },
+    "recommendation_locations": {
+      "support": 80,
+      "mean_gold_probability": 0.0001705734240141081,
+      "expected_mixed_G16_fraction": 0.0027250316881180193
+    },
+    "recommendation_movies": {
+      "support": 40,
+      "mean_gold_probability": 0.0035405516826896703,
+      "expected_mixed_G16_fraction": 0.05494821576581941
+    },
+    "social_post": {
+      "support": 181,
+      "mean_gold_probability": 6.621189081445034e-05,
+      "expected_mixed_G16_fraction": 0.001058723395099647
+    },
+    "social_query": {
+      "support": 84,
+      "mean_gold_probability": 0.010730590190103188,
+      "expected_mixed_G16_fraction": 0.15772356259556114
+    },
+    "takeaway_order": {
+      "support": 94,
+      "mean_gold_probability": 0.057379849070708845,
+      "expected_mixed_G16_fraction": 0.6013900185911747
+    },
+    "takeaway_query": {
+      "support": 105,
+      "mean_gold_probability": 0.008346213163503433,
+      "expected_mixed_G16_fraction": 0.12475737296916145
+    },
+    "transport_query": {
+      "support": 151,
+      "mean_gold_probability": 0.004162708352790283,
+      "expected_mixed_G16_fraction": 0.06442251283375945
+    },
+    "transport_taxi": {
+      "support": 47,
+      "mean_gold_probability": 0.004290644691292189,
+      "expected_mixed_G16_fraction": 0.06621002847986562
+    },
+    "transport_ticket": {
+      "support": 76,
+      "mean_gold_probability": 0.0019669386580299123,
+      "expected_mixed_G16_fraction": 0.030907336489944124
+    },
+    "transport_traffic": {
+      "support": 72,
+      "mean_gold_probability": 0.05823669900276439,
+      "expected_mixed_G16_fraction": 0.6035464183503136
+    },
+    "weather_query": {
+      "support": 471,
+      "mean_gold_probability": 0.009293148223386971,
+      "expected_mixed_G16_fraction": 0.1382080621896083
+    }
+  },
+  "limitations": [
+    "Posthoc descriptive diagnosis; no selection-driven training configuration change",
+    "Probability variation across recordings is not causal proof of audio understanding",
+    "Expected G16 groups on selection, not observed training samples or formal Stage2 reward",
+    "Top-k diagnostics do not replace the frozen top1/macro-F1 task metrics",
+    "Untrained typed-readout interface only; does not assess all base-model capabilities"
+  ],
+  "new_model_inference": false,
+  "configuration_changed": false,
+  "source_files_sha256": {
+    "/home/xingchao/workspace/multimodal-jev/.local/simple-final-v1/base-score-config.json": "ad2fdbc2cfc14c107015f57c522ae25e3dc64b92d7aa891ef7befa92d2591c03",
+    "/home/xingchao/workspace/multimodal-jev/.local/simple-final-v1/base-metrics-verified.json": "0336754665ed7bb009e702eb3afa0674c0b84095262ba7bc6ae6c5cffd4cef80",
+    "/home/xingchao/workspace/multimodal-jev/.local/simple-final-v1/diagnose_base_probabilities.py": "2566e005d4cacf9bf405cce474c0913a2f860da4e8e4d35af2c17da6751475a4"
+  }
+}

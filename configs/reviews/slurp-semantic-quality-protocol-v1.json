@@ -1,0 +1,104 @@
+{
+  "schema": "slurp-semantic-quality-protocol-v1",
+  "status": "preregistered_quality_design_not_execution_or_training_release",
+  "training_dispatch_allowed": false,
+  "full_population_dispatch_allowed": false,
+  "task_versions": {
+    "intent": "configs/tasks/slurp/semantic-intent-catalog-candidate-v5.json",
+    "slot": "configs/tasks/slurp/slot-consolidated-design-v14.json",
+    "shared_inputs": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-shared-v3/report.json"
+  },
+  "population": {
+    "learning_sources": 9192,
+    "learning_recordings": 40513,
+    "questions_per_source": 120,
+    "full_pass_requests": 147072,
+    "full_pass_decisions": 1103040,
+    "unit": "source_with_explicit_recording_bindings",
+    "native_final": "Separate official-clean intent contract; no new semantic admission inferred."
+  },
+  "quality_cohort": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-quality-audit-cohort-v1/report.json",
+    "check": "docs/research/semantic-quality-audit-cohort-check-v1.json",
+    "groups": 128,
+    "sources": 128,
+    "requests_per_pass": 2048,
+    "decisions_per_pass": 15360,
+    "selection": "Deterministic uniform ordering of eligible source groups; exclude inventoried author reference groups, no class/prediction/reference-text routing.",
+    "limitation": "Not proof of never-seen sources; inventoried exposure exclusions only. Sparse positive types may remain underpowered. Never use this cohort as the main training population."
+  },
+  "review_protocol": {
+    "proposer": "Pinned teacher and fixed complete question panels, no native labels or author judgments.",
+    "blind_reviewer": "Separate reviewer creates judgments from the same reference and rules without proposer answers, rationales, native labels or author references. Freeze reviewer identity/version before output collection.",
+    "independence": "Same author rereview or same-model repeat is not independent semantic certification. A different model is a second model opinion, not human gold; correlated errors remain possible.",
+    "adjudication": "Adjudicate every disagreement and all unavailable/conflict cases with evidence and both original judgments retained. Audit agreements as well; no majority vote or automatic positive/negative admission.",
+    "reviewer_identity_status": "not_yet_selected_or_executed",
+    "reference_vs_audio": "Reference-text judgments remain reference-based supervision. Audibility/transcript mismatch flags require recording-specific listening; no inherited all-recordings-listened claim.",
+    "missing": "Failed, truncated, malformed or omitted answers remain explicit failures with original denominators; no implicit negatives, partial JSON salvage, or automatic retry.",
+    "agreement_output": "Three-state confusion and completeness by family, panel and definition; disagreement is separate from API failure."
+  },
+  "preregistered_quality_gates": {
+    "transport_complete_fraction_min": 0.98,
+    "transport_scope": "All scheduled requests in each pass; failures remain denominator. Aggregate gate never hides a systematically failing panel.",
+    "semantic_bound": "For each family and each admitted proposed polarity, one-sided95 percent lower bound on correctness against adjudicated review must be at least0.95. Resample all128 source groups with replacement,10000 replicates,numpy default_rng seed317. Within each replicate sum correctly proposed coordinates divided by all proposed coordinates of that family/polarity;5th percentile with method=lower. A zero denominator is nonestimable and blocks that gate. Report raw numerator/denominator and group counts. Do not treat120 correlated predicates as120 independent sources.",
+    "audit_reference": "The separate blind reviewer covers every cohort coordinate; the adjudicator checks every disagreement and unavailable plus every positive/negative agreement used in the quality numerator. Persist final adjudicator status and evidence. No unchecked agreement is automatically correct. Reference-text audit is not audio gold.",
+    "interval_limit": "Cluster bootstrap is a descriptive finite-cohort bound, can degenerate with zero observed errors, and cannot certify unseen classes or systematic shared errors. Report these limits, class support and blinded reviewer method alongside it; the numeric gate alone is insufficient.",
+    "minimum_groups_per_family_polarity": 30,
+    "per_definition": "Report proposed/adjudicated positive,negative,unavailable,missing and disagreement counts. Every trained predicate must have independently reviewed positive and negative support; a one-example anchor does not certify a type.",
+    "underpowered_or_failed": "No pass claim. Freeze a separate coverage supplement and its sampling bias before review; never fold targeted positive sampling into representative prevalence/accuracy. Affected labels remain masked until their contract passes.",
+    "definition_conflict": "Unresolved contradiction in rules blocks that definition; genuine input ambiguity remains unavailable and does not require changing the rules.",
+    "scope": "Quality control for reference-based annotation, not proof of audio accuracy or task-generalization gains. Class coverage and actor-menu supervision adequacy must also be checked at full-population release."
+  },
+  "bulk_annotation": {
+    "prerequisites": "Calibration terminal reviewed; quality reviewer identity and method fixed; quality gates evaluated; full cost and resource budget frozen; resumable executor accepted. None automatically satisfied by this file.",
+    "proposals": "Complete fixed panels across all9192 sources. Preserve every coordinate and failure state.",
+    "independent_checks": "Blind quality cohort plus all low-confidence/disagreement/ambiguous cases; polarity and definition coverage supplement selected after proposals, before independent review, with separate denominators.",
+    "release": "Explicit versioned admission decision and annotation_method for every usable coordinate; teacher outputs remain proposals until release policy and review evidence are satisfied.",
+    "recording_binding": "All explicit source IDs must have compatible admitted values; never propagate via source_group or omitted native annotations.",
+    "selection_test": "Learning only. Selection annotations use frozen rules and separate manifests, never optimization; target test feedback cannot tune templates/checkpoints."
+  },
+  "cost": {
+    "teacher_completion_cap_per_request_candidate": 4096,
+    "quality_one_pass_completion_upper_bound": 8388608,
+    "full_one_pass_completion_upper_bound": 602406912,
+    "prompt_cost": "Must use observed per-panel usage and frozen request counts; representative cost projection is not a guaranteed token bound. No assumed price or total fee.",
+    "second_pass_and_adjudication": "Additional explicit budgets required; not included in one-pass caps.",
+    "execution": "No API dispatch by this protocol or cohort builder."
+  },
+  "scoring_implementation": {
+    "path": "tools/jev/score_semantic_quality_audit.py",
+    "status": "tested_evidence_scoring_only_no_real_quality_pass",
+    "decision_record": "docs/research/108-semantic-quality-protocol-and-cohort.md",
+    "semantic_admission": 0
+  },
+  "quality_input_preparation": {
+    "root": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-quality-inputs-envelope-v1",
+    "manifest_sha256": "32d72acc36d082863f5bf7052cfdadb8491deec70b5ed24f0c530593abc42e0f",
+    "sources": 128,
+    "panels": 16,
+    "requests": 2048,
+    "decisions": 15360,
+    "full_quality_API_sent": false,
+    "semantic_admission": 0,
+    "training_dispatch_allowed": false,
+    "verification": "docs/research/semantic-quality-inputs-envelope-check-v1.json",
+    "collector": "tools/jev/collect_semantic_quality_pass.py",
+    "status": "inputs_verified_prompt_model_not_semantically_accepted_no_dispatch"
+  },
+  "human_review_route": {
+    "root": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-quality-human-review-v1",
+    "manifest_sha256": "1cba1dc5971f4349d9ee458be1fced31850ed1793cf7e3b47ef07db03dadf2d8",
+    "sources": 128,
+    "panels": 16,
+    "requests": 2048,
+    "blank_decisions": 15360,
+    "reviewer_identity_unassigned": true,
+    "semantic_admission": 0,
+    "training_dispatch_allowed": false,
+    "verification": "docs/research/semantic-quality-human-review-check-v1.json",
+    "tool": "tools/jev/prepare_human_semantic_review.py",
+    "status": "material_complete_reviewer_unassigned_no_real_decisions",
+    "independent_review_certified": false,
+    "model_proposer_still_unaccepted": true
+  }
+}

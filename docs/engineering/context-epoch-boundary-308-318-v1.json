@@ -1,0 +1,230 @@
+{
+  "passed": true,
+  "source_transport": ".local/decision-objective-research/context-epoch-boundary-308-318-v1/transport.json",
+  "source_transport_sha256": "25e3fb0b9084e57aa99b4745048124b45975708875f09ab3cca7d36f0afb6b83",
+  "steps": {
+    "308": {
+      "summaries": {
+        "behavior": {
+          "queries": 128,
+          "decision": {
+            "top1_correct": 0.859375,
+            "exact_set": 0.8046875,
+            "set_f1": 0.8411458333333334,
+            "selected_count": 1.0390625,
+            "binary_nll": 0.03757962320070667,
+            "brier": 0.00507474119735691
+          },
+          "signal": {
+            "expected_set_f1": 0.8428555079313595,
+            "reward_variance": 0.0025182877135562862,
+            "group_all_equal_reward_probability": 0.9418303947004126,
+            "group_positive_reward_probability": 0.8762741172558056,
+            "exact_correct_set_probability": 0.8089941057643398,
+            "empty_set_probability": 0.033024248106629336,
+            "multiple_selection_probability": 0.06550326527538254,
+            "expected_selected_count": 1.03257893222938,
+            "gold_probability": 0.8598075868483299
+          }
+        },
+        "reference": {
+          "queries": 128,
+          "decision": {
+            "top1_correct": 0.859375,
+            "exact_set": 0.7578125,
+            "set_f1": 0.7682291666666667,
+            "selected_count": 0.8203125,
+            "binary_nll": 0.0136779081416044,
+            "brier": 0.0035613788821792637
+          },
+          "signal": {
+            "expected_set_f1": 0.6909885850401719,
+            "reward_variance": 0.0979600822888358,
+            "group_all_equal_reward_probability": 0.13547689805135738,
+            "group_positive_reward_probability": 0.9578801431162689,
+            "exact_correct_set_probability": 0.6186876583389456,
+            "empty_set_probability": 0.1833692565529972,
+            "multiple_selection_probability": 0.12121040377061332,
+            "expected_selected_count": 0.9483795165146756,
+            "gold_probability": 0.7295564607557026
+          }
+        }
+      },
+      "paired_changes": {
+        "reference_True_behavior_True": 91,
+        "reference_False_behavior_False": 19,
+        "reference_True_behavior_False": 6,
+        "reference_False_behavior_True": 12
+      },
+      "groups": {
+        "queries": 128,
+        "verified_action_hashes": 128,
+        "reward_groups": {
+          "all_one": 100,
+          "all_zero": 16,
+          "constant_partial": 4,
+          "varying": 8
+        },
+        "varying_group_fraction": 0.0625,
+        "sampled_actions": 2048,
+        "sampled_exact_sets": 1656,
+        "sampled_positive_rewards": 1760,
+        "mean_sampled_reward": 0.8424479182285722,
+        "identical_action_groups": 118,
+        "threshold_correctness_strata": {
+          "True": {
+            "queries": 103,
+            "reward_groups": {
+              "all_one": 100,
+              "varying": 3
+            }
+          },
+          "False": {
+            "queries": 25,
+            "reward_groups": {
+              "all_zero": 16,
+              "constant_partial": 4,
+              "varying": 5
+            }
+          }
+        }
+      },
+      "timing": {
+        "total_seconds": {
+          "mean": 100.56668096748763,
+          "minimum": 100.5621878199745,
+          "maximum": 100.57131855998887
+        },
+        "preparation_seconds": {
+          "mean": 74.60045776249899,
+          "minimum": 74.48273481000797,
+          "maximum": 74.66077783997753
+        },
+        "actor_seconds": {
+          "mean": 22.994618997501675,
+          "minimum": 22.931748300004983,
+          "maximum": 23.11835517999134
+        }
+      },
+      "rank0_rollout": {
+        "reference_misses": 128,
+        "reference_seconds": 33.36145110000507,
+        "total_seconds": 67.04880915000103
+      },
+      "input_cache_hits": 128,
+      "real_queries": 128
+    },
+    "318": {
+      "summaries": {
+        "behavior": {
+          "queries": 128,
+          "decision": {
+            "top1_correct": 0.8359375,
+            "exact_set": 0.796875,
+            "set_f1": 0.8372395833333335,
+            "selected_count": 1.09375,
+            "binary_nll": 0.052540598020325104,
+            "brier": 0.005966043335995925
+          },
+          "signal": {
+            "expected_set_f1": 0.8381295361664124,
+            "reward_variance": 0.0011767406131417179,
+            "group_all_equal_reward_probability": 0.9580550929763986,
+            "group_positive_reward_probability": 0.8650911061187678,
+            "exact_correct_set_probability": 0.7993820333925336,
+            "empty_set_probability": 0.010883828637036167,
+            "multiple_selection_probability": 0.09114737233984321,
+            "expected_selected_count": 1.0866924298819247,
+            "gold_probability": 0.8591098437855778
+          }
+        },
+        "reference": {
+          "queries": 128,
+          "decision": {
+            "top1_correct": 0.8046875,
+            "exact_set": 0.75,
+            "set_f1": 0.765625,
+            "selected_count": 0.859375,
+            "binary_nll": 0.017798468803110798,
+            "brier": 0.004486341857879274
+          },
+          "signal": {
+            "expected_set_f1": 0.6750038572627148,
+            "reward_variance": 0.09399014898324401,
+            "group_all_equal_reward_probability": 0.18755702317372386,
+            "group_positive_reward_probability": 0.927907757928765,
+            "exact_correct_set_probability": 0.6135064064777027,
+            "empty_set_probability": 0.1699105462849944,
+            "multiple_selection_probability": 0.11155883451973735,
+            "expected_selected_count": 0.9508332441208776,
+            "gold_probability": 0.7074815072485308
+          }
+        }
+      },
+      "paired_changes": {
+        "reference_False_behavior_False": 22,
+        "reference_True_behavior_True": 92,
+        "reference_False_behavior_True": 10,
+        "reference_True_behavior_False": 4
+      },
+      "groups": {
+        "queries": 128,
+        "verified_action_hashes": 128,
+        "reward_groups": {
+          "varying": 4,
+          "all_one": 101,
+          "all_zero": 18,
+          "constant_partial": 5
+        },
+        "varying_group_fraction": 0.03125,
+        "sampled_actions": 2048,
+        "sampled_exact_sets": 1636,
+        "sampled_positive_rewards": 1758,
+        "mean_sampled_reward": 0.8374837255105376,
+        "identical_action_groups": 122,
+        "threshold_correctness_strata": {
+          "True": {
+            "queries": 102,
+            "reward_groups": {
+              "all_one": 101,
+              "varying": 1
+            }
+          },
+          "False": {
+            "queries": 26,
+            "reward_groups": {
+              "varying": 3,
+              "all_zero": 18,
+              "constant_partial": 5
+            }
+          }
+        }
+      },
+      "timing": {
+        "total_seconds": {
+          "mean": 66.73855663499853,
+          "minimum": 66.72701672001858,
+          "maximum": 66.74345603998518
+        },
+        "preparation_seconds": {
+          "mean": 40.80198532749637,
+          "minimum": 40.71253494001576,
+          "maximum": 40.844412559992634
+        },
+        "actor_seconds": {
+          "mean": 22.985193164997327,
+          "minimum": 22.950642559997505,
+          "maximum": 23.063035909988685
+        }
+      },
+      "rank0_rollout": {
+        "reference_misses": 0,
+        "reference_seconds": 6.699992809444666e-07,
+        "total_seconds": 33.19100558999344
+      },
+      "input_cache_hits": 128,
+      "real_queries": 128
+    }
+  },
+  "scope": "Two distinct TRAIN batches. No causal efficacy comparison, complete selection gain, or steady-state throughput claim."
+}

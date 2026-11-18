@@ -1,0 +1,118 @@
+{
+  "status": "arithmetic_affected_paths_accepted_no_dispatch",
+  "binary_policy_arithmetic": "context-bernoulli-probability-cpu-log-v2",
+  "source_policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+  "bindings": {
+    "continuous": {
+      "report": {
+        "path": "docs/engineering/context-arithmetic-grpo-prefix-v2.json",
+        "sha256": "339b8c7a8c8c2d5e9ae8063d1066b1432814729650f6c4897e79913d6ad74e2e"
+      },
+      "transport": {
+        "path": ".local/decision-objective-research/context-arithmetic-grpo-prefix-v2-collected.transport.json",
+        "sha256": "bdb241208be5490620bf1a63aafa265ee71a0e4909cb46455b1f85a27163b7b0"
+      },
+      "launch": {
+        "path": ".local/decision-objective-research/context-arithmetic-grpo-prefix-v2-launch.json",
+        "sha256": "daf85cea028e100c4469496083332f7c617a83ee4bafade4a5509f3b3ea8e31e"
+      }
+    },
+    "fresh_replay": {
+      "report": {
+        "path": "docs/engineering/context-arithmetic-grpo-replay-v2.json",
+        "sha256": "557bfc34bad0f076890468dd2d7d516a34270b18d4f68b81779ead294d03865f"
+      },
+      "transport": {
+        "path": ".local/decision-objective-research/context-arithmetic-grpo-replay-v2-collected.transport.json",
+        "sha256": "8dbb736f73f14a7cf85049a86dcac82ea5e9725498c87cc7b94799c2fadefc17"
+      },
+      "launch": {
+        "path": ".local/decision-objective-research/context-arithmetic-grpo-replay-v2-launch.json",
+        "sha256": "e088e5166d436eadb1d1cc4367dcb90660fad7a0463b0e1609f2445c43c9485f"
+      }
+    }
+  },
+  "replay": {
+    "step": 2,
+    "rank_shards": 4,
+    "exact_masters": true,
+    "exact_adam": true,
+    "exact_samples": true,
+    "exact_execution": true,
+    "exact_joint_policy": true
+  },
+  "reused_checkpoint_frequency": {
+    "specification": ".local/decision-objective-research/context-baseline-sequence-v2-acceptance-spec.json",
+    "specification_sha256": "fbbef112c46f92a1ece3951f2e21c78e0141bb80bcd83cde7e89732c7166faeb",
+    "evidence": {
+      "status": "accepted_runtime_evidence_only_no_dispatch",
+      "containers": {
+        "continuous": "2decd427c8e1da9906c936db59378384b2fc065e53444dd596715382837b2931",
+        "fresh_replay": "6c09480f41a1c2461e965f310e370f620f91278885966905edba15d3182f93a9",
+        "checkpoint_frequency": "3d877a4c4c75bebc64bb6a6fce2d21dea34a4ce1d16de3a78739a3a115a8969b"
+      },
+      "bindings": {
+        "continuous": {
+          "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-online-shared-npu-v4-collected",
+          "report": "/home/xingchao/workspace/multimodal-jev/docs/engineering/context-online-shared-npu-v4.json",
+          "report_sha256": "170d427120b84bb92102f29035f0fd7bda85c818df29c751bde39c0b2942fbe5",
+          "launch": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-online-shared-npu-v4-launch.json",
+          "launch_sha256": "bc6c46d23d8e242de31ba8ce00f302752bae42f48ed59f26783f1f3c8a7dc48d"
+        },
+        "fresh_replay": {
+          "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-online-shared-resume-npu-v4-collected",
+          "report": "/home/xingchao/workspace/multimodal-jev/docs/engineering/context-online-shared-resume-npu-v4.json",
+          "report_sha256": "c9f589d0c75b5c2d963efc1fe0419b38b1588dab00a2f513f9411a6850e0940c",
+          "launch": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-online-shared-resume-npu-v4-launch.json",
+          "launch_sha256": "37b3fe781d7aae83e20529e5caaa6b81a367887fda2bec0381bc0ebd17257f14"
+        },
+        "checkpoint_frequency": {
+          "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-checkpoint-shared-npu-v3-collected",
+          "report": "/home/xingchao/workspace/multimodal-jev/docs/engineering/context-checkpoint-shared-npu-v3.json",
+          "report_sha256": "157f11d26419eeb7b901a96a5a1bacc8cfb3afd606bdae07efbe3bdc8b3f4457",
+          "launch": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-checkpoint-shared-npu-v3-launch.json",
+          "launch_sha256": "58ad1808385d022a7ee81df86f2fed6a2749354fbfc119cae3f6ca51de1db938"
+        }
+      },
+      "candidate_manifest_sha256": "43dc4bbf4667d3dd8ef853de95a60504455da074f42f97f63a1983e383be7ec0",
+      "replay": {
+        "step": 2,
+        "rank_shards": 4,
+        "exact_masters": true,
+        "exact_adam": true,
+        "exact_samples": true,
+        "exact_execution": true,
+        "exact_joint_policy": true
+      },
+      "checkpoint_comparison": {
+        "passed": true,
+        "updates": 2,
+        "exact_samples": true,
+        "exact_per_step_execution": true,
+        "exact_final_masters_and_adam": true,
+        "rank_shards": 4,
+        "scope": "Matched checkpoint-frequency comparison only; not fresh-process replay or efficacy"
+      },
+      "lifecycle": {
+        "passed": true,
+        "start_update": 0,
+        "stop_update": 2,
+        "published_updates": 2,
+        "recovery_steps": [
+          2
+        ],
+        "policy_ids": [
+          "bd2461ce6b16b48999a48f1ebd28a557e5189f560910b375299cb46d757bd6b2",
+          "040296241d399125bcab13eed35e157d74632d1f9397fb594f399e48a0c22730"
+        ],
+        "training_dispatch_allowed": false,
+        "scope": "Collected publication/checkpoint bindings only; tensor, Adam, sampling, terminal-state and NPU acceptance remain independent"
+      },
+      "scope": "Existing independent NPU collection rebound; fresh replay and checkpoint comparisons rerun. Full Stage1 source, formal packaging and efficacy remain separate."
+    },
+    "qualification": "Earlier-policy NPU interval comparison reused only for byte-identical checkpoint/export logic; not same-policy numerical trajectory evidence."
+  },
+  "unchanged_checkpoint_trainer_sha256": "941b9c89f8b61d07c11f452a29923002c40ca49280c1b00a27a9961b8b147699",
+  "candidate_trainer_sha256": "4a3a93d415971d1752ca8d370ab28a6b71c672264bc22afc42f7e6dc8453591d",
+  "scope": "Affected continuous/backward/refresh and fresh replay re-audited; old interval lifecycle evidence reused with exact transform check. Formal publication and efficacy separate."
+}

@@ -1,0 +1,13 @@
+{
+  "status": "cpu_verified_no_actual_rl_comparison",
+  "tests": 38,
+  "seconds": 2.11,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_curve_comparison.py tests/test_context_selection_curve.py",
+  "sources": {
+    "tools/jev/compare_context_rl_curves.py": "be04a9e8df2ed64f75feb0694d7102ac6567ddad5f9ac975843139213d926c4f",
+    "tests/test_context_rl_curve_comparison.py": "28a83ac64fa9d4ae0383026fc34421f810df6d51507d153a5fee366be262af85"
+  },
+  "scope": "26 new comparison and 12 existing curve tests. Real file/metric/time validation; training and model auditors substituted in integration fixtures. No actual full RL results.",
+  "queue_script": ".local/decision-objective-research/continue_context_baseline_comparison_v1.py",
+  "pinned_files": 469
+}

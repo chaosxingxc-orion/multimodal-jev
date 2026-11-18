@@ -1,0 +1,32 @@
+{
+  "schema": "context-attribute-parity-independent-auditor-readiness-v1",
+  "observed_unix": 1794711863.7903998,
+  "status": "local_auditor_ready_no_actual_npu_result",
+  "tests": {
+    "passed": 12,
+    "failed": 0,
+    "scope": "Actual sealed package, CPU prepared inputs, CPU evidence; model probabilities, container inspect and transport are synthetic"
+  },
+  "files": {
+    "tools/reports/audit_context_attribute_parity_npu.py": "51e0b753698c7033e59cc4b7c69848c8f715bddf02fd9033f69bec1450e38798",
+    "tests/test_context_attribute_parity_audit.py": "0b5673d7799956ec76e55bd6f10b447440f775114087cb47eced495910371cea",
+    "tools/reports/launch_context_attribute_parity_npu_v2.py": "79a9e262cd904d748adabfc5e81b041057cda3595e756f8846398569b3b211fa",
+    "tools/reports/probe_context_attribute_parity_v2.py": "33e15b6be4bb6e2e8d9628d52e611eaa22411b3280b126e132e97bbe6fd5f98f",
+    "docs/research/context-attribute-parity-prepare-fixed-image-cpu-v4.json": "1c829625d8a5aff0da5c5978b96ffbad307c9a9e30f8eaf5b51a440a78f8c9a6"
+  },
+  "unchanged_driver_pins": {
+    "context-rl-grpo-arithmetic-v2-driver.json": 1078,
+    "context-attribute-population-cpu-v1-driver-pins.json": 1073,
+    "context-attribute-selection-processor-cpu-v1-driver-pins.json": 1092
+  },
+  "checks": [
+    "exact_image_command_env_device_readonly_mounts",
+    "successful_terminal_same_package_hash",
+    "collected_file_hashes_and_configuration",
+    "CPU_evidence_terminal_and_payload_source_identity",
+    "six_complete_requests_bound_to_pinned_audio_catalog",
+    "both_backends_bound_to_CPU_token_feature_mask_position_hashes",
+    "recomputed_exact_probabilities_and_no_saturation"
+  ],
+  "scope": "Offline audit implementation; no new NPU run, training admission or efficacy evidence"
+}

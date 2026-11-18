@@ -1,0 +1,155 @@
+{
+  "schema": "jev-replica-training-design-v1",
+  "design": "formal_source_dp6_dual_reward",
+  "decision": "2026-11-17 user priority: run the dual-reward design first; full clean-SLURP two-epoch training on the validated configuration-driven replica chain",
+  "supersedes": "configs/experiments/context-replica-training-dp6-v1.json (design/topology; unchanged, still the source of the batch and curve declaration)",
+  "algorithm": {
+    "primary": "dual_credit_grpo_floor_clipped_v1",
+    "arm": "joint",
+    "source_config": "configs/experiments/context-dual-credit-v1.json",
+    "unchanged": [
+      "rewards",
+      "advantages",
+      "clip_ratio",
+      "auxiliary_coefficients",
+      "kl_definition",
+      "reference_policy"
+    ]
+  },
+  "topology": {
+    "world_size": 6,
+    "physical_devices_train": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "physical_devices_inference": [
+      6,
+      7
+    ],
+    "batch_config": {
+      "training_devices": 6,
+      "tensor_parallel": 1,
+      "pipeline_parallel": 1,
+      "per_dp_replica_batch": 64,
+      "microbatch": 8,
+      "inference_instances": 2,
+      "inference_batch_queries": 48,
+      "source_queries": 40513,
+      "epochs": 2,
+      "efficiency_steps": 100
+    },
+    "global_batch": 384,
+    "updates_per_epoch": 106,
+    "total_updates": 212,
+    "real_exposures": 81026,
+    "tail_per_epoch": {
+      "real_slots": 193,
+      "zero_weight_slots": 191,
+      "loss_denominator": 193
+    },
+    "rollout_queries": 32,
+    "macro_queries": 384
+  },
+  "training": {
+    "experiment_kind": "formal_source",
+    "start_update": 0,
+    "stop_update": 212,
+    "engineering_prefix": false,
+    "training_dispatch_allowed_in_package": true,
+    "optimizer_reset": true,
+    "execution_dtype": "bfloat16",
+    "optimizer_dtype": "float32",
+    "learning_rate": 0.0001,
+    "seed": 317,
+    "policy_export": "every_update_before_dual_replica_activation_ack",
+    "checkpoint_state": "only_at_preregistered_recovery_steps"
+  },
+  "evaluation": {
+    "evaluation_steps": [
+      0,
+      21,
+      42,
+      64,
+      85,
+      106,
+      127,
+      148,
+      170,
+      191,
+      212
+    ],
+    "recovery_checkpoint_steps": [
+      21,
+      42,
+      64,
+      85,
+      106,
+      127,
+      148,
+      170,
+      191,
+      212
+    ],
+    "selection_rule": "highest_set_f1_then_lowest_binary_nll_then_earliest_step",
+    "selection_population": "SLURP clean selection 9226",
+    "selection_not_for_training": true,
+    "target_tuning_allowed": false,
+    "metrics": [
+      "set_f1",
+      "top1_accuracy",
+      "pairwise_ranking_accuracy",
+      "exact_set",
+      "false_accept",
+      "false_reject",
+      "binary_nll",
+      "brier",
+      "positive_negative_scores",
+      "risk_coverage"
+    ],
+    "success": "fixed_endpoint_set_f1_delta_lower95_gt0_and_top1_delta_lower95_ge0_and_NLL_Brier_delta_upper95_le0",
+    "interval": "paired_source_group_bootstrap_2000_seed317_pointwise",
+    "curve_reporting": "complete 11-point curve and degradation; no single-step or last-step substitution",
+    "test_and_transfer": "frozen selected policy; no target tuning"
+  },
+  "engineering": {
+    "module": "tools/reports/context_replica_formal_candidate.py",
+    "packager": "tools/reports/prepare_context_replica_training_candidate.py",
+    "packager_template": "configs/portable/operations/context-replica-training-prepare-formal.json",
+    "operations": "tools/reports/context_replica_training_operations.py",
+    "auditor": "tools/reports/audit_context_replica_training.py",
+    "collector": "tools/jev/collect_context_replica_training.py",
+    "package_remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/context-replica-training-dp6-v9",
+    "attempt_id": "dp6-replica-attempt-09",
+    "note": "new versioned package (development v0.0.3); v6 acceptance package and all frozen pins stay unchanged",
+    "prepared_manifest_sha256": "e36040b27285bbfcd20fbfd00d3d257471bbc2143dfcb7e52af7e14c5f375318",
+    "cpu_check": "docs/engineering/context-replica-packaging-fixed-image-cpu-v9.json (53/53)",
+    "revisions": [
+      "v7/attempt-07 (2026-11-17T06:11Z): generated trainer still read the removed checkpoint_interval field -> KeyError, exit 1, zero updates; evidence kept in docs/engineering/context-replica-training-v1.md section 6",
+      "v8/attempt-08 (2026-11-17T06:15Z): generated trainer still enforced the engineering-only guard -> ValueError, exit 1, zero updates; same evidence table",
+      "v9/attempt-09 (2026-11-17T06:27Z): both root causes replaced by formal-contract guards; 53/53 fixed-image CPU tests; dispatched by the user-directed priority to run the dual-reward design first"
+    ]
+  },
+  "gates": {
+    "covered_by_v6_acceptance": [
+      "fixed-image import/check",
+      "real-audio inference passes across every declared service",
+      "two NPU updates with global reduction and tail denominator",
+      "nonzero adapter/head activation on every service",
+      "training/inference card isolation"
+    ],
+    "outstanding": [
+      "fresh-process resume from a committed checkpoint (separate versioned candidate)"
+    ],
+    "dispatch_rule": "full dispatch only after package-local validate, live NPU/storage verification and explicit finite_training_dispatch_allowed; one container, no retry"
+  },
+  "status": {
+    "phase": "formal_run_dispatched_pending_collection_and_audit",
+    "note": "dispatched 2026-11-17T06:27Z under explicit user direction; no efficacy claim until the full 212-update run is collected and independently audited"
+  },
+  "training_dispatch_allowed": true,
+  "dispatch_authorization": "user directive 2026-11-17: run the dual-reward design training first; finite dispatch flag set in .local/config/replica-training-operations-dp6-v9.json (not committed)"
+}

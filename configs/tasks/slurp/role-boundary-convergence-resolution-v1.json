@@ -1,0 +1,89 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "non_genre_descriptor_and_domestic_control_v1",
+  "status": "selected_task_design_rule_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "music_descriptor",
+    "place_name"
+  ],
+  "definitions": {
+    "music_descriptor": "An expressed non-genre musical property, context or selection criterion, such as mood, tempo, era, rating, listening history or use context. A genre/style identity alone, or a bare work, creator, service or playback-operation identity, does not supply this additional role. Apply request-relevant scope.",
+    "place_name": "An identifying geographic location, event venue or travel/delivery destination reference. A domestic room or surface used only to locate or scope household device control or cleaning does not supply this role. A domestic place independently serving as an event venue or destination may qualify. Apply request-relevant scope."
+  },
+  "per_type_rules": {
+    "music_descriptor": [
+      "Genre/style identity and a descriptive property are separate task roles. A genre used to select songs does not automatically satisfy the non-genre descriptor predicate.",
+      "Quality/rating, mood, tempo, era, history-relative selection, topic or use context can support music_descriptor when explicitly attached to music. A named artist, work, platform or playback mode alone cannot.",
+      "A phrase may express both roles: soft jazz supplies a softness descriptor and jazz genre; best country songs of the nineties supplies quality/era plus genre. A genre word need not be copied into the descriptor label.",
+      "Classify by the expressed semantic role rather than a native label or rigid dictionary. Terms that may be genre names or descriptive properties without enough context remain unavailable. Do not resolve rating attachment or bare classic using label metadata."
+    ],
+    "place_name": [
+      "Domestic room/area identity used solely to select household devices, control an ambient setting or delimit cleaning is house_place evidence, not an additional place_name role.",
+      "A domestic location can independently be a destination or venue for a represented event; such a role may support place_name as well as house_place. No global exclusion or house_place-implies-place_name rule applies.",
+      "Geographic references and non-domestic event venues qualify without a proper name when the location reference is identifying. Do not infer an address or geographic location from a company, device or room name alone.",
+      "Whether listening/broadcast location supplies an event venue versus merely a household device selector must be supported by the utterance. Insufficient context remains unavailable."
+    ]
+  },
+  "evidence": {
+    "music": {
+      "regex": "\\b(genre|jazz|blues?|folk|country|hip hop|rock|pop|classical|reggae)\\b",
+      "native_types_union": [
+        "music_genre",
+        "music_descriptor"
+      ],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/music-sources.jsonl",
+      "sha256": "6a2768d3c77cd86c4b2dbbb5a964996b482dffaacb80076ade811a6f18684251",
+      "sources": 246,
+      "recordings": 1080
+    },
+    "domestic": {
+      "regex": "\\b(bed\\s*room|living\\s*room|kitchen|bathroom|floor|room)\\b",
+      "native_types_union": [
+        "house_place"
+      ],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/domestic-sources.jsonl",
+      "sha256": "951821f5dcbe23f1d79e98bc48406990c5a77803b14eec701d8e5457ea8f11d9",
+      "sources": 177,
+      "recordings": 800
+    },
+    "report": {
+      "regex": "^(i|we|he|she|they) (went|was|were|am|are|have|had|feel|like|love|hate)\\b",
+      "native_types_union": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/report-sources.jsonl",
+      "sha256": "05f6cb8a7c13b7cad51810f07845081f04d77fac79d733fe80bce0e5d3809c83",
+      "sources": 78,
+      "recordings": 341
+    }
+  },
+  "reading": "Complete references in three diagnostic cohorts read, including every native music_genre/music_descriptor/house_place learning source. Cohorts are evidence retrieval, not rules that assign labels.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      154,
+      161,
+      165,
+      166,
+      168,
+      169,
+      177,
+      178,
+      179,
+      181,
+      183
+    ],
+    "interpretation": "Upstream distinguishes house control areas and musical genre/property roles, but does not prove semantic exclusivity. Explicit project definitions below are design choices, not recovered official gold."
+  },
+  "deferred_scope": {
+    "issue": "standalone_report_scope",
+    "source_id": "6203",
+    "decision": "remain_unavailable_no_scope_change",
+    "reason": "Upstream conversation and preference acts exist, but admitting every standalone report would change all55 request-scope predicates. Complete dialogue-act and implicit-request policy is needed before a global revision; do not infer intent from native labels."
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v7.json",
+    "previous_sha256": "e72139e9d9de803547dd6616b5e56bd2ef36eb2456579ef46d74f918485c385d",
+    "historical_supervision_automatically_migrated": false
+  }
+}

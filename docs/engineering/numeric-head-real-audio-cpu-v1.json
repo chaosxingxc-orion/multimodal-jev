@@ -1,0 +1,744 @@
+{
+  "container_id": "dccdfb8ab8ea50a0ed62d91ab7d5bae0547a774b400305b671e377cfacb28b3e",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T07:52:27.16146749Z",
+    "FinishedAt": "2026-11-14T08:40:23.47389055Z"
+  },
+  "physical_devices": [],
+  "remote_pins": {
+    "files": 328,
+    "mismatches": []
+  },
+  "collection_sha256": "e41517e2d0f794a5f94c552d9dce8ddc26bab8ca5af1bbf0c6ed65302dbdca69",
+  "result": {
+    "schema": "numeric-head-real-audio-cpu-v1",
+    "records": [
+      {
+        "audio_id": "slurp:audio-1497270079.flac",
+        "audio_sha256": "3eeea30f9ab5aec4159c79dbb3195b481cd55099584ce02cbe45ac9ca6aa8e9b",
+        "audio_processing": {
+          "config": {
+            "preemphasis": 0.0,
+            "trim_threshold_dbfs": null,
+            "trim_frame_ms": 20.0,
+            "trim_margin_ms": 100.0,
+            "target_rms_dbfs": null,
+            "max_gain_db": 12.0,
+            "peak_limit": 0.99,
+            "speed_factor": 1.0,
+            "version": "jev-waveform-v1"
+          },
+          "sample_rate": 16000,
+          "input_samples": 41979,
+          "output_samples": 41979,
+          "input_waveform_sha256": "acfc84134fa645c92f996f86264573c38a06b38804974cad09dd3af8d27f8a71",
+          "output_waveform_sha256": "acfc84134fa645c92f996f86264573c38a06b38804974cad09dd3af8d27f8a71",
+          "retained_original_interval": [
+            0,
+            41979
+          ],
+          "applied_gain": 1.0,
+          "speed_changes_pitch": false,
+          "internal_silence_removed": false
+        },
+        "request": {
+          "audio": "/mnt/cephfs/xingchao/datasets/slurp/slurp_real/audio-1497270079.flac",
+          "questions": [
+            {
+              "id": "applicable-route-00",
+              "schema": {
+                "id": "applicable-route-00",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-00 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-01",
+              "schema": {
+                "id": "applicable-route-01",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-01 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-02",
+              "schema": {
+                "id": "applicable-route-02",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-02 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-03",
+              "schema": {
+                "id": "applicable-route-03",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-03 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-04",
+              "schema": {
+                "id": "applicable-route-04",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-04 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-05",
+              "schema": {
+                "id": "applicable-route-05",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-05 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "final",
+              "schema": {
+                "id": "harness-route-final-v1",
+                "decision_type": "choice",
+                "question": "Which supplied route can receive this request under the routing policy?",
+                "candidates": [
+                  {
+                    "id": "route-00",
+                    "description": "Select route route-00 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-01",
+                    "description": "Select route route-01 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-02",
+                    "description": "Select route route-02 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-03",
+                    "description": "Select route route-03 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-04",
+                    "description": "Select route route-04 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-05",
+                    "description": "Select route route-05 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "no_route",
+                    "description": "No enabled route accepts the event under the supplied routing policy."
+                  }
+                ],
+                "allow_unknown": false,
+                "levels": []
+              }
+            }
+          ],
+          "final_id": "final",
+          "requirements": [
+            "Use the complete spoken request as evidence for every supplied question.",
+            "Use the supplied candidate definitions; do not assume an unspoken value or role.",
+            "Fill the provided typed spans in one forward pass without generating text.",
+            "Interpret the audio using the supplied exclusive event ontology and its annotation policy. A route is applicable exactly when enabled and its accepts list contains that event. Several routes may be applicable. Select any applicable route; select no_route only if none applies. no_route does not mean unintelligible audio or failed execution.",
+            "{\"caller_routing_policy\":{\"fallback\":\"no_route\",\"family\":\"partition6\",\"routes\":[{\"accepts\":[\"audio_volume_down\",\"calendar_remove\",\"cooking_recipe\",\"email_query\",\"iot_hue_lightchange\",\"iot_wemo_off\",\"qa_currency\",\"social_post\",\"takeaway_query\",\"transport_traffic\"],\"enabled\":true,\"id\":\"route-00\"},{\"accepts\":[\"audio_volume_mute\",\"cooking_query\",\"datetime_convert\",\"email_sendemail\",\"general_quirky\",\"iot_hue_lightdim\",\"iot_hue_lighton\",\"play_music\",\"qa_definition\",\"qa_stock\"],\"enabled\":true,\"id\":\"route-01\"},{\"accepts\":[\"alarm_query\",\"alarm_set\",\"calendar_query\",\"general_greet\",\"music_dislikeness\",\"music_likeness\",\"play_audiobook\",\"play_podcasts\",\"recommendation_movies\",\"transport_ticket\"],\"enabled\":true,\"id\":\"route-02\"},{\"accepts\":[\"audio_volume_up\",\"calendar_set\",\"general_joke\",\"iot_hue_lightoff\",\"lists_remove\",\"news_query\",\"play_game\",\"qa_maths\",\"transport_query\",\"transport_taxi\"],\"enabled\":true,\"id\":\"route-03\"},{\"accepts\":[\"audio_volume_other\",\"datetime_query\",\"iot_hue_lightup\",\"lists_query\",\"music_query\",\"music_settings\",\"qa_factoid\",\"recommendation_events\",\"social_query\",\"takeaway_order\"],\"enabled\":true,\"id\":\"route-04\"},{\"accepts\":[\"alarm_remove\",\"email_addcontact\",\"email_querycontact\",\"iot_cleaning\",\"iot_coffee\",\"iot_wemo_on\",\"lists_createoradd\",\"play_radio\",\"recommendation_locations\",\"weather_query\"],\"enabled\":true,\"id\":\"route-05\"}],\"seed\":317},\"event_ontology\":{\"allow_unknown\":false,\"candidates\":[{\"description\":\"Scenario: alarm; action: query.\",\"id\":\"alarm_query\"},{\"description\":\"Scenario: alarm; action: remove.\",\"id\":\"alarm_remove\"},{\"description\":\"Scenario: alarm; action: set.\",\"id\":\"alarm_set\"},{\"description\":\"Scenario: audio; action: volume_down.\",\"id\":\"audio_volume_down\"},{\"description\":\"Scenario: audio; action: volume_mute.\",\"id\":\"audio_volume_mute\"},{\"description\":\"Scenario: audio; action: volume_other.\",\"id\":\"audio_volume_other\"},{\"description\":\"Scenario: audio; action: volume_up.\",\"id\":\"audio_volume_up\"},{\"description\":\"Scenario: calendar; action: query.\",\"id\":\"calendar_query\"},{\"description\":\"Scenario: calendar; action: remove.\",\"id\":\"calendar_remove\"},{\"description\":\"Scenario: calendar; action: set.\",\"id\":\"calendar_set\"},{\"description\":\"Scenario: cooking; action: query.\",\"id\":\"cooking_query\"},{\"description\":\"Scenario: cooking; action: recipe.\",\"id\":\"cooking_recipe\"},{\"description\":\"Scenario: datetime; action: convert.\",\"id\":\"datetime_convert\"},{\"description\":\"Scenario: datetime; action: query.\",\"id\":\"datetime_query\"},{\"description\":\"Scenario: email; action: addcontact.\",\"id\":\"email_addcontact\"},{\"description\":\"Scenario: email; action: query.\",\"id\":\"email_query\"},{\"description\":\"Scenario: email; action: querycontact.\",\"id\":\"email_querycontact\"},{\"description\":\"Scenario: email; action: sendemail.\",\"id\":\"email_sendemail\"},{\"description\":\"Scenario: general; action: greet.\",\"id\":\"general_greet\"},{\"description\":\"Scenario: general; action: joke.\",\"id\":\"general_joke\"},{\"description\":\"Scenario: general; action: quirky.\",\"id\":\"general_quirky\"},{\"description\":\"Scenario: iot; action: cleaning.\",\"id\":\"iot_cleaning\"},{\"description\":\"Scenario: iot; action: coffee.\",\"id\":\"iot_coffee\"},{\"description\":\"Scenario: iot; action: hue_lightchange.\",\"id\":\"iot_hue_lightchange\"},{\"description\":\"Scenario: iot; action: hue_lightdim.\",\"id\":\"iot_hue_lightdim\"},{\"description\":\"Scenario: iot; action: hue_lightoff.\",\"id\":\"iot_hue_lightoff\"},{\"description\":\"Scenario: iot; action: hue_lighton.\",\"id\":\"iot_hue_lighton\"},{\"description\":\"Scenario: iot; action: hue_lightup.\",\"id\":\"iot_hue_lightup\"},{\"description\":\"Scenario: iot; action: wemo_off.\",\"id\":\"iot_wemo_off\"},{\"description\":\"Scenario: iot; action: wemo_on.\",\"id\":\"iot_wemo_on\"},{\"description\":\"Scenario: lists; action: createoradd.\",\"id\":\"lists_createoradd\"},{\"description\":\"Scenario: lists; action: query.\",\"id\":\"lists_query\"},{\"description\":\"Scenario: lists; action: remove.\",\"id\":\"lists_remove\"},{\"description\":\"Scenario: music; action: dislikeness.\",\"id\":\"music_dislikeness\"},{\"description\":\"Scenario: music; action: likeness.\",\"id\":\"music_likeness\"},{\"description\":\"Scenario: music; action: query.\",\"id\":\"music_query\"},{\"description\":\"Scenario: music; action: settings.\",\"id\":\"music_settings\"},{\"description\":\"Scenario: news; action: query.\",\"id\":\"news_query\"},{\"description\":\"Scenario: play; action: audiobook.\",\"id\":\"play_audiobook\"},{\"description\":\"Scenario: play; action: game.\",\"id\":\"play_game\"},{\"description\":\"Scenario: play; action: music.\",\"id\":\"play_music\"},{\"description\":\"Scenario: play; action: podcasts.\",\"id\":\"play_podcasts\"},{\"description\":\"Scenario: play; action: radio.\",\"id\":\"play_radio\"},{\"description\":\"Scenario: qa; action: currency.\",\"id\":\"qa_currency\"},{\"description\":\"Scenario: qa; action: definition.\",\"id\":\"qa_definition\"},{\"description\":\"Scenario: qa; action: factoid.\",\"id\":\"qa_factoid\"},{\"description\":\"Scenario: qa; action: maths.\",\"id\":\"qa_maths\"},{\"description\":\"Scenario: qa; action: stock.\",\"id\":\"qa_stock\"},{\"description\":\"Scenario: recommendation; action: events.\",\"id\":\"recommendation_events\"},{\"description\":\"Scenario: recommendation; action: locations.\",\"id\":\"recommendation_locations\"},{\"description\":\"Scenario: recommendation; action: movies.\",\"id\":\"recommendation_movies\"},{\"description\":\"Scenario: social; action: post.\",\"id\":\"social_post\"},{\"description\":\"Scenario: social; action: query.\",\"id\":\"social_query\"},{\"description\":\"Scenario: takeaway; action: order.\",\"id\":\"takeaway_order\"},{\"description\":\"Scenario: takeaway; action: query.\",\"id\":\"takeaway_query\"},{\"description\":\"Scenario: transport; action: query.\",\"id\":\"transport_query\"},{\"description\":\"Scenario: transport; action: taxi.\",\"id\":\"transport_taxi\"},{\"description\":\"Scenario: transport; action: ticket.\",\"id\":\"transport_ticket\"},{\"description\":\"Scenario: transport; action: traffic.\",\"id\":\"transport_traffic\"},{\"description\":\"Scenario: weather; action: query.\",\"id\":\"weather_query\"}],\"decision_type\":\"choice\",\"id\":\"slurp-intent-60-v1\",\"levels\":[],\"question\":\"Which listed scenario and action best describe the spoken request?\"}}"
+          ],
+          "version": "harness-routing-context-candidate-v1"
+        },
+        "request_sha256": "96bb0fcfa83de1d2038839dd20dc53867ff8db03bb547e3f5b01990852b5ec1c",
+        "input_tokens": 2759,
+        "positions": [
+          [
+            1947,
+            2042,
+            2137,
+            2232,
+            2327,
+            2422,
+            2748
+          ]
+        ],
+        "candidate_mapping": [
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E",
+              "F",
+              "G"
+            ],
+            "token_ids": [
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38
+            ],
+            "values": [
+              "route-00",
+              "route-01",
+              "route-02",
+              "route-03",
+              "route-04",
+              "route-05",
+              "no_route"
+            ]
+          }
+        ],
+        "input_ids": {
+          "shape": [
+            1,
+            2759
+          ],
+          "dtype": "torch.int64",
+          "sha256": "5d50f332c00c84b2a8af279f0b9bfdd45ecc5fc8ea19a48e861e0cbdc8a40a4e"
+        },
+        "input_features": {
+          "shape": [
+            1,
+            128,
+            300
+          ],
+          "dtype": "torch.float32",
+          "sha256": "e7208846c82b02607632fb7cf0f39a8a6c4cf1f75b4a72c2a84bfa14c1e17265"
+        },
+        "hidden": {
+          "shape": [
+            1,
+            6,
+            1024
+          ],
+          "dtype": "torch.bfloat16",
+          "sha256": "e2c5ad417e613fc0f0bdb828c5c8c6c02f0933c92c947e61e734175c359121c6"
+        },
+        "seconds": 1298.5493931899982,
+        "readout_snapshot_sha256": "3f6e55c2a14d101cf259e46a30f54ca2421d6fbf73ee5c5e54d326f28836094e",
+        "probabilities": {
+          "native": [
+            [
+              0.020964240655303,
+              0.4843800961971283,
+              0.622459352016449,
+              0.562176525592804,
+              0.4843800961971283,
+              0.03963883966207504
+            ]
+          ],
+          "two_row": [
+            [
+              0.020964240655303,
+              0.4843800961971283,
+              0.622459352016449,
+              0.562176525592804,
+              0.4843800961971283,
+              0.03963883966207504
+            ]
+          ],
+          "scalar": [
+            [
+              0.021287351846694946,
+              0.4725617468357086,
+              0.6118459105491638,
+              0.5712883472442627,
+              0.4887103736400604,
+              0.03963883966207504
+            ]
+          ]
+        },
+        "comparisons": {
+          "two_row": {
+            "max_probability_error": 0.0,
+            "threshold_disagreements": 0
+          },
+          "scalar": {
+            "max_probability_error": 0.011818349361419678,
+            "threshold_disagreements": 0
+          }
+        },
+        "exact_scalar_restore": true
+      },
+      {
+        "audio_id": "slurp:audio-1497621480-headset.flac",
+        "audio_sha256": "d7b188b5ffb9f46ad8d1ff8d2d746453386b32732a560251954af37e3880b826",
+        "audio_processing": {
+          "config": {
+            "preemphasis": 0.0,
+            "trim_threshold_dbfs": null,
+            "trim_frame_ms": 20.0,
+            "trim_margin_ms": 100.0,
+            "target_rms_dbfs": null,
+            "max_gain_db": 12.0,
+            "peak_limit": 0.99,
+            "speed_factor": 1.0,
+            "version": "jev-waveform-v1"
+          },
+          "sample_rate": 16000,
+          "input_samples": 373760,
+          "output_samples": 373760,
+          "input_waveform_sha256": "9c4e86de3e0cc10c29938051cb61791a9e91445163e603e65651d3ee03bdba14",
+          "output_waveform_sha256": "9c4e86de3e0cc10c29938051cb61791a9e91445163e603e65651d3ee03bdba14",
+          "retained_original_interval": [
+            0,
+            373760
+          ],
+          "applied_gain": 1.0,
+          "speed_changes_pitch": false,
+          "internal_silence_removed": false
+        },
+        "request": {
+          "audio": "/mnt/cephfs/xingchao/datasets/slurp/slurp_real/audio-1497621480-headset.flac",
+          "questions": [
+            {
+              "id": "applicable-route-00",
+              "schema": {
+                "id": "applicable-route-00",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-00 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-01",
+              "schema": {
+                "id": "applicable-route-01",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-01 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-02",
+              "schema": {
+                "id": "applicable-route-02",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-02 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-03",
+              "schema": {
+                "id": "applicable-route-03",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-03 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-04",
+              "schema": {
+                "id": "applicable-route-04",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-04 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "applicable-route-05",
+              "schema": {
+                "id": "applicable-route-05",
+                "decision_type": "noul",
+                "question": "Under the supplied routing policy, is route-05 applicable to this spoken request?",
+                "candidates": [],
+                "allow_unknown": false,
+                "levels": []
+              }
+            },
+            {
+              "id": "final",
+              "schema": {
+                "id": "harness-route-final-v1",
+                "decision_type": "choice",
+                "question": "Which supplied route can receive this request under the routing policy?",
+                "candidates": [
+                  {
+                    "id": "route-00",
+                    "description": "Select route route-00 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-01",
+                    "description": "Select route route-01 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-02",
+                    "description": "Select route route-02 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-03",
+                    "description": "Select route route-03 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-04",
+                    "description": "Select route route-04 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "route-05",
+                    "description": "Select route route-05 under its supplied acceptance and availability rule."
+                  },
+                  {
+                    "id": "no_route",
+                    "description": "No enabled route accepts the event under the supplied routing policy."
+                  }
+                ],
+                "allow_unknown": false,
+                "levels": []
+              }
+            }
+          ],
+          "final_id": "final",
+          "requirements": [
+            "Use the complete spoken request as evidence for every supplied question.",
+            "Use the supplied candidate definitions; do not assume an unspoken value or role.",
+            "Fill the provided typed spans in one forward pass without generating text.",
+            "Interpret the audio using the supplied exclusive event ontology and its annotation policy. A route is applicable exactly when enabled and its accepts list contains that event. Several routes may be applicable. Select any applicable route; select no_route only if none applies. no_route does not mean unintelligible audio or failed execution.",
+            "{\"caller_routing_policy\":{\"fallback\":\"no_route\",\"family\":\"partition6\",\"routes\":[{\"accepts\":[\"audio_volume_down\",\"calendar_remove\",\"cooking_recipe\",\"email_query\",\"iot_hue_lightchange\",\"iot_wemo_off\",\"qa_currency\",\"social_post\",\"takeaway_query\",\"transport_traffic\"],\"enabled\":true,\"id\":\"route-00\"},{\"accepts\":[\"audio_volume_mute\",\"cooking_query\",\"datetime_convert\",\"email_sendemail\",\"general_quirky\",\"iot_hue_lightdim\",\"iot_hue_lighton\",\"play_music\",\"qa_definition\",\"qa_stock\"],\"enabled\":true,\"id\":\"route-01\"},{\"accepts\":[\"alarm_query\",\"alarm_set\",\"calendar_query\",\"general_greet\",\"music_dislikeness\",\"music_likeness\",\"play_audiobook\",\"play_podcasts\",\"recommendation_movies\",\"transport_ticket\"],\"enabled\":true,\"id\":\"route-02\"},{\"accepts\":[\"audio_volume_up\",\"calendar_set\",\"general_joke\",\"iot_hue_lightoff\",\"lists_remove\",\"news_query\",\"play_game\",\"qa_maths\",\"transport_query\",\"transport_taxi\"],\"enabled\":true,\"id\":\"route-03\"},{\"accepts\":[\"audio_volume_other\",\"datetime_query\",\"iot_hue_lightup\",\"lists_query\",\"music_query\",\"music_settings\",\"qa_factoid\",\"recommendation_events\",\"social_query\",\"takeaway_order\"],\"enabled\":true,\"id\":\"route-04\"},{\"accepts\":[\"alarm_remove\",\"email_addcontact\",\"email_querycontact\",\"iot_cleaning\",\"iot_coffee\",\"iot_wemo_on\",\"lists_createoradd\",\"play_radio\",\"recommendation_locations\",\"weather_query\"],\"enabled\":true,\"id\":\"route-05\"}],\"seed\":317},\"event_ontology\":{\"allow_unknown\":false,\"candidates\":[{\"description\":\"Scenario: alarm; action: query.\",\"id\":\"alarm_query\"},{\"description\":\"Scenario: alarm; action: remove.\",\"id\":\"alarm_remove\"},{\"description\":\"Scenario: alarm; action: set.\",\"id\":\"alarm_set\"},{\"description\":\"Scenario: audio; action: volume_down.\",\"id\":\"audio_volume_down\"},{\"description\":\"Scenario: audio; action: volume_mute.\",\"id\":\"audio_volume_mute\"},{\"description\":\"Scenario: audio; action: volume_other.\",\"id\":\"audio_volume_other\"},{\"description\":\"Scenario: audio; action: volume_up.\",\"id\":\"audio_volume_up\"},{\"description\":\"Scenario: calendar; action: query.\",\"id\":\"calendar_query\"},{\"description\":\"Scenario: calendar; action: remove.\",\"id\":\"calendar_remove\"},{\"description\":\"Scenario: calendar; action: set.\",\"id\":\"calendar_set\"},{\"description\":\"Scenario: cooking; action: query.\",\"id\":\"cooking_query\"},{\"description\":\"Scenario: cooking; action: recipe.\",\"id\":\"cooking_recipe\"},{\"description\":\"Scenario: datetime; action: convert.\",\"id\":\"datetime_convert\"},{\"description\":\"Scenario: datetime; action: query.\",\"id\":\"datetime_query\"},{\"description\":\"Scenario: email; action: addcontact.\",\"id\":\"email_addcontact\"},{\"description\":\"Scenario: email; action: query.\",\"id\":\"email_query\"},{\"description\":\"Scenario: email; action: querycontact.\",\"id\":\"email_querycontact\"},{\"description\":\"Scenario: email; action: sendemail.\",\"id\":\"email_sendemail\"},{\"description\":\"Scenario: general; action: greet.\",\"id\":\"general_greet\"},{\"description\":\"Scenario: general; action: joke.\",\"id\":\"general_joke\"},{\"description\":\"Scenario: general; action: quirky.\",\"id\":\"general_quirky\"},{\"description\":\"Scenario: iot; action: cleaning.\",\"id\":\"iot_cleaning\"},{\"description\":\"Scenario: iot; action: coffee.\",\"id\":\"iot_coffee\"},{\"description\":\"Scenario: iot; action: hue_lightchange.\",\"id\":\"iot_hue_lightchange\"},{\"description\":\"Scenario: iot; action: hue_lightdim.\",\"id\":\"iot_hue_lightdim\"},{\"description\":\"Scenario: iot; action: hue_lightoff.\",\"id\":\"iot_hue_lightoff\"},{\"description\":\"Scenario: iot; action: hue_lighton.\",\"id\":\"iot_hue_lighton\"},{\"description\":\"Scenario: iot; action: hue_lightup.\",\"id\":\"iot_hue_lightup\"},{\"description\":\"Scenario: iot; action: wemo_off.\",\"id\":\"iot_wemo_off\"},{\"description\":\"Scenario: iot; action: wemo_on.\",\"id\":\"iot_wemo_on\"},{\"description\":\"Scenario: lists; action: createoradd.\",\"id\":\"lists_createoradd\"},{\"description\":\"Scenario: lists; action: query.\",\"id\":\"lists_query\"},{\"description\":\"Scenario: lists; action: remove.\",\"id\":\"lists_remove\"},{\"description\":\"Scenario: music; action: dislikeness.\",\"id\":\"music_dislikeness\"},{\"description\":\"Scenario: music; action: likeness.\",\"id\":\"music_likeness\"},{\"description\":\"Scenario: music; action: query.\",\"id\":\"music_query\"},{\"description\":\"Scenario: music; action: settings.\",\"id\":\"music_settings\"},{\"description\":\"Scenario: news; action: query.\",\"id\":\"news_query\"},{\"description\":\"Scenario: play; action: audiobook.\",\"id\":\"play_audiobook\"},{\"description\":\"Scenario: play; action: game.\",\"id\":\"play_game\"},{\"description\":\"Scenario: play; action: music.\",\"id\":\"play_music\"},{\"description\":\"Scenario: play; action: podcasts.\",\"id\":\"play_podcasts\"},{\"description\":\"Scenario: play; action: radio.\",\"id\":\"play_radio\"},{\"description\":\"Scenario: qa; action: currency.\",\"id\":\"qa_currency\"},{\"description\":\"Scenario: qa; action: definition.\",\"id\":\"qa_definition\"},{\"description\":\"Scenario: qa; action: factoid.\",\"id\":\"qa_factoid\"},{\"description\":\"Scenario: qa; action: maths.\",\"id\":\"qa_maths\"},{\"description\":\"Scenario: qa; action: stock.\",\"id\":\"qa_stock\"},{\"description\":\"Scenario: recommendation; action: events.\",\"id\":\"recommendation_events\"},{\"description\":\"Scenario: recommendation; action: locations.\",\"id\":\"recommendation_locations\"},{\"description\":\"Scenario: recommendation; action: movies.\",\"id\":\"recommendation_movies\"},{\"description\":\"Scenario: social; action: post.\",\"id\":\"social_post\"},{\"description\":\"Scenario: social; action: query.\",\"id\":\"social_query\"},{\"description\":\"Scenario: takeaway; action: order.\",\"id\":\"takeaway_order\"},{\"description\":\"Scenario: takeaway; action: query.\",\"id\":\"takeaway_query\"},{\"description\":\"Scenario: transport; action: query.\",\"id\":\"transport_query\"},{\"description\":\"Scenario: transport; action: taxi.\",\"id\":\"transport_taxi\"},{\"description\":\"Scenario: transport; action: ticket.\",\"id\":\"transport_ticket\"},{\"description\":\"Scenario: transport; action: traffic.\",\"id\":\"transport_traffic\"},{\"description\":\"Scenario: weather; action: query.\",\"id\":\"weather_query\"}],\"decision_type\":\"choice\",\"id\":\"slurp-intent-60-v1\",\"levels\":[],\"question\":\"Which listed scenario and action best describe the spoken request?\"}}"
+          ],
+          "version": "harness-routing-context-candidate-v1"
+        },
+        "request_sha256": "000428b8b42c57fd9b85823413f4b13c615838f86ba89d4e681a2afc3177cf7d",
+        "input_tokens": 3029,
+        "positions": [
+          [
+            2217,
+            2312,
+            2407,
+            2502,
+            2597,
+            2692,
+            3018
+          ]
+        ],
+        "candidate_mapping": [
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B"
+            ],
+            "token_ids": [
+              32,
+              33
+            ],
+            "values": [
+              false,
+              true
+            ]
+          },
+          {
+            "symbols": [
+              "A",
+              "B",
+              "C",
+              "D",
+              "E",
+              "F",
+              "G"
+            ],
+            "token_ids": [
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38
+            ],
+            "values": [
+              "route-00",
+              "route-01",
+              "route-02",
+              "route-03",
+              "route-04",
+              "route-05",
+              "no_route"
+            ]
+          }
+        ],
+        "input_ids": {
+          "shape": [
+            1,
+            3029
+          ],
+          "dtype": "torch.int64",
+          "sha256": "7ba0d301f1bcbf76db212c81062d85f998d9b5b1fb8e0d06c93a611f84161472"
+        },
+        "input_features": {
+          "shape": [
+            1,
+            128,
+            2400
+          ],
+          "dtype": "torch.float32",
+          "sha256": "cea2f06b625b8dc7400acfbb2fd7fe820cdb4d892552eb40edbf2d1ec37fa65d"
+        },
+        "hidden": {
+          "shape": [
+            1,
+            6,
+            1024
+          ],
+          "dtype": "torch.bfloat16",
+          "sha256": "5fbfefc28907a8be224c1fbaf57cf3068de9d3aa08ba6a87d495c65ebf099f04"
+        },
+        "seconds": 1538.737625130001,
+        "readout_snapshot_sha256": "8b658ee9e76197404908032fd1d37dfcf1b9d5b8d395df7310bc841f359f28ee",
+        "probabilities": {
+          "native": [
+            [
+              0.06954174488782883,
+              0.3775406777858734,
+              0.5774953365325928,
+              0.5774953365325928,
+              0.531209409236908,
+              0.053403329104185104
+            ]
+          ],
+          "two_row": [
+            [
+              0.06954174488782883,
+              0.3775406777858734,
+              0.5774953365325928,
+              0.5774953365325928,
+              0.531209409236908,
+              0.053403329104185104
+            ]
+          ],
+          "scalar": [
+            [
+              0.06954174488782883,
+              0.3821414113044739,
+              0.581303060054779,
+              0.5755879878997803,
+              0.5279250144958496,
+              0.053403329104185104
+            ]
+          ]
+        },
+        "comparisons": {
+          "two_row": {
+            "max_probability_error": 0.0,
+            "threshold_disagreements": 0
+          },
+          "scalar": {
+            "max_probability_error": 0.004600733518600464,
+            "threshold_disagreements": 0
+          }
+        },
+        "exact_scalar_restore": true
+      }
+    ],
+    "config_sha256": "e3f653c4dc244683ab7361a9a47e3fdf65adfc6583336ab8f1fe90ca91fcae6b",
+    "training_dispatch_allowed": false,
+    "scope": "Frozen BF16 CPU eager backbone, actual median/longest audio, six Boolean positions under partition6. No labels, new token, trained numeric head, NPU/vLLM or task-gain acceptance."
+  },
+  "independent_numeric_recheck_pending": false,
+  "independent_numeric_recheck": [
+    {
+      "audio": "slurp:audio-1497270079.flac",
+      "two_row_exact": true,
+      "scalar_bf16_max_probability_error": 0.011818349361419678,
+      "scalar_fp64_probability_error": 1.1102230246251565e-16,
+      "scalar_fp64_hidden_gradient_error": 6.938893903907228e-18
+    },
+    {
+      "audio": "slurp:audio-1497621480-headset.flac",
+      "two_row_exact": true,
+      "scalar_bf16_max_probability_error": 0.004600733518600464,
+      "scalar_fp64_probability_error": 1.3877787807814457e-17,
+      "scalar_fp64_hidden_gradient_error": 6.938893903907228e-18
+    }
+  ]
+}

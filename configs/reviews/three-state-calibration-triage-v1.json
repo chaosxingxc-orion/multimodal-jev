@@ -1,0 +1,110 @@
+{
+  "schema": "three-state-calibration-triage-v1",
+  "report_sha256": "5f271415c322307ffc7181da9460d3792ac932ef488e900cdd76bd15b2f3e86f",
+  "issues": [
+    {
+      "source_id": "2401",
+      "family": "I_present",
+      "semantic_id": "music_content_save",
+      "author_reference": "unavailable",
+      "predictions": {
+        "envelope": {
+          "id": "music_content_save",
+          "status": "positive",
+          "rationale": "'Can you save this' with 'what a nice song' provides music-domain referent and explicit instruction to save content; satisfies 'create/add to a playable playlist/library/favorites' per definition."
+        },
+        "envelope_three_state": {
+          "id": "music_content_save",
+          "status": "positive",
+          "rationale": "'save this what a nice song for me' expresses intent to save/download music content; 'this' refers to the identified song, and 'save' satisfies explicit addition to a playable playlist/library/favorites."
+        }
+      },
+      "diagnosis": "Both arms select a content-saving attachment; author reference preserves ambiguity between saving content and the quoted remark. Needs independent adjudication, not majority vote.",
+      "independent_adjudication_pending": true
+    },
+    {
+      "source_id": "869",
+      "family": "I_present",
+      "semantic_id": "music_positive_preference",
+      "author_reference": "unavailable",
+      "predictions": {
+        "envelope": {
+          "id": "music_positive_preference",
+          "status": "negative",
+          "rationale": "No favorable evaluation of music or music-related referent is expressed; 'save opinion' lacks polarity and music context."
+        },
+        "envelope_three_state": {
+          "id": "music_positive_preference",
+          "status": "unavailable",
+          "rationale": "'save opinion' registers feedback but lacks favorable evaluation content; polarity is unspecified per nonrequest preference policy."
+        }
+      },
+      "diagnosis": "Explicit tri-state reminder changes absence to unspecified evaluation. One reference recovery; no class-wide reliability claim.",
+      "independent_adjudication_pending": true
+    },
+    {
+      "source_id": "2768",
+      "family": "S_present",
+      "semantic_id": "playlist_name",
+      "author_reference": "negative",
+      "predictions": {
+        "envelope": {
+          "id": "playlist_name",
+          "status": "unavailable",
+          "rationale": "No expressed title, name or particular identifying reference to a music playlist collection; 'jazz music' is a genre/category, not a named playlist."
+        },
+        "envelope_three_state": {
+          "id": "playlist_name",
+          "status": "unavailable",
+          "rationale": "No expressed title, name or particular identifying reference to a music playlist collection; 'jazz music' is a genre/category, not a named playlist."
+        }
+      },
+      "diagnosis": "Both labels remain unavailable while rationales state no particular playlist reference. Status/rationale mismatch under current absence rule.",
+      "independent_adjudication_pending": true
+    },
+    {
+      "source_id": "12868",
+      "family": "S_present",
+      "semantic_id": "business_name",
+      "author_reference": "unavailable",
+      "predictions": {
+        "envelope": {
+          "id": "business_name",
+          "status": "positive",
+          "rationale": "'Uber' is an identifying name of a company/organization explicitly expressed as a provider; per R14 and R15, this satisfies business_name when used as a named entity in commercial context, even without additional verbs."
+        },
+        "envelope_three_state": {
+          "id": "business_name",
+          "status": "positive",
+          "rationale": "'Uber' is an identifying name of a company/organization explicitly expressed as a provider; per R14/R15, this satisfies business_name under expressed-communicative-content scope."
+        }
+      },
+      "diagnosis": "Both infer a company/provider role from the bare brand, despite supplied rules requiring expressed contextual role and forbidding external-brand closure.",
+      "independent_adjudication_pending": true
+    },
+    {
+      "source_id": "12855",
+      "family": "S_present",
+      "semantic_id": "business_type",
+      "author_reference": "unavailable",
+      "predictions": {
+        "envelope": {
+          "id": "business_type",
+          "status": "negative",
+          "rationale": "No commercial establishment or service category (e.g., 'railway service', 'booking platform') is explicitly named; 'IRCTC' is treated as a proper business name, not a category."
+        },
+        "envelope_three_state": {
+          "id": "business_type",
+          "status": "positive",
+          "rationale": "'ticket' booking implies a commercial service offering, and 'IRCTC' operates as a transportation service provider; this satisfies business_type as an expressed category of offered service per R17 and R16."
+        }
+      },
+      "diagnosis": "Treatment changes from no explicit category to positive using implied service and external IRCTC transportation identity. Current rules prohibit that inference; author unavailable still requires independent adjudication.",
+      "independent_adjudication_pending": true
+    }
+  ],
+  "ontology_changed": false,
+  "semantic_admission": 0,
+  "training_dispatch_allowed": false,
+  "scope": "Author triage of saved two-arm outputs. No independent gold, label changes or automatic candidate selection."
+}

@@ -1,0 +1,130 @@
+{
+  "recordings": 9226,
+  "source_groups": 2146,
+  "recordings_per_group": {
+    "min": 1,
+    "max": 67
+  },
+  "metrics": {
+    "top1": {
+      "recording_weighted": {
+        "initial": 0.017992629525254714,
+        "selected": 0.8207240407543898,
+        "delta": 0.802731411229135
+      },
+      "source_group_macro": {
+        "initial": 0.01827102900151902,
+        "selected": 0.8111445036497991,
+        "delta": 0.7928734746482801
+      },
+      "recordings_increased": 7421,
+      "recordings_decreased": 15,
+      "groups_with_mixed_directions": 6,
+      "transition_counts": {
+        "both_correct": 151,
+        "both_wrong": 1639,
+        "repaired": 7421,
+        "regressed": 15
+      }
+    },
+    "exact_set": {
+      "recording_weighted": {
+        "initial": 0.0,
+        "selected": 0.724474311727726,
+        "delta": 0.724474311727726
+      },
+      "source_group_macro": {
+        "initial": 0.0,
+        "selected": 0.7152820460275847,
+        "delta": 0.7152820460275847
+      },
+      "recordings_increased": 6684,
+      "recordings_decreased": 0,
+      "groups_with_mixed_directions": 0,
+      "transition_counts": {
+        "both_correct": 0,
+        "both_wrong": 2542,
+        "repaired": 6684,
+        "regressed": 0
+      }
+    },
+    "set_f1": {
+      "recording_weighted": {
+        "initial": 0.03319097257086619,
+        "selected": 0.7380410434279956,
+        "delta": 0.7048500708571294
+      },
+      "source_group_macro": {
+        "initial": 0.03318659767278866,
+        "selected": 0.7293353336281777,
+        "delta": 0.6961487359553891
+      },
+      "recordings_increased": 6872,
+      "recordings_decreased": 2352,
+      "groups_with_mixed_directions": 511
+    },
+    "selected_count": {
+      "recording_weighted": {
+        "initial": 59.247344461305005,
+        "selected": 0.8366572729243442,
+        "delta": -58.41068718838066
+      },
+      "source_group_macro": {
+        "initial": 59.240186336256855,
+        "selected": 0.836154862571653,
+        "delta": -58.4040314736852
+      },
+      "recordings_increased": 0,
+      "recordings_decreased": 9226,
+      "groups_with_mixed_directions": 0
+    },
+    "empty": {
+      "recording_weighted": {
+        "initial": 0.0,
+        "selected": 0.18458703663559506,
+        "delta": 0.18458703663559506
+      },
+      "source_group_macro": {
+        "initial": 0.0,
+        "selected": 0.1857912227126318,
+        "delta": 0.1857912227126318
+      },
+      "recordings_increased": 1703,
+      "recordings_decreased": 0,
+      "groups_with_mixed_directions": 0
+    },
+    "multiple": {
+      "recording_weighted": {
+        "initial": 1.0,
+        "selected": 0.021135920225449814,
+        "delta": -0.9788640797745501
+      },
+      "source_group_macro": {
+        "initial": 1.0,
+        "selected": 0.021868421413517285,
+        "delta": -0.9781315785864827
+      },
+      "recordings_increased": 0,
+      "recordings_decreased": 9031,
+      "groups_with_mixed_directions": 0
+    }
+  },
+  "scope": "Descriptive paired diagnostic at fixed threshold 0.5. Source-group macro is a different estimand, not a replacement for the predeclared recording-weighted primary metric. No independence, confidence interval, training-seed or pure-RL causal claim.",
+  "sources": {
+    "docs/engineering/context-stage1-initial-endpoint-comparison-v1.json": "013c0eba676c3bf75d3cd9b3e61173f762f9f944992307a21ea8f481633da5a1",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "docs/engineering/context-stage1-selection-step0000-v2.json": "cdc71f70211a0223041f561629e1f540b782ae723118c8bb389843402af6cdc4",
+    ".local/decision-objective-research/context-stage1-selection-step0000-v2-collected/selection/predictions.json": "24d7809a8e264c88772e182a52f32beb339c5045f542cf62b85aed2fa617f7e4",
+    "docs/engineering/context-stage1-selection-step0634-v2.json": "7e501aaa90177a4e85ff286ba64e9fe5a35c06eac103d4a34b72ddc237ace088",
+    ".local/decision-objective-research/context-stage1-selection-step0634-v2-collected/selection/predictions.json": "77a20898d4936da144fc5fa2fd77ec3129f0cacb2f0908d59a22d54b990cde33",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/selection.jsonl": "f70a6abb4dcdcd36ab3804df7b577cca1fcc20db6f6523d19aa6518f1ed095e9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/analyze_stage1_paired_decisions.py": "da66706a2f33c37bd90719735fcc42666bc2272116de81cd96d225c0c8f60cfd",
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/context_paired_decisions.py": "32fad3ce20bffaa9b6aa49322140e6bef499241f9cea383eeb1d2f87c969a41f"
+  },
+  "stage": "Stage1 adaptation only; not RL, TEST or native ASR zero-shot",
+  "comparison_policy_ids": [
+    "816ed39c8e2684653467558cd212686902b93fd283c527f594b1d8978e11e2d1",
+    "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66"
+  ]
+}

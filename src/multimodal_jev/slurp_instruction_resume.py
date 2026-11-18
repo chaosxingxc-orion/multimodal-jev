@@ -21,6 +21,10 @@ def validate_lineage(previous, current, completed_updates, total_updates):
     for key in FIELDS:
         if key not in previous or previous[key] != current.get(key):
             raise ValueError('instruction continuation changed '+key)
+    for key, default in (('task_mode', 'instruction_views'), ('loss_reduction', 'legacy_weight_mean'),
+                         ('microbatch_per_rank', 1)):
+        if previous.get(key, default) != current.get(key, default):
+            raise ValueError('instruction continuation changed '+key)
     previous_start = previous.get('start_update', 0)
     if previous_start+previous['updates'] != completed_updates:
         raise ValueError('predecessor completed update count differs')
@@ -118,9 +122,15 @@ def load_full_schedule(config):
         raise ValueError('pinned full processor acceptance required')
     proof=json.loads(proof_path.read_text())
     processor_root=proof_path.parent.parent
+    # New local-storage runs keep their original output layout. Explicit paths
+    # avoid copying receipts into a fabricated legacy directory structure.
+    evidence_paths = config.get('processor_evidence_paths')
+    required_receipts = ('launch.json','observed-final.json','config.json','run/terminal.json')
+    if evidence_paths is not None and set(evidence_paths) != set(required_receipts):
+        raise ValueError('complete explicit processor receipt paths required')
     receipts={}
-    for name in ('launch.json','observed-final.json','config.json','run/terminal.json'):
-        path=processor_root/name
+    for name in required_receipts:
+        path=Path(evidence_paths[name]) if evidence_paths is not None else processor_root/name
         if config['pins'].get(str(path))!=file_hash(path):
             raise ValueError('pinned actual processor completion required')
         receipts[name]=json.loads(path.read_text())
@@ -128,7 +138,8 @@ def load_full_schedule(config):
     if (observed['container_id']!=launch['container_id'] or observed['image']!=launch['image']
             or observed['state']['Status']!='exited' or observed['state']['ExitCode']!=0
             or receipts['run/terminal.json']['exit_code']!=0
-            or launch['config_sha256']!=file_hash(processor_root/'config.json')):
+            or launch['config_sha256']!=file_hash(
+                Path(evidence_paths['config.json']) if evidence_paths is not None else processor_root/'config.json')):
         raise ValueError('successful exact full processor observation required')
     processor_config=receipts['config.json']
     if (processor_config['schedule_sha256']!=config['schedule_sha256']
@@ -140,4 +151,17 @@ def load_full_schedule(config):
             or proof['requests']!=manifest['total_nonpadding_recording_uses']
             or proof['context_limit']!=config['context_limit'] or proof['context_overflow']):
         raise ValueError('full input population not accepted')
+    if config.get('task_mode') == 'direct_final':
+        audit_path = Path(config['processor_ledger_acceptance'])
+        if config['pins'].get(str(audit_path)) != file_hash(audit_path):
+            raise ValueError('pinned independent full processor ledger audit required')
+        audit = json.loads(audit_path.read_text())
+        if (audit.get('passed') is not True
+                or audit.get('independently_matched_every_schedule_coordinate') is not True
+                or audit.get('result_sha256') != file_hash(proof_path)
+                or audit.get('records_sha256') != proof['records_sha256']
+                or audit.get('requests') != proof['requests']
+                or audit.get('container_id') != observed['container_id']
+                or audit.get('image') != observed['image']):
+            raise ValueError('independent complete processor ledger differs')
     return batches,epoch_updates,manifest

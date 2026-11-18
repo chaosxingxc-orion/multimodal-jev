@@ -1,0 +1,81 @@
+{
+  "schema": "simple-final-comparison-population-v1",
+  "release_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+  "counts": {
+    "learning": 40513,
+    "selection": 9226,
+    "omni_clean_test": 12991,
+    "omni_original_test": 13078
+  },
+  "learning_selection_overlap": {
+    "id": 0,
+    "source_group": 0,
+    "audio_sha256": 0
+  },
+  "selection_vs_omni_clean_test_shared_recording_ids": 0,
+  "learning_vs_omni_clean_test_shared_recording_ids": 0,
+  "test_separation_scope": "Recording IDs only; no cross-split waveform/source semantic contamination claim",
+  "controls": {
+    "learning_majority": {
+      "choice": "calendar_set",
+      "choice_source": "learning_frequency_only",
+      "learning_support": 2557,
+      "selection_correct": 641,
+      "selection_total": 9226,
+      "accuracy": 0.06947756340776068,
+      "macro_F1_fixed60": 0.0021654673828586874
+    },
+    "fixed_first_candidate": {
+      "choice": "alarm_query",
+      "choice_source": "frozen_candidate_order",
+      "learning_support": 777,
+      "selection_correct": 138,
+      "selection_total": 9226,
+      "accuracy": 0.0149577281595491,
+      "macro_F1_fixed60": 0.0004912430585219991
+    },
+    "observed_base_constant": {
+      "choice": "qa_definition",
+      "choice_source": "existing_base_output_diagnostic_not_new_selection",
+      "learning_support": 763,
+      "selection_correct": 154,
+      "selection_total": 9226,
+      "accuracy": 0.01669195751138088,
+      "macro_F1_fixed60": 0.0005472636815920397
+    }
+  },
+  "omni_reference_source_hash_changes": [],
+  "comparisons": {
+    "asr_stage1_rl": "matched9226 selection; future results pending",
+    "omni_clean_native": "different TEST population and composite generation interface; cannot subtract as RL improvement",
+    "omni_historical_P": "1075 FoldA; historical project reference, not matched9226 evaluation",
+    "speechbrain_hubert": "official supervised TEST reference; local weight retest pending"
+  },
+  "new_model_inference": false,
+  "training_or_reward_changed": false,
+  "training_dispatch_allowed": false,
+  "scope": "Matched-population diagnostic controls and recording-ID audit only; not NPU acceptance, cross-model ranking or RL efficacy",
+  "pins": {
+    "/home/xingchao/workspace/multimodal-jev/configs/experiments/slurp-simple-final-v1.json": "ca70b9237ef809372977a73b67447c92d492c5416ca68795740422c0b7659415",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.audio.jsonl": "cd730aa1f6065670a2ce3205ca29b7472fae50e9ba4d1597d8c13c387c12625e",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.jsonl": "481703c7a6aeb696c652124eccd5533f81d5cefc67ff12d59c0920318df6bbbe",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/publication-config.json": "2eee6cdfd42cc27ee29ec9f8669d8a48726f46395f3e34703a3e2c3f3d3a6fcc",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/quarantine.json": "b7d5f0282cfbdbdbc2e969dd70c5b48a6f4ee9fbafe7a01b1a4b623d82f99e18",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/selection.audio.jsonl": "31b03d76e9df5ec6fc043a86488d20277269b31e3a04dcf9f2523f6642a994c0",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/selection.jsonl": "f70a6abb4dcdcd36ab3804df7b577cca1fcc20db6f6523d19aa6518f1ed095e9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    "/home/xingchao/workspace/multimodal-jev/.local/simple-final-v1/base-score-evidence.json": "a8747e879ec59a8feaac76e96b7b3c58b5c7791108968dc804533f18e96af996",
+    "/home/xingchao/workspace/multimodal-jev/docs/engineering/omni-slurp-clean-native-rescore-v1-verified.json": "e211c2d2f969a8da200fe59e9c042cde53012d5d0f83318b73098154ffe6033a",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-clean-test-rescore-v1/result.json": "c97bd3f0d48d7479a97b412d37cfc86255df888d548ff0218b779336bdf0be51",
+    "/mnt/cephfs/xingchao/experiments/multimodal-jev/frozen-qwen3-omni-slurp-clean-test-rescore-v1/population.json": "465649ecaa9bf5341a40872eea53f95f168308dc80bf432134b17bf7361ae71b",
+    "/mnt/cephfs/xingchao/datasets/slurp-native/240070cb69d71f5df53874ff9e728611dd1bd56a564f7f9e7718092125612add/test.requests.jsonl": "69f871d49407a6dbd10cb5cb24ad712497880796c92d41a83424ac878ff78fe4",
+    "/home/xingchao/workspace/multimodal-jev/docs/research/omni-slurp-jev-reference-lock-v1.json": "34861a6595a71649d2a7197f1a6882b1f57f281ce211270f65a510688ef09cbe",
+    "/home/xingchao/workspace/omni/repro/publication/omni/docs/results/P-S-Instruct-Baseline.md": "2c712f1256bbbfd117efc2f43a520acda4bf4b8c4176f753aeff27db7f097cc0",
+    "/home/xingchao/workspace/omni/repro/publication/omni/docs/results/S-Type-Only-Baseline.md": "44f5d23b04aa41bcfdab78d6774fadc6b19eed40435b284d31cd36abf7621100",
+    "/home/xingchao/workspace/omni/repro/publication/omni/docs/results/S1-Functional-Baseline.md": "b54b9a38066437338c805b0b1655fd9c85ffbc50b7024f45060129bba2b1ec39",
+    "/home/xingchao/workspace/omni/repro/publication/omni/docs/results/s-stages/S1-FULL-BASELINE.json": "ed1e67969f47f8ce8d9138f048f5ed199c89b76b9348c59cace1c1ac60ce97b5",
+    "/home/xingchao/workspace/omni/repro/publication/omni/docs/results/s-stages/FOLDS.json": "0e25f9dbf0cc8b97f44727df29df55cc0db2693855449f18478c8a257b120901"
+  },
+  "implementation_sha256": "4050226262fe26863d46441480feb1a8769cd3631e677d46672cb72710f3b409"
+}

@@ -1,0 +1,120 @@
+{
+  "schema": "context-probability-fixed-endpoint-uncertainty-v1",
+  "algorithm": "grpo_v1",
+  "decision_endpoint": {
+    "schema": "context-simple-fixed-endpoint-uncertainty-v1",
+    "algorithm": "grpo_v1",
+    "provenance": {
+      "directory": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-rl-grpo-arithmetic-v2-experiment",
+      "package_manifest_sha256": "7440c7fd421b73a38efcc9048a686e1f0fc596427d0dca16191a157885f34891",
+      "curve_spec_sha256": "53084b4327378b5f662b6a6e50da2bc6554c01ffa959bc94a5a480b15ea1765e",
+      "curve_sha256": "e94522003ac43b8a5fbf39a756b39895667e6da1a0c11696a05f84eea5369dc0",
+      "training_audit_sha256": "13d2bada61eb0b145a3bdbab9f9081bf809e5335adbbcffd01440cbf1959bc6a"
+    },
+    "sources": {
+      "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+      "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/selection.jsonl": "f70a6abb4dcdcd36ab3804df7b577cca1fcc20db6f6523d19aa6518f1ed095e9",
+      "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+      "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-rl-grpo-arithmetic-v2-experiment/step-0000/collected/evaluation/selection/predictions.json": "aba53eebf161d6eeb14940d4c55c07d25e28fa5a3fdc49cb84baff926bbca57d",
+      "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-rl-grpo-arithmetic-v2-experiment/step-0634/collected/evaluation/selection/predictions.json": "5677ef3a94665f84ea3e8190659649f17ec53aa12d8e19e546ae20c5aae19af2",
+      "/home/xingchao/workspace/multimodal-jev/tools/reports/context_simple_endpoint_uncertainty.py": "e6e8ce75849ef437a73430381481d8e566bdb0a665d7b4f1e93f41576881d475",
+      "tools/reports/context_attribute_paired_bootstrap.py": "209c71c208d985bf25488763cecd0a1f974354c1e4f6bebb0cad6fa0846277ee"
+    },
+    "uncertainty": {
+      "endpoint": "fixed_step634",
+      "recordings": 9226,
+      "source_groups": 2146,
+      "pairing_sha256": "7cbdc97f81f977980df734c7047e8d2f6bf049c257e72fb260d5b32ebde9144d",
+      "metrics": {
+        "set_f1": {
+          "delta": 0.07095888431245029,
+          "percentile_95": [
+            0.05990360268136952,
+            0.08283128291688346
+          ]
+        },
+        "exact_set": {
+          "delta": 0.06796011272490787,
+          "percentile_95": [
+            0.0562899973876795,
+            0.08076419827666406
+          ]
+        },
+        "top1_correct": {
+          "delta": 0.00043355733795794494,
+          "percentile_95": [
+            -0.007613150226462717,
+            0.008664048217251578
+          ]
+        }
+      },
+      "bootstrap": {
+        "unit": "source_group",
+        "paired": true,
+        "replicates": 2000,
+        "seed": 317,
+        "rng": "PCG64",
+        "quantile_method": "linear",
+        "estimand": "recording_weighted_mean_delta",
+        "draws_sha256": "4ed14e461625f0eda38ffbb7baf841003e654184d519ffc777c6175e6acc2f91"
+      },
+      "scope": "Conditional on fixed model outputs and source-group sampling assumptions. Not speaker-disjoint inference, training-seed variance, multiplicity correction or selection-adjusted coverage. No checkpoint selection by interval."
+    },
+    "probability_quality": {
+      "initial": {
+        "candidate_binary_nll": 0.018743428599588375,
+        "binary_nll_infinite": false,
+        "candidate_brier": 0.004649959234100332
+      },
+      "final": {
+        "candidate_binary_nll": 0.04667496039027886,
+        "binary_nll_infinite": false,
+        "candidate_brier": 0.005866270869857703
+      }
+    },
+    "complex_training_admitted": false,
+    "scope": "Fixed step634 minus step0, paired source-group sampling uncertainty only. NLL/Brier are point values, not bootstrap intervals. No seed variance, chosen-checkpoint coverage, pure-RL attribution or automatic complex-training approval."
+  },
+  "probability": {
+    "endpoint": "fixed_step634",
+    "recordings": 9226,
+    "source_groups": 2146,
+    "metrics": {
+      "candidate_binary_nll": {
+        "initial": 0.018743428599588375,
+        "final": 0.04667496039027886,
+        "delta": 0.027931531790690384,
+        "percentile_95": [
+          0.02479848846473013,
+          0.031213744230564635
+        ],
+        "status": "finite"
+      },
+      "candidate_brier": {
+        "initial": 0.004649959234100332,
+        "final": 0.005866270869857703,
+        "delta": 0.0012163116357573498,
+        "percentile_95": [
+          0.000920837603209808,
+          0.0015080034121708022
+        ],
+        "status": "finite"
+      }
+    },
+    "bootstrap": {
+      "unit": "source_group",
+      "paired": true,
+      "replicates": 2000,
+      "seed": 317,
+      "rng": "PCG64",
+      "quantile_method": "linear",
+      "estimand": "recording_weighted_mean_delta",
+      "draws_sha256": "4ed14e461625f0eda38ffbb7baf841003e654184d519ffc777c6175e6acc2f91"
+    },
+    "pairing_sha256": "7cbdc97f81f977980df734c7047e8d2f6bf049c257e72fb260d5b32ebde9144d",
+    "direction": "final_minus_initial; negative is better for both proper scores",
+    "scope": "Pointwise paired source-group sampling uncertainty conditional on fixed outputs. No seed variance, simultaneous coverage, selected-checkpoint guarantee, clipping, TEST tuning or automatic complex-training admission."
+  },
+  "implementation_sha256": "af8665675a3505fc23ce433d4fe4b363aa31947b4dfba6adda261a077fde0703",
+  "complex_training_admitted": false
+}

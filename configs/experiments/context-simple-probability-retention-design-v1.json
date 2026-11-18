@@ -1,0 +1,28 @@
+{
+  "schema": "context-simple-probability-retention-design-v1",
+  "status": "prospective_simple_task_candidate_not_runtime_admitted",
+  "training_dispatch_allowed": false,
+  "hypothesis": "keeping binary_NLL coefficient0.3 may reduce overconfident errors while preserving Final setF1 gains; no predicted benefit asserted",
+  "control": "existing GRPO arithmetic-v2 curve",
+  "single_changed_factor": "binary_NLL coefficient constant0.3 instead of cosine0.3_to0.1",
+  "unchanged": [
+    "GRPO_G16_joint60Bernoulli_setF1_clip0.2_dualclip3_one_epoch",
+    "ranking coefficient cosine0.3_to0.1 first80percent",
+    "reference_KL coefficient0.01 summed_over_nodes",
+    "same_completed_Stage1_initial_policy_and_fixed_reference",
+    "TRAIN40513_global128_DP4_micro8_accum4_twoepochs634",
+    "same_frozen_schedule_optimizer_precision_and_input_pipeline",
+    "same11_full9226_selection_checkpoints_threshold0.5"
+  ],
+  "primary_comparison": "step634_Final_setF1_and_binaryNLL versus original GRPO, with step0 and full curve reported",
+  "secondary": ["top1", "Brier", "confident_false_negative_and_false_positive_rates", "source_group_uncertainty", "NPU_time"],
+  "decision_rule": "do not call it better if only NLL improves while Final regresses; inspect full tradeoff; no TEST tuning",
+  "release_conditions": [
+    "original_simple_curve_completed_and_reviewed",
+    "confirm_sustained_probability_quality_problem_beyond_selected_TRAIN_batch",
+    "separate_versioned_coefficient_plumbing_and_finite_update_restore_acceptance",
+    "original_queues_and_device_lease_respected"
+  ],
+  "scope": "simple_task_only; not permission to start complex training or replace running config",
+  "limits": "single-variable coefficient control tests an optimization hypothesis, not pureRL attribution or guaranteed correction"
+}

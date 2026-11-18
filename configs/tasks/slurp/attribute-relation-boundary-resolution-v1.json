@@ -1,0 +1,76 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "attribute_relation_definition_target_v1",
+  "status": "selected_task_design_rule_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "definition_word",
+    "personal_info",
+    "relation"
+  ],
+  "definitions": {
+    "definition_word": "An expressed word, phrase, concept or identifying reference whose meaning, definition or conceptual explanation is requested. A generic factual, biographical, appearance, spelling or specification query alone does not establish this role. Apply request-relevant scope.",
+    "personal_info": "An explicitly expressed personal attribute or contact-information field, including a question asking for that attribute without supplying its value. Contact fields can belong to a person, group or organization. Mere person identity, possession, communication medium or an arbitrary event involving a person is insufficient. Apply request-relevant scope.",
+    "relation": "An expressed kinship, interpersonal, social or occupational designation used to refer to a person/group or specify a relation between people. Generic personhood, celebrity status, ownership of an object or a bare personal-status field is insufficient. Apply request-relevant scope."
+  },
+  "per_type_rules": {
+    "definition_word": [
+      "Require a meaning/definition/concept-explanation relation and an expressed target. Define, what does X mean and what is X as a concept can establish it. What shape, appearance, specifications, biography or event facts alone do not.",
+      "Spelling, pronunciation, word origin or example usage alone are not meaning requests. If a usage request explicitly asks for meaning in context, the meaning role can be present independently.",
+      "Bare describe X may request conceptual explanation or surface description. Keep unavailable if that distinction is unsupported; explicit appearance-only requests are false. Do not use the native qa_definition label as evidence.",
+      "Deictic targets such as this word or define this can count when the meaning/definition operation is explicit. No target identity recovery is required; an unfinished meaning of with no target/reference is unavailable.",
+      "A semantic target can also satisfy another type only with that type's own expressed-role evidence. Mentioning the word doctor does not alone refer to an actual doctor."
+    ],
+    "personal_info": [
+      "Count explicitly requested/stated personal attributes such as age, marital status, job title, department, residence or contact details. No supplied value is required. Contact address/number fields may have organizational owners.",
+      "Do not turn every statement about a person into a personal attribute: a name, bare recipient, social-role designation, possession of an object, or asking who participated in an event is insufficient.",
+      "An explicit attribute field and an explicit value may coexist with person, relation or email_address under independent definitions. Email as message medium or a standalone mailbox reference alone does not imply a separate attribute field.",
+      "Is X single or married explicitly asks marital status; who is X married to additionally expresses a spouse relation. My brother alone identifies a relative without independently requesting a personal attribute.",
+      "Contact wording with unclear message-versus-address reading stays unavailable; native labels never settle the ambiguity."
+    ],
+    "relation": [
+      "Count explicitly used kinship or social roles such as mother, friend, boss, client, colleague or spouse, including occupational designations such as dentist used to identify a participant or group.",
+      "A role need not be relative to the speaker. Lawyers in a requested joke can be a professional group. A title considered only as a word/definition target does not alone identify people.",
+      "Bare single/married status without a spouse/partner role or relational endpoint belongs to personal_info, not automatically relation. Married to whom explicitly establishes a spouse relation even though the partner identity is unknown.",
+      "Generic person/celebrity status and possession such as my audiobook are not kinship, interpersonal or occupational designations. Bare company/bank/brand identity alone is not a designation of people.",
+      "A named profession used as a person designation may coexist with person. An explicit job-title field alone does not supply a particular occupational designation; assess the two roles separately."
+    ]
+  },
+  "negative_rule": "Reviewed absence under complete input and current role policy; native omission is not absence.",
+  "ambiguity_rule": "Keep unavailable for unsupported meaning-versus-description or field-versus-message interpretations.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      50,
+      51,
+      146,
+      148,
+      192
+    ],
+    "interpretation": "Examples distinguish contact fields, relatives and forensic as a definition target. The semantic narrowing and explicit role boundaries are project decisions, not official annotation equivalence."
+  },
+  "evidence": {
+    "native_positive_path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/attribute-relation-boundary-evidence-v1/native-positive-sources.jsonl",
+    "native_positive_sha256": "abbb124c427e698d153f539f697e58cd5b8eceeab22f0e319db22b15f967edbe",
+    "native_sources": 432,
+    "native_recordings": 1505,
+    "per_type_sources": {
+      "definition_word": 182,
+      "personal_info": 62,
+      "relation": 198
+    },
+    "query_contrast_path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/attribute-relation-boundary-evidence-v1/query-contrast-sources.jsonl",
+    "query_contrast_sha256": "4dd14efcd3e87f8d44d8d38b1a9ed07d2e4c7d1a9f016bc80253a9aa77299056",
+    "query_regex": "\\b(married|single|wife|husband|job title|how old|assassinated|what shape|spell|etymology|meaning|mean|define)\\b",
+    "query_selection": "regex_match_and_no_native_positive_in_affected_types",
+    "query_sources": 57,
+    "reading": "All432 native union and57 disjoint contrast reference texts read. Not all adjudicated, no independent certification or audio listening."
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v5.json",
+    "previous_sha256": "129a28fee6e124acf59e3e2d9cf8cfd725a6c46ebf7b2128ce72133c0b620774",
+    "historical_supervision_automatically_migrated": false
+  },
+  "scope": "Input-only task rules; no answer generation, knowledge lookup or gold-dependent question selection."
+}

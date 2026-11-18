@@ -1,0 +1,57 @@
+{
+  "schema": "bulk-context-tools-fixed-image-cpu-v1",
+  "container_id": "cc79f506c4977b7a92c8bcbf03faa5e10b9b0b31a50a5ef643cb7ac5b3bae846",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-15T00:34:31.86654396Z",
+    "FinishedAt": "2026-11-15T00:36:03.07495668Z"
+  },
+  "source_files": 1076,
+  "source_manifest_sha256": "895c3c99025138db8b5e8f129f4906172f09355e6d676ed51b42a72a90b90a1d",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/bulk-context-tools-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "e454d176af91ed816e613baf87c6d7c3b1239185dbab92efb3561546509d114c",
+    "run/junit.xml": "224b7b9bdba14abf51069de354af51accba0ece7cf3c7b9f1a0ec98443c132c6",
+    "run/pytest.log": "4da05c008d79fe3f3fdacf460e2ed27d26284fdcc321cf9b576584832892951d",
+    "package/FILES.json": "895c3c99025138db8b5e8f129f4906172f09355e6d676ed51b42a72a90b90a1d",
+    "package/run.py": "d05b6085755800577d75a397d7df8e09e53b26d805b9fbf5663d4c0aef66ba9d"
+  },
+  "counts": {
+    "tests": 32,
+    "failures": 4,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 1,
+    "started_unix": 1794702898.6750407,
+    "finished_unix": 1794702961.453159,
+    "source_manifest_sha256": "895c3c99025138db8b5e8f129f4906172f09355e6d676ed51b42a72a90b90a1d",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/bulk-context-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_bulk_process_integration.py",
+      "tests/test_context_bulk_rpc_candidate.py",
+      "tests/test_context_bulk_session_candidate.py",
+      "tests/test_context_rollout_rpc.py",
+      "tests/test_context_rollout_session.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual CPU IPC and spawned-process session integration; engine, activation and temporary-path storage guards substituted. No NPU model or speedup claim."
+}

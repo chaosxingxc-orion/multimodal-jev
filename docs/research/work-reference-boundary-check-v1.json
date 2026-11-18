@@ -1,0 +1,166 @@
+{
+  "schema": "slurp-work-reference-boundary-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/work-reference-boundary-resolution-v1.json",
+  "rule_sha256": "fd2f36bef3331fe5b8d5430677e77402c5462c20724298dea05e28176d1af071",
+  "review": "configs/reviews/slurp-work-reference-boundary-v1.json",
+  "review_sha256": "8692aaab5c22d482d5b3658a96777a71faf790f3adec32a1e8e4d869ca8fff4d",
+  "cohort_sources": 353,
+  "cohort_recordings": 1592,
+  "cohort_native_classes": 12,
+  "review_coordinates": 45,
+  "review_sources": 43,
+  "proposal_counts": {
+    "true": 23,
+    "null": 9,
+    "false": 13
+  },
+  "recording_bindings": 222,
+  "unique_recordings": 216,
+  "native_agreement": {
+    "agree": 23,
+    "disagree": 13,
+    "unassessed": 9
+  },
+  "first_batch_rereview": [
+    {
+      "source_id": "11334",
+      "type": "song_name",
+      "old_proposal": null,
+      "new_proposal": false,
+      "admitted": false
+    },
+    {
+      "source_id": "11334",
+      "type": "podcast_name",
+      "old_proposal": null,
+      "new_proposal": false,
+      "admitted": false
+    },
+    {
+      "source_id": "9877",
+      "type": "audiobook_name",
+      "old_proposal": null,
+      "new_proposal": true,
+      "admitted": false
+    }
+  ],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/report.json": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "configs/tasks/slurp/work-reference-boundary-resolution-v1.json": "fd2f36bef3331fe5b8d5430677e77402c5462c20724298dea05e28176d1af071",
+    "configs/reviews/slurp-work-reference-boundary-v1.json": "8692aaab5c22d482d5b3658a96777a71faf790f3adec32a1e8e4d869ca8fff4d"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/work-reference-boundary-evidence-v1/sources.jsonl": "6e8009d7eb19c0f0382d65d2bbbfcdb4c79f60dba1d12e3cd84dce9c14749953",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/work-reference-boundary-evidence-v1/review-recording-bindings.jsonl": "633020d782d9b3198bb4cfbf367fb4d1ab102f2159f9617c05f26552851dcbcc",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/work-reference-boundary-evidence-v1/first-batch-migration.json": "3eac48be4f09f17d68f22c89b09cb674aca0f95eeb3f425d9a7c60dfd08b982b"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v4.json",
+    "sha256": "cd75d982af510be62d0f7db92968505bf03a89b692580db74fe57e631b582c00",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v6.json": "3e3ffbaa9c384de8df677a292273dc791a9a771f564131bfe7b058717306b8ab",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v6.json": "2a043cd4fad3326cee93a21de11377742c2781d7742db8e0a79724def71ef314",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v7.json": "bb374747a495eedb2f0634a161ce3d7b1a3732ee5612baef6a42f93a6cd2a0f4"
+    },
+    "unchanged_cards": 48,
+    "changed_semantic_types": [
+      "audiobook_name",
+      "game_name",
+      "movie_name",
+      "music_album",
+      "playlist_name",
+      "podcast_name",
+      "song_name"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "artist_name",
+        "song_name"
+      ],
+      [
+        "audiobook_author",
+        "audiobook_name"
+      ],
+      [
+        "audiobook_name",
+        "media_type"
+      ],
+      [
+        "audiobook_name",
+        "movie_name"
+      ],
+      [
+        "audiobook_name",
+        "song_name"
+      ],
+      [
+        "business_name",
+        "game_name"
+      ],
+      [
+        "business_name",
+        "podcast_name"
+      ],
+      [
+        "event_name",
+        "movie_name"
+      ],
+      [
+        "game_name",
+        "game_type"
+      ],
+      [
+        "list_name",
+        "playlist_name"
+      ],
+      [
+        "media_type",
+        "playlist_name"
+      ],
+      [
+        "media_type",
+        "song_name"
+      ],
+      [
+        "movie_name",
+        "movie_type"
+      ],
+      [
+        "movie_name",
+        "music_album"
+      ],
+      [
+        "movie_name",
+        "song_name"
+      ],
+      [
+        "music_album",
+        "playlist_name"
+      ],
+      [
+        "music_album",
+        "song_name"
+      ],
+      [
+        "music_descriptor",
+        "playlist_name"
+      ],
+      [
+        "music_genre",
+        "playlist_name"
+      ],
+      [
+        "playlist_name",
+        "song_name"
+      ],
+      [
+        "podcast_descriptor",
+        "podcast_name"
+      ]
+    ]
+  },
+  "scope": "Independent full cohort/reference and binding reconstruction, not independent semantic certification or listening. New semantic reference scope is not identical to native name annotations."
+}

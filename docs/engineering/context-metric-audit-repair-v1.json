@@ -1,0 +1,140 @@
+{
+  "schema": "context-metric-audit-repair-v1",
+  "created_unix": 1794686990.9249396,
+  "issue": "Exact binary64 aggregate comparison rejected successful complete selection; unordered set iteration changes floating summation order.",
+  "correction": "Allow at most eight binary64 ULPs only for aggregate NLL/Brier; all identities, probabilities, labels, counts, set and top1 metrics stay exact. Runtime metric serialization retained after independent equivalence check for stable re-audited curves.",
+  "model_rerun": false,
+  "training_numerics_changed": false,
+  "original_frozen_contract_changed": false,
+  "selection": {
+    "proof": "docs/engineering/context-stage1-selection-step0634-v2.json",
+    "proof_sha256": "7e501aaa90177a4e85ff286ba64e9fe5a35c06eac103d4a34b72ddc237ace088",
+    "container_id": "63e9abb7ac60c3fd087c3feb5006472ef23315081aad956da50a00cb59b2e70e",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-14T19:07:08.32458245Z",
+      "FinishedAt": "2026-11-14T19:54:35.10804602Z"
+    },
+    "metric_comparison": {
+      "passed": true,
+      "rounding_differences": [
+        {
+          "path": "metrics.candidate_binary_nll",
+          "recomputed": 0.01874342859958838,
+          "reported": 0.018743428599588375,
+          "absolute_difference": 3.469446951953614e-18,
+          "bound": 2.7755575615628914e-17
+        },
+        {
+          "path": "metrics.candidate_brier",
+          "recomputed": 0.004649959234100333,
+          "reported": 0.004649959234100332,
+          "absolute_difference": 8.673617379884035e-19,
+          "bound": 6.938893903907228e-18
+        }
+      ],
+      "rule": "Only aggregate binary NLL/Brier permit at most 8 binary64 ULPs"
+    },
+    "metrics": {
+      "queries": 9226,
+      "threshold": 0.5,
+      "query_macro_set_f1": 0.7380410434279947,
+      "set_precision": 0.9009482032876954,
+      "set_precision_defined_queries": 7523,
+      "set_recall": 0.7448515066117494,
+      "exact_set": 0.724474311727726,
+      "mean_selected_count": 0.8366572729243442,
+      "top1_event_accuracy": 0.8207240407543898,
+      "top1_macro_f1": 0.7743151618089749,
+      "candidate_binary_nll": 0.01874342859958838,
+      "binary_nll_infinite": false,
+      "candidate_brier": 0.004649959234100333,
+      "top1_tie_rule": "first_in_fixed_candidate_order",
+      "scope": "Exclusive benchmark event identity; independent sigmoid sets at fixed threshold, not semantic intent presence."
+    }
+  },
+  "validation": {
+    "tests_passed": 85,
+    "seconds": 161.59,
+    "log": ".local/decision-objective-research/context-metric-audit-regression-v1/pytest-final.log",
+    "log_sha256": "4f4fe6a35ae95b6cf5ac4b562519725addc6b7745e2c9408dd89af565516cb00",
+    "scope": "CPU tests including rejection cases and existing orchestration fixtures; model/remote operations mocked in fixture tests. Actual endpoint independently re-audited separately."
+  },
+  "files": {
+    "tools/jev/context_metric_equivalence.py": "9d5698bf5c53a35d69248a0a245f2e6aaebec4c8cb2e087c48dbefef9041099a",
+    "tools/jev/audit_context_rl_selection_v2.py": "110915b32d49df1948a0eac5f4299df8573314b441e800e9cbdb7aa3c8bc505a",
+    "tools/jev/audit_context_rl_curve_v2.py": "3911150bf00901a7cec8eeaa7877a78a813aef55402347bf4a967b8b416d48d2",
+    "tools/jev/compare_context_rl_curves_v2.py": "fb35ea886bbebf6b13e8bb560dee29737c725f0de9b8bf3ec3976f9fb99438be",
+    "tools/jev/run_context_formal_experiment_v3.py": "2a427b8492d3e85e0c42cdac5bd0223040eba808560c178e36a6d2bf474ef9ef",
+    "tools/jev/run_context_baseline_sequence_v3.py": "8f14a41c46daa61abeccce2c1fd4ee8a54a4b674971cedd515c7238a7d206f8f",
+    ".local/decision-objective-research/collect_context_stage1_selection_v3.py": "5767aee3fe56027214a54609e7374e43c256ab5e74f37cedbcb4845e0ae670da",
+    ".local/decision-objective-research/continue_context_stage1_selection_v3.py": "ab779c4dc487847a9a0ce0a91fdaf5a38e765548da3451d7b846ca97d16d8eca",
+    ".local/decision-objective-research/continue_context_baseline_comparison_v5.py": "00589e8276f91c516c3aa98b3c450c177038072965d593369275d6f339429a2c",
+    "tests/test_context_metric_equivalence.py": "a9f2c53771241aef720f9b33df4367247cd600b2eea0c98eee2307a68271e1e7"
+  },
+  "original_pins": {
+    "baseline": 364,
+    "sequence_v2": 498,
+    "comparison_v3": 500,
+    "unchanged": true
+  },
+  "replacement_pins": {
+    "sequence_v3": 507,
+    "comparison_v5": 510
+  },
+  "statuses": {
+    "context-stage1-selection-chain-v3-status.json": {
+      "phase": "launch_complete_selection",
+      "updated_unix": 1794686701.8568354,
+      "step": 0
+    },
+    "context-online-shared-npu-v4-chain-status.json": {
+      "phase": "two_updates_collected_restore_pending",
+      "pid": 549655,
+      "updated_unix": 1794686619.634076,
+      "scope": "Engineering prefix only; no formal Stage2 admission or efficacy"
+    },
+    "context-online-shared-resume-npu-v4-chain-status.json": {
+      "phase": "bounded_continuous_and_replay_collected",
+      "pid": 549657,
+      "updated_unix": 1794686990.6632736,
+      "scope": "Engineering only; formal Stage2 and efficacy remain pending"
+    },
+    "context-checkpoint-shared-npu-v3-chain-status.json": {
+      "phase": "waiting_original_shared_replay_chain",
+      "pid": 549658,
+      "updated_unix": 1794683419.5343914
+    },
+    "context-baseline-sequence-v3/status.json": {
+      "phase": "waiting_original_dependency",
+      "pid": 574965,
+      "unix": 1794686833.6384597,
+      "index": 0,
+      "dependency": {
+        "lock": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-stage1-selection-chain-v3.lock",
+        "status": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-stage1-selection-chain-v3-status.json",
+        "success_phase": "initial_and_final_selection_collected"
+      }
+    },
+    "context-baseline-comparison-v5-status.json": {
+      "phase": "waiting_original_two_algorithm_sequence",
+      "pid": 575569,
+      "unix": 1794686912.445389
+    }
+  },
+  "retained_failures": [
+    "selection collector v2 aggregate equality",
+    "sequence v2 predecessor rejection",
+    "comparison v3 predecessor rejection",
+    "comparison v4 sequence directory creation race"
+  ],
+  "scope": "Stage1 endpoint metrics and host audit fix only. Two-step RL engineering prefix collected; formal RL curve and initialization selection remain separately pending."
+}

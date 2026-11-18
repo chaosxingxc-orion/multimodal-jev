@@ -1,0 +1,93 @@
+{
+  "schema": "slurp-reference-review-issues-v1",
+  "review": "configs/reviews/slurp-full-slot-sequential-reference-b0002.json",
+  "review_sha256": "075fcfc090ea22e38c1b71c5649612633f1fb157aeff0d1ec45e4de0bfe71613",
+  "training_dispatch_allowed": false,
+  "issues": [
+    {
+      "source_id": "14749",
+      "definition_id": "date",
+      "quote": "when",
+      "rationale": "Birth timing normally seeks a calendar date, but no date is supplied and current date policy does not explicitly admit a bare requested calendar role.",
+      "reason_kind": "definition_boundary_requested_calendar_role"
+    },
+    {
+      "source_id": "14749",
+      "definition_id": "time",
+      "quote": "when",
+      "rationale": "Bare when does not establish clock time versus calendar date.",
+      "reason_kind": "input_temporal_granularity_ambiguity"
+    },
+    {
+      "source_id": "2744",
+      "definition_id": "business_name",
+      "quote": "cnn",
+      "rationale": "CNN is clearly a source, but whether this broadcaster reference also expresses an organizational identity versus only its channel is not settled.",
+      "reason_kind": "input_source_organization_role_ambiguity"
+    },
+    {
+      "source_id": "7242",
+      "definition_id": "list_name",
+      "quote": "my calendar",
+      "rationale": "Calendar may denote a task/event collection, but current list definition does not settle calendar-as-list scope.",
+      "reason_kind": "definition_boundary_calendar_collection"
+    },
+    {
+      "source_id": "8505",
+      "definition_id": "list_name",
+      "quote": "my calendar",
+      "rationale": "Whether a calendar itself is a named task collection is an unresolved type boundary.",
+      "reason_kind": "definition_boundary_calendar_collection"
+    },
+    {
+      "source_id": "8505",
+      "definition_id": "event_name",
+      "quote": "what's on my calendar",
+      "rationale": "Query implies calendar entries but names no event category; calendar-entry inference versus expressed event reference is not settled by current rule.",
+      "reason_kind": "definition_boundary_implicit_calendar_entries"
+    },
+    {
+      "source_id": "5388",
+      "definition_id": "artist_name",
+      "quote": "who",
+      "rationale": "Performer role is requested but unnamed; current artist_name requires a named performer, unlike person reference policy. Whether unspecified role counts requires task-level clarification.",
+      "reason_kind": "definition_boundary_requested_creator_role"
+    },
+    {
+      "source_id": "7414",
+      "definition_id": "general_frequency",
+      "quote": "repeat reminder",
+      "rationale": "Could repeat the reminder once or configure recurrence; no stable schedule is stated.",
+      "reason_kind": "input_repeat_vs_recurrence_ambiguity"
+    },
+    {
+      "source_id": "7414",
+      "definition_id": "list_name",
+      "quote": "my schedule",
+      "rationale": "Schedule-as-task-collection is not settled by current list policy.",
+      "reason_kind": "definition_boundary_calendar_collection"
+    },
+    {
+      "source_id": "11413",
+      "definition_id": "event_name",
+      "quote": "most played",
+      "rationale": "History-relative predicate may encode prior listening events or merely a selection attribute; represented-event threshold is not settled by wording.",
+      "reason_kind": "input_history_attribute_vs_event_ambiguity"
+    },
+    {
+      "source_id": "2471",
+      "definition_id": "weather_descriptor",
+      "quote": "sun set",
+      "rationale": "Sunset may be an astronomical timing event rather than meteorological condition; current weather definition does not settle this inclusion.",
+      "reason_kind": "definition_boundary_solar_event_weather"
+    },
+    {
+      "source_id": "15084",
+      "definition_id": "personal_info",
+      "quote": "perfect girlfriend",
+      "rationale": "Perfect could request an unspecified personal-quality criterion or be generic evaluative wording, not a defined attribute; cannot infer criteria.",
+      "reason_kind": "input_unspecified_personal_quality"
+    }
+  ],
+  "policy": "Batch triage; retain unavailable. No automatic ontology edits or input-specific rules; distinguish task-boundary questions from irreducible input ambiguity."
+}

@@ -3,6 +3,7 @@
 import argparse
 from collections import Counter
 import json
+import math
 from pathlib import Path
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.slurp_training import content_hash
@@ -18,15 +19,21 @@ def rows(p):
 
 def verify(root, expected_hash):
     root = Path(root); manifest = read(root/'MANIFEST.json')
-    if file_hash(root/'MANIFEST.json') != expected_hash or manifest['schema'] != 'slurp-official-clean-intent-v1':
+    if file_hash(root/'MANIFEST.json') != expected_hash or manifest['schema'] not in ('slurp-official-clean-intent-v1','slurp-official-clean-intent-v2'):
         raise ValueError('explicit publication identity required')
-    for name, digest in manifest['files'].items():
-        if Path(name).name != name or file_hash(root/name) != digest:
-            raise ValueError('publication file changed')
-    config = read(root/'publication-config.json'); source = Path(config['source'])
-    for path, digest in config['pins'].items():
-        if file_hash(path) != digest:
-            raise ValueError('dependency changed')
+    if manifest['schema']=='slurp-official-clean-intent-v2':
+        # Share only path/hash resolution, keep the independent population and
+        # native-label reconstruction below separate from the production loader.
+        from multimodal_jev.slurp_portable_release import config as resolve
+        config,_,_=resolve(root,expected_hash)
+    else:
+        for name,digest in manifest['files'].items():
+            if Path(name).name!=name or file_hash(root/name)!=digest:
+                raise ValueError('publication file changed')
+        config=read(root/'publication-config.json')
+        for path,digest in config['pins'].items():
+            if file_hash(path)!=digest:raise ValueError('dependency changed')
+    source=Path(config['source'])
     original_manifest = read(source/'MANIFEST.json')
     pairs = read(root/'tasks.json')['intent']['candidate_pairs']
     quarantine = read(root/'quarantine.json')
@@ -75,7 +82,9 @@ def verify(root, expected_hash):
         observed = dict(recordings=len(actual), source_groups=len({r['source_group'] for r in actual}),
                         classes=dict(sorted(Counter(r['intent'] for r in actual).items())),
                         audio_hours=sum(r['seconds'] for r in assets)/3600)
-        if observed != manifest['counts'][role]:
+        if (any(observed[k]!=manifest['counts'][role][k] for k in ('recordings','source_groups','classes'))
+                or not math.isclose(math.fsum(r['seconds'] for r in assets)/3600,
+                    manifest['counts'][role]['audio_hours'],rel_tol=0,abs_tol=1e-9)):
             raise ValueError('reported counts differ')
         summaries[role] = observed
     return dict(passed=True, manifest_sha256=expected_hash, counts=summaries,

@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "observed_unix": 1794598786.714154,
+  "collected_unix": 1794598801.8013227,
+  "container_id": "1680ac442df4f4065ae1cf7f9e8f0d3935b966b59bf1fd9f312d01debe7aa9a1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "tests_passed": 304,
+  "source_files": 1358,
+  "configuration_files": 2,
+  "source_archive_sha256": "a630ddaa1af2257eb86936720a7b6992042d1869dc88112aa6e39451330c9b86",
+  "manifest_sha256": "831ad1e191be6a30f2ce47670cf89738247d0bc62a276d96053d9e88fb0b1309",
+  "runner_sha256": "7e20bf8070b96173264a436f5eec62ce710b231cc6b613a1b8f1a2c8b5266daf",
+  "logs": {
+    "phase-0.log": "........................................................................ [ 23%]\n........................................................................ [ 47%]\n........................................................................ [ 71%]\n........................................................................ [ 94%]\n................                                                         [100%]\n=============================== warnings summary ===============================\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n304 passed, 3 warnings in 331.58s (0:05:31)\nDrvMngGetConsoleLogLevel failed. (ret=4)\n"
+  },
+  "training_dispatch_allowed": false,
+  "scope": "Fixed-image CPU same-snapshot regression; external model/audio/host substitutes. Not actual NPU continuous lifecycle, final Stage1 acceptance, or RL efficacy."
+}

@@ -1,0 +1,24 @@
+{
+  "status": "host_cpu_tests_and_actual_archived_reference_verified",
+  "tests": {
+    "passed": 64,
+    "seconds": 2.48,
+    "command": "PYTHONPATH=src:.local/verification-python:tools/jev python -m pytest -q tests/test_fsc_context_reference.py tests/test_fsc_context_experiment.py tests/test_fsc_context_metrics.py tests/test_fsc_reference_alignment.py"
+  },
+  "archive_proof": {
+    "path": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/fsc-context-reference-archive-v1.json",
+    "sha256": "fbda10013589a00241dfd6aa55f9a04c5d40c01061aa8accbd73c0bac610e4d4"
+  },
+  "actual_reference": {
+    "recordings": 3793,
+    "speakers": 10,
+    "verified_artifacts": 26,
+    "predictions_sha256": "b409f9b2658ff263ab2578fc299c7390d0becd0620b1c39f7d213e2945199e7b",
+    "live_container_inspected": false
+  },
+  "scope": "Real historical assets/audio revalidated; comparison orchestration tested with model/runtime fixtures. No actual context FSC predictions or transfer scores yet.",
+  "files": {
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/compare_fsc_context_reference.py": "ec4e03c6acf19536e21fede41bb315bb16e682759a8eb3c3ed6b4920ed2b9bd6",
+    "/home/xingchao/workspace/multimodal-jev/tests/test_fsc_context_reference.py": "13a401422275d2e01d9a6526e513abafe7d832d1222fcdb11ef2360f73856ca4"
+  }
+}

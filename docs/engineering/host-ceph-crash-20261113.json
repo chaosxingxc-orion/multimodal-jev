@@ -1,0 +1,117 @@
+{
+  "status": "same_kernel_fault_signature_confirmed_remediation_incomplete",
+  "host175_fault_utc": "2026-11-13T01:36:27Z",
+  "host181_fault_utc": "2026-11-12T16:00:26Z",
+  "kernel": "5.15.0-25-generic",
+  "pc": "unsafe_request_wait+0x1d0/0x564 [ceph]",
+  "null_address": "0x8",
+  "ceph_module_sha256": "42476bf3e27b084b1d495be72e2bf1721b7ab2d6ee70f7089d6fc092e012b955",
+  "image_cause": "No evidence of direct userspace image failure; containers share the faulty host kernel. Specific triggering workload unresolved.",
+  "implemented": "instruction entry prewrite mount and capacity admission; policy documented",
+  "kernel_upgrade_performed": false,
+  "training_launched": false,
+  "evidence": {
+    ".local/incidents/20261113-core-dump/175-crash-excerpt.log": {
+      "bytes": 9494,
+      "sha256": "29330035445972d0ac9dc71bd0b422fd282efcadb07538aa2d02b9e25155f324"
+    },
+    ".local/incidents/20261113-core-dump/175-journal-access.log": {
+      "bytes": 2162,
+      "sha256": "c88a8044f649c80c8bd7aa18880a5243766da76f2d810f0ac37ecc1998574d8b"
+    },
+    ".local/incidents/20261113-core-dump/175-kern-read-dac.json": {
+      "bytes": 604,
+      "sha256": "7e56014951cb22028f7f8b5cbe170e6d5b7937d80aa7dbe9367e7dd5239bd9ee"
+    },
+    ".local/incidents/20261113-core-dump/175-kern-read.json": {
+      "bytes": 619,
+      "sha256": "3ae4724e18f806f1247839809394263426641bfeb94f0761b5bec604c1e64733"
+    },
+    ".local/incidents/20261113-core-dump/175-kern.log": {
+      "bytes": 12953728,
+      "sha256": "acbe7f54c974e53948b5da414c418edd25754270503067bd07d69611a3c1157b"
+    },
+    ".local/incidents/20261113-core-dump/175-recovery.json": {
+      "bytes": 307,
+      "sha256": "07809d371603dfffcbc632bca85bc6ad1627c2c0832d782c60c04e9d9efea58e"
+    },
+    ".local/incidents/20261113-core-dump/175-recovery.log": {
+      "bytes": 550,
+      "sha256": "4de30ac7d1bbebeb22c16e95b271bc67c9fcd4790bc944a5c519cee497bb11cf"
+    },
+    ".local/incidents/20261113-core-dump/181-ceph-module.log": {
+      "bytes": 18474,
+      "sha256": "35cdbcd3bbde2fe478707a2ebfc32fb9b1a90229bbc771524e2c00843f5e8ebd"
+    },
+    ".local/incidents/20261113-core-dump/181-container-log-inventory.json": {
+      "bytes": 5247,
+      "sha256": "791e0246943ab8b661249a594bbc31dcda79b2248b2e654759c898917df60936"
+    },
+    ".local/incidents/20261113-core-dump/181-crash-storage.json": {
+      "bytes": 527,
+      "sha256": "be408e0d1c9c447efd48358bbfb49e59e3cc86babc4797de4788778c6b6932f6"
+    },
+    ".local/incidents/20261113-core-dump/181-crash-storage.log": {
+      "bytes": 437,
+      "sha256": "9826de98157b71a1b1e9c22afd57f2f4e0cbcf5d3778851791dadb730dba58a7"
+    },
+    ".local/incidents/20261113-core-dump/181-kernel-previous.json": {
+      "bytes": 266,
+      "sha256": "f2f2ac548229c344a01b4db08d7f26f10d775eb21621a45e37fbd0578b642aeb"
+    },
+    ".local/incidents/20261113-core-dump/181-kernel-previous.log": {
+      "bytes": 18512,
+      "sha256": "b30a803a4fd0a67eccecec1a2c91a4d95d2f60e26bee54101cce0bb90058dbcb"
+    },
+    ".local/incidents/20261113-core-dump/181-last-events.json": {
+      "bytes": 275,
+      "sha256": "d3f74046e14b8a711e5cc3a60594e274b597eb0376717060a2a3139ebe21d30e"
+    },
+    ".local/incidents/20261113-core-dump/181-last-events.log": {
+      "bytes": 172851,
+      "sha256": "c25db65bfdfc91b206abf6cf8527a5b3a558c589c006d0c8d638c941455c042f"
+    },
+    ".local/incidents/20261113-core-dump/181-platform.json": {
+      "bytes": 602,
+      "sha256": "07fb533fe581a11931293f8afa47cbf009ff42dc913f6518f446d87cb492a563"
+    },
+    ".local/incidents/20261113-core-dump/181-platform.log": {
+      "bytes": 30403,
+      "sha256": "d6b0751452022dc7115558d601f7c770eef9ed27e50fd5c9195118b15568e193"
+    },
+    ".local/incidents/20261113-core-dump/181-runtime.json": {
+      "bytes": 737,
+      "sha256": "d3c4426b77acb5cb0047fda306e87b81c3b804e73737b1b0a5b7a421755e600c"
+    },
+    ".local/incidents/20261113-core-dump/181-runtime.log": {
+      "bytes": 1009534,
+      "sha256": "6e1ae71f15f3bb37a84f9dec0b1465e13330f308a682d4ec4d26288542f65e45"
+    },
+    ".local/incidents/20261113-core-dump/ceph-null-session-fix.source": {
+      "bytes": 1518,
+      "sha256": "42d3a3d4a1c41f1f625c6a9253e382c1d4180fbc6a04f509bddd7c4d6b859360"
+    },
+    ".local/incidents/20261113-core-dump/ceph-session-race-fix.source": {
+      "bytes": 3901,
+      "sha256": "ab4feb045afc52e62986e338206393181e1e91d4981c186106247af4fb0c30b3"
+    },
+    ".local/incidents/20261113-core-dump/docker-logging-guidance.source": {
+      "bytes": 568399,
+      "sha256": "0980889eeaddf2d83831cc1dfed148608b3d8c08b87e96cb8d6486cd5fbfbcd5"
+    },
+    ".local/incidents/20261113-core-dump/primary-sources.json": {
+      "bytes": 713,
+      "sha256": "b23d039e7df38421e2aa41a676c0ac80eb51a0004258ac1ecf6306205aee9242"
+    },
+    ".local/incidents/20261113-core-dump/storage-entry-rejection.json": {
+      "bytes": 314,
+      "sha256": "717d3c804042b309c07cd02f80267d07457187cdb18d1c5131611da1a1e13faa"
+    }
+  },
+  "validation": {
+    "focused_storage_tests": 9,
+    "storage_and_instruction_resume_schedule_tests": 61,
+    "entry_rejected_before_output_creation": true,
+    "NPU_execution": false
+  }
+}

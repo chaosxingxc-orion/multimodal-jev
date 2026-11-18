@@ -1,0 +1,115 @@
+{
+  "schema": "context-native-attribute-comparison-design-v1",
+  "status": "prospective_design_not_runtime_admission",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "task_config": "configs/tasks/slurp/native-attribute-prob-candidate-v2.json",
+  "train_manifest_sha256": "d98db48e619a83e7eceb308da13f257a6cc3cfa4bf701f3f17022ff99a07a482",
+  "selection_manifest_sha256": "85d17ce7a12d2e39efb9bdc676cdb24b02f2531ccb4c93b7adeba303485d0710",
+  "catalog_sha256": "67ab6400a127a7e06c55e40b0e20a965978bb04f830df11efd383b7bc4813f1f",
+  "initial_policy": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+  "initialization": "same_completed_simple_Stage1_joint_policy_no_arm_specific_pretraining",
+  "reference": "same_initial_joint_policy_evaluated_on_each_arms_own_request",
+  "algorithms": {
+    "primary": "grpo_v1",
+    "matched_confirmation": "rloo_v1",
+    "dispatch_order": "after_existing_simple_baseline_closure_and_new_finite_acceptance"
+  },
+  "arms": {
+    "direct": {
+      "readouts": 60,
+      "sampled_action_bits": 60,
+      "reward": "Final_set_F1"
+    },
+    "q_input": {
+      "readouts": 124,
+      "sampled_action_bits": 124,
+      "reward": "Final_set_F1"
+    },
+    "q_credit": {
+      "readouts": 124,
+      "sampled_action_bits": 124,
+      "reward": "Final_set_F1+0.25*((scenario_set_F1+action_set_F1)/2)"
+    }
+  },
+  "process_lambda": 0.25,
+  "lambda_rationale": "prospective bounded bonus <=0.25 versus Final <=1; not a bound on GRPO normalized gradient; no weight search in first comparison",
+  "truth": "complete_native_label_projection_only; reject_partial_family_truth_for_this_experiment",
+  "policy_loss": "joint_action_clipped_surrogate_all_sampled_bits; G16; clip0.2; dualclip3; one_update_epoch",
+  "auxiliary": "Final_only_pairwise_ranking_and_binary_NLL; both_coefficients_cosine_0.3_to_0.1_first80percent",
+  "process_auxiliary": false,
+  "kl": "0.01*sum_Bernoulli_KL_over_arms_active_nodes_once_per_query",
+  "matching": "q_input_and_q_credit_identical_input_action_support_initialization_KL_auxiliary_budget; only_reward_differs",
+  "direct_contrast_limit": "Q changes input length, action dimension and KL support; Direct vs Q-input is a whole configured-method contrast, not isolated question-text causality",
+  "budget": {
+    "train_recordings": 40513,
+    "epochs": 2,
+    "updates": 634,
+    "global_queries": 128,
+    "group_size": 16,
+    "schedule": "same_existing_full_coverage_class_spread_query_order",
+    "target_dp": 4,
+    "target_microbatch": 8,
+    "target_accumulation": 4,
+    "capacity_policy": "if insufficient, freeze a common revised microbatch/accumulation for all new arms before dispatch; preserve global128",
+    "same_compute_claim": false,
+    "report": [
+      "NPU_seconds",
+      "audio_exposure",
+      "input_tokens",
+      "inference_latency"
+    ]
+  },
+  "evaluation": {
+    "population": 9226,
+    "threshold": 0.5,
+    "checkpoints": [
+      0,
+      64,
+      128,
+      192,
+      256,
+      320,
+      384,
+      448,
+      512,
+      576,
+      634
+    ],
+    "selection": "max_Final_query_macro_set_F1_then_min_Final_binary_NLL_then_earliest_step",
+    "must_report": [
+      "all_checkpoints",
+      "Final_top1_accuracy",
+      "Final_macro_F1",
+      "Final_exact_set",
+      "Final_NLL",
+      "Final_Brier",
+      "empty_multi_select_rates",
+      "each_process_family_set_F1",
+      "native_structural_slices"
+    ],
+    "process_metrics_select_checkpoint": false,
+    "test_tunes_or_selects": false,
+    "primary_reward_contrast": "q_credit_minus_q_input_at_step634; additionally report_source_selected_endpoints",
+    "baseline": "report_each_arms_step0_and_change; same_weights_different_input_can_have_different_step0",
+    "uncertainty": "paired_source_group_cluster_bootstrap_on_fixed_comparison_outputs; single_seed_not_training_variance"
+  },
+  "diagnostics": [
+    "Final_reward_constant_groups",
+    "total_reward_variance",
+    "nonzero_advantage_groups",
+    "joint_ratio_and_clip_fraction",
+    "post_update_KL",
+    "probability_saturation",
+    "process_Final_consistency_diagnostic_only"
+  ],
+  "no_final_repair": true,
+  "no_temporal_GAE": true,
+  "remaining": [
+    "TRAIN_full_processor_terminal_and_independent_audit",
+    "selection_actual_processor_and_identity_audit",
+    "new_124node_runtime_loss_and_KL_binding",
+    "finite_real_NPU_parity_update_restore_acceptance"
+  ],
+  "claim_boundary": "native supervised decomposition reward; not independent semantic process annotation or demonstrated reasoning/generalization"
+}

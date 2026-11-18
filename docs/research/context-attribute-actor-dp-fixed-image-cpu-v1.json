@@ -1,0 +1,95 @@
+{
+  "schema": "context-attribute-actor-dp-fixed-image-cpu-v1",
+  "container_id": "df43bf37a89f8b65d7e46e608913792b4d64ea78f9384f1a4bc517766994fea1",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T01:44:38.067684Z",
+    "FinishedAt": "2026-11-15T01:47:20.26173028Z"
+  },
+  "source_files": 382,
+  "source_manifest_sha256": "06d33c84d6d84b8bf2813323e614963ef6dfe5193a88c8ca4d2800e221040b7e",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-actor-dp-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "f89927bcc18bc11132823af704a2c23ecdf6e609a1dffbb5924182def051e236",
+    "run/pytest.log": "8432eb811afe55417d2abbcb0e4edf5ef9e81c8fe77b1b4d7079960ec8a5f63c",
+    "package/FILES.json": "06d33c84d6d84b8bf2813323e614963ef6dfe5193a88c8ca4d2800e221040b7e",
+    "package/run.py": "12510b2d6864f2c94a9d68e7055586ea4f210439ecab9385018d17a4ab8b4fe9",
+    "run/probe/comparison-rank-0.json": "2d476b7756ee9d536f3656b7da1ab2fec32763d329fa59ae585c9eaf8a620589",
+    "run/probe/comparison-rank-1.json": "2d476b7756ee9d536f3656b7da1ab2fec32763d329fa59ae585c9eaf8a620589",
+    "run/probe/comparison-rank-2.json": "2d476b7756ee9d536f3656b7da1ab2fec32763d329fa59ae585c9eaf8a620589",
+    "run/probe/comparison-rank-3.json": "2d476b7756ee9d536f3656b7da1ab2fec32763d329fa59ae585c9eaf8a620589",
+    "run/probe/rank-0.json": "07a2994794df278974501bf080745f686811f6a7bbd0e3bf7461491cdb87758f",
+    "run/probe/rank-1.json": "07a2994794df278974501bf080745f686811f6a7bbd0e3bf7461491cdb87758f",
+    "run/probe/rank-2.json": "07a2994794df278974501bf080745f686811f6a7bbd0e3bf7461491cdb87758f",
+    "run/probe/rank-3.json": "07a2994794df278974501bf080745f686811f6a7bbd0e3bf7461491cdb87758f",
+    "run/probe/result.json": "bf0015e9db5a1a7e5061e13f5a70d2406bad98682e87f89bf6bd23829f1e8cc0"
+  },
+  "checks": [
+    {
+      "rank": 0,
+      "cases": 36,
+      "max_errors": {
+        "gradients": 1.0728836059570312e-06,
+        "parameters": 1.8649029698281083e-07,
+        "exp_avg": 4.470348358154297e-08,
+        "exp_avg_sq": 3.2014213502407074e-10
+      }
+    },
+    {
+      "rank": 1,
+      "cases": 36,
+      "max_errors": {
+        "gradients": 1.0728836059570312e-06,
+        "parameters": 1.8649029698281083e-07,
+        "exp_avg": 4.470348358154297e-08,
+        "exp_avg_sq": 3.2014213502407074e-10
+      }
+    },
+    {
+      "rank": 2,
+      "cases": 36,
+      "max_errors": {
+        "gradients": 1.0728836059570312e-06,
+        "parameters": 1.8649029698281083e-07,
+        "exp_avg": 4.470348358154297e-08,
+        "exp_avg_sq": 3.2014213502407074e-10
+      }
+    },
+    {
+      "rank": 3,
+      "cases": 36,
+      "max_errors": {
+        "gradients": 1.0728836059570312e-06,
+        "parameters": 1.8649029698281083e-07,
+        "exp_avg": 4.470348358154297e-08,
+        "exp_avg_sq": 3.2014213502407074e-10
+      }
+    }
+  ],
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794707105.3335667,
+    "finished_unix": 1794707238.8499541,
+    "source_manifest_sha256": "06d33c84d6d84b8bf2813323e614963ef6dfe5193a88c8ca4d2800e221040b7e",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-actor-dp-cpu-v1/package/tools/reports/probe_context_attribute_actor_dp_cpu.py",
+      "--source-root",
+      "/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-actor-dp-cpu-v1/package",
+      "--output",
+      "/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-actor-dp-cpu-v1/run/probe"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual four-rank pinned verl/DDP actor, independent joint loss gradients and Adam, two microbatch splits, three arms and two algorithms; same-process save/load then update. Synthetic audio backbone, actual shared head; no Qwen/NPU/new-process resume/efficacy proof."
+}

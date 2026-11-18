@@ -1,0 +1,20 @@
+{
+  "status": "local_and_fixed_image_48_tests_plus_native_verl_composition_passed",
+  "files": {
+    "src/multimodal_jev/context_candidate_objective.py": "b18f3dfa4ccb65001e1281bf77501e76ca0e75fddfe512b4f0694eae3c71fb79",
+    "src/multimodal_jev/context_candidate_task.py": "6f909445ebaf30cf190120c355bd36ec3eb1169ec88fd9b3413067906d7bfe5c",
+    "tools/jev/probe_context_hybrid_loss_cpu.py": "b6602e318e02b23f68a33be74bd660220c063529a6c7ea34475d78d82501e0ee"
+  },
+  "native_verl_evidence": "docs/engineering/context-hybrid-loss-cpu-v1.json",
+  "training_dispatch_allowed": false,
+  "production_coefficients": null,
+  "production_reward": null,
+  "pending": [
+    "full_model_NPU_gradient_and_restore",
+    "vLLM_new_head_load_and_switch",
+    "full_population_processor_preflight",
+    "reward_contract_and_degenerate_controls",
+    "full_data_training_and_target_domain_transfer"
+  ],
+  "fixed_image_evidence": "docs/engineering/context-objective-cpu-regression-v1.json"
+}

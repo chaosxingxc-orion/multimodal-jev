@@ -1,0 +1,1686 @@
+{
+  "schema": "slurp-sequential-full-slot-reference-proposals-v1",
+  "status": "current_rule_full_type_reference_rereview_pending_independent_review",
+  "training_dispatch_allowed": false,
+  "workpack": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v1",
+  "workpack_report_sha256": "0caac43d49264896d12274167aa74245a94bed67047d2c1c65256ff627960fa2",
+  "ontology_sha256": "fdae6a84d1f44312b5d9868e419b447ce52dfe24d06f151b51a9fb7115c7a2a7",
+  "schedule": {
+    "order": "existing_annotation_workpack_v1_hash_order",
+    "start": 0,
+    "stop": 16,
+    "full_population_sources": 9192,
+    "selection": "first_contiguous_sources_no_native_label_or_model_result_routing",
+    "scope": "Incremental annotation progress only, not a16-source training population or whole-population completion."
+  },
+  "records": [
+    {
+      "source_id": "12647",
+      "metadata_sha256": "4931d1ff7d38a6e48226913514d1f7e5725c5ffded0ce54af4de262f0e396636",
+      "reference_sha256": "d509bcad7cda8bf2c724261457093de5e0ef852684198f6100752feecf05d397",
+      "positive": {
+        "place_name": {
+          "quote": "penn station",
+          "rationale": "The station is the explicit geographic departure/arrival venue."
+        },
+        "transport_type": {
+          "quote": "train",
+          "rationale": "Train explicitly states the travel mode."
+        },
+        "event_name": {
+          "quote": "arrive and depart",
+          "rationale": "Arrival/departure is queried event content, not merely the assistant operation."
+        },
+        "general_frequency": {
+          "quote": "how often",
+          "rationale": "Explicitly queried service recurrence rate qualifies without a rate value."
+        },
+        "transport_descriptor": {
+          "quote": "arrive and depart",
+          "rationale": "Arrival/departure frequency is an explicitly queried transport-service property."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "food_type",
+        "game_name",
+        "game_type",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_name",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Full source asks recurrence of train arrivals/departures at Penn Station. Positive roles are event, frequency, service property, location and mode. No work, content medium, creator, human participant, contact attribute, monetary amount, weather, clock duration, or other listed role is expressed.",
+        "source_summary": "how often does the train arrive and depart from penn station"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Full source asks recurrence of train arrivals/departures at Penn Station. Positive roles are event, frequency, service property, location and mode. No work, content medium, creator, human participant, contact attribute, monetary amount, weather, clock duration, or other listed role is expressed.",
+        "new_negative_rationales": {
+          "time": "How often asks recurrence; arrival/departure verbs alone provide no clock, duration or temporal ordering.",
+          "news_topic": "Service frequency query contains no reporting/public-development relation."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "867",
+      "metadata_sha256": "e3e3303eaf1d767b179ebb48eda0a3ee11559e6670063932a8c58c287555728a",
+      "reference_sha256": "904b80786847ff45a0c145773739dd47f6a5fca3c3f62fbbe02e67d68c03d7ef",
+      "positive": {
+        "device_type": {
+          "quote": "smart socket",
+          "rationale": "A physical smart socket is explicitly the device to deactivate."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Only smart-socket deactivation is requested. Hardware is present; no magnitude, event argument, temporal, location, content, person or other listed role is expressed.",
+        "source_summary": "turn off smart socket"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Only smart-socket deactivation is requested. Hardware is present; no magnitude, event argument, temporal, location, content, person or other listed role is expressed.",
+        "new_negative_rationales": {
+          "event_name": "Turn off specifies the assistant operation, without separate event content."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "13862",
+      "metadata_sha256": "aa32b6cc65cea6883135f7d7078ae0ad1bf7fbeb0e4b91d3504b18550e351105",
+      "reference_sha256": "5123bec6f36e2173419da5dcb0cca0c0fee44357f62f3547b3a9228c16ac9b42",
+      "positive": {},
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Only shape of a generic ball is asked. Shape has no dedicated type here; ball alone does not identify a sport/game or device. No meaning request, news, event, person or other listed role is expressed.",
+        "source_summary": "what shape is a ball"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Only shape of a generic ball is asked. Shape has no dedicated type here; ball alone does not identify a sport/game or device. No meaning request, news, event, person or other listed role is expressed.",
+        "new_negative_rationales": {
+          "definition_word": "Ball shape is a requested physical property, not a conceptual meaning request.",
+          "news_topic": "Static shape query is not news reporting."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "17101",
+      "metadata_sha256": "e5b782874de83e1660f122b5cb9d181dd6513ee45e0e2081e75f03c32851c9d9",
+      "reference_sha256": "3de29a5c5d774212102b409257a0c429a28f2574bcbd845932b7ae993b3980a0",
+      "positive": {
+        "email_folder": {
+          "quote": "inbox",
+          "rationale": "Explicit mailbox folder."
+        },
+        "person": {
+          "quote": "my inbox",
+          "rationale": "My explicitly identifies the owner of the mailbox, permitted by the contact-owner rule."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Mailbox-owner and inbox-folder roles are expressed. At the moment is generic present context. No specific address, contact attribute, news, event, clock/duration or other listed role is supplied.",
+        "source_summary": "how is my inbox looking at the moment"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Mailbox-owner and inbox-folder roles are expressed. At the moment is generic present context. No specific address, contact attribute, news, event, clock/duration or other listed role is supplied.",
+        "new_negative_rationales": {
+          "time": "At the moment is a generic now modifier, not a clock/duration/offset or temporal ordering.",
+          "news_topic": "Mailbox state is not news/reporting."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "11334",
+      "metadata_sha256": "083a9de1c285f96e135552031721bd98150970973c2b9f3c8c8dcf49f77d3652",
+      "reference_sha256": "1ae023c6526097f66de5a41e5cb80cc2b94f4cfbfcd5cd1e6f56b5b72e6036f4",
+      "positive": {
+        "media_type": {
+          "quote": "podcast",
+          "rationale": "Podcast explicitly supplies the content medium."
+        },
+        "music_genre": {
+          "quote": "folk",
+          "rationale": "Folk specifies a music style."
+        },
+        "podcast_descriptor": {
+          "quote": "best podcast of folk songs having rating of above four star",
+          "rationale": "Best and the rating/content criteria constrain podcast selection."
+        },
+        "player_setting": {
+          "quote": "play it",
+          "rationale": "Explicit playback operation on the selected podcast."
+        }
+      },
+      "unavailable": {
+        "music_descriptor": {
+          "quote": "rating of above four star",
+          "rationale": "Rating may constrain the podcast program or its songs. The input does not establish a distinct music-property role beyond genre; do not resolve attachment from native labels.",
+          "reason_kind": "input_attachment_ambiguity"
+        }
+      },
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "playlist_name",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Podcast medium, folk genre, podcast selection/rating and playback are expressed. Rating attachment to music remains unresolved. No particular work, creator, app, people, currency, control level or other listed role is expressed; four stars is a rating, not change_amount.",
+        "source_summary": "show me the best podcast of folk songs having rating of above four star and play it"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Podcast medium, folk genre, podcast selection/rating and playback are expressed. Rating attachment to music remains unresolved. No particular work, creator, app, people, currency, control level or other listed role is expressed; four stars is a rating, not change_amount.",
+        "new_negative_rationales": {
+          "song_name": "Folk songs is open genre content, not a particular track reference.",
+          "podcast_name": "Best/rating selection requests an unspecified qualifying podcast rather than an established work.",
+          "event_name": "Show/play are assistant operations with no separately represented event content."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "9877",
+      "metadata_sha256": "ac51b9b3eff863b501060b09bf6a79f68891a475a10b6b61500fe529656c5b59",
+      "reference_sha256": "6ebf833471abe8fc47dbcd9aeff4fc4a3f738cce4b83b7db3e232f4ac0d769cf",
+      "positive": {
+        "media_type": {
+          "quote": "audiobook",
+          "rationale": "Audiobook supplies content format."
+        },
+        "player_setting": {
+          "quote": "listen to",
+          "rationale": "Expressed request to play/listen to the book."
+        },
+        "audiobook_name": {
+          "quote": "my audiobook",
+          "rationale": "Possessive identifying reference to a particular audiobook; no title recovery required."
+        }
+      },
+      "unavailable": {
+        "person": {
+          "quote": "my audiobook",
+          "rationale": "Possessive identifies the work, but current person policy gives task-participant/contact-owner examples without settling content-owner-only presence. Keep pending rather than treating all possessives as people.",
+          "reason_kind": "definition_boundary_content_owner"
+        }
+      },
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "personal_info",
+        "place_name",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Particular possessed audiobook, audiobook medium and requested playback are explicit. Content-owner person policy remains unresolved. Possession alone supplies neither personal_info nor relation; no author, other work, app, time or other listed role.",
+        "source_summary": "i would like to listen to my audiobook"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Particular possessed audiobook, audiobook medium and requested playback are explicit. Content-owner person policy remains unresolved. Possession alone supplies neither personal_info nor relation; no author, other work, app, time or other listed role.",
+        "new_negative_rationales": {
+          "event_name": "Listening is the requested assistant playback operation, not separate event content."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "14833",
+      "metadata_sha256": "f11dcb51eba011e7528b9ecb6c92da5087c76f72c1d972699782da99b897db8d",
+      "reference_sha256": "e4883888b3876a609e9b2748e5d40a96c8f6d9095360658a8f6bb524b7b53c38",
+      "positive": {
+        "person": {
+          "quote": "the celebrity",
+          "rationale": "Explicit human subject, no proper name required."
+        },
+        "personal_info": {
+          "quote": "single or married",
+          "rationale": "Expressed marital-status attribute of the queried person."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. A human subject and marital-status alternatives are explicit. No named profession/spouse endpoint, performer role, event, news, contact field beyond marital status or other listed role is expressed.",
+        "source_summary": "is the celebrity single or married"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "A human subject and marital-status alternatives are explicit. No named profession/spouse endpoint, performer role, event, news, contact field beyond marital status or other listed role is expressed.",
+        "new_negative_rationales": {
+          "relation": "Single/married asks marital status without a spouse relation endpoint; celebrity alone is not a social/occupational designation under this rule.",
+          "news_topic": "Personal status query contains no reporting relation."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "7195",
+      "metadata_sha256": "d78ed5d481a4258b5f0ee235a779fd526a4f0ade5293312121b66b1c3e81b462",
+      "reference_sha256": "bbf39712a369530b54c520aa54db066add71d2a0cc426f55d18e081d533a1fda",
+      "positive": {
+        "date": {
+          "quote": "tomorrow",
+          "rationale": "Explicit calendar-relative day."
+        },
+        "event_name": {
+          "quote": "meeting",
+          "rationale": "Meeting is the event being scheduled/reminded."
+        },
+        "person": {
+          "quote": "allen",
+          "rationale": "Explicit meeting participant."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Tomorrow, meeting and Allen are explicit calendar, event and participant roles. Reminder operation alone supplies no alarm kind or recurrence; no clock/duration, venue, relation or other listed role.",
+        "source_summary": "set a reminder for tomorrow for meeting with allen"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Tomorrow, meeting and Allen are explicit calendar, event and participant roles. Reminder operation alone supplies no alarm kind or recurrence; no clock/duration, venue, relation or other listed role.",
+        "new_negative_rationales": {},
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "2346",
+      "metadata_sha256": "6cfcb0bed4c2351746fb0cbd3ef633a43dc74aa12d8a9051e80eda510b4e893d",
+      "reference_sha256": "6a71655bf9dffc8779815d47005f0d49478217df73b91cf4d36aa7fd35b77237",
+      "positive": {
+        "place_name": {
+          "quote": "miami",
+          "rationale": "Explicit geographic location."
+        },
+        "weather_descriptor": {
+          "quote": "temperature",
+          "rationale": "Explicit weather property being requested, permitted as a property expression."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Meteorological temperature and Miami are explicit. Current does not create a time-value role; no separate event, news, people, measurement magnitude, device or other listed role.",
+        "source_summary": "what is the current temperature in miami"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Meteorological temperature and Miami are explicit. Current does not create a time-value role; no separate event, news, people, measurement magnitude, device or other listed role.",
+        "new_negative_rationales": {
+          "time": "Current is a generic now modifier; no clock/duration/offset/ordering role expressed.",
+          "news_topic": "Ambient temperature is a measurement query, not reporting."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "1842",
+      "metadata_sha256": "efed6c760ca387e2f89c71e7cf59f93831cc785e31c9d558412bfa50b2c10f04",
+      "reference_sha256": "f73dde20f7af0fe662c5f1fb5e9c864ebb3a61fd72ea43401050e308248874e7",
+      "positive": {
+        "place_name": {
+          "quote": "devon",
+          "rationale": "Explicit geographic location."
+        },
+        "date": {
+          "quote": "this weekend",
+          "rationale": "Bounded calendar period."
+        },
+        "weather_descriptor": {
+          "quote": "sun gonna shine",
+          "rationale": "Explicit sunshine condition."
+        },
+        "event_name": {
+          "quote": "sun gonna shine",
+          "rationale": "Sunshine during a specified weekend is represented as a queried occurrence."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Sunshine occurrence, weather condition, Devon and weekend are explicit. No clock/duration, recurrence, news reporting, person, work or other listed role.",
+        "source_summary": "is the sun gonna shine in devon this weekend"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Sunshine occurrence, weather condition, Devon and weekend are explicit. No clock/duration, recurrence, news reporting, person, work or other listed role.",
+        "new_negative_rationales": {
+          "news_topic": "Weather forecast does not alone establish news reporting."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "8806",
+      "metadata_sha256": "27e0b3d52799921053e09b4fae3985c185909de4cc62bb4913dc725e93ea934c",
+      "reference_sha256": "870166ba2c19d174d8b84f673c89e12cc1a9da147a1b4aeb7c7efda1cb2402d5",
+      "positive": {
+        "date": {
+          "quote": "monday",
+          "rationale": "Calendar anchor of the meeting."
+        },
+        "event_name": {
+          "quote": "meeting",
+          "rationale": "Explicit represented meeting event."
+        },
+        "person": {
+          "quote": "peter francis",
+          "rationale": "Explicit meeting participant."
+        },
+        "time": {
+          "quote": "fifteen minutes before the meeting",
+          "rationale": "Explicit duration/offset relative to the meeting."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Monday, meeting, Peter Francis and fifteen-minute-before offset are explicit. Reminder command is not another alarm-category predicate; no recurrence, venue, relation or other listed role.",
+        "source_summary": "remind me about my monday meeting with peter francis fifteen minutes before the meeting"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Monday, meeting, Peter Francis and fifteen-minute-before offset are explicit. Reminder command is not another alarm-category predicate; no recurrence, venue, relation or other listed role.",
+        "new_negative_rationales": {},
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "14587",
+      "metadata_sha256": "98a23686faa518dc001b15fcae8d068a17d04f2a748a50f41e19a4d523052269",
+      "reference_sha256": "3e44fde587de58c95ecb18bbf5b04856e81fb1b912784a233b062f934a21bdd0",
+      "positive": {
+        "person": {
+          "quote": "lincoln",
+          "rationale": "Explicit person as the queried assassination target."
+        },
+        "event_name": {
+          "quote": "assassinated",
+          "rationale": "The assassination is an expressly queried historical occurrence."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Assassination and Lincoln are explicit event/person roles. Who requests an event participant, not a personal field or social designation; no reporter/news relation, definition, place, time or other listed role.",
+        "source_summary": "who assassinated lincoln"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Assassination and Lincoln are explicit event/person roles. Who requests an event participant, not a personal field or social designation; no reporter/news relation, definition, place, time or other listed role.",
+        "new_negative_rationales": {
+          "news_topic": "Historical who question is a static fact query, not reporting.",
+          "personal_info": "Event participant is not a requested personal/contact attribute."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "15420",
+      "metadata_sha256": "d431fdeffeb7f1ccb729ff66ecee1ccde66da745dca13d5193dff35ecfe87de2",
+      "reference_sha256": "0d118577410c735e5f6077bfd4ebd44148f76a7e221a2a5c18df512aa87d8f26",
+      "positive": {
+        "business_name": {
+          "quote": "@microsoft",
+          "rationale": "Explicit organizational recipient of the complaint."
+        },
+        "app_name": {
+          "quote": "twitter",
+          "rationale": "Named service used to publish the complaint."
+        }
+      },
+      "unavailable": {
+        "media_type": {
+          "quote": "twitter",
+          "rationale": "Twitter is a publication access service here; current media-source wording does not settle whether the same role also qualifies as a media channel. No automatic app-to-media implication.",
+          "reason_kind": "definition_boundary_publication_channel"
+        }
+      },
+      "negative_types": [
+        "alarm_type",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Microsoft is an organizational addressee and Twitter the publication application. Media-channel classification remains unresolved. Complaint content is unspecified, Olly is assistant address, and no human participant, event argument, contact field or other listed role is supplied.",
+        "source_summary": "hey olly post my complaint to @microsoft on twitter"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Microsoft is an organizational addressee and Twitter the publication application. Media-channel classification remains unresolved. Complaint content is unspecified, Olly is assistant address, and no human participant, event argument, contact field or other listed role is supplied.",
+        "new_negative_rationales": {
+          "event_name": "Posting the complaint is the assistant operation; no incident content is given."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "15116",
+      "metadata_sha256": "b279dc1f08f22b875fb9284c6598e9a5a72fd790167289f5c2e1f3aa4b7aa2aa",
+      "reference_sha256": "88ebaeda2a49281dcfc19da329c6d0e131f5315e51bca8ab526ccb5b2c8413dc",
+      "positive": {
+        "person": {
+          "quote": "someone",
+          "rationale": "Explicit human subject of the news query, no identity resolution needed."
+        },
+        "news_topic": {
+          "quote": "someone",
+          "rationale": "The person reference is explicitly the subject of requested news."
+        },
+        "media_type": {
+          "quote": "news",
+          "rationale": "Explicit content kind/source as news."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "order_type",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Someone is the explicit human subject of news, and news supplies a content kind. Recent is only an unquantified recency filter; no particular event, clock/duration, creator, work, location or other listed role.",
+        "source_summary": "check recent news on someone"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Someone is the explicit human subject of news, and news supplies a content kind. Recent is only an unquantified recency filter; no particular event, clock/duration, creator, work, location or other listed role.",
+        "new_negative_rationales": {
+          "time": "Recent is an unquantified recency filter with no expressed clock, duration, offset or relation between specified events."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "3805",
+      "metadata_sha256": "bc56a567a61bb1d3a1b8af90c7af254c8e10c36f57a4a48c1903847e24a12dba",
+      "reference_sha256": "afef63c5738ddd7a4a76d4673e3f78cc8fca11a25402f780dc0825141f2ba7e1",
+      "positive": {
+        "date": {
+          "quote": "this week",
+          "rationale": "Explicit bounded calendar period."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. This week is explicit calendar scope. Generic weather alone names no condition, topic reporting, event, location, time duration or other listed role.",
+        "source_summary": "weather this week"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "This week is explicit calendar scope. Generic weather alone names no condition, topic reporting, event, location, time duration or other listed role.",
+        "new_negative_rationales": {
+          "weather_descriptor": "Weather names the domain but no particular meteorological property.",
+          "news_topic": "Generic forecast lacks reporting relation."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    },
+    {
+      "source_id": "9475",
+      "metadata_sha256": "273aee08fa9f00bd6d856b28989b628e19f71188e6a1477fcba52406e12590cd",
+      "reference_sha256": "cb0633e0ea32f142e868c5a11e996b604b66d88f2ae2a80387f5dfa8a410a200",
+      "positive": {
+        "music_genre": {
+          "quote": "country",
+          "rationale": "Under play, country is explicitly the requested music genre."
+        },
+        "player_setting": {
+          "quote": "play",
+          "rationale": "Explicit playback operation."
+        }
+      },
+      "unavailable": {},
+      "negative_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "negative_coverage": {
+        "explicitly_assessed_all55": true,
+        "basis": "Explicit full-input reference reread against current55 definitions, policies and incident boundary rules; all listed negatives assessed as absent, not inferred from native omissions or unchanged historical status. Play country conventionally requests genre-based playback. No particular track, collection, radio station, geographic country reference, event content or other listed role is expressed.",
+        "source_summary": "play country"
+      },
+      "modality": "reference_text",
+      "independent_semantic_review": false,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "current_review": {
+        "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+        "reread_scope": "all55 including previous positive negative unavailable",
+        "source_interpretation": "Play country conventionally requests genre-based playback. No particular track, collection, radio station, geographic country reference, event content or other listed role is expressed.",
+        "new_negative_rationales": {
+          "event_name": "Play is the assistant operation, not a separately represented occurrence."
+        },
+        "same_author": true,
+        "independent_semantic_certification": false
+      }
+    }
+  ],
+  "previous_review": "configs/reviews/slurp-full-slot-sequential-reference-b0001.json",
+  "previous_review_sha256": "0d0881fce282edb582bf193e7fbbecc93649e8a6e1542bc22ca9203f6310a6b6",
+  "changes": [
+    {
+      "source_id": "12647",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": true
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "general_frequency",
+      "old_value": null,
+      "new_value": true
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "time",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "12647",
+      "definition_id": "transport_descriptor",
+      "old_value": null,
+      "new_value": true
+    },
+    {
+      "source_id": "867",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "definition_word",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "13862",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "17101",
+      "definition_id": "time",
+      "old_value": true,
+      "new_value": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "music_descriptor",
+      "old_value": true,
+      "new_value": null
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "podcast_name",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "11334",
+      "definition_id": "song_name",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "audiobook_name",
+      "old_value": null,
+      "new_value": true
+    },
+    {
+      "source_id": "9877",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "14833",
+      "definition_id": "relation",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "2346",
+      "definition_id": "time",
+      "old_value": true,
+      "new_value": false
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": true
+    },
+    {
+      "source_id": "1842",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": true
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "14587",
+      "definition_id": "personal_info",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "15420",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "15116",
+      "definition_id": "time",
+      "old_value": true,
+      "new_value": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "news_topic",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "3805",
+      "definition_id": "weather_descriptor",
+      "old_value": null,
+      "new_value": false
+    },
+    {
+      "source_id": "9475",
+      "definition_id": "event_name",
+      "old_value": null,
+      "new_value": false
+    }
+  ],
+  "scope": "Complete first16 x55 current-rule rereview; reference proposals only, not a training subset, independent review or audio listening."
+}

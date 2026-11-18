@@ -1,0 +1,87 @@
+{
+  "schema": "slurp-news-topic-boundary-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/news-topic-boundary-resolution-v1.json",
+  "rule_sha256": "c03a0d792b7883966f4772db11da9820bb507b177a93d60c76d7cefaf59d5ed5",
+  "review": "configs/reviews/slurp-news-topic-boundary-reference-v1.json",
+  "review_sha256": "c707a880abca0dcdb037088449dd54b4900d905c37cee64189d5880a042fffdb",
+  "cohort_sources": 403,
+  "native_news_intent_sources": 398,
+  "native_news_topic_sources": 144,
+  "cross_native_intent_topic_sources": [
+    "681",
+    "2997",
+    "3126",
+    "4727",
+    "15716"
+  ],
+  "review_sources": 46,
+  "proposal_counts": {
+    "true": 13,
+    "false": 23,
+    "null": 10
+  },
+  "recording_bindings": 198,
+  "unique_recordings": 198,
+  "native_agreement": {
+    "agree": 30,
+    "disagree": 6,
+    "unassessed": 10
+  },
+  "first_batch_rereview_sources": 16,
+  "first_batch_changed_proposals": [
+    "12647",
+    "13862",
+    "17101",
+    "14833",
+    "2346",
+    "1842",
+    "14587",
+    "3805"
+  ],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/report.json": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "configs/tasks/slurp/news-topic-boundary-resolution-v1.json": "c03a0d792b7883966f4772db11da9820bb507b177a93d60c76d7cefaf59d5ed5",
+    "configs/reviews/slurp-news-topic-boundary-reference-v1.json": "c707a880abca0dcdb037088449dd54b4900d905c37cee64189d5880a042fffdb"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/news-topic-boundary-evidence-v1/sources.jsonl": "a5b7e766919bfec66a7a3c502c65fa146f0b411d9d55af017c2f8c875b764bb9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/news-topic-boundary-evidence-v1/review-recording-bindings.jsonl": "b0025c1debb12b46957c4f410c84e5fc31b1644bf9cfe89b13d97b69a3fec6b4",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/news-topic-boundary-evidence-v1/first-batch-migration.json": "ce5444f3dcb936313d40b2f7b066976393d71a4a52269e4efbbc219674690646"
+  },
+  "scope": "Full learning cohort identity and all proposed review/binding identities reconstructed. Semantic decisions are same-agent reference proposals; no independent semantic certification, listening, native correction or whole-population admission.",
+  "new_definition_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v2.json",
+    "sha256": "8544ef618d67528476a8acd678527d62412cae4a3df26763c7c457ea610d2dac",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v4.json": "703937a703d5965a33ae57798f05fab11ed9681eafde2c52f1ab3175aff717cf",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v4.json": "5a50eb9563ba35300658e487a4d8c85c662913a3ff982dc54ffa80e08281cde4",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v5.json": "c1f8e2590f95163b1348c3a63518a18a6817320e559b22894375d19349b41e5d"
+    },
+    "changed_semantic_types": [
+      "news_topic"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "event_name",
+        "news_topic"
+      ],
+      [
+        "joke_type",
+        "news_topic"
+      ],
+      [
+        "news_topic",
+        "person"
+      ],
+      [
+        "news_topic",
+        "place_name"
+      ]
+    ],
+    "unchanged_type_cards": 54,
+    "historical_supervision_automatically_migrated": false
+  }
+}

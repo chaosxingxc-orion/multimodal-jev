@@ -1,0 +1,19 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "context-macro-dp2-cpu-v1",
+  "tests": ["tests/test_context_macro_actor_dp_resume.py"],
+  "expected_tests": 1,
+  "scope": "Actual CPU DP2/native verl GRPO global128 micro8/16/32 accumulation and exact new-process replay on synthetic logits; not BF16 FSDP/audio/NPU/engine or speed proof.",
+  "support_files": [
+    "tests/test_context_dual_actor_dp_resume.py",
+    "tools/reports/context_dual_actor_candidate.py",
+    "tools/reports/context_probability_policy_v2.py",
+    "tools/jev/probe_span_native_actor_dp_cpu.py"
+  ]
+}

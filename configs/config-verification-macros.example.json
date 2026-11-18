@@ -1,0 +1,14 @@
+{
+  "schema": "jev-local-macros-v1",
+  "macros": {
+    "WORKSPACE": "/absolute/path/to/multimodal-jev",
+    "CONFIG_VERIFICATION_ENTRIES": [
+      {
+        "id": "grpo",
+        "template": "${WORKSPACE}/configs/portable/training/context-grpo-experiment.json",
+        "source": "/absolute/path/to/frozen-grpo-spec.json",
+        "source_sha256": "replace-with-verified-source-sha256"
+      }
+    ]
+  }
+}

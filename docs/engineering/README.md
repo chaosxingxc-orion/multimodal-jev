@@ -1,5 +1,32 @@
 # 工程索引
 
+2026-11-18 最新执行调整：取消独立100步效率基线，正式训练内固定窗口采样统计。
+v0.0.91组合控制器已后台派发，顺序为prefix两更新→恢复→真实尾批两更新→formal634；
+固定镜像CPU和实际封包重建已通过，NPU阶段以准确容器与独立审核为准。
+入口、证据和统计口径见[组合式启动](stage2-startup-root-causes-20261118.md#7-组合式启动与正式训练内效率统计)。
+下方旧队列中的100步前置条件已被本条取代。
+
+2026-11-18 启动修复：按[根因分类与系统自检](stage2-startup-root-causes-20261118.md)推进，
+先完成分类门禁再发布新运行包。v77启动失败、v79后继已停止；下文旧调度状态仅供追溯。
+
+合作方最新交接：[2026-11-18实验观测与下一步计划](../collaboration/simple-task-experiment-observation-handoff-20261118.md)，包含现场状态、镜像与控制面、启动命令、指标口径、验收门槛和团队分工。
+
+**当前生效约束：正式实验总预算四卡（Stage1 DP4，Stage2 DP2 + 两个TP1推理实例），仅简单任务。** 最新配置与预算见[四卡基线](context-four-device-simple-baseline-v1.md)。
+当前顺序：InfoNCE区分性学习与warmup → Stage1终点318的全量TRAIN固定reference结果缓存 → 排序/存在性双信用GRPO。
+2026-11-18 起使用[CPU/NPU异步调度 v0.0.49](context-async-scheduling-v1.md)：
+Stage1完整selection与Stage2有限验收/100步效率的CPU准备、审核并行；已就绪评测优先使用四卡。
+两条分支全部审核通过后才派发正式634步GRPO，随后完成11点GRPO曲线与冻结策略FSC/MINDS/TEST。
+原v39–v44六个串行控制器已按准确身份退出，已完成训练与验收证据保留，禁止重复启动旧队列。
+Stage1来源审核已接入[并行校验及共同batch证明复用](scripted-parallel-audit-v1.md)，v0.0.45已退出。
+新控制器启动不等于NPU执行、正式基线发布或效果验证；现场状态与证据边界见调度文档。
+迁移客户端已适配当前两个replica实例；只读缓存、完整macro和逐策略HF对齐见
+[简单任务迁移客户端](context-replica-transfer-client-v1.md)。CPU验证不代表NPU准入或迁移收益。
+2026-11-18 组件化基座 v0.0.52–v0.0.68 完成六阶段CPU验收（`model_calls=0`、`npu_executed=false`）：
+模型几何、并行执行、组件注册表、发布句柄、评测契约与组合式控制器；0.6B/1.7B几何与策略快照同路径通过。
+该结论不证明NPU训练、1.7B四卡容量或效果收益，见[组件化工程基座](component-base-v1.md)。
+历史八卡/6+2方案见[两阶段 v0.0.4](context-two-stage-v0.0.4.md)，不作为当前拓扑准入。
+
+分阶段 LoRA 使用显式 `stage2.reuse_stage1_adapter` 开关；配置相同也可选择新参数。当前配置为 `configs/experiments/context-two-stage-v0.0.11.json`，规则及验收边界见 [分阶段 LoRA 规约](stage-lora-policy-v1.md)。
 > 状态快照：2026-11-17 UTC。本页是 `docs/engineering/` 的阅读入口，只保留**当前有效的结论与决策**。
 > 历史设计、失败探索和逐次运行记录收编在 [`archive/`](archive/README.md)，原始收据（JSON）原地保留。
 > 运行事实以冻结包、配置、容器/进程回执和独立审核结果为准；本页数字是快照，不是实时状态。
@@ -10,9 +37,10 @@
 | --- | --- | --- |
 | 任务 | 单音频、完整候选面板、SLURP 原生互斥意图成员判决；FSC/MINDS 用同一接口换候选定义 | [联合入口](context-prob-v1-baseline.md)、[协作指南](../collaboration/simple-task-rl-engineering-guide-v1.md) |
 | 模型 | Qwen3-ASR-0.6B-hf；q/v LoRA rank4/alpha8；共享一层 Transformer 概率头（hidden1024、8 heads、FFN1024、residual0.1、dropout0） | [runtime](runtime.md) |
+| 模型尺寸扩展 | 1.7B 与 0.6B 共用同一配置 schema 与算法，几何/56条目标/头/快照往返已CPU验收；`training_dispatch_allowed=false`，未申请四卡、未做NPU对齐 | [组件化基座](component-base-v1.md) |
 | 输出 | 每候选独立 sigmoid 概率；主决策为阈值 0.5 的候选集合，另报 top1；不生成文本 CoT、不做 ASR→文本模型级联 | [任务基线](context-prob-v1-baseline.md) |
-| 训练 | Stage1 指令/候选绑定 634 步 → Stage2 双信用 GRPO 634 步；RLOO 不再作为运行分支；PPO-critic 仅设计预留 | [协作指南](../collaboration/simple-task-rl-engineering-guide-v1.md) |
-| 并行/精度 | verl FSDP DP4、vLLM TP1；BF16 执行，FP32 master/Adam/loss | [网络与运行时](runtime.md) |
+| 训练 | Stage1 InfoNCE 318 更新 → Stage2 双信用 GRPO 634 更新；各两轮完整TRAIN。RLOO不作为当前运行分支，PPO-critic仅设计预留 | [四卡基线](context-four-device-simple-baseline-v1.md) |
+| 并行/精度 | Stage1 DP4/global256；Stage2 DP2/global128＋两个TP1/service32。BF16执行，FP32 master/Adam/loss | [四卡基线](context-four-device-simple-baseline-v1.md) |
 | 数据 | SLURP clean TRAIN 40,513、selection 9,226、TEST 12,991；FSC native31 3,793；MINDS native14 8,168 | [数据契约](data-contract.md)、[质量约束](slurp-quality-hold-v1.md) |
 | 存储 | Ceph 模型/数据只读；热状态写本地盘并保留 fsync | [存储规约](runtime-storage-policy.md) |
 | 监控 | 普通远程观察固定 900 秒；超时不等于训练失败 | [监控规约](monitoring-and-goal-continuation.md) |
@@ -22,8 +50,10 @@
 
 | 主题 | 有效结论 | 证据边界 |
 | --- | --- | --- |
-| Stage1 | 完成 634 次更新；完整 9,226 selection：set-F1 73.8041%、top1 82.0724%、macro-F1 77.4315%、NLL 0.0187434286、Brier 0.0046499592 | 不是 TEST、不是 RL 成绩；起点是新初始化概率头，不能称原生 ASR 零样本 |
-| 正式 GRPO | 原 GRPO 容器 `e564df04` 正常退出；完整 11 点 selection 尚未收口 | 进程 exit0、TRAIN reward 上升均不等于任务收益；以收据为准 |
+| 当前InfoNCE Stage1 | rc5 的318更新已独立收集审核，81,026真实曝光；11个真实checkpoint已绑定 | 本轮完整selection尚未评分，不沿用旧634步成绩；终点318固定为Stage2初始化/reference |
+| 当前Stage2准入 | v0.0.37终点TRAIN256面板logit/prob最大差0；v0.0.39全TRAIN reference已完成收集及独立日志重建审核：40,513条、317个macro，固定Stage1终点318 | 缓存完整性审核通过不等于全人口HF/vLLM对齐或训练准入；有限GRPO、100步效率与正式效果仍待。最新证据见[发布依赖规约](context-release-deployment-v1.md#全量reference审核结果2026-11-18北京时间) |
+| 历史Stage1 | 旧634更新来源的完整9,226 selection：set-F1 73.8041%、top1 82.0724%、macro-F1 77.4315%、NLL 0.0187434286、Brier 0.0046499592 | 不是本轮InfoNCE结果、TEST或RL成绩；起点是新初始化概率头，不能称原生ASR零样本 |
+| 正式 GRPO | 原 GRPO（`context-rl-grpo-arithmetic-v2`，算法 `grpo_v1`）容器正常退出；11 点 selection 曲线完整并已独立审核（step0 set-F1 0.738041 → 选中 step384 0.809831、top1 0.813245、NLL 0.056750；路径 sha256 `e9452200…69dc0`） | 源 selection 不是 TEST/FSC/MINDS 成绩；NLL/Brier 同时变差（0.018743→0.056750/0.006903）。FSC/MINDS/TEST 迁移评测按 v4 版本启动，结果未出前不得引用 |
 | 双信用 GRPO | 锁定算法 `dual_credit_grpo_floor_clipped_v1`，联合臂每分量 G=16；v3 整合包固定镜像 CPU 8 项检查通过 | CPU 导入/封包通过不等于 NPU 训练或效果；剩余放行条件是实际音频对齐、DP4 连续更新与恢复、全 TRAIN 数值覆盖 |
 | 训练效率（最新） | 100 步对照：声学批处理 +8.4058%，KV16 再 +3.8489%，合计 **12.5783%**；三臂均 `finite_dp2_efficiency_audited` | 单次顺序运行，`fresh_process_replay_verified=false`；不含启动/收集/评测，不是任务或迁移收益 |
 | 目标域一致性 | service32 的 FSC 有限面板 exact 通过；MINDS 259 条中 10 条差异（最大 prob 0.02438146、logit 0.21875，top1 翻转 0、阈值翻转 0） | 按失败停止，未执行 SLURP TEST；不能靠放宽 exact 条件宣布准入 |
@@ -48,13 +78,16 @@
 **入口与规约**
 
 - [任务与算法基线](context-prob-v1-baseline.md)
+- [组件化工程基座 v1](component-base-v1.md)：模型几何、并行执行、注册表、发布句柄、评测契约；0.6B/1.7B 同路径与未验证边界
 - [跨团队简单任务协作指南](../collaboration/simple-task-rl-engineering-guide-v1.md)
 - [runtime](runtime.md)、[存储规约](runtime-storage-policy.md)、[数据契约](data-contract.md)
 - [本地宏](local-config-macros-v1.md)、[日常操作归并](routine-operations-v1.md)、[监控与续跑](monitoring-and-goal-continuation.md)
 - [SLURP 质量约束](slurp-quality-hold-v1.md)、[LoRA checkpoint 存储](lora-checkpoint-storage-policy.md)
+- [超限证据指纹索引](large-evidence-artifacts-v1.md)：>1 MB 机器生成证据只记 SHA256，不入 GitHub 正文
 
 **当前主线（context / 双信用 / 效率 / 迁移）**
 
+- [四卡简单任务与缓存reference基线](context-four-device-simple-baseline-v1.md)
 - [声学批处理与 KV16 效率](context-acoustic-bucket-efficiency-v1.md)
 - [DP2 整合](context-macro-dp2-integration-v1.md)、[正式候选](context-macro-formal-candidate-v1.md)、[正式启动](context-macro-formal-launch-v1.md)
 - [源评测计划](context-macro-source-evaluation-plan-v1.md)、[评测准入边界](context-macro-evaluation-readiness-v1.md)
@@ -64,7 +97,7 @@
 - [reference 复用](context-reference-reuse-plan-v1.md)、[连续窗口效率](context-reference-epoch-windows-v1.md)
 - [双信号整合包 v3](context-dual-integrated-package-v3.md)、[双信号运行](context-dual-training-operations-v1.md)、[独立审核](context-dual-training-audit-v1.md)
 - [数值协议修复](context-ranking-numerics-v2.md)、[损失分项验收](context-loss-metrics-native-validation-v2.md)
-- [批量 rollout 候选](context-batch-probe-prepared-v1.md)、[整批 IPC 候选](context-bulk-ipc-candidate-v1.md)、[推理实例 overhead](context-replica-overhead-analysis-v1.md)
+- [批量 rollout 候选](context-batch-probe-prepared-v1.md)、[整批 IPC 候选](context-bulk-ipc-candidate-v1.md)、[配置化副本训练](context-replica-training-v1.md)、[推理实例 overhead](context-replica-overhead-analysis-v1.md)
 
 **FSC / 数据 / 运行时**
 
@@ -78,6 +111,7 @@
 - [保留库存](retention-inventory-v1.md)、[保留编排](retention-pipeline-v1.md)、[产物保留](artifact-retention-v1.md)、[归档编排](archive-retention-pipeline-v1.md)
 - [收集编排](collection-trajectory-pipeline-v1.md)、[配置化收集](configured-training-collection-v1.md)、[数据采样](dataset-sampling-v1.md)
 - [可移植配置校验](portable-config-verifier-v1.md)、[RL 配置](rl-experiment-portable-configs-v1.md)、[迁移配置](transfer-portable-configs-v1.md)
+- 组件化基座入口模板：`configs/portable/operations/context-{engineering-baseline,model-geometry-audit,parallel-execution-measurement,component-smoke,composed-differential,model-profile-1-7b}.json`，本地绑定与证据见[组件化基座 §5/§7](component-base-v1.md)
 - [主机 Ceph 崩溃记录](host-ceph-crash-20261113.md)、[磁盘清理](host-disk-cleanup-20261116.md)、[NPU175 分配](npu175-allocation.md)
 
 ## 5. 归档与失败探索

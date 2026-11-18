@@ -1,0 +1,61 @@
+{
+  "schema": "jev-existing-loss-reduction-audit-v1",
+  "pins": {
+    "src/multimodal_jev/span_hybrid_actor.py": "11d478074b8c15d2b5ef6788324e76e99a23678385bba23ef649165b21b9dcd1",
+    "src/multimodal_jev/span_hybrid_objective.py": "c8f4d25c766a8eb8cc5cb64997e3a500ca5eb0ec47f6256ccc2a610fb69ceb0b",
+    "configs/tasks/slurp/balance-policy-candidate-v1.json": "1d4327aab768639495da982e1a2e3c93ee978602d7c66a0418aded14fec01494",
+    ".local/research/request-loss-reduction-v1/check.py": "3d4e0abfe6773becaf9c1ecf176382cb63067971b23ec4efe371b359b2cbbaa8"
+  },
+  "torch_version": "2.10.0+cpu",
+  "dtype": "float64",
+  "population_weights": [
+    0.5,
+    1.5
+  ],
+  "full_population_mean_weight": 1.0,
+  "actual_legacy_full_batch_gradient": [
+    [
+      0.125,
+      -0.125
+    ],
+    [
+      0.375,
+      -0.375
+    ]
+  ],
+  "frozen_parameter_mean_of_legacy_singleton_gradients": [
+    [
+      0.25,
+      -0.25
+    ],
+    [
+      0.25,
+      -0.25
+    ]
+  ],
+  "declared_population_objective_gradient": [
+    [
+      0.125,
+      -0.125
+    ],
+    [
+      0.375,
+      -0.375
+    ]
+  ],
+  "simulated_two_rank_shared_denominator_gradient": [
+    [
+      0.125,
+      -0.125
+    ],
+    [
+      0.375,
+      -0.375
+    ]
+  ],
+  "maximum_legacy_singleton_gradient_error": 0.125,
+  "real_count_substitution_rejected": "local effective weight exceeds global denominator",
+  "conclusion": "Existing callback batch weight normalization cannot implement the registered fixed-population objective by changing only one denominator argument.",
+  "scope": "Actual existing CPU CE function on synthetic logits. Frozen parameters; no optimizer steps, real distributed collectives, RL integration, model inference or efficacy claim.",
+  "training_dispatch_allowed": false
+}

@@ -1,0 +1,109 @@
+{
+  "schedule_sha256": "fc36b3afdf367bad6a5f0530a8743cb44b630592e2c778c3046130e3c1adf200",
+  "population": 40513,
+  "epochs": 2,
+  "records_sha256": "9dddea74779c55250f9aa9501e24a8bc499b4930ada83c4095346641debc5645",
+  "token_quantiles": {
+    "0": 1952,
+    "0.1": 1965,
+    "0.25": 1971,
+    "0.5": 1979,
+    "0.75": 1990,
+    "0.9": 2003,
+    "0.95": 2013,
+    "0.99": 2039,
+    "1": 2249
+  },
+  "duration_seconds_quantiles": {
+    "0": 0.5119375,
+    "0.1": 1.536,
+    "0.25": 1.984,
+    "0.5": 2.6236875,
+    "0.75": 3.4555625,
+    "0.9": 4.48,
+    "0.95": 5.248,
+    "0.99": 7.232,
+    "1": 23.36
+  },
+  "token_bucket_counts": {
+    "1984": 26230,
+    "2048": 14060,
+    "2112": 200,
+    "2249": 23
+  },
+  "comparisons": [
+    {
+      "micro": 8,
+      "order": "rank_original",
+      "token_padding_fraction": 0.013867954922883396,
+      "waveform_padding_proxy_fraction": 0.42784774457691854,
+      "padded_token_slots": 163137320,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0113575328756843
+    },
+    {
+      "micro": 8,
+      "order": "rank_sorted",
+      "token_padding_fraction": 0.00514725718484621,
+      "waveform_padding_proxy_fraction": 0.2157660152119032,
+      "padded_token_slots": 161707288,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.00749504155094
+    },
+    {
+      "micro": 8,
+      "order": "global_sorted_snake",
+      "token_padding_fraction": 0.0017731679802044376,
+      "waveform_padding_proxy_fraction": 0.0863604824761246,
+      "padded_token_slots": 161160704,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0098852335327846
+    },
+    {
+      "micro": 16,
+      "order": "rank_original",
+      "token_padding_fraction": 0.019012660793566116,
+      "waveform_padding_proxy_fraction": 0.5074950303293209,
+      "padded_token_slots": 163992880,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0174103666518053
+    },
+    {
+      "micro": 16,
+      "order": "rank_sorted",
+      "token_padding_fraction": 0.011519946002025439,
+      "waveform_padding_proxy_fraction": 0.38257065807606117,
+      "padded_token_slots": 162749808,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0136953725407196
+    },
+    {
+      "micro": 16,
+      "order": "global_sorted_snake",
+      "token_padding_fraction": 0.0039731687884208,
+      "waveform_padding_proxy_fraction": 0.17497669434329788,
+      "padded_token_slots": 161516672,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0228230174687096
+    },
+    {
+      "micro": 32,
+      "order": "rank_original",
+      "token_padding_fraction": 0.024573783298198815,
+      "waveform_padding_proxy_fraction": 0.5725209659592914,
+      "padded_token_slots": 164927840,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0260198056811247
+    },
+    {
+      "micro": 32,
+      "order": "rank_sorted",
+      "token_padding_fraction": 0.024573783298198815,
+      "waveform_padding_proxy_fraction": 0.5725209659592914,
+      "padded_token_slots": 164927840,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0260198056811247
+    },
+    {
+      "micro": 32,
+      "order": "global_sorted_snake",
+      "token_padding_fraction": 0.008563628503070353,
+      "waveform_padding_proxy_fraction": 0.31468411376109184,
+      "padded_token_slots": 162264512,
+      "mean_slowest_rank_over_mean_dense_attention_proxy": 1.0597454584044326
+    }
+  ],
+  "scope": "Offline full two-epoch schedule simulation, same128 slot membership and weights per update including zero-weight padding; waveform padding is a proxy, not audio encoder FLOPs. No NPU execution or speedup claim. Token records authenticated; schedule coordinate and multiplicity checked."
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "context-attribute-bootstrap-tools-fixed-image-cpu-v1",
+  "container_id": "3da0272b1ad804ddaf3b917a9f0166075543cc26ba48e09d64481684865b14ba",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T02:20:32.43072976Z",
+    "FinishedAt": "2026-11-15T02:21:04.26044896Z"
+  },
+  "source_files": 381,
+  "source_manifest_sha256": "4abcd5666293d1694f5fd8fc47fbc273857c56de9dd047d6768ea584cae97f37",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-bootstrap-tools-cpu-v1-collected",
+  "files": {
+    "run/controls.json": "763cc03abadf75df42c556327afed3c10eb08d51727fbdeb6a4f4cbbc4134afb",
+    "run/terminal.json": "decf060ef1dfffe7d60cf9c08e1cb5a632f0fb4ecdad1ac442f4d2c1fb07df61",
+    "run/junit.xml": "dc5fa1ad93b6896a373774a347fbf1d8388c08926e8298025f37bb37e7c4c68d",
+    "run/pytest.log": "285219c2a318a031fb742c0d33a990939ce526952bd75bc47198a79b91e51e9b",
+    "package/FILES.json": "4abcd5666293d1694f5fd8fc47fbc273857c56de9dd047d6768ea584cae97f37",
+    "package/run.py": "9ebdc980dd7be11b564202ae03f1d63efbf619df225056d77b7c6a3c5fb006a8"
+  },
+  "counts": {
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794709259.776234,
+    "finished_unix": 1794709262.6350746,
+    "source_manifest_sha256": "4abcd5666293d1694f5fd8fc47fbc273857c56de9dd047d6768ea584cae97f37",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-bootstrap-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_paired_bootstrap.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Paired source-group bootstrap tested against exhaustive independent duplication and full9226/2146 source-group artificial score control; no model efficacy evidence."
+}

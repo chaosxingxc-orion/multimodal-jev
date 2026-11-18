@@ -1,0 +1,22 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "context-macro-dp2-rank64-cpu-v1",
+  "tests": [
+    "tests/test_context_macro_actor_dp_resume.py",
+    "tests/test_context_dual_credit_native.py"
+  ],
+  "expected_tests": 4,
+  "scope": "CPU native verl DP2 global128/micro8,16,32 exact fresh replay plus FP64 ranking numerics and FP32 loss; synthetic logits, not NPU evidence.",
+  "support_files": [
+    "tests/test_context_dual_actor_dp_resume.py",
+    "tools/reports/context_dual_actor_candidate.py",
+    "tools/reports/context_probability_policy_v2.py",
+    "tools/jev/probe_span_native_actor_dp_cpu.py"
+  ]
+}

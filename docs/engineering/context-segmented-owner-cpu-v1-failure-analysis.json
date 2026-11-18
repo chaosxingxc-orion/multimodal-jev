@@ -1,0 +1,15 @@
+{
+  "container_id": "dc78572d36f890f87e66482941e156046ff36861c03fd9cd84dfeb374b799d27",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "observed_unix": 1794717583.4353867,
+  "complete_logs": ".local/decision-objective-research/context-segmented-owner-cpu-v1-complete-logs.json",
+  "complete_logs_sha256": "9873fccaeb5a6b3e2878f75c1188f9ab894ff312df2dd747cf19f36900084667",
+  "tests_passed": 104,
+  "tests_seconds": 27.49,
+  "native_forward_context_imported": true,
+  "native_ascend_metadata_imported": false,
+  "owner_class_import_reached": false,
+  "failure": "Ascend metadata module transitively imports Triton operations querying hardware get_arch; container has no NPU devices",
+  "failure_evidence": "SystemError: <built-in function get_arch> returned NULL without setting an exception",
+  "production_changes": false
+}

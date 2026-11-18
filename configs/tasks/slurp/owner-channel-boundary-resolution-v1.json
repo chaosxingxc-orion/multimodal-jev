@@ -1,0 +1,67 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "human_owner_and_content_channel_v1",
+  "status": "selected_task_design_rule_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "person",
+    "media_type"
+  ],
+  "definitions": {
+    "person": "An expressed human name, description or reference serving as a task participant, queried subject, recipient, beneficiary, or owner whose possession identifies a request-relevant object, account or content. Pure conversational self-reference or assistant address alone is insufficient. Apply request-relevant scope.",
+    "media_type": "An expressed kind or format of content, or an explicitly used source/channel for obtaining, carrying or publishing content. A platform name counts only with evidence of this content-channel role, not merely application access, company identity or account metadata. Apply request-relevant scope."
+  },
+  "per_type_rules": {
+    "person": [
+      "A possessive can establish a human owner when that ownership identifies the requested object or content: my audiobook, my playlist, my inbox and my calendar follow the same rule. A proper name or recovered identity is not required.",
+      "Require the owner/participant role to be supported as human. Corporate ownership or ambiguous its/their without human evidence does not automatically establish person. Assistant ownership alone is not a human reference.",
+      "I want, please tell me, and direct assistant address alone are conversational framing, not an additional person role. Explicit recipients, beneficiaries, subjects or owners can independently qualify.",
+      "Ownership does not automatically imply personal_info, relation or authorship; these types require their own field, interpersonal-role or creator evidence. My audiobook need not be authored by the speaker."
+    ],
+    "media_type": [
+      "Explicit content formats and kinds such as audiobook, podcast, news, picture or video can count independently of a particular work identity.",
+      "A named service counts as a media source/channel when the utterance expresses content obtained from, played through, or published on it. Posting on Twitter and checking posts on Facebook establish this role; the same mention may independently satisfy app_name.",
+      "Opening an application alone, a company stock-price query, a contact handle lookup, profile metadata, login status or a bare platform name does not by itself express a media-source/channel role. Do not infer it from native intent or a platform dictionary.",
+      "Separate source from subject: news about a company is not evidence that the company is the news provider. Platform/topic or station/app ambiguity remains unavailable when the full utterance cannot settle the role.",
+      "No implication from app_name to media_type or vice versa is allowed. Dual presence is supported by two explicit roles, not inferred from real-world corporate identity or native label overlap."
+    ]
+  },
+  "evidence": {
+    "owner": {
+      "regex": "\\b(my|your|his|her|their|our)\\s+(audiobook|book|song|songs|playlist|music|podcast|inbox|email|emails|calendar|alarm|alarms|car|house)\\b",
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/owner-channel-boundary-evidence-v1/owner-sources.jsonl",
+      "sha256": "5e9ede750cca32905273e2ea14b5f95b4f077ee96f449d7246e6f5d7156dbdd3",
+      "sources": 278,
+      "recordings": 1357
+    },
+    "platform": {
+      "regex": "\\b(twitter|instagram|facebook|spotify|pandora|youtube|netflix)\\b",
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/owner-channel-boundary-evidence-v1/platform-sources.jsonl",
+      "sha256": "a113291f3c87ce4a8286d89476833d7c2f5ae32ef4705f4e5bc4df2aedb34d8c",
+      "sources": 155,
+      "recordings": 578
+    }
+  },
+  "reading": "All278 owner-pattern and155 platform-pattern learning references read; fixed diagnostic searches, not exhaustive type populations or labeling rules.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      140,
+      146,
+      148,
+      149,
+      188,
+      196,
+      200,
+      201
+    ],
+    "interpretation": "Human participant examples and explicit BBC/radio/Facebook channels support role distinctions. Possessive-owner extension and dual predicates are project semantic choices, not identical native tagging."
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+    "previous_sha256": "dd4bf750f1858a96f8376de39d418f0da6df2b1f71a8b3c11d4f21d438bec5ad",
+    "historical_supervision_automatically_migrated": false
+  },
+  "scope": "Input role definition shared across tasks; no query-specific question routing, output-value generation or identity lookup."
+}

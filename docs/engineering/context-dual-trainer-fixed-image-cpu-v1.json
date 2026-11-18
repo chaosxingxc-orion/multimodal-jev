@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "05cafa5ff5033474b17b0802df272330d4fdb1536d6cdcac9f75d1a32b56d384",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T02:13:18.804564Z",
+    "FinishedAt": "2026-11-16T02:14:17.04686585Z"
+  },
+  "source_files": 402,
+  "source_manifest_sha256": "c3228a7d029ea40242e565229824572b448ed5ee61d352bcc47145da21af61cb",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-trainer-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "f4f3622183bbea1fc4247d8b9e67c6e371eb309de9b68d2df408407c0985f3c9",
+    "run/junit.xml": "db7fae13003cece633bf3b53be6bcecc9242feaa868654858b5e232829afddae",
+    "run/pytest.log": "c57308f8fad7ebb3553a9b39324e46a5aac83f92ed539915b16ee11dc0cfcc5a",
+    "package/FILES.json": "c3228a7d029ea40242e565229824572b448ed5ee61d352bcc47145da21af61cb",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794795225.8583498,
+    "finished_unix": 1794795255.7210753,
+    "source_manifest_sha256": "c3228a7d029ea40242e565229824572b448ed5ee61d352bcc47145da21af61cb",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-trainer-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_trainer_candidate.py",
+      "tests/test_context_dual_session_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Trainer source integration, real socket runtime greeting, processor/source authentication and session wiring; engine mocked, no actual Qwen/NPU/trainer dispatch."
+}

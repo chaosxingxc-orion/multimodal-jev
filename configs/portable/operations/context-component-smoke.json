@@ -1,0 +1,28 @@
+{
+  "schema": "context-component-smoke-v1",
+  "components": {
+    "release": "slurp_portable_release_v2",
+    "objective": "candidate_infonce",
+    "evaluator": "context_event_metrics_v1",
+    "topology": "context_topology_batch_plan_v1"
+  },
+  "release_handle": "release_handle_v1",
+  "cache_entries": 2,
+  "rows_per_role": 4,
+  "threshold": 0.5,
+  "temperature": 1.0,
+  "seed": 20261118,
+  "topology": {
+    "training_devices": 4,
+    "tensor_parallel": 1,
+    "pipeline_parallel": 1,
+    "per_dp_replica_batch": 64,
+    "microbatch": 16,
+    "inference_instances": 2,
+    "inference_batch_queries": 32,
+    "source_queries": 40513,
+    "epochs": 1,
+    "efficiency_steps": 100
+  },
+  "output": "${COMPONENT_SMOKE_OUTPUT}"
+}

@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "recordings": 40513,
+  "report_sha256": "e952b2263ccf819702aecc813514e61293d4e33a4200c1dd0c12cf6b0f67f714",
+  "checks": [
+    {
+      "family": "partition6",
+      "independently_recomputed": true,
+      "no_route_constant_accuracy": 0.0,
+      "old_policy_oracle_stale_action_accuracy_on_changed_policy": 0.23538123565275343,
+      "changed_valid_set_recordings": 30977
+    },
+    {
+      "family": "partition12",
+      "independently_recomputed": true,
+      "no_route_constant_accuracy": 0.0,
+      "old_policy_oracle_stale_action_accuracy_on_changed_policy": 0.1491866808185027,
+      "changed_valid_set_recordings": 34469
+    },
+    {
+      "family": "overlap6",
+      "independently_recomputed": true,
+      "no_route_constant_accuracy": 0.0,
+      "old_policy_oracle_stale_action_accuracy_on_changed_policy": 0.2986201959864735,
+      "changed_valid_set_recordings": 30977
+    },
+    {
+      "family": "availability6",
+      "independently_recomputed": true,
+      "no_route_constant_accuracy": 0.5294103127391208,
+      "old_policy_oracle_stale_action_accuracy_on_changed_policy": 0.45689038086540124,
+      "changed_valid_set_recordings": 22003
+    }
+  ],
+  "scope": "Independent full population enumeration from separate round-robin derivation. Stale-policy oracle reads true native intent and old policy only; synthetic diagnostic, not a model result.",
+  "tests": "17 passed: test_harness_routing_support.py and test_slurp_contrastive_support.py"
+}

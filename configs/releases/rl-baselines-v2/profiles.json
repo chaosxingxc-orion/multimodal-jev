@@ -1,0 +1,102 @@
+{
+  "schema": "jev-rl-algorithm-profiles-v2",
+  "status": "configuration_catalog_not_new_training_admission",
+  "shared_engine": "arithmetic-v2 native verl actor plus vLLM; one implementation",
+  "runtime_image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "dispatch_allowed": false,
+  "required_order": [
+    "task_definition_and_comparison",
+    "engine_and_experiment_freeze",
+    "finite_affected_path_acceptance",
+    "training_and_complete_evaluation"
+  ],
+  "algorithms": [
+    {
+      "id": "grpo_v1",
+      "display_name": "GRPO with joint-action clipped surrogate",
+      "role": "primary",
+      "estimator": "compute_grpo_outcome_advantage",
+      "normalize_group_std": true,
+      "surrogate": "compute_policy_loss_vanilla",
+      "group_size": 16,
+      "clip_ratio": 0.2,
+      "dual_clip_c": 3.0,
+      "ppo_epochs": 1,
+      "critic": false,
+      "status": "full_training_independently_audited_selection_incomplete",
+      "paper": "https://arxiv.org/abs/2402.03300",
+      "actor_template": "configs/portable/training/context-grpo-actor-v1.json",
+      "release_id": "493cc1bea2fafc93a18827707f11ee9cf5308ee7078990c1e52d9d425a422d49"
+    },
+    {
+      "id": "rloo_v1",
+      "display_name": "RLOO-clipped",
+      "role": "matched_control",
+      "estimator": "compute_rloo_outcome_advantage",
+      "normalize_group_std": false,
+      "surrogate": "compute_policy_loss_vanilla",
+      "group_size": 16,
+      "clip_ratio": 0.2,
+      "dual_clip_c": 3.0,
+      "ppo_epochs": 1,
+      "critic": false,
+      "status": "existing_formal_package_verified_full_curve_not_established",
+      "paper": "https://arxiv.org/abs/2402.14740",
+      "qualification": "LOO estimator with clipped surrogate; not original unmodified REINFORCE RLOO recipe",
+      "actor_template": "configs/portable/training/context-rloo-actor-v1.json",
+      "release_id": "ff76239fc021fae104a8ed0cebe022a3e90e9e45c547604c934c13393599eb21"
+    },
+    {
+      "id": "ppo_critic_design_v1",
+      "display_name": "PPO with learned value baseline",
+      "role": "reserved_design",
+      "critic": true,
+      "status": "not_implemented_not_dispatchable",
+      "paper": "https://arxiv.org/abs/1707.06347",
+      "required_before_dispatch": [
+        "value_function_definition_and_training",
+        "value_checkpoint_and_resume",
+        "actual_audio_distributed_update_and_parity"
+      ],
+      "temporal_gae": "not_applicable_to_parallel_question_indices"
+    }
+  ],
+  "shared_task_stage": {
+    "epochs": 2,
+    "updates": 634,
+    "primary_algorithm": "grpo_v1",
+    "alternative_algorithm": "rloo_v1",
+    "action": "complete_60_bit_tuple",
+    "sampling": "factorized_Bernoulli_from_current_policy",
+    "group_size": 16,
+    "reward": "complete_candidate_set_f1",
+    "empty_empty_reward": 1.0,
+    "partial_set_truth": "reject_set_reward_do_not_fill_missing_labels",
+    "clip_ratio": 0.2,
+    "native_dual_clip_c": 3.0,
+    "ppo_epochs": 1,
+    "retain_zero_signal_groups": true,
+    "advantage_before_dp_partition": true,
+    "reference": "frozen_end_of_this_instruction_stage_joint_policy",
+    "reference_kl": "sum_candidate_Bernoulli_KL_per_query",
+    "kl_coefficient": 0.01,
+    "auxiliary": {
+      "ranking_coefficient_start": 0.3,
+      "ranking_coefficient_end": 0.1,
+      "probability_coefficient_start": 0.3,
+      "probability_coefficient_end": 0.1,
+      "decay": "cosine_first_80_percent_updates"
+    }
+  },
+  "comparison_controls": [
+    "same_completed_stage1_initialization",
+    "same_fixed_stage1_reference",
+    "same_audio_population_and_order",
+    "same_candidate_definitions",
+    "same_G16",
+    "same_updates_and_query_exposure",
+    "same_optimizer_and_auxiliary_decay",
+    "same_full_selection_checkpoints"
+  ],
+  "stepwise_design": "configs/experiments/context-native-attribute-comparison-design-v1.json"
+}

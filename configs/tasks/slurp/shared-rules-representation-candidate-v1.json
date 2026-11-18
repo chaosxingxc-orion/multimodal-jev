@@ -1,0 +1,30 @@
+{
+  "schema": "jev-slot-shared-rules-candidate-v1",
+  "status": "lossless_field_reconstruction_verified_8192_failed_model_equivalence_unverified",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "selected_for_main_task": false,
+  "representation": "shared_rules_v1",
+  "literal_default": "literal_v1",
+  "sources": {
+    "configs/tasks/slurp/type-definition-candidates-v3.json": "df017c09189e955cd4f5a834de0fd124fc6664c1b56d14122045abbb3277d68a",
+    "configs/tasks/slurp/slot-presence-policy-candidate-v3.json": "48b5c8fbab6bca447f89663359f0a9d1ea0567628380929249b82edfe06bd0e9",
+    "configs/tasks/slurp/type-boundary-rules-candidate-v4.json": "2c2e66628690fa6716cd3f14b2b30206a32c0b7364c9aa1c48098c6fb23aa9ec",
+    "configs/tasks/slurp/intent-definition-candidates-v1.json": "bcb8d49663e3fb8f00bb00b6dc3a76443cd6127a8c006d2c6622fed9b40ffc33"
+  },
+  "algorithm": "Replace repeated complete string values of at least64 characters by references. Preserve all keys, positions, list order, field scope and original text in a task-local library. Never replace substrings or use audio, gold or reference text to choose rules.",
+  "shared_library_scope": "fixed_task_panel_only_same_across_direct_q2_q8",
+  "actor_instructions": "Explicitly apply each library rule at every reference in its local type/policy/boundary context.",
+  "decoder_scope": "Audit reconstruction only; no generated text, additional model pass or external decision decoder.",
+  "verified": "docs/research/panel-context-probe-v5-verified.json",
+  "tests": "tests/test_panel_context_design.py",
+  "runtime_change": "Design probe opt-in only; training and production renderer unchanged.",
+  "meaning_limit": "Exact field reconstruction does not establish model comprehension or functional equivalence of literal and referenced prompts.",
+  "next_decision": "Do not select reference representation only to reduce tokens. Retain literal contract as primary design reference until input design and model evidence support a change.",
+  "remaining": [
+    "task definition and truth admission",
+    "context and full population acceptance",
+    "model rule-reference comprehension on admitted truth",
+    "NPU resource and backend acceptance"
+  ]
+}

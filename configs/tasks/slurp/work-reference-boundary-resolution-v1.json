@@ -1,0 +1,70 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "particular_work_reference_v1",
+  "status": "selected_task_design_rule_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "audiobook_name",
+    "song_name",
+    "podcast_name",
+    "music_album",
+    "playlist_name",
+    "movie_name",
+    "game_name"
+  ],
+  "definitions": {
+    "audiobook_name": "An expressed title, name or particular identifying reference to a book or audiobook. Require the work role and particular-reference relation in the utterance; generic content selection alone does not count. Apply request-relevant scope.",
+    "song_name": "An expressed title, name or particular identifying reference to a song or individual track. Require the work role and particular-reference relation in the utterance; generic content selection alone does not count. Apply request-relevant scope.",
+    "podcast_name": "An expressed title, name or particular identifying reference to a podcast program. Require the work role and particular-reference relation in the utterance; generic content selection alone does not count. Apply request-relevant scope.",
+    "music_album": "An expressed title, name or particular identifying reference to a music album. Require the work role and particular-reference relation in the utterance; generic content selection alone does not count. Apply request-relevant scope.",
+    "playlist_name": "An expressed title, name or particular identifying reference to a music playlist collection. Require the work role and particular-reference relation in the utterance; generic content selection alone does not count. Apply request-relevant scope.",
+    "movie_name": "An expressed title, name or particular identifying reference to a film. Require the work role and particular-reference relation in the utterance; generic content selection alone does not count. Apply request-relevant scope.",
+    "game_name": "An expressed title, name or particular identifying reference to a named game or identifiable game system. Require the work role and particular-reference relation in the utterance; generic content selection alone does not count. Apply request-relevant scope."
+  },
+  "thinking_requirements": [
+    "Require both an expressed reference to a particular work/collection and evidence of the requested work type. A title/name can supply identity, but a proper title or resolved database identifier is not required.",
+    "Anaphoric, possessive, ordinal or history-relative expressions such as that song, my audiobook, track eight or the last song can supply a particular reference when the work role is expressed. Do not resolve which work it denotes from missing history.",
+    "A request for arbitrary content satisfying a genre, topic, quality or provider criterion does not by itself identify a particular work. Some folk songs or a new podcast on healthcare is selection, not a work reference. A superlative alone is not proof of an already identified work.",
+    "Determine whether a description refers to an established/specific work or merely restricts an open search. Definite or possessive determiners are evidence, not automatic lexical rules. If the distinction is not supported by the full utterance, keep unavailable.",
+    "Explicit naming, called/named constructions, creator-work relations with a supplied work label, work nouns and continuation references can establish type and identity. Play plus an ambiguous name alone does not decide song versus artist, album, film or another type.",
+    "A provider, creator or medium alone does not imply an identified work. If creator/provider wording leaves one particular work versus unspecified content unresolved, keep unavailable.",
+    "Game names include conventionally named rule systems such as chess and rock paper scissors when used as games; an open game genre or an ambiguous sport-versus-digital-game request does not automatically identify a game work.",
+    "An identified playlist can be specified by its name, ordinal, owner or identifying description. An arbitrary newly requested playlist defined only by selection criteria is not an established work reference unless an explicit identifying label/reference is assigned.",
+    "Presence is independent of intent, playback commitment and value recovery. A negated or excluded identified work can still be request-relevant. Each other type requires its own evidence; do not propagate a work type from native labels or external title facts."
+  ],
+  "negative_rule": "Full-input review establishes only generic content/category/provider selection or no reference of this type; native omission is not absence.",
+  "ambiguity_rule": "Unavailable when particular-reference versus open selection, or the work type itself, cannot be established from the utterance.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      138,
+      150,
+      182,
+      191
+    ],
+    "interpretation": "Examples illustrate named works and game systems; descriptive/anaphoric scope is our explicit task decision, not claimed official exhaustive equivalence."
+  },
+  "evidence": {
+    "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/work-reference-boundary-evidence-v1/sources.jsonl",
+    "sha256": "6e8009d7eb19c0f0382d65d2bbbfcdb4c79f60dba1d12e3cd84dce9c14749953",
+    "sources": 353,
+    "recordings": 1592,
+    "native_per_type_source_counts": {
+      "audiobook_name": 60,
+      "song_name": 102,
+      "podcast_name": 48,
+      "music_album": 1,
+      "playlist_name": 53,
+      "movie_name": 13,
+      "game_name": 77
+    },
+    "reading": "All native-positive union reference texts read; not all rows adjudicated or independently certified."
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v3.json",
+    "previous_sha256": "0708b51ca0b9f9c0779b8379b2dbfb628e1697ed0d1f123561d6c58194ab8f87",
+    "historical_supervision_automatically_migrated": false
+  },
+  "scope": "One input-only rule across7 types; no generated reasoning, external identity resolution or gold-dependent routing."
+}

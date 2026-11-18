@@ -1,0 +1,13 @@
+{
+  "schema": "local-operations-v1",
+  "output_directory": "${FSC_COMPARISON_CONFIG_OUTPUT}",
+  "steps": [
+    {
+      "id": "comparison_config",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/operations/fsc-reference-comparison.json",
+      "output": "${FSC_COMPARISON_CONFIG_OUTPUT}/comparison.json",
+      "depends_on": []
+    }
+  ]
+}

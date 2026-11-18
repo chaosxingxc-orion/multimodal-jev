@@ -1,0 +1,84 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "news_topic_reporting_scope_v1",
+  "status": "selected_task_design_rule_pending_consolidated_ontology_and_supervision_release",
+  "training_dispatch_allowed": false,
+  "actor_operator": "S_present",
+  "base_definition_file": "configs/tasks/slurp/type-definition-candidates-v3.json",
+  "base_definition_file_sha256": "df017c09189e955cd4f5a834de0fd124fc6664c1b56d14122045abbb3277d68a",
+  "base_policy_file": "configs/tasks/slurp/slot-presence-policy-candidate-v3.json",
+  "base_policy_file_sha256": "48b5c8fbab6bca447f89663359f0a9d1ea0567628380929249b82edfe06bd0e9",
+  "base_boundary_file": "configs/tasks/slurp/type-boundary-rules-candidate-v4.json",
+  "base_boundary_file_sha256": "2c2e66628690fa6716cd3f14b2b30206a32c0b7364c9aa1c48098c6fb23aa9ec",
+  "entity_type": "news_topic",
+  "definition": "An expressed subject, event, person, organization, place or issue about which news, journalistic coverage or public-event developments are requested, discussed or included in requested message content. Apply the request-relevant role scope.",
+  "thinking_requirements": [
+    "Establish a news/reporting or public-event-development context from the whole utterance, then determine whether a subject is expressed. The word news is neither necessary nor sufficient for topic presence.",
+    "An explicit news, headline, story or journalistic-report relation can establish the context. A request about developments or outcomes in an expressed public event can also establish it without the word news. Do not classify by a fixed list of political, celebrity or sports words.",
+    "A bare current measurement, forecast, financial quote, personal mailbox status or static factual question is not by itself news reporting. The same topic can count when explicitly placed in a news/reporting relation.",
+    "A media outlet or content source alone is not automatically the subject of its reports. Distinguish news from BBC from news about BBC. General news without an expressed subject does not imply a topic.",
+    "A person, location or event may also satisfy its own type when independently supported. Do not use native intent, native slot membership or absence, elicitation prompt or external news knowledge to decide this predicate.",
+    "Topic fragments or generic updates whose relation could be reporting, personal state, product information or another task remain unavailable when the utterance cannot settle that distinction. A temporal word alone does not establish news.",
+    "Past news and historical-event coverage may count when a reporting relation is expressed; recency is not required. A static who/what fact about a historical event alone is insufficient.",
+    "An explicit identifying topic reference such as that subject or someone can supply a subject when its news relation is expressed; do not resolve the missing identity from unavailable history."
+  ],
+  "negative_rule": "After full-utterance review, false when reporting/development context or an expressed subject is absent. Native omission alone never supplies a negative.",
+  "ambiguity_rule": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role.",
+  "unchanged": [
+    "audio-only online actor",
+    "request-relevant scope",
+    "negated or constrained topic may count when relevant",
+    "independent type overlap",
+    "no slot value generation",
+    "native labels and metrics"
+  ],
+  "changes_from_v3": "Removes generic information closure. This is an explicit new semantic scope version; all prior news_topic proposals require re-review, and old context/input evidence cannot certify the changed text.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      89,
+      91,
+      188,
+      189,
+      190
+    ],
+    "interpretation": "Examples support news subjects and implicit public-event updates. Upstream guideline is evidence, not an exhaustive official definition of this new predicate."
+  },
+  "cross_class_evidence": {
+    "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/news-topic-boundary-evidence-v1/sources.jsonl",
+    "sha256": "a5b7e766919bfec66a7a3c502c65fa146f0b411d9d55af017c2f8c875b764bb9",
+    "sources": 403,
+    "reading": "All403 source references read in this turn; only separately listed judgements were annotated. Native cohort selection is offline review only, not actor routing."
+  },
+  "migration": {
+    "overwrite_base_files": false,
+    "affected_types": [
+      "news_topic"
+    ],
+    "affected_pairs": [
+      [
+        "event_name",
+        "news_topic"
+      ],
+      [
+        "joke_type",
+        "news_topic"
+      ],
+      [
+        "news_topic",
+        "person"
+      ],
+      [
+        "news_topic",
+        "place_name"
+      ]
+    ],
+    "requires": [
+      "consolidate current task rules without old generic-information clause",
+      "rebind and re-review previous news_topic evidence",
+      "full-population reliable truth/coverage",
+      "updated processor and backend acceptance"
+    ]
+  }
+}

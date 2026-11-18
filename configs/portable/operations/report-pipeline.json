@@ -1,0 +1,19 @@
+{
+  "schema": "local-operations-v2",
+  "output_directory": "${REPORT_PIPELINE_OUTPUT}",
+  "steps": [
+    {
+      "id": "signal",
+      "kind": "signal_report",
+      "config": "${WORKSPACE}/configs/portable/operations/committed-signal.json",
+      "depends_on": []
+    },
+    {
+      "id": "probability_errors",
+      "kind": "probability_errors",
+      "config": "${WORKSPACE}/configs/portable/operations/probability-errors.json",
+      "depends_on": ["signal"],
+      "signal_from": "signal"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "container_id": "e42ee9eadb8e24d9f15818a7a1600b58e03c1f5882243b38f1eb53d88ce9ee3e",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T11:37:01.2928702Z",
+    "FinishedAt": "2026-11-14T11:40:50.5907274Z"
+  },
+  "files": {
+    "phase-0.log": "3a3746893ba36647579831d899563bafcb011601afba2104f5ad94eaf4441dea",
+    "terminal.json": "c52fd5ebaeae20bd053b4b93a92ae77635ea482b4f6cea38c6b733ffad4080a8",
+    "phase-1.log": "281b72e18b83dcd95583fed7e706eb02a04ad34cabfd6b565019006e333e1cfd",
+    "config.json": "401700b9c6d790e8225eb76309fe7bd8d3a1a8d9ed39393e99a75c099f01696b",
+    "run/vllm-terminal.json": "218a17fa3c05279e609482897a5c0803b2fb5af128c4fec628d48944e3edfedb",
+    "run/context-actor-runtime.json": "fa0e7806de1ec386332f254b6170472bb0aefd2145f6927e638f3ef3e6cfff3e",
+    "run/diagnostic-update.json": "eae11955a91e4c15795356b437853d86421c19e5fb97f8a7fde02b50531f56dc",
+    "run/hf-terminal.json": "7a2ca17b5a949d5af5f2c70c87fb397f174939d7a90ceec09a4d9a7f17a098db",
+    "run/hf.json": "f282bd78823d42227b1ee3c9667f446fa896ff7ef83e9344a68ac146aa5c3aac",
+    "run/context-rollout-runtime.json": "49f4702b07e57a5949b4e490d682d3b609ea76f388cbea5407c598d703266650",
+    "run/diagnostic-update.pt": "e33b3b2b083ce72d0001cfcd1241c611678c7a7e230fffb0458f3e102f5778a3",
+    "run/progress.json": "ce60a83e1d504b1efd9c46868a12836f0e3519e0984d97939dfd0975affdfb39",
+    "run/joint.json": "66f01b68669c4bd12099c1a3352c173b947c411438ced7499dab8585d4a115a9",
+    "run/vllm.json": "824f033645911974c2c5d86d7f9073f7c62eab57e219550bae094670ba46107b",
+    "run/adapter/adapter_model.safetensors": "b7d3b2fab247800450b2aee8183dfc9c5d94e977a63722c5d8922f00b15d8dc6",
+    "run/adapter/adapter_config.json": "f561c32c7c671a47731c00d78dfc6b7a9c38198ecc4f4c3a0c72826cf72cbde0",
+    "run/adapter/CONTEXT_POLICY.json": "fff7b363414cd513a55bb5cb376880c7c892f5e68c44d5e5b983e4ccc1e56e1f",
+    "run/policy/execution.pt": "37fbaf4e8107bc04f20ab54cb9b353d10bfab13ab6f321fd17049988476ab205",
+    "run/policy/MANIFEST.json": "14e0cae0e0da7b98f8561374c2f37533b49724d4417538fd8add9ce3746c1e59",
+    "run/policy/processor/processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+    "run/policy/processor/tokenizer.json": "dfc31f2e73e91521a1f664ca198cffaaa123619c10b4638270b804565e4979c8",
+    "run/policy/processor/chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+    "run/policy/processor/tokenizer_config.json": "e2c2078a8c3e0394171ce4e82a76a8b38ced47cd20a34e5149ebb51198b19856"
+  },
+  "pins": 363,
+  "collection_sha256": "4fa0e56b346a04dc7379735fb80882f1f0f07e765c4f71546c138affde120ea3",
+  "training_dispatch_allowed": false,
+  "parity_admitted": false,
+  "updated_policy_checkpoint_recheck": {
+    "parameters": 128,
+    "master_bf16_export_exact": true,
+    "adam_step": 1,
+    "on_device_restore_probability_error": 0.0
+  },
+  "independent_probability_checks": [
+    {
+      "id": "slurp:audio-1497270079.flac",
+      "probability_max_error": 0.0,
+      "threshold_half_disagreements": 0
+    },
+    {
+      "id": "slurp:audio-1497621480-headset.flac",
+      "probability_max_error": 0.0,
+      "threshold_half_disagreements": 0
+    }
+  ],
+  "joint_policy_id": "26200e05ce48ab413073d7c6eed314d540847a92c53e6f45d7216ba3211a6754",
+  "scope": "Exact terminal assets, native adapter and complete updated snapshot independently checked; raw HF/vLLM probability errors only, no parity threshold promotion or task improvement."
+}

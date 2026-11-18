@@ -1,0 +1,133 @@
+{
+  "schema": "jev-replica-training-design-v1",
+  "decision": "2026-11-17 user priority: configuration-driven engineering base; 6 cards for data-parallel training, 2 cards for inference",
+  "reuse": "topology, batch, service count and cards, rollout width are resolved configuration; the replica schedule/trainer/runtime/supervisor chain is shared across DP widths",
+  "algorithm": {
+    "primary": "dual_credit_grpo_floor_clipped_v1",
+    "arm": "joint",
+    "group_size": 16,
+    "source_config": "configs/experiments/context-dual-credit-v1.json",
+    "unchanged": [
+      "rewards",
+      "advantages",
+      "clip_ratio",
+      "auxiliary_coefficients",
+      "kl_definition",
+      "reference_policy"
+    ]
+  },
+  "batch_config": {
+    "training_devices": 6,
+    "tensor_parallel": 1,
+    "pipeline_parallel": 1,
+    "per_dp_replica_batch": 64,
+    "microbatch": 8,
+    "inference_instances": 2,
+    "inference_batch_queries": 48,
+    "source_queries": 40513,
+    "epochs": 2,
+    "efficiency_steps": 100
+  },
+  "topology": {
+    "world_size": 6,
+    "physical_devices_train": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "physical_devices_inference": [
+      6,
+      7
+    ],
+    "inference_tensor_parallel": 1,
+    "inference_service_policy": "two TP1 services in one container, each enforcing CANN visibility through context_configurable_device_scope",
+    "rollout_transport": {
+      "protocol": "jev-replica-macro-client-v1",
+      "max_queries": 384,
+      "rollout_queries": 32,
+      "service_max_batch_queries": 48,
+      "service_max_batch_tokens": 16384,
+      "dispatch": "the pool splits each declared macro batch into rollout_queries groups internally; no separate per-topology chunking layer"
+    },
+    "lease": ".local/simple-final-v1/npu175-evaluation-training.lock"
+  },
+  "training": {
+    "source": "same_authenticated_full_Stage1_endpoint",
+    "optimizer_reset": true,
+    "epochs": 2,
+    "updates": 212,
+    "updates_per_epoch": 106,
+    "global_batch": 384,
+    "per_rank_batch": 64,
+    "actor_microbatch": 8,
+    "dp": 6,
+    "accumulation": 8,
+    "real_exposures": 81026,
+    "tail_per_epoch": {
+      "real_slots": 193,
+      "zero_weight_slots": 191,
+      "loss_denominator": 193
+    },
+    "execution_dtype": "bfloat16",
+    "optimizer_dtype": "float32",
+    "learning_rate": 0.0001,
+    "seed": 317,
+    "schedule_schema": "jev-replica-source-schedule-v1",
+    "schedule_semantics": "same membership order, class spread, length grouping and uniform weights as the frozen DP4 schedule; only batch width and rank partition change"
+  },
+  "evaluation": {
+    "checkpoints": [
+      0,
+      21,
+      42,
+      64,
+      85,
+      106,
+      127,
+      148,
+      170,
+      191,
+      212
+    ],
+    "selection_rule": "highest_set_f1_then_lowest_binary_nll_then_earliest_step",
+    "fixed_endpoint": 212,
+    "selection_population": "SLURP clean selection 9226",
+    "target_tuning_allowed": false
+  },
+  "runtime_gates": {
+    "required_before_dispatch": [
+      "replica_schedule_coverage_and_rank_permutation_audit",
+      "real_audio_serial_batch_parity",
+      "real_verl_dp_update_and_global_reduction",
+      "nonzero_adapter_head_activation",
+      "fresh_process_resume",
+      "tail_denominator_and_zero_weight_contribution",
+      "declared_training_and_inference_card_isolation"
+    ],
+    "acceptance_shape": "4 inference passes / 2 training updates on NPU before full dispatch"
+  },
+  "engineering": {
+    "batch_plan": "multimodal_jev.context_topology_batch_plan.derive",
+    "schedule_prepare": "tools/reports/prepare_context_replica_schedule.py",
+    "schedule_artifact": ".local/decision-objective-research/context-replica-schedule-dp6-v1",
+    "schedule_manifest_sha256": "d8175b03862f64b89446f49b78f514bacfd203fc3982838de9999bd7db5eeb55",
+    "parent_schedule": ".local/decision-objective-research/context-full-learning-schedule-v1",
+    "parent_schedule_sha256": "d9cd5832aa160df46a4c10a2051ff12c352d2a2609e2cffd6901267b28a814f6",
+    "schedule_release_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "packager": "tools/reports/prepare_context_replica_training_candidate.py",
+    "packager_template": "configs/portable/operations/context-replica-training-prepare.json",
+    "operations": "tools/reports/context_replica_training_operations.py",
+    "operations_template": "configs/portable/operations/context-replica-training-operations.json",
+    "collector": "tools/jev/collect_context_replica_training.py",
+    "package_remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/context-replica-training-dp6-v1",
+    "note": "DP4 package, specs and schedules stay unchanged; this candidate re-pins derived copies only"
+  },
+  "status": {
+    "phase": "superseded_by_formal_v1",
+    "note": "design/topology (batch, curve, exposure) still authoritative and unchanged; the v1 engineering paths in this record are historical - the v1-v5 packages were deleted on 2026-11-17 after v6 (=v0.0.rc0) was accepted, per the rc version policy in docs/engineering/context-replica-training-v1.md section 6.1. Current package: context-replica-training-dp6-v9 (see context-replica-training-dp6-formal-v1.json)."
+  },
+  "training_dispatch_allowed": false
+}

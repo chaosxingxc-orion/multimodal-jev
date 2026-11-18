@@ -1,0 +1,102 @@
+{
+  "schema": "context-step256-native-metric-semantics-v1",
+  "step": 256,
+  "rows": [
+    {
+      "rank": 0,
+      "source": ".local/decision-objective-research/context-arithmetic-step256-independent-v1/collected/run/rank-0/update-0256.json",
+      "sha256": "ad00eac6ff73ac005cf768e548ba1a4752a0ce63314b737378a815ff38f285d7",
+      "microstep_losses": [
+        0.011256811209022999,
+        0.001096257590688765,
+        0.004656286910176277,
+        0.00172709533944726
+      ],
+      "sum_microstep_losses": 0.0187364510493353,
+      "logged_actor_pg_loss": 0.0187364510493353,
+      "absolute_reduction_error": 0.0,
+      "logged_outer_kl_loss": 0.0,
+      "global_real_queries": 128
+    },
+    {
+      "rank": 1,
+      "source": ".local/decision-objective-research/context-arithmetic-step256-independent-v1/collected/run/rank-1/update-0256.json",
+      "sha256": "cb382296f06637b5229bb5e222fa857324c31f8fbf2bc1740e55d44d3b21194f",
+      "microstep_losses": [
+        0.009423958137631416,
+        0.0036633373238146305,
+        0.0016594293992966413,
+        0.007863271050155163
+      ],
+      "sum_microstep_losses": 0.02260999591089785,
+      "logged_actor_pg_loss": 0.02260999591089785,
+      "absolute_reduction_error": 0.0,
+      "logged_outer_kl_loss": 0.0,
+      "global_real_queries": 128
+    },
+    {
+      "rank": 2,
+      "source": ".local/decision-objective-research/context-arithmetic-step256-independent-v1/collected/run/rank-2/update-0256.json",
+      "sha256": "8ea1397ea58a77c97ba6da8d3510827bb2aeeebad208c6a030fbedb5a7d347f4",
+      "microstep_losses": [
+        0.012637217529118061,
+        0.013331493362784386,
+        0.01082620583474636,
+        0.011100970208644867
+      ],
+      "sum_microstep_losses": 0.047895886935293674,
+      "logged_actor_pg_loss": 0.047895886935293674,
+      "absolute_reduction_error": 0.0,
+      "logged_outer_kl_loss": 0.0,
+      "global_real_queries": 128
+    },
+    {
+      "rank": 3,
+      "source": ".local/decision-objective-research/context-arithmetic-step256-independent-v1/collected/run/rank-3/update-0256.json",
+      "sha256": "4212f8ff15fa1f84a18607f2326957f300f4f8d87eb93c0b34938db45338a460",
+      "microstep_losses": [
+        0.014870241284370422,
+        0.005254614166915417,
+        0.013550261966884136,
+        0.009867768734693527
+      ],
+      "sum_microstep_losses": 0.0435428861528635,
+      "logged_actor_pg_loss": 0.0435428861528635,
+      "absolute_reduction_error": 0.0,
+      "logged_outer_kl_loss": 0.0,
+      "global_real_queries": 128
+    }
+  ],
+  "world_size": 4,
+  "microsteps_per_rank": 4,
+  "global_real_queries": 128,
+  "global_query_mean_mixed_objective": 0.03319630501209758,
+  "incorrect_flat_microstep_mean": 0.008299076253024396,
+  "sources": {
+    "src/multimodal_jev/context_native_actor.py": "067297bc726d2b607776d40cf6e155f98649ba9405f1d025b43d803e9c1215b0",
+    "src/multimodal_jev/context_hybrid_objective.py": "3abfd148d33c15c358ee966ea69bb0511c4dcbbb95b4b33e8e763abd539bcda5",
+    "src/multimodal_jev/context_candidate_objective.py": "b18f3dfa4ccb65001e1281bf77501e76ca0e75fddfe512b4f0694eae3c71fb79",
+    "src/multimodal_jev/span_sampled_hybrid.py": "1ee8f43af58b433fd2ae895033e3e3015549dc3a7d56ab6a96066216f00d0981",
+    "tools/jev/train_context_online_candidate.py": "7bb1b2259bd799907856455cf75475280dd0bbb3998f6a928c03595141e73288",
+    ".local/research/omni-npu-sharding-v1/dp_actor.py": "207ba1d50a0344181779256b9bb32c733032c136e405d1846a57f9c78cda4cce"
+  },
+  "proof_sha256": "774692d471882c618bc46de71b699ef50fe8af38591231652714f8aacd9fc3f9",
+  "semantics": {
+    "actor/pg_loss": "rank-local sum of mixed-objective microsteps, including auxiliary and custom reference KL; not pure RL",
+    "jev/context_loss": "each entry is world_size/global_real_queries weighted microstep contribution before compensating native accumulation scale",
+    "global_reduction": "sum microsteps within rank, then mean across ranks; mean over all sixteen entries is four times too small",
+    "actor/kl_loss": "disabled native outer KL only; custom mixed-objective KL is not logged here"
+  },
+  "limits": [
+    "No component loss or parameter-gradient reconstruction.",
+    "Loss scalar is not learning strength: centered advantages may give near-zero scalar and nonzero gradient.",
+    "Single TRAIN batch before optimizer update; not heldout efficacy or temporal curve."
+  ],
+  "running_package_sources": {
+    ".local/decision-objective-research/context-rl-grpo-arithmetic-v2-package/source/src/multimodal_jev/context_native_actor.py": "a785016786955441b129b5432dec900259aaf80c197385f2e6773d563d865b29",
+    ".local/decision-objective-research/context-rl-grpo-arithmetic-v2-package/source/src/multimodal_jev/context_hybrid_objective.py": "3abfd148d33c15c358ee966ea69bb0511c4dcbbb95b4b33e8e763abd539bcda5",
+    ".local/decision-objective-research/context-rl-grpo-arithmetic-v2-package/source/src/multimodal_jev/context_candidate_objective.py": "b18f3dfa4ccb65001e1281bf77501e76ca0e75fddfe512b4f0694eae3c71fb79",
+    ".local/decision-objective-research/context-rl-grpo-arithmetic-v2-package/source/src/multimodal_jev/span_sampled_hybrid.py": "1ee8f43af58b433fd2ae895033e3e3015549dc3a7d56ab6a96066216f00d0981"
+  },
+  "source_comparison": "All four objective/actor sources equal current reviewed sources except the admitted actor probability import substitution; package hashes match frozen config."
+}

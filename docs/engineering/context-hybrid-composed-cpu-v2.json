@@ -1,0 +1,86 @@
+{
+  "container_id": "6210c732404df1cae833ac2cbceb584a3d44a05197e5975d08d1a26d91245c6d",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T11:16:01.54984001Z",
+    "FinishedAt": "2026-11-14T11:16:36.73936328Z"
+  },
+  "remote_pins_verified": 348,
+  "collection_sha256": "66f2c46231d47ea05c543dba4462ae3261780a70ed4cd0e7cabe5c85be5912a7",
+  "result": {
+    "passed": true,
+    "records": [
+      {
+        "algorithm": "grpo_v1",
+        "loss": 0.151694655418396,
+        "advantage_max_error": 0.0,
+        "reference_gradient_max_error": 0.0,
+        "composed_gradient_max_error": 7.450580596923828e-09,
+        "split_gradient_max_error": 7.450580596923828e-09,
+        "ratio_outside_clip": 57,
+        "auxiliary": {
+          "ranking_numerator": 0.3708672523498535,
+          "probability_numerator": 1.1868956089019775,
+          "observed_counts": [
+            3,
+            2,
+            0,
+            3
+          ],
+          "positive_negative_pair_counts": [
+            2,
+            0,
+            0,
+            2
+          ],
+          "local_real_requests": 3,
+          "global_real_requests": 3,
+          "normalization": "weighted_sum_per_query_mean_terms_divided_by_global_real_queries",
+          "scope": "Auxiliary supervised objective only; no reward, sampling, calibration or RL-gain claim."
+        }
+      },
+      {
+        "algorithm": "rloo_v1",
+        "loss": 0.13388702273368835,
+        "advantage_max_error": 2.9802322387695312e-08,
+        "reference_gradient_max_error": 0.0,
+        "composed_gradient_max_error": 0.0,
+        "split_gradient_max_error": 0.0,
+        "ratio_outside_clip": 57,
+        "auxiliary": {
+          "ranking_numerator": 0.3708672523498535,
+          "probability_numerator": 1.1868956089019775,
+          "observed_counts": [
+            3,
+            2,
+            0,
+            3
+          ],
+          "positive_negative_pair_counts": [
+            2,
+            0,
+            0,
+            2
+          ],
+          "local_real_requests": 3,
+          "global_real_requests": 3,
+          "normalization": "weighted_sum_per_query_mean_terms_divided_by_global_real_queries",
+          "scope": "Auxiliary supervised objective only; no reward, sampling, calibration or RL-gain claim."
+        }
+      }
+    ],
+    "training_dispatch_allowed": false,
+    "scope": "Pinned native verl GRPO/RLOO clipped plus pairwise/probability auxiliary on synthetic logits. Analytic world-size mean/micro accumulation, not a launched distributed Qwen actor or reward selection."
+  },
+  "training_dispatch_allowed": false,
+  "scope": "Collected pinned verl actual CPU synthetic-logit computation; independent equation implemented in probe, no local verl recomputation or Qwen/NPU training acceptance."
+}

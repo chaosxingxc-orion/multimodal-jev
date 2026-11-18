@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "615989407c75aa836994c3f4081d19e7ffd17a0c70f4ffd42bc9279cbc0a6fd6",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T02:02:59.07862806Z",
+    "FinishedAt": "2026-11-16T02:05:46.52696433Z"
+  },
+  "source_files": 366,
+  "source_manifest_sha256": "554d8d2bb85601623dff0449fd5d2cfe55a9ff95d0fade8bb99b1aff69ccf0c5",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-dp-resume-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "ddc086f9930c82264a0e5c7f6184638f25ecb39850e32f003a9f6a9b11fff25a",
+    "run/junit.xml": "7106c775bdb360fdc270d64ab8abed82fc17171fb0199114e9fc863131f029a7",
+    "run/pytest.log": "1a55e0e1c009032c929c2128965aed999895cd02402a006fafc034254a06878b",
+    "package/FILES.json": "554d8d2bb85601623dff0449fd5d2cfe55a9ff95d0fade8bb99b1aff69ccf0c5",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794794606.0167377,
+    "finished_unix": 1794794745.100925,
+    "source_manifest_sha256": "554d8d2bb85601623dff0449fd5d2cfe55a9ff95d0fade8bb99b1aff69ccf0c5",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-dp-resume-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_actor_dp_resume.py",
+      "tests/test_context_dual_actor_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Real 4-rank Gloo/DDP native verl two updates and fresh-process step2 replay on synthetic logits; FP32 CPU, not audio/BF16 FSDP/NPU/real engine activation."
+}

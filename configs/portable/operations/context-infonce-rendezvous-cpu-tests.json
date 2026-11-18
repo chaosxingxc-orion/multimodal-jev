@@ -1,0 +1,22 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "tests": [
+    "tests/test_context_infonce_rendezvous.py"
+  ],
+  "expected_tests": 1,
+  "scope": "Exact candidate torchrun argv, network=none, static loopback, real two-rank Gloo startup; no NPU training claim.",
+  "support_files": [
+    "tools/reports/context_instruction_operations.py"
+  ],
+  "resources": {
+    "cpus": 8,
+    "memory_gib": 32
+  }
+}

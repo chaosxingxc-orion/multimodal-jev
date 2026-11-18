@@ -1,0 +1,86 @@
+{
+  "schema": "slurp-hubert-historical-recipe-audit-v2",
+  "tag_commits": {
+    "method": "git ls-remote exact refs/tags",
+    "tags": {
+      "v0.5.11": "d6bfe138a90dff3490f7196acbd9c62939289d46",
+      "v0.5.12": "fc15db47cebd191e4f1ba9bb9040f2ee469873e4"
+    },
+    "history_API_status": "403 rate limit; no claim of complete commit history"
+  },
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/speechbrain/speechbrain/d6bfe138a90dff3490f7196acbd9c62939289d46/recipes/SLURP/README.md",
+      "path": "recipes/SLURP/README.md",
+      "revision": "d6bfe138a90dff3490f7196acbd9c62939289d46",
+      "retrieved_unix": 1794537083.6977434,
+      "status": 200,
+      "bytes": 2949,
+      "sha256": "80c4701298a2ef47bb5209becd7558884c267377d04e37ffe20fcd7ee572bce1"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/speechbrain/speechbrain/d6bfe138a90dff3490f7196acbd9c62939289d46/recipes/SLURP/direct/train_with_wav2vec2.py",
+      "path": "recipes/SLURP/direct/train_with_wav2vec2.py",
+      "revision": "d6bfe138a90dff3490f7196acbd9c62939289d46",
+      "retrieved_unix": 1794537083.6967697,
+      "status": 200,
+      "bytes": 13805,
+      "sha256": "1d38c4c7257812d372bd178fcb4f54139dfcf2904d632fc31ae698ee2b1b22dc"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/speechbrain/speechbrain/d6bfe138a90dff3490f7196acbd9c62939289d46/speechbrain/lobes/models/huggingface_wav2vec.py",
+      "path": "speechbrain/lobes/models/huggingface_wav2vec.py",
+      "revision": "d6bfe138a90dff3490f7196acbd9c62939289d46",
+      "retrieved_unix": 1794537083.6972759,
+      "status": 200,
+      "bytes": 14126,
+      "sha256": "de446d9450e870ce59a0874502265da16884d68608eb4c19c2b246c9f69a2ca4"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/speechbrain/speechbrain/d6bfe138a90dff3490f7196acbd9c62939289d46/recipes/SLURP/direct/hparams/train_with_wav2vec2.yaml",
+      "path": "recipes/SLURP/direct/hparams/train_with_wav2vec2.yaml",
+      "revision": "d6bfe138a90dff3490f7196acbd9c62939289d46",
+      "retrieved_unix": 1794537083.6950383,
+      "status": 200,
+      "bytes": 5221,
+      "sha256": "12b815b716323babc102a1aa6d35a8c8187aa534a80c8bb87cf44f4f30a8698c"
+    }
+  ],
+  "defaults_not_actual_training": {
+    "seed": 1986,
+    "epochs": 35,
+    "batch_size": 6,
+    "decoder_lr": 0.0003,
+    "encoder_lr": 1e-05,
+    "conv_freeze": true,
+    "encoder_freeze": false,
+    "label_smoothing": 0.1,
+    "train_splits": [
+      "train_synthetic",
+      "train_real"
+    ],
+    "speed_augmentation": [
+      95,
+      100,
+      105
+    ],
+    "validation_checkpoint_metric": "semantic_sequence_WER",
+    "beam": 80,
+    "temperature": 1.25,
+    "eos_threshold": 1.5
+  },
+  "architecture": "HuBERT-base encoder, 128-d embedding, 3-layer512 LSTM attention decoder, vocabulary58; header GRU description does not match instantiated lstm",
+  "wrapper_normalization": {
+    "waveform": "F.layer_norm(wav,wav.shape)",
+    "encoder_output": "F.layer_norm(out,out.shape)",
+    "includes_batch_axis": true,
+    "synthetic_max_difference_same_first_input_different_batch_partner": 2.7500723623232415,
+    "scope": "Pinned upstream method with numpy layer_norm and deterministic algebraic encoder stub. Demonstrates batch coupling; not real HuBERT numerical parity or task accuracy."
+  },
+  "publication_binding": "Historical tagged recipe exists and reports87.54 intent/75.10SLUF1, but does not establish actual HF checkpoint training commit or command overrides.",
+  "reproduction_decision": "Keep official weight retest separate from historical retraining. Batch1 initial reproduction; do not silently increase batch or replace normalization. Record precision/dependencies/parser separately before execution.",
+  "weights_downloaded": false,
+  "model_executed": false,
+  "training_dispatched": false,
+  "verifier_sha256": "b50b2cd2a27370554543676a5cb27b76773b4eab9c5d7d4b4d437e9547062664"
+}

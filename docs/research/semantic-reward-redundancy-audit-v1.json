@@ -1,0 +1,46 @@
+{
+  "schema": "jev-semantic-reward-redundancy-audit-v1",
+  "original_correctness": {
+    "A": [
+      true,
+      false,
+      false
+    ],
+    "B": [
+      false,
+      true,
+      true
+    ]
+  },
+  "expanded_correctness": {
+    "A": [
+      true,
+      true,
+      true,
+      false,
+      false
+    ],
+    "B": [
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "before": [
+    "1/30",
+    "1/15"
+  ],
+  "after": [
+    "3/50",
+    "1/25"
+  ],
+  "uniform_copy_preserves_credit": "1/30",
+  "masked_coordinate_fixed_denominator": "1/20",
+  "selective_duplication_reverses_ranking": true,
+  "process_cap": "1/10",
+  "scope": "Fixed-answer reward arithmetic only. Shared-label predicates need not have identical model answers. No proof of shared-backbone gradient impact or empirical model benefit.",
+  "decision": "Keep current fixed-count baseline unchanged; freeze semantic menu and measure repeated/concentrated supervision before experiments. Do not dynamically remove overlapping Q or infer labels by hierarchy.",
+  "training_dispatch_allowed": false
+}

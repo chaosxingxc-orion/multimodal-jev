@@ -1,0 +1,217 @@
+{
+  "status": "runtime_launch_repairs_queued_not_formal_rl",
+  "created_unix": 1794683953.0888572,
+  "stage1": {
+    "container_id": "04dd31b748d454b350321a41bd047b8e25824d3f6191b1aefd18f2965145a7d5",
+    "state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-14T15:35:58.67573064Z",
+      "FinishedAt": "2026-11-14T18:41:57.85973258Z"
+    },
+    "result": {
+      "passed": true,
+      "start_update": 2,
+      "stop_update": 634,
+      "schedule_updates": 634,
+      "learning_population": 40513,
+      "engineering_prefix": false
+    },
+    "performance": {
+      "all_steps": {
+        "updates": 632,
+        "effective_queries": 80770,
+        "queries_per_step_wall_second": 7.270423365149665,
+        "phases": {
+          "preparation_seconds": {
+            "mean": 0.6170431907755957,
+            "p50": 0.6026030399953015,
+            "p95": 0.6464777700020932
+          },
+          "actor_seconds": {
+            "mean": 16.909035034493275,
+            "p50": 16.872333579987753,
+            "p95": 17.469281059980858
+          },
+          "total_seconds": {
+            "mean": 17.578155561613787,
+            "p50": 17.513823829998728,
+            "p95": 18.22272287000669
+          }
+        },
+        "peak_allocated": 40791138816
+      },
+      "normal_after_warmup": {
+        "updates": 614,
+        "effective_queries": 78529,
+        "queries_per_step_wall_second": 7.291425825685215,
+        "phases": {
+          "preparation_seconds": {
+            "mean": 0.6161637035018768,
+            "p50": 0.6025004800176248,
+            "p95": 0.6464777700020932
+          },
+          "actor_seconds": {
+            "mean": 16.91007713138394,
+            "p50": 16.876061179995304,
+            "p95": 17.461344050010666
+          },
+          "total_seconds": {
+            "mean": 17.54079341879455,
+            "p50": 17.51337613002397,
+            "p95": 18.093193859996973
+          }
+        },
+        "peak_allocated": 40791138816
+      },
+      "first32_normal": {
+        "updates": 32,
+        "effective_queries": 4096,
+        "queries_per_step_wall_second": 7.301267452201465,
+        "phases": {
+          "preparation_seconds": {
+            "mean": 0.6121982375007065,
+            "p50": 0.6134443800256122,
+            "p95": 0.6287622200034093
+          },
+          "actor_seconds": {
+            "mean": 16.90372442249918,
+            "p50": 16.840665449999506,
+            "p95": 17.573044199991273
+          },
+          "total_seconds": {
+            "mean": 17.531202744998154,
+            "p50": 17.464000309992116,
+            "p95": 18.199588949995814
+          }
+        },
+        "peak_allocated": 39843507200
+      },
+      "last32_normal": {
+        "updates": 32,
+        "effective_queries": 4096,
+        "queries_per_step_wall_second": 7.286140329364944,
+        "phases": {
+          "preparation_seconds": {
+            "mean": 0.6244370000031267,
+            "p50": 0.6014404600136913,
+            "p95": 0.9121085299993865
+          },
+          "actor_seconds": {
+            "mean": 16.934039724688773,
+            "p50": 16.92410406001727,
+            "p95": 17.696701529988786
+          },
+          "total_seconds": {
+            "mean": 17.567600157813104,
+            "p50": 17.577977969980566,
+            "p95": 18.341762199997902
+          }
+        },
+        "peak_allocated": 39479126528
+      },
+      "scope": "Step wall time excludes container initialization and collection. No token throughput instrumentation available."
+    },
+    "evidence": "docs/engineering/context-admitted-full-npu-v1.json"
+  },
+  "failures": [
+    {
+      "run": "context-online-shared-npu-v2",
+      "cause": "Supervisor replaced short TMPDIR with long cache path;125-byte IPC exceeds107.",
+      "report": "docs/engineering/context-online-shared-npu-v2.json"
+    },
+    {
+      "run": "context-online-shared-npu-v3",
+      "cause": "Launcher overrides image Ascend entrypoint;vLLM child cannot import acl.",
+      "report": "docs/engineering/context-online-shared-npu-v3.json"
+    },
+    {
+      "run": "context-stage1-selection-step0634-v1",
+      "cause": "Missing readonly publication dependency mounts before full selection inference.",
+      "phase": "phase-2",
+      "container": "44e1afd8266beb5170cd7ce8b83eb9825de284b36cc9250553994b673740c048",
+      "parity256_exact": true
+    }
+  ],
+  "tests": [
+    {
+      "suite": "short_ipc_local_ipc_supervisor",
+      "passed": 20,
+      "seconds": 2.32
+    },
+    {
+      "suite": "resume_checkpoint_formal_package_sequence",
+      "passed": 39,
+      "seconds": 5.65
+    },
+    {
+      "suite": "new_v2_orchestration_launchers_mounts_ipc",
+      "passed": 45,
+      "seconds": 2.59
+    }
+  ],
+  "actual_cpu_proofs": [
+    "docs/engineering/context-selection-mount-preflight-v2.json",
+    "docs/engineering/context-entrypoint-import-cpu-v1.json"
+  ],
+  "queues": {
+    "selection": {
+      "driver": 548477,
+      "status": ".local/decision-objective-research/context-stage1-selection-chain-v2-status.json",
+      "phase_at_record": "launch_complete_selection"
+    },
+    "continuous": {
+      "driver": 549655,
+      "status": ".local/decision-objective-research/context-online-shared-npu-v4-chain-status.json",
+      "phase_at_record": "launch_waiting_shared_device_lease"
+    },
+    "replay": {
+      "driver": 549657,
+      "status": ".local/decision-objective-research/context-online-shared-resume-npu-v4-chain-status.json",
+      "phase_at_record": "waiting_original_shared_prefix_collection"
+    },
+    "checkpoint": {
+      "driver": 549658,
+      "status": ".local/decision-objective-research/context-checkpoint-shared-npu-v3-chain-status.json",
+      "phase_at_record": "waiting_original_shared_replay_chain"
+    },
+    "sequence": {
+      "driver": 550847,
+      "status": ".local/decision-objective-research/context-baseline-sequence-v2/status.json",
+      "pins": 498,
+      "phase_at_record": "waiting_original_dependency"
+    },
+    "comparison": {
+      "driver": 550848,
+      "status": ".local/decision-objective-research/context-baseline-comparison-v3-status.json",
+      "pins": 500,
+      "phase_at_record": "waiting_original_two_algorithm_sequence"
+    }
+  },
+  "preserved": [
+    "all_failed_containers_and_collections",
+    "original364_release_lock",
+    "original467_sequence_pins",
+    "original469_comparison_pins",
+    "source_data_model_and_training_numerics"
+  ],
+  "scope": "Actual full Stage1 completed;Stage1 selection not yet complete.Fixed-image CPU checks and queued bounded NPU acceptance do not establish continuous RL or efficacy.",
+  "live_process_verification": "    PID STAT     ELAPSED COMMAND\n 548477 Ss         10:59 /usr/bin/python .local/decision-objective-research/continue_context_stage1_selection_v2.py\n 549655 Ss         08:53 /usr/bin/python .local/decision-objective-research/continue_context_online_shared_v4.py\n 549657 Ss         08:53 /usr/bin/python .local/decision-objective-research/continue_context_online_shared_resume_v4.py\n 549658 Ss         08:53 /usr/bin/python .local/decision-objective-research/continue_context_checkpoint_shared_v3.py\n 550847 Ss         03:04 /usr/bin/python -m tools.jev.run_context_baseline_sequence_v2 --spec .local/decision-objective-research/context-baseline-sequence-v2-spec.json --output .local/decision-objective-research/context-baseline-sequence-v2 --launch\n 550848 Ss         03:04 /usr/bin/python .local/decision-objective-research/continue_context_baseline_comparison_v3.py\n",
+  "new_source_files": {
+    "tools/jev/prepare_context_short_ipc.py": "61b4615f8be8e14eab388096322f6d98e96fbaecc25223ee0088eaed932435da",
+    "tools/jev/context_release_mounts.py": "ed69d9ed05d6f43d58aaf60f569e8364b560a1468916d5a6ab9d64184deb2d7c",
+    "tools/jev/launch_context_formal_training_v2.py": "d23a9bd4955f027cedc9427227f92791b072baa43579e8f0487e1eeab1735f92",
+    "tools/jev/launch_context_rl_evaluation_v2.py": "639e7d7889d9c69b822e905f04446de4ed3cf70a6a4c73ae869106e54dcac317",
+    "tools/jev/run_context_formal_experiment_v2.py": "6d6374099c4acbbc2bfb83c59efe459375d923d3b56df53b0aacd4b3b75c95ce",
+    "tools/jev/run_context_baseline_sequence_v2.py": "f22191582788ee258336f72da2158614c81e80992c78aaf931ee8a4fadc41f4a",
+    "tests/test_context_short_ipc.py": "e7bd1c6015e99e234033bc904b56e0462ac862e8bbfd3c23f35192a373089333",
+    "tests/test_context_release_mounts.py": "e7911b2f75479bde8788e1b4ac089762eb6234eeae5fb1385d5d54dd9f589fdb"
+  }
+}

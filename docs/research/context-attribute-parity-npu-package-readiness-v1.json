@@ -1,0 +1,29 @@
+{
+  "schema": "context-attribute-parity-npu-package-readiness-v1",
+  "observed_unix": 1794710549.7294123,
+  "status": "sealed_not_launched",
+  "prepared": ".local/decision-objective-research/context-attribute-parity-npu-v1-prepared",
+  "prepared_sha256": "3d20476a2a86c604aa21db80490131f554aebb84dc5b30c5ff25bb8183defa3c",
+  "source_manifest_sha256": "69c593d2adc8e6dce8222c778f9560612eff802269b679b019d9f28e551f5d31",
+  "source_files": 405,
+  "local_comparator_tests": {
+    "passed": 9,
+    "scope": "Synthetic probabilities; no actual Qwen or NPU"
+  },
+  "driver_pins_verified": {
+    "context-attribute-population-cpu-v1-driver-pins.json": 1073,
+    "context-attribute-selection-processor-cpu-v1-driver-pins.json": 1092,
+    ".local/decision-objective-research/context-rl-grpo-arithmetic-v2-driver.json": 1078
+  },
+  "tools": {
+    "tools/reports/run_context_attribute_parity_pair.py": "7940d9b073f64622ac01e3a0b927c51b7fb13cc71b4ee361c15eb0bca31cbb1a",
+    "tools/reports/prepare_context_attribute_parity_npu.py": "6d9e9980bfe72657484ebb40e21ed5fca616575313f969ebe158bb66243728e9",
+    "tools/reports/launch_context_attribute_parity_npu.py": "c120c25af5f800044a9d993a1bbe559a3671ae75498874c2be2af91e33d676ae"
+  },
+  "launch_policy": "No automatic enqueue; existing simple experiment and evaluation queue has priority. Exclusive lease, actual idle device and image/storage checks required.",
+  "scope": "Packaged six-request diagnostic only; NPU launcher has not executed; independent runtime audit required after collection; not model parity or training admission.",
+  "local_lifecycle_tests": {
+    "passed": 4,
+    "scope": "Subprocess and storage substitutes; checks ordering, failed phase evidence, no overwrite and package tampering; no actual NPU launch"
+  }
+}

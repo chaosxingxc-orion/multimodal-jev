@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "7fba8ca8a97f6c3085e0e95f56e0fd4f1f0f9b0830dac4a674d662c6e8c1c8d3",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T02:49:35.87983692Z",
+    "FinishedAt": "2026-11-16T02:50:33.74742421Z"
+  },
+  "source_files": 415,
+  "source_manifest_sha256": "8cd81d39c3ae9f44b010ef019330c2629ffb3827287343ab5f973a6d94e7092b",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-audit-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "9c89b875c33f47f4f7070ede70b07149e7245f550f3b272d5cfbfa978b77d5b6",
+    "run/junit.xml": "9555ef298491637ea2268cc745863b9e4b3c8a0fd22412c754b40781d84d2bd0",
+    "run/pytest.log": "e45904af3885f329fe0a37b297f031d945b601873b1c46ed8dd7c2da1d55f8c9",
+    "package/FILES.json": "8cd81d39c3ae9f44b010ef019330c2629ffb3827287343ab5f973a6d94e7092b",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794797402.7792747,
+    "finished_unix": 1794797432.3528788,
+    "source_manifest_sha256": "8cd81d39c3ae9f44b010ef019330c2629ffb3827287343ab5f973a6d94e7092b",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-audit-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_group_audit.py",
+      "tests/test_context_dual_training_audit.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Independent saved dual-credit reward/sample/advantage recomputation and trainer checkpoint contract agreement; synthetic CPU inputs, no full NPU collection or efficacy claim."
+}

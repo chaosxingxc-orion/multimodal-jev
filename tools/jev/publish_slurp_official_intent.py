@@ -4,7 +4,8 @@ import argparse
 from pathlib import Path
 import time
 from multimodal_jev.baseline import atomic_json
-from multimodal_jev.slurp_official_training import publish, read
+from multimodal_jev.slurp_official_training import read
+from multimodal_jev.slurp_portable_release import publish
 
 
 if __name__ == '__main__':

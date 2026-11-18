@@ -1,0 +1,1507 @@
+{
+  "schema": "slurp-simple-sampled-rl-v1",
+  "status": "engineering_candidate_not_training_locked",
+  "task": "direct_audio_native_Final60",
+  "runtime_parent": "configs/experiments/slurp-simple-final-v1.json",
+  "primary": "grpo_v1",
+  "comparison": "rloo_v1",
+  "group_size": 16,
+  "temperature": 1.0,
+  "reward": "correctness_0_or_1",
+  "process_reward": 0,
+  "optimizer_epochs_per_behavior_batch": 1,
+  "ppo_clip_ratio": 0.2,
+  "dual_clip": 3.0,
+  "loss": "sum_real w_x*(mean_G native_clipped_surrogate + lambda_t*CE_x + beta*KL_x)/Nreal",
+  "ce": {
+    "start": 1.0,
+    "end": 0.1,
+    "decay_fraction": 0.8,
+    "schedule": "cosine"
+  },
+  "reference_kl": {
+    "coefficient": 0.01,
+    "type": "exact_categorical_policy_to_fixed_stage1",
+    "reference_refresh": false
+  },
+  "sampling": "all_G_draws_with_replacement_keep_constant_groups",
+  "padding": "explicit_zero_weight_excluded_from_Nreal",
+  "class_weight": "same_frozen_full_learning_population_as_stage1",
+  "differences_from_research_candidate": [
+    "one_optimizer_update_per_behavior_batch; actor_behavior_parity_before_update",
+    "pinned_verl_dual_clip_3_explicit_not_plain_PPO"
+  ],
+  "gates": {
+    "sampled_group_cpu": true,
+    "sampled_loss_cpu": true,
+    "sampled_hybrid_actor_dp_cpu": true,
+    "reference_kl_actor_dp_cpu": true,
+    "npu_audio_lifecycle": false,
+    "label_free_sampling_fixed_image_cpu": true,
+    "actor_sampling_bridge_dp_cpu": true,
+    "real_audio_artifact_transport_cpu": true,
+    "scheduled_weighted_audio_transport_cpu": true,
+    "continuous_loop_native_cpu": true
+  },
+  "training_dispatch_allowed": false,
+  "acceptance_scope": "Native verl CPU GRPO/RLOO DP4 continuous checks passed. Two scheduled NPU GRPO updates independently audited including exact Adam continuation, fixed reference, full128 sampling and PEFT export. First updated policy HF/vLLM256, resident switch and fresh-process recovery independently accepted. Resident two-batch256 collection and all raw sampling independently accepted. Second updated HF/vLLM256 and resident128 independently accepted (maxlogp9.536743e-7,argmax0). Continuous resident NPU trainer and final Stage1 reference remain unaccepted. Fixture begins at two-step CE prefix, not final Stage1. No formal Stage2 dispatch.",
+  "budget_candidate": {
+    "learning_population": 40513,
+    "epochs": 2,
+    "global_batch": 128,
+    "microbatch_per_rank": 1,
+    "dp_world_size": 4,
+    "updates_per_epoch": 317,
+    "total_updates": 634,
+    "schedule_sha256": "fc36b3afdf367bad6a5f0530a8743cb44b630592e2c778c3046130e3c1adf200",
+    "new_stage_cursor": 0,
+    "optimizer_reset_at_stage_boundary": true,
+    "selection_updates": [
+      0,
+      64,
+      128,
+      192,
+      256,
+      317,
+      384,
+      448,
+      512,
+      576,
+      634
+    ],
+    "selection_population": 9226,
+    "reference": "independently accepted Stage1 terminal634, frozen throughout RL",
+    "status": "candidate pending real_audio_lifecycle_acceptance"
+  },
+  "baseline_roles": {
+    "primary": "grpo_v1",
+    "comparison": "rloo_v1",
+    "optional_not_implemented": "ppo_critic_v1",
+    "legacy_not_primary": "exact_marginal_legacy"
+  },
+  "release_order": [
+    "freeze_task",
+    "accept_common_runtime_and_algorithm",
+    "freeze_experiment_snapshot",
+    "dispatch_training"
+  ],
+  "stepwise_status": "deferred_until_semantic_Q_supervision_and_metric_freeze; no temporal GAE on simultaneous spans",
+  "engineering_followup": {
+    "artifact_control": "v2_failed_exact_cross_run_FP32; BF16_bytes_exact; tiny_rank0_drift_recorded; no_threshold_relaxation",
+    "checkpoint_audit_tool": "tools/jev/verify_simple_sampled_checkpoint.py",
+    "checkpoint_audit_status": "passed_actual_fixed_image_independent_audit_and_file_hash_check",
+    "local_related_tests": 58,
+    "pending": [
+      "real continuous resident NPU updates and fresh-process recovery",
+      "final Stage1 checkpoint and selection acceptance",
+      "accepted immutable formal release snapshot"
+    ],
+    "updated_policy_gate": "tools/jev/verify_slurp_simple_parity.py: sampled resident128 vs fresh HF/vLLM256",
+    "resident_switch_probe": "tools/jev/probe_simple_sampled_switch.py",
+    "new_gate_status": "independent_probability_and_second_batch_transport_verified",
+    "fixture_initialization": "exact_accepted_checkpoint_restore_with_full256_resident_probability_gate",
+    "fresh_process_restore_tool": "tools/jev/probe_simple_sampled_restore.py",
+    "fresh_process_restore_audit": "tools/jev/verify_simple_sampled_restore.py",
+    "fresh_process_restore_status": "independent_exact_master_Adam_full256_probability_and7889_file_hashes_passed",
+    "npu_probe": {
+      "v1": "exit1_cpu_only_test_in_npu_container; no_update",
+      "v2_container": "faaa4e9f2ad104311ca51dfd3a14dbd5c70b9de5b7c28d58cdb648c034ed7d1c",
+      "v2_status": "observed_exit0_one_update_collected_independent_acceptance_pending",
+      "observed_unix": 1794582777.5296848,
+      "adapter_id": "63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97",
+      "checkpoint_audit_container": "133f8e0e274c0586fddd5fd16a49839716c4666af91dc3022ec71aac7d5e3ac2",
+      "checkpoint_audit_status": "observed_exit0_independently_collected"
+    },
+    "resident_switch_independent_audit": "v2_passed_full256_three_phases_and_reference_free_collection_6555_file_hashes",
+    "next_behavior_transport": {
+      "module": "src/multimodal_jev/simple_next_behavior.py",
+      "probe": "tools/jev/probe_simple_next_behavior.py",
+      "tests_passed": 51,
+      "status": "actual_fixed_image_second128_batch_verified_no_optimizer_update",
+      "scope": "second complete scheduled batch; updated behavior, fixed reference, cursor1; no optimizer step"
+    },
+    "checkpoint_audit_evidence": {
+      "container_id": "133f8e0e274c0586fddd5fd16a49839716c4666af91dc3022ec71aac7d5e3ac2",
+      "state_sha256": "f7b45d24cc89716bcc3f33be137d3b1d10a0d200bb58540589a02c69f7f61a61",
+      "verified_files": 3917,
+      "fixed_image_tests_passed": 93,
+      "sampling_signal": {
+        "requests": 128,
+        "samples": 2048,
+        "correct_samples": 30,
+        "all_wrong_groups": 109,
+        "all_correct_groups": 0,
+        "mixed_reward_groups": 19,
+        "mixed_group_request_weight": 31.11088585384682,
+        "real_request_weight": 181.1015367333769,
+        "scope": "Actual complete G16 sampling on the fixed learning engineering batch; no selection efficacy or isolated RL gradient contribution."
+      }
+    },
+    "updated_policy_launch": {
+      "container_id": "87a98d8265db5e35677d291931da43ffa7c426a7ee95b8d7cbb1efbc443bf28b",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "host": "175",
+      "physical_devices": [
+        0
+      ],
+      "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-parity-v2",
+      "created_unix": 1794584179.0793536,
+      "next_regular_observation_not_before": 1794584779.0793536,
+      "config_sha256": "e270cc5ac9e75ab34042b66484ac3f94822bbb2dda4e763d3331956e5727f113",
+      "scope": "Fresh prefix256 HF/vLLM full-candidate parity on isolated NPU0; sampled updated policy if explicitly selected, no training promotion",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 3156368,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-13T15:35:05.29495438Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      }
+    },
+    "updated_policy_failed_v1": {
+      "container_id": "809f72ee53540dce55d27d12af8e330be514ffa280e9cf4da6de8937b4d494ce",
+      "exit_code": 1,
+      "cause": "ZMQ pathname IPC exceeds107bytes",
+      "hf_completed_requests": 256,
+      "vllm_completed_requests": 0
+    },
+    "second_update": {
+      "probe": "tools/jev/probe_simple_sampled_continue.py",
+      "audit": "tools/jev/verify_simple_sampled_continue.py",
+      "status": "independent_checkpoint_and_updated_HF_vllm256_resident128_accepted",
+      "requirements": [
+        "accepted_updated_parity",
+        "accepted_resident_switch",
+        "accepted_fresh_process_restore"
+      ],
+      "tests": {
+        "state_transport_recovery": 60,
+        "second_audit": 9,
+        "parity": 27
+      },
+      "scope": "one additional full scheduled128 update; continuing Adam1to2; fixed original reference; not full trainer",
+      "launch": {
+        "container_id": "eaf12481a8bdbb59e19290e21189c4d65ddd71ef4e4fdda1164fff0ec1b76ed7",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "host": "175",
+        "physical_devices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1",
+        "created_unix": 1794587408.6097946,
+        "next_regular_observation_not_before": 1794588008.6097946,
+        "config_sha256": "061b60c0948ccef0455d89773531d22a9b40c19a9c714b06457f34fee084139d",
+        "scope": "Second scheduled audio RL update from accepted policy with exact continuing Adam and original reference; no training promotion",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3352006,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:28:54.85612002Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        }
+      },
+      "observation": {
+        "container_id": "eaf12481a8bdbb59e19290e21189c4d65ddd71ef4e4fdda1164fff0ec1b76ed7",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:28:54.85612002Z",
+          "FinishedAt": "2026-11-13T16:33:37.73090295Z"
+        },
+        "observed_unix": 1794588023.393056
+      }
+    },
+    "full_schedule": {
+      "module": "src/multimodal_jev/simple_rl_schedule.py",
+      "status": "actual_release_population_weights_and_fixed_image_next_batch_transport_verified",
+      "recordings": 40513,
+      "uses": 81026,
+      "updates": 634,
+      "tests_passed": 28,
+      "schedule_sha256": "fc36b3afdf367bad6a5f0530a8743cb44b630592e2c778c3046130e3c1adf200",
+      "population_sha256": "2055b46a133e19becc72fd12cc3cc482ea7267f38d0bc86908e4f9c108ab19ab"
+    },
+    "common_actor_config": "25 execution fields AST-equal to accepted NPU v2 snapshot; explicit policy argument only; no full trainer acceptance",
+    "updated_policy_observation": {
+      "container_id": "87a98d8265db5e35677d291931da43ffa7c426a7ee95b8d7cbb1efbc443bf28b",
+      "observed_unix": 1794584804.7435653,
+      "exit_code": 0,
+      "raw_summary": {
+        "hf": {
+          "passed": true,
+          "records": 256,
+          "adapter_id": "63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97"
+        },
+        "vllm": {
+          "passed": true,
+          "records": 256,
+          "adapter_id": "63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97",
+          "maximum_logprob_error": 9.5367431640625e-07,
+          "argmax_changes": 0
+        },
+        "ipc": {
+          "directory": "/jev-tmp",
+          "maximum_socket_path_bytes": 45,
+          "limit_bytes": 107,
+          "storage": [
+            {
+              "name": "ipc",
+              "path": "/jev-tmp",
+              "mount": "/jev-tmp",
+              "filesystem": "ext4",
+              "options": "rw,relatime",
+              "free_bytes": 3429996572672,
+              "free_fraction": 0.32974690380618427
+            }
+          ]
+        }
+      },
+      "fixed_image_tests_passed": 62
+    },
+    "updated_policy_finalizer_launch": {
+      "container_id": "5dc33a11aef9a1e04322313b2458a2e691353202622396c95adc8ceb082cae3f",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 3195483,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-13T15:45:46.26351508Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "host": "175",
+      "created_unix": 1794584820.278671,
+      "next_regular_observation_not_before": 1794585420.278671,
+      "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-parity-finalize-v1",
+      "config_sha256": "c08ddbc5f7418591e8936739ec07d64521c733be73949e5c66b0fa6d428f872a",
+      "scope": "Independent updated RL policy HF/vLLM256 plus resident128 parity; CPU only"
+    },
+    "reference_free_resident_behavior": {
+      "status": "prepared_not_executed_on_vllm",
+      "local_tests_passed": 22,
+      "scope": "resident rollout avoids extra HF pass; execution checks retained; independent switch audit required"
+    },
+    "updated_policy_independent_acceptance": {
+      "passed": true,
+      "adapter_id": "63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97",
+      "requests": 256,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_spans": 0,
+      "sampled_resident_parity": {
+        "hf": {
+          "passed": true,
+          "requests": 128,
+          "maximum_logprob_error": 0.0,
+          "argmax_changed_spans": 0
+        },
+        "vllm": {
+          "passed": true,
+          "requests": 128,
+          "maximum_logprob_error": 9.5367431640625e-07,
+          "argmax_changed_spans": 0
+        }
+      },
+      "file_checks": {
+        "run/verified.json": {
+          "sha256": "3e98d302a46da25eee536fa1aeb5297213f72f013885de9126fe306a72ecc957",
+          "verified_files": 5234
+        },
+        "next-behavior/result.json": {
+          "sha256": "803c8a2e2a77c74a06261e7e2ff4731dae1418de1807193540a9ca45964735c6",
+          "verified_files": 6545
+        }
+      },
+      "next_behavior": {
+        "passed": true,
+        "update": 1,
+        "real_requests": 128,
+        "population_check": {
+          "passed": true,
+          "recordings": 40513,
+          "classes": 60,
+          "epochs": 2,
+          "updates": 634,
+          "uses": 81026,
+          "population_sha256": "2055b46a133e19becc72fd12cc3cc482ea7267f38d0bc86908e4f9c108ab19ab",
+          "schedule_sha256": "fc36b3afdf367bad6a5f0530a8743cb44b630592e2c778c3046130e3c1adf200"
+        }
+      }
+    },
+    "resident_switch_launch": {
+      "container_id": "18ed559b6c03691757e9edeebb0854f9d3e97644598a58aa96dc97e7e07d8cea",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "host": "175",
+      "physical_devices": [
+        0
+      ],
+      "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-switch-v1",
+      "created_unix": 1794585460.4749734,
+      "next_regular_observation_not_before": 1794586060.4749734,
+      "config_sha256": "66ab1670708bc169b1734ea73668020a08c9a2d6328efbd834c0ac98cda5f826",
+      "scope": "Resident vLLM old/update/old policy switch over full256 audio; requires accepted updated policy and does not promote full training",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 3233310,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-13T15:56:26.70142254Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      }
+    },
+    "resident_batch_collector": {
+      "module": "src/multimodal_jev/simple_resident_batch.py",
+      "probe": "tools/jev/probe_simple_resident_batch.py",
+      "audit": "tools/jev/verify_simple_resident_batch.py",
+      "status": "local_tests_passed_actual_engine_pending",
+      "tests": {
+        "transport_related": 50,
+        "combined_schedule_switch": 50,
+        "new_collector_and_audit": 17
+      },
+      "scope": "single audio compile per batch; same resident engine; immutable fixed reference and current behavior; full128 with explicit padding; no optimizer loop or training admission"
+    },
+    "resident_switch_observed": {
+      "passed": true,
+      "requests_per_phase": 256,
+      "phases": 3,
+      "adapter_sequence": [
+        "b347b175f7c3418049cd8cda9f85facdd81901e56ed8af6035ccd846eec45136",
+        "63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97",
+        "b347b175f7c3418049cd8cda9f85facdd81901e56ed8af6035ccd846eec45136"
+      ],
+      "exact_switch_back": true,
+      "reference_free_behavior": {
+        "passed": true,
+        "requests": 256,
+        "exact_resident_behavior": true,
+        "scope": "Reference-free collection equals separately verified resident output; actor admission remains required."
+      },
+      "scope": "Actual single resident vLLM engine old/update/old over full256 audio with independent HF references. Not fresh-process FSDP resume or continuous RL efficacy."
+    },
+    "followup_launches": {
+      "sampled-npu-grpo_v1-switch-finalize": {
+        "container_id": "041b7686e89b0430a07966891524d23ca0afa96bb193f966342b4f56600bbb5c",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3271247,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:06:48.19131505Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794586082.197109,
+        "next_regular_observation_not_before": 1794586682.197109,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-switch-finalize-v1",
+        "config_sha256": "3b9ee4492dd0d9e28b61bec743f65e1c35adb87835a19ed9dad2cd8891f46dd6",
+        "scope": "Independent resident vLLM old/new/old full256 switch verification; CPU only"
+      },
+      "sampled-npu-grpo_v1-restore": {
+        "container_id": "dfabd18d6f44e3931b96cddbb3585336f25f56b368ef43387e27421f2be7d6e5",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "host": "175",
+        "physical_devices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-restore-v1",
+        "created_unix": 1794586097.4808927,
+        "next_regular_observation_not_before": 1794586697.4808927,
+        "config_sha256": "39253f8fd678716fdc4faead821f470fe78b97eacf10be143912e9868381ec7a",
+        "scope": "Fresh-process restore of accepted one-update RL checkpoint/master/Adam plus full256 probability check; no optimizer update",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3272329,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:07:03.71007065Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        }
+      }
+    },
+    "continuous_loop_driver": {
+      "module": "src/multimodal_jev/simple_rl_loop.py",
+      "probe": "tools/jev/probe_simple_rl_loop_cpu.py",
+      "local_tests_passed": 28,
+      "status": "pinned_native_verl_DP4_continuous_CPU_verified_NPU_pending",
+      "scope": "Continuous native verl GRPO/RLOO+CE/KL driver, real Gloo DP4, micro1/2, explicit numerical reference and Adam reload; synthetic CPU only."
+    },
+    "continuous_followup_launches": {
+      "sampled-loop-cpu": {
+        "container_id": "ff33abf7c0276f1d91cf166789e813f2d2c63e0a26b3425361f091ee405aaa86",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3296406,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:13:41.9004436Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794586495.9014416,
+        "next_regular_observation_not_before": 1794587095.9014416,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-loop-dp-cpu-v1",
+        "scope": "Continuous driver with native verl GRPO/RLOO, actual Gloo DP4, CE/KL G16, micro1/2 and Adam restore; syntheticCPU only"
+      },
+      "sampled-npu-grpo_v1-switch-finalize-v2": {
+        "container_id": "95eb24f0e679ba1e57eac86fc68cfb85191ed7570328afeeff0876a53e7f24a9",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3312936,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:18:08.71850652Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794586762.71912,
+        "next_regular_observation_not_before": 1794587362.71912,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-switch-finalize-v2",
+        "config_sha256": "c757f0d9f628fe6aab69fd39f69ca9e45274a8303de04aca9a573e930827fc12",
+        "scope": "Independent resident vLLM old/new/old full256 switch verification; CPU only"
+      },
+      "sampled-npu-grpo_v1-restore-audit": {
+        "container_id": "6c0e79455f774732682ef9d14565ed599b4d0bd54783e3b2aa411284c0223509",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3310371,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:17:30.52032836Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794586724.5187073,
+        "next_regular_observation_not_before": 1794587324.5187073,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-restore-audit-v1",
+        "config_sha256": "66321e92b5a333306cf1bfe70e096b31f802eb16e2034873c1d7dfd62bbd77e9",
+        "scope": "Generalized terminal instruction checkpoint audit; sampled-restore evidence only"
+      }
+    },
+    "switch_finalizer_failed_v1": {
+      "container_id": "041b7686e89b0430a07966891524d23ca0afa96bb193f966342b4f56600bbb5c",
+      "exit_code": 1,
+      "cause": "FileNotFoundError output parent run absent while writing verified.tmp after verification returned",
+      "fixed_image_tests_passed": 32,
+      "revision": "new CPU finalizer v2; original NPU switch preserved"
+    },
+    "independent_switch_restore_acceptance": {
+      "sampled-npu-grpo_v1-restore-audit": {
+        "passed": true,
+        "updates": 1,
+        "ranks": 4,
+        "requests": 256,
+        "adapter_id": "63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97",
+        "exact_master_adam": true,
+        "full_candidate_parity": true,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "argmax_changed_spans": 0,
+        "scope": "Independently recomputed fresh-process recovered FP32 master/Adam and all256 FSDP/HF/vLLM probabilities; no next optimizer update or efficacy claim.",
+        "file_check": {
+          "passed": true,
+          "verified_files": 7889,
+          "state_sha256": "1289ae32a4ffae1045bee9f732ab5701f9f255665fcbe8b5bdb8cfe20667bcc9",
+          "container_id": "6c0e79455f774732682ef9d14565ed599b4d0bd54783e3b2aa411284c0223509"
+        }
+      },
+      "sampled-npu-grpo_v1-switch-finalize-v2": {
+        "passed": true,
+        "requests_per_phase": 256,
+        "phases": 3,
+        "exact_switch_back": true,
+        "maximum_logprob_error": 9.5367431640625e-07,
+        "argmax_changed_spans": 0,
+        "container_id": "18ed559b6c03691757e9edeebb0854f9d3e97644598a58aa96dc97e7e07d8cea",
+        "reference_free_behavior": {
+          "passed": true,
+          "requests": 256,
+          "exact_resident_behavior": true,
+          "scope": "Reference-free collection equals separately verified resident output; actor admission remains required."
+        },
+        "scope": "Independently recomputed resident vLLM full256 old/new/old evidence; not continuous RL updates or task efficacy.",
+        "file_check": {
+          "run/verified.json": {
+            "sha256": "7b4eea92fea7c181310ed73e340b426038f121d70be45a04d39eb9334c913b38",
+            "verified_files": 6555
+          }
+        }
+      }
+    },
+    "resident_rpc": {
+      "module": "src/multimodal_jev/span_rollout_rpc.py",
+      "service": "tools/jev/serve_span_rollout.py",
+      "continuous_fixture": "tools/jev/probe_simple_resident_train.py",
+      "status": "prepared_not_dispatched",
+      "local_related_tests_passed": 46,
+      "scope": "Real socket/framing/weights_only tensor transport with substitute engine; NPU continuous callbacks syntax-checked only; requires separate TP1 device and independent admission"
+    },
+    "continuous_loop_cpu_failed_v1": {
+      "exit_code": 1,
+      "phase": 0,
+      "passed_tests": 20,
+      "failed_tests": 5,
+      "cause": "CPU Adam test triggered torch_npu initialization without NPU devices; native DP probe not entered"
+    },
+    "continuous_loop_cpu_v2_launch": {
+      "container_id": "d3bb859f15e1e6392648f779503950edaaa0bab7fd08cbdc3dbab3bd2040026c",
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 3336471,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-13T16:24:43.00276244Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "host": "175",
+      "created_unix": 1794587156.9850893,
+      "next_regular_observation_not_before": 1794587756.9850893,
+      "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-loop-dp-cpu-v2",
+      "scope": "Continuous driver with native verl GRPO/RLOO, actual Gloo DP4, CE/KL G16, micro1/2 and Adam restore; syntheticCPU only"
+    },
+    "continuous_loop_cpu_acceptance": {
+      "container_id": "d3bb859f15e1e6392648f779503950edaaa0bab7fd08cbdc3dbab3bd2040026c",
+      "passed": true,
+      "fixed_image_tests_passed": 28,
+      "rank_cases": [
+        {
+          "rank": 0,
+          "cases": 4,
+          "updates_per_case": 3
+        },
+        {
+          "rank": 1,
+          "cases": 4,
+          "updates_per_case": 3
+        },
+        {
+          "rank": 2,
+          "cases": 4,
+          "updates_per_case": 3
+        },
+        {
+          "rank": 3,
+          "cases": 4,
+          "updates_per_case": 3
+        }
+      ],
+      "artifact_files": 40,
+      "source_check": {
+        "passed": true,
+        "files": 1323,
+        "container_id": "d3bb859f15e1e6392648f779503950edaaa0bab7fd08cbdc3dbab3bd2040026c",
+        "archive_sha256": "cd6caaa568dd9a459dd8eecf1c5b95af5a85dec54b4a06fb1e6e73de6b3e5030"
+      },
+      "scope": "Continuous native verl GRPO/RLOO+CE/KL driver, real Gloo DP4, micro1/2, explicit numerical reference and Adam reload; synthetic CPU only.",
+      "evidence": ".local/simple-final-v1/sampled-loop-cpu-v2-collected.json"
+    },
+    "release_followup_launches": {
+      "sampled-npu-grpo_v1-continue-audit": {
+        "container_id": "7bd5bd23f57c86df4bbdc0c320307dc0c189df696e174a8239d1589a2b60731f",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3392064,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:39:36.773307Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794588050.76946,
+        "next_regular_observation_not_before": 1794588650.76946,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-audit-v1",
+        "config_sha256": "d977dae25adc2402ad81cd9b3be8ab266f35e7425c657e5d724fee6e9585f14a",
+        "scope": "Generalized terminal instruction checkpoint audit; sampled-continue evidence only"
+      },
+      "sampled-npu-grpo_v1-resident-batch": {
+        "container_id": "2b754be4df22cf16714c79a64566d039c1733bfa75400172f242d29b9853474a",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "host": "175",
+        "physical_devices": [
+          0
+        ],
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-resident-batch-v1",
+        "created_unix": 1794588067.980902,
+        "next_regular_observation_not_before": 1794588667.980902,
+        "config_sha256": "be4eec5f80b2931fdd17b917c8c25c4c5fc99953c3fa9d4fbb4f2a39d0a5e097",
+        "scope": "Resident full scheduled two-batch behavior/fixed-reference transport; no optimizer execution",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3393256,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:39:54.22787346Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        }
+      }
+    },
+    "continuous_resident_audit": {
+      "local_tests": {
+        "passed": true,
+        "tests_passed": 29,
+        "command": "PYTHONPATH=src python3 -m pytest -q tests/test_simple_resident_train_audit.py tests/test_simple_resident_acceptance.py",
+        "source_hashes": {
+          "tools/jev/verify_simple_resident_train.py": "87c23777c53405d29b423efae31052ddd13be00eab54a21bc68fc1c267125fb0",
+          "tests/test_simple_resident_train_audit.py": "086ebb49bcb5b1f3215196f8eb0d32aa3bda91d80ec1e3d6373b2c94c282e90d",
+          "src/multimodal_jev/simple_resident_acceptance.py": "4358cf9821c8848d9e6e3b70f0c3d726672a8a8ebc3e71422ec2528aea67c0ca",
+          "tests/test_simple_resident_acceptance.py": "9ce4238eb3880182c1895b6a9136b8264d0ca53b72d979fb62fd3fcf8220c8d7"
+        },
+        "scope": "System Python CPU, real four-shard tensors/G16/identity/parity; mocked audio/model/PEFT loaders, not actual NPU or PEFT acceptance.",
+        "created_unix": 1794588590.1316566
+      },
+      "fixed_image_launch": {
+        "container_id": "39d4fda7b5fd1d6bf327ca6314327948c1b6b2b6197b195399313f0472ca82a1",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3421298,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:47:29.14658985Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794588523.1351485,
+        "next_regular_observation_not_before": 1794589123.1351485,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/resident-audit-cpu-v1",
+        "scope": "Continuous audit failure-injection tests with real tensors/sampling and substituted model/audio I/O; fixed-image CPU only, not NPU lifecycle"
+      },
+      "status": "fixed_image54_tests_passed_NPU_continuous_pending",
+      "tools": [
+        "tools/jev/probe_simple_resident_train.py",
+        "tools/jev/verify_simple_resident_train.py"
+      ],
+      "pending": [
+        "continuous_NPU_launch_and_service_admission",
+        "actual_continuous_NPU_and_independent_audit",
+        "terminal_fresh_process_recovery",
+        "final_stage1_reference_and_formal_full_data_loop"
+      ],
+      "fixed_image_acceptance": {
+        "passed": true,
+        "container_id": "39d4fda7b5fd1d6bf327ca6314327948c1b6b2b6197b195399313f0472ca82a1",
+        "source_files": 1327,
+        "source_archive_sha256": "5604f44ca7dd9d42113f65200cf49e4112f4d89ea2b0d1afae86bb394d308eff",
+        "log_sha256": "7b96428123c96b2c2f376ad99ffa166a17f751f8555886d0d5742a812ccefc3e",
+        "scope": "Fixed-image CPU audit tests, actual tensor/sampling/parity and mocked external model/audio loaders. No continuous NPU acceptance.",
+        "tests_passed": 54
+      }
+    },
+    "second_sampled_update_independent_acceptance": {
+      "passed": true,
+      "training_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1",
+      "updates": 2,
+      "algorithm": "grpo_v1",
+      "adapter": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-adapter-step0002",
+      "adapter_id": "4c4fdb36028f84921fa4e47dc46d3d5fe2ec93f79c895fca2540f708f52644a4",
+      "reference_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:b347b175f7c3418049cd8cda9f85facdd81901e56ed8af6035ccd846eec45136",
+      "behavior_policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:63f0529709787bd858880096dc8476f784f1910258b7f5ad3cd7fb85a465da97",
+      "ranks": 4,
+      "tensors": 112,
+      "exact_master_export": true,
+      "exact_peft_reload": true,
+      "durable_commit_verified": true,
+      "supervision_records_verified": 128,
+      "exact_pre_update_recovery": true,
+      "population_check": {
+        "passed": true,
+        "recordings": 40513,
+        "classes": 60,
+        "epochs": 2,
+        "updates": 634,
+        "uses": 81026,
+        "population_sha256": "2055b46a133e19becc72fd12cc3cc482ea7267f38d0bc86908e4f9c108ab19ab",
+        "schedule_sha256": "fc36b3afdf367bad6a5f0530a8743cb44b630592e2c778c3046130e3c1adf200"
+      },
+      "scope": "Second scheduled new-behavior RL update with preserved Adam and fixed reference audited independently; updated backend parity and full training remain separate.",
+      "file_check": {
+        "passed": true,
+        "verified_files": 7923,
+        "state_sha256": "d253f6e32a4da5c735b0f45c98b89024ca07c5c1a4ffc6b8477b9ff2e93c0bcd",
+        "container_id": "7bd5bd23f57c86df4bbdc0c320307dc0c189df696e174a8239d1589a2b60731f"
+      },
+      "fixed_image_tests_passed": 53
+    },
+    "second_update_followup_launches": {
+      "sampled-npu-grpo_v1-continue-parity": {
+        "container_id": "0809792d65ca591b66c907e7517e1d4bcc107eaf0b15e94aa2f480bfc43b925f",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "host": "175",
+        "physical_devices": [
+          0
+        ],
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-parity-v1",
+        "created_unix": 1794588806.7237022,
+        "next_regular_observation_not_before": 1794589406.7237022,
+        "config_sha256": "b4c01d1ebaa393270c9373f2a2d8e54244ff4f400c4eda77535431f467a86e7d",
+        "scope": "Fresh prefix256 HF/vLLM full-candidate parity on isolated NPU0; sampled updated policy if explicitly selected, no training promotion",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3439440,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:52:12.97276516Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        }
+      },
+      "sampled-npu-grpo_v1-resident-batch-finalize": {
+        "container_id": "1453ee93070166cdb85e6cae7115e4f72bea9c779ee34aefa7950cb89cb1ff16",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3432777,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:50:35.67430754Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794588709.6524734,
+        "next_regular_observation_not_before": 1794589309.6524734,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-resident-batch-finalize-v1",
+        "config_sha256": "1721459dc067de2b062ac462effdb741125eb445deb546c8bf6c89fcf51b373c",
+        "scope": "Independent full scheduled resident collector verification; CPU only"
+      }
+    },
+    "export_permission_repair": {
+      "path": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-adapter-step0002/adapter_model.safetensors",
+      "before_mode": "0o600",
+      "after_mode": "0o644",
+      "sha256": "774aece74237e4a845c679b5b4906cc65a653555dcfaed9272e07f315a4b7cfb",
+      "content_unchanged": true
+    },
+    "resident_batch_observed": {
+      "container_id": "2b754be4df22cf16714c79a64566d039c1733bfa75400172f242d29b9853474a",
+      "exit_code": 0,
+      "independent_acceptance": "pending_finalizer"
+    },
+    "resident_joint_launcher": {
+      "status": "prepared_not_dispatched",
+      "launcher": "tools/jev/launch_simple_resident_train.py",
+      "local_service_rpc_storage_tests_passed": 31,
+      "local_launcher_preflight_tests_passed": 5,
+      "source_hashes": {
+        "tools/jev/launch_simple_resident_train.py": "0cc3dadccab990374b634eec7ba7b797778af51c09b2cae3cac4c7877589d20e",
+        "src/multimodal_jev/resident_service_admission.py": "b9d1d8c4c0f4e0b6ad8aa1df3ecfcc77a4eb033bc5b03d7f4d47f29034494e7b",
+        "tools/jev/probe_simple_resident_train.py": "3b492a4a9db02aa21ff028aeb06ba7485651df01d33c7d6198a17d4ee4e0fd8d",
+        "tests/test_resident_train_launch_preflight.py": "5ca72e74e6db20511be4d0f706047c9c360a5f5a5b310ace4dd09ee9fe92a2cb",
+        "tests/test_resident_service_admission.py": "164c357dc7249776143fe237b4daabc635cfee3e29d289e878c3a76a3a1349be"
+      },
+      "fixed_image_test_launch": {
+        "container_id": "0b605fc720b9954de5d518564fb853ce62d5057c388b8806aa73b51c63c9794a",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3467395,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T16:59:19.9309859Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794589233.9033155,
+        "next_regular_observation_not_before": 1794589833.9033155,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/resident-launch-cpu-v1",
+        "scope": "Resident service admission, real launcher preflight, socket and local commit tests; fixed-image CPU only, no NPU service or actor"
+      },
+      "resource_plan": {
+        "actor": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "rollout": [
+          4
+        ],
+        "require_all_free_before_service": true
+      },
+      "scope": "Two-phase launcher with exact process/device/mount/config authentication; no live NPU service/trainer validation yet.",
+      "post_dispatch_change": "Source archive now resolves repository paths independent of cwd; four local preflight tests passed. Already running CPU snapshot predates this path-resolution-only edit.",
+      "successful_path_test": "Both actual launcher branches executed with simulated SSH/Docker host; device/mount/IPC/manifest bindings and unrelated cwd checked; not real dispatch."
+    },
+    "resident_batch_independent_acceptance": {
+      "passed": true,
+      "container_id": "2b754be4df22cf16714c79a64566d039c1733bfa75400172f242d29b9853474a",
+      "batches": 2,
+      "requests": 256,
+      "checks": [
+        {
+          "requests": 128,
+          "maximum_logprob_error": 0.0
+        },
+        {
+          "requests": 128,
+          "maximum_logprob_error": 0.0
+        },
+        {
+          "requests": 128,
+          "maximum_logprob_error": 0.0
+        },
+        {
+          "requests": 128,
+          "maximum_logprob_error": 0.0
+        }
+      ],
+      "population_check": {
+        "passed": true,
+        "recordings": 40513,
+        "classes": 60,
+        "epochs": 2,
+        "updates": 634,
+        "uses": 81026,
+        "population_sha256": "2055b46a133e19becc72fd12cc3cc482ea7267f38d0bc86908e4f9c108ab19ab",
+        "schedule_sha256": "fc36b3afdf367bad6a5f0530a8743cb44b630592e2c778c3046130e3c1adf200"
+      },
+      "scope": "Independent raw resident output and full scheduled sampling reconstruction; no optimizer update or trainer acceptance.",
+      "file_check": {
+        "run/verified.json": {
+          "sha256": "5de3dcedd2173e8978a22024082a491cffd7b79629a0d42dcacbc4bddd57718f",
+          "verified_files": 6574
+        }
+      }
+    },
+    "second_updated_policy_observed": {
+      "container_id": "0809792d65ca591b66c907e7517e1d4bcc107eaf0b15e94aa2f480bfc43b925f",
+      "state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-13T16:52:12.97276516Z",
+        "FinishedAt": "2026-11-13T16:59:13.52814368Z"
+      },
+      "observed_unix": 1794589443.908524,
+      "fixed_image_tests_passed": 62,
+      "hf_requests": 256,
+      "vllm_requests": 256,
+      "independent_acceptance": "passed_collected_file_hashes_verified",
+      "finalizer_launch": {
+        "container_id": "89be746c4a7e152d7d80212b41577b6759e9e6cda1c22d770c78deab01365b11",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3480717,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T17:02:59.78104835Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794589453.7698023,
+        "next_regular_observation_not_before": 1794590053.7698023,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-parity-finalize-v1",
+        "config_sha256": "5a153192410d0c8c5701924574519a4fc3e433ddf740d13de0b36849144051d3",
+        "scope": "Independent updated RL policy HF/vLLM256 plus resident128 parity; CPU only"
+      }
+    },
+    "continuous_recovery": {
+      "status": "local_tests_passed_fixed_image_launched_no_real_NPU_recovery",
+      "modules": [
+        "src/multimodal_jev/simple_continuous_resume.py",
+        "tools/jev/probe_simple_continuous_restore.py",
+        "tools/jev/verify_simple_continuous_restore.py"
+      ],
+      "tests": {
+        "source_and_exact_state": 31,
+        "independent_restore_audit": 16,
+        "long_path_RPC": 9
+      },
+      "fixed_image_launch": {
+        "container_id": "046ef8c89d4bdfd2f7694f98b123df39baa3a3f42b56bc1b8ecc770fc400fe29",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3507707,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T17:10:35.31106171Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794589909.2869844,
+        "next_regular_observation_not_before": 1794590509.2869844,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/continuous-resume-cpu-v1",
+        "scope": "Continuous recovery admission/audit and exact state tests plus resident launch/RPC/storage regression; external model/audio/Docker replaced; no NPU dispatch"
+      },
+      "scope": "Actual tensor files, sampling and parity; mocked model/audio and source audit in unit fixtures. NPU restore entry syntax checked only; no continuous checkpoint exists yet.",
+      "source_hashes": {
+        "src/multimodal_jev/simple_continuous_resume.py": "5ae6bc791f25abb2e33ef1633c62ae2e5c7007351d19f070287a756e8e193dd4",
+        "tools/jev/probe_simple_continuous_restore.py": "cc76a8f1342cd1d9a7816a751bbebef2edb99083b8c2e730cf052c884e2bade9",
+        "tools/jev/verify_simple_continuous_restore.py": "fc60ebabeb18ee96434e1a0e933ec4f8463290e470e9390b3922a7f4110a1c7e"
+      },
+      "post_dispatch_source_evidence_binding": {
+        "tests_passed": 2,
+        "change": "Require recovery input and recorded-vLLM probability files in independent audit manifest; current source newer than running CPU snapshot."
+      },
+      "launcher_and_fixed_image_acceptance": {
+        "status": "fixed_image_CPU_passed_NPU_continuous_recovery_pending",
+        "fixed_image_acceptance": {
+          "passed": true,
+          "container_id": "046ef8c89d4bdfd2f7694f98b123df39baa3a3f42b56bc1b8ecc770fc400fe29",
+          "source_files": 1336,
+          "source_archive_sha256": "cb3bf361e1424c39690f8832a26f1985e9a8aed8f6a4953f19d88523116147e9",
+          "logs": {
+            "phase-0.log": "........................................................................ [ 86%]\n...........                                                              [100%]\n83 passed in 69.83s (0:01:09)\n"
+          },
+          "scope": "Fixed-image CPU recovery/admission/audit and launcher/RPC/storage tests; external model/audio/SSH/Docker substituted. Snapshot predates two source file-binding tests and seven continuous-recovery launcher tests. No real NPU continuous recovery."
+        },
+        "launcher": "tools/jev/launch_simple_continuous_restore.py",
+        "launcher_local_tests_passed": 7,
+        "launcher_test_scope": "Actual entry with simulated SSH/Docker; success and six rejection paths",
+        "source_hashes": {
+          "tools/jev/launch_simple_continuous_restore.py": "34de2a38e407e989eba60f1b6a863734797632215a90d3ad65ad6661e5330a65",
+          "tests/test_continuous_restore_launcher.py": "e6201550c88f417137c4a8500f8df151ac7fc18aaf807412a595fdf4a68d8b42"
+        },
+        "integration": "local observer plus terminal checkpoint audit --mode continuous-restore and collect_sampled_audit --continuous-restore prepared, not dispatched"
+      }
+    },
+    "resident_launcher_cpu_failed_v1": {
+      "container_id": "0b605fc720b9954de5d518564fb853ce62d5057c388b8806aa73b51c63c9794a",
+      "exit_code": 1,
+      "passed_tests": 34,
+      "failed_tests": 1,
+      "cause": "AF_UNIX path too long in test tmp_path; service/trainer not entered",
+      "fix": "test socket uses bounded /tmp directory with fixture cleanup;9 tests passed with deliberately long pytest basetemp"
+    },
+    "second_updated_policy_independent_acceptance": {
+      "passed": true,
+      "training_root": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1",
+      "updates": 2,
+      "state_sha256": "d253f6e32a4da5c735b0f45c98b89024ca07c5c1a4ffc6b8477b9ff2e93c0bcd",
+      "adapter_id": "4c4fdb36028f84921fa4e47dc46d3d5fe2ec93f79c895fca2540f708f52644a4",
+      "adapter": "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-adapter-step0002",
+      "full_candidate_parity": true,
+      "exact_master_export": true,
+      "requests": 256,
+      "population_mode": "prefix",
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_spans": 0,
+      "sampled_resident_parity": {
+        "hf": {
+          "passed": true,
+          "requests": 128,
+          "maximum_logprob_error": 0.0,
+          "argmax_changed_spans": 0
+        },
+        "vllm": {
+          "passed": true,
+          "requests": 128,
+          "maximum_logprob_error": 9.5367431640625e-07,
+          "argmax_changed_spans": 0
+        }
+      },
+      "scope": "Independent complete declared population HF/vLLM parity plus durable master/export/reload evidence; resident recovery and task metrics separate.",
+      "file_check": {
+        "run/verified.json": {
+          "sha256": "6a9553b256312be0af9a01776fd5227e14f7cfc392ce72edfcc98dbe54dcc87e",
+          "verified_files": 9259
+        }
+      }
+    },
+    "stage2_initialization": {
+      "status": "fixed_image_CPU_accepted_later_implicit_microbatch_default_fix_locally_tested",
+      "local_tests_passed": 49,
+      "source_hashes": {
+        "src/multimodal_jev/simple_stage2_initialization.py": "ed30496c17e510fc9736189f84cba39b7c1305a646bb10a132c672780aaa4892",
+        "tests/test_simple_stage2_initialization.py": "ae40193d476e6c09e2d8a3eb700b8e30893ee1badab9c6c160db7ffb5abf2697",
+        "tools/jev/probe_simple_sampled_npu.py": "76a1fe145fbc730555b342dd5f9f5cbbd5e5b3803165b0d8b74acea6f078b3bf",
+        "tools/jev/probe_simple_resident_train.py": "04f56afb5308af504a3f21339451da641499fd46e055774210ba0f9c0730ce8d"
+      },
+      "fixed_image_launch": {
+        "container_id": "2abd7c8b2429f62e3f4a8350acb30a10f0f73d35166ae0f2e552a9b80258720f",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3571076,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T17:28:33.34533015Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794590987.2969491,
+        "next_regular_observation_not_before": 1794591587.2969491,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/stage2-initialization-cpu-v1",
+        "scope": "Final Stage1 source authentication, exact FP32 stage boundary with fresh Adam, common loop and recovery launcher; CPU with external model/audio/SSH substitutes, no NPU dispatch"
+      },
+      "scope": "Final634/full9226 prerequisite, exact FP32 masters with reset Adam and RL cursor0, shared actor construction and loop0..634; local tensor and real parity-verifier synthetic9226 tests, model/audio substitutes; NPU path syntax checked only",
+      "remaining": [
+        "real continuous NPU lifecycle and fresh-process restore",
+        "final Stage1 checkpoint and selection acceptance",
+        "formal recovery integration"
+      ],
+      "fixed_image_acceptance": {
+        "passed": true,
+        "container_id": "2abd7c8b2429f62e3f4a8350acb30a10f0f73d35166ae0f2e552a9b80258720f",
+        "source_files": 1340,
+        "source_archive_sha256": "5582656336919f1484789c42a64b9f1676e52b90561e2efb22d22fa0403a9a98",
+        "logs": {
+          "phase-0.log": "........................................................                 [100%]\n=============================== warnings summary ===============================\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n56 passed, 3 warnings in 43.95s\nDrvMngGetConsoleLogLevel failed. (ret=4)\n"
+        },
+        "scope": "Fixed-image CPU Stage1 to Stage2 authentication and freshAdam, common loop and recovery launcher. Real tensors and synthetic full9226 parity verifier; external model/audio/SSH/Docker substitutes. Predates resident selection and formal terminal audit additions."
+      }
+    },
+    "resident_selection": {
+      "status": "fixed_image_CPU_accepted_no_formal_NPU_acceptance",
+      "tests": {
+        "resident_selection": 15,
+        "loop": 12,
+        "prepared_input": 8
+      },
+      "fixed_image_launch": {
+        "container_id": "ee061c1abcc0f34cecb2bc1bab3f3743604069b2886333e76e3263bf41dd18b1",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3598399,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T17:36:17.17787827Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794591451.1285787,
+        "next_regular_observation_not_before": 1794592051.1285787,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/resident-selection-cpu-v1",
+        "scope": "Resident full9226 streamed selection/scoring and independent rescore; shared renderer tensor identity and loop lifecycle; processor/audio/engine substitutes, CPU only"
+      },
+      "source_hashes": {
+        "src/multimodal_jev/simple_resident_selection.py": "6bc8569f71dc5bf5c10913d1624b2ca6c1005234a1b674a07742b2e5aeb4c081",
+        "src/multimodal_jev/simple_prepared_inputs.py": "7b48ce891750e5bde0cc5aa2994fe8f00205f8c745f807ef9e1585e454907f09",
+        "src/multimodal_jev/simple_rl_loop.py": "32e91152ee2142f14da9189952e73a9efe7fb8605879d5d57c15863a6e43db30",
+        "tools/jev/probe_simple_resident_train.py": "dd83b9f2568594aac6af52d428f136fbd7b24ff281e77952a2ad647f3db27757",
+        "tools/jev/check_slurp_native_span_policy.py": "888fb92e8ca91e7e7e46cde85714130b6cd8a30065d8a316a9c9f96019ee4a0f",
+        "tests/test_simple_resident_selection.py": "2b725a58da3f7a29d73e735995bd1fc06ab0b0a7f8f166c829f8a8f602d30a82",
+        "tests/test_simple_prepared_inputs.py": "c2845f1ad7aabb5b52ba9efbaee9855c96c78192cd87f56b4e2e7c0a7aa75c8b"
+      },
+      "scope": "Full9226 synthetic prediction/metric and raw rescore with processor/audio/engine substitutes; bounded73 batches and collective progress; real NPU callback syntax only",
+      "remaining": [
+        "real continuous NPU lifecycle and fresh-process restore",
+        "final Stage1 checkpoint and selection acceptance",
+        "formal recovery integration and full-run audit"
+      ],
+      "fixed_image_acceptance": {
+        "passed": true,
+        "container_id": "ee061c1abcc0f34cecb2bc1bab3f3743604069b2886333e76e3263bf41dd18b1",
+        "source_files": 1344,
+        "source_archive_sha256": "1affe00785e8545896b645bc1b22fb20fa49cdfe10c9d2f130811ecbe932d082",
+        "logs": {
+          "phase-0.log": "............................................................             [100%]\n=============================== warnings summary ===============================\ntest_simple_rl_loop.py::test_continuous_optimizer_and_exact_resume_match_uninterrupted\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n\ntest_simple_rl_loop.py::test_continuous_optimizer_and_exact_resume_match_uninterrupted\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n\ntest_simple_rl_loop.py::test_continuous_optimizer_and_exact_resume_match_uninterrupted\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n60 passed, 3 warnings in 80.94s (0:01:20)\nDrvMngGetConsoleLogLevel failed. (ret=4)\n"
+        },
+        "scope": "Fixed-image CPU full9226 synthetic resident scoring/raw rescore, shared renderer real tensors and loop tests; model/audio/engine substituted, no real NPU selection."
+      }
+    },
+    "stage2_terminal_audit": {
+      "status": "fixed_image_CPU_accepted_no_formal_NPU_acceptance",
+      "fixed_image_launch": {
+        "container_id": "3a966fc038cd4516928e6b568ae58e4b507f62a0c93129345a0e71c2299c37e5",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3620149,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T17:42:19.45334699Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794591813.417693,
+        "next_regular_observation_not_before": 1794592413.417693,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/stage2-audit-cpu-v1",
+        "scope": "Formal Stage2 source/initial-state and selection binding audit, checkpoint reconstruction and continuous fixture audit regression; CPU with external source/audio/model substitutes, not full634 validation"
+      },
+      "local_tests": {
+        "initial_audit_checkpoint_continuous_regression": 52,
+        "expanded_stage2_source_selection_bindings": 21,
+        "cpu_only_additional": 1
+      },
+      "scope": "Counts overlap; actual tensor files/source and 11-point rank bindings with external authentication/model/audio/scorer substitutes; full634 shared audit branch has no full-run execution evidence",
+      "source_hashes": {
+        "src/multimodal_jev/simple_stage2_audit.py": "31f4cf4d781634b53e2d07bf5e0d0ce61c76ba5a278d1bb09b40dc6a7fe0e5ed",
+        "src/multimodal_jev/simple_sampled_checkpoint.py": "8585ac07835ec211217b2c2ea10881204eebf9f26ffd85f1e8e7f1fcae3d6b73",
+        "tools/jev/verify_simple_resident_train.py": "ccf59d81e4f53860c4988e75b6d2e3f0cb57dcf90c3021155a492221d84032ef",
+        "tools/jev/probe_simple_sampled_npu.py": "63c43aee8c4d47963a5eac183b13f7c6bff9a8a3e1aa5d63261edda72b2fbc42",
+        "tests/test_simple_stage2_audit.py": "1237b0973852b81ae6b394e0919eb05df79a6dbbd150ac08924618470890cd47"
+      },
+      "post_dispatch_change": "CPU-only source check and one test added after fixed-image snapshot; separately local passed",
+      "pending": [
+        "real continuous NPU lifecycle and fresh-process restore",
+        "final Stage1 checkpoint and selection acceptance",
+        "formal recovery integration and full-run audit"
+      ],
+      "fixed_image_acceptance": {
+        "passed": true,
+        "container_id": "3a966fc038cd4516928e6b568ae58e4b507f62a0c93129345a0e71c2299c37e5",
+        "source_files": 1346,
+        "source_archive_sha256": "616fd7699bcb6597ba197bc584ecc58e2dc5e089a99facf4aaf89b83d94b8bb0",
+        "logs": {
+          "phase-0.log": "........................................................................ [ 87%]\n..........                                                               [100%]\n=============================== warnings summary ===============================\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n82 passed, 3 warnings in 97.96s (0:01:37)\nDrvMngGetConsoleLogLevel failed. (ret=4)\n"
+        },
+        "scope": "Fixed-image CPU formal initial-state/source/selection bindings and checkpoint reconstruction regression. External model/audio/source substitutes; not complete634 audit or NPU. Snapshot predates CPU-only guard and later formal launcher."
+      }
+    },
+    "stage2_release": {
+      "status": "fixed_image_CPU_accepted_no_formal_NPU_dispatch",
+      "fixed_image_launch": {
+        "container_id": "1d2fbf6624abbec4eed3abed1c8a0b483bce16980480175bc84decaa5fe6bac8",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3645863,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T17:49:35.44683477Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794592249.3961942,
+        "next_regular_observation_not_before": 1794592849.3961942,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/stage2-release-cpu-v1",
+        "scope": "Formal Stage2 release and real two-phase launcher with simulated SSH/Docker, initialization regression; CPU only, no formal service or NPU launch"
+      },
+      "local_tests": {
+        "release": 16,
+        "launcher": 7
+      },
+      "scope": "Actual formal two-phase launcher exercised with simulated SSH/Docker; real NPU entry syntax checked. Stage1 missing microbatch field uses existing default1; source snapshot immutable.",
+      "source_hashes": {
+        "src/multimodal_jev/simple_stage2_release.py": "606521d23c8c13534d6bb9c025ee7e4222c3e575b058a197f39e6ba87e7dd291",
+        "src/multimodal_jev/simple_stage2_initialization.py": "4f1cf4e0d8bb0e67eb16fa6393e79b13eb46435860485de7fd22844f4d0bd181",
+        "tools/jev/train_simple_stage2_npu.py": "a50ad4bc374325f03eae61f399492710d77c8e0b46df0ac52d81506ea56c711c",
+        "tools/jev/launch_simple_resident_train.py": "956cb5429759b5aaf24844f42f039fb9c01eef77e17c07d7bd48c1972f3bf7c0",
+        "tests/test_simple_stage2_release.py": "ca16a38e11eb675c16fa83fb3fa1b7e5da86f45fcc78ca727eb05d8038274c57",
+        "tests/test_resident_train_launch_preflight.py": "f7603fbb2b758cf071a604689f78a895705daeddb98430aaafa3e4b75b57b158"
+      },
+      "remaining": [
+        "real NPU continuous lifecycle and recovery",
+        "final Stage1 independent checkpoint and selection",
+        "formal recovery integration and complete audit"
+      ],
+      "fixed_image_acceptance": {
+        "passed": true,
+        "container_id": "1d2fbf6624abbec4eed3abed1c8a0b483bce16980480175bc84decaa5fe6bac8",
+        "source_files": 1349,
+        "source_archive_sha256": "0c598b6441f2c0acab2852a6a62d2c933a49aae054fe3858812124107497e6e3",
+        "logs": {
+          "phase-0.log": "...............................................                          [100%]\n=============================== warnings summary ===============================\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n\ntest_simple_stage2_initialization.py::test_stage_boundary_keeps_exact_masters_resets_adam_and_matches_fresh_next_step\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n47 passed, 3 warnings in 43.42s\nDrvMngGetConsoleLogLevel failed. (ret=4)\n"
+        },
+        "scope": "Fixed-image CPU release, actual two-phase launcher with simulated SSH/Docker, initialization. Predates stopped-prefix audit/recovery changes; no NPU formal dispatch."
+      }
+    },
+    "stage2_prefix_recovery": {
+      "status": "fixed_image_CPU_accepted_pre_resume_integration_snapshot",
+      "fixed_image_launch": {
+        "container_id": "081a1dc0d10ffa0ed3f583375afd170f6221c2781869ff8e632039e7cc4e58f5",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3688906,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T18:01:32.39482976Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794592966.3440382,
+        "next_regular_observation_not_before": 1794593566.3440382,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/stage2-prefix-recovery-cpu-v1",
+        "scope": "Stopped formal prefix source/initial-state/selection audit, every-update synthetic sampling/tensor verification, explicit formal recovery-source admission; CPU external model/audio substitutes, not NPU resume or full634 audit"
+      },
+      "local_tests": {
+        "audit_reconstruction_legacy_regression": 78,
+        "formal_prefix_integration": 4,
+        "recovery_and_restore_audit": 49
+      },
+      "counts_overlap": true,
+      "source_hashes": {
+        "src/multimodal_jev/simple_stage2_audit.py": "4c082281811087bdc52a60a6e47bee0ee854d93de5b063942cebef7078329f9f",
+        "src/multimodal_jev/simple_continuous_resume.py": "4a6cc29dc08d04c4e2ee45fd5c17ac14665763f32f470a42613baf35a631de1e",
+        "tools/jev/probe_simple_resident_train.py": "93aa3feeb18d18f91730b7589861df3d70d35ea7f9a48ac71029f84da7a97f8e",
+        "tools/jev/verify_simple_resident_train.py": "a877993a57fbdc620ca6d885b6cb022780c8fffc1b5a0c1cd1159ca469bb5c10",
+        "tests/test_simple_stage2_audit.py": "f1f76157ff2c41ac00c9c152bd12cebdf24c029c2b4418da1630667097a4d405",
+        "tests/test_simple_continuous_resume.py": "e65912bf8d4a861acb10d56ce583ece91477870a92c0d23cec3ae40f79c54825",
+        "tests/test_simple_resident_train_audit.py": "07b34f8a9151ba262717bc187e15c1e4bc66b9fa44f4c40cc0ca05b3fddd15bc"
+      },
+      "scope": "Explicit exited stopped-prefix source; exact initial state and per-checkpoint BF16 hooks; every update sampling/tensor/probability audit and due selections; explicit formal recovery admission. Model/audio/initial authentication substitutes in component tests. No formal resume loader/loop/launcher or complete634 audit.",
+      "remaining": [
+        "fixed_image_CPU_collection",
+        "formal resumed actor/selection/loop and launcher integration",
+        "actual continuous NPU fixture and fresh restore",
+        "final Stage1 checkpoint and full selection acceptance"
+      ],
+      "fixed_image_acceptance": {
+        "passed": true,
+        "container_id": "081a1dc0d10ffa0ed3f583375afd170f6221c2781869ff8e632039e7cc4e58f5",
+        "source_files": 1349,
+        "source_archive_sha256": "bf48aee840a60ce557c6fe4c1b9584a2f31c03685543b3621946d784053af7e5",
+        "logs": {
+          "phase-0.log": "........................................................................ [ 54%]\n...........................................................              [100%]\n131 passed in 163.61s (0:02:43)\n"
+        },
+        "scope": "Fixed-image CPU stopped-prefix audit and formal recovery source admission. Predates shared resume loader, selection history, policy chain and segment audit. External model/audio/authentication substitutes; no formal NPU recovery."
+      }
+    },
+    "stage2_resume_integration": {
+      "status": "fixed_image_CPU_accepted_no_NPU_resume",
+      "fixed_image_launch": {
+        "container_id": "7aae66cadeda82936fb40e51c3e63291d84b398752e934ef7961027f902f568d",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3725736,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T18:11:58.69101023Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794593592.6578522,
+        "next_regular_observation_not_before": 1794594192.6578522,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/stage2-resume-cpu-v1",
+        "scope": "Formal resume preserved master/Adam and next update, inherited selection raw rescore, segmented source/update audit and entry routing; CPU external model/audio substitutes, no NPU resume or full634 audit"
+      },
+      "local_tests": {
+        "resume_tensor_history": 47,
+        "entry_initialization_loop_audit": 94,
+        "expanded_resume_audit_regression": 110,
+        "new_segment_tests": 4
+      },
+      "counts_overlap": true,
+      "source_hashes": {
+        "src/multimodal_jev/simple_stage2_resume.py": "22947d756a2cd2c47296779e7f5e0bd532b607323d0cc1f6dae831af983d0653",
+        "src/multimodal_jev/simple_stage2_audit.py": "878d352cd43d609b3eccfb16ac4b5eaeb5558ce833ef12f154359c34daba98a9",
+        "src/multimodal_jev/simple_continuous_resume.py": "7600d76c2ab7dc775c9b7621fa0bcd4d5adfce02cee3504b181fab433b1fd7ca",
+        "src/multimodal_jev/simple_resident_selection.py": "946e3b706aa61fb7fa93904c0996285be2455666e1f832ff425b6a6b62789c3e",
+        "src/multimodal_jev/intent_resident_replay.py": "5133b78366b281b1d4f27ed2bbf5906f7ac506da92cb738e633f78d0c87f4b22",
+        "tools/jev/probe_simple_sampled_npu.py": "8b5ed72800df0ab36966eca8e2a0a04919b9c3c750af071e4bdb2bf193d29eae",
+        "tools/jev/probe_simple_resident_train.py": "35579e9ac5569d0f7f47fe5ac335a6df04066d592b8b87af5c04095dc6849e83",
+        "tools/jev/train_simple_stage2_npu.py": "ff2af827e99ec51f75aae3300c96b9193f72e877d9109f70ddc06cb974783597",
+        "tools/jev/verify_simple_resident_train.py": "cb4e2229ce902915c814575901e7ff86a065eb3c5f38329a8eae50bad656956e",
+        "tests/test_simple_stage2_resume.py": "03b6a4dc0876aa08145b580af3660a3b83bd273081f780699cb44610cca2d6dc",
+        "tests/test_simple_stage2_audit.py": "5289876145531e0c9d44b0946f9b09065d4332a7da454712ee95be65da9caece",
+        "tests/test_simple_resident_train_audit.py": "28f394955e983afc85d431679b5dbac384a36eeb393dd01d400b8601374d924d",
+        "tests/test_simple_continuous_resume.py": "56b13e09b2fe1959f4aa425a633de5e413f1bb865f4b30a0f232ba0beafcfefb",
+        "tests/test_simple_stage2_release.py": "173143761ce7ade95aac345d0025976804d3e2c39c9dbba1309b49581e6d97d8",
+        "tests/test_simple_resident_selection.py": "12169ff03ddf8660e5fcd900a93d5af7951505b27416393cd63e73b46b7cdbc9",
+        "tests/test_intent_resident_replay.py": "aeb974c0e3828790d73a2f93937868005f408410a2d817a7d9d9bfa9baf9850d"
+      },
+      "scope": "Shared actor loader now supports formal resume, exact master/Adam restore, no reference reset; selection history raw-rescored, common loop starts at recovered cursor; segment audit preserves certified prefix and verifies new suffix. Real CPU tensors/next update and synthetic full selection with external model/audio/admission substitutes. NPU code syntax checked only.",
+      "remaining": [
+        "fixed_image_CPU_result_collection",
+        "actual NPU lifecycle and formal resume validation",
+        "final Stage1 checkpoint and full selection acceptance",
+        "full formal634 execution and independent audit"
+      ],
+      "fixed_image_acceptance": {
+        "passed": true,
+        "container_id": "7aae66cadeda82936fb40e51c3e63291d84b398752e934ef7961027f902f568d",
+        "source_files": 1351,
+        "source_archive_sha256": "d6188aff291f0325ce2fb73d57d31d31d5483e15862c6de699984cb1f6ba96b1",
+        "logs": {
+          "phase-0.log": "........................................................................ [ 40%]\n........................................................................ [ 81%]\n.................................                                        [100%]\n=============================== warnings summary ===============================\ntest_simple_stage2_resume.py::test_recovered_master_adam_next_update_matches_uninterrupted\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:13: FutureWarning: triton.language.extra.cann.extension.atan2 is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.atan2 instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.atan2\")\n\ntest_simple_stage2_resume.py::test_recovered_master_adam_next_update_matches_uninterrupted\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:35: FutureWarning: triton.language.extra.cann.extension.isfinited is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.isfinited instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.isfinited\")\n\ntest_simple_stage2_resume.py::test_recovered_master_adam_next_update_matches_uninterrupted\n  /usr/local/python3.12.13/lib/python3.12/site-packages/triton/language/extra/cann/extension/math_ops.py:49: FutureWarning: triton.language.extra.cann.extension.finitef is deprecated and will be removed in the next release; use triton.language.extra.cann.libdevice.finitef instead.\n    @_deprecated(replacement=\"triton.language.extra.cann.libdevice.finitef\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n177 passed, 3 warnings in 245.76s (0:04:05)\nDrvMngGetConsoleLogLevel failed. (ret=4)\n"
+        },
+        "scope": "Fixed-image CPU exact resume/next-update tensors, full synthetic selection-history rescore, segmented source/state/policy audit and entry routing. External model/audio/admission substitutes, no actual NPU resume. Predates host launch/audit/collection additions."
+      }
+    },
+    "stage2_host_launch": {
+      "status": "local_28_passed_fixed_image_CPU_pending_no_formal_dispatch",
+      "fixed_image_launch": {
+        "container_id": "84157ce4de36d59f65f77b0a7669e660778896c1ddebb2de330265ced181c529",
+        "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 3753045,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-11-13T18:19:40.85235511Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "host": "175",
+        "created_unix": 1794594054.7895832,
+        "next_regular_observation_not_before": 1794594654.7895832,
+        "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/stage2-host-launch-cpu-v1",
+        "scope": "Formal resumed two-phase host launch, CPU audit launch and collection, release/resume regression; simulated SSH/Docker and external sources; no actual formal NPU dispatch"
+      },
+      "local_tests_passed": 28,
+      "source_hashes": {
+        "tools/jev/launch_simple_resident_train.py": "d64f69bc523ee0742d94660f69ad9961434005a46e882bfca98367ce77bd18f6",
+        "tools/jev/launch_simple_stage2_audit.py": "2ff31bba06a0c84f6fe5aad236cb239349b1a6896cfc10b2a052ffda98b3319d",
+        "tools/jev/collect_simple_stage2_audit.py": "56f643df9eccc771d01965f5039edd63d60879654f23c08afaccf62750e67b58",
+        "tests/test_resident_train_launch_preflight.py": "b2b7d7bf0a497037c9eb52357b0730ad16bf88224a9ef0a5a279a48fc6be0d4e",
+        "tests/test_stage2_audit_launch.py": "bd8f6a4e6264462e7516de87105df8e8f1c59fdb7f35a858f70b2dcc7f05adbe",
+        "tests/test_stage2_audit_collect.py": "9655183efaca283bbda44fc9a75cf11436d10af13390076cce58a3f52e458638"
+      },
+      "scope": "Actual two-phase formal resume launcher, independent CPU prefix/terminal audit launcher and exact-byte collector executed with simulated SSH/Docker. Includes live-source, incomplete-prefix, changed graph and experiment refusal before mutation. Not actual formal launch or NPU recovery.",
+      "runbook": "docs/engineering/simple-stage2-runbook.md",
+      "remaining": [
+        "fixed_image_host_entry_and_resume_collection",
+        "actual continuous NPU lifecycle and fresh restore",
+        "final Stage1 checkpoint and full selection acceptance",
+        "formal full634 and segment recovery execution"
+      ],
+      "post_dispatch_change": {
+        "change": "Require service/trainer same resume audit and cursor; running CPU snapshot predates this guard and one negative test",
+        "local_launcher_tests": 13,
+        "source_hashes": {
+          "tools/jev/launch_simple_resident_train.py": "968d54558ed349a7a38bf19b7c7a6f3ff46be2773f3ec226344d3905b14921f1",
+          "tests/test_resident_train_launch_preflight.py": "3214606530cacbf2751895654efc1516231468d13815cf6ee38fedecf4f125cc"
+        }
+      }
+    },
+    "host_launch_fixed_image_verified": {
+      "container_id": "84157ce4de36d59f65f77b0a7669e660778896c1ddebb2de330265ced181c529",
+      "tests_passed": 60,
+      "source_files": 1355,
+      "source_archive_sha256": "19babc9e80157546308916cbda982f8c86ccb33cd2145c189fab8425d0d6ba8d",
+      "scope": "Fixed-image CPU host launcher/audit collector/release/resume tests. SSH/Docker/model/audio substitutes. Predates same-resume service/trainer guard and epoch/terminal audit tests. No actual formal NPU dispatch."
+    }
+  }
+}

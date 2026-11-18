@@ -1,0 +1,19 @@
+{
+  "status": "implemented_and_cpu_tested_not_selection_executed",
+  "files": {
+    "tools/jev/verify_slurp_batched_parity.py": "d82a4fd2f56412e2e4e42000df0a7717839a35388a7cfbe6b3f090760c9c9cdf",
+    "tools/jev/finalize_slurp_batched_selection.py": "0e10842823fd7c91990bf96928ad934ed4c8028a6adff487733d040d570dde40",
+    "tests/test_slurp_batched_selection_verifier.py": "70a1f035d198b6658dd68e0b3ba7f51db16a380d0e4c19bd20df6fe8a9d7cf17",
+    ".local/simple-final-v1/launch_class_spread_batch_dp4_selection_finalize_v1.py": "2fe66021feca9597665caaa3f18878c2dc24afbdf31e87cc5ba49a8604bef4b8",
+    ".local/simple-final-v1/verify_class_spread_batch_audit.py": "e6b417121c1e10c5f6347f8736249aca5435c469ba778becb239d712cab2240a"
+  },
+  "tests": {
+    "command": "PYTHONPATH=src python3 -m pytest -q tests/test_slurp_batched_selection_verifier.py tests/test_simple_selection_inputs.py tests/test_simple_final_backend_scoring.py",
+    "passed": 27,
+    "scope": "Synthetic provenance fault tests plus existing selection binding/backend scoring tests; not real NPU selection results"
+  },
+  "release_rc2_original_files_verified": 1360,
+  "selection_requests": 9226,
+  "required_terminal_update": 634,
+  "scope": "Independent candidate full-selection parity and existing native60 scoring; no training outcome or RL gain claimed"
+}

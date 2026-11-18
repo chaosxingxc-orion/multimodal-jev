@@ -1,0 +1,25 @@
+{
+  "status": "real_Qwen_CPU_joint_execution_restore_verified",
+  "tests": 33,
+  "files": {
+    "src/multimodal_jev/context_policy_snapshot.py": "59b3267bae04cc4055774ccf85f95954bc661631a84350731b2d166d97184142",
+    "src/multimodal_jev/context_binary_policy.py": "5303f5882306a3041448c5025914be12b15c4c0cf5ab69f6700bcf5595c7a7f8",
+    "tests/test_context_policy_snapshot.py": "f3607081320745d1a714a5b45dcde386c3213d81b35f7cce6b5d21463172b008",
+    "tests/test_context_binary_policy.py": "adef9c84c782322277b1b52f63865297771c2148bc1cdfe55bfe0a7fabc37cb2"
+  },
+  "execution_dtype": "bfloat16",
+  "optimizer_restored": false,
+  "training_dispatch_allowed": false,
+  "pending": [
+    "NPU_joint_policy_reload",
+    "FP32_master_Adam_restore",
+    "vLLM_processor_and_branch_load_switch",
+    "task_reward_contrastive_auxiliary_contract",
+    "full_data_RL_and_transfer"
+  ],
+  "previous_fixed_image_regression": "docs/engineering/context-policy-cpu-regression-v1.json",
+  "fixed_image_regression": "docs/engineering/context-policy-cpu-regression-v3.json",
+  "real_audio_evidence": "docs/engineering/context-decision-real-audio-cpu-v1.json",
+  "real_Qwen_joint_restore_launch": ".local/decision-objective-research/context-policy-reload-audio-cpu-v1-launch.json",
+  "real_Qwen_joint_restore": "docs/engineering/context-policy-reload-audio-cpu-v1.json"
+}

@@ -1,0 +1,22 @@
+{
+  "status": "prepared_only_not_dispatched",
+  "physical_devices": [
+    5
+  ],
+  "priority": "finish_current_stage1_then_audit_and_full_selection_first",
+  "files": {
+    "tools/jev/probe_context_candidate_npu.py": "b2c633dc2a459290bdb384decc1825200cb821389e8681592351bc5bb38f70df",
+    ".local/decision-objective-research/launch_context_candidate_npu5.py": "a800ea97cdc92cb728767d48bbc81012dbadcd234806b113779ce420566e8c6d",
+    ".local/decision-objective-research/context-candidate-npu5-v1-config.json": "90ef22c7e5984e78fdb027b6984575a7b0a2dc07ba0040407418fb159ac0f151",
+    ".local/decision-objective-research/context-candidate-npu5-v1-prepared.json": "18d55bfbb57d9c2b8009ff2d2fd35bc134b3fa1341c9c3afa799e62383e9faa3"
+  },
+  "tests": "actual full60 median and longest audio, no labels/optimizer; repeated outputs and diagnostic gradients",
+  "training_dispatch_allowed": false,
+  "pending": [
+    "free_NPU_confirmed",
+    "actual_forward_backward_terminal",
+    "independent_repeat_snapshot_rescore",
+    "batch_padding_and_gradient_restore",
+    "vLLM_context_branch_load_switch_and_probability_parity"
+  ]
+}

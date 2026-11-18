@@ -1,0 +1,45 @@
+{
+  "schema": "slurp-blind-semantic-annotation-check-v3",
+  "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-workpack-v3/report.json",
+  "report_sha256": "1f959150b82040d98c1d1cb654b6af45eb21905e5ba1ada844d46e80c3866f98",
+  "summary": {
+    "recordings": 40513,
+    "sources": 9192,
+    "intent_cards": 65,
+    "slot_cards": 55,
+    "panels": 16,
+    "requests_per_pass": 147072,
+    "decisions_per_pass": 1103040,
+    "requests_two_passes": 294144,
+    "decisions_two_passes": 2206080,
+    "max_request_json_bytes_by_panel": {
+      "I_present-00": 20439,
+      "I_present-01": 20408,
+      "I_present-02": 21869,
+      "I_present-03": 20364,
+      "I_present-04": 21150,
+      "I_present-05": 21286,
+      "I_present-06": 20139,
+      "I_present-07": 21647,
+      "I_present-08": 15736,
+      "S_present-00": 407640,
+      "S_present-01": 284614,
+      "S_present-02": 350906,
+      "S_present-03": 276907,
+      "S_present-04": 391815,
+      "S_present-05": 420469,
+      "S_present-06": 215053
+    }
+  },
+  "verified": [
+    "all9192 source texts and original metadata hashes",
+    "all40513 recording-source bindings",
+    "all65 intent and55 slot semantic projections",
+    "fixed complete16-panel schedule and unique147072 requests",
+    "no native labels or historical assessments in semantic fields",
+    "all incident slot boundaries and neighbor definitions preserved"
+  ],
+  "verifier_sha256": "7af7c7a6bdc77519a8ce1e2b074e42515787bb60bf71d9c1d79e48406f6cfb52",
+  "scope": "Structural input and schedule verification only; no teacher call, token-budget acceptance, independent semantic judgments or audio listening.",
+  "semantic_admission": 0
+}

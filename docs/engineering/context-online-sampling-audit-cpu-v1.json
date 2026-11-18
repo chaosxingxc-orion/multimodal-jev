@@ -1,0 +1,19 @@
+{
+  "created_unix": 1794665578.8219018,
+  "status": "cpu_verified_npu_not_dispatched",
+  "tests": {
+    "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rollout_audit.py tests/test_context_online_batches.py tests/test_context_rollout_session.py tests/test_context_reference_cache.py tests/test_context_rollout_rpc.py",
+    "passed": 40,
+    "seconds": 2.44,
+    "interpreter": "/usr/bin/python",
+    "torch": "2.10.0+cpu"
+  },
+  "files": {
+    "tools/jev/context_rollout_audit.py": "f5a1772f1e6b9e1313f35be9b70d03dd1cc7ed482fb52ff542ce5ac59521cc88",
+    "tools/jev/context_online_batches.py": "2419cb61f2ecab37c0a06082c1d9bfa59eae5a18df5f67c769b8261985c9f1f4",
+    "tools/jev/train_context_online_candidate.py": "7bb1b2259bd799907856455cf75475280dd0bbb3998f6a928c03595141e73288",
+    "tests/test_context_rollout_audit.py": "3a86a453787bd85e6350f385a33708b4b64e0493d5ee343c90b3f635fbd180f6",
+    ".local/decision-objective-research/collect_context_online_npu_v1.py": "17576aff0abe5761742bb01f382f4e69d5a3bed08a6bf6fec4d79fd3864d3dbc"
+  },
+  "scope": "Independent raw behavior/reference log and deterministic Bernoulli sampling replay; synthetic CPU evidence only. Frozen training/config unchanged."
+}

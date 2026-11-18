@@ -1,0 +1,53 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "295af9ab63e92ea6ba4c0e73f43c29aed8f5028253d2e1f2e0bdf96c6c1a7aa6",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-16T03:13:48.16396748Z",
+    "FinishedAt": "2026-11-16T03:15:05.92311946Z"
+  },
+  "source_files": 418,
+  "source_manifest_sha256": "4a3d827cfc0bcf843d5767157cb90645a8fa031a7d3f16247ed1d174f222adbf",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-archive-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "73c1df2f9611a2cb9deab4cb70df56a4ff07b47a47e5fdea992be61ebae3001b",
+    "run/junit.xml": "67b28cfe2ba8d4d9f996ea43ddf4b156eb5726393b4f273f35c0c648ba835125",
+    "run/pytest.log": "4287abb0728841c36865a9480257857969d1d42569a0d564b44a2f2dbf532a35",
+    "package/FILES.json": "4a3d827cfc0bcf843d5767157cb90645a8fa031a7d3f16247ed1d174f222adbf",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 8,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 1,
+    "started_unix": 1794798855.2174246,
+    "finished_unix": 1794798904.559708,
+    "source_manifest_sha256": "4a3d827cfc0bcf843d5767157cb90645a8fa031a7d3f16247ed1d174f222adbf",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-archive-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_archive_integration.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Complete archive auditor on synthetic CPU prefix and replay records with actual tiny LoRA/head exports, Adam shards and dual credit samples. Dataset, schedule, runtime and inference evidence are fixtures; not actual NPU execution, recovery or throughput acceptance."
+}

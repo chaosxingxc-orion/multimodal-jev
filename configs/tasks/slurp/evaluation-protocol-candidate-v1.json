@@ -1,0 +1,116 @@
+{
+  "schema": "slurp-evaluation-protocol-candidate-v1",
+  "status": "task_evaluation_design_pending_semantic_and_cost_acceptance",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "selection": {
+    "release": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1",
+    "manifest_sha256": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "recordings": 9226,
+    "source_groups": 2146,
+    "role": "internal_source_disjoint_official_TRAIN_selection_not_official_DEV_or_TEST",
+    "design": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/selection-evaluation-design-v1/design.json",
+    "scoring_population": "all_fixed_recordings_no_prediction_dependent_exclusions",
+    "full_checkpoint_evaluation": "canonical_transform_all15panels_all3arms",
+    "definition_diagnostics": "all_recordings_all_panels_3arms_3transforms_at_stage1_and_preregistered_terminal_checkpoint_only",
+    "cost_note": "Exact count: 9226*15*3=415170 canonical requests/checkpoint; all3transform diagnostics include canonical and total1245510/checkpoint",
+    "no_union": "panel_Final_scores_report_separately_and_equal_panel_mean_no_vote_or_best_panel",
+    "question_order": "interleaved_I_S_then_Final; explicit panels in evaluation-readout-layout-candidate-v1.json; historical roster grouped order is not a current executable prompt"
+  },
+  "native_intent": {
+    "truth": "canonical_scenario_action_pair_in_frozen60_candidate_mapping",
+    "primary": "recording_accuracy_of_model_Final_on_natural_distribution_equal_panel_mean",
+    "secondary": [
+      "macro_F1_over_fixed60classes_zero_division0",
+      "macro_recall",
+      "per_class_recall_and_support",
+      "learning_defined_tail_classes",
+      "source_group_equal_accuracy",
+      "invalid_output_rate"
+    ],
+    "tail_definition": "classes_with_fewer_than100_learning_recordings_fixed_before_model_results",
+    "invalid": "count_wrong_in_accuracy_and_FN_for_gold_class; no fabricated_valid_prediction",
+    "class_namespace": "60_scenario_action_pairs_not_raw91_intent_strings"
+  },
+  "semantic_Q": {
+    "truth": "independently_versioned_positive_negative_only_unavailable_conflict_masked",
+    "metrics": [
+      "positive_class_F1_per_definition",
+      "macro_positive_F1_over_definitions_with_admitted_positive_support",
+      "positive_recall",
+      "false_positive_rate",
+      "balanced_accuracy_when_both_polarities_have_support",
+      "coverage_by_definition_polarity_and_panel"
+    ],
+    "zero_support": "undefined_recall_or_FPR_report_null_with_denominator_no_silent_drop_or_zero_imputation",
+    "invalid": "counts_as_wrong_for_balanced_accuracy; positive_FN; negative_invalid_separate_from_FPR; always_report_validity",
+    "coverage": "fixed_across_methods_not_conditioned_on_prediction_success",
+    "native_projection": "separate_diagnostic_never_label_as_semantic_truth"
+  },
+  "slot_sets": {
+    "complete_panel": "EM_micro_and_macro_F1_only_where_all_panel_truth_is_admitted_report_complete_panel_coverage",
+    "partial": "masked_decision_metrics_only_no_complete_set_EM",
+    "no_full_set_claim": "panel_sets_not55type_one_call_output_or_official_SLU_F1",
+    "no_gold_intent_input": true
+  },
+  "definition_tests": {
+    "candidate_order": "same_semantic_cards_and_symbols_different_positions",
+    "neutral_symbol_rebinding": "same_semantic_cards_and_positions_new_symbols_map_back_before_scoring",
+    "metrics": [
+      "both_original_and_transformed_correct",
+      "mapped_prediction_agreement",
+      "accuracy_delta",
+      "invalid_rate"
+    ],
+    "interpretation": "These test equivariance_only_not_semantic_definition_understanding",
+    "semantic_paraphrase": "requires_separate_equivalence_reviewed_cards_before_evaluation",
+    "semantic_change": "requires_independent_new_truth_no_gold_preserving_assumption",
+    "audio_controls": "silence_and_mismatched_audio_diagnostic_only_register_waveform_identity_and_no_target_answer_assumption",
+    "operator_paraphrase_and_complement": "configs/tasks/definition-interventions-candidate-v1.json; separate atomic diagnostic pending admission and cost",
+    "explicit_readout_design": "configs/tasks/slurp/evaluation-readout-layout-candidate-v1.json",
+    "existing_encoder_gap": "Position-bound readout symbols confound tuple reorder with symbol rebinding; declaration is not implemented."
+  },
+  "statistics": {
+    "primary_delta": "terminal_RL_minus_same_seed_stage1_same_input_and_population",
+    "process_credit_delta": "Qcredit_minus_Qinput_same_algorithm_seed_checkpoint_budget_input_CE_masks",
+    "cluster": "source_group_all_recordings_panels_transforms_kept_together",
+    "bootstrap": {
+      "resamples": 10000,
+      "seed": 317,
+      "interval": "percentile95",
+      "paired": true
+    },
+    "point_estimate": "recording_weighted_ratio_recomputed_with_repeated_cluster_multiplicity",
+    "training_seeds": [
+      17,
+      29,
+      43
+    ],
+    "seed_reporting": "individual_seed_curves_mean_and_sample_SD; source_bootstrap_not_training_seed_uncertainty",
+    "multiple_comparisons": "all_preregistered_curves_pointwise_CIs_no_best_checkpoint_significance_claim",
+    "selection_warning": "selection_population_results_are_development_evidence_final_claim_requires_frozen_heldout_test_protocol"
+  },
+  "academic_comparison": {
+    "official_original_test": "13078_real_recordings_paper_protocol_separate_from_clean_or_semantic_release",
+    "clean_test": "versioned_clean_audio_and_labels_same_for_all_models_manifest_and_scorer_pending",
+    "speechbrain_hubert": "direct_audio_reference_real_plus_synthetic_training_author75.10SLUF1_87.54intent_not_local_reproduction",
+    "omni_history": "selected_cohorts_and_gold_intent_conditions_not_matched_primary_baseline",
+    "matched_omni": "same_audio_ontology_definitions_masks_no_gold_intent_native_generation_parser_recorded_invalids_in_denominator",
+    "full_SLU": "requires_entity_values_and_official_scorer_type_presence_cannot_substitute",
+    "reference_status": "existing_source_records_reused_not_new_paper_retrieval_or_model_execution"
+  },
+  "remaining_before_freeze": [
+    "semantic_supervision_release_and_definition_boundaries",
+    "actual_context_and_cost_acceptance_for_every_arm_and_transform",
+    "frozen_training_budget_and_numerical_checkpoint_ids",
+    "official_and_clean_test_manifests_and_scorer_versions",
+    "definition_paraphrase_and_semantic_change_test_truth",
+    "independent_scoring_implementation_acceptance",
+    "explicit_display_alias_readout_mapping_rendering_and_backend_acceptance"
+  ],
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "required_before_release_not_implemented",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created."
+  }
+}

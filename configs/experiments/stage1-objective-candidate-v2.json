@@ -1,0 +1,63 @@
+{
+  "schema": "jev-stage1-objective-candidate-v2",
+  "status": "semantic_denominators_migrated_pending_admission_context_and_budget",
+  "training_dispatch_allowed": false,
+  "population": "full_versioned_admitted_SLURP_learning_population_not_reference_review_subset",
+  "coverage": {
+    "candidate_sweeps": 1,
+    "panels_per_audio": 17,
+    "I_definitions": 65,
+    "S_definitions": 55,
+    "current_native_population_forward_requests": 688721,
+    "selection": "all_fixed_panels_no_gold_question_selection",
+    "more_sweeps": "requires_new_preregistered_budget_not_test_or_target_feedback"
+  },
+  "family_coefficients": {
+    "Final": 1.0,
+    "I": 0.5,
+    "S": 0.5
+  },
+  "outer_weight": "configs/tasks/slurp/balance-policy-candidate-v1.json#/outer_weight",
+  "polarity_weight": {
+    "cap": 8.0,
+    "counts": "W_dy=sum_learning w_audio*admitted_mask*indicator(target=y); M_d=W_d0+W_d1",
+    "formula": "b_dy=min(8,M_d/(2*W_dy)) if W_dy>0 else0",
+    "no_renormalization_after_cap": true,
+    "no_missing_budget_transfer": true,
+    "frozen_counts": "compute_once_from_final_admitted_learning_release_never_per_batch_or_on_selection_test",
+    "zero_support": "zero_coefficient_for_absent_polarity; missing_half_not_given_to_other_polarity",
+    "insufficient_balance": "cap8_reduces_imbalance_but_does_not_guarantee_equal_polarity_mass_or_tail_learning",
+    "choice_basis": "bounded_label_concentration_no_claim_of_optimal_model_performance"
+  },
+  "objective_per_audio": "w_audio * [mean_over17 CE_Final + .5/65*sum_I_present(m*b_y*CE) + .5/55*sum_S_present(m*b_y*CE)]",
+  "streaming_request_objective": "w_audio * [CE_Final + 17*.5/65*sum_I_present_in_panel(m*b_y*CE) + 17*.5/55*sum_S_present_in_panel(m*b_y*CE)]",
+  "reduction": "mean_streaming_objective_over_real_requests; padding_has_zero_weight_and_does_not_enter_denominator; fixed_population_outer_normalization",
+  "equivalence_scope": "same_frozen_parameters_full_complete_panel_sum_only; streaming_Adam_updates_not_equal_one_global_accumulated_update",
+  "missing_final": "main_track_requires_admitted_Final; any_exclusion_requires_new_population_and_recomputed_weights_no_silent_skip",
+  "masking": "conflict_unavailable_unassessed_zero; I_present_not_native_membership; native_slot_omission_never_false",
+  "balance_effects": {
+    "coefficient_mass": "full_population_aux_family_coefficient_mass_at_most0.5_each_after_frozen_weights; not_per_query_loss_or_gradient_bound",
+    "calibration": "class_and_polarity_weighted_CE_changes_optimal_probabilities; do_not_claim_natural_probability_calibration",
+    "policy": "train_rollout_and_inference_use_same_raw_categorical_distribution_no_undeclared_prior_correction",
+    "calibration_extension": "separate_source_only_calibration_protocol_and_full_backend_revalidation_if_policy_changes"
+  },
+  "stage2": "configs/experiments/reward-contract-design-v3.json; cap8_polarity_CE_not_implicitly_carried_into_stage2; explicit_objective_change_at_stage_boundary",
+  "stage1_evaluation": "natural_population_Final_and_semantic_Q_metrics_polarity_stratified_positive_recall_FPR_and_invalids",
+  "required_before_release": [
+    "admitted_semantic_positive_negative_counts_and_masks",
+    "per_definition_retained_mass_and_source_concentration",
+    "complete_fixed_panel_schedule_and_input_acceptance",
+    "global_batch_LR_total_updates_and_resource_budget",
+    "distributed_loss_normalization_and_resume_acceptance"
+  ],
+  "audit_scope": "Native projection stress test in v1 is historical only; current semantic weights require admitted65I/55S counts.",
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "design_arithmetic_migrated_runtime_and_supervision_pending",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created."
+  },
+  "supersedes": "configs/experiments/stage1-objective-candidate-v1.json",
+  "menu": "configs/tasks/slurp/menu-design-candidate-v3.json",
+  "historical_evidence": "docs/research/stage1-polarity-budget-check-v1.json",
+  "ragged_panels": "Each predicate occurs once per complete sweep; empty family contributes0, no duplicate padding or redistribution; Final occurs17times and is mean-normalized."
+}

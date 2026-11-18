@@ -1,0 +1,55 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "f37503d17f4f7763f8a4b7d67283be6a5d4c258ce1056fdd6e85abf9dc6033cf",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-16T01:31:07.77332712Z",
+    "FinishedAt": "2026-11-16T01:32:15.861681Z"
+  },
+  "source_files": 378,
+  "source_manifest_sha256": "c0a7f5feea95f0c53f8f73817c64a920b551b7230ab7e1f7964614735c44a865",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-wire-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "77030a46661fbc394b51273dc294e670e457c7b8d2b9baf6e29332c976f72cd5",
+    "run/junit.xml": "fe9b1eb4cd4b32cf0c437f234fbcf6aff0cfc9a3197e9b29bbee7b1677ebdf4d",
+    "run/pytest.log": "08cb533efe964b136db5ef07551c20b891a333877bd604ac7d8af4975f44127e",
+    "package/FILES.json": "c0a7f5feea95f0c53f8f73817c64a920b551b7230ab7e1f7964614735c44a865",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 43,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 1,
+    "started_unix": 1794792694.8409595,
+    "finished_unix": 1794792734.548203,
+    "source_manifest_sha256": "c0a7f5feea95f0c53f8f73817c64a920b551b7230ab7e1f7964614735c44a865",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-wire-cpu-v1/run/junit.xml",
+      "tests/test_context_logits_wire.py",
+      "tests/test_context_batched_request_candidate.py",
+      "tests/test_context_batched_service_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Fixed image actual CPU BF16 context head and spawn IPC; model engine replies are fixtures. No real vLLM worker/NPU/model/throughput evidence."
+}

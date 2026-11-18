@@ -1,0 +1,67 @@
+{
+  "schema": "slurp-shared-rules-context-verification-v1",
+  "verified_date_local": "2026-11-13",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/panel-context-probe-v5-shared-rules",
+  "config_sha256": "89bb6c8dbbe0017cc8e21fbcec78867f403fe73e86e697febf8a88870499a7f3",
+  "report_sha256": "3f1b17258308e42ccffb249d7385e4b0472d16932400352526338c0bb430caf4",
+  "records_sha256": "6771a007af9035436844ac37d0639bb79c4ed193c4c2d83e4b8f723d8cf9f8a3",
+  "preflight_sha256": "0967c93c23ca0ee0164375d2f63442e0ea441440a5ef1e154d7ce86a4d98a432",
+  "container_id": "5ddd16ddc3e0f53fc451d245b9a2d6d9104b29aff9c6cca20bc156d38b11ef56",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-12T18:46:49.41873162Z",
+    "FinishedAt": "2026-11-12T18:47:19.69600848Z"
+  },
+  "requests": 90,
+  "context_limit": 8192,
+  "max_tokens": 11721,
+  "overflow": 83,
+  "per_arm": {
+    "0": {
+      "requests": 30,
+      "min_tokens": 5329,
+      "max_tokens": 11082,
+      "overflow": 27
+    },
+    "2": {
+      "requests": 30,
+      "min_tokens": 5408,
+      "max_tokens": 11242,
+      "overflow": 28
+    },
+    "8": {
+      "requests": 30,
+      "min_tokens": 5645,
+      "max_tokens": 11721,
+      "overflow": 28
+    }
+  },
+  "literal_max_tokens": 14710,
+  "source_pins_verified": 280,
+  "knowledge_equal_across_arms": true,
+  "independent_rule_expansions_equal": 90,
+  "old_literal_requests_identical": 90,
+  "scope": "CPU processor and lossless task-field reconstruction only; no model equivalence, NPU forward or full-population admission.",
+  "context_requirement_accepted": false,
+  "engineering_release_accepted": false,
+  "training_dispatch_allowed": false,
+  "paired_token_savings": {
+    "min": -86,
+    "max": 2989,
+    "mean": 1837.0,
+    "total": 165330,
+    "total_literal_tokens": 1029664,
+    "total_shared_tokens": 864334,
+    "increased_requests": 6,
+    "decreased_requests": 84
+  }
+}

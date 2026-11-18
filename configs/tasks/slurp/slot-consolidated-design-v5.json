@@ -1,0 +1,82 @@
+{
+  "schema": "slurp-slot-consolidated-design-v5",
+  "status": "property_role_policy_revised_attribute_relation_boundary_remaining",
+  "training_dispatch_allowed": false,
+  "scope": "request_relevant_role",
+  "scope_selection_basis": "working_assumption_not_user_confirmation",
+  "definitions": "configs/tasks/slurp/type-definition-candidates-v7.json",
+  "policy": "configs/tasks/slurp/slot-presence-policy-candidate-v7.json",
+  "boundaries": "configs/tasks/slurp/type-boundary-rules-candidate-v8.json",
+  "reviews": "configs/reviews/slurp-slot-decision-reference-v3.tsv",
+  "runtime_fields": [
+    "definition",
+    "thinking_requirements",
+    "role_rules",
+    "scope",
+    "presence_policy",
+    "requested_unassigned_role_policy",
+    "deictic_policy",
+    "scope_policy",
+    "coexistence_policy",
+    "commitment_policy",
+    "intent_conditioning",
+    "unresolved_boundaries",
+    "shared_rule",
+    "coexistence_rule",
+    "scope_condition",
+    "unresolved_constraint"
+  ],
+  "provenance_only_fields": [
+    "historical_boundary_review",
+    "historical_unresolved_boundaries",
+    "historical_unresolved_constraint",
+    "evidence_source_ids",
+    "support"
+  ],
+  "rule_authority": "Current explicit role/scope/overlap rules; historical native conventions are evidence only, never active conflicting precedence.",
+  "incomplete": [
+    "whole-population semantic annotation",
+    "independent disagreement review",
+    "intent definition finalization",
+    "selection annotation and unified task release",
+    "processor and engineering acceptance"
+  ],
+  "runtime_field_groups": {
+    "type": [
+      "definition",
+      "thinking_requirements",
+      "role_rules",
+      "scope"
+    ],
+    "policy": [
+      "presence_policy",
+      "requested_unassigned_role_policy",
+      "deictic_policy",
+      "scope_policy",
+      "coexistence_policy",
+      "commitment_policy",
+      "intent_conditioning",
+      "unresolved_boundaries",
+      "role_rules"
+    ],
+    "boundary": [
+      "shared_rule",
+      "coexistence_rule",
+      "scope_condition",
+      "unresolved_constraint",
+      "role_rules"
+    ]
+  },
+  "runtime_scope": "Current selected actor semantic fields; annotation admission/evidence remain offline. Shared identical policy values may be stored once and losslessly expanded. Not a frozen production renderer.",
+  "prior_package": "configs/tasks/slurp/slot-consolidated-design-v4.json",
+  "review_migration": {
+    "old_reviews": "Historical evidence only. Four property types now accept explicitly queried roles without supplied values. Re-review affected true/false/unavailable labels; no automatic native or historical label migration.",
+    "new_news_scope_reviews": "configs/reviews/slurp-news-topic-boundary-reference-v1.json",
+    "scope": "Rule-bound reference revisions only; no consolidated current supervision release.",
+    "new_event_role_reviews": "configs/reviews/slurp-event-role-boundary-reference-v1.json",
+    "new_work_reference_reviews": "configs/reviews/slurp-work-reference-boundary-v1.json",
+    "new_property_role_reviews": "configs/reviews/slurp-property-role-boundary-v1.json"
+  },
+  "context_status": "No processor acceptance for changed current text; prior v4/v5 length measurements are historical only.",
+  "remaining_boundary_issues": "configs/tasks/slurp/full-review-boundary-issues-v1.json"
+}

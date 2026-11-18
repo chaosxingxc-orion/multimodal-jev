@@ -1,0 +1,29 @@
+{
+  "schema": "jev-stage2-experiment-policy-v1",
+  "status": "next_round_policy_not_formal_npu_admission",
+  "algorithm": "GRPO",
+  "objective_entry": "extensions/stage2_objective.py",
+  "objective_options": {},
+  "default_semantics": "existing_ranking_and_existence_dual_credit",
+  "fixed_only_entry_permitted": false,
+  "reference": "frozen_stage1_endpoint318_full_train_outputs",
+  "training_devices": 2,
+  "inference_instances": 2,
+  "inference_tensor_parallel": 1,
+  "total_device_budget": 4,
+  "admission_order": [
+    "two_update_editable_objective_prefix",
+    "fresh_process_optimizer_and_objective_trace_recovery",
+    "real_tail_mask_and_normalization_acceptance",
+    "maximum_100_step_efficiency",
+    "full_train_registered_curve",
+    "frozen_policy_transfer"
+  ],
+  "new_objective_revision_requires": [
+    "new_frozen_plugin_sha256_and_options",
+    "reward_loss_semantic_and_gradient_tests",
+    "independent_actual_objective_trace_audit"
+  ],
+  "resume_objective_identity_must_match": true,
+  "monitor_interval_seconds": 900
+}

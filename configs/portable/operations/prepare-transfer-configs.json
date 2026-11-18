@@ -1,0 +1,27 @@
+{
+  "schema": "local-operations-v1",
+  "output_directory": "${TRANSFER_CONFIG_OUTPUT}",
+  "steps": [
+    {
+      "id": "fsc_transfer",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/evaluation/fsc-transfer.json",
+      "output": "${TRANSFER_CONFIG_OUTPUT}/fsc-transfer.json",
+      "depends_on": []
+    },
+    {
+      "id": "slurp_clean_test",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/evaluation/slurp-clean-test.json",
+      "output": "${TRANSFER_CONFIG_OUTPUT}/slurp-clean-test.json",
+      "depends_on": []
+    },
+    {
+      "id": "minds_transfer",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/evaluation/minds-transfer.json",
+      "output": "${TRANSFER_CONFIG_OUTPUT}/minds-transfer.json",
+      "depends_on": []
+    }
+  ]
+}

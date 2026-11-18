@@ -1,0 +1,64 @@
+{
+  "cases": [
+    {
+      "case": "m01-original",
+      "global64_seconds": [
+        70.43775425000058,
+        67.58809712000948
+      ],
+      "global_requests_per_second": 0.9273625102073563,
+      "peak_allocated_GiB": 7.1226701736450195,
+      "peak_reserved_GiB": 7.716796875
+    },
+    {
+      "case": "m08-original",
+      "global64_seconds": [
+        13.939679679999244,
+        12.480475179996574
+      ],
+      "global_requests_per_second": 4.844786136882631,
+      "peak_allocated_GiB": 27.97802734375,
+      "peak_reserved_GiB": 32.4765625
+    },
+    {
+      "case": "m08-length_grouped",
+      "global64_seconds": [
+        13.677143359993352,
+        13.117226480011595
+      ],
+      "global_requests_per_second": 4.77712298383265,
+      "peak_allocated_GiB": 28.060742378234863,
+      "peak_reserved_GiB": 32.4765625
+    },
+    {
+      "case": "m16-original",
+      "global64_seconds": [
+        15.660031029998208,
+        13.231926360007492
+      ],
+      "global_requests_per_second": 4.430298656202426,
+      "peak_allocated_GiB": 52.09723997116089,
+      "peak_reserved_GiB": 59.931640625
+    },
+    {
+      "case": "m16-length_grouped",
+      "global64_seconds": [
+        13.149828540001181,
+        13.212800320005044
+      ],
+      "global_requests_per_second": 4.855357964477666,
+      "peak_allocated_GiB": 52.265079975128174,
+      "peak_reserved_GiB": 57.76171875
+    }
+  ],
+  "global_batch": 64,
+  "dp": 2,
+  "records": 64,
+  "completed_optimizer_updates_per_rank": 10,
+  "probability_parity_passed": true,
+  "maximum_logprob_error": 9.5367431640625e-07,
+  "micro32": "device_out_of_memory_at_first_forward",
+  "kernel_determinism": "micro1_repeat_differs_before_any_batch_size_change",
+  "training_promotion": false,
+  "scope": "Two repeats reset same master and fresh Adam; timings include CPU audit hooks and barrier, not steady-state production. CPU strict gradient tolerance fails already on micro1 repeat; investigate determinism without relaxing acceptance. Docker OOMKilled=false does not rule out framework device OOM."
+}

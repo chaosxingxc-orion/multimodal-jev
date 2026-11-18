@@ -1,0 +1,34 @@
+{
+  "schema": "dual-probe-operations-readiness-v1",
+  "status": "validated_not_dispatched",
+  "package_manifest_sha256": "3691b50a8c0d3fa8f3f41f91bccf2635fe30e1acb858ac0e51f3fd30d49582f1",
+  "fixed_image_cpu_report": "docs/engineering/context-dual-operations-fixed-image-cpu-v1.json",
+  "local_tests": 43,
+  "scope": "Mocked SSH/engine plus real local locks/package verification; not NPU inference/training",
+  "priority_check": "BlockingIOError: [Errno 11] Resource temporarily unavailable",
+  "provenance": {
+    "schema": "jev-resolved-config-v1",
+    "template_sha256": "c17bbdef05a36a3afa3508cf4a0b3ec2b05edb944b1b3bbfd1ea13b7120658b0",
+    "local_bindings_sha256": "d9607ab8076f6e888f17920c17f84bc42f8644fa80f66f50fda10b6c180205a7",
+    "resolved_semantic_sha256": "fd21fa624f7c20b70f3785e0de2b13de7b89767cbb3243216c5427ad421418b4",
+    "macros_used": [
+      "ASCEND_DRIVER_ROOT",
+      "ASR_MODEL_ROOT",
+      "DUAL_PROBE_MANIFEST_SHA256",
+      "DUAL_PROBE_OPERATIONS_ROOT",
+      "DUAL_PROBE_PREPARED",
+      "DUAL_PROBE_REMOTE_ROOT",
+      "NPU_EXCLUSIVE_LEASE",
+      "PROBE_HOST",
+      "PROJECT_ROOT",
+      "RESEARCH_SUCCESSOR_ROOT"
+    ]
+  },
+  "source_sha256": {
+    "tools/reports/context_dual_probe_operations.py": "da8ca2908acf6637f9e7ba8c0fab5a71cd74bdf18dbbbd9459e8857fc4402358",
+    "tests/test_context_dual_probe_operations.py": "f1131df0ce8634976609246c944bce8ea0dea6a7cc5f9119e7a1a9abe7d675ca",
+    "configs/portable/operations/context-dual-probe-operations.json": "c17bbdef05a36a3afa3508cf4a0b3ec2b05edb944b1b3bbfd1ea13b7120658b0"
+  },
+  "finite_inference_dispatch_allowed": false,
+  "training_dispatch_allowed": false
+}

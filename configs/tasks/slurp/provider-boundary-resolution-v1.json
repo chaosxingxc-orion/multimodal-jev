@@ -1,0 +1,29 @@
+{
+  "schema": "slurp-provider-boundary-resolution-v1",
+  "status": "selected_role_overlap_pending_semantic_review",
+  "training_dispatch_allowed": false,
+  "prior_package": "configs/tasks/slurp/slot-consolidated-design-v13.json",
+  "prior_package_sha256": "b2349996411d8941fa26c9e7c906f6067aeeafbbba61f48af2219a0fe4bc4362",
+  "affected_types": [
+    "business_name",
+    "business_type",
+    "transport_agency"
+  ],
+  "definitions": {
+    "business_name": "An identifying name of a company, organization, commercial establishment or service provider expressed in that organizational, merchant or provider role. A named transportation provider can satisfy both business_name and transport_agency from the same expressed provider relation. Physical product-brand modification or software access alone does not establish an organization/provider role. Apply expressed-communicative-content scope.",
+    "business_type": "An expressed category of commercial establishment or offered service. A transportation service requested or described as a service, such as booking a taxi or flight, can satisfy this predicate together with transport_type. A vehicle category, physical facility or place alone does not establish a commercial service role. Apply expressed-communicative-content scope.",
+    "transport_agency": "An identifying name of an organization or service expressed as providing transportation. The transportation-provider relation must be supported by the utterance; a brand in a stock query or an application-opening instruction alone does not establish it. The same expressed named provider may also satisfy business_name. Apply expressed-communicative-content scope."
+  },
+  "rules": [
+    "A single expressed named transportation provider may support business_name and transport_agency simultaneously. Distinct predicates do not require distinct mentions or entities. Evaluate the expressed role under each definition; do not propagate a label from a native entity tag or ontology hierarchy.",
+    "A name attached to a represented transport service, as in AA flight or Ola cab, may express its operator/provider. In these constructions the provider role is part of the service attribution; no expansion of an acronym, corporate ownership lookup or separate commercial transaction is required. An identifying name is enough; canonical company identity is not an output.",
+    "The physical product-brand exclusion concerns a name serving only to identify a physical product, such as Samsung phone or Wemo plug. It does not exclude an explicitly named service operator merely because the name grammatically modifies a service noun. Genuine provider-versus-title/product attachment ambiguity stays unavailable.",
+    "Opening or using an app alone does not establish the company or transportation-provider role. A stock/organization query names an organization without necessarily expressing transportation. App access and an explicitly attributed ride can support both software and provider roles; neither role automatically supplies the other.",
+    "Bare Uber or find me an Uber without a journey/service or software cue remains ambiguous for provider role; native travel labels and familiar brand knowledge cannot settle it. Book Uber for a time or destination expresses a scheduled named service, but whether transportation is supported must be assessed from the complete wording, not the brand alone.",
+    "business_type asks for an establishment or offered-service category, not a provider name. Book a taxi or book a flight expresses a transport-service category and transport_type. A bare vehicle, an airport/gate used only as location, or a flight word inside a museum title does not establish a service category. Do not infer commercial role from hypothetical tickets, payment or infrastructure.",
+    "No categorical implication from transport_type to business_type: a car described as a physical object can express mode/category without a offered-service role. No reverse implication from business_name to transport_agency: company stock and complaint contexts need their own transportation evidence."
+  ],
+  "evidence_issue": "configs/reviews/slurp-provider-boundary-review-issue-v1.json",
+  "basis": "Clarify generic provider inclusion and independent overlapping role predicates; not native slot-label reproduction or teacher-answer matching.",
+  "semantic_admission": 0
+}

@@ -1,0 +1,141 @@
+{
+  "schema": "slurp-remaining-role-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/remaining-role-boundary-resolution-v1.json",
+  "rule_sha256": "de25e4b4f5c11ba47f53ec97f6650387f02249f7bada9dc52873b651055e5835",
+  "review": "configs/reviews/slurp-remaining-role-boundary-v1.json",
+  "review_sha256": "8bee3d754a66b0c2c7ffa1a1565d7d47ffecb0418c54e5a82cd38921cbcd9d45",
+  "cohort_counts": {
+    "event_ellipsis": 134,
+    "structural_device": 309,
+    "platform_brand": 283,
+    "solar": 31,
+    "brand_structure": 74,
+    "explicit_controls": 13
+  },
+  "unique_read_sources": 820,
+  "review_coordinates": 64,
+  "review_sources": 59,
+  "proposal_counts": {
+    "true": 30,
+    "false": 28,
+    "null": 6
+  },
+  "recording_bindings": 234,
+  "unique_recordings": 213,
+  "native_disagreements": 20,
+  "first_batch_rereview": [],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v9/report.json": "4f6a1e043ff79650c1bdaf1555374eaae8f6a7756af6f29edafc828c9128e4e5",
+    "configs/tasks/slurp/remaining-role-boundary-resolution-v1.json": "de25e4b4f5c11ba47f53ec97f6650387f02249f7bada9dc52873b651055e5835",
+    "configs/reviews/slurp-remaining-role-boundary-v1.json": "8bee3d754a66b0c2c7ffa1a1565d7d47ffecb0418c54e5a82cd38921cbcd9d45"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/solar-sources.jsonl": "0c24191951f56fb64ad796956ae93699b39dec707fc7b0a9180c2a37c4681055",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/review-recording-bindings.jsonl": "2b31a3a051d07c29e44e598072b17f01213551fde344dee56e6ac42ebaef8686",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/explicit_controls-sources.jsonl": "aec7b46e2ef0e3d8d701806ca3ada265196423b8fefe6167cc8a0349c0e50803",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/event_ellipsis-sources.jsonl": "8d25b3797f1b36e65723b20cf80337d68cb16cc7a1b855e1530c8fd353a7e793",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/summary.json": "23105570c7ca2058c2b70d94f6d26595d8ed144562ffebce4dc9b033a6a5fbd7",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/platform_brand-sources.jsonl": "32e85f8b80be2846c284afe7d02c0cd27b13c39f4cfb10b9d2b95b2a6d82aefb",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/brand_structure-sources.jsonl": "5b2aa7dd64775a8f253bbc6a54f741725ea5abcec1ff65d6aa23f741d6813da2",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/structural_device-sources.jsonl": "877ad58ae150893c0620b7e2c82090d58bbdebb072a1807791415e77f6d1e1d9"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v11.json",
+    "sha256": "1b7cf1f5ab8f4e7812664a58dc5fa1461f73e47323f413e4a96d92ba10c4205d",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v13.json": "b52aa70cfbddfeac89505dd454bcadaa82ca7887f7c6f8ea43e46ef16aff0018",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v13.json": "f10997e19fb4d46ec3a3bd5213024cc8b3216ca7d604f0969bc3780bc7350ee1",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v14.json": "09aa0007ab59b4a2a65b81215f101fc9fd9a6f9058c55f7465c5f76823eef9da"
+    },
+    "unchanged_cards": 50,
+    "changed_semantic_types": [
+      "app_name",
+      "business_name",
+      "device_type",
+      "event_name",
+      "weather_descriptor"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "alarm_type",
+        "event_name"
+      ],
+      [
+        "app_name",
+        "business_name"
+      ],
+      [
+        "app_name",
+        "device_type"
+      ],
+      [
+        "app_name",
+        "media_type"
+      ],
+      [
+        "app_name",
+        "radio_name"
+      ],
+      [
+        "app_name",
+        "transport_agency"
+      ],
+      [
+        "business_name",
+        "business_type"
+      ],
+      [
+        "business_name",
+        "game_name"
+      ],
+      [
+        "business_name",
+        "place_name"
+      ],
+      [
+        "business_name",
+        "podcast_name"
+      ],
+      [
+        "business_name",
+        "sport_type"
+      ],
+      [
+        "business_name",
+        "transport_agency"
+      ],
+      [
+        "device_type",
+        "transport_type"
+      ],
+      [
+        "device_type",
+        "weather_descriptor"
+      ],
+      [
+        "event_name",
+        "meal_type"
+      ],
+      [
+        "event_name",
+        "movie_name"
+      ],
+      [
+        "event_name",
+        "news_topic"
+      ],
+      [
+        "event_name",
+        "person"
+      ],
+      [
+        "event_name",
+        "sport_type"
+      ]
+    ]
+  },
+  "scope": "Metadata, full learning source membership and binding reconstruction independent of workpack bindings; same-author reference judgments, no independent semantic certification, listening or optimization admission."
+}

@@ -1,0 +1,1277 @@
+{
+  "schema": "slurp-upstream-definition-crosswalk-v1",
+  "status": "source_evidence_not_definition_or_supervision_release",
+  "training_dispatch_allowed": false,
+  "upstream_repository": "https://github.com/xliuhw/NLU-Evaluation-Data",
+  "upstream_commit": "f6071b496b17d71e6eb43f543af0707f4ff30557",
+  "guideline_sha256": "f40f66d44914a1e075a44fceed6d460e85f5cd831c080d7863c11099d95a5bf2",
+  "guideline_text_sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+  "paragraph_numbering": "zero-based Word document paragraphs in cached nlu-guidelines.txt",
+  "current_intent_definitions_sha256": "bcb8d49663e3fb8f00bb00b6dc3a76443cd6127a8c006d2c6622fed9b40ffc33",
+  "current_slot_definitions_sha256": "74e6da8fabfeab37eaafcc3f68e4982e8061b02d48b649cf63ddf4e65a6e0c32",
+  "inherited_principles": [
+    {
+      "paragraphs": [
+        7,
+        9,
+        44
+      ],
+      "principle": "Annotate user goal and key information relevant to fulfilling that goal; not an exhaustive all-mention ontology."
+    },
+    {
+      "paragraphs": [
+        57,
+        59,
+        61
+      ],
+      "principle": "Correct preassigned scenario and intent when the utterance expresses a different goal."
+    },
+    {
+      "paragraphs": [
+        48,
+        50,
+        51
+      ],
+      "principle": "Entity types can be introduced and reused across utterances/scenarios; historical inventory is not immutable."
+    },
+    {
+      "paragraphs": [
+        106,
+        108,
+        110
+      ],
+      "principle": "Some utterances have no entity under this annotation scheme; does not certify every empty current set."
+    },
+    {
+      "paragraphs": [
+        126
+      ],
+      "principle": "Native intent identity combines scenario and action."
+    }
+  ],
+  "unresolved_rules": [
+    "No complete exclusive priority for multi-goal or conditional requests.",
+    "No exhaustive negative semantics for our full-utterance S_present.",
+    "Historical type names and examples are not a certified mapping to the final SLURP ontology.",
+    "Original elicitation prompts are annotation provenance, never inference inputs or a basis for gold-specific Q selection."
+  ],
+  "intents": [
+    {
+      "semantic_id": "alarm_query",
+      "historical_id": "alarm_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 132,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "alarm_remove",
+      "historical_id": "alarm_remove",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 131,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "alarm_set",
+      "historical_id": "alarm_set",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 130,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_down",
+      "historical_id": "audio_volume_down",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 133,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_mute",
+      "historical_id": "audio_volume_mute",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 134,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_other",
+      "historical_id": "audio_volume_other",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 136,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "audio_volume_up",
+      "historical_id": "audio_volume_up",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 135,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "calendar_query",
+      "historical_id": "calendar_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 140,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "calendar_remove",
+      "historical_id": "calendar_delete",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 139,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "calendar_set",
+      "historical_id": "calendar_set",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 141,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "cooking_query",
+      "historical_id": null,
+      "relation": "no_direct_mapping_established",
+      "guideline_paragraph": null,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "cooking_recipe",
+      "historical_id": "cooking_recipe",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 142,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "datetime_convert",
+      "historical_id": "datetime_convert",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 143,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "datetime_query",
+      "historical_id": "datetime_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 144,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "email_addcontact",
+      "historical_id": "email_add_contact",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 146,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "email_query",
+      "historical_id": "email_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 147,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "email_querycontact",
+      "historical_id": "email_query_contact",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 148,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "email_sendemail",
+      "historical_id": "email_send_email",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 149,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "general_greet",
+      "historical_id": "general_greet",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 156,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "general_joke",
+      "historical_id": "general_joke",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 157,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "general_quirky",
+      "historical_id": null,
+      "relation": "no_direct_mapping_established",
+      "guideline_paragraph": null,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_cleaning",
+      "historical_id": "iot_cleaning",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 161,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_coffee",
+      "historical_id": "iot_coffee",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 162,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightchange",
+      "historical_id": "iot_hue_changecolor",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 163,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightdim",
+      "historical_id": "iot_hue_lightdim",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 166,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightoff",
+      "historical_id": "iot_hue_lightoff",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 169,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lighton",
+      "historical_id": null,
+      "relation": "no_direct_mapping_established",
+      "guideline_paragraph": null,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_hue_lightup",
+      "historical_id": "iot_hue_lightup",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 170,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_wemo_off",
+      "historical_id": "iot_wemo_off",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 172,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "iot_wemo_on",
+      "historical_id": "iot_wemo_on",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 173,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "lists_createoradd",
+      "historical_id": "lists_create_add",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 174,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "lists_query",
+      "historical_id": "lists_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 176,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "lists_remove",
+      "historical_id": "lists_delete",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 175,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "music_dislikeness",
+      "historical_id": "music_dislikeness",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 177,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "music_likeness",
+      "historical_id": "music_likeness",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 179,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "music_query",
+      "historical_id": "music_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 185,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "music_settings",
+      "historical_id": "music_settings",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 187,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "news_query",
+      "historical_id": "news_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 188,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "play_audiobook",
+      "historical_id": "audiobook_play",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 138,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "play_game",
+      "historical_id": "game_play",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 150,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "play_music",
+      "historical_id": "music_play",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 182,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "play_podcasts",
+      "historical_id": "podcasts_play",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 191,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "play_radio",
+      "historical_id": "radio_play",
+      "relation": "candidate_rename_from_example_not_certified_mapping",
+      "guideline_paragraph": 196,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "qa_currency",
+      "historical_id": null,
+      "relation": "no_direct_mapping_established",
+      "guideline_paragraph": null,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "qa_definition",
+      "historical_id": "qa_definition",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 192,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "qa_factoid",
+      "historical_id": null,
+      "relation": "no_direct_mapping_established",
+      "guideline_paragraph": null,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "qa_maths",
+      "historical_id": "qa_maths",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 193,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "qa_stock",
+      "historical_id": "qa_stock",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 195,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "recommendation_events",
+      "historical_id": "recommendation_events",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 197,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "recommendation_locations",
+      "historical_id": "recommendation_locations",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 198,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "recommendation_movies",
+      "historical_id": "recommendation_movies",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 199,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "social_post",
+      "historical_id": "social_post",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 200,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "social_query",
+      "historical_id": "social_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 201,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "takeaway_order",
+      "historical_id": "takeaway_order",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 202,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "takeaway_query",
+      "historical_id": "takeaway_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 203,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "transport_query",
+      "historical_id": "transport_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 204,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "transport_taxi",
+      "historical_id": "transport_taxi",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 205,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "transport_ticket",
+      "historical_id": "transport_ticket",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 206,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "transport_traffic",
+      "historical_id": "transport_traffic",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 207,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "semantic_id": "weather_query",
+      "historical_id": "weather_query",
+      "relation": "same_identifier_not_semantic_equivalence",
+      "guideline_paragraph": 208,
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    }
+  ],
+  "slots": [
+    {
+      "entity_type": "alarm_type",
+      "historical_ids": [
+        "alarm_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        132
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "app_name",
+      "historical_ids": [
+        "app_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "artist_name",
+      "historical_ids": [
+        "artist"
+      ],
+      "relation": "candidate_role_mapping_not_certified",
+      "entity_inventory_paragraph": null,
+      "example_paragraphs": [
+        179,
+        182
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "audiobook_author",
+      "historical_ids": [
+        "audiobook_author"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        138
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "audiobook_name",
+      "historical_ids": [
+        "audiobook_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        138
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "business_name",
+      "historical_ids": [
+        "business_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        195,
+        203
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "business_type",
+      "historical_ids": [
+        "business_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        198
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "change_amount",
+      "historical_ids": [
+        "change_amount"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        133,
+        135,
+        137,
+        164,
+        167,
+        168,
+        170
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "coffee_type",
+      "historical_ids": [
+        "coffee_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        162
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "color_type",
+      "historical_ids": [
+        "color_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        163,
+        165
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "cooking_type",
+      "historical_ids": [
+        "cooking_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "currency_name",
+      "historical_ids": [],
+      "relation": "no_direct_mapping_established",
+      "entity_inventory_paragraph": null,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "date",
+      "historical_ids": [
+        "date"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        130,
+        131,
+        139,
+        141,
+        145,
+        154,
+        189,
+        199
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "definition_word",
+      "historical_ids": [
+        "definition_word"
+      ],
+      "relation": "example_only_missing_from_historical_inventory",
+      "entity_inventory_paragraph": null,
+      "example_paragraphs": [
+        192
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "device_type",
+      "historical_ids": [
+        "device_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        135,
+        172,
+        173
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "drink_type",
+      "historical_ids": [
+        "drink_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "email_address",
+      "historical_ids": [
+        "email_address"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "email_folder",
+      "historical_ids": [
+        "email_folder"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "event_name",
+      "historical_ids": [
+        "event_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        139,
+        140,
+        141
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "food_type",
+      "historical_ids": [
+        "food_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        142,
+        198,
+        202
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "game_name",
+      "historical_ids": [
+        "game_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        150
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "game_type",
+      "historical_ids": [
+        "game_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "general_frequency",
+      "historical_ids": [
+        "general_frequency"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "house_place",
+      "historical_ids": [
+        "house_place"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        161,
+        165,
+        166,
+        168,
+        169,
+        171
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "ingredient",
+      "historical_ids": [
+        "ingredient"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "joke_type",
+      "historical_ids": [
+        "joke_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        157
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "list_name",
+      "historical_ids": [
+        "list_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        174,
+        175,
+        176
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "meal_type",
+      "historical_ids": [],
+      "relation": "no_direct_mapping_established",
+      "entity_inventory_paragraph": null,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "media_type",
+      "historical_ids": [
+        "media_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        188,
+        196,
+        200,
+        201
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "movie_name",
+      "historical_ids": [
+        "movie_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "movie_type",
+      "historical_ids": [
+        "movie_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "music_album",
+      "historical_ids": [
+        "music_album"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "music_descriptor",
+      "historical_ids": [
+        "music_descriptor"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        178,
+        183
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "music_genre",
+      "historical_ids": [
+        "music_genre"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        181
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "news_topic",
+      "historical_ids": [
+        "news_topic"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        189,
+        190
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "order_type",
+      "historical_ids": [
+        "order_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        203
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "person",
+      "historical_ids": [
+        "person_name"
+      ],
+      "relation": "candidate_role_mapping_not_certified",
+      "entity_inventory_paragraph": null,
+      "example_paragraphs": [
+        140,
+        141,
+        146,
+        148,
+        149
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "personal_info",
+      "historical_ids": [
+        "person_info"
+      ],
+      "relation": "candidate_role_mapping_not_certified",
+      "entity_inventory_paragraph": null,
+      "example_paragraphs": [
+        146,
+        148
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "place_name",
+      "historical_ids": [
+        "location",
+        "location_start",
+        "location_stop",
+        "city_name",
+        "country_name"
+      ],
+      "relation": "candidate_role_mapping_not_certified",
+      "entity_inventory_paragraph": null,
+      "example_paragraphs": [
+        143,
+        144,
+        194,
+        197,
+        198,
+        199,
+        204,
+        205,
+        207,
+        208,
+        209
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "player_setting",
+      "historical_ids": [
+        "player_setting"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        138,
+        187,
+        191
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "playlist_name",
+      "historical_ids": [
+        "playlist_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "podcast_descriptor",
+      "historical_ids": [
+        "podcast_descriptor"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "podcast_name",
+      "historical_ids": [
+        "podcast_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        191
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "radio_name",
+      "historical_ids": [
+        "radio_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        196
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "relation",
+      "historical_ids": [
+        "relation"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "song_name",
+      "historical_ids": [
+        "song_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        182
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "sport_type",
+      "historical_ids": [
+        "sport_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "time",
+      "historical_ids": [
+        "time"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        130,
+        140,
+        141,
+        165,
+        172,
+        190,
+        205
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "time_zone",
+      "historical_ids": [
+        "time_zone"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "timeofday",
+      "historical_ids": [
+        "timeofday"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        131,
+        132,
+        210
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "transport_agency",
+      "historical_ids": [
+        "transport_agency"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "transport_descriptor",
+      "historical_ids": [
+        "transport_descriptor"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "transport_name",
+      "historical_ids": [
+        "transport_name"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "transport_type",
+      "historical_ids": [
+        "transport_type"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        204,
+        205,
+        206
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    },
+    {
+      "entity_type": "weather_descriptor",
+      "historical_ids": [
+        "weather_descriptor"
+      ],
+      "relation": "same_identifier_not_semantic_equivalence",
+      "entity_inventory_paragraph": 214,
+      "example_paragraphs": [
+        208,
+        210
+      ],
+      "definition_adoption_allowed": false,
+      "supervision_admission_allowed": false
+    }
+  ]
+}

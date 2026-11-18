@@ -1,0 +1,55 @@
+{
+  "schema": "context-attribute-parity-prepare-fixed-image-cpu-v1",
+  "container_id": "199a7ba45ec1b4279d2d1c75600a6faa5bbff4ed7a12026d9e59334eb895fc8d",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T02:06:40.07908438Z",
+    "FinishedAt": "2026-11-15T02:07:49.40566511Z"
+  },
+  "source_files": 404,
+  "source_manifest_sha256": "1b5df01131d7cf0357e54b83e0a0517eef983aa83f9fcfbff93527cd872d1ca7",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-parity-prepare-cpu-v1-collected",
+  "files": {
+    "run/prepared.json": "2cd987fb61852c834892a9899069062717e7b3e3786738144207fc9ea8454764",
+    "package/probe-config.json": "325312d38e1aa08809051d6fbfb01a3462e84117f2b205c3a586af94d9cc1c85",
+    "run/terminal.json": "5a4ca0f82813b73ac39cb255f2c2104b07f2010a6456b7dd7cbcbb8d47bc3bcf",
+    "run/junit.xml": "5317eca3bbf533a0be3284003d55b42ba29742703c789daca2c05ecd562803d8",
+    "run/pytest.log": "8cdefdcd5bb385555a1ec1c3c148348b9747dd13ed58839dc3d4ccdcbc7cf075",
+    "package/FILES.json": "1b5df01131d7cf0357e54b83e0a0517eef983aa83f9fcfbff93527cd872d1ca7",
+    "package/run.py": "37a18831ba2e5d52ebad6202e55867b451f625681f50316181eb4ee58c5d8211"
+  },
+  "counts": {
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794708427.2841575,
+    "finished_unix": 1794708467.5909317,
+    "source_manifest_sha256": "1b5df01131d7cf0357e54b83e0a0517eef983aa83f9fcfbff93527cd872d1ca7",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-parity-prepare-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_parity.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Frozen Stage1 policy/adapter authentication and actual six compact requests prepared with BF16 cache. Comparator unit tests use synthetic probabilities; no Qwen forward, NPU or efficacy proof."
+}

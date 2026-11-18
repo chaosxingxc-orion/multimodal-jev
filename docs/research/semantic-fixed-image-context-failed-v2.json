@@ -1,0 +1,28 @@
+{
+  "schema": "semantic-fixed-image-context-failed-v2",
+  "container_id": "2368b7443633e0ed4bc1ddf0c13a9b9c6fed2387e4d5adfc64a89019ab1189db",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-13T01:35:48.47701105Z",
+    "FinishedAt": "2026-11-13T01:35:57.45890183Z"
+  },
+  "state_evidence": ".local/incidents/20261113-core-dump/175-journal-access.log",
+  "state_evidence_sha256": "c88a8044f649c80c8bd7aa18880a5243766da76f2d810f0ac37ecc1998574d8b",
+  "logs": ".local/incidents/20261113-core-dump/fixed-image-v2-terminal-logs.txt",
+  "logs_sha256": "e46013095266ba324e1cb457ae3374cda9b3ee16ca5705d43ee21ebc7e080ec8",
+  "failure": "Transformers processor import explicitly imports torch_npu via flash-attention integration; libascend_hal.so absent in CPU-only container. TORCH_DEVICE_BACKEND_AUTOLOAD=0 does not block this explicit import.",
+  "requests_completed": 0,
+  "paired_comparison_performed": false,
+  "restart_allowed": false,
+  "context_accepted": false,
+  "training_dispatch_allowed": false,
+  "scope": "Terminal import failure, not OOM, task-length measurement, CPU/NPU parity or evidence attributing host Ceph crash to this process."
+}

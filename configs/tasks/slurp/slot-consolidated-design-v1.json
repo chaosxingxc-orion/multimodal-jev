@@ -1,0 +1,72 @@
+{
+  "schema": "slurp-slot-consolidated-design-v1",
+  "status": "complete_definition_package_draft_not_task_or_training_release",
+  "training_dispatch_allowed": false,
+  "scope": "request_relevant_role",
+  "scope_selection_basis": "working_assumption_not_user_confirmation",
+  "definitions": "configs/tasks/slurp/type-definition-candidates-v3.json",
+  "policy": "configs/tasks/slurp/slot-presence-policy-candidate-v3.json",
+  "boundaries": "configs/tasks/slurp/type-boundary-rules-candidate-v4.json",
+  "reviews": "configs/reviews/slurp-slot-decision-reference-v3.tsv",
+  "runtime_fields": [
+    "definition",
+    "thinking_requirements",
+    "role_rules",
+    "scope",
+    "presence_policy",
+    "requested_unassigned_role_policy",
+    "deictic_policy",
+    "scope_policy",
+    "coexistence_policy",
+    "commitment_policy",
+    "intent_conditioning",
+    "unresolved_boundaries",
+    "shared_rule",
+    "coexistence_rule",
+    "scope_condition",
+    "unresolved_constraint"
+  ],
+  "provenance_only_fields": [
+    "historical_boundary_review",
+    "historical_unresolved_boundaries",
+    "historical_unresolved_constraint",
+    "evidence_source_ids",
+    "support"
+  ],
+  "rule_authority": "Current explicit role/scope/overlap rules; historical native conventions are evidence only, never active conflicting precedence.",
+  "incomplete": [
+    "whole-population semantic annotation",
+    "independent disagreement review",
+    "intent definition finalization",
+    "selection annotation and unified task release",
+    "processor and engineering acceptance"
+  ],
+  "runtime_field_groups": {
+    "type": [
+      "definition",
+      "thinking_requirements",
+      "role_rules",
+      "scope"
+    ],
+    "policy": [
+      "presence_policy",
+      "requested_unassigned_role_policy",
+      "deictic_policy",
+      "scope_policy",
+      "coexistence_policy",
+      "commitment_policy",
+      "intent_conditioning",
+      "unresolved_boundaries",
+      "role_rules"
+    ],
+    "boundary": [
+      "shared_rule",
+      "coexistence_rule",
+      "scope_condition",
+      "unresolved_constraint",
+      "role_rules"
+    ]
+  },
+  "processor_probe": "docs/research/panel-context-probe-v4-verified.json",
+  "runtime_scope": "Current selected actor semantic fields; annotation admission/evidence remain offline. Shared identical policy values may be stored once and losslessly expanded. Not a frozen production renderer."
+}

@@ -1,0 +1,61 @@
+{
+  "schema": "user-experiment-status-v1",
+  "recorded_unix": 1794644392.2140656,
+  "accepted_result": "docs/engineering/slurp-stage1-selection-accepted-v1.json",
+  "accepted_result_sha256": "80d74f9d4be4889016972a31175ef4c646172d823133d7baa856df83e82771c4",
+  "paired_result": "docs/engineering/slurp-stage1-selection-paired-v1.json",
+  "paired_result_sha256": "6008e28db884e0032efc53e956e056b88ef32753a14d7fe57591a04725746acf",
+  "selection_recordings": 9226,
+  "base_accuracy": 0.01669195751138088,
+  "stage1_accuracy": 0.20203771948840235,
+  "stage1_macro_f1": 0.08710685492800148,
+  "diagnostic": {
+    "predicted_classes": 24,
+    "classes_with_correct_prediction": 23,
+    "top2_prediction_count": 8300,
+    "top2_prediction_fraction": 0.8996314762627358
+  },
+  "current_training": {
+    "container_id": "934b106a6563f87f29e343f66b10e75485fd7c1b5de93864f920e00f02b931df",
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 2060339,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-14T05:58:18.03245168Z",
+      "FinishedAt": "0001-01-01T00:00:00Z"
+    },
+    "progress": {
+      "run/rank-0/progress.json": {
+        "phase": "native_actor_update",
+        "updated_unix": 1794644259.0094168,
+        "step": 375
+      },
+      "run/rank-1/progress.json": {
+        "phase": "native_actor_update",
+        "updated_unix": 1794644259.0125988,
+        "step": 375
+      },
+      "run/rank-2/progress.json": {
+        "phase": "native_actor_update",
+        "updated_unix": 1794644259.0060406,
+        "step": 375
+      },
+      "run/rank-3/progress.json": {
+        "phase": "native_actor_update",
+        "updated_unix": 1794644259.0085585,
+        "step": 375
+      }
+    },
+    "config": "configs/experiments/slurp-class-spread-batch-stage1-v1.json"
+  },
+  "new_branch_delegate": "/root/context_prob_branch",
+  "delegate_model": "gpt-6.1-sol",
+  "rl_efficacy_available": false,
+  "scope": "Old Stage1 full internal selection, not official TEST or new batch run outcome. Current run instruction CE, not RL. Source report hash and metric arithmetic rechecked."
+}

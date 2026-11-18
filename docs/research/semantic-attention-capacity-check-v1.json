@@ -1,0 +1,46 @@
+{
+  "schema": "semantic-attention-capacity-independent-check-v1",
+  "report_sha256": "0ad1129bf7028adf95882705e4c14ca8d736e2fd6979888072dd8e30195cc206",
+  "verifier_sha256": "24bd0ba822991760f95013555e5b6792b69e1021c1c3122d41f928a5a2d05389",
+  "checks": {
+    "learning": {
+      "Direct": {
+        "requests": 688721,
+        "requests_exceeding_pair_capacity": 40513,
+        "entire_panels_exceeding_pair_capacity": [
+          "semantic-07"
+        ],
+        "worst_pair_bytes": 87927330816
+      },
+      "Q_input": {
+        "requests": 688721,
+        "requests_exceeding_pair_capacity": 40513,
+        "entire_panels_exceeding_pair_capacity": [
+          "semantic-07"
+        ],
+        "worst_pair_bytes": 92089419264
+      }
+    },
+    "selection": {
+      "Direct": {
+        "requests": 156842,
+        "requests_exceeding_pair_capacity": 9226,
+        "entire_panels_exceeding_pair_capacity": [
+          "semantic-07"
+        ],
+        "worst_pair_bytes": 87052105824
+      },
+      "Q_input": {
+        "requests": 156842,
+        "requests_exceeding_pair_capacity": 9226,
+        "entire_panels_exceeding_pair_capacity": [
+          "semantic-07"
+        ],
+        "worst_pair_bytes": 91193667936
+      }
+    }
+  },
+  "context_accepted": false,
+  "training_dispatch_allowed": false,
+  "scope": "Separate integer tensor-size calculation and histogram enumeration. Not measured peak memory or actual NPU OOM."
+}

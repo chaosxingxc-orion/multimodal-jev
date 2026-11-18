@@ -1,0 +1,305 @@
+{
+  "schema": "slurp-semantic-teacher-profile-candidate-v1",
+  "status": "slot_calibration_and_concise_probe_terminal_output_incomplete_no_bulk_admission",
+  "model": "glm-5.3-flash",
+  "executor": "/home/xingchao/workspace/omni/repro/codex-subprocess/global-topk-transition/recall_teacher_prepare/ace-recall-v1/vendor/base/ace/executor.py",
+  "executor_sha256": "c9f9bbd333f038955945db82d946cb2757bafbc340b1a8ca476f52f3ab406bd4",
+  "transport_identity_source": "existing_Omni_private_config_endpoint_model_api_key_env_only_never_copy_research_prompt_or_analysis_budget",
+  "thinking": {
+    "type": "enabled"
+  },
+  "stream": true,
+  "max_tokens": 4096,
+  "timeout_seconds": 60,
+  "total_timeout_seconds": 180,
+  "automatic_retry": false,
+  "workpack": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-shared-v3/report.json",
+  "evidence": "docs/research/teacher-thinking-compatibility-v1.json",
+  "evidence_sha256": "50d420cf99bc284d17c7997ea8c3145dd9a287d1d0e05e489891c16680ebe78f",
+  "observed": {
+    "completion_tokens": 1856,
+    "completion_tokens_details": {
+      "reasoning_tokens": 1439
+    },
+    "prompt_tokens": 24593,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 26449
+  },
+  "evidence_scope": "One maximum-JSON-size panel/source accepted; JSON size is not tokenizer maximum. Completion tokens include reasoning. No claim of full-menu token limit or worst-case output budget.",
+  "required_before_bulk": [
+    "all16 panel request token accounting or provider-correct tokenizer binding",
+    "fixed class/polarity ambiguity calibration independent of native labels",
+    "literal_vs_shared_semantic_response_check",
+    "provider pricing and explicit full-run request/token budget",
+    "durable per-request identity and terminal state; no ambiguous automatic replay",
+    "separate reviewer identities and disagreement/admission protocol"
+  ],
+  "bulk_dispatch_allowed": false,
+  "training_dispatch_allowed": false,
+  "semantic_admission": 0,
+  "panel_probe": {
+    "receipt": "docs/research/teacher-panel-probe-observed-v1.json",
+    "receipt_sha256": "d763ed298c766db308847157d746d6fabc97d41f2c0ca7afaadecf530c151686",
+    "shared_panels": 16,
+    "shared_complete": 15,
+    "missing_decisions": 8,
+    "failed_panel": "S_present-00",
+    "reason": "4096 completion tokens all reasoning, finish length and empty final content",
+    "literal_shared_agreements": 8,
+    "literal_shared_compared": 8,
+    "scope": "Same single source across menus; no all-class positive calibration or independence claim."
+  },
+  "max_tokens_scope": "Historical measured profile:4096 failed on S_present-00 and another panel used4055; not sufficient global budget. New budget requires separately named probe, never mutate previous attempts.",
+  "output_budget_probe": {
+    "receipt": "docs/research/teacher-output-budget-observed-v1.json",
+    "receipt_sha256": "e12702676242d40ec95aec867f386cd6f17863def05ed3a87a5f63a51a6cf486",
+    "max_tokens": 8192,
+    "complete": false,
+    "semantic_admission": 0
+  },
+  "intent_calibration": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-teacher-calibration-v1/report.json",
+    "report_sha256": "d9dcf46dc55ff5e29a34b7c4aa8452d74954a311e18239c0cd871de69d73167e",
+    "check": "docs/research/intent-teacher-calibration-check-v1.json",
+    "run": ".local/research/intent-teacher-calibration-v1/run",
+    "launch": ".local/research/intent-teacher-calibration-v1/launch.json",
+    "status": "complete115_of122_no_semantic_admission",
+    "requests": 122,
+    "positive_targets": 65,
+    "negative_targets": 65,
+    "ambiguous_targets": 16,
+    "concurrency": 2,
+    "max_tokens_per_request": 4096,
+    "semantic_admission": 0,
+    "decision_record": "docs/research/105-intent-calibration-results-and-ambiguity.md",
+    "observed_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-teacher-calibration-observed-v1/report.json",
+    "observed_report_sha256": "b5f298813048ae783f4cad1c69d5a82abbdc84c6d693b8b35f4c173c2b840287",
+    "verification": "docs/research/intent-teacher-calibration-observed-check-v1.json",
+    "disagreement_triage": "configs/reviews/slurp-intent-calibration-disagreement-triage-v1.json",
+    "author_resolution": "configs/reviews/slurp-intent-calibration-author-resolution-v1.json"
+  },
+  "slot_split_probe": {
+    "receipt": "docs/research/teacher-slot-question-split-observed-v1.json",
+    "receipt_sha256": "8c4de4d62bfd2d60a6f090bf3db49fff09e1cae77cfe97218a088ae5f897b7bc",
+    "complete_requests": 1,
+    "requests": 2,
+    "complete_decisions": 4,
+    "expected_decisions": 8,
+    "boundary_issue": "configs/reviews/slurp-provider-boundary-review-issue-v1.json",
+    "semantic_admission": 0
+  },
+  "slot_rule_revision": {
+    "current_package": "configs/tasks/slurp/slot-consolidated-design-v14.json",
+    "existing_workpack_slot_rules": "current_v14",
+    "intent_calibration_affected": false,
+    "required": "Current full8-question probe and broader quality/context validation required; historical results remain pinned to original rules."
+  },
+  "historical_workpack": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-shared-v1/report.json",
+  "workpack_sha256": "890f4b4d5a909aa81389cc5a0c6cec79dc0969d940fa8b9c8f7ed9db1f9efb59",
+  "current_rule_slot_probe": {
+    "receipt": "docs/research/teacher-provider-rules-observed-v1.json",
+    "receipt_sha256": "53267c39cb2ec9f7684ae143aee051e1baaf6a2ab03e428087e55ee156a1fed2",
+    "check": "docs/research/teacher-provider-rules-check-v1.json",
+    "status": "single_authoring_source_complete_not_quality_admission",
+    "complete_decisions": 8,
+    "reference_agreements": 2,
+    "reference_compared": 2,
+    "semantic_admission": 0
+  },
+  "slot_calibration": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/slot-teacher-calibration-v1/report.json",
+    "report_sha256": "4688960b722bbd3be012fee109cb607eada9098724be8e356097d345872ada17",
+    "verification": "docs/research/slot-teacher-calibration-check-v1.json",
+    "requests": 89,
+    "positive_targets": 55,
+    "negative_targets": 55,
+    "status": "terminal75_of89_complete_no_semantic_admission",
+    "decision_record": "docs/research/112-slot-teacher-calibration-observed.md",
+    "semantic_admission": 0,
+    "run": ".local/research/slot-teacher-calibration-v1/run",
+    "launch": ".local/research/slot-teacher-calibration-v1/launch.json",
+    "concurrency": 2,
+    "max_tokens_per_request": 4096,
+    "maximum_completion_tokens": 364544,
+    "automatic_retry": false
+  },
+  "workpack_history": [
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/blind-semantic-annotation-shared-v2/report.json"
+  ],
+  "slot_calibration_observed": {
+    "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/slot-teacher-calibration-observed-v1/report.json",
+    "report_sha256": "51386feca8002f6229fb2802f372bb4cf5ad7abf7afeb4c80ec50cf46a0b62fd",
+    "verification": "docs/research/slot-teacher-calibration-observed-check-v1.json",
+    "decision_record": "docs/research/112-slot-teacher-calibration-observed.md",
+    "valid_requests": 75,
+    "requests": 89,
+    "reference_agreements": 94,
+    "targets": 110,
+    "failed_targets": 16,
+    "semantic_admission": 0
+  },
+  "slot_calibration_disposition": "Current4096thinking-enabled profile failed completeness75/89;14length empty answers. No automatic retry, budget increase,128group or full-population dispatch; output-method/reviewer validation required.",
+  "concise_output_probe": {
+    "run": ".local/research/teacher-concise-output-v1/run",
+    "launch": ".local/research/teacher-concise-output-v1/launch.json",
+    "input_check": "docs/research/teacher-concise-output-input-check-v1.json",
+    "status": "terminal4of6_complete_not_bulk_accepted",
+    "requests": 6,
+    "max_tokens_per_request": 4096,
+    "maximum_completion_tokens": 24576,
+    "automatic_retry": false,
+    "changed_field": "system_message_append_efficiency_directive_only",
+    "semantic_admission": 0,
+    "observed": {
+      "report": "docs/research/teacher-concise-output-observed-v1.json",
+      "report_sha256": "880e83e1d4227bde48149a9d9813638ea27e814ac1dfb85cf50387742733fe0e",
+      "verification": "docs/research/teacher-concise-output-observed-check-v1.json",
+      "decision_record": "docs/research/115-teacher-output-probe-observed.md",
+      "requests": 6,
+      "complete_requests": 4,
+      "length_empty_requests": 2,
+      "prior_complete_preserved": 3,
+      "prior_decisions_unchanged": 24,
+      "prior_failures_recovered": 1,
+      "reference_agreements": 5,
+      "reference_targets": 7,
+      "semantic_admission": 0,
+      "bulk_dispatch_allowed": false
+    }
+  },
+  "cost_projection": "docs/research/semantic-annotation-cost-projection-v1.json",
+  "concise_output_disposition": "Soft efficiency instruction insufficient: two length/empty responses remain. Preserve original attempts; no automatic retry, budget escalation or bulk dispatch. Complete-output route and independent reviewer acceptance remain required.",
+  "alternative_reviewer_route_probe": {
+    "requests": 6,
+    "http_success": 6,
+    "strict_valid": 3,
+    "failures": {
+      "bare_array": 3
+    },
+    "reference_targets": 7,
+    "reference_agreements": 3,
+    "reference_missing": 3,
+    "reference_disagreements": [
+      {
+        "source_id": "1887",
+        "semantic_id": "music_genre",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 136827,
+      "completion_tokens": 3593,
+      "total_tokens": 140420
+    },
+    "semantic_admission": 0,
+    "bulk_dispatch_allowed": false,
+    "training_dispatch_allowed": false,
+    "model": "qwen-plus",
+    "model_identity": "provider_alias_only_no_upstream_revision_attestation",
+    "observation": "docs/research/qwen-plus-reviewer-route-observed-v1.json",
+    "verification": "docs/research/qwen-plus-reviewer-route-check-v1.json",
+    "decision": "Not admitted: three malformed envelopes and one reference disagreement. No salvage, automatic retry or bulk dispatch."
+  },
+  "envelope_contract_probe": {
+    "requests": 6,
+    "http_success": 6,
+    "strict_valid": 6,
+    "reference_targets": 7,
+    "reference_agreements": 2,
+    "reference_missing": 0,
+    "reference_disagreements": [
+      {
+        "source_id": "14835",
+        "semantic_id": "media_type",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "5274",
+        "semantic_id": "list_name",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "1887",
+        "semantic_id": "music_genre",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "2768",
+        "semantic_id": "playlist_name",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      },
+      {
+        "source_id": "2768",
+        "semantic_id": "song_name",
+        "expected": "negative",
+        "predicted": "unavailable",
+        "agreement": false
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 137607,
+      "completion_tokens": 1875,
+      "total_tokens": 139482
+    },
+    "semantic_admission": 0,
+    "bulk_dispatch_allowed": false,
+    "training_dispatch_allowed": false,
+    "model": "qwen-plus",
+    "observation": "docs/research/qwen-envelope-contract-observed-v1.json",
+    "verification": "docs/research/qwen-envelope-contract-check-v1.json",
+    "paired_output": "docs/research/qwen-envelope-contract-paired-output-v1.json",
+    "status": "format_complete_but_semantic_calibration_failed",
+    "decision": "Do not release this prompt/model for full quality review; preserve original rules, parser, labels and default teacher."
+  },
+  "three_state_calibration": {
+    "profile": "configs/reviews/slurp-three-state-calibration-candidate-v1.json",
+    "status": "terminal_both_arms_failed_semantic_calibration",
+    "input_check": "docs/research/three-state-calibration-input-check-v1.json",
+    "metadata_check": "docs/research/three-state-original-metadata-check-v1.json",
+    "semantic_admission": 0,
+    "training_dispatch_allowed": false,
+    "observed": {
+      "observation": "docs/research/three-state-calibration-observed-v1.json",
+      "verification": "docs/research/three-state-calibration-observed-check-v1.json",
+      "triage": "configs/reviews/three-state-calibration-triage-v1.json",
+      "status": "terminal_both_arms_failed_semantic_calibration",
+      "complete_requests": 24,
+      "reference_agreement": {
+        "envelope": 7,
+        "envelope_three_state": 8
+      },
+      "targets_per_arm": 12,
+      "paired_decisions": 95,
+      "changed_paired_decisions": 13,
+      "usage": {
+        "envelope": {
+          "prompt_tokens": 160539,
+          "completion_tokens": 3581,
+          "total_tokens": 164120
+        },
+        "envelope_three_state": {
+          "prompt_tokens": 162771,
+          "completion_tokens": 3738,
+          "total_tokens": 166509
+        }
+      },
+      "first_observation_elapsed_seconds": 636.3562037944794,
+      "semantic_admission": 0,
+      "bulk_dispatch_allowed": false,
+      "training_dispatch_allowed": false,
+      "next_action": "No automatic repeat or prompt sweep. Resolve independent reviewer/adjudication route and full rule consumption; preserve ontology and all prior attempts."
+    }
+  }
+}

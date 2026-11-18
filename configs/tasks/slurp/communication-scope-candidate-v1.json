@@ -1,0 +1,72 @@
+{
+  "schema": "slurp-communication-scope-candidate-v1",
+  "status": "candidate_not_applied_to_current_ontology",
+  "training_dispatch_allowed": false,
+  "recommended_scope": "communicative_content_with_request_relevance",
+  "user_preference": "optional_question_pending_no_approval_inferred",
+  "current_package": "configs/tasks/slurp/slot-consolidated-design-v8.json",
+  "current_package_sha256": "895ad9f080483cc6e31b1525bef9ff0f2cf1794e0c695da60ddb968d921cb807",
+  "fixed_question": "Does the audio express a role satisfying the supplied type and presence policy within the declared communicative-content scope?",
+  "rules": [
+    "For an explicit operation, information question, constraint or requested payload, retain the existing request-relevance rule; quoted/message content and object-identifying context count.",
+    "When the input is a complete standalone assertion or preference without an explicit operation/question, its main proposition and expressed arguments are communicative content. Do not require an invented assistant command.",
+    "In mixed inputs, a statement counts when it contributes to an expressed request, identifies its target, supplies its reason/constraint or is explicitly requested content. Clearly unrelated background is excluded; uncertain relation stays unavailable.",
+    "Presence is independent of commitment: dislike, negation, cancellation or a conditional statement may contain relevant roles without asserting a positive state or execution authorization.",
+    "Implicit-request inference is not required to include an explicit stated fact/state. Never invent the missing action, answer, entity identity or required parameter.",
+    "A scope decision is not a type label. The per-type identity/reference/property, overlap and absence policies still apply independently.",
+    "Bare fragments and unresolved pronouns remain unavailable for affected type judgments unless the input alone establishes the required role. Do not use native intent or unseen dialogue history.",
+    "Use the same operator and task-level scope text for every audio query; no gold- or topic-specific question routing."
+  ],
+  "remaining_definition_issue": "Mixed independent discourse acts versus subordinate background require a clear annotation convention before release; examples below are a candidate, not already admitted truth.",
+  "evidence": {
+    "general_quirky": {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v1/general_quirky.jsonl",
+      "sha256": "905ac3ba5d294541ced141ec6f63d77eaacb718e11a9494f4ace661c6011b30e",
+      "sources": 425,
+      "recordings": 1550
+    },
+    "music_likeness": {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v1/music_likeness.jsonl",
+      "sha256": "15bc400a98a716a82121a779c61797ee420bbb60f961e38349b03463dfef1de9",
+      "sources": 96,
+      "recordings": 405
+    },
+    "music_dislikeness": {
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/communication-scope-evidence-v1/music_dislikeness.jsonl",
+      "sha256": "136a0399518f61274280fcc801bb3383a57b70b432c6e0cb952b92b26208b662",
+      "sources": 11,
+      "recordings": 69
+    }
+  },
+  "source_references": {
+    "../nga/survey/01-object-and-definitions.md": "3a4a73dcb51bb10a98b2b3d3c74bfac0aa42fd572f76aec33b218255141964c1",
+    "../nga/survey/03-semantics-can-the-model-read-the-rules.md": "93ecc6bc811511559cd1a899b53e1a0b992a7bfa7f1c7fb978ad4d2604977716",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2"
+  },
+  "source_interpretation": "NGA motivates explicit criteria and definition-use controls; this turn reads local summaries, not independently rechecking their cited papers or numerical claims. Upstream general_conversation/music examples demonstrate data coverage, not automatic new semantic truth.",
+  "synthetic_controls": [
+    {
+      "reference": "I visited Paris yesterday. Turn the volume down.",
+      "assumption": "The first sentence is unrelated background, not a separately requested report task.",
+      "candidate_place_scope": false,
+      "scope_status": "authored_control_no_dataset_audio_no_gold",
+      "caveat": "If independent report acts are included instead, the assumption and expected outcome change; audio wording alone may not establish this relation."
+    },
+    {
+      "reference": "Play the radio station I listened to in Paris.",
+      "candidate_place_scope": true,
+      "scope_status": "authored_control_no_dataset_audio_no_gold"
+    },
+    {
+      "reference": "Send the message I visited Paris yesterday.",
+      "candidate_place_scope": true,
+      "scope_status": "authored_control_no_dataset_audio_no_gold"
+    }
+  ],
+  "migration": [
+    "No current ontology or supervision pointer changes in this candidate.",
+    "Before adopting, align scope fields on all55 cards/policies and89 boundaries and compare all existing reference contracts; do not auto-admit old false labels.",
+    "Rereview affected standalone and mixed inputs with explicit semantic status; preserve the full population and native labels.",
+    "Freeze equivalent paraphrase and scope-change discriminating controls before model evaluation; changes in predictions alone are not correctness."
+  ]
+}

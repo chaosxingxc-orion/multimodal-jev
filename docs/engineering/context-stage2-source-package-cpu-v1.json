@@ -1,0 +1,13 @@
+{
+  "status": "source_packager_cpu_verified_not_actual_full_stage1_package",
+  "passed": true,
+  "tests": 22,
+  "test_command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_stage2_source_package.py tests/test_context_stage2_source.py",
+  "elapsed_seconds": 3.54,
+  "files": {
+    "tools/jev/prepare_context_stage2_source.py": "8959b9a70a5dfbbd38cbad1ac0a9a111b184ce5f217b7ac2a5e794b85ab1e4ab",
+    "tests/test_context_stage2_source_package.py": "6c2bac41b0b2cda47ad0940f25aaab0800a5d89100a39a0a891026bfcdb78f9c"
+  },
+  "scope": "Real tiny BF16 policy copy and native safetensors adapter serialization/authentication; full Stage1 binding substituted in packaging tests and covered separately by source-binding fixtures. No actual full Stage1 endpoint or NPU execution.",
+  "training_dispatch_allowed": false
+}

@@ -1,0 +1,19 @@
+{
+  "status": "candidate_source_and_cpu_validation_not_npu_RL_admission",
+  "files": {
+    "src/multimodal_jev/batched_stage2_initialization.py": "a6913752986781b8e8378cf0f8142b055f21f22ad566174c5926c421a1f1eae9",
+    "tools/jev/initialize_batched_stage2_actor.py": "3204468d9062b75a8eaf521d29497e319d11a5b59e50e1773c5c52149cb0109a",
+    "tools/jev/run_batched_stage2_loop.py": "fd1716acec0cb045f9bc9535c28920c07592e61430da1e398b98bd398be7ff14",
+    "tools/jev/probe_batched_grouped_rl_dp_cpu.py": "683198f5c9c753cf4263100dc81cfeb839d2657468cc428d23d381d0b8363131",
+    "tests/test_batched_stage2_initialization.py": "97101fc944bbc39100a040ecb28a719f42f66c18c7393e87f44ced5c3699e442",
+    "tests/test_batched_rl_payload_order.py": "36ba813b55d1b9bad408e0d3ba276c5f31c179a81c4bdefbfbaa17e5ec5294ac"
+  },
+  "tests": {
+    "stage_boundary_and_related_passed": 45,
+    "local_verl_loss_skipped": 1,
+    "payload_and_binding_passed": 19,
+    "fixed_image_native_verl_dp4": "docs/engineering/slurp-batched-grouped-rl-dp4-cpu-v1.json"
+  },
+  "training_dispatch_allowed": false,
+  "scope": "Candidate final634 initialization retains exact FP32 masters and resets Adam; full-schedule loop now uses batch actor and whole-payload length permutation. NPU lifecycle, candidate resume and formal release remain unverified."
+}

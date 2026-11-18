@@ -1,0 +1,566 @@
+{
+  "schema": "teacher-concise-output-observed-v1",
+  "plan_sha256": "f9a91814fce3fef07bc672acdcc524eca365b861cec655d7f00eb1f48189707e",
+  "terminal_sha256": "1178911a7ed9bab52f4823b4b7482ddddd2863a0440a24612b9c8d97e53a99dc",
+  "scorer_sha256": "fd5ccf6bb08f52e44d8276ccb767084168097d5f74c6d7c59b63708017808364",
+  "requests": 6,
+  "valid_requests": 4,
+  "usage": {
+    "prompt_tokens": 133683,
+    "completion_tokens": 14566,
+    "total_tokens": 148249
+  },
+  "receipts": [
+    {
+      "request_id": "0ce44be474715eea58c132b31cb96b9550ab313d755ac1f7c0adc2392373345a",
+      "panel_id": "S_present-03",
+      "prior_valid": true,
+      "prior_request_sha256": "12b2f9383b6a1e840fb3a1f08849d29aa262f7fa8815f853a6a7850b9cc63185",
+      "messages_sha256": "04a41a9e2fed9ca2c39a0725a0bbf7907900ba62c2213aec926506f34a6ff01f",
+      "config_sha256": "3d4b232edd29f9a1a1723ec996c646dc63c9313da27777fc8b5398b6ad32b8d5",
+      "exit_code": 0,
+      "valid": true,
+      "http_status": 200,
+      "finish_reasons": [
+        "stop"
+      ],
+      "usage": {
+        "completion_tokens": 891,
+        "completion_tokens_details": {
+          "reasoning_tokens": 485
+        },
+        "prompt_tokens": 17489,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 18380
+      },
+      "result_sha256": "b22b47db5f109024fa5738d71522135055340cda3288120dbbc42cc756d8f605",
+      "content_characters": 1662,
+      "decisions": [
+        {
+          "id": "ingredient",
+          "status": "negative",
+          "rationale": "The utterance is a financial query; 'stock' is a share-price sense, not a food-preparation substance, so no ingredient role is expressed."
+        },
+        {
+          "id": "joke_type",
+          "status": "negative",
+          "rationale": "No joke request or descriptive joke characteristic appears; the utterance concerns a stock price."
+        },
+        {
+          "id": "list_name",
+          "status": "negative",
+          "rationale": "No item/task list, calendar-collection, or contact-collection reference is expressed; only a stock-price fact is queried."
+        },
+        {
+          "id": "meal_type",
+          "status": "negative",
+          "rationale": "No meal occasion such as breakfast, lunch, or dinner is mentioned in the financial query."
+        },
+        {
+          "id": "media_type",
+          "status": "negative",
+          "rationale": "Samsung appears as the subject of a stock-price/company query, which per R3/R5 is not a media source/channel or content format role; no audiobook, podcast, news, picture, or video relation is expressed."
+        },
+        {
+          "id": "movie_name",
+          "status": "negative",
+          "rationale": "No film title or particular film reference appears; 'Samsung' names a company, not a movie."
+        },
+        {
+          "id": "movie_type",
+          "status": "negative",
+          "rationale": "No genre, rating, or other movie selection criterion is expressed in the utterance."
+        },
+        {
+          "id": "music_album",
+          "status": "negative",
+          "rationale": "No particular music album or work-of-music reference is expressed; the query is purely financial."
+        }
+      ],
+      "format": "json_fence",
+      "reference_comparisons": [
+        {
+          "source_id": "14835",
+          "semantic_id": "media_type",
+          "expected": "negative",
+          "predicted": "negative",
+          "agreement": true
+        }
+      ],
+      "prior_valid_comparison": [
+        {
+          "semantic_id": "ingredient",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "joke_type",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "list_name",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "meal_type",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "media_type",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "movie_name",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "movie_type",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "music_album",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        }
+      ]
+    },
+    {
+      "request_id": "11fe72d9a825d376f3ccb236cf8b66ff8604ed9096b2c44b8e7e3b22e5f1b4a3",
+      "panel_id": "S_present-03",
+      "prior_valid": false,
+      "prior_request_sha256": "71358a1819d222ea19a5a7ec7152eacb2db7c6fdbf39075af5e9afed9938db9d",
+      "messages_sha256": "ada44516bf36b175b1e8c3536dbfaeb45da7944646b570c769a08cc45e0f3376",
+      "config_sha256": "79280591b0ed93c642f6e9123e9c76387c45c75a9c3097b03230820d13cb86cd",
+      "exit_code": 0,
+      "valid": false,
+      "http_status": 200,
+      "finish_reasons": [
+        "length"
+      ],
+      "usage": {
+        "completion_tokens": 4096,
+        "completion_tokens_details": {
+          "reasoning_tokens": 4094
+        },
+        "prompt_tokens": 17486,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 21582
+      },
+      "result_sha256": "a55d3912fc2c69ea5659e5f9daccc37eeb539c98763458073ca465f45f7ce672",
+      "content_characters": 0,
+      "reference_comparisons": [
+        {
+          "source_id": "5274",
+          "semantic_id": "list_name",
+          "expected": "negative",
+          "predicted": null,
+          "agreement": false
+        }
+      ],
+      "prior_valid_comparison": []
+    },
+    {
+      "request_id": "7b9e0f92ee115b9b023d983f0c90751e1bd3b2e5d28a58720ea3c83e44e09fbf",
+      "panel_id": "S_present-04",
+      "prior_valid": false,
+      "prior_request_sha256": "a00020fdf807ef37d728a1878ceae63ff8a008f7ca5bec9a2bd7a291923ee843",
+      "messages_sha256": "b661a49804062bdbae743ee432d3d1e7b3c435b35cd0dd8d4651ce2c4e4ec29c",
+      "config_sha256": "c92073b80ff1e295b2b0551438aa0daf388632b0ddda4fd45587e8ce58b69d62",
+      "exit_code": 0,
+      "valid": false,
+      "http_status": 200,
+      "finish_reasons": [
+        "length"
+      ],
+      "usage": {
+        "completion_tokens": 4096,
+        "completion_tokens_details": {
+          "reasoning_tokens": 4096
+        },
+        "prompt_tokens": 23941,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 28037
+      },
+      "result_sha256": "cbeaed5782260078fbb53d30d6488b7227d160e550c8f9cdf5c9f453a0c3bd3f",
+      "content_characters": 0,
+      "reference_comparisons": [
+        {
+          "source_id": "1887",
+          "semantic_id": "music_genre",
+          "expected": "negative",
+          "predicted": null,
+          "agreement": false
+        }
+      ],
+      "prior_valid_comparison": []
+    },
+    {
+      "request_id": "2c8bebeea95366934faf7e09b47e173d5da4c538fea8cfe750784cfb52ea5cb8",
+      "panel_id": "S_present-04",
+      "prior_valid": true,
+      "prior_request_sha256": "edc96ecfd0bba40aaa23dfc265dc2ea61b44d884f749d18964adfc054acd962d",
+      "messages_sha256": "151e188a9a8bdb8ce1b65c4d000c8928874d9b703729fe183655c8ed70488a36",
+      "config_sha256": "a6a43d0baf769b8a38ea98cbe8419bb55d3a4f89b0bdc321f491fb8b12992952",
+      "exit_code": 0,
+      "valid": true,
+      "http_status": 200,
+      "finish_reasons": [
+        "stop"
+      ],
+      "usage": {
+        "completion_tokens": 699,
+        "completion_tokens_details": {
+          "reasoning_tokens": 327
+        },
+        "prompt_tokens": 23941,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 24640
+      },
+      "result_sha256": "5253ee92e63d1c7c2908157dd00c16fd95694079ab19a71f24ea97145e265dbe",
+      "content_characters": 1607,
+      "decisions": [
+        {
+          "id": "music_descriptor",
+          "status": "negative",
+          "rationale": "Volume is a playback control, not an expressed non-genre musical property such as mood, tempo, era or rating attached to music selection."
+        },
+        {
+          "id": "music_genre",
+          "status": "negative",
+          "rationale": "No music style or category is expressed anywhere in the utterance."
+        },
+        {
+          "id": "news_topic",
+          "status": "negative",
+          "rationale": "No news, reporting or public-event-development relation is expressed, so no subject can be a news topic."
+        },
+        {
+          "id": "order_type",
+          "status": "negative",
+          "rationale": "No fulfillment or ordering mode such as delivery or takeaway appears in the utterance."
+        },
+        {
+          "id": "person",
+          "status": "negative",
+          "rationale": "Only a bare assistant command is expressed; no human participant, owner, recipient or queried subject is referenced."
+        },
+        {
+          "id": "personal_info",
+          "status": "negative",
+          "rationale": "No personal attribute or contact-information field such as age, department or phone number is requested or stated."
+        },
+        {
+          "id": "place_name",
+          "status": "negative",
+          "rationale": "No geographic location, venue or destination reference is expressed; volume is a device setting."
+        },
+        {
+          "id": "player_setting",
+          "status": "positive",
+          "rationale": "The utterance explicitly expresses a playback control operation, setting volume to zero, satisfying the control-setting definition."
+        }
+      ],
+      "format": "json_fence",
+      "reference_comparisons": [
+        {
+          "source_id": "3583",
+          "semantic_id": "person",
+          "expected": "negative",
+          "predicted": "negative",
+          "agreement": true
+        }
+      ],
+      "prior_valid_comparison": [
+        {
+          "semantic_id": "music_descriptor",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "music_genre",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "news_topic",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "order_type",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "person",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "personal_info",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "place_name",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "player_setting",
+          "prior": "positive",
+          "current": "positive",
+          "agreement": true
+        }
+      ]
+    },
+    {
+      "request_id": "1172eb427dbf6316ca33fc3e23c7ee6f3ba196c1719304dabe8cbc84de9408ab",
+      "panel_id": "S_present-05",
+      "prior_valid": true,
+      "prior_request_sha256": "a247629a36fde13a6ba1ad12b7ff40dc2dbac67ebad7fbfd957a5553e7361f49",
+      "messages_sha256": "ee358e231b939662629b6e26e7c5ca9f701a011c0e26e09b78b35d8a074fd9bb",
+      "config_sha256": "a5f0956ac0d8da91ecf3ce69545a15aa3b7c67a4d94d94c205c9f1c2b9693196",
+      "exit_code": 0,
+      "valid": true,
+      "http_status": 200,
+      "finish_reasons": [
+        "stop"
+      ],
+      "usage": {
+        "completion_tokens": 1231,
+        "completion_tokens_details": {
+          "reasoning_tokens": 850
+        },
+        "prompt_tokens": 25413,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 26644
+      },
+      "result_sha256": "1a901e64ec150bd219100909cf9d472f81c1feb950ca8e16a87de3f67fc56539",
+      "content_characters": 1613,
+      "decisions": [
+        {
+          "id": "playlist_name",
+          "status": "negative",
+          "rationale": "\"jazz music\" is genre-based content selection, not a particular identifying reference to a playlist collection."
+        },
+        {
+          "id": "podcast_descriptor",
+          "status": "negative",
+          "rationale": "No episode-selection property or podcast content criterion is expressed; \"start playing\" is only a playback operation and \"jazz\" selects music, not podcast episodes."
+        },
+        {
+          "id": "podcast_name",
+          "status": "negative",
+          "rationale": "No particular podcast program is named or referenced in the utterance."
+        },
+        {
+          "id": "radio_name",
+          "status": "negative",
+          "rationale": "\"jazz music\" expresses a music style to play, not a station, channel or tuning reference; the pair rule separates the style from a station being selected."
+        },
+        {
+          "id": "relation",
+          "status": "negative",
+          "rationale": "No kinship, social or occupational designation of people is expressed."
+        },
+        {
+          "id": "song_name",
+          "status": "negative",
+          "rationale": "Arbitrary content satisfying a genre criterion is open selection, not a particular song or track reference."
+        },
+        {
+          "id": "sport_type",
+          "status": "negative",
+          "rationale": "No sport category or sports-event reference appears in the utterance."
+        },
+        {
+          "id": "time",
+          "status": "negative",
+          "rationale": "No clock time, duration, offset or temporal ordering is expressed; \"start\" does not establish a time role."
+        }
+      ],
+      "format": "json_fence",
+      "reference_comparisons": [
+        {
+          "source_id": "2768",
+          "semantic_id": "playlist_name",
+          "expected": "negative",
+          "predicted": "negative",
+          "agreement": true
+        },
+        {
+          "source_id": "2768",
+          "semantic_id": "song_name",
+          "expected": "negative",
+          "predicted": "negative",
+          "agreement": true
+        }
+      ],
+      "prior_valid_comparison": [
+        {
+          "semantic_id": "playlist_name",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "podcast_descriptor",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "podcast_name",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "radio_name",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "relation",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "song_name",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "sport_type",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        },
+        {
+          "semantic_id": "time",
+          "prior": "negative",
+          "current": "negative",
+          "agreement": true
+        }
+      ]
+    },
+    {
+      "request_id": "0af7c80f4d9844eb20803e1b131f73b4cfe86682a4648df60ddaa79961507cd8",
+      "panel_id": "S_present-05",
+      "prior_valid": false,
+      "prior_request_sha256": "4a0f36d851b35523f7395086777c09f6a6012a4e93b71a797b82884e99435f86",
+      "messages_sha256": "3be92fb34173247a9c7135a5035fae36a2a6b2501f2e67935fbbefc5ca47461d",
+      "config_sha256": "b282e30e427f340392c96d6b2d85adbb083a898d03cc0d8dd5a1bdb424703a22",
+      "exit_code": 0,
+      "valid": true,
+      "http_status": 200,
+      "finish_reasons": [
+        "stop"
+      ],
+      "usage": {
+        "completion_tokens": 3553,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3173
+        },
+        "prompt_tokens": 25413,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 28966
+      },
+      "result_sha256": "62eba111f28175c73d54b78a2c0264917d4d05b67bc8c2029ba0ef3e9052d5af",
+      "content_characters": 1557,
+      "decisions": [
+        {
+          "id": "playlist_name",
+          "status": "negative",
+          "rationale": "The utterance only asks a person's age; no playlist or collection role is expressed anywhere."
+        },
+        {
+          "id": "podcast_descriptor",
+          "status": "negative",
+          "rationale": "No episode-selection property or podcast criterion appears; the sole content is an age question."
+        },
+        {
+          "id": "podcast_name",
+          "status": "negative",
+          "rationale": "\"Cher\" is the subject of an age question about a person; no podcast program work role is expressed."
+        },
+        {
+          "id": "radio_name",
+          "status": "negative",
+          "rationale": "No station, channel or tuning reference occurs; the utterance is only an age question."
+        },
+        {
+          "id": "relation",
+          "status": "negative",
+          "rationale": "\"Cher\" is a bare personal name; no kinship, social or occupational designation is used, and celebrity status alone is not a relation."
+        },
+        {
+          "id": "song_name",
+          "status": "negative",
+          "rationale": "No song or track work role is expressed; the age-question frame identifies a person referent, not a song."
+        },
+        {
+          "id": "sport_type",
+          "status": "negative",
+          "rationale": "No sport category or sports-event/team reference appears in the utterance."
+        },
+        {
+          "id": "time",
+          "status": "negative",
+          "rationale": "\"How old\" requests a personal age attribute, not a clock time, duration, offset or temporal ordering as defined for this type."
+        }
+      ],
+      "format": "bare_json",
+      "reference_comparisons": [
+        {
+          "source_id": "13025",
+          "semantic_id": "relation",
+          "expected": "negative",
+          "predicted": "negative",
+          "agreement": true
+        }
+      ],
+      "prior_valid_comparison": []
+    }
+  ],
+  "semantic_admission": 0,
+  "bulk_dispatch_allowed": false,
+  "scope": "Single-system-instruction diagnostic on six selected historical requests, not random quality audit or causal reliability proof; previous results preserved. No automatic retry/admission."
+}

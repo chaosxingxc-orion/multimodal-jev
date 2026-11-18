@@ -1,0 +1,120 @@
+{
+  "schema": "jev-formal-launch-environment-repair-v1",
+  "verified_local_unix": 1794690938.9896104,
+  "baseline": {
+    "lock_id": "2ece49811d1e11eabc75f3e95e73ef532bda3fe9f16e9a399da7725ad0d95bfc",
+    "verified_files": 364,
+    "stage2_released": false,
+    "scope": "File and contract identity only; no added runtime or efficacy evidence"
+  },
+  "queue_pin_counts": {
+    "context-baseline-sequence-v3-spec.json": 507,
+    "context-baseline-comparison-v6-pins.json": 512,
+    "fsc-context-experiment-v2-queue-pins.json": 1073,
+    "fsc-context-reference-v3-queue-pins.json": 1107
+  },
+  "prior_failure": {
+    "phase": "stopped_preserve_handles",
+    "pid": 574965,
+    "unix": 1794690478.7973769,
+    "error": "CalledProcessError(1, ['/usr/bin/python', '-m', 'tools.jev.prepare_context_stage2_source', '--spec', '/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-baseline-sequence-v2-source-spec.json', '--output', '/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-baseline-sequence-v3/source-package'])",
+    "restart": false
+  },
+  "root_cause": "Host child process omitted repo/src from PYTHONPATH; ModuleNotFoundError: multimodal_jev before formal runtime dispatch.",
+  "repair": {
+    "pid": 595506,
+    "args": [
+      "/usr/bin/python",
+      "-m",
+      "tools.jev.run_context_baseline_sequence_v3",
+      "--spec",
+      "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-baseline-sequence-v3-spec.json",
+      "--output",
+      "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-baseline-sequence-v4",
+      "--launch"
+    ],
+    "started": 1794690681.6329956,
+    "pythonpath": "/home/xingchao/workspace/multimodal-jev/src:/home/xingchao/workspace/multimodal-jev/.local/verification-python:/home/xingchao/workspace/multimodal-jev/tools/jev:/home/xingchao/workspace/multimodal-jev",
+    "prior_failure": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-baseline-sequence-v3/status.json",
+    "repair": "Set explicit inherited host import paths; unchanged numerical code, frozen spec and completed evidence",
+    "preflight": "fresh interpreter actual imports passed"
+  },
+  "checkpoint_comparison": {
+    "passed": true,
+    "updates": 2,
+    "exact_samples": true,
+    "exact_per_step_execution": true,
+    "exact_final_masters_and_adam": true,
+    "rank_shards": 4,
+    "scope": "Matched checkpoint-frequency comparison only; not fresh-process replay or efficacy",
+    "source_containers": [
+      "2decd427c8e1da9906c936db59378384b2fc065e53444dd596715382837b2931",
+      "3d877a4c4c75bebc64bb6a6fce2d21dea34a4ce1d16de3a78739a3a115a8969b"
+    ]
+  },
+  "source_package_manifest_sha256": "4334afddb7140f4a254db5c41b1149bed3228e9151f83ad810b40a8a96a93073",
+  "formal_release": {
+    "path": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-baseline-sequence-v4/grpo_v1-package/RELEASE.json",
+    "sha256": "329360599738f5558a5f604a18af5c679b09eb3d1ff24e28bdf8fe171877c54a",
+    "release_id": "2689659cde35e5233b77a66d5c51ff50e9a843e28787c196eaf523397b4cdb89",
+    "status": "released"
+  },
+  "launch": {
+    "container_id": "19f100b20fd744d966cc744fb6023dda797ef0f5b02d78afa21055bffff3654b",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "remote_root": "/data/xingchao/multimodal-jev/simple-final-v1/context-rl-grpo-full-v1",
+    "config_sha256": "479730575ba753d5f96556de87a689912a667acfd40fbb92057ae18c17183103",
+    "service_config_sha256": "5882803f47304a92b29b83b946a9331c12b5b86d379b1e37ed37ffdca2663851",
+    "manifest_sha256": "1df8cc7c8c607b9fd1eb2436c2ae04a1e7c5b3500ee50abbf07adf2c6fd20307",
+    "release_id": "2689659cde35e5233b77a66d5c51ff50e9a843e28787c196eaf523397b4cdb89",
+    "algorithm": "grpo_v1"
+  },
+  "last_remote_observation": {
+    "observed_unix": 1794690717.7735958,
+    "container_id": "19f100b20fd744d966cc744fb6023dda797ef0f5b02d78afa21055bffff3654b",
+    "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 1174436,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-14T21:11:10.18391554Z",
+      "FinishedAt": "0001-01-01T00:00:00Z"
+    },
+    "next_ordinary_observation_remote_unix": 1794691317.7735958
+  },
+  "current_local_status": {
+    "context-baseline-sequence-v4/status.json": {
+      "phase": "grpo_v1-run",
+      "pid": 595506,
+      "unix": 1794690721.7113512
+    },
+    "context-baseline-comparison-v6-status.json": {
+      "phase": "waiting_original_two_algorithm_sequence",
+      "pid": 595742,
+      "unix": 1794690742.5147398
+    },
+    "fsc-context-experiment-v2-queue-status.json": {
+      "phase": "waiting_existing_source_comparison",
+      "pid": 595743,
+      "unix": 1794690744.4791749
+    },
+    "fsc-context-reference-v3-status.json": {
+      "phase": "waiting_existing_frozen_transfer",
+      "pid": 595973,
+      "unix": 1794690866.2002823
+    },
+    "slurp-clean-test-processor-cpu-v4-status.json": {
+      "phase": "exact_cpu_container_wait",
+      "unix": 1794690426.0517898,
+      "container_id": "2c92b7a103e0beb9005a89e3ed001cddaf7a8dea29e33d393f2458686729dc70"
+    }
+  },
+  "verification": "Fresh host interpreter imported real policy/storage/safetensors; real full-source binding and formal runtime acceptance/publication completed. Original frozen 364 identities unchanged.",
+  "scope": "Formal GRPO publication and container startup; not completed 634 updates, RL efficacy, full selection curve or TEST result."
+}

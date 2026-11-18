@@ -1,0 +1,92 @@
+{
+  "schema": "context-input-throughput-v1",
+  "container_id": "1bec47078c3a19020c04f3739c00cd86f0fce132c447d43f281af847c88e0e68",
+  "source_proof_sha256": "3083aea83fdf7d83bd0601c1cc2240cbfae26202b36e838d5189792553de9173",
+  "all_steps": {
+    "updates": 2,
+    "real_queries": 256,
+    "padding_slots": 0,
+    "real_input_tokens": 726471,
+    "slot_input_tokens": 726471,
+    "real_audio_seconds": 741.8095625000001,
+    "slot_audio_seconds": 741.8095625000001,
+    "measured_step_seconds": 44.56724550999934,
+    "real_queries_per_second": 5.744128834315383,
+    "real_input_tokens_per_second": 16300.558665601293,
+    "real_audio_seconds_per_second": 16.64472538096535,
+    "phases": {
+      "total_seconds": {
+        "mean": 22.28362275499967,
+        "p50": 18.35995950999495,
+        "p95": 26.207286000004387
+      },
+      "actor_seconds": {
+        "mean": 17.67024264000065,
+        "p50": 15.531309470010456,
+        "p95": 19.809175809990847
+      },
+      "preparation_seconds": {
+        "mean": 2.2592557099997066,
+        "p50": 0.4786297700047726,
+        "p95": 4.039881649994641
+      },
+      "maximum_rank_other_seconds": {
+        "mean": 2.3749492849965463,
+        "p50": 2.359315269990475,
+        "p95": 2.3905833000026178
+      }
+    },
+    "foreground_wait_seconds": 3.464946520005469,
+    "background_worker_seconds": 7.885576200002106,
+    "cache_hits": 256,
+    "peak_allocated_bytes": 39368524800
+  },
+  "checkpoint_steps": {
+    "updates": 2,
+    "real_queries": 256,
+    "padding_slots": 0,
+    "real_input_tokens": 726471,
+    "slot_input_tokens": 726471,
+    "real_audio_seconds": 741.8095625000001,
+    "slot_audio_seconds": 741.8095625000001,
+    "measured_step_seconds": 44.56724550999934,
+    "real_queries_per_second": 5.744128834315383,
+    "real_input_tokens_per_second": 16300.558665601293,
+    "real_audio_seconds_per_second": 16.64472538096535,
+    "phases": {
+      "total_seconds": {
+        "mean": 22.28362275499967,
+        "p50": 18.35995950999495,
+        "p95": 26.207286000004387
+      },
+      "actor_seconds": {
+        "mean": 17.67024264000065,
+        "p50": 15.531309470010456,
+        "p95": 19.809175809990847
+      },
+      "preparation_seconds": {
+        "mean": 2.2592557099997066,
+        "p50": 0.4786297700047726,
+        "p95": 4.039881649994641
+      },
+      "maximum_rank_other_seconds": {
+        "mean": 2.3749492849965463,
+        "p50": 2.359315269990475,
+        "p95": 2.3905833000026178
+      }
+    },
+    "foreground_wait_seconds": 3.464946520005469,
+    "background_worker_seconds": 7.885576200002106,
+    "cache_hits": 256,
+    "peak_allocated_bytes": 39368524800
+  },
+  "normal_after_warmup": null,
+  "first32_normal": null,
+  "last32_normal": null,
+  "scope": "Offline collected Stage1 exposure only. Max rank step durations exclude initialization, collection and evaluation. Phase maxima are not additive. Background input overlaps training. Other time includes audits/synchronization/save and is not isolated I/O. Unpadded input tokens are not executed FLOPs or decoding throughput. No RL timing claim.",
+  "detailed_report": ".local/decision-objective-research/context-prefix-input-throughput-v1.json",
+  "detailed_report_sha256": "9e53427d11f3512e8f924da2743f461eafc24cbbe345295a1b3ac2d73ab5695c",
+  "tests": "11 CPU tests passed",
+  "tool_sha256": "965e33a17104011859b72fd72153919da18f7ccaf61d05ebdd35cd748976ba7e",
+  "interpretation": "Two already collected Stage1 engineering updates, both checkpoint steps; no stable throughput, full training, RL or efficacy claim."
+}

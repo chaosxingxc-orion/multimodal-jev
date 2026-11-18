@@ -1,0 +1,76 @@
+{
+  "schema": "slurp-native-semantic-task-resolution-v1",
+  "status": "architecture_decided_pending_complete_ontology_supervision_and_dependent_config_migration",
+  "training_dispatch_allowed": false,
+  "decision": "Separate native classification from transferable semantic predicates; their ontologies need not correspond one-to-one.",
+  "native_final": {
+    "classes": 60,
+    "population": "official-clean-intent-v1 unchanged full learning and selection populations",
+    "identity": "original scenario/action pair",
+    "truth": "published native clean label",
+    "input": "Direct audio plus complete native category identifiers/descriptive names and an explicit dataset-classification instruction. Names are category descriptors, not certified necessary-and-sufficient semantic definitions.",
+    "output": "one typed choice among all 60 categories",
+    "candidate_symbols": "Output symbol and display-order changes require explicit category bindings; never omit or dynamically filter a candidate.",
+    "old_definition_cards": "Historical drafts; do not supply contradictory boundaries as if native gold were guaranteed to satisfy them.",
+    "metrics": "native accuracy, macro metrics, tail classes on fixed population; academic and clean protocols separate",
+    "scope": "Dataset-label classification, not proof of semantic definition consumption or OOD detection"
+  },
+  "native_membership_control": {
+    "operator": "I_class",
+    "question": "Under this dataset's exclusive class convention, is the query assigned to the supplied category?",
+    "truth": "indicator(native_Final == candidate_class)",
+    "role": "optional redundant-classification control, not main independent semantic process evidence",
+    "negative": "Other native classes are negative for membership only, never for I_present.",
+    "semantic_definition_variant": "A question claiming an explicit semantic definition still requires validated definition-to-label mapping; this control does not waive that requirement.",
+    "reward": "No automatic process budget in semantic Q-credit; separate control configuration required"
+  },
+  "semantic_process": {
+    "operators": ["I_present", "S_present"],
+    "main_intent_operator": "I_present",
+    "ontology": "Independent task-level definitions of expressed communicative acts; may overlap and need not reproduce native classes.",
+    "population": "All 40513 learning recordings retained, including cooking_query/general_quirky. Labels depend on evidence and definitions, not native membership.",
+    "request_policy": "configs/tasks/intent-request-semantics-candidate-v1.json",
+    "non_request_policy": "Greeting, preference and other communicative acts need explicit policies; request-only rules cannot negate these acts.",
+    "coverage": "Finalize the full intended ontology and effective positive/negative supervision. Four contact/transport cards are rule studies, not a reduced final training task.",
+    "truth": "Independent admitted semantic labels; old native labels and definition-fit proposals do not automatically become semantic truth.",
+    "missing": "unavailable/conflict/unassessed mask reward and CE; keep population, no budget redistribution or implicit false",
+    "menu": "Fixed panels or label-independent schedule; never selected using gold, reference text or predicted topic",
+    "final_relation": "Shared-representation auxiliary evidence; no hard mapping or candidate filtering. Model reads Final directly in one forward; sampled preceding answers are not fed back.",
+    "all_false": "Does not mean OOD or no intent; a finite panel is not an exhaustive semantic description"
+  },
+  "exception_categories": {
+    "cooking_query": {
+      "native": "Retain both learning sources and the native class.",
+      "semantic": "Do not invent a predicate defined by two source IDs. Recipe/preparation guidance can be expressed across native cooking classes; no label merge.",
+      "evidence": "Both cooking_query references fit the historical recipe definition; motivates overlap, not automatic label admission."
+    },
+    "general_quirky": {
+      "native": "Retain 425 learning sources/1550 recordings and native class.",
+      "semantic": "No quirky semantic predicate, complement-of-known-predicates rule or OOD interpretation. Assess concrete requests/greetings/preferences/etc. individually under definitions; never assign all false from native membership.",
+      "evidence": "Observed fragments, persona questions, factual/mathematical questions and requests do not define one closed semantic act."
+    }
+  },
+  "experimental_arms": {
+    "Direct": "Native Final only; same native menu and supplied semantic knowledge as paired structured condition",
+    "Q_input": "Fixed I_present/S_present outputs and native Final; Final-only RL reward, fixed reported process CE",
+    "Q_credit": "Same input/action membership/CE/KL as Q_input; change only admitted process RL reward",
+    "I_class_control": "Separate optional redundancy control, never mixed into semantic process results",
+    "knowledge": "Same definitions across paired arms, no sample-specific omission of native classes",
+    "status": "panel sizes, coefficients and runtime not yet accepted"
+  },
+  "transfer": {
+    "FSC_native": "Retain frozen-source-weight 31-way command accuracy.",
+    "FSC_I_class": "Protocol-v2 measures membership/control transfer; cannot prove same-I_present semantic transfer.",
+    "FSC_semantic": "Publish I_present complete-command definitions and explicit target truth mapping, including location none and multi-request exceptions. Do not silently reuse native negatives. Define using TRAIN ontology; no TEST-feedback rewrite.",
+    "S_present": "FSC attribute enums are not substitutes; preserve semantic-slot transfer on suitable datasets.",
+    "selection": "Source selection only, predeclared Stage1/RL checkpoints, no target weight updates or feedback optimization"
+  },
+  "dependent_config_migration": {
+    "menus": "Old 60-I_class/55-S/15-panel schedule is historical. Derive new fixed menus after full semantic ontology freeze.",
+    "stage1": "Cannot inherit I denominator60. Recompute counts, schedule, weights and objective with admitted I_present ontology.",
+    "reward": "Retain fixed family-budget principle; bind I to I_present and publish coherent config before execution.",
+    "context": "Old all60 draft-definition probes do not validate native-menu-plus-semantic-definitions; processor/resource acceptance required.",
+    "FSC": "Protocol-v2 retained as membership track; same-operator semantic protocol pending.",
+    "engineering": "No trainer integration or research training before task package and dependent configs are complete."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "status": "CPU actual audio completed and independently rechecked",
+  "container_id": "0360ca927b7e935e23fa84c825ee9a70ac043d3d0801617d863cb1cd095a6b16",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "physical_devices": [],
+  "token_probe": "docs/engineering/decision-token-registration-cpu-v3.json",
+  "numeric_readout": "docs/engineering/numeric-head-real-audio-cpu-v1.json",
+  "tests": {
+    "context_head_and_contract": 16
+  },
+  "files": {
+    "tools/jev/probe_context_decision_audio.py": "5fe0d33d56871794dbe070f2eaf4afb243268eb0700774ad837e43215dd1ed74",
+    "src/multimodal_jev/context_decision_model.py": "71c3a38e630f295a56c68dfbe812e611575bfd4498d3438a2a2b70981adf341f",
+    "src/multimodal_jev/context_decision_head.py": "9adb4e2b241f1f3f4385ca3f01c696f4f5423b87d417fc1874c6a590f8cc026b",
+    "src/multimodal_jev/context_decision_contract.py": "895e4a8feddb87c7cc3f7b27ddb6421337c478da33f3c2132a6eabdad583e345"
+  },
+  "training_dispatch_allowed": false,
+  "scope": "Two actual audio CPU cases, one diagnostic backward, independently rechecked head reload and real-hidden probabilities. No optimizer step, task gain, production token, NPU or vLLM acceptance.",
+  "result": "docs/engineering/context-decision-real-audio-cpu-v1.json"
+}

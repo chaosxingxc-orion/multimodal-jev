@@ -1,0 +1,32 @@
+{
+  "schema": "context-attribute-package-candidate-readiness-v1",
+  "observed_unix": 1794714863.5868547,
+  "training_dispatch_allowed": false,
+  "tests": {
+    "passed": 3,
+    "seconds": 2.96,
+    "scope": "Actual source sealing and mismatch rejection, missing-publication refusal and Docker argv configuration; full prepare success path not exercised without actual TRAIN publication"
+  },
+  "runtime_sha256": "2558b169a61a69dc07ac59be0b98f471cc181e2832433a8337f5044835939b28",
+  "runtime_source_files": 1158,
+  "isolated_import_verified": true,
+  "pins_verified": {
+    "context-rl-grpo-arithmetic-v2-driver.json": 1078,
+    "context-attribute-population-cpu-v1-driver-pins.json": 1073,
+    "context-attribute-selection-processor-cpu-v1-driver-pins.json": 1092,
+    "context-attribute-input-finalization-v2-pins.json": 1167
+  },
+  "files": {
+    "tools/reports/prepare_context_attribute_training_package.py": "6a643da46da6e682f00dd6cbced6a4a92954cb49d88611875c85e50f6a297b9d",
+    "tests/test_prepare_context_attribute_training_package.py": "605501a0589711a2b91913b7cc3c4679329f942d42bee4215c83a5e378c814e5",
+    ".local/decision-objective-research/context-attribute-bounded-packaging-plan-v1.json": "209d72618ee43b337b8d8597cf23c24c641590cb527135967e7b44d21a2f9cb3"
+  },
+  "remaining": [
+    "Wait original TRAIN collector and v2 finalizer",
+    "Inspect actual PUBLICATION and bind SHA256 before prepare",
+    "Run fixed-image configuration validation with full publication mounts",
+    "Preserve existing NPU training/evaluation queue priority",
+    "Actual parity then independently audited bounded updates and fresh-process restore"
+  ],
+  "scope": "Runtime source sealed; complete executable package not yet constructed, no actual NPU or remote launch"
+}

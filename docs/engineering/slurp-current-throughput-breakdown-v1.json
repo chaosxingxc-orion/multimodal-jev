@@ -1,0 +1,42 @@
+{
+  "updates": [
+    341,
+    404
+  ],
+  "count": 64,
+  "normal_count": 63,
+  "normal": {
+    "preparation_seconds": 6.55313253936465,
+    "seconds": 15.71270151698402,
+    "audit_seconds": 0.0916947239685604,
+    "total_step_seconds": 22.337224433808135
+  },
+  "all_steps_mean_seconds": 22.35704003890487,
+  "checkpoint_steps": [
+    {
+      "update": 384,
+      "total": 23.60542315999919,
+      "checkpoint": 0.7436315700033447,
+      "audit": 0.548263760007103
+    }
+  ],
+  "max_allocated_GiB": 29.878246307373047,
+  "max_reserved_GiB": 35.28125,
+  "observed_unix": 1794644992.3700674,
+  "normal_requests_per_second": 5.730344894877258,
+  "ideal_zero_prep_speedup": 1.4151732379150408,
+  "length_population": {
+    "requests": 8192,
+    "min_tokens": 1952,
+    "max_tokens": 2249,
+    "mean_tokens": 1982.489013671875,
+    "padding_token_fraction": 0.0019244261136892491,
+    "fixed128_tiling_extra_fraction": 0.033992440652028263,
+    "microbatches": 1024
+  },
+  "source_files_sha256": {
+    ".local/simple-final-v1/throughput-latest64-raw.json": "9d27a4b73d219b95ad1c4d7ca82a55168dfc6be4627919f2d146f18945798429",
+    ".local/simple-final-v1/throughput-latest64-lengths.json": "d5d00ccfe898693a93989022edcaf59a805501e4abd4921fb5564d45308394ac"
+  },
+  "scope": "64 completed steps; per-phase maxima across ranks need not sum exactly. NPU model update includes communication and host work, not isolated kernel time. Utilization snapshot is not time average."
+}

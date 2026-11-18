@@ -1,0 +1,72 @@
+{
+  "schema": "jev-semantic-type-overlap-contract-v1",
+  "status": "task_design_candidate_not_frozen_or_applied_to_gold",
+  "training_dispatch_allowed": false,
+  "input_contract": "audio and fixed type definitions; no gold intent, no gold-selected menu",
+  "default_relation": "independent_predicates_not_global_one_type_per_span",
+  "rule": "For each configured type, require its own expressed-role evidence, presence policy and scope. The same expression may support multiple true predicates when each definition is satisfied and no explicit task rule excludes that overlap.",
+  "no_automatic_closure": "A type hierarchy, shared word, native positive or external real-world identity does not automatically establish another predicate.",
+  "no_automatic_exclusion": "A native single-span label or lack of coannotation does not establish semantic exclusivity.",
+  "relation_kinds": [
+    "compatible_distinct_expressions",
+    "compatible_same_expression_if_both_definitions_satisfied",
+    "explicitly_disjoint_roles_under_fixed_policy",
+    "semantic_evidence_unresolved"
+  ],
+  "classification_order": [
+    "Read full input and frozen definitions; determine request relevance without using native Final.",
+    "Assess each role predicate independently with evidence; multiple truths are allowed.",
+    "Apply only explicit frozen scope/exclusion rules, never priorities inferred from native frequency.",
+    "Keep ambiguity unresolved if role evidence cannot establish a boolean; do not resolve ambiguity merely by allowing both.",
+    "Compare semantic proposal with native projection separately; disagreement is provenance, not automatic semantic uncertainty.",
+    "Admit supervision only under a separate reviewed release; neither agreement nor disagreement grants admission."
+  ],
+  "boundary_examples": [
+    {
+      "kind": "authored_logic_fixture_no_audio",
+      "definition_A": "An explicitly identified person serving the request.",
+      "definition_B": "An explicitly identified author of the requested book.",
+      "utterance": "Find the book by Susan, the author.",
+      "expected": [
+        true,
+        true
+      ],
+      "reason": "Both definitions have explicit support; this is not a certified mapping of SLURP person/audiobook_author."
+    },
+    {
+      "kind": "authored_logic_fixture_no_audio",
+      "definition_A": "An explicitly supplied email address.",
+      "definition_B": "A requested contact-information field.",
+      "utterance": "What is her email address?",
+      "expected": [
+        false,
+        true
+      ],
+      "reason": "Field requested does not supply an address."
+    },
+    {
+      "kind": "authored_logic_fixture_no_audio",
+      "definition_A": "A named radio station requested for playback.",
+      "definition_B": "A named application used for playback.",
+      "utterance": "Play it on Mercury.",
+      "expected": [
+        null,
+        null
+      ],
+      "reason": "Unresolved reference and role cannot be made true merely by allowing overlap."
+    }
+  ],
+  "downstream_consequences": [
+    "Semantic multilabel set metrics are separate from native projection and official slot-value SLU-F1.",
+    "Complete set EM requires complete admitted labels; unknown predicates remain masked for atomic objectives.",
+    "Step-wise auxiliary rewards follow the fixed family budget even if more than one type is true.",
+    "Changing overlap policy invalidates dependent definition/review hashes; old native gold remains untouched.",
+    "Type independence does not establish intent-instance binding or accepted parameter values."
+  ],
+  "migration_scope": "Design only. Existing 55-card and 89-boundary unresolved statements remain historical until individually reconciled; no blanket resolution.",
+  "evidence_pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-request-relevant-v1/report.json": "be6967653b4d383c67581f4fb3d9d7475355eade7092feee33bf7e0df64eeba5",
+    "configs/tasks/slurp/type-definition-candidates-v2.json": "5b5dfbf8b9847e1315634853d159860eb5f4920a707e0573dcf7cbd5e941c8f1",
+    "configs/tasks/slurp/type-boundary-rules-candidate-v3.json": "7e4104d73f728f3bd365eab6d1ad3570ec2da6d9a80bc66c0258414c93a5f0c3"
+  }
+}

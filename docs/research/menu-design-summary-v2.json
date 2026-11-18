@@ -1,0 +1,80 @@
+{
+  "schema": "slurp-menu-design-summary-v2",
+  "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/menu-design-audit-v2/report.json",
+  "report_sha256": "9ba4bd7a6dc38035ca2593f87caac12f816aebda49aa6db3d2b63bb33afb64cf",
+  "recordings": 40513,
+  "source_groups": 9181,
+  "audit_epochs": 2,
+  "arms": {
+    "q2": {
+      "zero_native_positive_Q_fraction": 0.969207414903858,
+      "families": {
+        "intent": {
+          "exposures": 81026,
+          "native_positive": 1178,
+          "zero_positive_types": [
+            "audio_volume_mute",
+            "audio_volume_other",
+            "cooking_query",
+            "email_addcontact",
+            "iot_hue_lighton",
+            "iot_wemo_off",
+            "recommendation_movies"
+          ],
+          "min_exposure": 1128,
+          "max_exposure": 1696
+        },
+        "slot": {
+          "exposures": 81026,
+          "native_positive": 1329,
+          "zero_positive_types": [
+            "coffee_type",
+            "cooking_type",
+            "drink_type",
+            "email_folder",
+            "game_type",
+            "movie_name",
+            "movie_type",
+            "music_album",
+            "music_descriptor",
+            "playlist_name",
+            "sport_type",
+            "transport_descriptor",
+            "transport_name"
+          ],
+          "min_exposure": 1236,
+          "max_exposure": 1695
+        }
+      }
+    },
+    "q8": {
+      "zero_native_positive_Q_fraction": 0.8750030854293683,
+      "families": {
+        "intent": {
+          "exposures": 324104,
+          "native_positive": 5283,
+          "zero_positive_types": [
+            "cooking_query"
+          ],
+          "min_exposure": 4943,
+          "max_exposure": 5876
+        },
+        "slot": {
+          "exposures": 324104,
+          "native_positive": 5164,
+          "zero_positive_types": [
+            "drink_type",
+            "game_type",
+            "music_album",
+            "sport_type",
+            "transport_name"
+          ],
+          "min_exposure": 5399,
+          "max_exposure": 6382
+        }
+      }
+    }
+  },
+  "semantic_admission": false,
+  "runtime_admission": false
+}

@@ -43,3 +43,19 @@ def test_resume_rejects_changed_population_or_cursor():
         resume_cursor(report, next_batch=0, actual_identity='wrong')
     with pytest.raises(ValueError):
         epoch_schedule([dict(population()[0], role='selection')], seed=317, epoch=0)
+
+
+def test_simple_mode_full_population_fixed_final_and_frozen_weights():
+    rows = population()
+    batches, report = epoch_schedule(rows, seed=317, epoch=0, global_batch=8,
+                                    task_mode='direct_final', class_weighting='sqrt_cap4')
+    real = [s for b in batches for s in b if not s['padding']]
+    assert {s['id'] for s in real} == {r['id'] for r in rows}
+    assert all(s['view'] == 'direct' and s['variant'] == 'native' for b in batches for s in b)
+    assert sum(s['weight'] for s in real) == pytest.approx(len(rows))
+    assert report['class_weights']['tail'] > report['class_weights']['head']
+    assert all(s['weight'] == 0 for b in batches for s in b if s['padding'])
+    other, second = epoch_schedule(rows, seed=317, epoch=1, global_batch=8,
+                                  task_mode='direct_final', class_weighting='sqrt_cap4')
+    assert second['class_weights'] == report['class_weights']
+    assert report['schema'] == 'slurp-simple-final-epoch-v1'

@@ -1,0 +1,55 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "2a480fb52056cf7ab422338fe7e3c1be2a2b9ec819c76bbd5375f8ed7ba138f8",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T01:23:53.98093711Z",
+    "FinishedAt": "2026-11-16T01:25:00.05369314Z"
+  },
+  "source_files": 363,
+  "source_manifest_sha256": "7e3a9c0cab7802177f5c7b1987eed721bef6a9e0d27c436ab5f4c42d2954420e",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-credit-native-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "17fa1d3d8546dcc44ce3a326cfc3a991ee5ee3499b233920b178c58219fcea7f",
+    "run/junit.xml": "b44caef1d8ae88fbe96290574fb92efce9b353865e7483d76c23b75111e5d5f9",
+    "run/pytest.log": "c9277fbfca5772ba8b3a5f07737aa68630ad995f9030157380caa4bb97d1c859",
+    "package/FILES.json": "7e3a9c0cab7802177f5c7b1987eed721bef6a9e0d27c436ab5f4c42d2954420e",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794792260.8999383,
+    "finished_unix": 1794792298.6091537,
+    "source_manifest_sha256": "7e3a9c0cab7802177f5c7b1987eed721bef6a9e0d27c436ab5f4c42d2954420e",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-credit-native-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_credit.py",
+      "tests/test_context_dual_credit_native.py",
+      "tests/test_context_candidate_objective.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual pinned verl CPU surrogate and dual-credit tests; synthetic logits; DP reduction is algebraic simulation. No Qwen/NPU/actor integration or efficacy evidence."
+}

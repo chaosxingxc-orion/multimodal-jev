@@ -1,0 +1,12 @@
+{
+  "schema": "local-operations-v2",
+  "output_directory": "${TRAJECTORY_PIPELINE_OUTPUT}",
+  "steps": [
+    {
+      "id": "trajectory",
+      "kind": "training_trajectory",
+      "config": "${WORKSPACE}/configs/portable/operations/training-trajectory.json",
+      "depends_on": []
+    }
+  ]
+}

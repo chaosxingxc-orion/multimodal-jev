@@ -60,12 +60,57 @@
 - `p-only-eval-data-v1`、`p-only-rework2-prepared`、`p-node-release-consumer-test`、
   `local-teacher-completion-replay` —— `mtime` 为当天，判龄跳过。
 - `systemd-private-*`、`mkinitramfs_*` —— 系统目录。
-- `/var/lib/omni-hot-runtime` 244 GB、`/home/xingchao/omni-hot-runtime` 156 GB、
-  `/data/xingchao/s2-dev1850-hot-preparation-v1` —— 其他项目存活挂载（已由
-  `docker inspect` 与运行中 `row_operator_probe.py` pidfd 等待确证），**未触碰**。
+- `/var/lib/omni-hot-runtime` 244 GB、`/home/xingchao/omni-hot-runtime` 156 GB
+  —— 其他项目存活挂载（已由 `docker inspect` 与运行中 `row_operator_probe.py`
+  pidfd 等待确证），**未触碰**。
 
-结论：181 的 `/data` 仍 99% 满（110 GB 空闲），但占用主体是 omni 的 244 GB + 156 GB，
-不属于本项目。本项目侧可回收空间已在 `/var/tmp` 回收完毕。
+> 更正（2026-11-16T16:0xZ）：本节早先版本把 `/data/xingchao/s2-dev1850-hot-preparation-v1`
+> 也列为「其他项目存活挂载」，**该判断是错的**。复核证据：`docker ps` 全部运行容器的
+> bind 清单中没有任何 `/data/*` 路径；`/proc/*/cwd` 无进程位于 `/data` 下；该目录
+> `mtime` 为 2026-11-13T02:31:29Z，远超 24 小时判龄线。早先据以判定的
+> `row_operator_probe.py` 等待的是 `/var/lib` 下的路径，不是 `/data`。
+> 该目录及其余我方 `/data` 条目已于 16:06:44Z 删除（见下节）。
+
+结论（更正后）：181 的 `/data` 仍 99% 满，占用主体是**其他账号的模型权重**
+（`Qwen3-VL-235B-A22B-Instruct` 942.7 GB、`GLM-5.2-w8a8c8` 764.2 GB、
+`wanghongliang` 740.3 GB、`DeepSeek-V3.2-Exp-w8a8` 694.5 GB 等），
+与 omni 无关 —— omni 的 244 GB + 156 GB 分别在 `/var` 与 `/home`，不在 `/data`。
+本项目在 `/data` 的占用本来就只有约 482 MB，删掉也改变不了 99% 的占用率；
+能真正释放的 omni 容量在 `/var/lib` 与 `/home`。
+
+### `/data` 专项执行（2026-11-16T16:06:44Z）
+
+用户问「/data 我们占了多少，是否有清理的空间」，并要求 omni / jev /
+multimodal-jev 的容量释放掉。先量后删：
+
+| 项 | 值 |
+| --- | --- |
+| `/data` 总量 | 6,390,492,389,376 B（约 5.8 TiB） |
+| 清理前已用 | 5,950,562,897,920 B（**99%**），可用 117,790,167,040 B（约 110 GiB） |
+| 我方占用 | ≈ 482 MB（**约 0.007%**）；`/data/xingchao/` 下 7 个一级条目 |
+| 删除后已用 | **5,950,080,491,520 B**，可用 **118,272,573,440 B** |
+| 实际释放 | **482,406,400 B ≈ 460 MiB**，`RM_FAIL=0` |
+
+删除前的存活检查（三项全过，缺一不删）：
+
+- 全部运行中容器的 bind 清单里**没有任何 `/data/*` 路径**（逐容器 `docker inspect`
+  的 `Mounts` 逐条过滤）。
+- `lsof +D /data/xingchao` 为空，`/proc/*/cwd` 无进程落在 `/data` 下。
+- 7 个一级条目 mtime 全为 2026-11-13，远超 24 小时判龄线。
+
+删除的 6 个目录（第 7 个 `/data/xingchao/omni` 是指向 ceph 的软链，0 本地字节，保留）：
+
+- `/data/xingchao/s2-dev1850-hot-preparation-v1`（此前误判为"其他项目存活挂载"）
+- 其余 5 个我方历史输出目录，逐项登记在 `manifest.txt.gz`。
+
+收据：`/var/backups/data-own-cleanup-20261116T160644Z/`
+（`df-before.txt`、`df-after.txt`、`manifest.txt.gz` 409 行两级元数据、
+`manifest.sha256` = `c3e733c837d01f3b93c613d7aa72cd818c08abbd50139c3de4bce183096648eb`）。
+只存元数据，不存 payload。
+
+**`/data` 的 99% 不可由我方回收到合格水位**：剩余占用是其他账号的模型权重，
+即使把我方 482 MB 全部清空，可用空间仍是 118 GB / 5.8 TiB。要真正腾出 `/data`，
+只能由那些权重的属主处理。
 
 ## `/opt` 专项（175 + 181）
 
@@ -198,12 +243,19 @@ ssh npu2 'sudo -n rm -rf /opt/omni-hot-runtime'
 
 ### 181 真正紧张的位置（不在 `/opt`）
 
-删除后的 `df`：`/` **218G/298G（77%，68 G 空闲）**、`/var` 783G/984G（84%，151 G 空闲，
-其中 `/var/lib` 约 774 G 为容器镜像/层）、`/data` **5.5T/5.9T（99%，仅 110 G 空闲）**、
-ceph 63T/65T（98%）。`/var/lib` 与 `/data` 的占用主体是 omni 的
-`/var/lib/omni-hot-runtime`（244 GB）与 `/home/xingchao/omni-hot-runtime`（156 GB），
-属其他项目，按决策 3 未触碰——已登记，不作为本项目清理目标。
-**181 真正的瓶颈仍是 `/data`（仅 110 G 空闲）**，`/opt` 已经不是因素。
+删除后的 `df`：`/` **218G/298G（77%，68 G 空闲）**、`/var` 783G/984G（84%，151 G 空闲）、
+`/data` **5.5T/5.9T（99%，仅 110 G 空闲）**、ceph 63T/65T（98%）。
+
+三处的占用主体各自不同，不要混为一谈（早先版本把后两者写成同一段，是错的）：
+
+| 挂载点 | 占用主体 | 归属 |
+| --- | --- | --- |
+| `/var` | `/var/lib` 约 774 G，其中绝大部分是**容器镜像与层**；`/var/lib/omni-hot-runtime` 约 244 GB | `omni-hot-runtime` 属其他项目，按决策 3 未触碰 |
+| `/data` | 其他账号的模型权重（见上节明细），**与 omni 无关**；我方 482 MB 已清空 | 非本项目 |
+| `/home` | `/home/xingchao/omni-hot-runtime` 约 156 GB | 其他项目；**已于 16:04–16:15Z 回收 155.2 GiB**，见下节 |
+
+**181 真正的瓶颈仍是 `/data`（仅 118 GB 空闲）**，而它不由我方占用，也不由 omni 占用。
+`/opt` 已经不是因素。
 
 ## 全项目运行态保护（未受影响）
 

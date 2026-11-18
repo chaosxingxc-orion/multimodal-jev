@@ -1,0 +1,75 @@
+{
+  "schema": "semantic-fixed-image-context-launch-v1",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-fixed-image-context-v1",
+  "launch": {
+    "host": "npu",
+    "container_id": "85f192c1f982a8be1be770b7142124831b8b57495d261a7221d3032264b9ceaf",
+    "argv": [
+      "docker",
+      "create",
+      "--pull=never",
+      "--network=none",
+      "--cpus=4",
+      "--memory=16g",
+      "--shm-size=2g",
+      "-e",
+      "PYTHONPATH=/code/src",
+      "-e",
+      "HF_HUB_OFFLINE=1",
+      "-e",
+      "PYTHONDONTWRITEBYTECODE=1",
+      "-e",
+      "OMP_NUM_THREADS=4",
+      "-v",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-fixed-image-context-v1/source:/code:ro",
+      "-v",
+      "/mnt/cephfs/xingchao:/mnt/cephfs/xingchao:ro",
+      "-v",
+      "/mnt/cephfs/xingchao/experiments/multimodal-jev/semantic-fixed-image-context-v1:/out",
+      "--entrypoint",
+      "timeout",
+      "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "300",
+      "python",
+      "/code/tools/jev/probe_semantic_actor_context.py",
+      "--config",
+      "/out/config.json",
+      "--output",
+      "/out/run"
+    ],
+    "created_unix": 1794533168.3887937,
+    "config_sha256": "ed9973b0663fab31ce0b1368bb77daf20a44027325636e243fbcb340b77706f5",
+    "training_dispatch_allowed": false,
+    "launch_inspection": {
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 93965,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-11-13T01:24:53.61578709Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+      "devices": [],
+      "observed_unix": 1794533168.6680999
+    },
+    "next_regular_observation_not_before": 1794533768.6680999
+  },
+  "prepared": {
+    "config_sha256": "ed9973b0663fab31ce0b1368bb77daf20a44027325636e243fbcb340b77706f5",
+    "templates_sha256": "da0e8bb10e48521314acebe618bfbcbc0234a2d87e484dc70f7386c65dce0e1b",
+    "changed_source_files": [
+      "tools/jev/probe_semantic_actor_context.py"
+    ],
+    "input_requests_unchanged": true,
+    "training_dispatch_allowed": false
+  },
+  "launch_sha256": "d838e3fd8771a182398ce69a184cfa5b8edfb98591ba1794c0bc9c2135f5e972",
+  "status": "running_at_launch_inspection_no_subsequent_observation",
+  "scope": "Launch identity only; results not inspected. Not completion, processor equality, NPU or training acceptance."
+}

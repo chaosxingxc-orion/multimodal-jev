@@ -1,0 +1,64 @@
+{
+  "schema": "slurp-collection-role-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/collection-role-boundary-resolution-v1.json",
+  "rule_sha256": "31bf33c3cfb67691c55696f20068d70129bb29a5eb529e0a3cc85284a4487251",
+  "review": "configs/reviews/slurp-collection-role-boundary-v1.json",
+  "review_sha256": "680f330213e44a4eb510691b0e76b7daa0b7e0f35c254857cda9472970515a50",
+  "cohort_counts": {
+    "native": 151,
+    "calendar": 387,
+    "contacts": 48
+  },
+  "unique_read_sources": 582,
+  "review_coordinates": 39,
+  "review_sources": 39,
+  "proposal_counts": {
+    "true": 22,
+    "false": 11,
+    "null": 6
+  },
+  "recording_bindings": 165,
+  "unique_recordings": 165,
+  "native_disagreements": 18,
+  "first_batch_rereview": [],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v7/report.json": "f2bface49d8198d75b3b9526dcbc7dae01d3e65dfe23d1672abec7f1aab20998",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "configs/tasks/slurp/collection-role-boundary-resolution-v1.json": "31bf33c3cfb67691c55696f20068d70129bb29a5eb529e0a3cc85284a4487251",
+    "configs/reviews/slurp-collection-role-boundary-v1.json": "680f330213e44a4eb510691b0e76b7daa0b7e0f35c254857cda9472970515a50"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/review-recording-bindings.jsonl": "0f64eafa92ecc1b1be583243e9749870352f0506796602ea5abf7ed5f1b41463",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/native-sources.jsonl": "f915261b6de559695bde3d94ee5d7e2cd89ad40f460c8192234a84c911da3a09",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/summary.json": "47bd79accb7cdfc55ddd5c8add8e30a2df98f97a339b27e9e9a09c79af707df4",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/contacts-sources.jsonl": "4edb2a4027c1df589994ca30283e4c7286c0df672dd155d39ac20b4527275a4e",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/calendar-sources.jsonl": "038d9a3a176e90180ca2eb542e7c77da1b565e792cd3b61f04b6793e3f165939"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v9.json",
+    "sha256": "243ccf163f054323af6d573ef1e550788e54d66c767405d75cd9d7af827e2b33",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v11.json": "4a8128561f0674f0bb79e92e5806a516e7a1caa3b1cbb15ab5c66f28574c9fe7",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v11.json": "892260833250a9ed0b390bda20a8d829a769bf37e3b6aceb59d766860fa1bae3",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v12.json": "032f709ae02a3101f1f47750f166f84b4d3a6a3898813fa3296a74d759365cd8"
+    },
+    "unchanged_cards": 54,
+    "changed_semantic_types": [
+      "list_name"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "email_folder",
+        "list_name"
+      ],
+      [
+        "list_name",
+        "playlist_name"
+      ]
+    ]
+  },
+  "scope": "Metadata, full learning source membership and binding reconstruction independent of workpack bindings; same-author reference judgments, no independent semantic certification, listening or optimization admission."
+}

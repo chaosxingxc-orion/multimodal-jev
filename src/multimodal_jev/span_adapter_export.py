@@ -21,3 +21,10 @@ def legacy_broken_key(canonical):
     if adapter_key(canonical) != canonical:
         raise ValueError('canonical export key required')
     return canonical.replace('.lora_A.weight', '.lora_Aweight').replace('.lora_B.weight', '.lora_Bweight')
+
+
+def checkpoint_export_key(canonical, *, legacy_repair=False):
+    """Select the declared source layout; never silently guess broken exports."""
+    if type(legacy_repair) is not bool:
+        raise ValueError('explicit legacy repair flag required')
+    return legacy_broken_key(canonical) if legacy_repair else adapter_key(canonical)

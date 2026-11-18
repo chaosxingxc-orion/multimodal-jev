@@ -1,0 +1,86 @@
+{
+  "schema": "jev-reward-contract-design-v2",
+  "status": "task_reward_candidate_not_training_implementation",
+  "training_dispatch_allowed": false,
+  "supersedes": "mean_valid_process_reward_in_task_design_v1_for_new_experiments_only",
+  "final": {
+    "reward": "correctness_0_or_1",
+    "required": "independent_admitted_final_truth",
+    "missing": "exclude_entire_RL_request_from_comparative_main_track; retain_audit_count",
+    "set_task": "complete_panel_exact_only_when_every_output_label_is_admitted"
+  },
+  "process": {
+    "total_cap": 0.2,
+    "family_caps": {
+      "I": 0.1,
+      "S": 0.1
+    },
+    "formula": "sum_f cap_f / configured_count_f * sum_j mask_fj * correctness_fj",
+    "denominator": "configured_question_count_before_supervision_lookup",
+    "empty_family": "zero_reward_no_budget_transfer",
+    "unknown_or_conflict": "mask_no_false_no_reward",
+    "weights": "same_masks_and_weights_across_algorithm_comparisons",
+    "cross_budget": "2Q_and8Q_have_same_family_caps_when_fully_labelled_not_same_per_question_weight",
+    "scope": "raw_reward_bound_not_gradient_bound_not_per_step_monotonic_improvement",
+    "operators": {
+      "I": "I_present",
+      "S": "S_present"
+    },
+    "ragged_panels": "Existing per-call family caps remain; empty family0, no transfer. Equal17panel averaging gives unequal per-definition process reward exposure in ragged tails. Report exact coefficients and compare Qinput/Qcredit on same schedule; do not claim equal type weighting."
+  },
+  "ce": {
+    "stage1_complete_panels": "configs/experiments/stage1-objective-candidate-v2.json; Final1_I0.5_S0.5_cap8 with65I/55S across17panels; admission/runtime pending",
+    "stage2": "Final_CE + .1/configured_I_count * sum_valid_I_CE + .1/configured_S_count * sum_valid_S_CE; common_decay_lambda",
+    "reward_ablation": "Q-input_and_Q-credit_have_identical_process_CE_and_masks; reward_changed_only",
+    "missing": "no_redistribution",
+    "balance": "training_population_only_predeclared_outer_weight; report natural and weighted objectives separately"
+  },
+  "algorithms": {
+    "ppo_critic": "joint_clipped_surrogate_with_pinned_verl_whitened_R_minus_V; unwhitened_return_for_critic; no additional normalization; behavior-batch scope in rl-baseline-design-v2",
+    "grpo": "standard_group_center_and_sample_std_plus_1e-6; process cap not preserved in gradient scale",
+    "rloo_clipped": "R_i_minus_mean_others_with_joint_PPO_clip; no extra advantage standardization",
+    "registered_extension": {
+      "id": "grpo_std_floor_1_typed_candidate_v1",
+      "advantage": "(R_i-mean(R))/max(sample_std(R),1.0)",
+      "purpose": "avoid_amplifying_small_group_reward_variance",
+      "caveat": "For R in [0,1.2], sample_std<=1.2/sqrt(2)<1: this collapses to group-centered reward, not a novel stepwise method.",
+      "relation": "group_centered_advantage=(G-1)/G * RLOO_advantage; compare with scaling disclosed",
+      "status": "analysis_only_not_added_to_standard_baseline"
+    }
+  },
+  "stepwise": {
+    "first": "fixed_raw_process_credit_vs_final_only_on_same_joint_algorithm",
+    "second": "conditional_node_credit_new_variant_with_explicit_ratio_and_clipping",
+    "exact_scope": "additive_rewards_under_factorized_finite_policy",
+    "final_only_process_credit": 0,
+    "not_temporal_GAE": true,
+    "shared_parameter_warning": "zero independent process action credit does not mean no backbone gradient through process hidden positions"
+  },
+  "required_metrics": [
+    "Final_accuracy_or_complete_set_EM",
+    "process_positive_recall_and_false_positive_rate",
+    "valid_supervision_coverage_by_family",
+    "Final_constant_groups",
+    "all_reward_zero_variance_groups",
+    "sample_reward_std",
+    "advantage_scale",
+    "clip_fraction",
+    "KL",
+    "shared_parameter_process_Final_gradient_norm_and_cosine",
+    "native_and_weighted_class_metrics"
+  ],
+  "evidence": "docs/research/reward-contract-toy-audit-v1.json",
+  "algorithm_normalization_evidence": "docs/research/rl-source-normalization-audit-v1.json",
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "required_before_release_not_implemented",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created."
+  },
+  "semantic_redundancy_review": {
+    "evidence": "docs/research/semantic-reward-redundancy-audit-v1.json",
+    "decision": "Keep fixed-count baseline; selectively duplicating a concept changes weighting despite fixed cap. Freeze menu and audit admitted pair coverage/positive overlap/conditional label entropy before release. No gold-dependent deduplication or hierarchy label inference.",
+    "scope": "Exact fixed-answer arithmetic, not runtime integration or model effect",
+    "formula_changed": false
+  },
+  "semantic_menu_design": "configs/tasks/slurp/menu-design-candidate-v3.json"
+}

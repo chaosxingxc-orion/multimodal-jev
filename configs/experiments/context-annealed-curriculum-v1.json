@@ -1,0 +1,243 @@
+{
+  "schema": "jev-curriculum-training-design-v1",
+  "design": "annealed_supervised_to_sampled_reward_curriculum",
+  "version": "v0.0.4",
+  "decision": "2026-11-17 user-approved design: anneal the differentiable SFT term 0.5 -> 0 and grow the sampled-reward mixture 0.3/0.2 -> 0.4/0.6 over 212 updates",
+  "status": {
+    "phase": "preregistered_not_dispatched",
+    "note": "design, config and an installed source candidate; no package, fixed-image CPU acceptance, NPU run or efficacy claim exists yet"
+  },
+  "training_dispatch_allowed": false,
+  "algorithm": "curriculum_grpo_floor_clipped_v1",
+  "algorithm_family": "dual_credit_grpo_floor_clipped_v1",
+  "differentiable_terms": [
+    "supervised_fit_only"
+  ],
+  "non_differentiable_terms": [
+    "ranking_tier_reward",
+    "brier_calibration_reward",
+    "margin_contrast_reward"
+  ],
+  "reward_propagation": "sampled scalar rewards -> GRPO group centering, population std floor -> probability-ratio clipped surrogate; rewards are never written as differentiable losses",
+  "schedule": {
+    "name": "annealed_convex_linear_v1",
+    "total_updates": 212,
+    "start": [
+      0.5,
+      0.3,
+      0.2
+    ],
+    "end": [
+      0.0,
+      0.4,
+      0.6
+    ],
+    "order": [
+      "supervised",
+      "contrast",
+      "ranking"
+    ],
+    "rule": "linear interpolation at update/total; endpoints exact; the three weights sum to one at every update"
+  },
+  "rewards": {
+    "supervised": {
+      "role": "template_and_representation_initialization",
+      "differentiable": true,
+      "internal_split": "NLL/InfoNCE split read from constants.sft_split; frozen at NLL 0.3 / InfoNCE 0.7 (InfoNCE primary; 2026-11-17 user)"
+    },
+    "ranking": {
+      "role": "listwise_ordering",
+      "differentiable": false,
+      "distribution": "shared_plackett_luce_without_replacement_trajectory",
+      "trajectory_k": 8,
+      "tier_positions": 3,
+      "tiers": {
+        "top1_hit": 1.0,
+        "top3_hit": 0.5,
+        "otherwise": 0.0
+      },
+      "reduction": "per group one shared trajectory; the tier is read from its first three positions",
+      "label_rule": "any candidate in the complete gold set counts as a hit"
+    },
+    "probability": {
+      "role": "calibration",
+      "differentiable": false,
+      "statistic": "1 - mean_squared_error(p, target) over the shared k trajectory candidates",
+      "trajectory": "same shared k-candidate trajectory as ranking and contrast",
+      "labels_enter_draw": false,
+      "range": [
+        0.0,
+        1.0
+      ]
+    },
+    "contrast": {
+      "role": "positive_negative_separation",
+      "differentiable": false,
+      "trajectory_k": 8,
+      "pairs": "drawn_gold_x_drawn_non_gold_inside_the_same_trajectory",
+      "margin": 0.2,
+      "reward": "fraction of drawn gold/non-gold pairs with p_gold - p_negative >= margin",
+      "empty_gold_branch": "component 0 with margin_reason=no_gold_in_trajectory",
+      "empty_non_gold_branch": "component 0 with margin_reason=no_non_gold_in_trajectory"
+    }
+  },
+  "trajectory": {
+    "draw": "one Plackett-Luce without-replacement draw of k ordered candidates per group",
+    "k": 8,
+    "shared_by": [
+      "rank",
+      "brier",
+      "margin"
+    ],
+    "log_prob": "exact FP64 sum_j log(w_cj / sum_{i not drawn yet} w_i); shape [group_size]; detached",
+    "implementation": "src/multimodal_jev/context_curriculum_credit.py::trajectory"
+  },
+  "surrogate": {
+    "advantages": "existing GRPO group centering and population-std floor 0.25 on the composite score",
+    "log_prob_use": "the candidate multiplies detached advantages by the shared trajectory log_prob inside the ratio-clipped surrogate",
+    "autograd": "not introduced by this module"
+  },
+  "constants": {
+    "group_size": 16,
+    "trajectory_k": 8,
+    "margin": 0.2,
+    "contrast_fraction": 0.5,
+    "std_floor": 0.25,
+    "clip_ratio": 0.2,
+    "dual_clip_c": 3.0,
+    "seed": 317,
+    "sft_split": {
+      "nll": 0.3,
+      "infonce": 0.7
+    }
+  },
+  "composite": "R = w_contrast * (contrast_fraction * margin_reward + (1 - contrast_fraction) * brier_reward) + w_ranking * rank_reward; the supervised weight multiplies only the differentiable SFT term and is not part of R",
+  "removed_supervision": [
+    "binary_nll 0.3",
+    "supervised_ranking 0.1"
+  ],
+  "removal_reason": "v9 auxiliary supervised ranking and binary NLL duplicated the sampled ranking/probability signals; the approved curriculum keeps only SFT as differentiable supervision",
+  "topology": {
+    "world_size": 6,
+    "physical_devices_train": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "physical_devices_inference": [
+      6,
+      7
+    ],
+    "batch_config": {
+      "training_devices": 6,
+      "tensor_parallel": 1,
+      "pipeline_parallel": 1,
+      "per_dp_replica_batch": 64,
+      "microbatch": 8,
+      "inference_instances": 2,
+      "inference_batch_queries": 48,
+      "source_queries": 40513,
+      "epochs": 2,
+      "efficiency_steps": 100
+    },
+    "global_batch": 384,
+    "updates_per_epoch": 106,
+    "total_updates": 212,
+    "real_exposures": 81026,
+    "tail_per_epoch": {
+      "real_slots": 193,
+      "zero_weight_slots": 191,
+      "loss_denominator": 193
+    },
+    "rollout_queries": 32,
+    "macro_queries": 384
+  },
+  "training": {
+    "experiment_kind": "formal_source",
+    "start_update": 0,
+    "stop_update": 212,
+    "engineering_prefix": false,
+    "training_dispatch_allowed_in_package": false,
+    "optimizer_reset": true,
+    "execution_dtype": "bfloat16",
+    "optimizer_dtype": "float32",
+    "learning_rate": 0.0001,
+    "seed": 317,
+    "source_population": "full clean SLURP TRAIN 40513",
+    "selection_population": "SLURP clean selection 9226",
+    "selection_not_for_training": true,
+    "target_tuning_allowed": false
+  },
+  "evaluation": {
+    "evaluation_steps": [
+      0,
+      21,
+      42,
+      64,
+      85,
+      106,
+      127,
+      148,
+      170,
+      191,
+      212
+    ],
+    "curve_reuse": "configs/experiments/context-replica-training-dp6-formal-v1.json",
+    "recovery_checkpoint_steps": [
+      21,
+      42,
+      64,
+      85,
+      106,
+      127,
+      148,
+      170,
+      191,
+      212
+    ],
+    "selection_rule": "highest_set_f1_then_lowest_binary_nll_then_earliest_step",
+    "selection_population": "SLURP clean selection 9226",
+    "selection_not_for_training": true,
+    "target_tuning_allowed": false,
+    "metrics": [
+      "set_f1",
+      "top1_accuracy",
+      "pairwise_ranking_accuracy",
+      "exact_set",
+      "false_accept",
+      "false_reject",
+      "binary_nll",
+      "brier",
+      "positive_negative_scores",
+      "risk_coverage"
+    ],
+    "success": "fixed_endpoint_set_f1_delta_lower95_gt0_and_top1_delta_lower95_ge0_and_NLL_Brier_delta_upper95_le0",
+    "interval": "paired_source_group_bootstrap_2000_seed317_pointwise",
+    "curve_reporting": "complete 11-point curve and degradation; no single-step or last-step substitution",
+    "test_and_transfer": "frozen selected policy; no target tuning"
+  },
+  "relationship_to_v9": {
+    "v9": "constant mixed dual-credit GRPO with binary NLL 0.3 and supervised ranking 0.1; running and frozen, not modified in place",
+    "v0_0_4": "removes both auxiliary supervised terms; anneals SFT 0.5 -> 0; grows contrast/ranking 0.3/0.2 -> 0.4/0.6",
+    "shared": "same full clean SLURP source population, DP6 topology, global batch 384, microbatch 8, seed 317, two epochs and 212 updates",
+    "new_identity_required": "new versioned package and candidate module; never edits the running v9 package or its pins"
+  },
+  "engineering": {
+    "module": "src/multimodal_jev/context_curriculum_credit.py",
+    "candidate_module": "tools/reports/context_curriculum_candidate.py",
+    "candidate_status": "implemented_not_dispatched",
+    "tests": "tests/test_context_curriculum_credit.py and tests/test_context_curriculum_candidate.py",
+    "note": "the source candidate exists, but fixed-image CPU acceptance, runtime parity, NPU update and dispatch gates do not exist yet"
+  },
+  "open_issues": [
+    "SFT internal NLL/InfoNCE split frozen at 0.3/0.7 (InfoNCE primary); an ablation can be a separate candidate",
+    "the source candidate is implemented but has no fixed-image CPU acceptance, real-audio rollout parity, global reduction or NPU update evidence",
+    "trajectory k=8 must not exceed the menu size; helper wrappers keep legacy subset/negatives names as the trajectory length and reject values outside the menu",
+    "margin returns 0 with margin_reason for trajectories without gold or without non-gold; diagnostics must count these branches instead of dropping them",
+    "log_prob is FP64 and detached; the candidate must reuse the same trajectory draw for the ratio and must not resample",
+    "v9 remains the running frozen package; this config cannot be dispatched or merged into it"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "schema": "context-transport-tools-fixed-image-cpu-v1",
+  "container_id": "52677bb7689923070383546ee6d1f3fe7d301c32db1a874d278cd7e4e1edca75",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T00:51:47.56689243Z",
+    "FinishedAt": "2026-11-15T00:53:19.72367031Z"
+  },
+  "source_files": 1080,
+  "source_manifest_sha256": "c18227667bb780599c4c9e6de72b8426044587edde926a9f199c7267ad85568d",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-transport-tools-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "71c6d829642b69bb78294c118722948b2f463af84f34a93497621bbe946e83a3",
+    "run/junit.xml": "2289b824fd5029d4ac742801fabe8116cdc9a9088cf98b46e22ee515fef4c137",
+    "run/pytest.log": "00e599df996fad2caed7d3e41fc46ccb6b3d84a4dc40085d4cbd47cadd2421e3",
+    "package/FILES.json": "c18227667bb780599c4c9e6de72b8426044587edde926a9f199c7267ad85568d",
+    "package/run.py": "d05b6085755800577d75a397d7df8e09e53b26d805b9fbf5663d4c0aef66ba9d"
+  },
+  "counts": {
+    "tests": 45,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794703934.6628065,
+    "finished_unix": 1794703998.329944,
+    "source_manifest_sha256": "c18227667bb780599c4c9e6de72b8426044587edde926a9f199c7267ad85568d",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-transport-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_bulk_process_integration.py",
+      "tests/test_context_bulk_rpc_candidate.py",
+      "tests/test_context_bulk_session_candidate.py",
+      "tests/test_context_rollout_rpc.py",
+      "tests/test_context_rollout_session.py",
+      "tests/test_context_transport_measurement_candidate.py",
+      "tests/test_context_transport_service_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual CPU service and finite measurement checks plus IPC and spawned-process session integration; engine, activation and temporary-path storage guards substituted. No NPU model or speedup claim."
+}

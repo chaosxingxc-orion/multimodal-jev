@@ -1,0 +1,40 @@
+{
+  "schema": "slurp-reference-migration-config-v1",
+  "training_dispatch_allowed": false,
+  "base_workpack": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2",
+  "package": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+  "sequential_review": "configs/reviews/slurp-full-slot-sequential-reference-b0001.json",
+  "boundary_reviews": [
+    {
+      "receipt": "docs/research/news-topic-boundary-check-v1.json",
+      "single_type": "news_topic"
+    },
+    {
+      "receipt": "docs/research/event-role-boundary-check-v1.json",
+      "single_type": "event_name"
+    },
+    {
+      "receipt": "docs/research/work-reference-boundary-check-v1.json"
+    },
+    {
+      "receipt": "docs/research/property-role-boundary-check-v1.json"
+    },
+    {
+      "receipt": "docs/research/attribute-relation-boundary-check-v1.json"
+    }
+  ],
+  "expected_source_count": 9192,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/report.json": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+    "configs/tasks/slurp/slot-consolidated-design-v6.json": "dd4bf750f1858a96f8376de39d418f0da6df2b1f71a8b3c11d4f21d438bec5ad",
+    "configs/reviews/slurp-full-slot-sequential-reference-b0001.json": "0d0881fce282edb582bf193e7fbbecc93649e8a6e1542bc22ca9203f6310a6b6",
+    "configs/tasks/slurp/type-definition-candidates-v8.json": "2d310a0f7ca24432124f96142e2869893cb5a0401f62ffc6f435e733ce3128c3",
+    "configs/tasks/slurp/slot-presence-policy-candidate-v8.json": "12bf40de8a08143f3669a609aae352c7dec6f77ca23d7d48e5083734115da70c",
+    "configs/tasks/slurp/type-boundary-rules-candidate-v9.json": "72cf2851c7907755b19ce62bd9b8753be2973e0da7c0503e2729bb22d99eec1f",
+    "docs/research/news-topic-boundary-check-v1.json": "0780c51e38d42bcb05beb8619429ae8ecca455f3998be6c2e4ebdeda50a56648",
+    "docs/research/event-role-boundary-check-v1.json": "202439aa4e04468223837b1dd05a2432cc2c0ec20e4030f80d13a8e50b7f7cf0",
+    "docs/research/work-reference-boundary-check-v1.json": "3f7c414be7f713308e1f44e8625778d9e211dad4b24b2e10c2c7c87c4b95c736",
+    "docs/research/property-role-boundary-check-v1.json": "08cd2c4941d89578b3cfa2f260081973b1297459ee1d85793fc0537197e82aeb",
+    "docs/research/attribute-relation-boundary-check-v1.json": "38ee8aed32c756e25fc9623e985b96a040b412fa78d1080eb415adb19154073a"
+  }
+}

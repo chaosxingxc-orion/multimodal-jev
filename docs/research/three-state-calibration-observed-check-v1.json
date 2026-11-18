@@ -1,0 +1,228 @@
+{
+  "schema": "three-state-calibration-observed-independent-check-v1",
+  "report_sha256": "5f271415c322307ffc7181da9460d3792ac932ef488e900cdd76bd15b2f3e86f",
+  "verifier_sha256": "767b598a556cac68d4642e9a0bcbf478fc8f8ee4c9ecde89a4a064498ec3ece7",
+  "full_decisions_returned": 190,
+  "paired_decisions": 95,
+  "changed_paired_decisions": 13,
+  "changed": [
+    {
+      "request_id": "051ba6b79d386e8c8ab5f8b3ff8d611d5c9870ba474b31c16dac288bd3798116",
+      "semantic_id": "music_feedback_record",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "positive"
+      }
+    },
+    {
+      "request_id": "051ba6b79d386e8c8ab5f8b3ff8d611d5c9870ba474b31c16dac288bd3798116",
+      "semantic_id": "music_negative_preference",
+      "predictions": {
+        "envelope": "negative",
+        "envelope_three_state": "unavailable"
+      }
+    },
+    {
+      "request_id": "051ba6b79d386e8c8ab5f8b3ff8d611d5c9870ba474b31c16dac288bd3798116",
+      "semantic_id": "music_positive_preference",
+      "predictions": {
+        "envelope": "negative",
+        "envelope_three_state": "unavailable"
+      }
+    },
+    {
+      "request_id": "06971a30bc718e1d4f79750718215e0293fc6c937b0aee4ab0256a96c02f121f",
+      "semantic_id": "radio_name",
+      "predictions": {
+        "envelope": "negative",
+        "envelope_three_state": "unavailable"
+      }
+    },
+    {
+      "request_id": "38bd9c934b5f7373cb783e231707a3c827ced45c3cd809fb994d037686d9a7a5",
+      "semantic_id": "audio_quieter",
+      "predictions": {
+        "envelope": "negative",
+        "envelope_three_state": "unavailable"
+      }
+    },
+    {
+      "request_id": "b8c1bc1d4f46a027a114a017738102d766984a32c1bb0fb9249e0d509240d82b",
+      "semantic_id": "business_type",
+      "predictions": {
+        "envelope": "negative",
+        "envelope_three_state": "positive"
+      }
+    },
+    {
+      "request_id": "c608ad238151389846d22b1d50af5ea93a167002aa5509c138f71723d5a7783e",
+      "semantic_id": "light_on",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "negative"
+      }
+    },
+    {
+      "request_id": "c608ad238151389846d22b1d50af5ea93a167002aa5509c138f71723d5a7783e",
+      "semantic_id": "list_create_add",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "negative"
+      }
+    },
+    {
+      "request_id": "c608ad238151389846d22b1d50af5ea93a167002aa5509c138f71723d5a7783e",
+      "semantic_id": "list_information",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "negative"
+      }
+    },
+    {
+      "request_id": "c608ad238151389846d22b1d50af5ea93a167002aa5509c138f71723d5a7783e",
+      "semantic_id": "list_remove",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "negative"
+      }
+    },
+    {
+      "request_id": "c608ad238151389846d22b1d50af5ea93a167002aa5509c138f71723d5a7783e",
+      "semantic_id": "market_information",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "negative"
+      }
+    },
+    {
+      "request_id": "c608ad238151389846d22b1d50af5ea93a167002aa5509c138f71723d5a7783e",
+      "semantic_id": "mathematical_answer",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "negative"
+      }
+    },
+    {
+      "request_id": "c608ad238151389846d22b1d50af5ea93a167002aa5509c138f71723d5a7783e",
+      "semantic_id": "movie_discovery",
+      "predictions": {
+        "envelope": "unavailable",
+        "envelope_three_state": "negative"
+      }
+    }
+  ],
+  "arms": {
+    "envelope": {
+      "valid_requests": 12,
+      "reference_agreement": 7,
+      "targets": 12,
+      "by_stratum": {
+        "I_present/positive": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 2,
+          "positive__positive": 2
+        },
+        "I_present/negative": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 2,
+          "negative__negative": 2
+        },
+        "I_present/unavailable": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 0,
+          "unavailable__positive": 1,
+          "unavailable__negative": 1
+        },
+        "S_present/positive": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 2,
+          "positive__positive": 2
+        },
+        "S_present/negative": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 1,
+          "negative__unavailable": 1,
+          "negative__negative": 1
+        },
+        "S_present/unavailable": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 0,
+          "unavailable__positive": 1,
+          "unavailable__negative": 1
+        }
+      },
+      "usage": {
+        "prompt_tokens": 160539,
+        "completion_tokens": 3581,
+        "total_tokens": 164120
+      }
+    },
+    "envelope_three_state": {
+      "valid_requests": 12,
+      "reference_agreement": 8,
+      "targets": 12,
+      "by_stratum": {
+        "I_present/positive": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 2,
+          "positive__positive": 2
+        },
+        "I_present/negative": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 2,
+          "negative__negative": 2
+        },
+        "I_present/unavailable": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 1,
+          "unavailable__positive": 1,
+          "unavailable__unavailable": 1
+        },
+        "S_present/positive": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 2,
+          "positive__positive": 2
+        },
+        "S_present/negative": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 1,
+          "negative__unavailable": 1,
+          "negative__negative": 1
+        },
+        "S_present/unavailable": {
+          "targets": 2,
+          "returned": 2,
+          "agreement": 0,
+          "unavailable__positive": 2
+        }
+      },
+      "usage": {
+        "prompt_tokens": 162771,
+        "completion_tokens": 3738,
+        "total_tokens": 166509
+      }
+    }
+  },
+  "first_observation": {
+    "unix": 1794531344.0661995,
+    "utc": "2026-11-13T00:55:44.066207+00:00",
+    "session_id": 91568,
+    "tool_exit_code": 0
+  },
+  "first_observation_elapsed_seconds": 636.3562037944794,
+  "semantic_admission": 0,
+  "training_dispatch_allowed": false,
+  "bulk_dispatch_allowed": false,
+  "scope": "Independent all wire/output/terminal/usage and denominator reconstruction; author-reference calibration only, no independent gold claim."
+}

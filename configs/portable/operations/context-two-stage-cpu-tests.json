@@ -1,0 +1,19 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "tests": ["tests/test_context_infonce.py", "tests/test_context_topology_batch_plan.py", "tests/test_context_replica_schedule.py"],
+  "expected_tests": 30,
+  "scope": "Supervised InfoNCE value/gradient, DP8 reduction and zero padding, warmup Adam resume, generated native verl instruction integration and DP8/DP6 batch arithmetic. CPU only; no NPU admission or efficacy.",
+  "support_files": [
+    "tools/reports/context_infonce_actor.py",
+    "tools/reports/context_infonce_trainer.py",
+    "tools/jev/train_context_instruction_npu.py",
+    "configs/experiments/context-two-stage-v0.0.4.json"
+  ]
+}

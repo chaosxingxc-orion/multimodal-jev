@@ -1,0 +1,2515 @@
+{
+  "schema": "slurp-type-boundary-rules-candidate-v4",
+  "training_dispatch_allowed": false,
+  "evidence_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/type-boundary-evidence-v1/report.json",
+  "evidence_sha256": "151d93623c537b248520d5d96061377538fe17784db4fd05b3466ca9c9cf87f5",
+  "authoring_pins": {
+    "configs/tasks/slurp/type-boundary-rules-v1.tsv": "6316be018d50f4061d5c54c73009b8172e6e2e92a0ba4e0d8af5e2314206c668",
+    "configs/tasks/slurp/type-boundary-rules-extension-v1.tsv": "9d7b25cb97282d7b08f3d28ce4af39205f1655f1e404025f81ac89d3f67c6182"
+  },
+  "rule_application": "task_level_shared_rules_never_query_topic_selection_or_posthoc_answer_override",
+  "rules": [
+    {
+      "types": [
+        "alarm_type",
+        "event_name"
+      ],
+      "shared_rule": "Distinguish the kind/purpose identifying an alarm from an activity referred to as an event.",
+      "coexistence_rule": "An alarm category and a separately expressed event can coexist.",
+      "evidence_source_ids": [
+        "4016",
+        "5102",
+        "5173",
+        "7603",
+        "8533",
+        "9026"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Soccer practice is assigned either type within alarm requests; action intent alone cannot settle precedence.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "alarm_type",
+        "time"
+      ],
+      "shared_rule": "Distinguish an alarm category or purpose from its timing expression.",
+      "coexistence_rule": "Wake-up category and seven am can both be expressed.",
+      "evidence_source_ids": [
+        "839",
+        "3462",
+        "5173",
+        "6724",
+        "16734"
+      ],
+      "coannotated_source_utterances": 2,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Do not infer a time merely from the existence of an alarm; time also includes offsets under its own definition.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "app_name",
+        "business_name"
+      ],
+      "shared_rule": "Distinguish software access from a company or business identity in the expressed role.",
+      "coexistence_rule": "A merchant and an ordering app can both be named.",
+      "evidence_source_ids": [
+        "877",
+        "4358",
+        "9422",
+        "9652",
+        "14070",
+        "14625",
+        "15395"
+      ],
+      "coannotated_source_utterances": 1,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Netflix is an app in playback and a business in stock queries; dual-purpose mentions need an explicit precedence policy.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "station_service",
+          "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+          "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+        }
+      ]
+    },
+    {
+      "types": [
+        "app_name",
+        "device_type"
+      ],
+      "shared_rule": "Distinguish software/service from physical equipment.",
+      "coexistence_rule": "Netflix and a PS4 can serve different roles in one request.",
+      "evidence_source_ids": [
+        "677",
+        "2601",
+        "9231",
+        "9423",
+        "9652"
+      ],
+      "coannotated_source_utterances": 1,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A brand can denote hardware or software; the name alone is insufficient.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "station_service",
+          "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+          "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+        }
+      ]
+    },
+    {
+      "types": [
+        "app_name",
+        "media_type"
+      ],
+      "shared_rule": "Distinguish an access application from content format or media source under the dataset convention.",
+      "coexistence_rule": "Separately expressed application and content kind can coexist.",
+      "evidence_source_ids": [
+        "2940",
+        "3778",
+        "9424",
+        "9440",
+        "10140",
+        "15176",
+        "15354"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Spotify receives both labels in related playback contexts; native media_type includes platforms, so strict exclusivity is unverified.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "station_service",
+          "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+          "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+        }
+      ]
+    },
+    {
+      "types": [
+        "app_name",
+        "radio_name"
+      ],
+      "shared_rule": "Distinguish the application or service providing access from the station or tuning reference being accessed.",
+      "coexistence_rule": "A station played through an application provides evidence for both roles.",
+      "evidence_source_ids": [
+        "9271",
+        "9467",
+        "9477",
+        "9608",
+        "9609",
+        "11165"
+      ],
+      "coannotated_source_utterances": 5,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A platform-only expression must not be assumed to contain a separately identified station; station existence still follows the type definition.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "station_service",
+          "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+          "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+        }
+      ]
+    },
+    {
+      "types": [
+        "app_name",
+        "transport_agency"
+      ],
+      "shared_rule": "Distinguish software access from the organization or service providing a journey.",
+      "coexistence_rule": "A provider accessed via a separately named application can express both roles.",
+      "evidence_source_ids": [
+        "9231",
+        "9467",
+        "12480",
+        "12849"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A service can also be an app. Uber labelled transport_agency does not establish app_name absence; native same-brand precedence remains unresolved.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "station_service",
+          "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+          "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+        }
+      ]
+    },
+    {
+      "types": [
+        "artist_name",
+        "audiobook_author"
+      ],
+      "shared_rule": "Distinguish a performer/music creator from the author of a referenced book.",
+      "coexistence_rule": "Separate people or separate creative roles can be expressed together.",
+      "evidence_source_ids": [
+        "1712",
+        "4306",
+        "9695",
+        "9870"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "No observed shared names does not prove mutually exclusive identities; narrator versus author still needs policy.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "artist_name",
+        "color_type"
+      ],
+      "shared_rule": "Distinguish an artist identity from a color attributed to an object.",
+      "coexistence_rule": "An artist and a color may be mentioned separately.",
+      "evidence_source_ids": [
+        "727",
+        "1110",
+        "3799",
+        "3881",
+        "3882",
+        "4825",
+        "5117"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Pink has both meanings; spelling and capitalisation cannot determine the role.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "artist_name",
+        "person"
+      ],
+      "shared_rule": "Use expressed performer/creator role as evidence for artist_name; a person's identity alone does not settle the dataset person-versus-artist convention.",
+      "coexistence_rule": "Different person references may serve different roles; absence of observed coannotation is not an exclusivity rule.",
+      "evidence_source_ids": [
+        "474",
+        "1112",
+        "2072",
+        "2105",
+        "5385",
+        "7405",
+        "13657",
+        "13879",
+        "15005",
+        "16342"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 6,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Artist names also occur in factoid contexts. Music topic alone cannot resolve all native assignments, nor establish person absence.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        }
+      ]
+    },
+    {
+      "types": [
+        "artist_name",
+        "song_name"
+      ],
+      "shared_rule": "Distinguish the creator/performer from the song being identified.",
+      "coexistence_rule": "Creator and work title commonly coexist.",
+      "evidence_source_ids": [
+        "380",
+        "4030",
+        "4041",
+        "4754",
+        "6106",
+        "13444"
+      ],
+      "coannotated_source_utterances": 40,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Artist names can also be work titles; no complete precedence follows from name recognition alone.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "audiobook_author",
+        "audiobook_name"
+      ],
+      "shared_rule": "Distinguish the book's author from the book title or identifying reference.",
+      "coexistence_rule": "A title followed by its author supports both roles.",
+      "evidence_source_ids": [
+        "9686",
+        "9695",
+        "9702",
+        "9870",
+        "9890"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Only four author source utterances support the card; no broad narrator policy is established.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "audiobook_author",
+        "person"
+      ],
+      "shared_rule": "Use an authorship relation to the referenced book as evidence for audiobook_author. Separate that relation from an ordinary personal reference.",
+      "coexistence_rule": "An author and another person can be mentioned together; no global exclusivity is justified.",
+      "evidence_source_ids": [
+        "5222",
+        "9667",
+        "9870",
+        "15810"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Only four learning source utterances carry author annotations; same-span person/author precedence remains unverified.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        }
+      ]
+    },
+    {
+      "types": [
+        "audiobook_name",
+        "media_type"
+      ],
+      "shared_rule": "Distinguish the particular book reference from its media kind or source.",
+      "coexistence_rule": "Audiobook and its title can both be explicit.",
+      "evidence_source_ids": [
+        "4536",
+        "9687",
+        "9766",
+        "9870",
+        "9886",
+        "15649"
+      ],
+      "coannotated_source_utterances": 9,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Media_type also covers named sources; source versus title needs context.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "audiobook_name",
+        "movie_name"
+      ],
+      "shared_rule": "Distinguish the work as a book from the work as a film using expressed medium/context.",
+      "coexistence_rule": "Separate books and films may be mentioned together.",
+      "evidence_source_ids": [
+        "9671",
+        "9820",
+        "11765",
+        "12105"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Adaptations share titles; isolated titles need evidence unavailable from the name alone.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "audiobook_name",
+        "song_name"
+      ],
+      "shared_rule": "Distinguish a referenced book from a referenced song.",
+      "coexistence_rule": "Different works can be named in one request.",
+      "evidence_source_ids": [
+        "992",
+        "1359",
+        "9731",
+        "9804"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A title can be shared across media; do not infer medium exclusively from world knowledge.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "business_name",
+        "business_type"
+      ],
+      "shared_rule": "Distinguish an identified establishment from its business category.",
+      "coexistence_rule": "Starbucks and coffee shop can both be expressed.",
+      "evidence_source_ids": [
+        "1816",
+        "4868",
+        "11676",
+        "11725",
+        "11726",
+        "12036",
+        "12115",
+        "15009",
+        "15044",
+        "15677"
+      ],
+      "coannotated_source_utterances": 7,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Olive Garden is annotated as business_type in some examples; semantic name/category distinction does not reconstruct all native gold.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "business_name",
+        "game_name"
+      ],
+      "shared_rule": "Distinguish a company/publisher from a specific game reference.",
+      "coexistence_rule": "A publisher and a game can be separately named.",
+      "evidence_source_ids": [
+        "6880",
+        "10274",
+        "10284",
+        "14625"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A publisher may be annotated as a game in the prior type card; do not expand game semantics to fit every label.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "business_name",
+        "place_name"
+      ],
+      "shared_rule": "Distinguish an identified business or organization from a location reference; a named business can also function as a destination.",
+      "coexistence_rule": "Business identity and geographic location can be separately expressed in the same request.",
+      "evidence_source_ids": [
+        "2268",
+        "3740",
+        "5407",
+        "7931",
+        "12029",
+        "12061",
+        "12122",
+        "12421",
+        "13899",
+        "15150",
+        "15151"
+      ],
+      "coannotated_source_utterances": 4,
+      "shared_normalized_fillers": 4,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Walmart is assigned either label; venue role alone may not determine native annotation. Do not use capitalisation or brand lookup as a label rule.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        }
+      ]
+    },
+    {
+      "types": [
+        "business_name",
+        "podcast_name"
+      ],
+      "shared_rule": "Distinguish a producing organization from the podcast program it provides.",
+      "coexistence_rule": "A producer and separately identified program can coexist.",
+      "evidence_source_ids": [
+        "11344",
+        "11541",
+        "12061",
+        "15524"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "NYT may identify a program by its publisher; metonymic naming needs explicit policy.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "business_name",
+        "sport_type"
+      ],
+      "shared_rule": "Distinguish an organization identity from a sport or sports-event reference.",
+      "coexistence_rule": "A sponsoring business and a sport can coexist.",
+      "evidence_source_ids": [
+        "2448",
+        "8298",
+        "8299",
+        "13640"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Sport_type includes team-related references in only four learning sources; organization/team precedence is not resolved.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "business_name",
+        "transport_agency"
+      ],
+      "shared_rule": "Distinguish an organization considered as a business from its role providing transportation.",
+      "coexistence_rule": "A transport provider and a destination business can coexist.",
+      "evidence_source_ids": [
+        "2926",
+        "12122",
+        "12250",
+        "12463",
+        "12829",
+        "12830",
+        "12868",
+        "14718",
+        "15689"
+      ],
+      "coannotated_source_utterances": 1,
+      "shared_normalized_fillers": 2,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Ola and Uber receive business labels in stock questions; provider identity alone cannot settle every mention.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "business_type",
+        "order_type"
+      ],
+      "shared_rule": "Distinguish a commercial establishment category from an ordering/fulfillment mode.",
+      "coexistence_rule": "Restaurant and carryout can both be present.",
+      "evidence_source_ids": [
+        "1727",
+        "3617",
+        "4829",
+        "5838",
+        "11683",
+        "12739"
+      ],
+      "coannotated_source_utterances": 19,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Takeaway can also describe an establishment; do not classify by word alone.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "business_type",
+        "place_name"
+      ],
+      "shared_rule": "Distinguish a venue category from a location or destination reference.",
+      "coexistence_rule": "A taco truck and a city can be separately expressed.",
+      "evidence_source_ids": [
+        "10977",
+        "11588",
+        "11603",
+        "11609",
+        "11924",
+        "12043",
+        "12058",
+        "12094",
+        "12116",
+        "14466"
+      ],
+      "coannotated_source_utterances": 32,
+      "shared_normalized_fillers": 3,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Store/theaters vary across labels; category-as-location and native metonymy need review.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        }
+      ]
+    },
+    {
+      "types": [
+        "change_amount",
+        "date"
+      ],
+      "shared_rule": "Distinguish a control magnitude/target level from a calendar expression.",
+      "coexistence_rule": "An adjustment level and its calendar schedule can coexist.",
+      "evidence_source_ids": [
+        "82",
+        "2342",
+        "2791",
+        "7537"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Numerals alone cannot decide whether an expression is a level or date.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "change_amount",
+        "time"
+      ],
+      "shared_rule": "Distinguish a control magnitude/target level from a clock time or duration.",
+      "coexistence_rule": "A desired level and adjustment timing can coexist.",
+      "evidence_source_ids": [
+        "82",
+        "2290",
+        "5220",
+        "6167"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Maximum need not be numeric; minutes describe time rather than amount unless the controlled quantity is explicitly defined otherwise.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "coffee_type",
+        "cooking_type"
+      ],
+      "shared_rule": "Distinguish a coffee variety/characteristic from an operation used to prepare food.",
+      "coexistence_rule": "A coffee style and a separately expressed preparation operation may coexist.",
+      "evidence_source_ids": [
+        "1168",
+        "1814",
+        "9922",
+        "10018"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Filter/roast can be characteristics or processes; no hard lexical mapping is justified.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "coffee_type",
+        "drink_type"
+      ],
+      "shared_rule": "Distinguish a coffee-specific variety/characteristic from a beverage reference.",
+      "coexistence_rule": "Different beverages or explicitly separate characteristics may coexist.",
+      "evidence_source_ids": [
+        "1572",
+        "2291",
+        "10939",
+        "11195"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Coffee is also a drink; absence of dual annotation does not prove semantic exclusivity or completeness.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "cooking_type",
+        "food_type"
+      ],
+      "shared_rule": "Distinguish a preparation operation from the food being prepared/discussed.",
+      "coexistence_rule": "Roll and sushi or frying and french fries can coexist.",
+      "evidence_source_ids": [
+        "4340",
+        "9922",
+        "9939",
+        "10064"
+      ],
+      "coannotated_source_utterances": 8,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Generic cooking verbs are not consistently established as annotated; unmarked operations cannot automatically be false.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "cooking_type",
+        "ingredient"
+      ],
+      "shared_rule": "Distinguish a preparation operation from a material used in preparation.",
+      "coexistence_rule": "Poach and egg or steam and rice can coexist.",
+      "evidence_source_ids": [
+        "9960",
+        "10000",
+        "10006",
+        "10008",
+        "10029"
+      ],
+      "coannotated_source_utterances": 5,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Food-versus-ingredient precedence is independently unresolved; this rule does not certify every material label.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "cooking_type",
+        "time"
+      ],
+      "shared_rule": "Distinguish a preparation operation from a supplied duration or clock expression.",
+      "coexistence_rule": "A cooking method and a stated cooking duration may coexist.",
+      "evidence_source_ids": [
+        "6941",
+        "9922",
+        "9995",
+        "14363"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Asking how long to boil activates a question but does not supply a duration value.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "currency_name",
+        "place_name"
+      ],
+      "shared_rule": "Distinguish a monetary denomination from a geographic reference.",
+      "coexistence_rule": "A currency and a geographic location may be separately expressed.",
+      "evidence_source_ids": [
+        "1801",
+        "2097",
+        "4527",
+        "5299",
+        "8018",
+        "13259",
+        "13707",
+        "13767",
+        "14157",
+        "14485",
+        "14972"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 4,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Country names are used metonymically for currency in native data; surrounding monetary relation must be examined.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        }
+      ]
+    },
+    {
+      "types": [
+        "date",
+        "general_frequency"
+      ],
+      "shared_rule": "Distinguish calendar anchoring or a bounded calendar period from a recurrence rule. Use the function of the expression in context, not a weekday keyword alone.",
+      "coexistence_rule": "A recurrence can be anchored to a calendar period; distinct evidence can support both types.",
+      "evidence_source_ids": [
+        "2839",
+        "4425",
+        "6743",
+        "6824",
+        "6915",
+        "7003",
+        "7363",
+        "8354",
+        "8437",
+        "8603"
+      ],
+      "coannotated_source_utterances": 15,
+      "shared_normalized_fillers": 6,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Mondays and weekly receive both types across contexts; do not impose a global lexical mapping or claim exhaustive precedence.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "date",
+        "time"
+      ],
+      "shared_rule": "Distinguish calendar anchoring/period from a clock time, duration, or offset.",
+      "coexistence_rule": "Tomorrow and six can support distinct types.",
+      "evidence_source_ids": [
+        "2145",
+        "2229",
+        "3362",
+        "4105",
+        "5834",
+        "5976",
+        "6843",
+        "7659",
+        "7713",
+        "9068",
+        "11698",
+        "15173"
+      ],
+      "coannotated_source_utterances": 245,
+      "shared_normalized_fillers": 5,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Weekend and next few days receive both labels in similar contexts; unit size alone cannot settle native precedence.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "date",
+        "timeofday"
+      ],
+      "shared_rule": "Distinguish the calendar day or period from a part of a day. A combined expression may express both aspects.",
+      "coexistence_rule": "Tomorrow morning can separately express a date and a day part.",
+      "evidence_source_ids": [
+        "1514",
+        "5375",
+        "5723",
+        "8497",
+        "8625",
+        "10787",
+        "11890",
+        "12701",
+        "12847"
+      ],
+      "coannotated_source_utterances": 75,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Tonight is annotated under either type; same-expression dual labelling or precedence requires a frozen annotation convention.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "definition_word",
+        "food_type"
+      ],
+      "shared_rule": "Distinguish an expression quoted or queried for its meaning from food referred to as food.",
+      "coexistence_rule": "Separate definition targets and food mentions may coexist.",
+      "evidence_source_ids": [
+        "4394",
+        "10130",
+        "10145",
+        "12958",
+        "13243",
+        "15051"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Garam masala has both labels by role; semantic food identity does not automatically license food_type alongside definition_word.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "definition_word",
+        "person"
+      ],
+      "shared_rule": "Distinguish a definition/description target from a person reference.",
+      "coexistence_rule": "Different targets and people can be mentioned together.",
+      "evidence_source_ids": [
+        "7578",
+        "7619",
+        "13207",
+        "13569",
+        "13764",
+        "13885",
+        "16640"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Describe Joe is annotated definition_word; person/target overlap requires annotation convention rather than name matching.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        }
+      ]
+    },
+    {
+      "types": [
+        "definition_word",
+        "place_name"
+      ],
+      "shared_rule": "Distinguish a word/concept under definition from a place used geographically.",
+      "coexistence_rule": "A definition target and a separate geographic reference may coexist.",
+      "evidence_source_ids": [
+        "11887",
+        "11888",
+        "12115",
+        "12746",
+        "12889",
+        "13901",
+        "14120",
+        "14121",
+        "14828",
+        "14863",
+        "14908"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 2,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Home and Angel have both roles; same-span dual presence or priority remains unverified.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        }
+      ]
+    },
+    {
+      "types": [
+        "device_type",
+        "transport_type"
+      ],
+      "shared_rule": "Distinguish equipment from a transport mode or vehicle category in context.",
+      "coexistence_rule": "A GPS device and its car can coexist.",
+      "evidence_source_ids": [
+        "227",
+        "3842",
+        "4590",
+        "11351",
+        "12397"
+      ],
+      "coannotated_source_utterances": 1,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Vehicles are also physical devices; broad physical-object membership is insufficient for native device_type.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "device_type",
+        "weather_descriptor"
+      ],
+      "shared_rule": "Distinguish equipment identity from a weather condition or weather-related practical criterion.",
+      "coexistence_rule": "A device and a separate weather condition can coexist.",
+      "evidence_source_ids": [
+        "777",
+        "4110",
+        "4800",
+        "5460"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Umbrella may express weather advice in this ontology; object identity alone does not imply device_type.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "drink_type",
+        "food_type"
+      ],
+      "shared_rule": "Distinguish beverages from food/dish references under explicit preparation and consumption context.",
+      "coexistence_rule": "A meal order can mention food and drink separately.",
+      "evidence_source_ids": [
+        "3081",
+        "9917",
+        "10184",
+        "11195",
+        "11655"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Ingredients cross both categories; liquid form alone is not a complete annotation rule.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "drink_type",
+        "ingredient"
+      ],
+      "shared_rule": "Distinguish a beverage reference from a material serving an ingredient role in preparation.",
+      "coexistence_rule": "Distinct expressions can name a beverage and one of its ingredients; shared substance identity does not imply mutual exclusion.",
+      "evidence_source_ids": [
+        "9995",
+        "10035",
+        "10084",
+        "10184",
+        "10939",
+        "11195"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Water differs by context, while other preparation objects use food_type. Whole-ontology precedence needs review before negatives are inferred.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "email_address",
+        "person"
+      ],
+      "shared_rule": "Distinguish an address identifying a mailbox from the person it refers to.",
+      "coexistence_rule": "Toby and the stated address can coexist.",
+      "evidence_source_ids": [
+        "7525",
+        "8590",
+        "15768",
+        "15859",
+        "15919"
+      ],
+      "coannotated_source_utterances": 5,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "An address local-part is not automatically an independently expressed person name.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        },
+        {
+          "id": "contact_attribute",
+          "rule": "personal_info requires an explicitly requested or stated contact/person attribute, such as a phone number field or work department. The communication medium email and a standalone mailbox identifying expression do not on their own add a second personal_info predicate.",
+          "boundary": "An explicit field and an explicit value can coexist. Absence is established by full-input review, not by native email_address membership."
+        }
+      ]
+    },
+    {
+      "types": [
+        "email_address",
+        "personal_info"
+      ],
+      "shared_rule": "Distinguish an email-address identifying expression from a requested or stated personal-information field or attribute.",
+      "coexistence_rule": "A field name and its stated address can both be expressed.",
+      "evidence_source_ids": [
+        "15768",
+        "15793",
+        "15859",
+        "16185"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A requested contact field need not include its value; conversely an address does not by itself express every possible contact-field type.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "contact_attribute",
+          "rule": "personal_info requires an explicitly requested or stated contact/person attribute, such as a phone number field or work department. The communication medium email and a standalone mailbox identifying expression do not on their own add a second personal_info predicate.",
+          "boundary": "An explicit field and an explicit value can coexist. Absence is established by full-input review, not by native email_address membership."
+        }
+      ]
+    },
+    {
+      "types": [
+        "email_folder",
+        "list_name"
+      ],
+      "shared_rule": "Distinguish a mail-storage folder from an identified list/task collection.",
+      "coexistence_rule": "A folder and a separate list can be mentioned together.",
+      "evidence_source_ids": [
+        "10811",
+        "10978",
+        "16486",
+        "16844"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Generic containers such as wallet appear in list_name; no exhaustive container hierarchy is established.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "event_name",
+        "meal_type"
+      ],
+      "shared_rule": "Distinguish an event/activity reference from a meal occasion/category.",
+      "coexistence_rule": "A meeting and lunch can be separately expressed.",
+      "evidence_source_ids": [
+        "5466",
+        "7457",
+        "8052",
+        "8837",
+        "9150",
+        "10002"
+      ],
+      "coannotated_source_utterances": 2,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Lunch can itself be an event; native priority for a single meal-event expression remains unresolved.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "event_name",
+        "movie_name"
+      ],
+      "shared_rule": "Distinguish an event/screening from a film title in the expressed role.",
+      "coexistence_rule": "A screening event and a separate film reference can coexist.",
+      "evidence_source_ids": [
+        "6192",
+        "6552",
+        "8177",
+        "11657",
+        "11736",
+        "11850"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Logan in near-equivalent show-time questions receives either label; do not invent a semantic difference to justify it.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "event_name",
+        "news_topic"
+      ],
+      "shared_rule": "Distinguish a represented event/activity from its role as the subject of news/reporting or public-event developments; both may hold with independent evidence.",
+      "coexistence_rule": "A scheduled activity and a separate news topic may coexist.",
+      "evidence_source_ids": [
+        "632",
+        "1861",
+        "2897",
+        "2922",
+        "6759",
+        "7273",
+        "7895"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type independently satisfies request relevance and its presence policy. news_topic additionally requires the expressed reporting/development relation; a native news intent or topical word alone is not sufficient.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Election receives either type in update requests; event/topic overlap needs explicit precedence.",
+      "unresolved_constraint": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role. Do not infer absence or exclusivity from native assignments.",
+      "role_rules": [
+        {
+          "id": "news_reporting_scope",
+          "rule": "Establish an expressed news/reporting or public-event-development relation before assigning a subject as news_topic; generic information alone is insufficient.",
+          "boundary": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role."
+        }
+      ]
+    },
+    {
+      "types": [
+        "event_name",
+        "person"
+      ],
+      "shared_rule": "Distinguish an event identifier from a person reference.",
+      "coexistence_rule": "Sam and party can be separately expressed.",
+      "evidence_source_ids": [
+        "6876",
+        "6879",
+        "7024",
+        "7106",
+        "7251",
+        "8892",
+        "9016",
+        "14587",
+        "15351",
+        "15745",
+        "15817",
+        "15826"
+      ],
+      "coannotated_source_utterances": 132,
+      "shared_normalized_fillers": 2,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "An event can be named Anna, and all can refer to events or recipients; reference role rather than surface form is required.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        }
+      ]
+    },
+    {
+      "types": [
+        "event_name",
+        "sport_type"
+      ],
+      "shared_rule": "Distinguish a general event/activity from a sports category or sports-event reference.",
+      "coexistence_rule": "Separate events and sports references can coexist.",
+      "evidence_source_ids": [
+        "6788",
+        "7791",
+        "8246",
+        "8393"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Basketball game is both semantically an event and sport-related; four sports sources do not establish same-span precedence.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "food_type",
+        "ingredient"
+      ],
+      "shared_rule": "A food/dish role and an explicitly acted-on preparation material role may both be supported by the same expression. Mere recipe-for wording may not determine the input role.",
+      "coexistence_rule": "An explicitly cooked food can satisfy both predicates; no separate finished dish is required for the material role.",
+      "evidence_source_ids": [
+        "2362",
+        "9960",
+        "9974",
+        "9985",
+        "9997",
+        "10005",
+        "10006",
+        "10148",
+        "10205",
+        "10207",
+        "10227",
+        "10239"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 3,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Rice in nearly equivalent cooking requests receives different labels; an input/output rule is a semantic candidate, not a complete reconstruction of native gold.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "food_type",
+        "meal_type"
+      ],
+      "shared_rule": "Distinguish a food/dish from the meal occasion at which it is served.",
+      "coexistence_rule": "Sushi and dinner can coexist.",
+      "evidence_source_ids": [
+        "87",
+        "306",
+        "2089",
+        "4866",
+        "7138",
+        "8713"
+      ],
+      "coannotated_source_utterances": 6,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Meal names can denote dishes or events; same-word assignment needs context and explicit convention.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "food_type",
+        "order_type"
+      ],
+      "shared_rule": "Distinguish food content from its ordering/fulfillment mode.",
+      "coexistence_rule": "Pizza and delivery can coexist.",
+      "evidence_source_ids": [
+        "131",
+        "352",
+        "1044",
+        "1232",
+        "2479",
+        "2525",
+        "2631",
+        "4935",
+        "10015"
+      ],
+      "coannotated_source_utterances": 19,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Takeout appears as food_type in 2525 and order_type elsewhere; do not equate all native assignments with semantic correctness.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "preparation_input",
+          "rule": "ingredient includes an explicitly stated material/component/substitute used in food preparation, including the material acted upon by an explicitly requested cooking process. A food name or request for a recipe alone does not certify an input role. food_type may also be true when its food/dish definition is satisfied.",
+          "boundary": "The object of cook/steam/poach can be an ingredient even without naming another finished dish. Recipe-for wording alone may remain ambiguous; no blanket negative or lexical food list."
+        }
+      ]
+    },
+    {
+      "types": [
+        "game_name",
+        "game_type"
+      ],
+      "shared_rule": "Distinguish a particular game reference from a game category or medium.",
+      "coexistence_rule": "A named game and its medium can be separately expressed.",
+      "evidence_source_ids": [
+        "10336",
+        "10402",
+        "14210"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Game_type has only one learning source, video; no complete genre/name boundary is established.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "general_frequency",
+        "time"
+      ],
+      "shared_rule": "Distinguish recurrence from a clock time/duration/offset.",
+      "coexistence_rule": "Weekly and one pm can both be present.",
+      "evidence_source_ids": [
+        "1134",
+        "6743",
+        "6768",
+        "7172",
+        "8131",
+        "16110"
+      ],
+      "coannotated_source_utterances": 27,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Every hour may express both a period and recurrence; no automatic single-label precedence is established.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "house_place",
+        "place_name"
+      ],
+      "shared_rule": "A domestic cleaning surface supports house_place but not place_name without a geographic, venue or destination role.",
+      "coexistence_rule": "A domestic area explicitly functioning as a destination may satisfy both definitions; no global exclusion applies.",
+      "evidence_source_ids": [
+        "29",
+        "226",
+        "2904",
+        "3237",
+        "3415",
+        "5980",
+        "9465",
+        "12239",
+        "15054"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 4,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Near-equivalent clean-the-floor requests receive different labels; this needs annotation adjudication, not an invented role distinction.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        }
+      ]
+    },
+    {
+      "types": [
+        "joke_type",
+        "news_topic"
+      ],
+      "shared_rule": "A joke topic is not a news topic unless the utterance also expresses a news/reporting or public-event-development relation.",
+      "coexistence_rule": "Separate humor and news requests may express both.",
+      "evidence_source_ids": [
+        "1578",
+        "4100",
+        "4366",
+        "6553"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type independently satisfies request relevance and its presence policy. news_topic additionally requires the expressed reporting/development relation; a native news intent or topical word alone is not sufficient.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "The same topic can belong to both contexts; neither word identity nor a presumed single intent proves absence.",
+      "unresolved_constraint": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role. Do not infer absence or exclusivity from native assignments.",
+      "role_rules": [
+        {
+          "id": "news_reporting_scope",
+          "rule": "Establish an expressed news/reporting or public-event-development relation before assigning a subject as news_topic; generic information alone is insufficient.",
+          "boundary": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role."
+        }
+      ]
+    },
+    {
+      "types": [
+        "joke_type",
+        "person"
+      ],
+      "shared_rule": "Distinguish a joke characteristic/topic from a person participating in the request.",
+      "coexistence_rule": "Funny and recipient Sam coexist.",
+      "evidence_source_ids": [
+        "526",
+        "2685",
+        "2686",
+        "8111",
+        "14027"
+      ],
+      "coannotated_source_utterances": 2,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A person's name used as joke topic may overlap both; explicit annotation precedence is needed.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        }
+      ]
+    },
+    {
+      "types": [
+        "list_name",
+        "playlist_name"
+      ],
+      "shared_rule": "Distinguish a general task/item collection from a music playlist reference.",
+      "coexistence_rule": "Separate lists and playlists may coexist.",
+      "evidence_source_ids": [
+        "1095",
+        "1931",
+        "11117",
+        "11183"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Both are collections; generic list wording needs contextual evidence, not automatic inheritance to both types.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "media_type",
+        "playlist_name"
+      ],
+      "shared_rule": "Distinguish a media kind/source from an identified playlist collection.",
+      "coexistence_rule": "A collection and separately expressed media format/source may coexist.",
+      "evidence_source_ids": [
+        "577",
+        "4419",
+        "15419",
+        "15568"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Native media_type includes platforms; playlist providers are not automatically playlist identifiers.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "media_type",
+        "radio_name"
+      ],
+      "shared_rule": "Distinguish a media kind/source from a radio station or tuning reference.",
+      "coexistence_rule": "A station and separate media/source expression may coexist.",
+      "evidence_source_ids": [
+        "3604",
+        "5315",
+        "9199",
+        "9251",
+        "9551",
+        "9648",
+        "15473"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "BBC is a media source in news requests and a radio station in playback; same-brand precedence remains task-specific.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "station_service",
+          "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+          "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+        }
+      ]
+    },
+    {
+      "types": [
+        "media_type",
+        "song_name"
+      ],
+      "shared_rule": "Distinguish content kind/source from a particular song reference.",
+      "coexistence_rule": "Music as a kind and an identified song can coexist.",
+      "evidence_source_ids": [
+        "2534",
+        "4030",
+        "15270",
+        "16186"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Native song_name includes ambiguous platform/collection-like expressions; do not let those redefine all source roles.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "movie_name",
+        "movie_type"
+      ],
+      "shared_rule": "Distinguish a film identifier from a genre/rating/selection property.",
+      "coexistence_rule": "A film and its descriptive criterion may coexist.",
+      "evidence_source_ids": [
+        "11728",
+        "11735",
+        "11766",
+        "11983"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Only eight movie_type sources exist; not every adjective is a valid genre/property annotation.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "movie_name",
+        "music_album"
+      ],
+      "shared_rule": "Distinguish a film reference from a music album reference using medium and work role.",
+      "coexistence_rule": "Separate works in both media may coexist.",
+      "evidence_source_ids": [
+        "2911",
+        "5056",
+        "11735"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "2911 is music-context movie_name; the only album source is a theme-song reference. Both need adjudication, not an invented overlap rule.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "movie_name",
+        "song_name"
+      ],
+      "shared_rule": "Distinguish a film from a song referenced in context.",
+      "coexistence_rule": "A song and the film containing it may both be mentioned.",
+      "evidence_source_ids": [
+        "1782",
+        "4410",
+        "6552",
+        "11737"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Shared titles require medium evidence; titles alone cannot settle membership.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "music_album",
+        "playlist_name"
+      ],
+      "shared_rule": "Distinguish an album release from a curated playlist collection.",
+      "coexistence_rule": "An album and a separately identified playlist can coexist.",
+      "evidence_source_ids": [
+        "2535",
+        "4870",
+        "5056"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "The sole album source does not reliably establish album semantics; native absence is not a verified negative.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "music_album",
+        "song_name"
+      ],
+      "shared_rule": "Distinguish an album collection/release from an individual song.",
+      "coexistence_rule": "A song can be identified together with its album.",
+      "evidence_source_ids": [
+        "2358",
+        "4304",
+        "5056"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "The only album annotation concerns a theme song, and some song labels name artists; source adjudication is required.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "music_descriptor",
+        "music_genre"
+      ],
+      "shared_rule": "Distinguish a music selection/property expression from a stylistic genre.",
+      "coexistence_rule": "Popular and hip hop or a rating and folk can coexist.",
+      "evidence_source_ids": [
+        "1439",
+        "2072",
+        "3158",
+        "4629",
+        "5685",
+        "6098"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Genre is itself a descriptor semantically; generic property inheritance does not establish native dual labels.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "music_descriptor",
+        "player_setting"
+      ],
+      "shared_rule": "Distinguish characteristics selecting content from an operation/mode controlling playback.",
+      "coexistence_rule": "Recent songs and shuffle can be separately expressed.",
+      "evidence_source_ids": [
+        "1439",
+        "2162",
+        "4777",
+        "5019",
+        "9802",
+        "11135"
+      ],
+      "coannotated_source_utterances": 2,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Without shuffle still mentions a setting; presence must not be confused with choosing to enable it.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "music_descriptor",
+        "playlist_name"
+      ],
+      "shared_rule": "Distinguish a property selecting music from an expression identifying a playlist collection.",
+      "coexistence_rule": "A descriptor and a playlist reference can coexist, including descriptive words within a playlist name under an admitted span policy.",
+      "evidence_source_ids": [
+        "627",
+        "1712",
+        "1964",
+        "2356",
+        "2941",
+        "5311"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Descriptive titles and genre words overlap; do not force one label from syntax or the presence of the word playlist alone.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "music_genre",
+        "playlist_name"
+      ],
+      "shared_rule": "Distinguish music style from a playlist identifier, including a descriptive title.",
+      "coexistence_rule": "Separate genre and playlist references may coexist.",
+      "evidence_source_ids": [
+        "1931",
+        "2377",
+        "2378",
+        "2954",
+        "4936",
+        "5023",
+        "9247"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Electronic is assigned either label; whether a genre inside a playlist title counts separately needs a span/precedence policy.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "music_genre",
+        "radio_name"
+      ],
+      "shared_rule": "Distinguish a music style from the station being selected.",
+      "coexistence_rule": "Hip hop and Hot 97 coexist.",
+      "evidence_source_ids": [
+        "1559",
+        "3432",
+        "9536",
+        "9552",
+        "9644"
+      ],
+      "coannotated_source_utterances": 1,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A genre-named station is not automatically an independently expressed genre under the native convention.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "station_service",
+          "rule": "radio_name requires a station/channel/tuning reference, which can be descriptive rather than a proper name. An application/service name does not automatically identify a station.",
+          "boundary": "Service/station ambiguity without a disambiguating role remains unresolved; do not force both true or use native omission as false."
+        }
+      ]
+    },
+    {
+      "types": [
+        "news_topic",
+        "person"
+      ],
+      "shared_rule": "Distinguish an expressed person reference from its role as the subject of news/reporting or public-event developments; both may hold.",
+      "coexistence_rule": "Trump and immigration policy may occupy separate roles.",
+      "evidence_source_ids": [
+        "1302",
+        "1998",
+        "2595",
+        "3188",
+        "3409",
+        "3945",
+        "8074",
+        "13492",
+        "13718",
+        "17039"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type independently satisfies request relevance and its presence policy. news_topic additionally requires the expressed reporting/development relation; a native news intent or topical word alone is not sufficient.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Trump alone can be a topic or person in news-like contexts; world knowledge does not determine native priority.",
+      "unresolved_constraint": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role. Do not infer absence or exclusivity from native assignments.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        },
+        {
+          "id": "news_reporting_scope",
+          "rule": "Establish an expressed news/reporting or public-event-development relation before assigning a subject as news_topic; generic information alone is insufficient.",
+          "boundary": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role."
+        }
+      ]
+    },
+    {
+      "types": [
+        "news_topic",
+        "place_name"
+      ],
+      "shared_rule": "Distinguish a geographic location reference from the geographic subject/scope of reports; a report source location alone does not automatically supply a news subject.",
+      "coexistence_rule": "Elections and France can be expressed separately.",
+      "evidence_source_ids": [
+        "282",
+        "293",
+        "1269",
+        "1296",
+        "1424",
+        "1463",
+        "2370",
+        "3215",
+        "13116",
+        "13117",
+        "13218",
+        "15076"
+      ],
+      "coannotated_source_utterances": 6,
+      "shared_normalized_fillers": 3,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type independently satisfies request relevance and its presence policy. news_topic additionally requires the expressed reporting/development relation; a native news intent or topical word alone is not sufficient.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "World in near-equivalent requests receives either type; topic/location overlap cannot be resolved by prepositions alone.",
+      "unresolved_constraint": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role. Do not infer absence or exclusivity from native assignments.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        },
+        {
+          "id": "news_reporting_scope",
+          "rule": "Establish an expressed news/reporting or public-event-development relation before assigning a subject as news_topic; generic information alone is insufficient.",
+          "boundary": "Unavailable when evidence does not distinguish a reporting/development reading from another plausible task, or does not settle source-versus-topic role."
+        }
+      ]
+    },
+    {
+      "types": [
+        "person",
+        "personal_info"
+      ],
+      "shared_rule": "Distinguish a person from an information field/attribute about that person.",
+      "coexistence_rule": "John and address can both be explicit.",
+      "evidence_source_ids": [
+        "7792",
+        "15793",
+        "15879",
+        "16068",
+        "16199",
+        "16720"
+      ],
+      "coannotated_source_utterances": 49,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A name does not imply an expressed address/phone field, and a field need not have a stated value.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        },
+        {
+          "id": "contact_attribute",
+          "rule": "personal_info requires an explicitly requested or stated contact/person attribute, such as a phone number field or work department. The communication medium email and a standalone mailbox identifying expression do not on their own add a second personal_info predicate.",
+          "boundary": "An explicit field and an explicit value can coexist. Absence is established by full-input review, not by native email_address membership."
+        }
+      ]
+    },
+    {
+      "types": [
+        "person",
+        "relation"
+      ],
+      "shared_rule": "Distinguish an identifying personal reference from a social/kinship/occupational relation.",
+      "coexistence_rule": "Uncle and John can both be present.",
+      "evidence_source_ids": [
+        "6254",
+        "6949",
+        "6987",
+        "7273",
+        "15803",
+        "16417"
+      ],
+      "coannotated_source_utterances": 11,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A relational reference can identify a person semantically; same-span type inheritance is not automatically native policy.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "person_reference",
+          "rule": "An explicitly person-directed name, description or pronoun can supply person presence when it serves the request. Resolving the individual identity or supplying a proper name is not required. Grammatical first/second person merely addressing the assistant does not by itself establish a task participant; a role such as contact owner, recipient or queried subject must be expressed.",
+          "boundary": "Bare ambiguous it/they without a supported human role remains unresolved; no person label inferred solely from creator world knowledge."
+        }
+      ]
+    },
+    {
+      "types": [
+        "personal_info",
+        "relation"
+      ],
+      "shared_rule": "Distinguish a contact/personal attribute from a person's relation or social role.",
+      "coexistence_rule": "Sister and cellphone number can coexist.",
+      "evidence_source_ids": [
+        "8393",
+        "9003",
+        "16272",
+        "16581",
+        "17038",
+        "17168"
+      ],
+      "coannotated_source_utterances": 10,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Email can refer to a message or a contact field; the distinction must follow the local role rather than keyword presence.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "contact_attribute",
+          "rule": "personal_info requires an explicitly requested or stated contact/person attribute, such as a phone number field or work department. The communication medium email and a standalone mailbox identifying expression do not on their own add a second personal_info predicate.",
+          "boundary": "An explicit field and an explicit value can coexist. Absence is established by full-input review, not by native email_address membership."
+        }
+      ]
+    },
+    {
+      "types": [
+        "place_name",
+        "time_zone"
+      ],
+      "shared_rule": "Distinguish a geographic location from the time standard used for a clock reading.",
+      "coexistence_rule": "A location and a separate time zone may coexist.",
+      "evidence_source_ids": [
+        "48",
+        "619",
+        "755",
+        "2229",
+        "3469",
+        "4113",
+        "4561",
+        "5203",
+        "5617",
+        "5933",
+        "12272"
+      ],
+      "coannotated_source_utterances": 3,
+      "shared_normalized_fillers": 2,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Moscow can be a location or zone reference; CST/EST as place_name in 2229 needs adjudication, not automatic acceptance.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        }
+      ]
+    },
+    {
+      "types": [
+        "place_name",
+        "transport_descriptor"
+      ],
+      "shared_rule": "Distinguish location identity from a journey/ticket property or route qualifier.",
+      "coexistence_rule": "Origin/destination and round-trip property can coexist.",
+      "evidence_source_ids": [
+        "5872",
+        "7318",
+        "12131",
+        "12192",
+        "12193"
+      ],
+      "coannotated_source_utterances": 5,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A route clause may contain a location inside the descriptor span; nested mention policy is not yet established.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": [
+        {
+          "id": "domestic_surface",
+          "rule": "house_place includes a domestic room, area or household surface used as a cleaning/activity target. place_name requires a geographic location, venue or travel destination role; a bare household surface as a cleaning target does not satisfy it.",
+          "boundary": "A home or room explicitly used as a destination can support a location role; no global house_place implies not place_name rule."
+        }
+      ]
+    },
+    {
+      "types": [
+        "player_setting",
+        "podcast_descriptor"
+      ],
+      "shared_rule": "Distinguish a playback operation from a property selecting a podcast episode.",
+      "coexistence_rule": "Skip and next episode can coexist.",
+      "evidence_source_ids": [
+        "9890",
+        "9908",
+        "11465",
+        "11491",
+        "11522",
+        "11533"
+      ],
+      "coannotated_source_utterances": 7,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Next can describe an operation or episode choice; no keyword-only assignment is valid.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "playlist_name",
+        "song_name"
+      ],
+      "shared_rule": "Distinguish the music collection from an individual track reference.",
+      "coexistence_rule": "A track and its collection may both be expressed.",
+      "evidence_source_ids": [
+        "361",
+        "1711",
+        "1876",
+        "2079",
+        "3557"
+      ],
+      "coannotated_source_utterances": 1,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "361 labels Google Play as playlist; service/collection interpretation is unresolved and cannot certify general precedence.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "podcast_descriptor",
+        "podcast_name"
+      ],
+      "shared_rule": "Distinguish an episode-selection property from the program identifier.",
+      "coexistence_rule": "Next episode and Con Man coexist.",
+      "evidence_source_ids": [
+        "11325",
+        "11362",
+        "11397",
+        "11405",
+        "11518",
+        "11531"
+      ],
+      "coannotated_source_utterances": 12,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Some names include topic/command fragments; source boundaries require review before semantic supervision.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "time",
+        "time_zone"
+      ],
+      "shared_rule": "Distinguish a clock/duration expression from the standard or zone used to interpret a clock reading.",
+      "coexistence_rule": "Seven pm and PST support different types within one request.",
+      "evidence_source_ids": [
+        "4180",
+        "4181",
+        "4771",
+        "5775",
+        "6837",
+        "16093"
+      ],
+      "coannotated_source_utterances": 4,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Asking the time does not supply a clock value; a zone name does not imply an independently expressed time value.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "time",
+        "timeofday"
+      ],
+      "shared_rule": "Distinguish a clock time, duration or offset from a named day part.",
+      "coexistence_rule": "A specified hour and its day part can both be present.",
+      "evidence_source_ids": [
+        "721",
+        "3663",
+        "4466",
+        "4735",
+        "6718",
+        "7172",
+        "8450",
+        "8473",
+        "12462",
+        "15107"
+      ],
+      "coannotated_source_utterances": 39,
+      "shared_normalized_fillers": 1,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Night appears under both labels; broadening time to all temporal expressions would erase the intended boundary.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "transport_agency",
+        "transport_name"
+      ],
+      "shared_rule": "Distinguish the provider organization from a particular service, route, or journey identifier.",
+      "coexistence_rule": "A provider and separately identified service can coexist.",
+      "evidence_source_ids": [
+        "12180",
+        "12313",
+        "12830",
+        "12897"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Brands can name both operator and service; zero observed coannotation does not imply exclusivity.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "transport_agency",
+        "transport_type"
+      ],
+      "shared_rule": "Distinguish the provider from the travel mode/vehicle category.",
+      "coexistence_rule": "Uber and taxi coexist.",
+      "evidence_source_ids": [
+        "12243",
+        "12382",
+        "12481",
+        "12560",
+        "12635",
+        "12918"
+      ],
+      "coannotated_source_utterances": 7,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "A provider-only request does not prove a separate vehicle category expression.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "transport_descriptor",
+        "transport_name"
+      ],
+      "shared_rule": "Distinguish a journey/ticket property from a service/route identifier.",
+      "coexistence_rule": "A named train service and a trip property can coexist.",
+      "evidence_source_ids": [
+        "12341",
+        "12683",
+        "12881",
+        "12890"
+      ],
+      "coannotated_source_utterances": 0,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Depart is annotated as descriptor while branded trains receive name labels; neither syntax nor proper-name recognition fully fixes the convention.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "transport_descriptor",
+        "transport_type"
+      ],
+      "shared_rule": "Distinguish journey/ticket qualifiers from the transport mode.",
+      "coexistence_rule": "Return and train or berth seat and train coexist.",
+      "evidence_source_ids": [
+        "12131",
+        "12192",
+        "12227",
+        "12351",
+        "12386",
+        "12683"
+      ],
+      "coannotated_source_utterances": 4,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Descriptor contains heterogeneous route and departure phrases; scope remains under review.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    },
+    {
+      "types": [
+        "transport_name",
+        "transport_type"
+      ],
+      "shared_rule": "Distinguish a service/route/journey identifier from its mode or vehicle category.",
+      "coexistence_rule": "Train and number five can coexist.",
+      "evidence_source_ids": [
+        "11350",
+        "12342",
+        "12657",
+        "12682",
+        "12897"
+      ],
+      "coannotated_source_utterances": 4,
+      "shared_normalized_fillers": 0,
+      "status": "reference_reviewed_candidate_not_semantic_supervision",
+      "optimization_allowed": false,
+      "scope_condition": "Each type must independently satisfy request relevance and its existence policy. Coexistence examples do not admit unrelated background; original unresolved precedence remains unresolved.",
+      "scope_review_status": "shared_rule_read_and_retained_with_explicit_relevance_condition_not_label_admission",
+      "historical_unresolved_constraint": "Service-number expressions can include a vehicle word; nested or same-span policy needs explicit treatment.",
+      "unresolved_constraint": "Do not infer semantic absence or exclusivity from historical native assignments. If the current input does not establish the role required by either definition, preserve that predicate as unresolved.",
+      "role_rules": []
+    }
+  ],
+  "other_declared_pairs": [],
+  "scope_contract": "configs/tasks/slurp/slot-relevance-contract-candidate-v1.json",
+  "scope_contract_sha256": "41b016f925aaebcbbca2a665e1ffaf0859fba72ed1a4a9f3df602c6448e51fda",
+  "scope": "request_relevant_role",
+  "source_definition_sha256": "703937a703d5965a33ae57798f05fab11ed9681eafde2c52f1ab3175aff717cf",
+  "source_policy_sha256": "5a50eb9563ba35300658e487a4d8c85c662913a3ff982dc54ffa80e08281cde4",
+  "supersedes_for_scope_draft": "configs/tasks/slurp/type-boundary-rules-candidate-v3.json",
+  "overlap_rule": "For each configured type, require its own expressed-role evidence, presence policy and scope. The same expression may support multiple true predicates when each definition is satisfied and no explicit task rule excludes that overlap.",
+  "news_scope_revision": {
+    "rule": "configs/tasks/slurp/news-topic-boundary-resolution-v1.json",
+    "sha256": "c03a0d792b7883966f4772db11da9820bb507b177a93d60c76d7cefaf59d5ed5",
+    "previous": "configs/tasks/slurp/type-definition-candidates-v3.json",
+    "previous_sha256": "df017c09189e955cd4f5a834de0fd124fc6664c1b56d14122045abbb3277d68a",
+    "affected_types": [
+      "news_topic"
+    ],
+    "old_news_topic_supervision_requires_rereview": true
+  }
+}

@@ -1,0 +1,6465 @@
+{
+  "schema": "context-actual-reward-group-replay-v1",
+  "sources": {
+    ".local/decision-objective-research/context-committed-step320-signal-input-v1.json": "99a18990aac158fb8b4f0a87cac1039492fb16d912a844b91f8a5f876d2b10ab",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.jsonl": "481703c7a6aeb696c652124eccd5533f81d5cefc67ff12d59c0920318df6bbbe",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    ".local/decision-objective-research/context-full-learning-schedule-v1/MANIFEST.json": "d9cd5832aa160df46a4c10a2051ff12c352d2a2609e2cffd6901267b28a814f6",
+    ".local/decision-objective-research/context-full-learning-schedule-v1/epoch-1.json": "6a0243c3440d593b7016fd17c3e028b21045ebf694a49e79f97ebecea535d41b",
+    ".local/decision-objective-research/context-learning-cache-v1-collected/independent.jsonl": "e95689c8633cb676bff926d4704cb8a6d07fa19d7c95fa541af74dcc7cf88567",
+    "docs/engineering/context-learning-cache-v1.json": "4b97af73d330e29b2b3d193b6a09914ecc34c8a7d335399f9654f3db6a7fb3ac",
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/analyze_context_live_reward_support.py": "31c28c729f95ec744fc0252b7f0e84a0a177b90f35e34b9704c252cb29cd4e00",
+    "tools/jev/context_reward_signal.py": "88059df7ae86db05f4de1802d7d053933c2cf7f104288e427877b5cbca352cd3",
+    "tools/reports/analyze_context_action_diversity.py": "906755de0dfbc0a57d7260699ebf8eb2f0ce17b039c088f59959a6c296a919fd",
+    "/home/xingchao/workspace/multimodal-jev/tools/reports/replay_context_reward_groups.py": "979c19d4be79111526b2ee5eee37f267c99c52b597d9b84b4180c9cfaf49dd63",
+    "src/multimodal_jev/context_rollout_batch.py": "b929188f2ddacc1d31ebe89a63142d7023e4a6163b0d17f6bd17208cb206915e",
+    "src/multimodal_jev/span_group_advantage.py": "e99a2ae80edbb1005b5f875bf1114dda8307afd2d2f9529a5a0b6f987f57f8a5"
+  },
+  "torch_version": "2.10.0+cpu",
+  "actor_update": 320,
+  "behavior_update": 319,
+  "queries": [
+    {
+      "request_id": "slurp:audio-1501150258.flac::epoch1-batch2-slot0",
+      "gold_index": 20,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "f6e28ad1753237d42be72be187a88f09a269097eeda24bcf12908db6bd361246"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:4dcc72d7a9e89a59f9bfaae051a289640e8ada068ae9b43e7c932239b2b9a3d7",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.999764202341487
+    },
+    {
+      "request_id": "slurp:audio-1501777134.flac::epoch1-batch2-slot1",
+      "gold_index": 0,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "3a93fe02eda3246d6017710ec247bafa3e0449f405b5466b96b37809c47f8ca1"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:7cc5e1b3e5c2d1891b00392dae8e0e9de1c9e7f6c8d84c135e1181db55b66078",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.980130064271821
+    },
+    {
+      "request_id": "slurp:audio-1490183803-headset.flac::epoch1-batch2-slot2",
+      "gold_index": 8,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "755572e353c4c871c02e09c5c4542b1b8d66ce5713b6628781880fcb16191945"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:eddf013a7c6ad86337401b0f98132ed5af4790867af78cd38fb9075774cec40e",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9964530394592178
+    },
+    {
+      "request_id": "slurp:audio-1489154300.flac::epoch1-batch2-slot3",
+      "gold_index": 17,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "776f0d4c359de79e3cc921d14cf6f074ee22c83bce96b173b1d8e59bcb0cc2e4"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:244a15ce4c0834c1dd54a3bebd98d2f2167c18eb861f01968430a9b8317b3016",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9963717824348399
+    },
+    {
+      "request_id": "slurp:audio-1490290037.flac::epoch1-batch2-slot4",
+      "gold_index": 23,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "c434deedb836ac53c0aebaf85f05a98f8fb0b9bdc2648eecf6156c330c57dffc"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:fad229beca6b9f0f718a8c495a4396fa91f2b3f611c355753fed7140ba8abd8b",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9967024620186028
+    },
+    {
+      "request_id": "slurp:audio-1498570445-headset.flac::epoch1-batch2-slot5",
+      "gold_index": 29,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "750e070a9a7844eccad67ae60de858fc67cc56a5f824acbde7389077f8249d31"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:39eb86ef9ef45ff96e9d33cb1c6a1cf3f84295c0326ecc86a7819ed5bf496d32",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9954188485939843
+    },
+    {
+      "request_id": "slurp:audio-1501751697.flac::epoch1-batch2-slot6",
+      "gold_index": 21,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:701a04bd678e43a2e5c6f461d514ce514571f7d5a1229f83ad183c38b84f5bf9",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9998814261188298
+    },
+    {
+      "request_id": "slurp:audio-1502198876-headset.flac::epoch1-batch2-slot7",
+      "gold_index": 28,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "4e861b137a2a47254bf52490fd5254530e25dbd09e665fea9031b87dadbeb38b"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:47385ee9cd6795338f74c3965817ecd4a2ab0f6beb49e5d465ed6e7347310ed0",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9952135422936187
+    },
+    {
+      "request_id": "slurp:audio-1497861383-headset.flac::epoch1-batch2-slot8",
+      "gold_index": 45,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119c3b77cd4d82e9dfff29269f2d35067660b11064310fd56261954027ebc23f"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:319dbf8b03c384f48a58871aa38b444022cee37ffd770b8368ea76274c9ef7c8",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9944132636273717
+    },
+    {
+      "request_id": "slurp:audio-1502377795.flac::epoch1-batch2-slot9",
+      "gold_index": 7,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "516ee40c16464dfb87904649e7024c3665867d24978761a9682d9ad2efbe875f"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 2,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:1d4bb07c99cda991bdaa025d34d504b09a076adc9b1afee34ae5d3f33b65e8cf",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9999638354221044
+    },
+    {
+      "request_id": "slurp:audio-1502199103.flac::epoch1-batch2-slot10",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:50893e986caab0c9799d539737982848971dac200c6d7c969e837df598be9793",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9940143841487314
+    },
+    {
+      "request_id": "slurp:audio-1498565822.flac::epoch1-batch2-slot11",
+      "gold_index": 40,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:2364a778fd74272824e3131e9ae1529b831be6947d8d33d4f411675c6b99ce38",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9959103564184326
+    },
+    {
+      "request_id": "slurp:audio-1498574209-headset.flac::epoch1-batch2-slot12",
+      "gold_index": 46,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "fa07cc6cfc864ad53ac109a7f32c62ba8275e846c7a77c6287a33b696550673b"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:caf4f92b1631e1970f5a044e3676fce8ca9200f2de0720f3d48df76316c5ed58",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9964891878939791
+    },
+    {
+      "request_id": "slurp:audio-1499361206.flac::epoch1-batch2-slot13",
+      "gold_index": 39,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "e0b11a7f3af78f6de14be96cd3bed3fb426f48c6177e352e4779248a07c21886"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 2,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:3650e76f3a66bbdad8811ed201e3c3d7fcf4fe353c22ed843c7945a382b13800",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9980275128079086
+    },
+    {
+      "request_id": "slurp:audio-1498565643-headset.flac::epoch1-batch2-slot14",
+      "gold_index": 30,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119aafddfebbf7f346ecd06e2e84332b93ede790a83ba46c9fb42a2078eb22fb"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:e415a40fb93a27b87f29c955bc008245d93f967e6da7d13d63a3e0e0380af8ca",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9911470757790631
+    },
+    {
+      "request_id": "slurp:audio-1501766695.flac::epoch1-batch2-slot15",
+      "gold_index": 47,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "43134b11dbed7a5126b048082f9992b654e993974ba771d1ecca9da98ea3c705"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:a42cd8e90bd4c1d3de85224f77c166d890ee12bfba3706f3e0d4ec88d5693ad6",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.996368372807082
+    },
+    {
+      "request_id": "slurp:audio-1499698308.flac::epoch1-batch2-slot16",
+      "gold_index": 49,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "365012d2d5e6f62687e495c797e14722bebba1dbe030c42b97211a407e6bcde4"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:9e3fbb98309de74ca998742e9b4e119cffaa5562f2abb41734500d8f82dd190d",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9910991684030882
+    },
+    {
+      "request_id": "slurp:audio-1490365818-headset.flac::epoch1-batch2-slot17",
+      "gold_index": 22,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "83dc61e9ee84beb8b5124d70a3f824fe94d663a932480e9e920db140789b4679"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:a32d3b7089786cc552dc6362fe453b37735ee3dc1a81937d678f19def7821f0f",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9935187900851848
+    },
+    {
+      "request_id": "slurp:audio-1497884594.flac::epoch1-batch2-slot18",
+      "gold_index": 15,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "aef55a488451a16fe803dfbb8baa4ad20827e87daf7d16f9df4c5eb944a30bce"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:381d019592fd12d4475b08ab3a9523aa51969e7f51c7827a5ed2933614c11ad6",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9973854893082745
+    },
+    {
+      "request_id": "slurp:audio-1502100350.flac::epoch1-batch2-slot19",
+      "gold_index": 59,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "38e7e36201fa9af38bef55f88f09d2d72ce43d99cc908cb9d171cf0716e8d925"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:ce1df5bc7354828c1260fe472ec252774c4ea7bb5988e8709634f3ae26e4fb3c",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9970731361400396
+    },
+    {
+      "request_id": "slurp:audio--1505406115-headset.flac::epoch1-batch2-slot20",
+      "gold_index": 38,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "e42cd4a829563443f933a1843864e51f2f1acb280013a0c14313f9930dbef243"
+      },
+      "reward_kind": "varying",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        0.6666666865348816,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.6666666865348816
+      ],
+      "reward_mean": 0.9583333730697632,
+      "reward_sample_std": 0.11385500431060791,
+      "unique_actions": 2,
+      "sampled_exact_sets": 14,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.32021438681744274,
+          "gold_coordinate": -1.2350120925930241e-10
+        },
+        "rloo_formula": {
+          "l2": 0.038888886431783926,
+          "gold_coordinate": -1.4751533328194455e-11
+        }
+      },
+      "source_group": "slurp-clean:420840a87247ea2049e559eeed3e927f9c6cfd55e66debb3e9d845482f25105c",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.034345739548733246
+    },
+    {
+      "request_id": "slurp:audio-1488970906.flac::epoch1-batch2-slot21",
+      "gold_index": 34,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "83ab23f0c8121e313e8bff561f2631f544a38114b8146f236248d971462de960"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:5f122e273b16b83994c1607cdcab3bfdf178a7fecc0f54577f4ef3fa0afa254f",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9964374086626022
+    },
+    {
+      "request_id": "slurp:audio-1502100001-headset.flac::epoch1-batch2-slot22",
+      "gold_index": 37,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "8fe7d5c3666c893e8b5d14c22b36458b019efcbd291f822872ba8c2d14fcd4d5"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 2,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:549b509bde18fa3f85e651d51510047ea51383f96069bd9d198d435f4b18ac95",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.999994096200193
+    },
+    {
+      "request_id": "slurp:audio--1506078260.flac::epoch1-batch2-slot23",
+      "gold_index": 2,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:a87efa59664aba7769b153b0004ba5f71d1c72510fdbb32323e3d34742adff67",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9995311184612533
+    },
+    {
+      "request_id": "slurp:audio-1502113004.flac::epoch1-batch2-slot24",
+      "gold_index": 48,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "d1bd9af05535c580b2576e500637ff5fff455dcfaba3ee5d710480c6e068c92e"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:7f062e1833bfe5c8939e172bbd113b0daf9fc5df20dd7483d6767d16791ffa84",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.887101905858573
+    },
+    {
+      "request_id": "slurp:audio-1489152224.flac::epoch1-batch2-slot25",
+      "gold_index": 13,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "6cf84a7866c2253b284914e21baa4c8daaf451b540b643168377a791eda9fff3"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:92748d8d0e351feb90af0a2ab82ac005d930448cf7f1bd443bb64ce86b71c42a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9966063698542779
+    },
+    {
+      "request_id": "slurp:audio-1490955558.flac::epoch1-batch2-slot26",
+      "gold_index": 20,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "e2955729ebb7985d38bf0f2d0c28986981d3a2de2be37d3414bea325a3ff1062"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:d84e63315d00d795790803ffd3760afbc0357bb9962def273c655c2d7baed83c",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9806508860314488
+    },
+    {
+      "request_id": "slurp:audio-1497881716-headset.flac::epoch1-batch2-slot27",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:480c79b658d23feea9ce81f44aef9f19d6a58af7116c6ee8a4eaafed8d21c580",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9936299486405162
+    },
+    {
+      "request_id": "slurp:audio-1502218020.flac::epoch1-batch2-slot28",
+      "gold_index": 44,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "a5e9fcfd11065f8a22718c02520239151a6d023e7ed4c1f21d95de754f6a97d3"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:92c4815f9b170cd64b02af11a24a8e615ff7ce85b4060c95ea9f7fdb3ef7d65d",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9961166038629776
+    },
+    {
+      "request_id": "slurp:audio-1490371612-headset.flac::epoch1-batch2-slot29",
+      "gold_index": 40,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:6cb25de4c42c2d8d735c489a638120f1a893fcb8b14e70fc8689039cfc655ba3",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9967721382427672
+    },
+    {
+      "request_id": "slurp:audio-1497254224-headset.flac::epoch1-batch2-slot30",
+      "gold_index": 31,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "9a0f5aa9fa0af9536f3b1ceed2b36f7a72bff8f29c428ad4632b8d566bcea884"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:3a2c2c5a45b8df230ff3331ca525b702c9305d7b93b35dd0778b9b338c92b617",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9899324937062735
+    },
+    {
+      "request_id": "slurp:audio-1490283651.flac::epoch1-batch2-slot31",
+      "gold_index": 7,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "26aad230d03ba8aac46f41cce778ed2dd4235264c787fc03af1596b3f38445a5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:b03fbc6ed88dffd28eb98d1aa0d91ed24656a3293600784931b93b43edb00816",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9963215888220387
+    },
+    {
+      "request_id": "slurp:audio-1490801487-headset.flac::epoch1-batch2-slot32",
+      "gold_index": 45,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119c3b77cd4d82e9dfff29269f2d35067660b11064310fd56261954027ebc23f"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:ae03dedacdaa36ac9e78f22bec9ee48df4dcddbe64d082e1b2ddbd3811786948",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9960077863396309
+    },
+    {
+      "request_id": "slurp:audio-1498566664-headset.flac::epoch1-batch2-slot33",
+      "gold_index": 42,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "25675cd2b3c7e9dc460731269c65525972ff8ad815f0e2a4624e87f6a3a1ef80"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:09f276b75bfa44500f98d52442d9fb06984e5f95d3bc3dd4a8ec3b350396d73f",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9958768709866801
+    },
+    {
+      "request_id": "slurp:audio-1501753764-headset.flac::epoch1-batch2-slot34",
+      "gold_index": 11,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119c3b77cd4d82e9dfff29269f2d35067660b11064310fd56261954027ebc23f"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:ae239f00cd6b39de739f5fe36322050e8301c005b4c1dcd28fefcd8ef7f6d603",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.998556491451189
+    },
+    {
+      "request_id": "slurp:audio-1501758660.flac::epoch1-batch2-slot35",
+      "gold_index": 51,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "267327652add0c11d3b098d5aa6d40d48b3d4c5f6f7b516c8526fc878e2bcd97"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:c3a4b707ab78e638d0b162ab0fd4715812636f5d4bafac45a18e1248a809d106",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9961760692818916
+    },
+    {
+      "request_id": "slurp:audio-1501690850.flac::epoch1-batch2-slot36",
+      "gold_index": 57,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "7a2b1b240f82e2970280237ee284ef871e9025f48ecb245ec2dc783e49f13694"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:3b1cf087ba44fac194d9d5aba4048e592a2707434207b15f27064658eb8d2382",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9952922028161693
+    },
+    {
+      "request_id": "slurp:audio-1490704414.flac::epoch1-batch2-slot37",
+      "gold_index": 59,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "38e7e36201fa9af38bef55f88f09d2d72ce43d99cc908cb9d171cf0716e8d925"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:23896f23bd6f70532e9b9c4f1a379841665da9555f01265fc03bfe2f0f356f29",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969272292287004
+    },
+    {
+      "request_id": "slurp:audio-1497861629-headset.flac::epoch1-batch2-slot38",
+      "gold_index": 25,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "1cc0d9c738fc110df20d6c3372230d0c81b8f02bf7fd0dae3e86ce48726e06eb"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:e04b1a959f498108d9fe31bedac0290b5b5079e409d726106c6b97a9f2c0bb3a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9960473770608949
+    },
+    {
+      "request_id": "slurp:audio-1502099576-headset.flac::epoch1-batch2-slot39",
+      "gold_index": 17,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "776f0d4c359de79e3cc921d14cf6f074ee22c83bce96b173b1d8e59bcb0cc2e4"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:79bdae97c3e4c17c710a0a5393755ad6c610b68acabacbfe2ed6646a3baebae1",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9962810184787317
+    },
+    {
+      "request_id": "slurp:audio-1501694806.flac::epoch1-batch2-slot40",
+      "gold_index": 8,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "755572e353c4c871c02e09c5c4542b1b8d66ce5713b6628781880fcb16191945"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:7d7e3f26f72fb9fa580396e440b2dd08475c64cfe0260f840af63220ea364b6e",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9956691693243009
+    },
+    {
+      "request_id": "slurp:audio-1501767905-headset.flac::epoch1-batch2-slot41",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:42510df6eebb46d7adb51da2061864a1f00022302fdb30271bb23f3c7e1be08b",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9944077747426361
+    },
+    {
+      "request_id": "slurp:audio-1502195188-headset.flac::epoch1-batch2-slot42",
+      "gold_index": 16,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "eac5306a8022b1d1c58ba697cdd92d01713ae8fca58601ba4a3d23f76b5bcb76"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:a4c56eb481fb38af371f5985e77ccd66ea7b360d7f86ba4a17e59827c8ad7ee2",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9958721244381923
+    },
+    {
+      "request_id": "slurp:audio-1495369891.flac::epoch1-batch2-slot43",
+      "gold_index": 41,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "74b2835cd2029e4c2d734f0652c04a3f9e6728d96738c6ebdc269f23bf55284c"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:1cf781293881c6e22e098712032dfcd1bc730205d568451a529249dab8f6f965",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9971689936075518
+    },
+    {
+      "request_id": "slurp:audio-1497880623.flac::epoch1-batch2-slot44",
+      "gold_index": 15,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "aef55a488451a16fe803dfbb8baa4ad20827e87daf7d16f9df4c5eb944a30bce"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:6018caa0d3bb6ac2a5d239fc5b28645a87dd235895c027aba760f660de854827",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969282312900889
+    },
+    {
+      "request_id": "slurp:audio-1489674297-headset.flac::epoch1-batch2-slot45",
+      "gold_index": 55,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "9bc5f4c44bef13a72a9799957c52c9efd57c9a93c867f474b9407041ab330ee2"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:fdbc2bd5f3044acf51c9184740ea10362f90d1850cebf968d6da654684f5b2b1",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9922162372974002
+    },
+    {
+      "request_id": "slurp:audio-1502218554-headset.flac::epoch1-batch2-slot46",
+      "gold_index": 37,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "af99b2057474484f689cb849bf907f764188f4d544bce928145cfd8954b8f7ca"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:8d190b0e7a31ef021ad0476758c2b37aa34e654707d6735583c5a738c8222958",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969192477944965
+    },
+    {
+      "request_id": "slurp:audio-1501752370.flac::epoch1-batch2-slot47",
+      "gold_index": 40,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:b72903f9fecbaeefbd6f31ef0732ca10af64b614c7421821890545546880e44a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9963542621271981
+    },
+    {
+      "request_id": "slurp:audio-1498572117-headset.flac::epoch1-batch2-slot48",
+      "gold_index": 52,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "b5393b033b660cdc2ac0e50c2e7761060afa6fa6e729e39571b433427ce8e683"
+      },
+      "reward_kind": "constant_partial",
+      "rewards": [
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816
+      ],
+      "reward_mean": 0.6666666865348816,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:d41722ee5748c11bb1e41ff9bb8f2ec905b156c0ca51e676b2280316b91c4778",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9888169734461217
+    },
+    {
+      "request_id": "slurp:audio-1497861611.flac::epoch1-batch2-slot49",
+      "gold_index": 4,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "e2cc4d522c055428f2b868ae20dca69cfd45b74597975a5e1b32fccead27f95e"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:96d8671c5f2046fc1281844b33842e84578ae5e8ca07a53e285cbb22ef7a7659",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9963151455475694
+    },
+    {
+      "request_id": "slurp:audio-1490181447-headset.flac::epoch1-batch2-slot50",
+      "gold_index": 20,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "9bc5f4c44bef13a72a9799957c52c9efd57c9a93c867f474b9407041ab330ee2"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:e922e3e2d0d0a8bc4c0dd05e5827ee7c2bf1cb054075382594e915d261e8d26b",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9999016977278753
+    },
+    {
+      "request_id": "slurp:audio--1506078117-headset.flac::epoch1-batch2-slot51",
+      "gold_index": 13,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "6cf84a7866c2253b284914e21baa4c8daaf451b540b643168377a791eda9fff3"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:236734caf159751c008122264eb2e5378fb78d25e2c825424330af9766853da8",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9957686554822981
+    },
+    {
+      "request_id": "slurp:audio--1506078294.flac::epoch1-batch2-slot52",
+      "gold_index": 7,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "26aad230d03ba8aac46f41cce778ed2dd4235264c787fc03af1596b3f38445a5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:222944d2ceff2f938186fc1b8d7b6257b2d8c4db8f908ea5de114803a50f6cb5",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9966751726150775
+    },
+    {
+      "request_id": "slurp:audio--1505406571-headset.flac::epoch1-batch2-slot53",
+      "gold_index": 0,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "3a93fe02eda3246d6017710ec247bafa3e0449f405b5466b96b37809c47f8ca1"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:08e8300ee5aba85291d2fdd7a7a107b494568680ad392a207e7d0a5d1435c488",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9832396829321514
+    },
+    {
+      "request_id": "slurp:audio--1505407251.flac::epoch1-batch2-slot54",
+      "gold_index": 6,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "e2cc4d522c055428f2b868ae20dca69cfd45b74597975a5e1b32fccead27f95e"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:b794da238a654b02e7db1d88a4f4c49e2775a6bca7edfadbef2eba4aa783e1a1",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9999439878020392
+    },
+    {
+      "request_id": "slurp:audio-1502891680.flac::epoch1-batch2-slot55",
+      "gold_index": 12,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "c424bc0ae341f9afe62320727e04f17e748821f1c430c2bddb8da826145da18f"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:0642c2bcfc977bd4968083587e4cf2d5a1f8c50f8430279cadfc8e8c36049a18",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9952919519484585
+    },
+    {
+      "request_id": "slurp:audio-1500036550-headset.flac::epoch1-batch2-slot56",
+      "gold_index": 45,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119c3b77cd4d82e9dfff29269f2d35067660b11064310fd56261954027ebc23f"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:dc652f1742278d0fcb89c867c51ac15f31ee76e9260033b0e9155f0eec6de037",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9963489269522776
+    },
+    {
+      "request_id": "slurp:audio-1489499133-headset.flac::epoch1-batch2-slot57",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:32f55ec09ebfbbd9d7c136075b659c8008ef8fa9e00804227850bb8b1b96f70e",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.799361724128407
+    },
+    {
+      "request_id": "slurp:audio-1501773569.flac::epoch1-batch2-slot58",
+      "gold_index": 35,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bd1c8ce61853cadf2b49f8179a6038961ca173a6c0a58a06a3ee76ae0782f92a"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:84fe9fdb37471781d7597a166bf5a2bb79588662754b396cd1a58100bc996f24",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9964656339346266
+    },
+    {
+      "request_id": "slurp:audio-1497870082.flac::epoch1-batch2-slot59",
+      "gold_index": 59,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "38e7e36201fa9af38bef55f88f09d2d72ce43d99cc908cb9d171cf0716e8d925"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:e2a47f2925b3633c7fc5691215f86e5db80caca4f33f7a3d28c39b927de799b7",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9974015071891916
+    },
+    {
+      "request_id": "slurp:audio--1506521673.flac::epoch1-batch2-slot60",
+      "gold_index": 38,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "ea6f9b815ca141a3b2a9d60353a813923c0477feeb1abe38a9fcd13774bf67bf"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:e245d95dec59ae2815e8d793428883ed2c825b6f2b8f372fcbeed7a3410a4704",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.996561304390751
+    },
+    {
+      "request_id": "slurp:audio-1495378700.flac::epoch1-batch2-slot61",
+      "gold_index": 32,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "33a79a5d3178933b2d979e18bf21c60b91db6a0c639abe676a830793098b7409"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:f141c6321e64ced1a835964ff2df0151483e3a908ce2ab3cce63fb1d2b6bb1b6",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969052637797959
+    },
+    {
+      "request_id": "slurp:audio-1502215970-headset.flac::epoch1-batch2-slot62",
+      "gold_index": 40,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:c15df197f23d1f8105871c11c0459f99abe2d3c7c4f2d1988b4ef2f0e5b8fefa",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9957457492852526
+    },
+    {
+      "request_id": "slurp:audio-1499245535.flac::epoch1-batch2-slot63",
+      "gold_index": 54,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "fbd62e4b79c48da488b81dad98cd15a6062d7d174c1fcebee621886800d380a9"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:690665a8fdc8971b52fa9e347ecca4dc5b1136d8be087de5d1e6bc8b191b1181",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.996820816457244
+    },
+    {
+      "request_id": "slurp:audio-1502194838.flac::epoch1-batch2-slot64",
+      "gold_index": 43,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "9cd9e0f45ac44c290be50e288025e69396b3a3b120fdfd8e5c0e6a7c8ccbbbab"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 2,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:7ed5b289aa041aa11c51dcd3c70818853890293ee021433c582626e0b27228ed",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9996777176340712
+    },
+    {
+      "request_id": "slurp:audio-1490261451-headset.flac::epoch1-batch2-slot65",
+      "gold_index": 56,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "a10bb66e7a9c586855c173f724f8a0ae1593f2c629ba40875b50b5715d1b7edf"
+      },
+      "reward_kind": "varying",
+      "rewards": [
+        1.0,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        1.0,
+        0.6666666865348816,
+        1.0,
+        1.0,
+        1.0,
+        0.6666666865348816,
+        0.6666666865348816,
+        1.0
+      ],
+      "reward_mean": 0.7916667461395264,
+      "reward_sample_std": 0.1666666567325592,
+      "unique_actions": 2,
+      "sampled_exact_sets": 6,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.468747213563272,
+          "gold_coordinate": -8.228218106864915e-11
+        },
+        "rloo_formula": {
+          "l2": 0.0833333357584004,
+          "gold_coordinate": -1.4923728919313817e-11
+        }
+      },
+      "source_group": "slurp-clean:9b10a738382e5b1faffd5c0fb2c95d690c0446569a0d27227b4d2caf7986340e",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.00011978255594529669
+    },
+    {
+      "request_id": "slurp:audio--1505406953.flac::epoch1-batch2-slot66",
+      "gold_index": 2,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "62bd7c5538f45d9ca1a950f1b30cc2a23fa11e5af4ad1a21f34d0209e216b6e8"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:8a47dfec8a3dd8ae73d5116504a02f8dfd6ca6e078484b92d4321f4a7034bdc6",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.996471546209763
+    },
+    {
+      "request_id": "slurp:audio-1490291484-headset.flac::epoch1-batch2-slot67",
+      "gold_index": 15,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "aef55a488451a16fe803dfbb8baa4ad20827e87daf7d16f9df4c5eb944a30bce"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:0061d6f70951f8b24702d339a0f76115ded4a9dbc0a713b870fc674a56d0de5a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969052641663663
+    },
+    {
+      "request_id": "slurp:audio--1504191030-headset.flac::epoch1-batch2-slot68",
+      "gold_index": 3,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "f6f47cc9b989ae46eb342fe8268369e8500c5610837562b1d63691cda0457559"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:e9a6637bd61d4badb63e47c9f5ebf58cc7d1f424575862964d5b35877a1d328b",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.993075688639879
+    },
+    {
+      "request_id": "slurp:audio-1497437290.flac::epoch1-batch2-slot69",
+      "gold_index": 37,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "af99b2057474484f689cb849bf907f764188f4d544bce928145cfd8954b8f7ca"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:5be74256334c67d117e00f40cd436cc227ac7aca78d28960791b1c4eb53dc70f",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9968700157158641
+    },
+    {
+      "request_id": "slurp:audio-1500978669-headset.flac::epoch1-batch2-slot70",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:b3e3dc98b69b7bdab96dbd7406555fc90ee6d47f39eaed6f0bdbb519853469a2",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9966823956874127
+    },
+    {
+      "request_id": "slurp:audio-1494607400.flac::epoch1-batch2-slot71",
+      "gold_index": 7,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "26aad230d03ba8aac46f41cce778ed2dd4235264c787fc03af1596b3f38445a5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:822c22deceed3271410b2c2346e9f8fe01fe1ad3fefe2c3fc087fe001c8451a7",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.997567646732807
+    },
+    {
+      "request_id": "slurp:audio-1497883151-headset.flac::epoch1-batch2-slot72",
+      "gold_index": 53,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "8a6b595cb1fbff71198ad5edde567f0bbbc88b677d3ed9dd5261356fc9b1df11"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:811dee30ca36cdf8cff5362fa1882fb97541f489e4786a3985fa8fb059b6173c",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9948533438081216
+    },
+    {
+      "request_id": "slurp:audio-1501150868.flac::epoch1-batch2-slot73",
+      "gold_index": 20,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "f6e28ad1753237d42be72be187a88f09a269097eeda24bcf12908db6bd361246"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:32dfc3b76bacba49f10406019b6fba48a8ecfa90ca3c2413fa22fe183aa8f917",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9946478718628662
+    },
+    {
+      "request_id": "slurp:audio-1497436789-headset.flac::epoch1-batch2-slot74",
+      "gold_index": 42,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:fb7a25432aa5684b481c101b68c02c647623b9013ab8b3b4b2e05086b7076668",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9993591734923707
+    },
+    {
+      "request_id": "slurp:audio-1489154366.flac::epoch1-batch2-slot75",
+      "gold_index": 13,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "6cf84a7866c2253b284914e21baa4c8daaf451b540b643168377a791eda9fff3"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:926a6d8a0c921dbadd21adb38459a1bb0a8b1848bfd8b13b64043309866aea83",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9968992550408087
+    },
+    {
+      "request_id": "slurp:audio-1501771761-headset.flac::epoch1-batch2-slot76",
+      "gold_index": 45,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119c3b77cd4d82e9dfff29269f2d35067660b11064310fd56261954027ebc23f"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:dcabd7c8019b3c437c0f1ad839a38e262365ec88e9d3acf7f077d6547da0c00d",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9962628608595178
+    },
+    {
+      "request_id": "slurp:audio-1494548659.flac::epoch1-batch2-slot77",
+      "gold_index": 17,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "776f0d4c359de79e3cc921d14cf6f074ee22c83bce96b173b1d8e59bcb0cc2e4"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:8cd91820e338e0bd7213141f70d4293f15f29386e1e640c8408ad2d5b0ebe0d3",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969497734574624
+    },
+    {
+      "request_id": "slurp:audio-1488561243.flac::epoch1-batch2-slot78",
+      "gold_index": 24,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "d8b2a30659d07d9c7f35efce4aaa3d2d502ee45a125392d259091af43fda5726"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:3e370947fc163a49551cc19a461505ba61da3e4be5643a53a62a336c35233246",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9962244705483598
+    },
+    {
+      "request_id": "slurp:audio-1502311568-headset.flac::epoch1-batch2-slot79",
+      "gold_index": 8,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "755572e353c4c871c02e09c5c4542b1b8d66ce5713b6628781880fcb16191945"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:fbad1ab1b5f57c8a78b389265a0c2f38a80c4cbb9891ec6c429e7059404634aa",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9931090569441595
+    },
+    {
+      "request_id": "slurp:audio-1502462212-headset.flac::epoch1-batch2-slot80",
+      "gold_index": 59,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "38e7e36201fa9af38bef55f88f09d2d72ce43d99cc908cb9d171cf0716e8d925"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:199ed57320d51f67ab2776516eb287b25a58bd8dab7b70a964598b41119c31eb",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9968811443256435
+    },
+    {
+      "request_id": "slurp:audio-1494421982-headset.flac::epoch1-batch2-slot81",
+      "gold_index": 40,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:4faf70016e8f7bfdf4652339dba1729c105fff1a920e97db4132f210b022e14c",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.995534067006338
+    },
+    {
+      "request_id": "slurp:audio-1490291477-headset.flac::epoch1-batch2-slot82",
+      "gold_index": 44,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "a5e9fcfd11065f8a22718c02520239151a6d023e7ed4c1f21d95de754f6a97d3"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:85145d5c5292fb0b170dbd4c9a5d4d10b913c07ef3e22fc6c1130e1405a53c7d",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9950367382818878
+    },
+    {
+      "request_id": "slurp:audio-1501772952.flac::epoch1-batch2-slot83",
+      "gold_index": 58,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5d70877c2aa6681858df340d4a871c937907a2f4daf4a54ef6f09b798b292a74"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:71d8de46edf9040ac8730a96cb721667ffffda7aad45824de5208078ca0a7a10",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9963212783365452
+    },
+    {
+      "request_id": "slurp:audio-1502198954.flac::epoch1-batch2-slot84",
+      "gold_index": 30,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119aafddfebbf7f346ecd06e2e84332b93ede790a83ba46c9fb42a2078eb22fb"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:8c61741c884b263562365541c69d6b03c3e6577c90c4f679a0e415f4f5c20c06",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969630841848313
+    },
+    {
+      "request_id": "slurp:audio-1494417918.flac::epoch1-batch2-slot85",
+      "gold_index": 51,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "267327652add0c11d3b098d5aa6d40d48b3d4c5f6f7b516c8526fc878e2bcd97"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:ecd839815fa7560daf3b5817ccd0f13eaacdc7197c35602345466bede48e205a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9957972708886017
+    },
+    {
+      "request_id": "slurp:audio-1495369896.flac::epoch1-batch2-slot86",
+      "gold_index": 48,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "104477a4b5c36245a81e3e0388e413f5822b5c3eb9e70252ad39ca4252693f34"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 2,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:9bc63913759c996155be176b6c73513c5dc9665f820a0de57d4b7948a04ca7bb",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9994344499246531
+    },
+    {
+      "request_id": "slurp:audio--1505406858.flac::epoch1-batch2-slot87",
+      "gold_index": 1,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "c8542abead39ede32125e7900411d489791e9c99e54df2c100c33ef37e6c4a65"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:53c01e2508e1e4f37060aa3a69a63f5cb3a3d2d6c98ed3bb78b78ca3bf0d9437",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9911201836024899
+    },
+    {
+      "request_id": "slurp:audio-1502101847-headset.flac::epoch1-batch2-slot88",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:707b717a2de9f0071c19a8c410d82ad3be9bfe0d4e85a03dfb98a68741aac3d8",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9964209779024789
+    },
+    {
+      "request_id": "slurp:audio-1494422520.flac::epoch1-batch2-slot89",
+      "gold_index": 31,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "9a0f5aa9fa0af9536f3b1ceed2b36f7a72bff8f29c428ad4632b8d566bcea884"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:9a108642e876df89c8ede413f5642ac6ce48bcd49466d34bc872d37f6a885447",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9936575533754407
+    },
+    {
+      "request_id": "slurp:audio-1490368009.flac::epoch1-batch2-slot90",
+      "gold_index": 7,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "26aad230d03ba8aac46f41cce778ed2dd4235264c787fc03af1596b3f38445a5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:f2cc3a5f8f64e8e1f7499337a0647fee6530d09d3fe0eb154d9a47342c20a353",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9925950838967678
+    },
+    {
+      "request_id": "slurp:audio-1497264350-headset.flac::epoch1-batch2-slot91",
+      "gold_index": 11,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "e9d64f3a6023d005d848574aea256032c6f723516dd31288052a65b59398413e"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:d0ce6dccf9fdce6c5c8eb33fac3075afd00fea2db07daa98b59339b2dcd3dfd2",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9962390368659534
+    },
+    {
+      "request_id": "slurp:audio-1498566674-headset.flac::epoch1-batch2-slot92",
+      "gold_index": 49,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "365012d2d5e6f62687e495c797e14722bebba1dbe030c42b97211a407e6bcde4"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:db65d7890b3e8ffa89da7b00cc5681b8af2a5d5e31261c2082af7e2744a4439b",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9933121681557281
+    },
+    {
+      "request_id": "slurp:audio-1497869694.flac::epoch1-batch2-slot93",
+      "gold_index": 27,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "08dc6df28032ea83cc37da9d3e93946bbf266d3fb3c21ad56c84803c5453dc45"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:ea55a2cb9f8bae3d4b3ffbae2fef3e2161f3f9786f5a96bee6a29ed99716b604",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9937710638628153
+    },
+    {
+      "request_id": "slurp:audio-1502216881-headset.flac::epoch1-batch2-slot94",
+      "gold_index": 37,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "af99b2057474484f689cb849bf907f764188f4d544bce928145cfd8954b8f7ca"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:6cf847e78590a5cd93f066fa1aad91b212bbba35179d60022bad2806f3f11cd0",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9967593001045877
+    },
+    {
+      "request_id": "slurp:audio-1498572419.flac::epoch1-batch2-slot95",
+      "gold_index": 23,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "c434deedb836ac53c0aebaf85f05a98f8fb0b9bdc2648eecf6156c330c57dffc"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:de39556d37400414b8149c00111e6c9e97c32e207c08942e6dfa1568b7131036",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.997389574434542
+    },
+    {
+      "request_id": "slurp:audio-1498484577-headset.flac::epoch1-batch2-slot96",
+      "gold_index": 15,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "aef55a488451a16fe803dfbb8baa4ad20827e87daf7d16f9df4c5eb944a30bce"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:6018caa0d3bb6ac2a5d239fc5b28645a87dd235895c027aba760f660de854827",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969237401848325
+    },
+    {
+      "request_id": "slurp:audio-1488984689.flac::epoch1-batch2-slot97",
+      "gold_index": 25,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "1cc0d9c738fc110df20d6c3372230d0c81b8f02bf7fd0dae3e86ce48726e06eb"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:c28e42d96b947502d9ff5405e01a869aeeff5aec51e2bca638f1b3bf1fe4cf30",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9968395578511007
+    },
+    {
+      "request_id": "slurp:audio-1501172966-headset.flac::epoch1-batch2-slot98",
+      "gold_index": 40,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5088454a01d2e718188e6b52d094026b8e8771622aafb5ba6844da0c77eaefb5"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:8a00652b0269ef38856c7361e101d5ae62cf6e48b731700b20b7a2c06ba659df",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9954343464787136
+    },
+    {
+      "request_id": "slurp:audio-1502376511-headset.flac::epoch1-batch2-slot99",
+      "gold_index": 45,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119c3b77cd4d82e9dfff29269f2d35067660b11064310fd56261954027ebc23f"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:033603403142d313ed10747e202370d5bed556a9235caffb8b2a10d093d9837c",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9955574725259126
+    },
+    {
+      "request_id": "slurp:audio-1502302345-headset.flac::epoch1-batch2-slot100",
+      "gold_index": 59,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "38e7e36201fa9af38bef55f88f09d2d72ce43d99cc908cb9d171cf0716e8d925"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:9814926f4b55d9f0d870efb17e994462abad0c386e226bf0e4a45ec0d722d70a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9965627750772877
+    },
+    {
+      "request_id": "slurp:audio--1504195178.flac::epoch1-batch2-slot101",
+      "gold_index": 38,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "ea6f9b815ca141a3b2a9d60353a813923c0477feeb1abe38a9fcd13774bf67bf"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:c507a7f9c5c5bb89c29866274c3267f20ddb9a08241fd8af7e92a5ec4e9898b7",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9966605446760669
+    },
+    {
+      "request_id": "slurp:audio-1490107427.flac::epoch1-batch2-slot102",
+      "gold_index": 20,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "f6e28ad1753237d42be72be187a88f09a269097eeda24bcf12908db6bd361246"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:0a0d9b4df72154dd6e08f14ae78f64d85661ed43f396ae0b3dc15c4a9b021d2b",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9969467094477296
+    },
+    {
+      "request_id": "slurp:audio-1501692548-headset.flac::epoch1-batch2-slot103",
+      "gold_index": 47,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "43134b11dbed7a5126b048082f9992b654e993974ba771d1ecca9da98ea3c705"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:402a48a6ae5d33ac666e782f4a0832df00f29520a36e35c872eaf1fb2f3b5c13",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9973507719657385
+    },
+    {
+      "request_id": "slurp:audio-1500419148-headset.flac::epoch1-batch2-slot104",
+      "gold_index": 19,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "a9b8b45c13eafec8b37fe8fba2f40ba5aec68e3f17979c34a1ec0860a42b3fdc"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:d126509b13cea25795853c2bb913cf4a8ccd54134db5b0712f0812a4948c1592",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9969652417144691
+    },
+    {
+      "request_id": "slurp:audio-1502376506.flac::epoch1-batch2-slot105",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "26aad230d03ba8aac46f41cce778ed2dd4235264c787fc03af1596b3f38445a5"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:17a563ab1be4e25391c85487c21191f833fb4befd572dbfbf8b407426589ee8d",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9982590717818356
+    },
+    {
+      "request_id": "slurp:audio-1501691077-headset.flac::epoch1-batch2-slot106",
+      "gold_index": 13,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "6cf84a7866c2253b284914e21baa4c8daaf451b540b643168377a791eda9fff3"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:3b49232255a29c046abf1e66bbc40f5bc82b668b16f5f0223eddcf324b7666f2",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9968625392702275
+    },
+    {
+      "request_id": "slurp:audio-1502895935.flac::epoch1-batch2-slot107",
+      "gold_index": 55,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "ff3f89b18bfa57785751f1532eaddee6cf603009466b5fa11f27b2b6298de3d5"
+      },
+      "reward_kind": "varying",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.6666666865348816
+      ],
+      "reward_mean": 0.9791666865348816,
+      "reward_sample_std": 0.0833333283662796,
+      "unique_actions": 2,
+      "sampled_exact_sets": 15,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.23437220957605304,
+          "gold_coordinate": -4.181104351630438e-10
+        },
+        "rloo_formula": {
+          "l2": 0.020833333627335304,
+          "gold_coordinate": -3.498303036142403e-11
+        }
+      },
+      "source_group": "slurp-clean:b0488a1305193c8ad21cf336c04df53464eb5b4d9c122df397efafe022663247",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.7382172333005302
+    },
+    {
+      "request_id": "slurp:audio-1499697481.flac::epoch1-batch2-slot108",
+      "gold_index": 0,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "3a93fe02eda3246d6017710ec247bafa3e0449f405b5466b96b37809c47f8ca1"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:0ba67ec03fe9e787d5561c6d5fe34eb86d12885fc1fa3953572e26753c244457",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9792966736468512
+    },
+    {
+      "request_id": "slurp:audio-1501697960-headset.flac::epoch1-batch2-slot109",
+      "gold_index": 41,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "3721c934fd9bb519d8f08d7071aadde471c7fcefb596bd33b5fbf65e2815b856"
+      },
+      "reward_kind": "varying",
+      "rewards": [
+        0.6666666865348816,
+        0.6666666865348816,
+        0.0,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816
+      ],
+      "reward_mean": 0.625,
+      "reward_sample_std": 0.1666666716337204,
+      "unique_actions": 2,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 15,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.23437358441193268,
+          "gold_coordinate": 0.23437358441193268
+        },
+        "rloo_formula": {
+          "l2": 0.041666667912389904,
+          "gold_coordinate": 0.041666667912389904
+        }
+      },
+      "source_group": "slurp-clean:597cd9ce0e43f6ad6c708fa23e14795ff7d6227e29f5380ee4bba58f661166bd",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.992129157994698
+    },
+    {
+      "request_id": "slurp:audio-1501752710.flac::epoch1-batch2-slot110",
+      "gold_index": 4,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:f511a898e787d3196cbde2d31aeae9b4d1c778c8d0572b9c29fe40244b528b30",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9999944538925349
+    },
+    {
+      "request_id": "slurp:audio-1502201157.flac::epoch1-batch2-slot111",
+      "gold_index": 57,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "7a2b1b240f82e2970280237ee284ef871e9025f48ecb245ec2dc783e49f13694"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:b6761fff2a30f61e89bbbb70ad3c5825a0f0801d7e770eea34e8a260e13a95dc",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.994894505753321
+    },
+    {
+      "request_id": "slurp:audio-1501756974.flac::epoch1-batch2-slot112",
+      "gold_index": 39,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "5f4f95670d47943b219da24cc9ebed22bc6e1ac63f5e30e116e9f181b3301c15"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:305bbe44cd2a39a8127842a49278fa3abbed9e521002aa93baeb224defb64bf4",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.996908482601446
+    },
+    {
+      "request_id": "slurp:audio-1501685597-headset.flac::epoch1-batch2-slot113",
+      "gold_index": 6,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "a3c9a1b7b5a533fd2a65d0eb6b129ddfd9bedbbc3a8eb07a7b04067a20213fad"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:c7b06eb5a0cd7f0e97bd23458665764c15775086385a60d72b67b732b82e9de4",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.993756576792789
+    },
+    {
+      "request_id": "slurp:audio-1494415717.flac::epoch1-batch2-slot114",
+      "gold_index": 7,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "365012d2d5e6f62687e495c797e14722bebba1dbe030c42b97211a407e6bcde4"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:10dbb95e5b1b38029a2cc5b27da8497167f0382939164e3b09e9df834799c18c",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9997155811035247
+    },
+    {
+      "request_id": "slurp:audio-1499697402.flac::epoch1-batch2-slot115",
+      "gold_index": 40,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "b2d221c1a737cee18a185aa107d224f4cc2c43d6afeb28ff780e59fe0bb21589"
+      },
+      "reward_kind": "constant_partial",
+      "rewards": [
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816,
+        0.6666666865348816
+      ],
+      "reward_mean": 0.6666666865348816,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:e7053eb3aee82d7ec9677aa91ddf5bea263f474915d09580e63b8ea135ed11d1",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9891275164940693
+    },
+    {
+      "request_id": "slurp:audio-1495378328-headset.flac::epoch1-batch2-slot116",
+      "gold_index": 17,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "776f0d4c359de79e3cc921d14cf6f074ee22c83bce96b173b1d8e59bcb0cc2e4"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:5a843945b1d9a834a835c876e7a9b95e0c895177727ca9274020c7b5846f1214",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9973229163451889
+    },
+    {
+      "request_id": "slurp:audio-1502890141.flac::epoch1-batch2-slot117",
+      "gold_index": 8,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "bf9401a7b3d9a22795dff574ed55c4dc5dc88cf05a895566f1df1a119faa2d55"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:863b38d23a68434c6df1a8324ec32f0f8f634c030582fa3a2adb179f85fff5d9",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.9999185038316208
+    },
+    {
+      "request_id": "slurp:audio-1501752319.flac::epoch1-batch2-slot118",
+      "gold_index": 21,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "c9d0a2445b577d4aed64daf9541bf9fc13791c3e410963c3d1ca5eb77c482d32"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:319644b2ffc654614d2672d17a9a88c5820f61565dcb6606f3646cdf090df37a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9968212308306516
+    },
+    {
+      "request_id": "slurp:audio-1499090711.flac::epoch1-batch2-slot119",
+      "gold_index": 34,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "83ab23f0c8121e313e8bff561f2631f544a38114b8146f236248d971462de960"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:de7b0a11c4a60ed9e25f5ec7232f121ae9b4d64831c3a4cb99711d14952cda85",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9925133961533378
+    },
+    {
+      "request_id": "slurp:audio-1490282032-headset.flac::epoch1-batch2-slot120",
+      "gold_index": 42,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "25675cd2b3c7e9dc460731269c65525972ff8ad815f0e2a4624e87f6a3a1ef80"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:b456216892c1287aa9d40e1d37774ade6ae82b78ca0aa8ae4ac85ed5942ac439",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.995575727951313
+    },
+    {
+      "request_id": "slurp:audio-1501774374.flac::epoch1-batch2-slot121",
+      "gold_index": 9,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "755572e353c4c871c02e09c5c4542b1b8d66ce5713b6628781880fcb16191945"
+      },
+      "reward_kind": "all_zero",
+      "rewards": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "reward_mean": 0.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 0,
+      "sampled_positive_rewards": 0,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:f32c9c06e749287859e0911b47db4af10964efe466a75287599755c693daa485",
+      "threshold_exact_set": false,
+      "theoretical_constant_reward_probability": 0.998556491451189
+    },
+    {
+      "request_id": "slurp:audio--1504193321.flac::epoch1-batch2-slot122",
+      "gold_index": 2,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "62bd7c5538f45d9ca1a950f1b30cc2a23fa11e5af4ad1a21f34d0209e216b6e8"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:8a47dfec8a3dd8ae73d5116504a02f8dfd6ca6e078484b92d4321f4a7034bdc6",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9955598670475528
+    },
+    {
+      "request_id": "slurp:audio-1495377782.flac::epoch1-batch2-slot123",
+      "gold_index": 22,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "83dc61e9ee84beb8b5124d70a3f824fe94d663a932480e9e920db140789b4679"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:1ab296abad8fc57a5428c9ed37799f2688dc8f3f0802c9e6471cad09799f0f3a",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9970161966695452
+    },
+    {
+      "request_id": "slurp:audio-1502894178-headset.flac::epoch1-batch2-slot124",
+      "gold_index": 37,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "af99b2057474484f689cb849bf907f764188f4d544bce928145cfd8954b8f7ca"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:b00e499469024a7ddca500e5df215b94d8a66158d580e51e6c5b621acd026271",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9972529108840046
+    },
+    {
+      "request_id": "slurp:audio-1497558658.flac::epoch1-batch2-slot125",
+      "gold_index": 59,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "38e7e36201fa9af38bef55f88f09d2d72ce43d99cc908cb9d171cf0716e8d925"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:3a2c4f6ca0105a0e385e87c0909272f39ec4af6faa903b8ddb607f0e50848b30",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9963525234894378
+    },
+    {
+      "request_id": "slurp:audio-1490360169-headset.flac::epoch1-batch2-slot126",
+      "gold_index": 15,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "aef55a488451a16fe803dfbb8baa4ad20827e87daf7d16f9df4c5eb944a30bce"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:9b7fbe77d492a79157668a9e5c0a0385d5b9ea533c90b1153620afd6535c2d0c",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9974238535461305
+    },
+    {
+      "request_id": "slurp:audio-1502374919-headset.flac::epoch1-batch2-slot127",
+      "gold_index": 45,
+      "action_identity": {
+        "shape": [
+          1,
+          16,
+          60
+        ],
+        "dtype": "torch.int64",
+        "sha256": "119c3b77cd4d82e9dfff29269f2d35067660b11064310fd56261954027ebc23f"
+      },
+      "reward_kind": "all_one",
+      "rewards": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "reward_mean": 1.0,
+      "reward_sample_std": 0.0,
+      "unique_actions": 1,
+      "sampled_exact_sets": 16,
+      "sampled_positive_rewards": 16,
+      "score_directions": {
+        "grpo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        },
+        "rloo_formula": {
+          "l2": 0.0,
+          "gold_coordinate": 0.0
+        }
+      },
+      "source_group": "slurp-clean:067cbb332a5b5e0e3416c0aca7b9fb318ad1c98e033033adae872c0a68acce15",
+      "threshold_exact_set": true,
+      "theoretical_constant_reward_probability": 0.9961461024200083
+    }
+  ],
+  "summary": {
+    "queries": 128,
+    "verified_action_hashes": 128,
+    "reward_groups": {
+      "all_zero": 19,
+      "all_one": 103,
+      "varying": 4,
+      "constant_partial": 2
+    },
+    "varying_group_fraction": 0.03125,
+    "sampled_actions": 2048,
+    "sampled_exact_sets": 1683,
+    "sampled_positive_rewards": 1743,
+    "mean_sampled_reward": 0.8413085951469839,
+    "identical_action_groups": 119,
+    "threshold_correctness_strata": {
+      "True": {
+        "queries": 105,
+        "reward_groups": {
+          "all_one": 103,
+          "varying": 2
+        }
+      },
+      "False": {
+        "queries": 23,
+        "reward_groups": {
+          "all_zero": 19,
+          "constant_partial": 2,
+          "varying": 2
+        }
+      }
+    }
+  },
+  "limits": [
+    "Single TRAIN batch, not heldout efficacy or a learning trend.",
+    "All four rank copies authenticated and counted once.",
+    "Actions match archived hashes exactly; no new sampling experiment or model execution.",
+    "GRPO/RLOO directions use independent local formulas at ratio=1, not native verl or parameter-gradient replay.",
+    "A zero group advantage removes only the sampled policy term; auxiliary and KL gradients may remain.",
+    "No modification of running configurations or dispatch criteria."
+  ]
+}

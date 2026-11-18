@@ -1,0 +1,42 @@
+{
+  "status": "local_component_checks_passed_not_runtime_admitted",
+  "created_unix": 1794716725.8268323,
+  "source_hashes": {
+    "tools/reports/context_segmented_attention_candidate.py": "8786d4c9279d713b52d83697e5b6e955d909ec54ff36806b75a40949b53bdb36",
+    "tools/reports/context_segmented_audio_candidate.py": "0f0f397957595d0944cf2c0d478c71a1fe901a782dcc1ee26b9a8462661a3eb2",
+    "tests/test_context_segmented_attention_candidate.py": "5df12a9af95b0e8140e4f9a68962b49cdc29a212424a86d536256c918eb2722e",
+    "tests/test_context_segmented_audio_candidate.py": "f96f8f1a03f2601443d9897af9832fd8332e710872aa9c3d4b8d2f1e5d4b4a95",
+    "src/multimodal_jev/span_batch_rollout_candidate.py": "ae19295733714a632c91d8c82fcb1851faad18bb46d9636a2997580c002c8771",
+    "src/multimodal_jev/span_packed_attention.py": "09af47ed2fd2a91f065348b99c894b13260894ff0cd7300eab59b973a692c002",
+    "src/multimodal_jev/span_audio_padding.py": "ce288a1f85c2db9ea73035ed570e6d7e76a360fd51eb169b773153abd1494507",
+    "src/multimodal_jev/context_pooling.py": "18035dcf7a344a18b14da50a9cdd4bfb47b6b7ed74fe089ad4925369dea66eda",
+    "src/multimodal_jev/vllm_context_pooler.py": "314e08bee37da0023ccc94c7e33dfe16a8de85f3b90141779dde51e5f190c856"
+  },
+  "checks": [
+    {
+      "files": [
+        "tests/test_context_segmented_attention_candidate.py",
+        "tests/test_span_batch_rollout_candidate.py",
+        "tests/test_context_pooling.py"
+      ],
+      "passed": 26,
+      "seconds": 2.66
+    },
+    {
+      "files": [
+        "tests/test_context_segmented_audio_candidate.py",
+        "tests/test_span_audio_padding.py"
+      ],
+      "passed": 19,
+      "seconds": 2.56
+    }
+  ],
+  "scope": "CPU component oracles, synthetic projections/rotary, small real short-audio convolutions; no Qwen weights/NPU/model throughput",
+  "training_dispatch_allowed": false,
+  "remaining": [
+    "real scheduler metadata and identity binding",
+    "independent profile worker integration",
+    "real Qwen NPU serial/batch probability parity and isolation",
+    "memory and end-to-end throughput measurement"
+  ]
+}

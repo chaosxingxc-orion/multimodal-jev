@@ -1,0 +1,19 @@
+{
+  "schema": "local-operations-v5",
+  "output_directory": "${RETENTION_PIPELINE_OUTPUT}",
+  "steps": [
+    {
+      "id": "inventory",
+      "kind": "retention_inventory",
+      "config": "${WORKSPACE}/configs/portable/operations/retention-inventory.json",
+      "depends_on": []
+    },
+    {
+      "id": "retention",
+      "kind": "retention_plan",
+      "config": "${WORKSPACE}/configs/portable/operations/artifact-retention.json",
+      "depends_on": ["inventory"],
+      "inventory_from": "inventory"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "slurp-panel-context-v4-verification",
+  "verified_date_local": "2026-11-13",
+  "root": "/mnt/cephfs/xingchao/experiments/multimodal-jev/panel-context-probe-v4-full-slot-contract",
+  "config_sha256": "2a62c55d8d4d759680e66aed12753077ee7958ff2c07f0048b57acb733795863",
+  "report_sha256": "c2996e4873355201ac336c22dbcb9e7ff40a5e78b78a8483ed0b14587ad82660",
+  "records_sha256": "061179dbec70ae4c0e72dbb1e8bae39ff159a9a231d7dfdd19f70c890c0c0885",
+  "container_id": "6a2a75204040c4a6042fc03454123284b5ee247a5838e425be8728ff70aa2610",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-12T18:38:06.66682339Z",
+    "FinishedAt": "2026-11-12T18:38:41.11257811Z"
+  },
+  "requests": 90,
+  "context_limit": 8192,
+  "max_tokens": 14710,
+  "overflow": 84,
+  "per_arm": {
+    "0": {
+      "requests": 30,
+      "min_tokens": 5243,
+      "max_tokens": 14071,
+      "overflow": 28
+    },
+    "2": {
+      "requests": 30,
+      "min_tokens": 5322,
+      "max_tokens": 14231,
+      "overflow": 28
+    },
+    "8": {
+      "requests": 30,
+      "min_tokens": 5559,
+      "max_tokens": 14710,
+      "overflow": 28
+    }
+  },
+  "source_pins_verified": 280,
+  "knowledge_equal_across_arms": true,
+  "span_positions_valid": true,
+  "scope": "CPU processor on median/longest learning waveforms, 15 fixed panels and 3 arms; selected runtime semantic fields. No model forward, full-population/context acceptance, semantic certification or NPU parity.",
+  "context_requirement_accepted": false,
+  "engineering_release_accepted": false,
+  "training_dispatch_allowed": false
+}

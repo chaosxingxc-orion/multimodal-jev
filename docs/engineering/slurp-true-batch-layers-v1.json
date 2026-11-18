@@ -1,0 +1,213 @@
+{
+  "completed": true,
+  "container_id": "84016f0a8a5789c4ca23b91432bea261598304730b02c26969a992ec2d08d947",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "raw_sha256": "7e1b7affa16c74d89ed8819fe8590f272f312808129cde7c84aad4c192e85cd0",
+  "request_id": "b107a2a12df29178d7a57dd062238aa7a7780925d7176b6c27f14540fef5c9f3",
+  "layer_comparisons": {
+    "input_norm": [
+      {
+        "input_max_abs": 0.002685546875,
+        "output_max_abs": 0.03125,
+        "output_changed_elements": 28677,
+        "output_elements": 2025472
+      },
+      {
+        "input_max_abs": 0.002685546875,
+        "output_max_abs": 0.03125,
+        "output_changed_elements": 28677,
+        "output_elements": 2025472
+      }
+    ],
+    "q_proj": [
+      {
+        "input_max_abs": 0.03125,
+        "output_max_abs": 0.0390625,
+        "output_changed_elements": 55983,
+        "output_elements": 4050944
+      },
+      {
+        "input_max_abs": 0.03125,
+        "output_max_abs": 0.0390625,
+        "output_changed_elements": 55983,
+        "output_elements": 4050944
+      }
+    ],
+    "k_proj": [
+      {
+        "input_max_abs": 0.03125,
+        "output_max_abs": 0.03125,
+        "output_changed_elements": 27000,
+        "output_elements": 2025472
+      },
+      {
+        "input_max_abs": 0.03125,
+        "output_max_abs": 0.03125,
+        "output_changed_elements": 26981,
+        "output_elements": 2025472
+      }
+    ],
+    "v_proj": [
+      {
+        "input_max_abs": 0.03125,
+        "output_max_abs": 0.014404296875,
+        "output_changed_elements": 30414,
+        "output_elements": 2025472
+      },
+      {
+        "input_max_abs": 0.03125,
+        "output_max_abs": 0.014404296875,
+        "output_changed_elements": 30387,
+        "output_elements": 2025472
+      }
+    ],
+    "o_proj": [
+      {
+        "input_max_abs": 0.033203125,
+        "output_max_abs": 0.015625,
+        "output_changed_elements": 335962,
+        "output_elements": 2025472
+      },
+      {
+        "input_max_abs": 0.033203125,
+        "output_max_abs": 0.015625,
+        "output_changed_elements": 336395,
+        "output_elements": 2025472
+      }
+    ],
+    "post_norm": [
+      {
+        "input_max_abs": 0.015625,
+        "output_max_abs": 0.125,
+        "output_changed_elements": 238849,
+        "output_elements": 2025472
+      },
+      {
+        "input_max_abs": 0.015625,
+        "output_max_abs": 0.125,
+        "output_changed_elements": 239136,
+        "output_elements": 2025472
+      }
+    ],
+    "gate_proj": [
+      {
+        "input_max_abs": 0.125,
+        "output_max_abs": 0.1875,
+        "output_changed_elements": 1514790,
+        "output_elements": 6076416
+      },
+      {
+        "input_max_abs": 0.125,
+        "output_max_abs": 0.1875,
+        "output_changed_elements": 1518963,
+        "output_elements": 6076416
+      }
+    ],
+    "down_proj": [
+      {
+        "input_max_abs": 0.23046875,
+        "output_max_abs": 0.0546875,
+        "output_changed_elements": 1020532,
+        "output_elements": 2025472
+      },
+      {
+        "input_max_abs": 0.23046875,
+        "output_max_abs": 0.0546875,
+        "output_changed_elements": 1024839,
+        "output_elements": 2025472
+      }
+    ],
+    "final_norm": [
+      {
+        "input_max_abs": 11.25,
+        "output_max_abs": 16.0625,
+        "output_changed_elements": 1878850,
+        "output_elements": 2025472
+      },
+      {
+        "input_max_abs": 17.0,
+        "output_max_abs": 25.986328125,
+        "output_changed_elements": 1880003,
+        "output_elements": 2025472
+      }
+    ],
+    "head": [
+      {
+        "input_max_abs": 1.125,
+        "output_max_abs": 0.9375,
+        "output_changed_elements": 146505,
+        "output_elements": 151936
+      },
+      {
+        "input_max_abs": 1.8125,
+        "output_max_abs": 1.0625,
+        "output_changed_elements": 142359,
+        "output_elements": 151936
+      }
+    ]
+  },
+  "isolated_identical_projection_errors": {
+    "q_proj": [
+      0.001953125,
+      0.001953125
+    ],
+    "k_proj": [
+      0.00390625,
+      0.00390625
+    ],
+    "v_proj": [
+      0.00048828125,
+      0.001953125
+    ],
+    "gate_proj": [
+      0.015625,
+      0.015625
+    ],
+    "down_proj": [
+      0.0009765625,
+      0.0009765625
+    ]
+  },
+  "parity": [
+    {
+      "passed": false,
+      "per_span_passed": false,
+      "joint_ratio_passed": false,
+      "maximum_logprob_error": 0.49842238426208496,
+      "p95_logprob_error": 0.3735799193382263,
+      "joint_log_ratio_min": -0.49842238426208496,
+      "joint_log_ratio_max": 0.37657785415649414,
+      "joint_ratio_min": 0.6074882872124138,
+      "joint_ratio_max": 1.4572889910129772,
+      "candidate_kl_actor_to_behavior": 0.01414522621943416,
+      "argmax_changed_spans": [],
+      "per_span_tolerance": 0.02,
+      "joint_ratio_bounds": [
+        0.98,
+        1.02
+      ],
+      "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+    },
+    {
+      "passed": false,
+      "per_span_passed": false,
+      "joint_ratio_passed": false,
+      "maximum_logprob_error": 0.4698305130004883,
+      "p95_logprob_error": 0.25576794147491455,
+      "joint_log_ratio_min": -0.21766972541809082,
+      "joint_log_ratio_max": 0.4698305130004883,
+      "joint_ratio_min": 0.8043910677229614,
+      "joint_ratio_max": 1.5997230379816083,
+      "candidate_kl_actor_to_behavior": 0.004258465379723906,
+      "argmax_changed_spans": [],
+      "per_span_tolerance": 0.02,
+      "joint_ratio_bounds": [
+        0.98,
+        1.02
+      ],
+      "scope": "Every finite complete action; fixed independent categorical sampling, temperature already applied."
+    }
+  ],
+  "training_promotion": false,
+  "scope": "Actual BF16 NPU same-input projection shape dependence; not a unique root-cause proof, numerical fix, or training acceptance."
+}

@@ -1,0 +1,2430 @@
+{
+  "schema": "jev-evaluation-readout-layout-candidate-v1",
+  "status": "design_axes_explicit_production_encoder_not_integrated",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "source_design": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/selection-evaluation-design-v1/design.json",
+  "source_design_sha256": "79530924fb96cc339d08e553eb8fda20a4fb1252d31b443c445311f4c27ed96b",
+  "compiler_sha256": "7ef214f306f470023f8194c66bd30f12742fdd4185f0cbb44256614ebced9596",
+  "candidate_alias": "C00..C59 label supplied definition cards; these are not claimed single-token readout symbols.",
+  "output_symbols": "A..Z,a..z,0..7; tokenizer single-token identity still requires processor acceptance.",
+  "order_intervention": "Permute display positions of complete cards and candidate entries while preserving semantic->alias->output_symbol.",
+  "rebinding_intervention": "Keep semantic card and candidate display positions; change semantic->alias->output_symbol consistently in definition keys, every I_class question reference, candidate entries, emitted symbol map and scorer inverse.",
+  "auxiliary_boolean_symbols": "Keep A=false,B=true at auxiliary I/S readouts; rebinding is only the intent class identifier/readout mapping.",
+  "semantic_ids": "Offline joins/scoring only; never copy ontology IDs into actor input as a side effect of this audit.",
+  "existing_encoder": "span_labels binds alphabet symbols to candidate tuple positions; direct tuple reordering confounds order and readout binding. Existing span_candidate_intervention documents this compound diagnostic.",
+  "production_change": "none; requires new explicit binding interface and acceptance after task freeze",
+  "layouts": {
+    "canonical": {
+      "entries": [
+        {
+          "display_position": 0,
+          "semantic_id": "alarm_query",
+          "candidate_alias": "C00",
+          "output_symbol": "A"
+        },
+        {
+          "display_position": 1,
+          "semantic_id": "alarm_remove",
+          "candidate_alias": "C01",
+          "output_symbol": "B"
+        },
+        {
+          "display_position": 2,
+          "semantic_id": "alarm_set",
+          "candidate_alias": "C02",
+          "output_symbol": "C"
+        },
+        {
+          "display_position": 3,
+          "semantic_id": "audio_volume_down",
+          "candidate_alias": "C03",
+          "output_symbol": "D"
+        },
+        {
+          "display_position": 4,
+          "semantic_id": "audio_volume_mute",
+          "candidate_alias": "C04",
+          "output_symbol": "E"
+        },
+        {
+          "display_position": 5,
+          "semantic_id": "audio_volume_other",
+          "candidate_alias": "C05",
+          "output_symbol": "F"
+        },
+        {
+          "display_position": 6,
+          "semantic_id": "audio_volume_up",
+          "candidate_alias": "C06",
+          "output_symbol": "G"
+        },
+        {
+          "display_position": 7,
+          "semantic_id": "calendar_query",
+          "candidate_alias": "C07",
+          "output_symbol": "H"
+        },
+        {
+          "display_position": 8,
+          "semantic_id": "calendar_remove",
+          "candidate_alias": "C08",
+          "output_symbol": "I"
+        },
+        {
+          "display_position": 9,
+          "semantic_id": "calendar_set",
+          "candidate_alias": "C09",
+          "output_symbol": "J"
+        },
+        {
+          "display_position": 10,
+          "semantic_id": "cooking_query",
+          "candidate_alias": "C10",
+          "output_symbol": "K"
+        },
+        {
+          "display_position": 11,
+          "semantic_id": "cooking_recipe",
+          "candidate_alias": "C11",
+          "output_symbol": "L"
+        },
+        {
+          "display_position": 12,
+          "semantic_id": "datetime_convert",
+          "candidate_alias": "C12",
+          "output_symbol": "M"
+        },
+        {
+          "display_position": 13,
+          "semantic_id": "datetime_query",
+          "candidate_alias": "C13",
+          "output_symbol": "N"
+        },
+        {
+          "display_position": 14,
+          "semantic_id": "email_addcontact",
+          "candidate_alias": "C14",
+          "output_symbol": "O"
+        },
+        {
+          "display_position": 15,
+          "semantic_id": "email_query",
+          "candidate_alias": "C15",
+          "output_symbol": "P"
+        },
+        {
+          "display_position": 16,
+          "semantic_id": "email_querycontact",
+          "candidate_alias": "C16",
+          "output_symbol": "Q"
+        },
+        {
+          "display_position": 17,
+          "semantic_id": "email_sendemail",
+          "candidate_alias": "C17",
+          "output_symbol": "R"
+        },
+        {
+          "display_position": 18,
+          "semantic_id": "general_greet",
+          "candidate_alias": "C18",
+          "output_symbol": "S"
+        },
+        {
+          "display_position": 19,
+          "semantic_id": "general_joke",
+          "candidate_alias": "C19",
+          "output_symbol": "T"
+        },
+        {
+          "display_position": 20,
+          "semantic_id": "general_quirky",
+          "candidate_alias": "C20",
+          "output_symbol": "U"
+        },
+        {
+          "display_position": 21,
+          "semantic_id": "iot_cleaning",
+          "candidate_alias": "C21",
+          "output_symbol": "V"
+        },
+        {
+          "display_position": 22,
+          "semantic_id": "iot_coffee",
+          "candidate_alias": "C22",
+          "output_symbol": "W"
+        },
+        {
+          "display_position": 23,
+          "semantic_id": "iot_hue_lightchange",
+          "candidate_alias": "C23",
+          "output_symbol": "X"
+        },
+        {
+          "display_position": 24,
+          "semantic_id": "iot_hue_lightdim",
+          "candidate_alias": "C24",
+          "output_symbol": "Y"
+        },
+        {
+          "display_position": 25,
+          "semantic_id": "iot_hue_lightoff",
+          "candidate_alias": "C25",
+          "output_symbol": "Z"
+        },
+        {
+          "display_position": 26,
+          "semantic_id": "iot_hue_lighton",
+          "candidate_alias": "C26",
+          "output_symbol": "a"
+        },
+        {
+          "display_position": 27,
+          "semantic_id": "iot_hue_lightup",
+          "candidate_alias": "C27",
+          "output_symbol": "b"
+        },
+        {
+          "display_position": 28,
+          "semantic_id": "iot_wemo_off",
+          "candidate_alias": "C28",
+          "output_symbol": "c"
+        },
+        {
+          "display_position": 29,
+          "semantic_id": "iot_wemo_on",
+          "candidate_alias": "C29",
+          "output_symbol": "d"
+        },
+        {
+          "display_position": 30,
+          "semantic_id": "lists_createoradd",
+          "candidate_alias": "C30",
+          "output_symbol": "e"
+        },
+        {
+          "display_position": 31,
+          "semantic_id": "lists_query",
+          "candidate_alias": "C31",
+          "output_symbol": "f"
+        },
+        {
+          "display_position": 32,
+          "semantic_id": "lists_remove",
+          "candidate_alias": "C32",
+          "output_symbol": "g"
+        },
+        {
+          "display_position": 33,
+          "semantic_id": "music_dislikeness",
+          "candidate_alias": "C33",
+          "output_symbol": "h"
+        },
+        {
+          "display_position": 34,
+          "semantic_id": "music_likeness",
+          "candidate_alias": "C34",
+          "output_symbol": "i"
+        },
+        {
+          "display_position": 35,
+          "semantic_id": "music_query",
+          "candidate_alias": "C35",
+          "output_symbol": "j"
+        },
+        {
+          "display_position": 36,
+          "semantic_id": "music_settings",
+          "candidate_alias": "C36",
+          "output_symbol": "k"
+        },
+        {
+          "display_position": 37,
+          "semantic_id": "news_query",
+          "candidate_alias": "C37",
+          "output_symbol": "l"
+        },
+        {
+          "display_position": 38,
+          "semantic_id": "play_audiobook",
+          "candidate_alias": "C38",
+          "output_symbol": "m"
+        },
+        {
+          "display_position": 39,
+          "semantic_id": "play_game",
+          "candidate_alias": "C39",
+          "output_symbol": "n"
+        },
+        {
+          "display_position": 40,
+          "semantic_id": "play_music",
+          "candidate_alias": "C40",
+          "output_symbol": "o"
+        },
+        {
+          "display_position": 41,
+          "semantic_id": "play_podcasts",
+          "candidate_alias": "C41",
+          "output_symbol": "p"
+        },
+        {
+          "display_position": 42,
+          "semantic_id": "play_radio",
+          "candidate_alias": "C42",
+          "output_symbol": "q"
+        },
+        {
+          "display_position": 43,
+          "semantic_id": "qa_currency",
+          "candidate_alias": "C43",
+          "output_symbol": "r"
+        },
+        {
+          "display_position": 44,
+          "semantic_id": "qa_definition",
+          "candidate_alias": "C44",
+          "output_symbol": "s"
+        },
+        {
+          "display_position": 45,
+          "semantic_id": "qa_factoid",
+          "candidate_alias": "C45",
+          "output_symbol": "t"
+        },
+        {
+          "display_position": 46,
+          "semantic_id": "qa_maths",
+          "candidate_alias": "C46",
+          "output_symbol": "u"
+        },
+        {
+          "display_position": 47,
+          "semantic_id": "qa_stock",
+          "candidate_alias": "C47",
+          "output_symbol": "v"
+        },
+        {
+          "display_position": 48,
+          "semantic_id": "recommendation_events",
+          "candidate_alias": "C48",
+          "output_symbol": "w"
+        },
+        {
+          "display_position": 49,
+          "semantic_id": "recommendation_locations",
+          "candidate_alias": "C49",
+          "output_symbol": "x"
+        },
+        {
+          "display_position": 50,
+          "semantic_id": "recommendation_movies",
+          "candidate_alias": "C50",
+          "output_symbol": "y"
+        },
+        {
+          "display_position": 51,
+          "semantic_id": "social_post",
+          "candidate_alias": "C51",
+          "output_symbol": "z"
+        },
+        {
+          "display_position": 52,
+          "semantic_id": "social_query",
+          "candidate_alias": "C52",
+          "output_symbol": "0"
+        },
+        {
+          "display_position": 53,
+          "semantic_id": "takeaway_order",
+          "candidate_alias": "C53",
+          "output_symbol": "1"
+        },
+        {
+          "display_position": 54,
+          "semantic_id": "takeaway_query",
+          "candidate_alias": "C54",
+          "output_symbol": "2"
+        },
+        {
+          "display_position": 55,
+          "semantic_id": "transport_query",
+          "candidate_alias": "C55",
+          "output_symbol": "3"
+        },
+        {
+          "display_position": 56,
+          "semantic_id": "transport_taxi",
+          "candidate_alias": "C56",
+          "output_symbol": "4"
+        },
+        {
+          "display_position": 57,
+          "semantic_id": "transport_ticket",
+          "candidate_alias": "C57",
+          "output_symbol": "5"
+        },
+        {
+          "display_position": 58,
+          "semantic_id": "transport_traffic",
+          "candidate_alias": "C58",
+          "output_symbol": "6"
+        },
+        {
+          "display_position": 59,
+          "semantic_id": "weather_query",
+          "candidate_alias": "C59",
+          "output_symbol": "7"
+        }
+      ],
+      "output_symbol_to_candidate_alias": {
+        "A": "C00",
+        "B": "C01",
+        "C": "C02",
+        "D": "C03",
+        "E": "C04",
+        "F": "C05",
+        "G": "C06",
+        "H": "C07",
+        "I": "C08",
+        "J": "C09",
+        "K": "C10",
+        "L": "C11",
+        "M": "C12",
+        "N": "C13",
+        "O": "C14",
+        "P": "C15",
+        "Q": "C16",
+        "R": "C17",
+        "S": "C18",
+        "T": "C19",
+        "U": "C20",
+        "V": "C21",
+        "W": "C22",
+        "X": "C23",
+        "Y": "C24",
+        "Z": "C25",
+        "a": "C26",
+        "b": "C27",
+        "c": "C28",
+        "d": "C29",
+        "e": "C30",
+        "f": "C31",
+        "g": "C32",
+        "h": "C33",
+        "i": "C34",
+        "j": "C35",
+        "k": "C36",
+        "l": "C37",
+        "m": "C38",
+        "n": "C39",
+        "o": "C40",
+        "p": "C41",
+        "q": "C42",
+        "r": "C43",
+        "s": "C44",
+        "t": "C45",
+        "u": "C46",
+        "v": "C47",
+        "w": "C48",
+        "x": "C49",
+        "y": "C50",
+        "z": "C51",
+        "0": "C52",
+        "1": "C53",
+        "2": "C54",
+        "3": "C55",
+        "4": "C56",
+        "5": "C57",
+        "6": "C58",
+        "7": "C59"
+      },
+      "scorer_alias_to_semantic_id": {
+        "C00": "alarm_query",
+        "C01": "alarm_remove",
+        "C02": "alarm_set",
+        "C03": "audio_volume_down",
+        "C04": "audio_volume_mute",
+        "C05": "audio_volume_other",
+        "C06": "audio_volume_up",
+        "C07": "calendar_query",
+        "C08": "calendar_remove",
+        "C09": "calendar_set",
+        "C10": "cooking_query",
+        "C11": "cooking_recipe",
+        "C12": "datetime_convert",
+        "C13": "datetime_query",
+        "C14": "email_addcontact",
+        "C15": "email_query",
+        "C16": "email_querycontact",
+        "C17": "email_sendemail",
+        "C18": "general_greet",
+        "C19": "general_joke",
+        "C20": "general_quirky",
+        "C21": "iot_cleaning",
+        "C22": "iot_coffee",
+        "C23": "iot_hue_lightchange",
+        "C24": "iot_hue_lightdim",
+        "C25": "iot_hue_lightoff",
+        "C26": "iot_hue_lighton",
+        "C27": "iot_hue_lightup",
+        "C28": "iot_wemo_off",
+        "C29": "iot_wemo_on",
+        "C30": "lists_createoradd",
+        "C31": "lists_query",
+        "C32": "lists_remove",
+        "C33": "music_dislikeness",
+        "C34": "music_likeness",
+        "C35": "music_query",
+        "C36": "music_settings",
+        "C37": "news_query",
+        "C38": "play_audiobook",
+        "C39": "play_game",
+        "C40": "play_music",
+        "C41": "play_podcasts",
+        "C42": "play_radio",
+        "C43": "qa_currency",
+        "C44": "qa_definition",
+        "C45": "qa_factoid",
+        "C46": "qa_maths",
+        "C47": "qa_stock",
+        "C48": "recommendation_events",
+        "C49": "recommendation_locations",
+        "C50": "recommendation_movies",
+        "C51": "social_post",
+        "C52": "social_query",
+        "C53": "takeaway_order",
+        "C54": "takeaway_query",
+        "C55": "transport_query",
+        "C56": "transport_taxi",
+        "C57": "transport_ticket",
+        "C58": "transport_traffic",
+        "C59": "weather_query"
+      },
+      "fixed_head_symbol_order": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "existing_position_bound_symbol_mismatches": 0,
+      "scope": "Design only. Semantic IDs are scorer provenance, never automatically actor text. Candidate aliases and explicit output symbols are visible. Requires separate processor/backend acceptance."
+    },
+    "candidate_order": {
+      "entries": [
+        {
+          "display_position": 0,
+          "semantic_id": "alarm_set",
+          "candidate_alias": "C02",
+          "output_symbol": "C"
+        },
+        {
+          "display_position": 1,
+          "semantic_id": "audio_volume_other",
+          "candidate_alias": "C05",
+          "output_symbol": "F"
+        },
+        {
+          "display_position": 2,
+          "semantic_id": "recommendation_locations",
+          "candidate_alias": "C49",
+          "output_symbol": "x"
+        },
+        {
+          "display_position": 3,
+          "semantic_id": "lists_createoradd",
+          "candidate_alias": "C30",
+          "output_symbol": "e"
+        },
+        {
+          "display_position": 4,
+          "semantic_id": "iot_hue_lightoff",
+          "candidate_alias": "C25",
+          "output_symbol": "Z"
+        },
+        {
+          "display_position": 5,
+          "semantic_id": "iot_hue_lightdim",
+          "candidate_alias": "C24",
+          "output_symbol": "Y"
+        },
+        {
+          "display_position": 6,
+          "semantic_id": "play_music",
+          "candidate_alias": "C40",
+          "output_symbol": "o"
+        },
+        {
+          "display_position": 7,
+          "semantic_id": "takeaway_query",
+          "candidate_alias": "C54",
+          "output_symbol": "2"
+        },
+        {
+          "display_position": 8,
+          "semantic_id": "iot_hue_lightup",
+          "candidate_alias": "C27",
+          "output_symbol": "b"
+        },
+        {
+          "display_position": 9,
+          "semantic_id": "takeaway_order",
+          "candidate_alias": "C53",
+          "output_symbol": "1"
+        },
+        {
+          "display_position": 10,
+          "semantic_id": "social_query",
+          "candidate_alias": "C52",
+          "output_symbol": "0"
+        },
+        {
+          "display_position": 11,
+          "semantic_id": "news_query",
+          "candidate_alias": "C37",
+          "output_symbol": "l"
+        },
+        {
+          "display_position": 12,
+          "semantic_id": "social_post",
+          "candidate_alias": "C51",
+          "output_symbol": "z"
+        },
+        {
+          "display_position": 13,
+          "semantic_id": "lists_query",
+          "candidate_alias": "C31",
+          "output_symbol": "f"
+        },
+        {
+          "display_position": 14,
+          "semantic_id": "lists_remove",
+          "candidate_alias": "C32",
+          "output_symbol": "g"
+        },
+        {
+          "display_position": 15,
+          "semantic_id": "calendar_set",
+          "candidate_alias": "C09",
+          "output_symbol": "J"
+        },
+        {
+          "display_position": 16,
+          "semantic_id": "email_query",
+          "candidate_alias": "C15",
+          "output_symbol": "P"
+        },
+        {
+          "display_position": 17,
+          "semantic_id": "transport_ticket",
+          "candidate_alias": "C57",
+          "output_symbol": "5"
+        },
+        {
+          "display_position": 18,
+          "semantic_id": "cooking_query",
+          "candidate_alias": "C10",
+          "output_symbol": "K"
+        },
+        {
+          "display_position": 19,
+          "semantic_id": "general_greet",
+          "candidate_alias": "C18",
+          "output_symbol": "S"
+        },
+        {
+          "display_position": 20,
+          "semantic_id": "music_dislikeness",
+          "candidate_alias": "C33",
+          "output_symbol": "h"
+        },
+        {
+          "display_position": 21,
+          "semantic_id": "weather_query",
+          "candidate_alias": "C59",
+          "output_symbol": "7"
+        },
+        {
+          "display_position": 22,
+          "semantic_id": "calendar_query",
+          "candidate_alias": "C07",
+          "output_symbol": "H"
+        },
+        {
+          "display_position": 23,
+          "semantic_id": "datetime_query",
+          "candidate_alias": "C13",
+          "output_symbol": "N"
+        },
+        {
+          "display_position": 24,
+          "semantic_id": "iot_hue_lightchange",
+          "candidate_alias": "C23",
+          "output_symbol": "X"
+        },
+        {
+          "display_position": 25,
+          "semantic_id": "qa_currency",
+          "candidate_alias": "C43",
+          "output_symbol": "r"
+        },
+        {
+          "display_position": 26,
+          "semantic_id": "iot_wemo_on",
+          "candidate_alias": "C29",
+          "output_symbol": "d"
+        },
+        {
+          "display_position": 27,
+          "semantic_id": "datetime_convert",
+          "candidate_alias": "C12",
+          "output_symbol": "M"
+        },
+        {
+          "display_position": 28,
+          "semantic_id": "recommendation_movies",
+          "candidate_alias": "C50",
+          "output_symbol": "y"
+        },
+        {
+          "display_position": 29,
+          "semantic_id": "music_settings",
+          "candidate_alias": "C36",
+          "output_symbol": "k"
+        },
+        {
+          "display_position": 30,
+          "semantic_id": "qa_definition",
+          "candidate_alias": "C44",
+          "output_symbol": "s"
+        },
+        {
+          "display_position": 31,
+          "semantic_id": "iot_wemo_off",
+          "candidate_alias": "C28",
+          "output_symbol": "c"
+        },
+        {
+          "display_position": 32,
+          "semantic_id": "email_querycontact",
+          "candidate_alias": "C16",
+          "output_symbol": "Q"
+        },
+        {
+          "display_position": 33,
+          "semantic_id": "transport_taxi",
+          "candidate_alias": "C56",
+          "output_symbol": "4"
+        },
+        {
+          "display_position": 34,
+          "semantic_id": "cooking_recipe",
+          "candidate_alias": "C11",
+          "output_symbol": "L"
+        },
+        {
+          "display_position": 35,
+          "semantic_id": "play_audiobook",
+          "candidate_alias": "C38",
+          "output_symbol": "m"
+        },
+        {
+          "display_position": 36,
+          "semantic_id": "music_likeness",
+          "candidate_alias": "C34",
+          "output_symbol": "i"
+        },
+        {
+          "display_position": 37,
+          "semantic_id": "audio_volume_up",
+          "candidate_alias": "C06",
+          "output_symbol": "G"
+        },
+        {
+          "display_position": 38,
+          "semantic_id": "audio_volume_mute",
+          "candidate_alias": "C04",
+          "output_symbol": "E"
+        },
+        {
+          "display_position": 39,
+          "semantic_id": "general_quirky",
+          "candidate_alias": "C20",
+          "output_symbol": "U"
+        },
+        {
+          "display_position": 40,
+          "semantic_id": "qa_stock",
+          "candidate_alias": "C47",
+          "output_symbol": "v"
+        },
+        {
+          "display_position": 41,
+          "semantic_id": "calendar_remove",
+          "candidate_alias": "C08",
+          "output_symbol": "I"
+        },
+        {
+          "display_position": 42,
+          "semantic_id": "play_podcasts",
+          "candidate_alias": "C41",
+          "output_symbol": "p"
+        },
+        {
+          "display_position": 43,
+          "semantic_id": "email_addcontact",
+          "candidate_alias": "C14",
+          "output_symbol": "O"
+        },
+        {
+          "display_position": 44,
+          "semantic_id": "iot_coffee",
+          "candidate_alias": "C22",
+          "output_symbol": "W"
+        },
+        {
+          "display_position": 45,
+          "semantic_id": "recommendation_events",
+          "candidate_alias": "C48",
+          "output_symbol": "w"
+        },
+        {
+          "display_position": 46,
+          "semantic_id": "alarm_remove",
+          "candidate_alias": "C01",
+          "output_symbol": "B"
+        },
+        {
+          "display_position": 47,
+          "semantic_id": "general_joke",
+          "candidate_alias": "C19",
+          "output_symbol": "T"
+        },
+        {
+          "display_position": 48,
+          "semantic_id": "qa_factoid",
+          "candidate_alias": "C45",
+          "output_symbol": "t"
+        },
+        {
+          "display_position": 49,
+          "semantic_id": "qa_maths",
+          "candidate_alias": "C46",
+          "output_symbol": "u"
+        },
+        {
+          "display_position": 50,
+          "semantic_id": "iot_cleaning",
+          "candidate_alias": "C21",
+          "output_symbol": "V"
+        },
+        {
+          "display_position": 51,
+          "semantic_id": "alarm_query",
+          "candidate_alias": "C00",
+          "output_symbol": "A"
+        },
+        {
+          "display_position": 52,
+          "semantic_id": "transport_query",
+          "candidate_alias": "C55",
+          "output_symbol": "3"
+        },
+        {
+          "display_position": 53,
+          "semantic_id": "music_query",
+          "candidate_alias": "C35",
+          "output_symbol": "j"
+        },
+        {
+          "display_position": 54,
+          "semantic_id": "transport_traffic",
+          "candidate_alias": "C58",
+          "output_symbol": "6"
+        },
+        {
+          "display_position": 55,
+          "semantic_id": "audio_volume_down",
+          "candidate_alias": "C03",
+          "output_symbol": "D"
+        },
+        {
+          "display_position": 56,
+          "semantic_id": "email_sendemail",
+          "candidate_alias": "C17",
+          "output_symbol": "R"
+        },
+        {
+          "display_position": 57,
+          "semantic_id": "play_game",
+          "candidate_alias": "C39",
+          "output_symbol": "n"
+        },
+        {
+          "display_position": 58,
+          "semantic_id": "play_radio",
+          "candidate_alias": "C42",
+          "output_symbol": "q"
+        },
+        {
+          "display_position": 59,
+          "semantic_id": "iot_hue_lighton",
+          "candidate_alias": "C26",
+          "output_symbol": "a"
+        }
+      ],
+      "output_symbol_to_candidate_alias": {
+        "C": "C02",
+        "F": "C05",
+        "x": "C49",
+        "e": "C30",
+        "Z": "C25",
+        "Y": "C24",
+        "o": "C40",
+        "2": "C54",
+        "b": "C27",
+        "1": "C53",
+        "0": "C52",
+        "l": "C37",
+        "z": "C51",
+        "f": "C31",
+        "g": "C32",
+        "J": "C09",
+        "P": "C15",
+        "5": "C57",
+        "K": "C10",
+        "S": "C18",
+        "h": "C33",
+        "7": "C59",
+        "H": "C07",
+        "N": "C13",
+        "X": "C23",
+        "r": "C43",
+        "d": "C29",
+        "M": "C12",
+        "y": "C50",
+        "k": "C36",
+        "s": "C44",
+        "c": "C28",
+        "Q": "C16",
+        "4": "C56",
+        "L": "C11",
+        "m": "C38",
+        "i": "C34",
+        "G": "C06",
+        "E": "C04",
+        "U": "C20",
+        "v": "C47",
+        "I": "C08",
+        "p": "C41",
+        "O": "C14",
+        "W": "C22",
+        "w": "C48",
+        "B": "C01",
+        "T": "C19",
+        "t": "C45",
+        "u": "C46",
+        "V": "C21",
+        "A": "C00",
+        "3": "C55",
+        "j": "C35",
+        "6": "C58",
+        "D": "C03",
+        "R": "C17",
+        "n": "C39",
+        "q": "C42",
+        "a": "C26"
+      },
+      "scorer_alias_to_semantic_id": {
+        "C02": "alarm_set",
+        "C05": "audio_volume_other",
+        "C49": "recommendation_locations",
+        "C30": "lists_createoradd",
+        "C25": "iot_hue_lightoff",
+        "C24": "iot_hue_lightdim",
+        "C40": "play_music",
+        "C54": "takeaway_query",
+        "C27": "iot_hue_lightup",
+        "C53": "takeaway_order",
+        "C52": "social_query",
+        "C37": "news_query",
+        "C51": "social_post",
+        "C31": "lists_query",
+        "C32": "lists_remove",
+        "C09": "calendar_set",
+        "C15": "email_query",
+        "C57": "transport_ticket",
+        "C10": "cooking_query",
+        "C18": "general_greet",
+        "C33": "music_dislikeness",
+        "C59": "weather_query",
+        "C07": "calendar_query",
+        "C13": "datetime_query",
+        "C23": "iot_hue_lightchange",
+        "C43": "qa_currency",
+        "C29": "iot_wemo_on",
+        "C12": "datetime_convert",
+        "C50": "recommendation_movies",
+        "C36": "music_settings",
+        "C44": "qa_definition",
+        "C28": "iot_wemo_off",
+        "C16": "email_querycontact",
+        "C56": "transport_taxi",
+        "C11": "cooking_recipe",
+        "C38": "play_audiobook",
+        "C34": "music_likeness",
+        "C06": "audio_volume_up",
+        "C04": "audio_volume_mute",
+        "C20": "general_quirky",
+        "C47": "qa_stock",
+        "C08": "calendar_remove",
+        "C41": "play_podcasts",
+        "C14": "email_addcontact",
+        "C22": "iot_coffee",
+        "C48": "recommendation_events",
+        "C01": "alarm_remove",
+        "C19": "general_joke",
+        "C45": "qa_factoid",
+        "C46": "qa_maths",
+        "C21": "iot_cleaning",
+        "C00": "alarm_query",
+        "C55": "transport_query",
+        "C35": "music_query",
+        "C58": "transport_traffic",
+        "C03": "audio_volume_down",
+        "C17": "email_sendemail",
+        "C39": "play_game",
+        "C42": "play_radio",
+        "C26": "iot_hue_lighton"
+      },
+      "fixed_head_symbol_order": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "existing_position_bound_symbol_mismatches": 60,
+      "scope": "Design only. Semantic IDs are scorer provenance, never automatically actor text. Candidate aliases and explicit output symbols are visible. Requires separate processor/backend acceptance."
+    },
+    "neutral_symbol_rebinding": {
+      "entries": [
+        {
+          "display_position": 0,
+          "semantic_id": "alarm_query",
+          "candidate_alias": "C13",
+          "output_symbol": "N"
+        },
+        {
+          "display_position": 1,
+          "semantic_id": "alarm_remove",
+          "candidate_alias": "C47",
+          "output_symbol": "v"
+        },
+        {
+          "display_position": 2,
+          "semantic_id": "alarm_set",
+          "candidate_alias": "C35",
+          "output_symbol": "j"
+        },
+        {
+          "display_position": 3,
+          "semantic_id": "audio_volume_down",
+          "candidate_alias": "C32",
+          "output_symbol": "g"
+        },
+        {
+          "display_position": 4,
+          "semantic_id": "audio_volume_mute",
+          "candidate_alias": "C11",
+          "output_symbol": "L"
+        },
+        {
+          "display_position": 5,
+          "semantic_id": "audio_volume_other",
+          "candidate_alias": "C58",
+          "output_symbol": "6"
+        },
+        {
+          "display_position": 6,
+          "semantic_id": "audio_volume_up",
+          "candidate_alias": "C27",
+          "output_symbol": "b"
+        },
+        {
+          "display_position": 7,
+          "semantic_id": "calendar_query",
+          "candidate_alias": "C54",
+          "output_symbol": "2"
+        },
+        {
+          "display_position": 8,
+          "semantic_id": "calendar_remove",
+          "candidate_alias": "C34",
+          "output_symbol": "i"
+        },
+        {
+          "display_position": 9,
+          "semantic_id": "calendar_set",
+          "candidate_alias": "C43",
+          "output_symbol": "r"
+        },
+        {
+          "display_position": 10,
+          "semantic_id": "cooking_query",
+          "candidate_alias": "C40",
+          "output_symbol": "o"
+        },
+        {
+          "display_position": 11,
+          "semantic_id": "cooking_recipe",
+          "candidate_alias": "C45",
+          "output_symbol": "t"
+        },
+        {
+          "display_position": 12,
+          "semantic_id": "datetime_convert",
+          "candidate_alias": "C41",
+          "output_symbol": "p"
+        },
+        {
+          "display_position": 13,
+          "semantic_id": "datetime_query",
+          "candidate_alias": "C59",
+          "output_symbol": "7"
+        },
+        {
+          "display_position": 14,
+          "semantic_id": "email_addcontact",
+          "candidate_alias": "C38",
+          "output_symbol": "m"
+        },
+        {
+          "display_position": 15,
+          "semantic_id": "email_query",
+          "candidate_alias": "C48",
+          "output_symbol": "w"
+        },
+        {
+          "display_position": 16,
+          "semantic_id": "email_querycontact",
+          "candidate_alias": "C15",
+          "output_symbol": "P"
+        },
+        {
+          "display_position": 17,
+          "semantic_id": "email_sendemail",
+          "candidate_alias": "C04",
+          "output_symbol": "E"
+        },
+        {
+          "display_position": 18,
+          "semantic_id": "general_greet",
+          "candidate_alias": "C17",
+          "output_symbol": "R"
+        },
+        {
+          "display_position": 19,
+          "semantic_id": "general_joke",
+          "candidate_alias": "C10",
+          "output_symbol": "K"
+        },
+        {
+          "display_position": 20,
+          "semantic_id": "general_quirky",
+          "candidate_alias": "C46",
+          "output_symbol": "u"
+        },
+        {
+          "display_position": 21,
+          "semantic_id": "iot_cleaning",
+          "candidate_alias": "C23",
+          "output_symbol": "X"
+        },
+        {
+          "display_position": 22,
+          "semantic_id": "iot_coffee",
+          "candidate_alias": "C51",
+          "output_symbol": "z"
+        },
+        {
+          "display_position": 23,
+          "semantic_id": "iot_hue_lightchange",
+          "candidate_alias": "C56",
+          "output_symbol": "4"
+        },
+        {
+          "display_position": 24,
+          "semantic_id": "iot_hue_lightdim",
+          "candidate_alias": "C57",
+          "output_symbol": "5"
+        },
+        {
+          "display_position": 25,
+          "semantic_id": "iot_hue_lightoff",
+          "candidate_alias": "C19",
+          "output_symbol": "T"
+        },
+        {
+          "display_position": 26,
+          "semantic_id": "iot_hue_lighton",
+          "candidate_alias": "C16",
+          "output_symbol": "Q"
+        },
+        {
+          "display_position": 27,
+          "semantic_id": "iot_hue_lightup",
+          "candidate_alias": "C12",
+          "output_symbol": "M"
+        },
+        {
+          "display_position": 28,
+          "semantic_id": "iot_wemo_off",
+          "candidate_alias": "C50",
+          "output_symbol": "y"
+        },
+        {
+          "display_position": 29,
+          "semantic_id": "iot_wemo_on",
+          "candidate_alias": "C36",
+          "output_symbol": "k"
+        },
+        {
+          "display_position": 30,
+          "semantic_id": "lists_createoradd",
+          "candidate_alias": "C31",
+          "output_symbol": "f"
+        },
+        {
+          "display_position": 31,
+          "semantic_id": "lists_query",
+          "candidate_alias": "C25",
+          "output_symbol": "Z"
+        },
+        {
+          "display_position": 32,
+          "semantic_id": "lists_remove",
+          "candidate_alias": "C44",
+          "output_symbol": "s"
+        },
+        {
+          "display_position": 33,
+          "semantic_id": "music_dislikeness",
+          "candidate_alias": "C33",
+          "output_symbol": "h"
+        },
+        {
+          "display_position": 34,
+          "semantic_id": "music_likeness",
+          "candidate_alias": "C07",
+          "output_symbol": "H"
+        },
+        {
+          "display_position": 35,
+          "semantic_id": "music_query",
+          "candidate_alias": "C26",
+          "output_symbol": "a"
+        },
+        {
+          "display_position": 36,
+          "semantic_id": "music_settings",
+          "candidate_alias": "C39",
+          "output_symbol": "n"
+        },
+        {
+          "display_position": 37,
+          "semantic_id": "news_query",
+          "candidate_alias": "C37",
+          "output_symbol": "l"
+        },
+        {
+          "display_position": 38,
+          "semantic_id": "play_audiobook",
+          "candidate_alias": "C06",
+          "output_symbol": "G"
+        },
+        {
+          "display_position": 39,
+          "semantic_id": "play_game",
+          "candidate_alias": "C20",
+          "output_symbol": "U"
+        },
+        {
+          "display_position": 40,
+          "semantic_id": "play_music",
+          "candidate_alias": "C22",
+          "output_symbol": "W"
+        },
+        {
+          "display_position": 41,
+          "semantic_id": "play_podcasts",
+          "candidate_alias": "C29",
+          "output_symbol": "d"
+        },
+        {
+          "display_position": 42,
+          "semantic_id": "play_radio",
+          "candidate_alias": "C09",
+          "output_symbol": "J"
+        },
+        {
+          "display_position": 43,
+          "semantic_id": "qa_currency",
+          "candidate_alias": "C28",
+          "output_symbol": "c"
+        },
+        {
+          "display_position": 44,
+          "semantic_id": "qa_definition",
+          "candidate_alias": "C52",
+          "output_symbol": "0"
+        },
+        {
+          "display_position": 45,
+          "semantic_id": "qa_factoid",
+          "candidate_alias": "C55",
+          "output_symbol": "3"
+        },
+        {
+          "display_position": 46,
+          "semantic_id": "qa_maths",
+          "candidate_alias": "C05",
+          "output_symbol": "F"
+        },
+        {
+          "display_position": 47,
+          "semantic_id": "qa_stock",
+          "candidate_alias": "C03",
+          "output_symbol": "D"
+        },
+        {
+          "display_position": 48,
+          "semantic_id": "recommendation_events",
+          "candidate_alias": "C01",
+          "output_symbol": "B"
+        },
+        {
+          "display_position": 49,
+          "semantic_id": "recommendation_locations",
+          "candidate_alias": "C24",
+          "output_symbol": "Y"
+        },
+        {
+          "display_position": 50,
+          "semantic_id": "recommendation_movies",
+          "candidate_alias": "C02",
+          "output_symbol": "C"
+        },
+        {
+          "display_position": 51,
+          "semantic_id": "social_post",
+          "candidate_alias": "C21",
+          "output_symbol": "V"
+        },
+        {
+          "display_position": 52,
+          "semantic_id": "social_query",
+          "candidate_alias": "C00",
+          "output_symbol": "A"
+        },
+        {
+          "display_position": 53,
+          "semantic_id": "takeaway_order",
+          "candidate_alias": "C30",
+          "output_symbol": "e"
+        },
+        {
+          "display_position": 54,
+          "semantic_id": "takeaway_query",
+          "candidate_alias": "C14",
+          "output_symbol": "O"
+        },
+        {
+          "display_position": 55,
+          "semantic_id": "transport_query",
+          "candidate_alias": "C18",
+          "output_symbol": "S"
+        },
+        {
+          "display_position": 56,
+          "semantic_id": "transport_taxi",
+          "candidate_alias": "C49",
+          "output_symbol": "x"
+        },
+        {
+          "display_position": 57,
+          "semantic_id": "transport_ticket",
+          "candidate_alias": "C53",
+          "output_symbol": "1"
+        },
+        {
+          "display_position": 58,
+          "semantic_id": "transport_traffic",
+          "candidate_alias": "C08",
+          "output_symbol": "I"
+        },
+        {
+          "display_position": 59,
+          "semantic_id": "weather_query",
+          "candidate_alias": "C42",
+          "output_symbol": "q"
+        }
+      ],
+      "output_symbol_to_candidate_alias": {
+        "N": "C13",
+        "v": "C47",
+        "j": "C35",
+        "g": "C32",
+        "L": "C11",
+        "6": "C58",
+        "b": "C27",
+        "2": "C54",
+        "i": "C34",
+        "r": "C43",
+        "o": "C40",
+        "t": "C45",
+        "p": "C41",
+        "7": "C59",
+        "m": "C38",
+        "w": "C48",
+        "P": "C15",
+        "E": "C04",
+        "R": "C17",
+        "K": "C10",
+        "u": "C46",
+        "X": "C23",
+        "z": "C51",
+        "4": "C56",
+        "5": "C57",
+        "T": "C19",
+        "Q": "C16",
+        "M": "C12",
+        "y": "C50",
+        "k": "C36",
+        "f": "C31",
+        "Z": "C25",
+        "s": "C44",
+        "h": "C33",
+        "H": "C07",
+        "a": "C26",
+        "n": "C39",
+        "l": "C37",
+        "G": "C06",
+        "U": "C20",
+        "W": "C22",
+        "d": "C29",
+        "J": "C09",
+        "c": "C28",
+        "0": "C52",
+        "3": "C55",
+        "F": "C05",
+        "D": "C03",
+        "B": "C01",
+        "Y": "C24",
+        "C": "C02",
+        "V": "C21",
+        "A": "C00",
+        "e": "C30",
+        "O": "C14",
+        "S": "C18",
+        "x": "C49",
+        "1": "C53",
+        "I": "C08",
+        "q": "C42"
+      },
+      "scorer_alias_to_semantic_id": {
+        "C13": "alarm_query",
+        "C47": "alarm_remove",
+        "C35": "alarm_set",
+        "C32": "audio_volume_down",
+        "C11": "audio_volume_mute",
+        "C58": "audio_volume_other",
+        "C27": "audio_volume_up",
+        "C54": "calendar_query",
+        "C34": "calendar_remove",
+        "C43": "calendar_set",
+        "C40": "cooking_query",
+        "C45": "cooking_recipe",
+        "C41": "datetime_convert",
+        "C59": "datetime_query",
+        "C38": "email_addcontact",
+        "C48": "email_query",
+        "C15": "email_querycontact",
+        "C04": "email_sendemail",
+        "C17": "general_greet",
+        "C10": "general_joke",
+        "C46": "general_quirky",
+        "C23": "iot_cleaning",
+        "C51": "iot_coffee",
+        "C56": "iot_hue_lightchange",
+        "C57": "iot_hue_lightdim",
+        "C19": "iot_hue_lightoff",
+        "C16": "iot_hue_lighton",
+        "C12": "iot_hue_lightup",
+        "C50": "iot_wemo_off",
+        "C36": "iot_wemo_on",
+        "C31": "lists_createoradd",
+        "C25": "lists_query",
+        "C44": "lists_remove",
+        "C33": "music_dislikeness",
+        "C07": "music_likeness",
+        "C26": "music_query",
+        "C39": "music_settings",
+        "C37": "news_query",
+        "C06": "play_audiobook",
+        "C20": "play_game",
+        "C22": "play_music",
+        "C29": "play_podcasts",
+        "C09": "play_radio",
+        "C28": "qa_currency",
+        "C52": "qa_definition",
+        "C55": "qa_factoid",
+        "C05": "qa_maths",
+        "C03": "qa_stock",
+        "C01": "recommendation_events",
+        "C24": "recommendation_locations",
+        "C02": "recommendation_movies",
+        "C21": "social_post",
+        "C00": "social_query",
+        "C30": "takeaway_order",
+        "C14": "takeaway_query",
+        "C18": "transport_query",
+        "C49": "transport_taxi",
+        "C53": "transport_ticket",
+        "C08": "transport_traffic",
+        "C42": "weather_query"
+      },
+      "fixed_head_symbol_order": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M",
+        "N",
+        "O",
+        "P",
+        "Q",
+        "R",
+        "S",
+        "T",
+        "U",
+        "V",
+        "W",
+        "X",
+        "Y",
+        "Z",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "existing_position_bound_symbol_mismatches": 58,
+      "scope": "Design only. Semantic IDs are scorer provenance, never automatically actor text. Candidate aliases and explicit output symbols are visible. Requires separate processor/backend acceptance."
+    }
+  },
+  "remaining": [
+    "render all evaluation transforms preserving semantic fields",
+    "tokenization and candidate-ID/head mapping acceptance",
+    "context audit for all transformed inputs",
+    "HF/FSDP/vLLM parity of transformed mappings"
+  ],
+  "question_order": "interleaved_I_S_then_Final",
+  "question_panels_source": {
+    "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/complete-definition-panels-v1/design.json",
+    "sha256": "9bc1611660e751fdc5abe79171bf9b64d68040ec7f67b218e9e5c7c590f74754"
+  },
+  "question_panels": [
+    {
+      "panel_id": 0,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "qa_definition"
+          },
+          {
+            "operator": "S_present",
+            "definition": "player_setting"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "qa_definition"
+          },
+          {
+            "operator": "S_present",
+            "definition": "player_setting"
+          },
+          {
+            "operator": "I_class",
+            "definition": "transport_ticket"
+          },
+          {
+            "operator": "S_present",
+            "definition": "definition_word"
+          },
+          {
+            "operator": "I_class",
+            "definition": "play_game"
+          },
+          {
+            "operator": "S_present",
+            "definition": "media_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "takeaway_order"
+          },
+          {
+            "operator": "S_present",
+            "definition": "joke_type"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 1,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "play_audiobook"
+          },
+          {
+            "operator": "S_present",
+            "definition": "podcast_name"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "play_audiobook"
+          },
+          {
+            "operator": "S_present",
+            "definition": "podcast_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "transport_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "time_zone"
+          },
+          {
+            "operator": "I_class",
+            "definition": "recommendation_events"
+          },
+          {
+            "operator": "S_present",
+            "definition": "house_place"
+          },
+          {
+            "operator": "I_class",
+            "definition": "alarm_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "food_type"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 2,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "general_joke"
+          },
+          {
+            "operator": "S_present",
+            "definition": "date"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "general_joke"
+          },
+          {
+            "operator": "S_present",
+            "definition": "date"
+          },
+          {
+            "operator": "I_class",
+            "definition": "email_addcontact"
+          },
+          {
+            "operator": "S_present",
+            "definition": "change_amount"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_hue_lightchange"
+          },
+          {
+            "operator": "S_present",
+            "definition": "transport_descriptor"
+          },
+          {
+            "operator": "I_class",
+            "definition": "play_podcasts"
+          },
+          {
+            "operator": "S_present",
+            "definition": "music_descriptor"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 3,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "recommendation_movies"
+          },
+          {
+            "operator": "S_present",
+            "definition": "drink_type"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "recommendation_movies"
+          },
+          {
+            "operator": "S_present",
+            "definition": "drink_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "play_radio"
+          },
+          {
+            "operator": "S_present",
+            "definition": "app_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "datetime_convert"
+          },
+          {
+            "operator": "S_present",
+            "definition": "podcast_descriptor"
+          },
+          {
+            "operator": "I_class",
+            "definition": "qa_factoid"
+          },
+          {
+            "operator": "S_present",
+            "definition": "time"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 4,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "transport_taxi"
+          },
+          {
+            "operator": "S_present",
+            "definition": "meal_type"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "transport_taxi"
+          },
+          {
+            "operator": "S_present",
+            "definition": "meal_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_wemo_off"
+          },
+          {
+            "operator": "S_present",
+            "definition": "relation"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_wemo_on"
+          },
+          {
+            "operator": "S_present",
+            "definition": "ingredient"
+          },
+          {
+            "operator": "I_class",
+            "definition": "music_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "artist_name"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 5,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "music_likeness"
+          },
+          {
+            "operator": "S_present",
+            "definition": "business_type"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "music_likeness"
+          },
+          {
+            "operator": "S_present",
+            "definition": "business_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "play_music"
+          },
+          {
+            "operator": "S_present",
+            "definition": "game_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "calendar_set"
+          },
+          {
+            "operator": "S_present",
+            "definition": "song_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "qa_maths"
+          },
+          {
+            "operator": "S_present",
+            "definition": "audiobook_author"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 6,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "iot_cleaning"
+          },
+          {
+            "operator": "S_present",
+            "definition": "news_topic"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "iot_cleaning"
+          },
+          {
+            "operator": "S_present",
+            "definition": "news_topic"
+          },
+          {
+            "operator": "I_class",
+            "definition": "music_dislikeness"
+          },
+          {
+            "operator": "S_present",
+            "definition": "business_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "social_post"
+          },
+          {
+            "operator": "S_present",
+            "definition": "general_frequency"
+          },
+          {
+            "operator": "I_class",
+            "definition": "qa_stock"
+          },
+          {
+            "operator": "S_present",
+            "definition": "color_type"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 7,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "audio_volume_mute"
+          },
+          {
+            "operator": "S_present",
+            "definition": "game_name"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "audio_volume_mute"
+          },
+          {
+            "operator": "S_present",
+            "definition": "game_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "weather_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "timeofday"
+          },
+          {
+            "operator": "I_class",
+            "definition": "lists_remove"
+          },
+          {
+            "operator": "S_present",
+            "definition": "device_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "takeaway_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "audiobook_name"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 8,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "datetime_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "email_folder"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "datetime_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "email_folder"
+          },
+          {
+            "operator": "I_class",
+            "definition": "email_querycontact"
+          },
+          {
+            "operator": "S_present",
+            "definition": "person"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_hue_lighton"
+          },
+          {
+            "operator": "S_present",
+            "definition": "coffee_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "news_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "personal_info"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 9,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "alarm_set"
+          },
+          {
+            "operator": "S_present",
+            "definition": "cooking_type"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "alarm_set"
+          },
+          {
+            "operator": "S_present",
+            "definition": "cooking_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "cooking_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "transport_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_hue_lightoff"
+          },
+          {
+            "operator": "S_present",
+            "definition": "music_album"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_hue_lightdim"
+          },
+          {
+            "operator": "S_present",
+            "definition": "order_type"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 10,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "email_sendemail"
+          },
+          {
+            "operator": "S_present",
+            "definition": "music_genre"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "email_sendemail"
+          },
+          {
+            "operator": "S_present",
+            "definition": "music_genre"
+          },
+          {
+            "operator": "I_class",
+            "definition": "lists_query"
+          },
+          {
+            "operator": "S_present",
+            "definition": "weather_descriptor"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_hue_lightup"
+          },
+          {
+            "operator": "S_present",
+            "definition": "movie_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "transport_traffic"
+          },
+          {
+            "operator": "S_present",
+            "definition": "transport_name"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 11,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "general_greet"
+          },
+          {
+            "operator": "S_present",
+            "definition": "email_address"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "general_greet"
+          },
+          {
+            "operator": "S_present",
+            "definition": "email_address"
+          },
+          {
+            "operator": "I_class",
+            "definition": "recommendation_locations"
+          },
+          {
+            "operator": "S_present",
+            "definition": "alarm_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "calendar_remove"
+          },
+          {
+            "operator": "S_present",
+            "definition": "currency_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "lists_createoradd"
+          },
+          {
+            "operator": "S_present",
+            "definition": "transport_agency"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 12,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "music_settings"
+          },
+          {
+            "operator": "S_present",
+            "definition": "radio_name"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "music_settings"
+          },
+          {
+            "operator": "S_present",
+            "definition": "radio_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "audio_volume_up"
+          },
+          {
+            "operator": "S_present",
+            "definition": "list_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "iot_coffee"
+          },
+          {
+            "operator": "S_present",
+            "definition": "movie_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "general_quirky"
+          },
+          {
+            "operator": "S_present",
+            "definition": "event_name"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 13,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "audio_volume_down"
+          },
+          {
+            "operator": "S_present",
+            "definition": "sport_type"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "audio_volume_down"
+          },
+          {
+            "operator": "S_present",
+            "definition": "sport_type"
+          },
+          {
+            "operator": "I_class",
+            "definition": "audio_volume_other"
+          },
+          {
+            "operator": "S_present",
+            "definition": "playlist_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "alarm_remove"
+          },
+          {
+            "operator": "S_present",
+            "definition": "place_name"
+          },
+          {
+            "operator": "I_class",
+            "definition": "social_query"
+          }
+        ]
+      }
+    },
+    {
+      "panel_id": 14,
+      "knowledge": "same_complete_intent_and_panel_slot_neighbor_rules_across_arms",
+      "arms": {
+        "direct": [],
+        "q_small": [
+          {
+            "operator": "I_class",
+            "definition": "qa_currency"
+          }
+        ],
+        "q_full": [
+          {
+            "operator": "I_class",
+            "definition": "qa_currency"
+          },
+          {
+            "operator": "I_class",
+            "definition": "calendar_query"
+          },
+          {
+            "operator": "I_class",
+            "definition": "cooking_recipe"
+          },
+          {
+            "operator": "I_class",
+            "definition": "email_query"
+          }
+        ]
+      }
+    }
+  ],
+  "historical_roster": "Existing evaluation roster has same coordinate counts and question sets but grouped family order; it is not an executable current input artifact. Use this explicit interleaved layout in the future frozen renderer."
+}

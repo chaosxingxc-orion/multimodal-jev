@@ -1,0 +1,32 @@
+{
+  "status": "formal_runtime_and_acceptance_candidates_not_released",
+  "training_dispatch_allowed": false,
+  "cpu_tests": [
+    {
+      "count": 32,
+      "seconds": 4.3,
+      "scope": "formal entry transformation/runtime binding plus checkpoint runtime and Stage2 source packaging"
+    },
+    {
+      "count": 44,
+      "seconds": 2.59,
+      "scope": "acceptance binding/formal runtime plus replay and checkpoint comparison"
+    }
+  ],
+  "files": {
+    "tools/jev/prepare_context_formal_runtime.py": "59f8b3d5d37cf180083c45ea9c6956bd0d1c28855a1da2738ac4aec6adb27481",
+    "tools/jev/context_formal_runtime.py": "cd3b74821874150d36bc28e814c1a3519098a5180387a74e09f626669332108e",
+    "tools/jev/context_formal_acceptance.py": "ba6ff4a457b511f79adc9b9da8cc9443e54ae0b50101d14a0d02c0aea6bd7580",
+    "tests/test_context_formal_runtime.py": "46f4ee100b13b076e25fdb6bfb39c71f0a951b0121d2c10f30bfa9a4030b5023",
+    "tests/test_context_formal_acceptance.py": "34f22a8fd367ff37d80188448f742a12f76fe4fe2052faad9aaa965d4bbf8a5b"
+  },
+  "candidate": ".local/decision-objective-research/context-formal-runtime-candidate-v1",
+  "candidate_manifest_sha256": "f483f5af61fa05ece020e7c410a71e6beec68e6fbc43c3f17d933ba6169c4224",
+  "scope": "Exact source transformation and runtime identity tested on CPU; acceptance binding uses synthetic collections and substituted comparisons, separately covered by tensor fixtures. No actual NPU acceptance or formal source package.",
+  "remaining": [
+    "actual_continuous_replay_checkpoint_acceptance",
+    "completed_stage1_and_selection",
+    "formal_training_package_publisher_launcher",
+    "full_training_collection_audit_and_11_point_evaluation"
+  ]
+}

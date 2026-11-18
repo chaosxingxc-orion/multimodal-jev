@@ -1,0 +1,101 @@
+{
+  "schema": "jev-reward-contract-design-v3",
+  "status": "fixed_capacity_semantic_menu_reward_selected_design_not_runtime",
+  "training_dispatch_allowed": false,
+  "supersedes": "configs/experiments/reward-contract-design-v2.json for the17panel65I55S semantic track; historical experiments unchanged",
+  "final": {
+    "reward": "correctness_0_or_1",
+    "required": "independent_admitted_final_truth",
+    "missing": "exclude_entire_RL_request_from_comparative_main_track; retain_audit_count",
+    "set_task": "complete_panel_exact_only_when_every_output_label_is_admitted"
+  },
+  "process": {
+    "total_cap": 0.2,
+    "family_caps": {
+      "I": 0.1,
+      "S": 0.1
+    },
+    "formula": "sum_f cap_f / fixed_capacity_f * sum_j_in_panel mask_fj * correctness_fj",
+    "denominator": "fixed_capacity4_per_family_bound_to_menu_v3_not_actual_panel_length_or_valid_label_count",
+    "empty_family": "zero_reward_no_budget_transfer_no_virtual_actions",
+    "unknown_or_conflict": "mask_no_false_no_reward",
+    "weights": "same_masks_and_weights_across_algorithm_comparisons",
+    "cross_budget": "Only registered17panel schedule with capacity4perfamily. Other question budgets require separate preregistered contract; no implicit rescaling.",
+    "scope": "Equal raw coefficient per predicate and same-input Final ranking margin, not equal positive/negative exposure, family totals, advantages, gradients or empirical benefit.",
+    "operators": {
+      "I": "I_present",
+      "S": "S_present"
+    },
+    "ragged_panels": "Unused capacity remains unused. Every semantic predicate occurs once per complete17panel sweep at coefficient.025; no duplicated questions or label-dependent denominators.",
+    "fixed_capacity": {
+      "I": 4,
+      "S": 4
+    },
+    "per_question_coefficient": 0.025,
+    "sweep_totals": {
+      "I": "13/136",
+      "S": "11/136",
+      "combined": "3/17",
+      "interpretation": "Maximum equal-panel-mean coefficients when all labels admitted/correct. Different family sizes give different totals; preserve each-call cap0.1, do not claim full0.1 average per family."
+    }
+  },
+  "ce": {
+    "stage1_complete_panels": "configs/experiments/stage1-objective-candidate-v2.json; Final1_I0.5_S0.5_cap8 with65I/55S across17panels; admission/runtime pending",
+    "stage2": "Final_CE + .025*sum_valid_I_present_CE + .025*sum_valid_S_present_CE; shared_decay_lambda; no cap8 polarity weighting inherited from Stage1",
+    "reward_ablation": "Q-input_and_Q-credit_have_identical_process_CE_and_masks; reward_changed_only",
+    "missing": "no_redistribution",
+    "balance": "training_population_only_predeclared_outer_weight; report natural and weighted objectives separately",
+    "ragged_panels": "Same fixed capacity coefficients for Q_input and Q_credit; no missing-label or empty-slot transfer. This changes both arms equally relative to oldv2, so do not compare v2/v3 curves as reward-only effect."
+  },
+  "algorithms": {
+    "ppo_critic": "joint_clipped_surrogate_with_pinned_verl_whitened_R_minus_V; unwhitened_return_for_critic; no additional normalization; behavior-batch scope in rl-baseline-design-v2",
+    "grpo": "standard_group_center_and_sample_std_plus_1e-6; process cap not preserved in gradient scale",
+    "rloo_clipped": "R_i_minus_mean_others_with_joint_PPO_clip; no extra advantage standardization",
+    "registered_extension": {
+      "id": "grpo_std_floor_1_typed_candidate_v1",
+      "advantage": "(R_i-mean(R))/max(sample_std(R),1.0)",
+      "purpose": "avoid_amplifying_small_group_reward_variance",
+      "caveat": "For R in [0,1.2], sample_std<=1.2/sqrt(2)<1: this collapses to group-centered reward, not a novel stepwise method.",
+      "relation": "group_centered_advantage=(G-1)/G * RLOO_advantage; compare with scaling disclosed",
+      "status": "analysis_only_not_added_to_standard_baseline"
+    }
+  },
+  "stepwise": {
+    "first": "fixed_raw_process_credit_vs_final_only_on_same_joint_algorithm",
+    "second": "conditional_node_credit_new_variant_with_explicit_ratio_and_clipping",
+    "exact_scope": "additive_rewards_under_factorized_finite_policy",
+    "final_only_process_credit": 0,
+    "not_temporal_GAE": true,
+    "shared_parameter_warning": "zero independent process action credit does not mean no backbone gradient through process hidden positions",
+    "grpo_warning": "Fixed raw weights remove ragged denominator bias but do not control GRPO standardized gradient weight in Final-constant groups. Standard advantage definition unchanged; report group and gradient diagnostics."
+  },
+  "required_metrics": [
+    "Final_accuracy_or_complete_set_EM",
+    "process_positive_recall_and_false_positive_rate",
+    "valid_supervision_coverage_by_family",
+    "Final_constant_groups",
+    "all_reward_zero_variance_groups",
+    "sample_reward_std",
+    "advantage_scale",
+    "clip_fraction",
+    "KL",
+    "shared_parameter_process_Final_gradient_norm_and_cosine",
+    "native_and_weighted_class_metrics"
+  ],
+  "evidence": "docs/research/semantic-menu-fixed-capacity-budget-check-v1.json",
+  "algorithm_normalization_evidence": "docs/research/rl-source-normalization-audit-v1.json",
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "semantic_operators_menu_and_fixed_capacity_design_migrated_supervision_runtime_pending",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created."
+  },
+  "semantic_redundancy_review": {
+    "evidence": "docs/research/semantic-reward-redundancy-audit-v1.json",
+    "decision": "Menuv3 has each predicate exactly once per complete sweep; semantic overlap still requires admitted-label audit. No sample-gold deduplication or hierarchy inference.",
+    "scope": "Exact fixed-answer arithmetic, not runtime integration or model effect",
+    "formula_changed": true,
+    "limitation": "Fixed coefficient does not solve duplicated semantic concepts; exact duplicate IDs are rejected by menu audit."
+  },
+  "semantic_menu_design": "configs/tasks/slurp/menu-design-candidate-v3.json",
+  "historical_reward_evidence": "docs/research/reward-contract-toy-audit-v1.json"
+}

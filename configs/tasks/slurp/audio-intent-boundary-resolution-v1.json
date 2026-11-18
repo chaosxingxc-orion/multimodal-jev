@@ -1,0 +1,17 @@
+{
+  "schema": "jev-audio-intent-boundary-resolution-v1",
+  "status": "candidate_rules_reference_review_not_training_release",
+  "training_dispatch_allowed": false,
+  "rules": {
+    "semantic_direction_not_state_change": "Louder/quieter ask whether a relative loudness request is expressed. An absolute target without comparative direction does not express either relative request: false under complete review, even though actual physical change is unknown. If the wording itself is ambiguous about relative direction, mark unavailable.",
+    "adjustment": "Setting/changing output loudness or an explicit mute/unmute control is audio_level_adjust. Requests to speak louder/softer also adjust output loudness. Merely forbidding speech or pausing playback does not explicitly change a loudness control.",
+    "silence": "audio_silence covers explicitly suppressing sound from the addressed source: mute, zero output, stop speaking, or stop/pause identified audible playback. Stop alone lacks source evidence. Do not equate all responses/notifications with sound when text/visual modalities are possible.",
+    "unmute": "An explicit unmute is an audio-control adjustment but not a request for a relative loudness increase or for silence. Actual prior mute state and resulting level are not inferred.",
+    "relative_and_target": "Decrease to ten percent expresses both relative quieter and adjustment. Set to sixty-five percent expresses adjustment alone. Maximum/high/low are absolute targets unless the utterance also expresses a relative direction.",
+    "absence_vs_ambiguity": "Unknown physical current state is not unknown semantic evidence. A clearly different act gives false; unresolved domain, act or conflicting direction gives unavailable for the affected predicates only.",
+    "information_vs_interface": "Ask the current numerical level/mute status for audio_level_information; ask to open/show the settings interface for audio_controls_open. Bare volume settings can mean either; no inference from an opened interface to a current-state question.",
+    "no_automatic_closure": "Each predicate has its own evidence. Explicit mute may satisfy silence and adjustment; do-not-speak can satisfy silence without adjustment. Broader/narrower vocabulary does not automatically label other predicates.",
+    "coexistence": "Separate clauses can satisfy different predicates. Contradictory directions in an unresolved fragment do not authorize marking both true; clearly distinct directed operations can coexist."
+  },
+  "scope": "Task-level audio semantics, no new output coordinates and no environmental state inference. Native labels unchanged."
+}

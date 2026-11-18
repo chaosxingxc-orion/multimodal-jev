@@ -1,0 +1,22 @@
+{
+  "status": "cpu_verified_candidate_not_released",
+  "tests_passed": 24,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_checkpoint_lifecycle.py tests/test_context_checkpoint_runtime.py tests/test_context_rollout_session.py",
+  "files": {
+    "tools/jev/audit_context_checkpoint_lifecycle.py": "14a73b8c815dc10cca8d62caf2fe227c99b19957779f0c02e96ef2c8a3073855",
+    "tests/test_context_checkpoint_lifecycle.py": "4be770acee56fe282e4b8c36f370c31204c110736ce3d9b435d6a19958a71d84",
+    "tools/jev/prepare_context_checkpoint_runtime.py": "0faa32ca5daa7556e47ea4852cb50b60bb0d37583fa24273d7c95aa7cd066a15",
+    "tests/test_context_checkpoint_runtime.py": "76ba8dd873a8dd3762cc840d4971048d08f5341a5a5ed6e7254b1d6a5f29f657"
+  },
+  "scope": "Read-only collected publication/checkpoint lifecycle audit. Tests execute transformed publication block with CPU model/Adam and mocked FSDP/collectives/export; simulated engine receipts. Not tensor authenticity, full optimizer audit, terminal-state audit or NPU acceptance.",
+  "covered": [
+    "all_update_policy_export_and_activation_binding",
+    "interval_and_terminal_four_rank_recovery_checkpoint",
+    "fresh_optimizer_replay_exactness",
+    "missing_stale_changed_or_unplanned_artifact_rejection",
+    "symlink_rejection",
+    "collection_hash_change_rejection"
+  ],
+  "stage2_released": false,
+  "queued_sources_unchanged": true
+}

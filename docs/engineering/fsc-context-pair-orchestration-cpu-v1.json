@@ -1,0 +1,54 @@
+{
+  "status": "candidate_cpu_orchestration_verified_no_npu_dispatch",
+  "created_unix": 1794685018.1606913,
+  "tests": {
+    "command": "PYTHONPATH=src:.local/verification-python:tools/jev python -m pytest -q tests/test_fsc_context_pair.py tests/test_fsc_context_source.py tests/test_fsc_context_inference.py tests/test_fsc_context_parity.py",
+    "passed": 46,
+    "seconds": 9.8
+  },
+  "coverage": [
+    "real BF16 fixture policy/native adapter packaging and identity verification",
+    "raw HF/vLLM panel compared against audited input receipts",
+    "full 3793 synthetic prediction population and identity/probability rejection",
+    "both policy panels must pass before any full inference",
+    "failure stops and preserves outputs; duplicate output rejected; no automatic retry",
+    "runtime source pins and source/input pair binding"
+  ],
+  "limitations": [
+    "complete SLURP source auditor replaced by fixture in package tests",
+    "model subprocesses and local storage admission mocked in orchestration tests",
+    "no actual source pair exists until full GRPO curve",
+    "no NPU launch/collector/full target scores yet"
+  ],
+  "sources": {
+    "tools/jev/prepare_fsc_context_source.py": "486ce58e3d9ffd1c6470e0d728368a396d939078287fcacff1c5819914ada761",
+    "tools/jev/run_fsc_context_pair.py": "37943ac08f1212e3e0e8925afdc68e1f19e17c30ae9e638f7221204504a85550",
+    "tests/test_fsc_context_source.py": "1a1b2e7499140bbaecb14ad15afc45e0daa9e56a47eeac574dc93b7794ac5c6b",
+    "tests/test_fsc_context_pair.py": "778a371542193021f717309e10543485493fcc86cdf2c5e3eec226ba2aae1193"
+  },
+  "mainline_observation": {
+    "remote_observed_unix": 1794684604.146284,
+    "container_id": "63e9abb7ac60c3fd087c3feb5006472ef23315081aad956da50a00cb59b2e70e",
+    "state": {
+      "Status": "running",
+      "Running": true,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 723304,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-11-14T19:07:08.32458245Z",
+      "FinishedAt": "0001-01-01T00:00:00Z"
+    },
+    "selection_progress": {
+      "completed": 3136,
+      "total": 9226,
+      "seconds": 837.2003160600143,
+      "policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66"
+    },
+    "next_ordinary_observation_not_before": 1794685204.146284
+  },
+  "scope": "Preparation for frozen source-only cross-dataset transfer; not a new prerequisite for simple SLURP RL."
+}

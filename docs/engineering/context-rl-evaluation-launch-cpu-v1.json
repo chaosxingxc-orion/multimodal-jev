@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "tests": 44,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_evaluation_package.py tests/test_context_rl_selection_entry.py tests/test_context_rl_evaluation_plan.py",
+  "files": {
+    "tools/jev/prepare_context_rl_evaluation_package.py": "7d5bca8b8bdc9aab783aa2eec21720e86d406a543fe00cbbb194e67760b20c55",
+    "tools/jev/launch_context_rl_evaluation.py": "e5f5914d8dad3a6fc4a07c8559d0f45fc5ec947017daab136b8cbea08295ae82",
+    "tests/test_context_rl_evaluation_package.py": "5f7fab59f160aabc1108bad2c93b9bf52103e8df84fa4b33ff3ff91e123f74bb"
+  },
+  "unchanged_queued_pins": {
+    "context-online-acceptance-v1-pins.json": 369,
+    "context-online-shared-npu-v2-chain-pins.json": 4,
+    "context-online-shared-resume-npu-v2-chain-pins.json": 5
+  },
+  "actual_NPU_dispatch": false,
+  "formal_RL_package_created": false,
+  "scope": "CPU package relocation/identity and mocked SSH lifecycle, including exact-handle retry with actual local flock. Model and formal source replaced in package fixtures; full-source admission separately covered. No real remote evaluation or efficacy claim."
+}

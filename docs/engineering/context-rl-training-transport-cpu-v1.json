@@ -1,0 +1,13 @@
+{
+  "status": "training_transport_candidate_cpu_verified",
+  "tests_passed": 35,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_training_collection.py tests/test_context_rl_selection_collection.py tests/test_context_rl_training_audit.py",
+  "files": {
+    "tools/jev/collect_context_rl_training.py": "2b63b12ced0334719d8e5842a25c8ccb400c572c5c622ca627d176c41cd0d429",
+    "tests/test_context_rl_training_collection.py": "eb33b997181031481839e872e395a13d7e04308f88478465a908e2eca9500496",
+    "tools/jev/audit_context_rl_training.py": "c138d53c7d6cc7bbe1250b6ac490f7daf155af7723feb6e311c2fa9f23ffa9c6",
+    "tests/test_context_rl_training_audit.py": "b435accf791ba253a5bb4d7d459c2a1d749c4b6884b80096309bcf239acbc639"
+  },
+  "scope": "SSH/docker substituted, real reader scripts executed as CPU child processes and real tar/hash/unpack. Successful and failed terminal transport, source drift preservation, exact handle, no-device read-only commands checked. No actual remote training collection yet.",
+  "stage2_released": false
+}

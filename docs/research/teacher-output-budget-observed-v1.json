@@ -1,0 +1,38 @@
+{
+  "schema": "slurp-teacher-output-budget-observed-v1",
+  "changed_request_fields": [
+    "max_tokens"
+  ],
+  "prior_max_tokens": 4096,
+  "max_tokens": 8192,
+  "http_status": 200,
+  "usage": {
+    "completion_tokens": 8192,
+    "completion_tokens_details": {
+      "reasoning_tokens": 8192
+    },
+    "prompt_tokens": 21853,
+    "prompt_tokens_details": {
+      "cached_tokens": 21824
+    },
+    "total_tokens": 30045
+  },
+  "finish_reasons": [
+    "length"
+  ],
+  "elapsed_seconds": 129.92626838991418,
+  "content_characters": 0,
+  "structure_valid": false,
+  "parse_error": "Expecting value: line 1 column 1 (char 0)",
+  "semantic_admission": 0,
+  "bulk_dispatch_allowed": false,
+  "training_dispatch_allowed": false,
+  "request_sha256": "4caabef4b061f888977cb173ff89a7ade84c0059e4bb5759e72099a41b1520b5",
+  "result_sha256": "f1cf0bea7789c38248494eaf921438cae959e1edb2434084f15403a9497c7277",
+  "terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794522338.4262064
+  },
+  "evidence_directory": ".local/research/teacher-output-budget-v1/output8192",
+  "conclusion": "Increasing only the output cap to8192 did not complete this panel. No automatic retry or further budget increase."
+}

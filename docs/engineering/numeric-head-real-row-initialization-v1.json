@@ -1,0 +1,56 @@
+{
+  "schema": "numeric-head-real-row-initialization-v1",
+  "identity": {
+    "tensor": "model.language_model.embed_tokens.weight",
+    "tokens": [
+      32,
+      33
+    ],
+    "hidden_size": 1024,
+    "row_sha256": [
+      "5ea02a46ecf998e99168930e8e08b3b9a60d6d0df6f6890e69c2e18e67266e89",
+      "8bad803d71a639f4445b3c441d8dd36177341033950935eaff14fc6849d86778"
+    ],
+    "model_weight_sha256": "d3f212dd20abecd315d830bc54ae3865e56ebfc3276484e57b771288ba27fd35",
+    "config_sha256": "9eecf6f1b383e343889c2e6010e632590fa57d4bc678e151c7d6a160a0dfb04a",
+    "tokenizer_sha256": "fe1fad59be22a41ee293363fcf95fdedbc7c93f3b49270b1d2e18bd1399a7a05"
+  },
+  "hidden_states": {
+    "source": "synthetic_normalized_gaussian_not_model_activations",
+    "seed": 317,
+    "count": 128
+  },
+  "cases": [
+    {
+      "dtype": "torch.float64",
+      "max_probability_error": 4.440892098500626e-16,
+      "max_hidden_gradient_error": 3.5236570605778894e-19,
+      "candidate_nll": 0.797744492620174,
+      "scalar_nll": 0.7977444926201739,
+      "different_threshold_decisions": 0,
+      "serialized_head_exact_restore": true
+    },
+    {
+      "dtype": "torch.float32",
+      "max_probability_error": 3.5762786865234375e-07,
+      "max_hidden_gradient_error": 2.3283064365386963e-10,
+      "candidate_nll": 0.7977445125579834,
+      "scalar_nll": 0.7977445125579834,
+      "different_threshold_decisions": 0,
+      "serialized_head_exact_restore": true
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "max_probability_error": 0.0021054744720458984,
+      "max_hidden_gradient_error": 3.814697265625e-06,
+      "candidate_nll": 0.7977963089942932,
+      "scalar_nll": 0.7978364825248718,
+      "different_threshold_decisions": 0,
+      "serialized_head_exact_restore": true
+    }
+  ],
+  "scalar_parameters": 1025,
+  "training_dispatch_allowed": false,
+  "scope": "Actual frozen A/B weight rows with synthetic hidden states; same-position linear readout and hidden-gradient diagnostic. No audio forward, special token, LoRA update, vLLM/NPU parity, calibration or efficacy acceptance.",
+  "probe_sha256": "8fd2c857fd88458250cb7b826844923035ddb41dd4bfb6cb1ed6b7be106f1508"
+}

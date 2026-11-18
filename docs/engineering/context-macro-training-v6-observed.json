@@ -1,0 +1,143 @@
+{
+  "schema": "context-macro-training-observed-v1",
+  "status": "finite_dp2_training_audited",
+  "audit_path": "/srv/multimodal-jev-xingchao/operations/macro-training-v6/audit.json",
+  "manifest_sha256": "6794abab2d758339007fa152ff3d4e578df1c2954948422ebe4e40fbba0a1d85",
+  "containers": {
+    "service-0": "2312425ec21c1f8920a5c8fe30c0271b9440c8a580ccbd390d535899141100e3",
+    "service-1": "56af04553755a95f1c0c4060c20052761f0d76e82d03c9c2d185fed33cb4fc5d",
+    "client": "49677232c33abb4c98d0be43da3eb4c7996f00d59faca115cd2627454c0ddd53",
+    "preflight": "8163e5d63cc42033ce071b7999a29464c68f0131a4020fb5c376f0453d6182f2"
+  },
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "updates": [
+    {
+      "algorithm": "dual_credit_grpo_floor_clipped_v1",
+      "arm": "joint",
+      "update": 0,
+      "checked_slots": 128,
+      "real_queries": 128,
+      "padding_slots": 0,
+      "branches": {
+        "ranking": {
+          "mean_weighted_reward": 0.9899943289346993,
+          "zero_signal_components": 7224,
+          "components": 7552
+        },
+        "existence": {
+          "mean_weighted_reward": 0.8630536689888686,
+          "zero_signal_components": 7403,
+          "components": 7680
+        }
+      },
+      "scope": "Independent recorded component/sample/reward/advantage audit; not model execution proof",
+      "slowest_rank_step_seconds": 82.0453200500342,
+      "changed_execution_tensors": {
+        "lora": 112,
+        "head": 13
+      },
+      "master_export": {
+        "exact_bf16_from_master_shards": true,
+        "rank_shards": 2,
+        "parameters": 128,
+        "numel": 6878209,
+        "completed_updates": 1,
+        "checkpoint_scopes": [
+          {
+            "tensors": 128,
+            "local_numel": {
+              "lora": 286720,
+              "head": 3152385
+            },
+            "base_model_saved": false,
+            "scope": "LoRA and Jev head only; base identity referenced separately"
+          },
+          {
+            "tensors": 128,
+            "local_numel": {
+              "lora": 286720,
+              "head": 3152384
+            },
+            "base_model_saved": false,
+            "scope": "LoRA and Jev head only; base identity referenced separately"
+          }
+        ],
+        "scope": "Original-parameter FSDP rank-order reconstruction; not a gradient correctness proof"
+      }
+    },
+    {
+      "algorithm": "dual_credit_grpo_floor_clipped_v1",
+      "arm": "joint",
+      "update": 1,
+      "checked_slots": 128,
+      "real_queries": 128,
+      "padding_slots": 0,
+      "branches": {
+        "ranking": {
+          "mean_weighted_reward": 0.9920633183792233,
+          "zero_signal_components": 7353,
+          "components": 7552
+        },
+        "existence": {
+          "mean_weighted_reward": 0.9533029380254447,
+          "zero_signal_components": 7114,
+          "components": 7680
+        }
+      },
+      "scope": "Independent recorded component/sample/reward/advantage audit; not model execution proof",
+      "slowest_rank_step_seconds": 80.06846802996006,
+      "changed_execution_tensors": {
+        "lora": 112,
+        "head": 12
+      },
+      "master_export": {
+        "exact_bf16_from_master_shards": true,
+        "rank_shards": 2,
+        "parameters": 128,
+        "numel": 6878209,
+        "completed_updates": 2,
+        "checkpoint_scopes": [
+          {
+            "tensors": 128,
+            "local_numel": {
+              "lora": 286720,
+              "head": 3152385
+            },
+            "base_model_saved": false,
+            "scope": "LoRA and Jev head only; base identity referenced separately"
+          },
+          {
+            "tensors": 128,
+            "local_numel": {
+              "lora": 286720,
+              "head": 3152384
+            },
+            "base_model_saved": false,
+            "scope": "LoRA and Jev head only; base identity referenced separately"
+          }
+        ],
+        "scope": "Original-parameter FSDP rank-order reconstruction; not a gradient correctness proof"
+      }
+    }
+  ],
+  "timing": {
+    "updates": 2,
+    "real_query_exposures": 256,
+    "complete_seconds": 162.11378807999426,
+    "queries_per_second": 1.5791377342541526,
+    "mean_seconds": {
+      "complete_seconds": 81.05689403999713,
+      "rank0_preparation_seconds": 36.79392764001386,
+      "rank0_actor_seconds": 39.640948104992276,
+      "rank0_export_checkpoint_sync_seconds": 4.621610984992003,
+      "rollout_seconds": 31.130563360027736,
+      "reference_seconds": 15.732813499984331,
+      "behavior_and_credit_seconds": 14.437970819999464
+    },
+    "median_complete_seconds": 81.05689403999713,
+    "peak_actor_allocated_bytes": 39804589568,
+    "reference_misses": 256
+  },
+  "fresh_process_replay_verified": false,
+  "scope": "Finite DP2 journal/export/activation audit and explicit replay result; no efficacy or sustained speed claim"
+}

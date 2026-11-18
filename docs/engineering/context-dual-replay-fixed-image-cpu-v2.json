@@ -1,0 +1,57 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "600cd1a17f1d3d1e22bd1b7b2b97f2bfa9245cf8c0f2e969b1ad9e6fee1160f0",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T03:07:48.25358793Z",
+    "FinishedAt": "2026-11-16T03:08:46.76122885Z"
+  },
+  "source_files": 420,
+  "source_manifest_sha256": "3e6b292dec94ce769aa8f5e6e5e4ee20346f380ddf1ace5c680e27f18dd79daa",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-replay-cpu-v2-collected",
+  "files": {
+    "run/terminal.json": "06906a24f6f25111e94c0c1d5addba6bb5c93e5efd2dfd91a5f7180e2102254d",
+    "run/junit.xml": "ba384ebb09d426eeeaa4b4b07c6f062388e081b20fb4fa183cee623f093b4de7",
+    "run/pytest.log": "9359f34495f2971bbcad7214864baf6d8f725af57cfed5a15b12f81e19e705a2",
+    "package/FILES.json": "3e6b292dec94ce769aa8f5e6e5e4ee20346f380ddf1ace5c680e27f18dd79daa",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 44,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794798495.2774246,
+    "finished_unix": 1794798525.3643267,
+    "source_manifest_sha256": "3e6b292dec94ce769aa8f5e6e5e4ee20346f380ddf1ace5c680e27f18dd79daa",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-replay-cpu-v2/run/junit.xml",
+      "tests/test_context_dual_replay.py",
+      "tests/test_context_dual_training_operations.py",
+      "tests/test_context_dual_training_audit.py",
+      "tests/test_context_master_export_audit.py",
+      "tests/test_context_dual_group_audit.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "CPU tests of master-to-BF16 export reconstruction, independent dual group audit, replay packaging and launch contracts. Synthetic fixtures; no complete NPU archive replay, throughput or training gain acceptance."
+}

@@ -1,0 +1,408 @@
+{
+  "schema": "slurp-slot-relevance-contract-candidate-v1",
+  "status": "proposal_pending_scope_decision_and_definition_alignment",
+  "training_dispatch_allowed": false,
+  "selected_main_scope": null,
+  "recommended_main_scope": "request_relevant_role",
+  "alternatives": [
+    "request_relevant_role",
+    "whole_utterance_role_mention"
+  ],
+  "user_question": "Optional scope preference asked; this artifact does not record approval or silently replace existing whole-utterance policy.",
+  "task_question": "Does the audio express a role of the defined type that contributes to a requested operation, query, constraint, target description, or explicitly requested message content?",
+  "logic": "exists expression: matches_type_definition AND satisfies_presence_policy AND relevant_to_any_expressed_request",
+  "axes": {
+    "type_identity": "role under supplied definition, not lexical entity lookup",
+    "presence_policy": "explicit_filler remains independent of relevance",
+    "relevance": "relation to requested task; not supplied gold intent",
+    "commitment": "affirmed, excluded, corrected, conditional or cancelled value is separate from type presence"
+  },
+  "included_roles": [
+    "operation_argument",
+    "query_object",
+    "retrieval_constraint",
+    "negative_constraint",
+    "cancel_or_update_target",
+    "object_identifying_modifier",
+    "message_payload",
+    "reported_but_task_relevant"
+  ],
+  "excluded_roles": [
+    "unrelated_background",
+    "merely_associated_unexpressed_role"
+  ],
+  "scope_rules": [
+    "All expressed requests are considered; do not choose relevance by the single native Final label.",
+    "Inspect the complete audio to establish relevance; a past tense or negation token never decides relevance alone.",
+    "Quoted content explicitly requested for posting or sending is part of the task; types still require their own role evidence.",
+    "Excluded values, corrections and cancelled targets can express types; this task does not output accepted slot values or executable states.",
+    "An explicit conditional request remains a request; unavailable external condition truth must not be invented.",
+    "Unknown relevance or unresolved type precedence masks supervision; it is not a negative.",
+    "A type match plus relevance is not a gold intent-to-slot instance binding; B_bound requires independent binding truth.",
+    "Atomic S negatives require complete inspection for the configured type/policy/scope; native omission is insufficient."
+  ],
+  "migration": {
+    "current_policy": "configs/tasks/slurp/slot-presence-policy-candidate-v1.json",
+    "current_policy_sha256": "33ce85dd37c63a9cd473a948e4cd82e3f8fa07b6bd905df0bff0492bcc1ca86e",
+    "current_definitions": "configs/tasks/slurp/type-definition-candidates-v1.json",
+    "current_definitions_sha256": "74e6da8fabfeab37eaafcc3f68e4982e8061b02d48b649cf63ddf4e65a6e0c32",
+    "changes_required": [
+      "Version scope and align all 55 definition cards; do not overwrite pinned draft.",
+      "Re-review evidence whose policy hash changes; no automatic inheritance of prior truth.",
+      "Audit 89 boundary rules and explicit-filler exceptions independently of relevance.",
+      "Rebuild annotation-workpack with new identity before bulk annotation; retain native labels.",
+      "Freeze selection annotation under the same policy after learning-side design; no test-driven scope changes."
+    ],
+    "old_review_truth_transfer_allowed": false
+  },
+  "evidence": {
+    "workpack": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-v2",
+    "report_sha256": "38eafec94b9151a1e472ee504036757c6fbed3e00b310dee62401a11367fd46f",
+    "sources_sha256": "6b6f9b81b927b91f480c33f945aef064ec4d6379c7773beccd6e09c2e04c7bd4"
+  },
+  "real_scope_examples": [
+    {
+      "source_id": "10315",
+      "reference": "let's play never have i ever",
+      "native_intent": "play_game",
+      "entity_type": "game_name",
+      "role_category": "named_task_object",
+      "rationale": "never occurs inside the game title and is not request negation.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1490193128-headset.flac",
+        "slurp:audio-1490193128.flac",
+        "slurp:audio-1501155938-headset.flac",
+        "slurp:audio-1501155938.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "10459",
+      "reference": "delete the list created yesterday",
+      "native_intent": "lists_remove",
+      "entity_type": "date",
+      "role_category": "object_identifying_modifier",
+      "rationale": "yesterday identifies the list to remove; it is not the execution date.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1490203400-headset.flac",
+        "slurp:audio-1490203400.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "13793",
+      "reference": "define love without invoking the term love",
+      "native_intent": "qa_definition",
+      "entity_type": "definition_word",
+      "role_category": "query_object",
+      "rationale": "love is the object of definition even with a constraint on wording.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1494415506-headset.flac",
+        "slurp:audio-1494415506.flac",
+        "slurp:audio-1501754972.flac",
+        "slurp:audio-1502198816-headset.flac",
+        "slurp:audio-1502198816.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "1439",
+      "reference": "download the latest folk songs having rating of four star or above and play all without shuffle",
+      "native_intent": "play_music",
+      "entity_type": "player_setting",
+      "role_category": "negative_constraint",
+      "rationale": "without shuffle specifies the requested playback mode; type presence does not mean shuffle is enabled.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1489154118.flac",
+        "slurp:audio-1497030445-headset.flac",
+        "slurp:audio-1497030445.flac",
+        "slurp:audio-1502197537-headset.flac",
+        "slurp:audio-1502197537.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "1447",
+      "reference": "play music of kate perry without shuffle",
+      "native_intent": "play_music",
+      "entity_type": "player_setting",
+      "role_category": "negative_constraint",
+      "rationale": "without shuffle supplies a playback-setting constraint.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1490356196-headset.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "15150",
+      "reference": "post that i am going to mcdonalds at manhattan",
+      "native_intent": "social_post",
+      "entity_type": "place_name",
+      "role_category": "message_payload",
+      "rationale": "Manhattan is inside the explicitly requested post content; payload is part of the requested task.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1490103686-headset.flac",
+        "slurp:audio-1490103686.flac",
+        "slurp:audio-1498579112.flac",
+        "slurp:audio-1501774093-headset.flac",
+        "slurp:audio-1501774093.flac",
+        "slurp:audio-1501778250-headset.flac",
+        "slurp:audio-1501778250.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "15151",
+      "reference": "post that i am going to walmart for shopping",
+      "native_intent": "social_post",
+      "entity_type": "business_name",
+      "role_category": "message_payload",
+      "rationale": "Walmart is inside the requested post content, not an unrelated background mention.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1497267878-headset.flac",
+        "slurp:audio-1497267878.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "15218",
+      "reference": "can you update my facebook profile picture to the image i took from google office yesterday",
+      "native_intent": "social_post",
+      "entity_type": "date",
+      "role_category": "object_identifying_modifier",
+      "rationale": "yesterday identifies the photo to use for the requested profile update.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1500388602-headset.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "15355",
+      "reference": "can you tweet for me to amazon services for not delivering my product on time",
+      "native_intent": "social_post",
+      "entity_type": "business_name",
+      "role_category": "recipient_or_complaint_target",
+      "rationale": "Amazon services is the complaint target; not delivering does not negate its identity.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1501778501-headset.flac",
+        "slurp:audio-1501778501.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "15716",
+      "reference": "was there any articles on shark attacks on snapchat yesterday",
+      "native_intent": "social_query",
+      "entity_type": "date",
+      "role_category": "retrieval_constraint",
+      "rationale": "yesterday limits the sought articles.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1492781241-headset.flac",
+        "slurp:audio-1492781241.flac",
+        "slurp:audio-1501766831-headset.flac",
+        "slurp:audio-1501766831.flac",
+        "slurp:audio-1502893737-headset.flac",
+        "slurp:audio-1502893737.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "16000",
+      "reference": "alex has told me that he will send an email regarding the price of the machine please check if that has come",
+      "native_intent": "email_query",
+      "entity_type": "person",
+      "role_category": "reported_but_task_relevant",
+      "rationale": "Alex identifies the sender of the email whose arrival should be checked.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1501758275-headset.flac",
+        "slurp:audio-1501758275.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "16577",
+      "reference": "did i get an email from jen last night",
+      "native_intent": "email_query",
+      "entity_type": "date",
+      "role_category": "retrieval_constraint",
+      "rationale": "last night constrains the email query.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1497864736-headset.flac",
+        "slurp:audio-1497864736.flac",
+        "slurp:audio-1500039489-headset.flac",
+        "slurp:audio-1500039489.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    },
+    {
+      "source_id": "3191",
+      "reference": "play the playlist we were listening last night",
+      "native_intent": "play_music",
+      "entity_type": "date",
+      "role_category": "object_identifying_modifier",
+      "rationale": "last night identifies the playlist being requested.",
+      "proposed_task_relevance": true,
+      "proposed_type_value": true,
+      "old_all_mentions_scope_value": true,
+      "recording_ids": [
+        "slurp:audio-1501151994-headset.flac",
+        "slurp:audio-1501151994.flac"
+      ],
+      "evidence": "reference_text_scope_review_only",
+      "optimization_allowed": false,
+      "audio_listened": false
+    }
+  ],
+  "synthetic_scope_examples": [
+    {
+      "id": "unrelated_place",
+      "audio_meaning_text": "I visited Paris yesterday. Turn the volume down.",
+      "entity_type": "place_name",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": false,
+      "rationale": "Paris has no role in the volume request.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "related_past_place",
+      "audio_meaning_text": "Play the radio station I listened to in Paris.",
+      "entity_type": "place_name",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": true,
+      "rationale": "Paris helps identify the station.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "quoted_payload_place",
+      "audio_meaning_text": "Send the message: I visited Paris yesterday.",
+      "entity_type": "place_name",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": true,
+      "rationale": "The place is part of explicit message content.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "negated_mode",
+      "audio_meaning_text": "Play music without shuffle.",
+      "entity_type": "player_setting",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": true,
+      "rationale": "The mode is explicitly constrained; do not interpret presence as enablement.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "unrequested_event",
+      "audio_meaning_text": "I met Susan yesterday. What is two plus two?",
+      "entity_type": "person",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": false,
+      "rationale": "Susan is unrelated background to the requested calculation.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "requested_person",
+      "audio_meaning_text": "Tell Susan what two plus two is.",
+      "entity_type": "person",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": true,
+      "rationale": "Susan is the requested recipient.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "cancel_target",
+      "audio_meaning_text": "Cancel the trip to Paris.",
+      "entity_type": "place_name",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": true,
+      "rationale": "A cancellation target is still a task object.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "alternative_constraint",
+      "audio_meaning_text": "Find a flight to Rome, not Paris.",
+      "entity_type": "place_name",
+      "whole_utterance_expected": true,
+      "request_relevant_expected": true,
+      "rationale": "Destination and excluded alternative both constrain the task; presence is not acceptance.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    },
+    {
+      "id": "absent_clock_value",
+      "audio_meaning_text": "What time is it?",
+      "entity_type": "time",
+      "whole_utterance_expected": false,
+      "request_relevant_expected": false,
+      "rationale": "Explicit-filler time requires a temporal expression; asking for a value does not provide one.",
+      "provenance": "authored_semantic_specification_example_no_audio_not_dataset_gold",
+      "optimization_allowed": false
+    }
+  ]
+}

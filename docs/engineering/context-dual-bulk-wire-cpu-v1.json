@@ -1,0 +1,16 @@
+{
+  "schema": "context-dual-bulk-wire-cpu-v1",
+  "tests": 43,
+  "failures": 0,
+  "skipped": 0,
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:tools/jev:tests:. python -m pytest -q -p no:cacheprovider tests/test_context_logits_wire.py tests/test_context_batched_request_candidate.py tests/test_context_batched_service_candidate.py",
+  "files": {
+    "src/multimodal_jev/context_logits_wire.py": "839555b70aae5a704583902297bd578a8216ded009da79c76d1b881cbf723f3b",
+    "tools/reports/context_dual_rollout_candidate.py": "722ad8ccede45499271e61c8897c847a6918a7304168592f9c98a53e1558bf19",
+    "tools/reports/context_dual_worker_candidate.py": "c260ca09e4ae198db5b9d99ed8d15ccc596477d10faeb8d2c0c2c0412e482e7f",
+    "tools/reports/serve_context_dual_candidate.py": "97138b81b4fd237ddc4c1063859bfd63db1d91cdbe726934dcfd1d734a552c0e",
+    "tests/test_context_logits_wire.py": "f2cb606342a925ec447ae69a5f6bf24f2a81f0327884277d704d07ebd3302a32"
+  },
+  "scope": "Actual CPU BF16 shared transformer head and spawned socket/tensor transport; engine encode/model replies are fixtures. No vLLM worker construction, Qwen, NPU parity, real adapter switching, training recovery, throughput or efficacy evidence.",
+  "training_dispatch_allowed": false
+}

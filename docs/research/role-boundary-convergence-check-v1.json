@@ -1,0 +1,101 @@
+{
+  "schema": "slurp-role-boundary-convergence-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/role-boundary-convergence-resolution-v1.json",
+  "rule_sha256": "d6b807153c5f293ab495481ba0fa060c57bd9ee88a2b29476550dc0f6da76003",
+  "review": "configs/reviews/slurp-role-boundary-convergence-v1.json",
+  "review_sha256": "9d45a9b95d60e150d453cb59c2fbeef31444bddf2a205eda8227d125210ae2f3",
+  "cohort_counts": {
+    "music": 246,
+    "domestic": 177,
+    "report": 78
+  },
+  "unique_read_sources": 486,
+  "review_coordinates": 35,
+  "review_sources": 35,
+  "proposal_counts": {
+    "false": 14,
+    "true": 15,
+    "null": 6
+  },
+  "recording_bindings": 152,
+  "unique_recordings": 152,
+  "native_disagreements": 10,
+  "first_batch_rereview": [],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v4/report.json": "e4e23e90b6a6ad6799cef1c67d0aa65b594abc5f63eb50f7e57c8c847a98f0c2",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "configs/tasks/slurp/role-boundary-convergence-resolution-v1.json": "d6b807153c5f293ab495481ba0fa060c57bd9ee88a2b29476550dc0f6da76003",
+    "configs/reviews/slurp-role-boundary-convergence-v1.json": "9d45a9b95d60e150d453cb59c2fbeef31444bddf2a205eda8227d125210ae2f3"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/domestic-sources.jsonl": "951821f5dcbe23f1d79e98bc48406990c5a77803b14eec701d8e5457ea8f11d9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/review-recording-bindings.jsonl": "323f79924f912ebeafd12311374c096558c7866072bc54d58ea9b20ecc0fc2ec",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/music-sources.jsonl": "6a2768d3c77cd86c4b2dbbb5a964996b482dffaacb80076ade811a6f18684251",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/summary.json": "b746e7d9f06da911d7f94d6093dbe5b8db73ea4b2ae9d85e4fc59d02e340641a",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/role-boundary-convergence-evidence-v1/report-sources.jsonl": "05f6cb8a7c13b7cad51810f07845081f04d77fac79d733fe80bce0e5d3809c83"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v8.json",
+    "sha256": "895ad9f080483cc6e31b1525bef9ff0f2cf1794e0c695da60ddb968d921cb807",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v10.json": "81fec3bbdabb5fc5cee81544464639be6c6183d4ae81ce77eea01beda5b3b2a0",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v10.json": "0f333ef00d997fc7c8a1dc7fd1beb0c5cedc0c4207a739818cd85e05f0b113f3",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v11.json": "78589452d7ce9bff8bb8dde1a5679acb653b7cb700ddb2cfad8ca3679a5ed7b3"
+    },
+    "unchanged_cards": 53,
+    "changed_semantic_types": [
+      "music_descriptor",
+      "place_name"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "business_name",
+        "place_name"
+      ],
+      [
+        "business_type",
+        "place_name"
+      ],
+      [
+        "currency_name",
+        "place_name"
+      ],
+      [
+        "definition_word",
+        "place_name"
+      ],
+      [
+        "house_place",
+        "place_name"
+      ],
+      [
+        "music_descriptor",
+        "music_genre"
+      ],
+      [
+        "music_descriptor",
+        "player_setting"
+      ],
+      [
+        "music_descriptor",
+        "playlist_name"
+      ],
+      [
+        "news_topic",
+        "place_name"
+      ],
+      [
+        "place_name",
+        "time_zone"
+      ],
+      [
+        "place_name",
+        "transport_descriptor"
+      ]
+    ]
+  },
+  "scope": "Metadata, full learning source membership and binding reconstruction independent of workpack bindings; same-author reference judgments, no independent semantic certification, listening or optimization admission."
+}

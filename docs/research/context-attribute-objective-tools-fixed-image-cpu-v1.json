@@ -1,0 +1,58 @@
+{
+  "schema": "context-attribute-objective-tools-fixed-image-cpu-v1",
+  "container_id": "dba19e44902fe0d401c62a8801a4eedc4f127778d9300d5d105285257540ec03",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T01:33:08.55103615Z",
+    "FinishedAt": "2026-11-15T01:34:17.00506166Z"
+  },
+  "source_files": 377,
+  "source_manifest_sha256": "bc481be5bb6e7cec5403e78de4a2b1ae6b5e83a1e1f56bc86cad8f62abca4dfe",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-objective-tools-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "bb4aafac4a3faab9b89bee700117b880473ea64a7765fbd02a4cc5e48c6d9bb8",
+    "run/junit.xml": "a51185dc6fd53758bed6fdbe3f334ea0a57513dc145ebb8b860cfebfee40a52c",
+    "run/pytest.log": "ab9c69660bbb42646cc2bbe3a425753e3e273fa15cabd6f0c9373f788dee5cc5",
+    "package/FILES.json": "bc481be5bb6e7cec5403e78de4a2b1ae6b5e83a1e1f56bc86cad8f62abca4dfe",
+    "package/run.py": "d05b6085755800577d75a397d7df8e09e53b26d805b9fbf5663d4c0aef66ba9d"
+  },
+  "counts": {
+    "tests": 49,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794706415.9089205,
+    "finished_unix": 1794706455.58932,
+    "source_manifest_sha256": "bc481be5bb6e7cec5403e78de4a2b1ae6b5e83a1e1f56bc86cad8f62abca4dfe",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-objective-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_candidate.py",
+      "tests/test_context_attribute_objective_candidate.py",
+      "tests/test_context_attribute_reward_candidate.py",
+      "tests/test_context_attribute_selection.py",
+      "tests/test_context_candidate_objective.py",
+      "tests/test_context_set_reward.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual pinned verl advantage and clipped objective checks with real 124-node catalog, synthetic logits and actions; no actor/model/NPU/efficacy evidence."
+}

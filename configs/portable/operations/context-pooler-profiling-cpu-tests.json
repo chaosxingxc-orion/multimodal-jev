@@ -1,0 +1,16 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "tests": [
+    "tests/test_vllm_context_pooler.py"
+  ],
+  "expected_tests": 3,
+  "scope": "Fixed-image vLLM dummy pooler profiling layout: rectangular int32 prompt rows whose last scheduled request carries the token remainder must be rebuilt as exact-length synthetic zero prompts. CPU only; no NPU or audio.",
+  "support_files": []
+}

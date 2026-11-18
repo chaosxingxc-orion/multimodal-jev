@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "tests": 37,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_curve_audit.py tests/test_context_rl_evaluation_plan.py tests/test_context_selection_curve.py",
+  "files": {
+    "tools/jev/audit_context_rl_curve.py": "6d87f716ad06d5c2fe1362f257eb0d3a28906fbae80ff194a3d883d4d1ffcd6a",
+    "tests/test_context_rl_curve_audit.py": "3a0430eb6a9761f4b14785cb858a51df6246cf5ab817c2253c5b59e98032155a"
+  },
+  "unchanged_queued_pins": {
+    "context-online-acceptance-v1-pins.json": 369,
+    "context-online-shared-npu-v2-chain-pins.json": 4,
+    "context-online-shared-resume-npu-v2-chain-pins.json": 5
+  },
+  "actual_full_RL_curve": false,
+  "scope": "CPU complete/prefix curve and shared-source binding tests; per-point auditor substituted in curve tests. Actual point audit separately tested; no new NPU or RL efficacy evidence."
+}

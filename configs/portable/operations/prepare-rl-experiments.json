@@ -1,0 +1,20 @@
+{
+  "schema": "local-operations-v1",
+  "output_directory": "${RL_EXPERIMENT_CONFIG_OUTPUT}",
+  "steps": [
+    {
+      "id": "grpo_experiment",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/training/context-grpo-experiment.json",
+      "output": "${RL_EXPERIMENT_CONFIG_OUTPUT}/grpo.json",
+      "depends_on": []
+    },
+    {
+      "id": "rloo_experiment",
+      "kind": "materialize",
+      "config": "${WORKSPACE}/configs/portable/training/context-rloo-experiment.json",
+      "output": "${RL_EXPERIMENT_CONFIG_OUTPUT}/rloo.json",
+      "depends_on": []
+    }
+  ]
+}

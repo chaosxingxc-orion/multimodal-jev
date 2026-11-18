@@ -1,0 +1,210 @@
+{
+  "schema": "jev-efficiency-design-v1",
+  "design": "context_length_and_pipeline_efficiency",
+  "version": "v0.0.5",
+  "decision": "2026-11-17 user directive: optimize engineering efficiency before locking the baseline (rc1 deferred)",
+  "status": {
+    "phase": "dp2_efficiency_baseline_established_source_parity_cleared",
+    "baseline": "acoustic_kv16 DP2 (2 train + 2 infer) 100-step = 74.7641 s/step, finite_dp2_efficiency_audited, 12800 exposures; SLURP TEST acoustic parity exact (269x60, prob/logit err 0.0)",
+    "blocked_on": "none for the efficiency baseline; the only remaining lever with positive expected gain is reference_actor_overlap (epoch-1 only, ~1.1x full run) and it is a structural build, not yet started",
+    "note": "capacity disproven (8x token = +2.70%); acoustic_kv16 is the measured DP2 baseline; MINDS transfer-domain parity (10/259) is a transfer-eval item, not a source-domain baseline blocker"
+  },
+  "training_dispatch_allowed": false,
+  "topology": {
+    "pattern": "2 training cards + 2 inference cards (2026-11-17 user directive: the 100-step efficiency baseline uses 2-card training + 2-card inference)",
+    "training_devices": 2,
+    "tensor_parallel": 1,
+    "pipeline_parallel": 1,
+    "physical_devices_train": [
+      0,
+      1
+    ],
+    "physical_devices_inference": [
+      2,
+      3
+    ],
+    "inference_instances": 2,
+    "per_dp_replica_batch": 64,
+    "microbatch": 8,
+    "global_batch": 128,
+    "efficiency_steps": 100,
+    "matched_baseline": "docs/engineering/context-service-batch32-100step-study-v1.md",
+    "matched_baseline_note": "the batch32 study already measured DP2 + dual TP1 at 32q/131072t over 100 steps (12800 real exposures, 84.17 s/step) and only gained 2.70% over 4q/16384t. This DP2 topology is retained for a future NON-capacity candidate (actor / acoustic batching / reference-actor overlap); capacity itself is fixed at the measured optimum."
+  },
+  "baseline": {
+    "source": "docs/research/context-inference-context-length-v1.md",
+    "v9_step_seconds": 150,
+    "v9_total_updates": 212,
+    "v9_rollout_seconds": 110,
+    "v9_actor_seconds": 44,
+    "query_context_tokens": 2831,
+    "dp2_batch32_step_seconds": 84.1681,
+    "token_breakdown": {
+      "system": 36,
+      "audio": 31,
+      "questions_60": 2764
+    },
+    "redundancy": "the per-candidate question boilerplate (~20 tokens) is identical across all 60 questions, ~42% of the context",
+    "measured_negative_result": "docs/engineering/context-service-batch32-100step-study-v1.md: batch4 (4q/16384t) -> batch32 (32q/131072t, 8x tokens) at gpu_memory_utilization=.4 improved throughput by only 2.70% (86.44->84.17 s/step); actor unchanged. Evidence: srv .../service-batch32-v1-prepared/package/service-0.json = 32/131072. So capacity is saturated; the cost is the serial acoustic tower plus the 48% actor."
+  },
+  "changes": {
+    "engine_token_budget": {
+      "field": "service_max_batch_tokens",
+      "status": "already_measured_negative_withdrawn",
+      "note": "2026-11-17 correction: the batch32 study already raised max_batch_tokens 16384->131072 (8x) AND max_batch_queries 4->32, at gpu_memory_utilization=.4, for only +2.70% (86.44->84.17 s/step). Evidence: srv/multimodal-jev-xingchao/operations/service-batch32-v1-prepared/package/service-0.json shows 32/131072 vs the micro8 baseline 4/16384. 65536 is strictly below the tested 131072, so this lever is not the efficiency baseline; capacity is fixed at the already-proven 32q/131072t."
+    },
+    "engine_memory_utilization": {
+      "field": "gpu_memory_utilization",
+      "status": "unnecessary_withdrawn",
+      "note": "131072 tokens already ran 100 steps at gpu_memory_utilization=.4 (the batch32 study completed). Raising to .6 has no demonstrated need and is dropped."
+    },
+    "template_dedup": {
+      "change": "state the question boilerplate once in the system prompt; each candidate keeps only id + definition + marker",
+      "context_from": 2831,
+      "context_to": "~1600-1700",
+      "reason": "42% of the context is verbatim-repeated boilerplate",
+      "risk": "medium",
+      "kind": "task_definition",
+      "status": "separate_candidate",
+      "note": "semantically equivalent but changes the prompt; must be a separate validated task-definition candidate, not folded into the engineering baseline"
+    },
+    "actor_optimization": {
+      "change": "reduce the non-rollout actor cost (FSDP/all-reduce, microbatch schedule, Python dispatch overhead)",
+      "reason": "actor is 48.26% of the step (~40.6 s/step in DP2) and does not improve with inference batching; it is the single largest remaining term",
+      "risk": "medium",
+      "kind": "structural",
+      "status": "primary_lever_unmeasured"
+    },
+    "acoustic_batching": {
+      "change": "batch the acoustic tower across recordings instead of the current serial per-recording forward",
+      "reason": "context_segmented_audio_candidate.segmented_audio_forward is intentionally serial; only the LM prefill is batched, which is why raising the LM token budget returned only 2.70%",
+      "risk": "medium_high",
+      "kind": "structural",
+      "status": "primary_lever_unmeasured",
+      "note": "changes the acoustic forward path; requires a train/infer numerical-consistency acceptance before any throughput claim"
+    },
+    "reference_actor_overlap": {
+      "change": "score the fixed reference policy for the next step's queries while the actor update is in flight",
+      "reason": "the reference policy is frozen, so its scores are policy-independent and safe to prefetch during the ~40 s actor window when the two inference cards idle; hides ~15-17 s/step of reference",
+      "risk": "low",
+      "kind": "pipeline",
+      "status": "pipeline_lever_unmeasured",
+      "note": "distinct from a full-run reference prewarm: a one-shot 40513-query prewarm costs ~1.5 h on one card and roughly breaks even over a 2-epoch run, so overlap (not bulk prewarm) is the candidate"
+    }
+  },
+  "withdrawn_candidate": {
+    "name": "v0.0.5 service-capacity (48q/65536t, gpu_memory_utilization .4->.6)",
+    "reason": "central lever (token budget) already measured at 8x for +2.70%; memory-utilization raise unnecessary (131072 fit at .4). Building this package would re-test a disproven lever and be weaker than the tested optimum.",
+    "disposition": "the subagent-built packager skeleton (config-driven topology, module closure, fixed-image CPU harness) is retained as reusable infrastructure; the 65536/48 hardcoding and the mem-util transform are dropped"
+  },
+  "lever_ranking": {
+    "schema": "jev-efficiency-lever-ranking-v1",
+    "rule": "2026-11-17 user directive: validate the highest-expected-improvement module first, each validated separately on a 4-card group (2 train + 2 infer)",
+    "measured_dp2_decomposition_seconds": {
+      "step_total": 84.17,
+      "actor": 40.6,
+      "rollout": 33.41,
+      "reference": 14.96,
+      "behavior_credit": 16.51,
+      "residual_prep_export_sync": 10.16,
+      "source": "docs/engineering/context-service-batch32-100step-study-v1.md (batch32, DP2 + dual TP1)"
+    },
+    "already_measured_audited": [
+      {
+        "module": "service_capacity",
+        "result": "4q/16384t -> 32q/131072t = +2.70% (86.44->84.17 s/step); saturated, withdrawn as a lever",
+        "source": "context-service-batch32-100step-study-v1.md"
+      },
+      {
+        "module": "acoustic_batching",
+        "result": "+8.39% (84.17->77.64 s/step)",
+        "source": "docs/engineering/context-acoustic-bucket-efficiency-v1.md"
+      },
+      {
+        "module": "acoustic_batching_plus_kv16",
+        "result": "fastest audited arm: 74.76 s/step, +12.58% over service32, saves 940 s/100 steps; status complete_efficiency_evidence_reconstructed",
+        "source": "docs/engineering/context-acoustic-bucket-efficiency-v1.md; report training-efficiency-recommendation-final-v1/report.json",
+        "source_domain_parity": "SLURP TEST exact 2026-11-17: 269 queries x 60 decisions, probability_max_abs=0.0, logit_max_abs=0.0, threshold_flips=0, top1_changes=0; status target_width_macro_parity_outputs_audited; finite panel (full_population_parity=false), parity only (target_scored=false)",
+        "caveat": "MINDS transfer-domain parity not exact (10/259 samples, max prob err 0.0244, logit err 0.21875, top1 change 0); SLURP source-domain TEST parity now exact (269/60, 0 diffs); not a fresh-process-recovery or efficacy claim"
+      }
+    ],
+    "current_frontier_seconds_per_step": 74.76,
+    "remaining_order": [
+      {
+        "rank": 1,
+        "module": "reference_actor_overlap",
+        "hits": "reference ~14.96-16.15 s (epoch-1 misses; epoch 2 hits cache)",
+        "optimistic_saving_seconds": 15.0,
+        "speedup_epoch1": 1.2,
+        "speedup_full_run": 1.1,
+        "risk": "low",
+        "why_highest_remaining": "the actor is already fully batched (collate_span_audio pads+concats into one backbone forward) and microbatch 16 already OOM'd, so actor-loop headroom is low; acoustic batching is done; reference prefetch during the idle ~40 s actor is the clearest remaining win in epoch 1"
+      },
+      {
+        "rank": 2,
+        "module": "actor_loop",
+        "hits": "actor 40.45 s (batched, microbatch capped at 8)",
+        "speedup": "low ceiling (~1.05-1.1x)",
+        "risk": "medium",
+        "why_lower": "already batched; microbatch increase blocked by OOM; remaining headroom is FSDP all-reduce / python dispatch, uncertain"
+      },
+      {
+        "rank": 3,
+        "module": "graph_capture",
+        "hits": "rollout LM forward",
+        "speedup": "1.1-1.3x unknown",
+        "risk": "medium_high",
+        "why_lower": "Ascend correctness unknown"
+      }
+    ],
+    "separate_task_candidate": "template_dedup (~1.2x) is a task-definition change, validated separately",
+    "combined_estimate": "adopt acoustic_kv16 (74.76 s) as base, then reference-overlap ~1.1x full-run; 1 hour (8.8x) remains out of reach",
+    "validation_protocol": "each remaining module validated separately on a 4-card group (2 train + 2 infer, DP2 + dual TP1); short acceptance 4 inference passes / 2 training updates; all numbers are estimates until measured"
+  },
+  "efficiency_service": {
+    "schema": "jev-efficiency-service-v1",
+    "status": "withdrawn_capacity_unchanged",
+    "source": "tools/jev/context_switch_rollout.py",
+    "source_sha256": "beb755c48b4307a0754204a3aaae0fff5aba30187f1d70957894b208cb1c0813",
+    "candidate_module": "tools/reports/context_efficiency_owner_candidate.py",
+    "candidate_runtime": "context-efficiency-candidate-v1",
+    "service_max_batch_queries": 32,
+    "service_max_batch_tokens": 131072,
+    "gpu_memory_utilization": 0.4,
+    "note": "SUPERSEDED: capacity is fixed at the already-measured batch32 optimum (32q/131072t, .4); the 48q/65536t/.6 variant is withdrawn per withdrawn_candidate. The owner candidate and config-driven packager skeleton are retained only as reusable infrastructure for a future pipeline/actor candidate; no package, CPU acceptance, NPU run or throughput claim exists.",
+    "training_devices": 2,
+    "inference_instances": 2,
+    "physical_devices_train": [
+      0,
+      1
+    ],
+    "physical_devices_inference": [
+      2,
+      3
+    ],
+    "max_steps": 100,
+    "training_dispatch_allowed": false
+  },
+  "efficiency_budget": {
+    "max_steps": 100,
+    "short_acceptance": "4 inference passes / 2 training updates",
+    "primary_metric": "real_queries_per_second_at_fixed_device_budget",
+    "comparison_rule": "matched DP2 + dual TP1 run against the batch32 study (32q/131072t, 84.17 s/step) on the same 4 cards, same schedule prefix, same seeds; report the full 100-step curve, not a prefix or a single step. The next candidate must change a NON-capacity lever (actor, acoustic batching or reference/actor overlap), since capacity is already measured at 8x for 2.70%."
+  },
+  "gates": {
+    "before_dispatch": [
+      "the 4 cards (0-1 train, 2-3 inference) are free; no frozen run occupies them",
+      "the next candidate changes actor, acoustic batching or reference/actor overlap (NOT capacity, which is saturated)",
+      "fixed-image CPU acceptance for every changed source",
+      "task-definition candidate (template dedup) validated separately from the engineering baseline",
+      "DP global reduction and 2-update NPU acceptance at DP2 + dual TP1"
+    ],
+    "no_claim_without": "measured 100-step throughput, not an extrapolation"
+  },
+  "open_issues": [
+    "the 1-hour target needs ~8.8x; after the capacity correction the remaining estimated levers (actor+acoustic+overlap) are ~2-3.5x, so 1 hour is very likely unreachable by service tuning alone and the hard floor needs measurement",
+    "the acoustic-tower batching lever risks train/infer numerical divergence; it needs a dedicated consistency acceptance, not just throughput",
+    "graph capture (enforce_eager=False) is untested on Ascend and is not part of this first candidate",
+    "this design does not change the v9 212-update budget and makes no efficacy claim"
+  ]
+}

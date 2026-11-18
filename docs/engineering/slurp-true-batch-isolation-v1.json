@@ -1,0 +1,77 @@
+{
+  "completed": true,
+  "independently_rescored": true,
+  "container_id": "79d311e292954bb1191cd2152c8fabc727674633985bbdc0703d00a9378cb734",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "raw_sha256": "d016fb75af0eddc251974d4d85742ff58c58d6a6c00ceb15c48514fedf745d50",
+  "results": [
+    {
+      "case": "mixed_short_long",
+      "frames": 63,
+      "audio_max_abs_difference": 0.001708984375,
+      "max_logprob_errors": {
+        "audio_batch_only": 0.29477691650390625,
+        "text_padding_only": 0.0,
+        "language_batch_only": 0.2628207206726074,
+        "full_batch": 0.28853797912597656
+      }
+    },
+    {
+      "case": "mixed_short_long",
+      "frames": 665,
+      "audio_max_abs_difference": 0.0,
+      "max_logprob_errors": {
+        "audio_batch_only": 0.0,
+        "text_padding_only": 0.0,
+        "language_batch_only": 0.2579612731933594,
+        "full_batch": 0.2579612731933594
+      }
+    },
+    {
+      "case": "long_pair",
+      "frames": 633,
+      "audio_max_abs_difference": 0.006591796875,
+      "max_logprob_errors": {
+        "audio_batch_only": 0.3548860549926758,
+        "text_padding_only": 0.477459192276001,
+        "language_batch_only": 0.3183283805847168,
+        "full_batch": 0.43967723846435547
+      }
+    },
+    {
+      "case": "long_pair",
+      "frames": 665,
+      "audio_max_abs_difference": 0.008056640625,
+      "max_logprob_errors": {
+        "audio_batch_only": 0.3585996627807617,
+        "text_padding_only": 0.0,
+        "language_batch_only": 0.2579612731933594,
+        "full_batch": 0.505345344543457
+      }
+    },
+    {
+      "case": "identical_pair",
+      "frames": 255,
+      "audio_max_abs_difference": 0.002685546875,
+      "max_logprob_errors": {
+        "audio_batch_only": 0.3255617618560791,
+        "text_padding_only": 0.0,
+        "language_batch_only": 0.3989119529724121,
+        "full_batch": 0.49842238426208496
+      }
+    },
+    {
+      "case": "identical_pair",
+      "frames": 255,
+      "audio_max_abs_difference": 0.002685546875,
+      "max_logprob_errors": {
+        "audio_batch_only": 0.3255617618560791,
+        "text_padding_only": 0.0,
+        "language_batch_only": 0.34989404678344727,
+        "full_batch": 0.4698305130004883
+      }
+    }
+  ],
+  "training_promotion": false,
+  "limitation": "Four learning inputs, two repeated; component isolation does not identify the responsible kernel or prove a fix."
+}

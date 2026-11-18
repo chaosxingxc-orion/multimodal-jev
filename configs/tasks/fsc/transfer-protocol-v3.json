@@ -1,0 +1,201 @@
+{
+  "schema": "slurp-to-fsc-transfer-protocol-v3",
+  "status": "native_and_semantic_roles_defined_pending_independent_labels_renderer_and_source_release",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "supersedes": "v2 for current semantic main track; retain v2 as historical I_class membership control, no past result relabeling.",
+  "source_model": "same_Qwen3_ASR_0_6B_BF16_LoRA_stage1_and_RL_checkpoints",
+  "readout_design": "configs/tasks/fsc/evaluation-readout-layout-candidate-v1.json",
+  "readout_scope": "native31_and_semantic31_separate_namespaces; canonical_primary_only; order_and_symbol_rebinding_diagnostics_require_separate_budget; no_processor_or_backend_acceptance",
+  "target_definitions": "configs/tasks/fsc/semantic-presence-definitions-candidate-v1.json",
+  "target_definitions_sha256": "b26b1978ff1d3af7507813b05a47ec451fdd9f14ac39c4f2e1934bf43cf72545",
+  "source_request_policy": "configs/tasks/intent-request-semantics-candidate-v1.json",
+  "source_request_policy_sha256": "4cb8698806311285a30c06cb1c9fe2f60ae3170efe37c52def8a6d5c872f4367",
+  "shared_operator": "I_present with task-defined complete command and scope constraints; independent semantic supervision, never native-class projection",
+  "native_final": {
+    "classes": 31,
+    "identity": "original(action,object,location) legal triple",
+    "input": "Direct audio plus all31 native category descriptors, native unspecified values explained as classification convention; no claim that proposed semantic cards are native necessary-and-sufficient definitions.",
+    "output": "one model_Final typed choice among all31 commands",
+    "truth": "Official target native label, preserved even when independent semantic meaning differs.",
+    "metric": "native_triple_exact_accuracy_over_fixed_full_population_with_invalid_predictions_wrong",
+    "keep_semantic_unknown": "No native sample excluded because semantic_Q is unavailable, conflict or unassessed; native population never shrunk using model errors."
+  },
+  "semantic_Q": {
+    "operators": [
+      "I_present"
+    ],
+    "definitions": 31,
+    "output": "boolean per configured Span; unavailable is a supervision mask, not automatic third predicted class",
+    "truth": "Independent reviewed semantic presence for each definition and reference, with explicit recording-binding and evidence scope; not native one-hot.",
+    "source_truth": "Neither native truth nor author boundary exemplars admit labels; all248 TRAIN references remain unassessed in initial packet.",
+    "location_none": "The matching request leaves location unspecified; this is an explicit constraint, not a wildcard, missing annotation or evidence of real-world absence.",
+    "multi_request": "Per expressed request; distinct room-specific and room-unspecified requests can each match. Never impose whole-utterance one-hot or silently choose main intent.",
+    "missing": "Keep unavailable/conflict/unassessed/transport failure separate; no implicit false.",
+    "unexpressed_domain": "Bare Play/Resume/Stop/Pause or Turn it up/down cannot use native labels to resolve domain.",
+    "boundary_examples": "configs/reviews/fsc-semantic-transfer-boundaries-v1.json",
+    "relation_to_native": "No hard fold, pruning, repair or primary-command choice from predicates. All-false semantic panel does not imply OOD.",
+    "slots": "No FSC action/object/location enum substitution for S_present. This first migration tests I_present and native Final only; semantic slot transfer remains a separate dataset requirement."
+  },
+  "structure": {
+    "panels": [
+      {
+        "panel_id": "fsc-semantic-00",
+        "semantic_ids": [
+          "fsc_presence_00",
+          "fsc_presence_01",
+          "fsc_presence_02",
+          "fsc_presence_03"
+        ]
+      },
+      {
+        "panel_id": "fsc-semantic-01",
+        "semantic_ids": [
+          "fsc_presence_04",
+          "fsc_presence_05",
+          "fsc_presence_06",
+          "fsc_presence_07"
+        ]
+      },
+      {
+        "panel_id": "fsc-semantic-02",
+        "semantic_ids": [
+          "fsc_presence_08",
+          "fsc_presence_09",
+          "fsc_presence_10",
+          "fsc_presence_11"
+        ]
+      },
+      {
+        "panel_id": "fsc-semantic-03",
+        "semantic_ids": [
+          "fsc_presence_12",
+          "fsc_presence_13",
+          "fsc_presence_14",
+          "fsc_presence_15"
+        ]
+      },
+      {
+        "panel_id": "fsc-semantic-04",
+        "semantic_ids": [
+          "fsc_presence_16",
+          "fsc_presence_17",
+          "fsc_presence_18",
+          "fsc_presence_19"
+        ]
+      },
+      {
+        "panel_id": "fsc-semantic-05",
+        "semantic_ids": [
+          "fsc_presence_20",
+          "fsc_presence_21",
+          "fsc_presence_22",
+          "fsc_presence_23"
+        ]
+      },
+      {
+        "panel_id": "fsc-semantic-06",
+        "semantic_ids": [
+          "fsc_presence_24",
+          "fsc_presence_25",
+          "fsc_presence_26",
+          "fsc_presence_27"
+        ]
+      },
+      {
+        "panel_id": "fsc-semantic-07",
+        "semantic_ids": [
+          "fsc_presence_28",
+          "fsc_presence_29",
+          "fsc_presence_30"
+        ]
+      }
+    ],
+    "arms": [
+      "Direct",
+      "Q_input"
+    ],
+    "knowledge": "Identical complete native31 menu plus panel semantic cards and complete shared policy for each paired arm.",
+    "output": "Direct Final only; Q_input all panel I_present Spans then native Final in one forward.",
+    "assignment": "All8 fixed panels for every target audio, no gold/reference/topic routing; four questions except final three.",
+    "aggregate": "Per-panel Final metrics and equal-panel mean, no best panel, vote, union or multi-call complete-set claim.",
+    "checkpoint_comparison": "Compare Stage1 and source Q_input/Q_credit RL checkpoints under the same target templates; Q_credit is a source training condition, not target reward optimization.",
+    "calls": "8 per audio per target arm per checkpoint; token/compute cost and mismatch from source4I+4S inputs disclosed."
+  },
+  "metrics": {
+    "native": [
+      "exact_command_accuracy",
+      "macro_F1_fixed31",
+      "per_class_recall_support",
+      "invalid_rate"
+    ],
+    "semantic": [
+      "per_definition_positive_F1",
+      "macro_positive_F1_with_declared_positive_support",
+      "positive_recall",
+      "negative_false_positive_rate",
+      "balanced_accuracy_if_both_polarities_supported",
+      "explicit_validity_and_supervision_coverage",
+      "negative_failure_rate"
+    ],
+    "unknown": "Masked only in semantic metrics; keep complete original denominator and missing/conflict counts visible.",
+    "invalid": "Native wrong; semantic positive FN, negative invalid separately from FPR; balanced-accuracy wrong. Do not fabricate a label.",
+    "panels": "Exact-match/sets only on fully admitted panel truth. Not31-predicate one-call prediction.",
+    "dependence": "Repeated scripts and speaker clustering reported; target TRAIN inspection disclosed as schema authoring, not unseen-task discovery.",
+    "shared_arithmetic": {
+      "reference": "configs/tasks/slurp/evaluation-protocol-candidate-v2.json#/semantic_Q/metric_arithmetic",
+      "native_fixed_macro_classes": 31,
+      "native_accuracy": "official legal triple accuracy over unchanged full recording population; per-panel plus equal-panel mean",
+      "semantic_families": [
+        "I_present"
+      ],
+      "semantic_macro": "equal mean over fixed positive-supported definitions, not unweighted mean of four-question and three-question panel macros",
+      "slot_metrics": "not_applicable_no_S_present_in_this_transfer"
+    }
+  },
+  "checkpoints": {
+    "baseline": "frozen_stage1_before_RL",
+    "later": "predeclared_RL_updates_shared_with_source_evaluation",
+    "selection": "SLURP_selection_only_never_FSC_metrics",
+    "stage1_selection": "SLURP_only",
+    "numerical_update_ids": "must_be_written_after_source_training_budget_frozen_before_first_target_run"
+  },
+  "inference": {
+    "weights_frozen": true,
+    "teacher_feedback_from_target": false,
+    "reference_transcript_input": false,
+    "one_forward_per_registered_request": true,
+    "external_text_reasoning": false
+  },
+  "statistical_plan": {
+    "primary_delta": "later_RL_minus_stage1_on_same_audio_and_template",
+    "paired_bootstrap": {
+      "cluster": "official_test_speaker",
+      "resamples": 10000,
+      "seed": 317,
+      "interval": "percentile_95_percent"
+    },
+    "secondary_cluster": "normalized_reference_utterance_for_reporting_dependency_sensitivity_only_never_actor_or_question_selection",
+    "multiple_testing": "report_all_preregistered_checkpoints_and_panels_with_pointwise_intervals; no_best_checkpoint_significance_claim",
+    "interaction": "(later_Qinput-stage1_Qinput)-(later_Direct-stage1_Direct)",
+    "unsuccessful_transfer": "retain_zero_or_negative_delta_and_saturation_no_test_guided_retry"
+  },
+  "target_usage": "TRAIN references and ontology may inform definitions, no target model-performance feedback used for template/checkpoint/algorithm selection. Target weights frozen. TEST annotation is evaluation-only under frozen definitions, blind to predictions; discovered ambiguity stays masked rather than prompting in-place rule edits.",
+  "input_packet": {
+    "report": "/mnt/cephfs/xingchao/datasets/jev/fsc-semantic-review-packet-v1/report.json",
+    "report_sha256": "54099b3729fb55c05ddb77b185c088209d28755b8a74ee24e296b7fd3529abe9",
+    "role": "TRAIN offline annotation inputs only, not actor prompts or execution acceptance",
+    "API_sent": false
+  },
+  "test_status": "No TEST CSV/reference/audio opened for this revision; historical FSC exposure remains disclosed. Full official evaluation population identity/scoring and semantic annotation pending.",
+  "freeze_requirements": [
+    "independent_semantic_truth_and_recording_binding_for_eval",
+    "per_definition_polarity_and_ambiguity_coverage",
+    "source_task_and_Stage1_RL_checkpoints_frozen",
+    "direct_audio_renderer_native31_and_semantic_aliases",
+    "all_panel_context_symbols_and_backend_parity",
+    "prospective_fixed_test_manifest_budget_and_checkpoint_ids",
+    "complete_prediction_coverage_and_independent_scorer_check"
+  ],
+  "semantic_admission": 0
+}

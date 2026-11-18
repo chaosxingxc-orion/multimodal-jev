@@ -1,0 +1,618 @@
+{
+  "schema": "jev-definition-intervention-audit-v1",
+  "config": "configs/tasks/definition-interventions-candidate-v1.json",
+  "config_sha256": "21ee2ada27d259440703ca040c9f3c08ef2118d6280abd3e696f38722cba87da",
+  "source_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/slot-reference-adjudication-v2/report.json",
+  "source_report_sha256": "3a5c5cacab6f98560a793637c7fe82dcb27e41139e7fde3de4c84a354f6557a2",
+  "implementation_sha256": "8bd3d85a86476d25d6b362107fd290079633bb9c510eff4044ffda29f4cedff1",
+  "reference_decisions": 38,
+  "reference_status_counts": {
+    "positive": 16,
+    "negative": 9,
+    "unavailable": 7,
+    "conflict": 6
+  },
+  "known_reference_pairs": 25,
+  "masked_reference_pairs": 13,
+  "known_recording_pair_bindings": 127,
+  "masked_recording_pair_bindings": 58,
+  "synthetic_balanced_controls": {
+    "always_false": {
+      "both_correct": 0.0,
+      "valid_opposite": 0.0,
+      "opposite_but_both_wrong": 0.0,
+      "invalid_pair": 0.0
+    },
+    "template_only": {
+      "both_correct": 0.5,
+      "valid_opposite": 1.0,
+      "opposite_but_both_wrong": 0.5,
+      "invalid_pair": 0.0
+    },
+    "perfect_but_wrong_complement": {
+      "both_correct": 0.0,
+      "valid_opposite": 1.0,
+      "opposite_but_both_wrong": 1.0,
+      "invalid_pair": 0.0
+    },
+    "oracle": {
+      "both_correct": 1.0,
+      "valid_opposite": 1.0,
+      "opposite_but_both_wrong": 0.0,
+      "invalid_pair": 0.0
+    }
+  },
+  "fixtures": [
+    {
+      "source_id": "4181",
+      "definition_id": "time",
+      "definition_sha256": "2659bb4ec931bc2d29f8a5a965780833b22a995bc766dc28f83cf66851d74b1e",
+      "policy_sha256": "14ccdfedd486f1d167d106689a0b03fe7a799c96669facd8e8a2bdc61b856089",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "4181",
+      "definition_id": "time_zone",
+      "definition_sha256": "d60d1ef29024cd7445caa3dadfc75be25c901a93e9e973a3e5cc6f369f2507ec",
+      "policy_sha256": "75ce8c1394fab5c1f1113f1f50f7f45da0b118b008531427ab59dfe6a6835298",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "4181",
+      "definition_id": "date",
+      "definition_sha256": "5ed48646e45bae7a84c9effcbdcb4f2a8ff9ac99e3bdeb048ed59ae09bddf2dd",
+      "policy_sha256": "c459bef783b02dad834e71b4e835b70f41b4de3e698f1be4ccafced75f307ffb",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "4771",
+      "definition_id": "time_zone",
+      "definition_sha256": "d60d1ef29024cd7445caa3dadfc75be25c901a93e9e973a3e5cc6f369f2507ec",
+      "policy_sha256": "75ce8c1394fab5c1f1113f1f50f7f45da0b118b008531427ab59dfe6a6835298",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "4771",
+      "definition_id": "time",
+      "definition_sha256": "2659bb4ec931bc2d29f8a5a965780833b22a995bc766dc28f83cf66851d74b1e",
+      "policy_sha256": "14ccdfedd486f1d167d106689a0b03fe7a799c96669facd8e8a2bdc61b856089",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "4771",
+      "definition_id": "date",
+      "definition_sha256": "5ed48646e45bae7a84c9effcbdcb4f2a8ff9ac99e3bdeb048ed59ae09bddf2dd",
+      "policy_sha256": "c459bef783b02dad834e71b4e835b70f41b4de3e698f1be4ccafced75f307ffb",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "15772",
+      "definition_id": "personal_info",
+      "definition_sha256": "a28761821c74ea3da9a19d88bec67ebc9d7531a5f8e3a53c70b7bd30cb3df326",
+      "policy_sha256": "96e4fb0b0f51098e458e5c95531d0bf23211928e815037005424dfa62e250448",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "15772",
+      "definition_id": "email_address",
+      "definition_sha256": "78e04500de927cb66d61211f18c628257cc43c9c33ca9d0fc9503d3481240be0",
+      "policy_sha256": "60b6cbd8f0799102966ebc840ded5d7ed56e4395b84360439301de75574d4cdb",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "15772",
+      "definition_id": "person",
+      "definition_sha256": "1f6a7eb5910655f0c25c00b4d32c6592205ed30590b7c6e40217bc36f323cc2c",
+      "policy_sha256": "ea344a54281a07c77429d2176fee2993054944ef5be26ecf8ba016f578c450a2",
+      "source_status": "unavailable",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "15859",
+      "definition_id": "email_address",
+      "definition_sha256": "78e04500de927cb66d61211f18c628257cc43c9c33ca9d0fc9503d3481240be0",
+      "policy_sha256": "60b6cbd8f0799102966ebc840ded5d7ed56e4395b84360439301de75574d4cdb",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "15859",
+      "definition_id": "time",
+      "definition_sha256": "2659bb4ec931bc2d29f8a5a965780833b22a995bc766dc28f83cf66851d74b1e",
+      "policy_sha256": "14ccdfedd486f1d167d106689a0b03fe7a799c96669facd8e8a2bdc61b856089",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "15859",
+      "definition_id": "personal_info",
+      "definition_sha256": "a28761821c74ea3da9a19d88bec67ebc9d7531a5f8e3a53c70b7bd30cb3df326",
+      "policy_sha256": "96e4fb0b0f51098e458e5c95531d0bf23211928e815037005424dfa62e250448",
+      "source_status": "unavailable",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "9609",
+      "definition_id": "app_name",
+      "definition_sha256": "e530289640a992c27e18f05417b3b1e325d33212647daa0089b2708ba08e4375",
+      "policy_sha256": "a2719f068eab9cae135c74aa310589a69e619816c4c06e4332147106c546db22",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "9609",
+      "definition_id": "radio_name",
+      "definition_sha256": "e04df091aa61f8bf1c6c5d092d35dccbc57971b63095d79c28136b9d47d0866d",
+      "policy_sha256": "0bb7f73eae5e2173349aff06d1b189f55c8d24f588a7cfb810bf92d32c1dfb61",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "9609",
+      "definition_id": "time",
+      "definition_sha256": "2659bb4ec931bc2d29f8a5a965780833b22a995bc766dc28f83cf66851d74b1e",
+      "policy_sha256": "14ccdfedd486f1d167d106689a0b03fe7a799c96669facd8e8a2bdc61b856089",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "9231",
+      "definition_id": "app_name",
+      "definition_sha256": "e530289640a992c27e18f05417b3b1e325d33212647daa0089b2708ba08e4375",
+      "policy_sha256": "a2719f068eab9cae135c74aa310589a69e619816c4c06e4332147106c546db22",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "9231",
+      "definition_id": "radio_name",
+      "definition_sha256": "e04df091aa61f8bf1c6c5d092d35dccbc57971b63095d79c28136b9d47d0866d",
+      "policy_sha256": "0bb7f73eae5e2173349aff06d1b189f55c8d24f588a7cfb810bf92d32c1dfb61",
+      "source_status": "unavailable",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "2229",
+      "definition_id": "time",
+      "definition_sha256": "2659bb4ec931bc2d29f8a5a965780833b22a995bc766dc28f83cf66851d74b1e",
+      "policy_sha256": "14ccdfedd486f1d167d106689a0b03fe7a799c96669facd8e8a2bdc61b856089",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "2229",
+      "definition_id": "time_zone",
+      "definition_sha256": "d60d1ef29024cd7445caa3dadfc75be25c901a93e9e973a3e5cc6f369f2507ec",
+      "policy_sha256": "75ce8c1394fab5c1f1113f1f50f7f45da0b118b008531427ab59dfe6a6835298",
+      "source_status": "conflict",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "2229",
+      "definition_id": "place_name",
+      "definition_sha256": "e5c0bc7d1ec1d435c40321f0e69b2a4bb08ce591a823701fa52016057ec9d501",
+      "policy_sha256": "939bf772d773447a055f26a626fc7de877f3f40201f9b9f8a9b78f07689f56af",
+      "source_status": "conflict",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "226",
+      "definition_id": "house_place",
+      "definition_sha256": "1a180192273abca71dc811fee6d5599795a7e861618b6d947d6e247d65b2c252",
+      "policy_sha256": "dd1fc49642269e33d86d7a1d00f496664b8ea8e4d60c612509078fa24d270f9e",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "226",
+      "definition_id": "place_name",
+      "definition_sha256": "e5c0bc7d1ec1d435c40321f0e69b2a4bb08ce591a823701fa52016057ec9d501",
+      "policy_sha256": "939bf772d773447a055f26a626fc7de877f3f40201f9b9f8a9b78f07689f56af",
+      "source_status": "unavailable",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "2904",
+      "definition_id": "house_place",
+      "definition_sha256": "1a180192273abca71dc811fee6d5599795a7e861618b6d947d6e247d65b2c252",
+      "policy_sha256": "dd1fc49642269e33d86d7a1d00f496664b8ea8e4d60c612509078fa24d270f9e",
+      "source_status": "conflict",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "2904",
+      "definition_id": "place_name",
+      "definition_sha256": "e5c0bc7d1ec1d435c40321f0e69b2a4bb08ce591a823701fa52016057ec9d501",
+      "policy_sha256": "939bf772d773447a055f26a626fc7de877f3f40201f9b9f8a9b78f07689f56af",
+      "source_status": "unavailable",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "10205",
+      "definition_id": "food_type",
+      "definition_sha256": "0fba9b96943c64efd0908c079c652680b814cc174a274226735f5c3039a1c732",
+      "policy_sha256": "26c0acf863a5d792d03f3a0a7161c1cccb7f47574194d67c77a9543a07a7aed3",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "10205",
+      "definition_id": "ingredient",
+      "definition_sha256": "2abb776121cc41d97eac11c3c0122c14e40e596139ed6bde93f74f01f149476f",
+      "policy_sha256": "e4aa9a9938fa99d7d8f1af8d0d63a4d923efb5f6733b1bf1fb0527bb8b171c46",
+      "source_status": "unavailable",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "10006",
+      "definition_id": "food_type",
+      "definition_sha256": "0fba9b96943c64efd0908c079c652680b814cc174a274226735f5c3039a1c732",
+      "policy_sha256": "26c0acf863a5d792d03f3a0a7161c1cccb7f47574194d67c77a9543a07a7aed3",
+      "source_status": "conflict",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "10006",
+      "definition_id": "ingredient",
+      "definition_sha256": "2abb776121cc41d97eac11c3c0122c14e40e596139ed6bde93f74f01f149476f",
+      "policy_sha256": "e4aa9a9938fa99d7d8f1af8d0d63a4d923efb5f6733b1bf1fb0527bb8b171c46",
+      "source_status": "unavailable",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "5056",
+      "definition_id": "music_album",
+      "definition_sha256": "6b106037ab9a3af93f1d9b591c7ce292780faad9a0fdce8fd8f6da7d090baf8e",
+      "policy_sha256": "61c793fc9a6bfb822e6a7fe6122d140be420d39c52f084567c72056a71090fe2",
+      "source_status": "conflict",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "2911",
+      "definition_id": "movie_name",
+      "definition_sha256": "59c204825efbbcdda76817963870bfba12b9cfbb89daf8a12f3ae33961e742c1",
+      "policy_sha256": "8241f6f8e660987f36083289dba3766b7ba73dbae47c199482227a83275863bd",
+      "source_status": "conflict",
+      "reference_only_targets": {
+        "affirmative": null,
+        "paraphrase": null,
+        "complement": null
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "16876",
+      "definition_id": "personal_info",
+      "definition_sha256": "a28761821c74ea3da9a19d88bec67ebc9d7531a5f8e3a53c70b7bd30cb3df326",
+      "policy_sha256": "96e4fb0b0f51098e458e5c95531d0bf23211928e815037005424dfa62e250448",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "16876",
+      "definition_id": "person",
+      "definition_sha256": "1f6a7eb5910655f0c25c00b4d32c6592205ed30590b7c6e40217bc36f323cc2c",
+      "policy_sha256": "ea344a54281a07c77429d2176fee2993054944ef5be26ecf8ba016f578c450a2",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "16876",
+      "definition_id": "email_address",
+      "definition_sha256": "78e04500de927cb66d61211f18c628257cc43c9c33ca9d0fc9503d3481240be0",
+      "policy_sha256": "60b6cbd8f0799102966ebc840ded5d7ed56e4395b84360439301de75574d4cdb",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "16976",
+      "definition_id": "personal_info",
+      "definition_sha256": "a28761821c74ea3da9a19d88bec67ebc9d7531a5f8e3a53c70b7bd30cb3df326",
+      "policy_sha256": "96e4fb0b0f51098e458e5c95531d0bf23211928e815037005424dfa62e250448",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "16976",
+      "definition_id": "email_address",
+      "definition_sha256": "78e04500de927cb66d61211f18c628257cc43c9c33ca9d0fc9503d3481240be0",
+      "policy_sha256": "60b6cbd8f0799102966ebc840ded5d7ed56e4395b84360439301de75574d4cdb",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "12590",
+      "definition_id": "transport_type",
+      "definition_sha256": "5efa2b76b2bd2857df503be5a84a4b600117ea0917040a162457938b384ff348",
+      "policy_sha256": "69a691c1109aefbe8d345bac86a7b55b8c303529f4cb65d6d00d2364ed32e2bd",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "12590",
+      "definition_id": "place_name",
+      "definition_sha256": "e5c0bc7d1ec1d435c40321f0e69b2a4bb08ce591a823701fa52016057ec9d501",
+      "policy_sha256": "939bf772d773447a055f26a626fc7de877f3f40201f9b9f8a9b78f07689f56af",
+      "source_status": "positive",
+      "reference_only_targets": {
+        "affirmative": true,
+        "paraphrase": true,
+        "complement": false
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    },
+    {
+      "source_id": "12590",
+      "definition_id": "time",
+      "definition_sha256": "2659bb4ec931bc2d29f8a5a965780833b22a995bc766dc28f83cf66851d74b1e",
+      "policy_sha256": "14ccdfedd486f1d167d106689a0b03fe7a799c96669facd8e8a2bdc61b856089",
+      "source_status": "negative",
+      "reference_only_targets": {
+        "affirmative": false,
+        "paraphrase": false,
+        "complement": true
+      },
+      "optimization_allowed": false,
+      "model_scoring_allowed": false,
+      "limitation": "Reference-only transform fixture, not an admitted audio evaluation label."
+    }
+  ],
+  "scope": "Transforms and synthetic control calculations only. No model result, no new audio labels, no training or evaluation dispatch."
+}

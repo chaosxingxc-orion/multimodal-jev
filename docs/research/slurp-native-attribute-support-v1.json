@@ -1,0 +1,930 @@
+{
+  "schema": "slurp-native-attribute-support-v1",
+  "scope": "TRAIN-only label projection analysis; no new semantic truth or training admission",
+  "recordings": 40513,
+  "source_groups": 9181,
+  "final_candidates": 60,
+  "training_dispatch_allowed": false,
+  "sources": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.jsonl": "481703c7a6aeb696c652124eccd5533f81d5cefc67ff12d59c0920318df6bbbe",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/learning.audio.jsonl": "cd730aa1f6065670a2ce3205ca29b7472fae50e9ba4d1597d8c13c387c12625e"
+  },
+  "families": {
+    "scenario": {
+      "questions": 18,
+      "columns": [
+        {
+          "value": "alarm",
+          "positive_recordings": 1931,
+          "negative_recordings": 38582,
+          "positive_source_groups": 314,
+          "compatible_final_candidates": [
+            "alarm_query",
+            "alarm_remove",
+            "alarm_set"
+          ],
+          "event_histogram": {
+            "alarm_query": 777,
+            "alarm_remove": 332,
+            "alarm_set": 822
+          }
+        },
+        {
+          "value": "audio",
+          "positive_recordings": 1861,
+          "negative_recordings": 38652,
+          "positive_source_groups": 227,
+          "compatible_final_candidates": [
+            "audio_volume_down",
+            "audio_volume_mute",
+            "audio_volume_other",
+            "audio_volume_up"
+          ],
+          "event_histogram": {
+            "audio_volume_down": 366,
+            "audio_volume_mute": 725,
+            "audio_volume_other": 104,
+            "audio_volume_up": 666
+          }
+        },
+        {
+          "value": "calendar",
+          "positive_recordings": 5491,
+          "negative_recordings": 35022,
+          "positive_source_groups": 1335,
+          "compatible_final_candidates": [
+            "calendar_query",
+            "calendar_remove",
+            "calendar_set"
+          ],
+          "event_histogram": {
+            "calendar_query": 1904,
+            "calendar_remove": 1030,
+            "calendar_set": 2557
+          }
+        },
+        {
+          "value": "cooking",
+          "positive_recordings": 681,
+          "negative_recordings": 39832,
+          "positive_source_groups": 167,
+          "compatible_final_candidates": [
+            "cooking_query",
+            "cooking_recipe"
+          ],
+          "event_histogram": {
+            "cooking_query": 2,
+            "cooking_recipe": 679
+          }
+        },
+        {
+          "value": "datetime",
+          "positive_recordings": 1701,
+          "negative_recordings": 38812,
+          "positive_source_groups": 321,
+          "compatible_final_candidates": [
+            "datetime_convert",
+            "datetime_query"
+          ],
+          "event_histogram": {
+            "datetime_convert": 186,
+            "datetime_query": 1515
+          }
+        },
+        {
+          "value": "email",
+          "positive_recordings": 3124,
+          "negative_recordings": 37389,
+          "positive_source_groups": 760,
+          "compatible_final_candidates": [
+            "email_addcontact",
+            "email_query",
+            "email_querycontact",
+            "email_sendemail"
+          ],
+          "event_histogram": {
+            "email_addcontact": 139,
+            "email_query": 1516,
+            "email_querycontact": 418,
+            "email_sendemail": 1051
+          }
+        },
+        {
+          "value": "general",
+          "positive_recordings": 2008,
+          "negative_recordings": 38505,
+          "positive_source_groups": 499,
+          "compatible_final_candidates": [
+            "general_greet",
+            "general_joke",
+            "general_quirky"
+          ],
+          "event_histogram": {
+            "general_greet": 122,
+            "general_joke": 336,
+            "general_quirky": 1550
+          }
+        },
+        {
+          "value": "iot",
+          "positive_recordings": 2938,
+          "negative_recordings": 37575,
+          "positive_source_groups": 621,
+          "compatible_final_candidates": [
+            "iot_cleaning",
+            "iot_coffee",
+            "iot_hue_lightchange",
+            "iot_hue_lightdim",
+            "iot_hue_lightoff",
+            "iot_hue_lighton",
+            "iot_hue_lightup",
+            "iot_wemo_off",
+            "iot_wemo_on"
+          ],
+          "event_histogram": {
+            "iot_cleaning": 348,
+            "iot_coffee": 387,
+            "iot_hue_lightchange": 427,
+            "iot_hue_lightdim": 396,
+            "iot_hue_lightoff": 680,
+            "iot_hue_lighton": 62,
+            "iot_hue_lightup": 281,
+            "iot_wemo_off": 168,
+            "iot_wemo_on": 189
+          }
+        },
+        {
+          "value": "lists",
+          "positive_recordings": 1832,
+          "negative_recordings": 38681,
+          "positive_source_groups": 424,
+          "compatible_final_candidates": [
+            "lists_createoradd",
+            "lists_query",
+            "lists_remove"
+          ],
+          "event_histogram": {
+            "lists_createoradd": 609,
+            "lists_query": 673,
+            "lists_remove": 550
+          }
+        },
+        {
+          "value": "music",
+          "positive_recordings": 1175,
+          "negative_recordings": 39338,
+          "positive_source_groups": 273,
+          "compatible_final_candidates": [
+            "music_dislikeness",
+            "music_likeness",
+            "music_query",
+            "music_settings"
+          ],
+          "event_histogram": {
+            "music_dislikeness": 69,
+            "music_likeness": 405,
+            "music_query": 546,
+            "music_settings": 155
+          }
+        },
+        {
+          "value": "news",
+          "positive_recordings": 1600,
+          "negative_recordings": 38913,
+          "positive_source_groups": 398,
+          "compatible_final_candidates": [
+            "news_query"
+          ],
+          "event_histogram": {
+            "news_query": 1600
+          }
+        },
+        {
+          "value": "play",
+          "positive_recordings": 5269,
+          "negative_recordings": 35244,
+          "positive_source_groups": 1094,
+          "compatible_final_candidates": [
+            "play_audiobook",
+            "play_game",
+            "play_music",
+            "play_podcasts",
+            "play_radio"
+          ],
+          "event_histogram": {
+            "play_audiobook": 970,
+            "play_game": 419,
+            "play_music": 2298,
+            "play_podcasts": 644,
+            "play_radio": 938
+          }
+        },
+        {
+          "value": "qa",
+          "positive_recordings": 3556,
+          "negative_recordings": 36957,
+          "positive_source_groups": 957,
+          "compatible_final_candidates": [
+            "qa_currency",
+            "qa_definition",
+            "qa_factoid",
+            "qa_maths",
+            "qa_stock"
+          ],
+          "event_histogram": {
+            "qa_currency": 381,
+            "qa_definition": 763,
+            "qa_factoid": 1717,
+            "qa_maths": 226,
+            "qa_stock": 469
+          }
+        },
+        {
+          "value": "recommendation",
+          "positive_recordings": 1330,
+          "negative_recordings": 39183,
+          "positive_source_groups": 363,
+          "compatible_final_candidates": [
+            "recommendation_events",
+            "recommendation_locations",
+            "recommendation_movies"
+          ],
+          "event_histogram": {
+            "recommendation_events": 634,
+            "recommendation_locations": 511,
+            "recommendation_movies": 185
+          }
+        },
+        {
+          "value": "social",
+          "positive_recordings": 1234,
+          "negative_recordings": 39279,
+          "positive_source_groups": 316,
+          "compatible_final_candidates": [
+            "social_post",
+            "social_query"
+          ],
+          "event_histogram": {
+            "social_post": 856,
+            "social_query": 378
+          }
+        },
+        {
+          "value": "takeaway",
+          "positive_recordings": 791,
+          "negative_recordings": 39722,
+          "positive_source_groups": 200,
+          "compatible_final_candidates": [
+            "takeaway_order",
+            "takeaway_query"
+          ],
+          "event_histogram": {
+            "takeaway_order": 398,
+            "takeaway_query": 393
+          }
+        },
+        {
+          "value": "transport",
+          "positive_recordings": 2045,
+          "negative_recordings": 38468,
+          "positive_source_groups": 462,
+          "compatible_final_candidates": [
+            "transport_query",
+            "transport_taxi",
+            "transport_ticket",
+            "transport_traffic"
+          ],
+          "event_histogram": {
+            "transport_query": 684,
+            "transport_taxi": 411,
+            "transport_ticket": 548,
+            "transport_traffic": 402
+          }
+        },
+        {
+          "value": "weather",
+          "positive_recordings": 1946,
+          "negative_recordings": 38567,
+          "positive_source_groups": 450,
+          "compatible_final_candidates": [
+            "weather_query"
+          ],
+          "event_histogram": {
+            "weather_query": 1946
+          }
+        }
+      ],
+      "conditional_event_entropy_bits": 1.5191406804380383,
+      "oracle_attribute_train_majority_event_accuracy": 0.5281267741218868,
+      "oracle_scope": "Uses gold attribute and TRAIN frequency; not model performance or a deployed decoder"
+    },
+    "action": {
+      "questions": 46,
+      "columns": [
+        {
+          "value": "addcontact",
+          "positive_recordings": 139,
+          "negative_recordings": 40374,
+          "positive_source_groups": 43,
+          "compatible_final_candidates": [
+            "email_addcontact"
+          ],
+          "event_histogram": {
+            "email_addcontact": 139
+          }
+        },
+        {
+          "value": "audiobook",
+          "positive_recordings": 970,
+          "negative_recordings": 39543,
+          "positive_source_groups": 119,
+          "compatible_final_candidates": [
+            "play_audiobook"
+          ],
+          "event_histogram": {
+            "play_audiobook": 970
+          }
+        },
+        {
+          "value": "cleaning",
+          "positive_recordings": 348,
+          "negative_recordings": 40165,
+          "positive_source_groups": 76,
+          "compatible_final_candidates": [
+            "iot_cleaning"
+          ],
+          "event_histogram": {
+            "iot_cleaning": 348
+          }
+        },
+        {
+          "value": "coffee",
+          "positive_recordings": 387,
+          "negative_recordings": 40126,
+          "positive_source_groups": 96,
+          "compatible_final_candidates": [
+            "iot_coffee"
+          ],
+          "event_histogram": {
+            "iot_coffee": 387
+          }
+        },
+        {
+          "value": "convert",
+          "positive_recordings": 186,
+          "negative_recordings": 40327,
+          "positive_source_groups": 43,
+          "compatible_final_candidates": [
+            "datetime_convert"
+          ],
+          "event_histogram": {
+            "datetime_convert": 186
+          }
+        },
+        {
+          "value": "createoradd",
+          "positive_recordings": 609,
+          "negative_recordings": 39904,
+          "positive_source_groups": 143,
+          "compatible_final_candidates": [
+            "lists_createoradd"
+          ],
+          "event_histogram": {
+            "lists_createoradd": 609
+          }
+        },
+        {
+          "value": "currency",
+          "positive_recordings": 381,
+          "negative_recordings": 40132,
+          "positive_source_groups": 115,
+          "compatible_final_candidates": [
+            "qa_currency"
+          ],
+          "event_histogram": {
+            "qa_currency": 381
+          }
+        },
+        {
+          "value": "definition",
+          "positive_recordings": 763,
+          "negative_recordings": 39750,
+          "positive_source_groups": 216,
+          "compatible_final_candidates": [
+            "qa_definition"
+          ],
+          "event_histogram": {
+            "qa_definition": 763
+          }
+        },
+        {
+          "value": "dislikeness",
+          "positive_recordings": 69,
+          "negative_recordings": 40444,
+          "positive_source_groups": 11,
+          "compatible_final_candidates": [
+            "music_dislikeness"
+          ],
+          "event_histogram": {
+            "music_dislikeness": 69
+          }
+        },
+        {
+          "value": "events",
+          "positive_recordings": 634,
+          "negative_recordings": 39879,
+          "positive_source_groups": 159,
+          "compatible_final_candidates": [
+            "recommendation_events"
+          ],
+          "event_histogram": {
+            "recommendation_events": 634
+          }
+        },
+        {
+          "value": "factoid",
+          "positive_recordings": 1717,
+          "negative_recordings": 38796,
+          "positive_source_groups": 440,
+          "compatible_final_candidates": [
+            "qa_factoid"
+          ],
+          "event_histogram": {
+            "qa_factoid": 1717
+          }
+        },
+        {
+          "value": "game",
+          "positive_recordings": 419,
+          "negative_recordings": 40094,
+          "positive_source_groups": 95,
+          "compatible_final_candidates": [
+            "play_game"
+          ],
+          "event_histogram": {
+            "play_game": 419
+          }
+        },
+        {
+          "value": "greet",
+          "positive_recordings": 122,
+          "negative_recordings": 40391,
+          "positive_source_groups": 18,
+          "compatible_final_candidates": [
+            "general_greet"
+          ],
+          "event_histogram": {
+            "general_greet": 122
+          }
+        },
+        {
+          "value": "hue_lightchange",
+          "positive_recordings": 427,
+          "negative_recordings": 40086,
+          "positive_source_groups": 100,
+          "compatible_final_candidates": [
+            "iot_hue_lightchange"
+          ],
+          "event_histogram": {
+            "iot_hue_lightchange": 427
+          }
+        },
+        {
+          "value": "hue_lightdim",
+          "positive_recordings": 396,
+          "negative_recordings": 40117,
+          "positive_source_groups": 61,
+          "compatible_final_candidates": [
+            "iot_hue_lightdim"
+          ],
+          "event_histogram": {
+            "iot_hue_lightdim": 396
+          }
+        },
+        {
+          "value": "hue_lightoff",
+          "positive_recordings": 680,
+          "negative_recordings": 39833,
+          "positive_source_groups": 130,
+          "compatible_final_candidates": [
+            "iot_hue_lightoff"
+          ],
+          "event_histogram": {
+            "iot_hue_lightoff": 680
+          }
+        },
+        {
+          "value": "hue_lighton",
+          "positive_recordings": 62,
+          "negative_recordings": 40451,
+          "positive_source_groups": 16,
+          "compatible_final_candidates": [
+            "iot_hue_lighton"
+          ],
+          "event_histogram": {
+            "iot_hue_lighton": 62
+          }
+        },
+        {
+          "value": "hue_lightup",
+          "positive_recordings": 281,
+          "negative_recordings": 40232,
+          "positive_source_groups": 63,
+          "compatible_final_candidates": [
+            "iot_hue_lightup"
+          ],
+          "event_histogram": {
+            "iot_hue_lightup": 281
+          }
+        },
+        {
+          "value": "joke",
+          "positive_recordings": 336,
+          "negative_recordings": 40177,
+          "positive_source_groups": 56,
+          "compatible_final_candidates": [
+            "general_joke"
+          ],
+          "event_histogram": {
+            "general_joke": 336
+          }
+        },
+        {
+          "value": "likeness",
+          "positive_recordings": 405,
+          "negative_recordings": 40108,
+          "positive_source_groups": 96,
+          "compatible_final_candidates": [
+            "music_likeness"
+          ],
+          "event_histogram": {
+            "music_likeness": 405
+          }
+        },
+        {
+          "value": "locations",
+          "positive_recordings": 511,
+          "negative_recordings": 40002,
+          "positive_source_groups": 148,
+          "compatible_final_candidates": [
+            "recommendation_locations"
+          ],
+          "event_histogram": {
+            "recommendation_locations": 511
+          }
+        },
+        {
+          "value": "maths",
+          "positive_recordings": 226,
+          "negative_recordings": 40287,
+          "positive_source_groups": 58,
+          "compatible_final_candidates": [
+            "qa_maths"
+          ],
+          "event_histogram": {
+            "qa_maths": 226
+          }
+        },
+        {
+          "value": "movies",
+          "positive_recordings": 185,
+          "negative_recordings": 40328,
+          "positive_source_groups": 56,
+          "compatible_final_candidates": [
+            "recommendation_movies"
+          ],
+          "event_histogram": {
+            "recommendation_movies": 185
+          }
+        },
+        {
+          "value": "music",
+          "positive_recordings": 2298,
+          "negative_recordings": 38215,
+          "positive_source_groups": 518,
+          "compatible_final_candidates": [
+            "play_music"
+          ],
+          "event_histogram": {
+            "play_music": 2298
+          }
+        },
+        {
+          "value": "order",
+          "positive_recordings": 398,
+          "negative_recordings": 40115,
+          "positive_source_groups": 103,
+          "compatible_final_candidates": [
+            "takeaway_order"
+          ],
+          "event_histogram": {
+            "takeaway_order": 398
+          }
+        },
+        {
+          "value": "podcasts",
+          "positive_recordings": 644,
+          "negative_recordings": 39869,
+          "positive_source_groups": 146,
+          "compatible_final_candidates": [
+            "play_podcasts"
+          ],
+          "event_histogram": {
+            "play_podcasts": 644
+          }
+        },
+        {
+          "value": "post",
+          "positive_recordings": 856,
+          "negative_recordings": 39657,
+          "positive_source_groups": 225,
+          "compatible_final_candidates": [
+            "social_post"
+          ],
+          "event_histogram": {
+            "social_post": 856
+          }
+        },
+        {
+          "value": "query",
+          "positive_recordings": 11934,
+          "negative_recordings": 28579,
+          "positive_source_groups": 2653,
+          "compatible_final_candidates": [
+            "alarm_query",
+            "calendar_query",
+            "cooking_query",
+            "datetime_query",
+            "email_query",
+            "lists_query",
+            "music_query",
+            "news_query",
+            "social_query",
+            "takeaway_query",
+            "transport_query",
+            "weather_query"
+          ],
+          "event_histogram": {
+            "alarm_query": 777,
+            "calendar_query": 1904,
+            "cooking_query": 2,
+            "datetime_query": 1515,
+            "email_query": 1516,
+            "lists_query": 673,
+            "music_query": 546,
+            "news_query": 1600,
+            "social_query": 378,
+            "takeaway_query": 393,
+            "transport_query": 684,
+            "weather_query": 1946
+          }
+        },
+        {
+          "value": "querycontact",
+          "positive_recordings": 418,
+          "negative_recordings": 40095,
+          "positive_source_groups": 104,
+          "compatible_final_candidates": [
+            "email_querycontact"
+          ],
+          "event_histogram": {
+            "email_querycontact": 418
+          }
+        },
+        {
+          "value": "quirky",
+          "positive_recordings": 1550,
+          "negative_recordings": 38963,
+          "positive_source_groups": 425,
+          "compatible_final_candidates": [
+            "general_quirky"
+          ],
+          "event_histogram": {
+            "general_quirky": 1550
+          }
+        },
+        {
+          "value": "radio",
+          "positive_recordings": 938,
+          "negative_recordings": 39575,
+          "positive_source_groups": 216,
+          "compatible_final_candidates": [
+            "play_radio"
+          ],
+          "event_histogram": {
+            "play_radio": 938
+          }
+        },
+        {
+          "value": "recipe",
+          "positive_recordings": 679,
+          "negative_recordings": 39834,
+          "positive_source_groups": 165,
+          "compatible_final_candidates": [
+            "cooking_recipe"
+          ],
+          "event_histogram": {
+            "cooking_recipe": 679
+          }
+        },
+        {
+          "value": "remove",
+          "positive_recordings": 1912,
+          "negative_recordings": 38601,
+          "positive_source_groups": 437,
+          "compatible_final_candidates": [
+            "alarm_remove",
+            "calendar_remove",
+            "lists_remove"
+          ],
+          "event_histogram": {
+            "alarm_remove": 332,
+            "calendar_remove": 1030,
+            "lists_remove": 550
+          }
+        },
+        {
+          "value": "sendemail",
+          "positive_recordings": 1051,
+          "negative_recordings": 39462,
+          "positive_source_groups": 277,
+          "compatible_final_candidates": [
+            "email_sendemail"
+          ],
+          "event_histogram": {
+            "email_sendemail": 1051
+          }
+        },
+        {
+          "value": "set",
+          "positive_recordings": 3379,
+          "negative_recordings": 37134,
+          "positive_source_groups": 794,
+          "compatible_final_candidates": [
+            "alarm_set",
+            "calendar_set"
+          ],
+          "event_histogram": {
+            "alarm_set": 822,
+            "calendar_set": 2557
+          }
+        },
+        {
+          "value": "settings",
+          "positive_recordings": 155,
+          "negative_recordings": 40358,
+          "positive_source_groups": 42,
+          "compatible_final_candidates": [
+            "music_settings"
+          ],
+          "event_histogram": {
+            "music_settings": 155
+          }
+        },
+        {
+          "value": "stock",
+          "positive_recordings": 469,
+          "negative_recordings": 40044,
+          "positive_source_groups": 128,
+          "compatible_final_candidates": [
+            "qa_stock"
+          ],
+          "event_histogram": {
+            "qa_stock": 469
+          }
+        },
+        {
+          "value": "taxi",
+          "positive_recordings": 411,
+          "negative_recordings": 40102,
+          "positive_source_groups": 83,
+          "compatible_final_candidates": [
+            "transport_taxi"
+          ],
+          "event_histogram": {
+            "transport_taxi": 411
+          }
+        },
+        {
+          "value": "ticket",
+          "positive_recordings": 548,
+          "negative_recordings": 39965,
+          "positive_source_groups": 104,
+          "compatible_final_candidates": [
+            "transport_ticket"
+          ],
+          "event_histogram": {
+            "transport_ticket": 548
+          }
+        },
+        {
+          "value": "traffic",
+          "positive_recordings": 402,
+          "negative_recordings": 40111,
+          "positive_source_groups": 97,
+          "compatible_final_candidates": [
+            "transport_traffic"
+          ],
+          "event_histogram": {
+            "transport_traffic": 402
+          }
+        },
+        {
+          "value": "volume_down",
+          "positive_recordings": 366,
+          "negative_recordings": 40147,
+          "positive_source_groups": 44,
+          "compatible_final_candidates": [
+            "audio_volume_down"
+          ],
+          "event_histogram": {
+            "audio_volume_down": 366
+          }
+        },
+        {
+          "value": "volume_mute",
+          "positive_recordings": 725,
+          "negative_recordings": 39788,
+          "positive_source_groups": 89,
+          "compatible_final_candidates": [
+            "audio_volume_mute"
+          ],
+          "event_histogram": {
+            "audio_volume_mute": 725
+          }
+        },
+        {
+          "value": "volume_other",
+          "positive_recordings": 104,
+          "negative_recordings": 40409,
+          "positive_source_groups": 11,
+          "compatible_final_candidates": [
+            "audio_volume_other"
+          ],
+          "event_histogram": {
+            "audio_volume_other": 104
+          }
+        },
+        {
+          "value": "volume_up",
+          "positive_recordings": 666,
+          "negative_recordings": 39847,
+          "positive_source_groups": 83,
+          "compatible_final_candidates": [
+            "audio_volume_up"
+          ],
+          "event_histogram": {
+            "audio_volume_up": 666
+          }
+        },
+        {
+          "value": "wemo_off",
+          "positive_recordings": 168,
+          "negative_recordings": 40345,
+          "positive_source_groups": 41,
+          "compatible_final_candidates": [
+            "iot_wemo_off"
+          ],
+          "event_histogram": {
+            "iot_wemo_off": 168
+          }
+        },
+        {
+          "value": "wemo_on",
+          "positive_recordings": 189,
+          "negative_recordings": 40324,
+          "positive_source_groups": 38,
+          "compatible_final_candidates": [
+            "iot_wemo_on"
+          ],
+          "event_histogram": {
+            "iot_wemo_on": 189
+          }
+        }
+      ],
+      "conditional_event_entropy_bits": 1.0908836086564815,
+      "oracle_attribute_train_majority_event_accuracy": 0.7114012786019303,
+      "oracle_scope": "Uses gold attribute and TRAIN frequency; not model performance or a deployed decoder"
+    }
+  },
+  "structural_slices": {
+    "both_attributes_ambiguous": {
+      "recordings": 13679,
+      "mean_audio_seconds": 2.983151221763268
+    },
+    "one_attribute_identifies_event": {
+      "recordings": 26834,
+      "mean_audio_seconds": 2.808857182119612
+    }
+  },
+  "interpretation": [
+    "All Q labels are deterministic projections of Final, not independent process supervision.",
+    "Native action words have domain-dependent meanings; shared strings do not prove cross-dataset equivalence.",
+    "Structural ambiguity and duration are diagnostics, not cognitive difficulty or multi-intent truth.",
+    "Use a task-wide menu independent of per-query labels; no gold-dependent Q routing.",
+    "Joint gold scenario/action uniquely identifies Final; this is an auxiliary decomposition control.",
+    "No TEST or selection labels were read; no model or processor was executed."
+  ],
+  "tool_sha256": "132ef89b4d430ee5096d9c8e28e28768d87ea6a899f7077275325a15ab6e7073"
+}

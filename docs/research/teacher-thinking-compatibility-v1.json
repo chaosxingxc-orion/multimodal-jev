@@ -1,0 +1,108 @@
+{
+  "schema": "slurp-teacher-thinking-compatibility-v1",
+  "controls": {
+    "minimal_disabled": {
+      "state": "http_error",
+      "http_status": 400,
+      "usage": null,
+      "elapsed_seconds": 1.8827937999740243,
+      "finish_reasons": null,
+      "private_evidence": "/home/xingchao/workspace/multimodal-jev/.local/research/teacher-interface-controls-v1/minimal-disabled",
+      "evidence_hashes": {
+        "intent.json": "35cdd46162d14dc18dede1490b3121307e5a064037510bfccecc0d5f2b425050",
+        "terminal.json": "90ce2b820329cc979be10c046a09b46cc492ccc31bd2fd76a01e17175724c690",
+        "response/request.json": "568e17e95832840497eb716b7385c2ae91ef16eabeb7d23ca50108017bcfa1ae",
+        "response/result.json": "e51c16052a8c09a21bdb911fafa4d24a56c9aed02442be08a9a7cd23e5779810"
+      },
+      "error": {
+        "code": "400001",
+        "type": "invalid_request_error",
+        "message": "The request is invalid: the request was rejected by an internal MaaS component. Please check the request body, required fields, and request format."
+      }
+    },
+    "minimal_enabled": {
+      "state": "response_received",
+      "http_status": 200,
+      "usage": {
+        "completion_tokens": 284,
+        "completion_tokens_details": {
+          "reasoning_tokens": 277
+        },
+        "prompt_tokens": 53,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 337
+      },
+      "elapsed_seconds": 4.502172309905291,
+      "finish_reasons": [
+        "stop"
+      ],
+      "private_evidence": "/home/xingchao/workspace/multimodal-jev/.local/research/teacher-interface-controls-v1/minimal-enabled",
+      "evidence_hashes": {
+        "intent.json": "820edaa59be3ae54dc41814cdf7eb4ffacacc3f4e4ccb509207cbeb7fe681380",
+        "terminal.json": "898990a265b6f07b910c3f06bb8c21e30369476cbf4db97417ce29d4c2fdf2c8",
+        "response/request.json": "917b973e198cf64d5c889b55f9dd0c544258e575bd03da3308f052a730a820b2",
+        "response/result.json": "e72b53639ce8adc90d9a4ab8b603233c600df34ad6dba90a0217da703238f774"
+      }
+    },
+    "annotation_disabled": {
+      "state": "http_error",
+      "http_status": 400,
+      "usage": null,
+      "elapsed_seconds": 3.256934919860214,
+      "finish_reasons": null,
+      "private_evidence": "/home/xingchao/workspace/multimodal-jev/.local/research/shared-annotation-v1/teacher-probe",
+      "evidence_hashes": {
+        "intent.json": "6002dcbdcaa409f2da6da2dd12aedfb151ffb2c2b5eb8d0fa53dab66f0459154",
+        "terminal.json": "42f17292b8c877fe81de3e1042001bdee4c844ede92b9691fbee32d32427ce94",
+        "response/request.json": "76ae3ad0a0c010ba590f80c5dd0883f4c576976450c637bd5127de79343a8d78",
+        "response/result.json": "df27ab9f54976858b249f73dc45b00e1495dea8fb340ab1412b7026a3acd09fb"
+      },
+      "error": {
+        "code": "400001",
+        "type": "invalid_request_error",
+        "message": "The request is invalid: the request was rejected by an internal MaaS component. Please check the request body, required fields, and request format."
+      }
+    },
+    "annotation_enabled": {
+      "state": "response_received",
+      "http_status": 200,
+      "usage": {
+        "completion_tokens": 1856,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1439
+        },
+        "prompt_tokens": 24593,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 26449
+      },
+      "elapsed_seconds": 34.84216954000294,
+      "finish_reasons": [
+        "stop"
+      ],
+      "private_evidence": "/home/xingchao/workspace/multimodal-jev/.local/research/shared-annotation-v1/teacher-probe-enabled",
+      "evidence_hashes": {
+        "intent.json": "4d35827fc9dec1878341fde87f11b102ff19bb21b5ca8fd5e4b38e3ffb0c8175",
+        "terminal.json": "8aced6c2cb76e9994dae1bc44a55af7a821e55e3247e39fe4ad246d4cb9f4fa3",
+        "response/request.json": "b76169ba9bdba0163768194c56139a6865027b24b1dcbdf1be44fd3afcff2978",
+        "response/result.json": "c13a493cf76bdcbbe80af70a8f43288e3a6156b9d9cbb7f1117e2211033e6702"
+      }
+    }
+  },
+  "request_delta_only_thinking": true,
+  "executor_matches_historical_pin": true,
+  "annotation_validation": {
+    "structure_valid": true,
+    "decisions": 8,
+    "semantic_admission": 0,
+    "finish_reason": "stop"
+  },
+  "new_requests_this_turn": 3,
+  "automatic_retries": 0,
+  "semantic_admission": 0,
+  "verifier_sha256": "16229a0eebaabf7432c253a9553c5a1980baf5c40e851eca153e377d66a373c0",
+  "conclusion": "Minimal enabled request succeeds while disabled fails; longest annotation pair tests same parameter change. Observational one-factor controls, not proof of universal provider behavior or full-context semantic equivalence."
+}

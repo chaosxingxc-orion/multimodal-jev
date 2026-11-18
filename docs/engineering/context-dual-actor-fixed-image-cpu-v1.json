@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "79abfcba1b6f3726f152559de3099b0e761e6b6e2346a62d5201ce460b4cdc23",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T01:58:54.72809022Z",
+    "FinishedAt": "2026-11-16T02:00:02.35673692Z"
+  },
+  "source_files": 366,
+  "source_manifest_sha256": "c5263ac194d0365cf29c67dd6035d4dd05b21064c5ae47015f699efa94c64ba7",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-actor-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "c21b39e13063adde1f61b56686c0962c4e478780bf3a333c9d2b618256317d2b",
+    "run/junit.xml": "749f23102e460573ecb1b96869d3b8541ec1721a0bd5d8cfcc43de384815edb6",
+    "run/pytest.log": "853e23274447ad4ede06a109fba4b534754251e2053dbb7126d4b8f1472ce868",
+    "package/FILES.json": "c5263ac194d0365cf29c67dd6035d4dd05b21064c5ae47015f699efa94c64ba7",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794794361.8092697,
+    "finished_unix": 1794794400.9604928,
+    "source_manifest_sha256": "c5263ac194d0365cf29c67dd6035d4dd05b21064c5ae47015f699efa94c64ba7",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-actor-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_actor_candidate.py",
+      "tests/test_context_dual_credit_native.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Pinned native verl CPU actor update with real one-rank Gloo/DDP and synthetic logits; no real audio/Qwen/NPU or four-rank recovery claim."
+}

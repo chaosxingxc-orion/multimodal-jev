@@ -1,0 +1,133 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "explicit_contextual_role_v1",
+  "status": "selected_task_design_rules_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "event_name",
+    "device_type",
+    "app_name",
+    "business_name",
+    "weather_descriptor"
+  ],
+  "definitions": {
+    "event_name": "An explicitly represented event, occasion, appointment or activity serving as content or an argument of the request: something scheduled, recalled, queried, reported, used as a condition or temporal anchor, or included in requested message/list content. A command merely specifying the assistant operation does not by itself supply this role. Apply request-relevant scope. Explicit calendar-entry retrieval and an unambiguous scheduling construction can represent an event without an event noun; the operation alone still cannot.",
+    "device_type": "An expressed kind of physical equipment or appliance involved in the request. Hardware role must be supported by the utterance; structural objects, alert records, content and software do not automatically qualify. Apply request-relevant scope.",
+    "app_name": "An identified application or software service used or explicitly referenced as the means of accessing or performing an activity. Identification may use a name or a registered service-specific lexical expression such as tweet or Google as a search verb. Assistant address, corporate identity or a generic operation alone is insufficient. Apply request-relevant scope.",
+    "business_name": "An identifying name of a company, organization or commercial establishment expressed in that organizational, merchant or provider role. A product-brand modifier or software platform identity alone does not establish this role. Apply request-relevant scope.",
+    "weather_descriptor": "An explicitly expressed meteorological condition, property or supported weather-protection criterion, including a question asking for a particular weather property. A generic weather request alone is insufficient. Apply request-relevant scope. Solar/lunar geometry, astronomical event timing and daylight duration alone are outside this meteorological predicate."
+  },
+  "per_type_rules": {
+    "event_name": [
+      "Calendar or event-schedule entry retrieval/removal explicitly represents its event contents even with what, anything, everything or that: what is on my calendar and remove everything on my calendar qualify. The contents are represented by the construction, not inferred from a native intent.",
+      "An elliptical scheduling construction with a represented participant/appointment relation and temporal anchor can qualify: put me in on Tuesday at ten with Al supplies scheduled interaction content. Put me in alone, a bare time, or an operation to open a calendar does not supply such evidence.",
+      "Do not turn every list or collection into an event. Grocery-list items, a calendar application itself, or calendar availability/free gaps do not alone establish an event. Generic what is on without an event-bearing referent can remain ambiguous.",
+      "Activities explicitly queried as planned or scheduled content can count without a title. Calendar and task-list words are not an automatic event label; distinguish collection content from the container and assistant operation."
+    ],
+    "device_type": [
+      "Physical appliances/equipment explicitly typed as sockets, chargers, televisions, vacuum cleaners or coffee machines qualify in a hardware use. A smart/electrical/mechanized qualifier can establish equipment for an otherwise structural object; this is a compositional rule, not evidence that such examples were observed here.",
+      "Ordinary doors, windows, gates, curtains and rooms are structural objects, not devices merely because the assistant is asked to open/close them. Do not infer an actuator, smart home capability or equipment from the requested action. Airport gates and bridge names likewise do not supply equipment.",
+      "Alarm records, reminder notifications, alarm schedules and tones are not physical devices. Set an alarm for six, show my alarms and the alarm you sent express alerts only; clear lack of hardware evidence is negative, not unknown due to hypothetical implementations.",
+      "An alarm clock or clock can be physical hardware or a software clock when the utterance leaves that distinction open. Preserve genuine hardware/software ambiguity. An explicit mobile phone receiving an alarm independently establishes device presence.",
+      "Radio used only as playback/broadcast content or in a shuffle instruction does not establish hardware. A radio receiver physically described as equipment can qualify; a station or application alone cannot."
+    ],
+    "app_name": [
+      "The registered lexical forms tweet/tweets/tweeted/tweeting in a social-message use identify the Twitter service in this dataset-era task contract, including drafting a tweet. Explicit bird-call use does not. This is a declared lexical convention, not inferred from gold social intent or from a model predicting platform identity.",
+      "Google used as a transitive search operation identifies the search service; look up in Google and named Google Calendar/Play likewise qualify. Hey/OK Google merely addressing the assistant does not qualify without a separate service role. Generic search, post, message, email or call alone does not identify an application.",
+      "A platform in a stock-price/company query is not thereby being used as software. A requested post or content lookup on a named platform can support software access and media-channel roles independently; no automatic company-role closure.",
+      "Keep genuinely ambiguous platform/provider/station roles unavailable where input does not settle them. Registered lexical conventions are versioned task definitions and must be revalidated for cross-dataset transfer, not treated as timeless brand facts."
+    ],
+    "business_name": [
+      "A named company as the subject of stock/organization queries, merchant, complaint recipient or explicitly expressed provider qualifies. Native business annotation or external ownership relationships are not needed to supply the role.",
+      "A brand modifying a product, such as Wemo plug, Samsung phone or Apple phone, identifies a product and does not independently establish a company role. Explicitly contacting that company about the product can supply both roles.",
+      "Using a named application, a platform communication verb or a platform content channel alone does not establish business_name. A separately expressed organizational function may coexist; do not expand platform names by corporate world knowledge.",
+      "Generic company/store category without identifying name does not meet this named-organization predicate. Unclear organization versus product/provider attachment stays unavailable; a clearly isolated product modifier is negative."
+    ],
+    "weather_descriptor": [
+      "Sunrise/sunset timing, solar/lunar distance or mass, moon phase and daylight duration are astronomical/temporal properties, not weather descriptors by themselves. Time/date/event predicates must be assessed independently.",
+      "Sunny/sunshine as an outdoor condition or forecast does express a meteorological property. A song title containing sunshine does not. Temperature at sunset explicitly adds a meteorological property; sunset alone does not.",
+      "Clothing/protection objects and windows are not automatically weather evidence. Sun glasses without a supported exposure/weather criterion remains ambiguous; do not settle it from native weather labels. Existing explicit weather-protection policy remains applicable."
+    ]
+  },
+  "evidence": {
+    "event_ellipsis": {
+      "regex": "\\b(on my calendar|on the calendar|on my schedule|on the schedule|scheduled|schedule it|schedule that|schedule this|coming up|have planned|have plans|anything planned|anything on|what.s on)\\b",
+      "native_types_union": [],
+      "explicit_source_ids": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/event_ellipsis-sources.jsonl",
+      "sha256": "8d25b3797f1b36e65723b20cf80337d68cb16cc7a1b855e1530c8fd353a7e793",
+      "sources": 134,
+      "recordings": 607
+    },
+    "structural_device": {
+      "regex": "\\b(door|doors|window|windows|blind|blinds|curtain|curtains|gate|gates|garage|alarm|alarms|clock)\\b",
+      "native_types_union": [],
+      "explicit_source_ids": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/structural_device-sources.jsonl",
+      "sha256": "877ad58ae150893c0620b7e2c82090d58bbdebb072a1807791415e77f6d1e1d9",
+      "sources": 309,
+      "recordings": 1854
+    },
+    "platform_brand": {
+      "regex": "\\b(google|googl\\w+|tweet|tweeted|tweeting|facebook|twitter|samsung|apple|sony|philips|phillips|dyson|nest)\\b",
+      "native_types_union": [],
+      "explicit_source_ids": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/platform_brand-sources.jsonl",
+      "sha256": "32e85f8b80be2846c284afe7d02c0cd27b13c39f4cfb10b9d2b95b2a6d82aefb",
+      "sources": 283,
+      "recordings": 1029
+    },
+    "solar": {
+      "regex": "\\b(sunrise|sunset|sunlight|daylight|sunshine|sunny|sun|moon|eclipse)\\b",
+      "native_types_union": [],
+      "explicit_source_ids": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/solar-sources.jsonl",
+      "sha256": "0c24191951f56fb64ad796956ae93699b39dec707fc7b0a9180c2a37c4681055",
+      "sources": 31,
+      "recordings": 106
+    },
+    "brand_structure": {
+      "regex": "\\b(wemo|nest|dyson|philips|phillips|brand|manufacturer|manufactur\\w+|company|corporation|electric|motorized|smart|door|window|blinds|curtains)\\b",
+      "native_types_union": [],
+      "explicit_source_ids": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/brand_structure-sources.jsonl",
+      "sha256": "5b2aa7dd64775a8f253bbc6a54f741725ea5abcec1ff65d6aa23f741d6813da2",
+      "sources": 74,
+      "recordings": 284
+    },
+    "explicit_controls": {
+      "regex": "(?!)",
+      "native_types_union": [],
+      "explicit_source_ids": [
+        "8698",
+        "868",
+        "5313",
+        "4109",
+        "5767",
+        "1889",
+        "9654",
+        "3325",
+        "2513",
+        "13534",
+        "7472",
+        "4095",
+        "13794"
+      ],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/remaining-role-evidence-v1/explicit_controls-sources.jsonl",
+      "sha256": "aec7b46e2ef0e3d8d701806ca3ada265196423b8fefe6167cc8a0349c0e50803",
+      "sources": 13,
+      "recordings": 46
+    }
+  },
+  "reading": "Read all134 event-ellipsis,309 structural/alert,283 platform/brand,31 solar,74 brand/structure sources and13 explicit controls. Cohorts overlap. Diagnostic selection, not exhaustive semantic annotation.",
+  "design_extensions_without_observed_cohort_support": [
+    "Explicit smart/mechanized structural equipment examples are a compositional convention, not an observed cohort.",
+    "Tweet bird-call contrast is a lexical exclusion, not an observed labeled source."
+  ],
+  "scope": "Project contextual role definitions, not native entity-span gold. No new scope for unrelated background or standalone reports.",
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v10.json",
+    "previous_sha256": "0fe8e53da998e866f6b18f0ea31ba628a671569e61a8ffffb089e0ae9eda55e1",
+    "historical_supervision_automatically_migrated": false
+  }
+}

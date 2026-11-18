@@ -1,0 +1,13 @@
+{
+  "schema": "ascend-context-runtime-plan-v1",
+  "host": "${TRAIN_HOST}",
+  "image": "${TRAIN_IMAGE}",
+  "mount_source_container": "${TRAIN_MOUNT_SOURCE_CONTAINER}",
+  "remote_root": "${TRAIN_ROOT}",
+  "encoded_audio_cache": "${ENCODED_AUDIO_CACHE}",
+  "audio_mirror_root": "${AUDIO_MIRROR_ROOT}",
+  "shared_root": "${SHARED_ROOT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "physical_devices": "${TRAIN_DEVICES}",
+  "resources": {"cpus": 24, "memory": "128g", "shm_size": "8g"}
+}

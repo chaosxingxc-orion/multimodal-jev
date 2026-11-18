@@ -1,0 +1,33 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "context-dual-wire-cpu-v3",
+  "tests": [
+    "tests/test_context_logits_wire.py",
+    "tests/test_context_batched_request_candidate.py",
+    "tests/test_context_batched_service_candidate.py"
+  ],
+  "expected_tests": 43,
+  "scope": "Fixed image actual CPU BF16 context head and spawn IPC; model engine replies are fixtures. No real vLLM worker/NPU/model/throughput evidence.",
+  "support_files": [
+    "tests/test_context_pooling.py",
+    "tests/test_context_rollout_transport.py",
+    "tests/test_context_bulk_rpc_candidate.py",
+    "tools/jev/context_rollout_rpc.py",
+    "tools/jev/context_policy_activation.py",
+    "tools/jev/context_switch_rollout.py",
+    "tools/reports/context_batched_request_candidate.py",
+    "tools/reports/context_batched_owner_candidate.py",
+    "tools/reports/context_batched_service_candidate.py",
+    "tools/reports/context_bulk_rpc_candidate.py",
+    "tools/reports/context_dual_rollout_candidate.py",
+    "tools/reports/context_dual_worker_candidate.py",
+    "tools/reports/serve_context_dual_candidate.py",
+    "tools/reports/serve_context_batched_candidate.py"
+  ]
+}

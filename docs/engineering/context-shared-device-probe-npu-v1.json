@@ -1,0 +1,95 @@
+{
+  "container_id": "16ad20332b9fa5505f00170f69f00e5fdad9753c4726dc5588a0903e3001ebfc",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T18:41:59.38646007Z",
+    "FinishedAt": "2026-11-14T18:42:31.49139317Z"
+  },
+  "files": {
+    "probe.py": "32436b8836cb339e92eb8e1d9743957ded1692724ca59e7308e0fba0156fda15",
+    "run/actor-0.json": "c5387d6ea57c4b61ff3456f2d5513184c0e3b484e5e7f4cb5be4eb2b00fd64cc",
+    "run/actor-0.log": "a6be8fa7f4f324925f7f508cd5a960fac19d3e207670e73552d9737f7241a5e2",
+    "run/actor-1.json": "57a92da7f78e3f6859e391d5579392b50f4b27f2ce3f67b629d6ea6145ae7311",
+    "run/actor-1.log": "3c6593e655338886ae84007365fd28d7866fd072809ba40fd2be185e4f48dfb7",
+    "run/actor-2.json": "09b3fa8eb0658d0fb208a39a6e78ecbc24e502fb9775e63b452852f935bc9ad5",
+    "run/actor-2.log": "db1672b7165d22d7bf84e132b0470678fed2738c624932c52412a8e727c52ffa",
+    "run/actor-3.json": "e072b9306c6e31c2c2754264a70aa679f5767021994b8d2f5209267ace211859",
+    "run/actor-3.log": "5f01b14c3ab2500de356bdbc83bf97a9617035aad1fa38dd6ac02b5373c6e081",
+    "run/release-service": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run/result.json": "4daa45b4b6cb2289d894d2cfcbd284e3f78c70d547e1e80b1b090bd0e55917ae",
+    "run/service-0.log": "362cb0875e6b431f94ba0e31bcbd5893015336bf868a34235bb298ffbe72bfc5",
+    "run/service-ready.json": "3eb4fe96c12b773ffcbf3f485663a824b548328529026809cdd12321ea353183",
+    "run/terminal.json": "b890e56faf8c9086c25949d296ac731d418898921cf390579c83316a3f355bb0"
+  },
+  "passed": true,
+  "scope": "Terminal same-container device sharing probe only; not engine co-residency, HCCL or RL admission",
+  "terminal": {
+    "exit_code": 0,
+    "finished_unix": 1794681751.4662428
+  },
+  "result": {
+    "service": {
+      "role": "service",
+      "rank": 0,
+      "logical": 0,
+      "physical": 7,
+      "device_count": 1,
+      "visible": "3",
+      "pid": 7,
+      "compute_exact": true
+    },
+    "actors": [
+      {
+        "role": "actor",
+        "rank": 0,
+        "logical": 0,
+        "physical": 4,
+        "device_count": 4,
+        "visible": null,
+        "pid": 30,
+        "compute_exact": true
+      },
+      {
+        "role": "actor",
+        "rank": 1,
+        "logical": 1,
+        "physical": 5,
+        "device_count": 4,
+        "visible": null,
+        "pid": 31,
+        "compute_exact": true
+      },
+      {
+        "role": "actor",
+        "rank": 2,
+        "logical": 2,
+        "physical": 6,
+        "device_count": 4,
+        "visible": null,
+        "pid": 32,
+        "compute_exact": true
+      },
+      {
+        "role": "actor",
+        "rank": 3,
+        "logical": 3,
+        "physical": 7,
+        "device_count": 4,
+        "visible": null,
+        "pid": 33,
+        "compute_exact": true
+      }
+    ],
+    "passed": true,
+    "scope": "Same-container overlapping NPU initialization and tiny BF16 matmul only; no vLLM engine, HCCL, actor model, full memory capacity, continuous RL or recovery admission"
+  }
+}

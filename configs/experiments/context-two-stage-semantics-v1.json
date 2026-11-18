@@ -1,0 +1,20 @@
+{
+  "schema": "jev-two-stage-semantics-v1",
+  "stage1": {
+    "task": "audio_candidate_discrimination",
+    "learning_method": "candidate_contrastive_learning",
+    "only_loss": "InfoNCE",
+    "text_generation_loss": false,
+    "binary_nll_loss": false,
+    "legacy_runtime_stage": "instruction",
+    "legacy_name_meaning": "shared_supervised_transport_only_not_language_SFT",
+    "training_dp": 8,
+    "warmup": true
+  },
+  "stage2": {
+    "algorithm": "dual_credit_grpo_floor_clipped_v1",
+    "training_dp": 6,
+    "inference_instances": 2,
+    "reference": "frozen_stage1_full_train_outputs"
+  }
+}

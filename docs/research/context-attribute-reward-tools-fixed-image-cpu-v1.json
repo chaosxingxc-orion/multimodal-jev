@@ -1,0 +1,102 @@
+{
+  "schema": "context-attribute-reward-tools-fixed-image-cpu-v1",
+  "container_id": "960831eddd213ade02e61ea248bcb7407c97823e7f9a6b3375eef897c35bd493",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T01:28:04.38946324Z",
+    "FinishedAt": "2026-11-15T01:29:39.16412417Z"
+  },
+  "source_files": 374,
+  "source_manifest_sha256": "5e43c714a2d8f6a4afe4135c100f30dfe3838a6bbb154b7a1cdb2927e0ad77d5",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-reward-tools-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "6e47274881426b19c61348b562937e9c0e12248955b86ebbf20fb254c41b6f3e",
+    "run/junit.xml": "cc860a151d1712d53131cdc3401840cc44cabdba883160f91e5221f169fae268",
+    "run/pytest.log": "62855226d47accf3cbf0cc2f89a204677360c8a8c4fc7ee380ea1a7cee376cdd",
+    "run/population.json": "a1a68abac73c040eca83742e3000478d2914feb2e23faee058d5699cc16f8fc0",
+    "run/population.log": "9dd430ab10e9295b43a3a070e1189ffb898826b460bae75b8899280d561764ed",
+    "package/FILES.json": "5e43c714a2d8f6a4afe4135c100f30dfe3838a6bbb154b7a1cdb2927e0ad77d5",
+    "package/run.py": "148dfd782a95de5faae2af4a99adf33fa7e8e43fb221cd75ff91e7599bc4bb75"
+  },
+  "counts": {
+    "tests": 36,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794706111.623794,
+    "finished_unix": 1794706177.732001,
+    "source_manifest_sha256": "5e43c714a2d8f6a4afe4135c100f30dfe3838a6bbb154b7a1cdb2927e0ad77d5",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-reward-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_candidate.py",
+      "tests/test_context_attribute_reward_candidate.py",
+      "tests/test_context_attribute_selection.py",
+      "tests/test_context_candidate_objective.py",
+      "tests/test_context_set_reward.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Fixed-image CPU reward and selection contract tests plus full real TRAIN/selection labels with synthetic action controls. No audio/model/NPU/efficacy evidence.",
+  "population": {
+    "status": "full_population_synthetic_action_reward_contract_passed",
+    "torch_version": "2.10.0+cpu",
+    "scope": "Local CPU reward contract only; no audio/model/sampled-policy/NPU/learning-gain evidence",
+    "populations": [
+      {
+        "dataset": ".local/decision-objective-research/slurp-native-attribute-prob-candidate-v1",
+        "manifest_sha256": "d98db48e619a83e7eceb308da13f257a6cc3cfa4bf701f3f17022ff99a07a482",
+        "recordings": 40513,
+        "labels_checked": 5023612,
+        "controls_per_recording": 4,
+        "batches": 159,
+        "controls": [
+          "exact_truth",
+          "empty",
+          "all_selected",
+          "only_correct_Final"
+        ],
+        "max_reward_error": 0.0
+      },
+      {
+        "dataset": ".local/decision-objective-research/slurp-native-attribute-selection-candidate-v1",
+        "manifest_sha256": "85d17ce7a12d2e39efb9bdc676cdb24b02f2531ccb4c93b7adeba303485d0710",
+        "recordings": 9226,
+        "labels_checked": 1144024,
+        "controls_per_recording": 4,
+        "batches": 37,
+        "controls": [
+          "exact_truth",
+          "empty",
+          "all_selected",
+          "only_correct_Final"
+        ],
+        "max_reward_error": 0.0
+      }
+    ],
+    "files": {
+      "/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-reward-tools-cpu-v1/package/tools/reports/audit_context_attribute_rewards.py": "4a3f723a1136e1b16084daf2d73f02d4cf079162a90bd3821efaf8f90e557b88",
+      "tools/reports/context_attribute_reward_candidate.py": "2be34c065d6d1c577ad617a5af5cd5e958fa687309879e3c1f5f000783b22612",
+      "tests/test_context_attribute_reward_candidate.py": "3dfd54fcadce15a2c4903a1320d15543e56c632ea8ca2d362d3c2b68afb81c32",
+      "configs/experiments/context-native-attribute-comparison-design-v1.json": "69c81b2840c295c9504060aa2e4f8b66f0fe29facbf50d0672840db1994f01bd"
+    }
+  }
+}

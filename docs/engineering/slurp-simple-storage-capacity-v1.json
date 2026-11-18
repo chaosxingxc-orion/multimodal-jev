@@ -1,0 +1,59 @@
+{
+  "schema": "simple-local-storage-capacity-v1",
+  "observation": {
+    "observed_unix": 1794596271.6067858,
+    "filesystem": {
+      "total_bytes": 10401906835456,
+      "available_bytes": 3422933598208,
+      "total_inodes": 637009920,
+      "available_inodes": 636744600
+    },
+    "closed_checkpoints": {
+      "stage1-continuation-v1": {
+        "files": {
+          "/data/xingchao/multimodal-jev/simple-final-v1/stage1-continuation-v1/run/rank-0/checkpoint-0256.pt": 1903999,
+          "/data/xingchao/multimodal-jev/simple-final-v1/stage1-continuation-v1/run/rank-1/checkpoint-0256.pt": 1903999,
+          "/data/xingchao/multimodal-jev/simple-final-v1/stage1-continuation-v1/run/rank-2/checkpoint-0256.pt": 1903999,
+          "/data/xingchao/multimodal-jev/simple-final-v1/stage1-continuation-v1/run/rank-3/checkpoint-0256.pt": 1903999,
+          "/data/xingchao/multimodal-jev/simple-final-v1/stage1-continuation-v1/run/adapter-step0256/adapter_model.safetensors": 1163208,
+          "/data/xingchao/multimodal-jev/simple-final-v1/stage1-continuation-v1/run/adapter-step0256/adapter_config.json": 4160
+        },
+        "bytes": 8783364
+      },
+      "sampled-npu-grpo_v1-continue-v1": {
+        "files": {
+          "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-0/checkpoint-0002.pt": 1904191,
+          "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-1/checkpoint-0002.pt": 1904191,
+          "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-2/checkpoint-0002.pt": 1904191,
+          "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-rank-3/checkpoint-0002.pt": 1904191,
+          "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-adapter-step0002/adapter_model.safetensors": 1163208,
+          "/data/xingchao/multimodal-jev/simple-final-v1/sampled-npu-grpo_v1-continue-v1/run/rl-adapter-step0002/adapter_config.json": 4160
+        },
+        "bytes": 8784132
+      }
+    },
+    "stage1_config": {
+      "updates": 632,
+      "start_update": 2,
+      "checkpoint_interval": 64
+    }
+  },
+  "stage1_remaining_checkpoint_updates": [
+    317,
+    320,
+    384,
+    448,
+    512,
+    576,
+    634
+  ],
+  "stage1_remaining_tensor_bytes_estimate": 61483548,
+  "stage2_634_tensor_bytes_estimate": 5569139688,
+  "free_fraction": 0.3290678961419428,
+  "free_inode_fraction": 0.9995834915726273,
+  "minimum_reserve_passed": true,
+  "scope": "Measured closed four-shard optimizer+adapter artifact sizes; extrapolation only. Excludes future raw probabilities, audio features, cache, evaluation records and other users. Not a complete Stage2 disk budget or reservation.",
+  "inaccessible_cache_directories": "Host du lacked access to several root-owned cache directories; partial du totals were not used as complete storage usage.",
+  "no_cleanup": true,
+  "no_runtime_change": true
+}

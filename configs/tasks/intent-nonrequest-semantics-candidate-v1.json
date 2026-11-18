@@ -1,0 +1,20 @@
+{
+  "schema": "jev-nonrequest-acts-candidate-v1",
+  "status": "task_definition_candidate_pending_supervision",
+  "training_dispatch_allowed": false,
+  "greeting": {
+    "scope": "A greeting is performed in the current utterance toward the assistant; quoted/reported greetings do not count. A bare assistant name is an address cue, not automatically greeting.",
+    "phatic": "Conventional how-are-you/what-is-up can perform a greeting. A substantive request for identity, experiences or feelings is judged separately; genuinely ambiguous phatic-versus-substantive use remains unavailable.",
+    "coexistence": "A greeting may coexist with a business request; no whole-utterance exclusion."
+  },
+  "preference": {
+    "scope": "Current speaker expresses or explicitly registers an evaluation with identifiable polarity and a referent established in the supplied audio; no dataset/topic label supplies the referent.",
+    "domain": "Music/song/genre/artist context must be expressed. I like it without music context is unavailable for music preference; do not infer a current song from dataset membership.",
+    "polarity": "Positive and negative evidence are separate. Not good may be adverse; not bad or not dislike is not automatically positive. Mixed assessments may satisfy both when each is independently expressed.",
+    "ratings": "A numeric rating alone has no polarity without an explicit scale or accompanying evaluation. Stars do not silently imply a five-point maximum; report score-storage requests separately. Explicit thumbs-up/favorite designation supplies favorable evidence.",
+    "operations": "Saving/downloading/playing/skipping alone does not imply preference. Asking to record an unspecified opinion establishes a recording act, not its polarity.",
+    "embedded": "Message payload, quotes or reported opinions are not automatically the current speaker's committed preference; a separately expressed endorsement can count."
+  },
+  "shared": "Missing/ambiguous evidence is unavailable, not an output unknown class without supervision. Reviewed clear absence is negative. All acts are judged from audio and task definitions in a single forward.",
+  "scope": "Policies define semantic acts, not native labels or private mental states; independent semantic review pending."
+}

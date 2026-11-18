@@ -1,0 +1,29 @@
+{
+  "schema": "jev-intent-request-semantics-candidate-v1",
+  "status": "proposed_semantic_presence_contract_not_native_class_mapping",
+  "training_dispatch_allowed": false,
+  "operator": "I_present",
+  "scope": "Request-type semantic definitions only; greeting/preference/assertion definitions require their own communicative-act policy. Does not replace SLURP I_class or its 60 native labels.",
+  "question": "Does the audio express at least one request satisfying the supplied semantic definition under the following rules?",
+  "actor_rules": {
+    "evidence": "Judge the audio and supplied task definitions. Do not infer an operation from a dataset label, a person's real-world identity, or an unstated execution plan.",
+    "information_vs_operation": "Seeking an answer, explanation, available options or displayed records is an information request. Asking to create, modify, purchase or execute is an operation request. Interrogative wording such as can you may be a polite operation request; classify its communicative purpose, not punctuation or a keyword.",
+    "method_vs_execution": "Asking how or where to perform an operation does not by itself request performing it. A request to open a tool does not by itself request that tool's downstream action. Explicitly requested lookup or checking counts even if it is preparatory; unstated necessary prerequisites do not.",
+    "coordinated_requests": "Evaluate each expressed request against each definition. Distinct matching requests may coexist. An exclusion distinguishes a nonmatching act; it does not veto a separate matching act elsewhere in the utterance. No first-clause, last-clause or presumed-main-intent priority is imposed.",
+    "conditional_requests": "A directed instruction to perform an act if a condition holds expresses that conditional request. It does not establish that the condition holds, that execution is authorized by the environment, or that the act succeeded. A condition mentioned only in a factual or hypothetical question does not by itself request its execution.",
+    "negation": "Negating or prohibiting an act does not request that affirmative act. A definition explicitly covering stopping, muting or preventing an act may match. Resolve negation scope; quoted titles, payload text and ordinary negative preferences do not negate unrelated requests.",
+    "embedded_content": "Quoted, reported or dictated message content is not automatically a request addressed to the assistant. Only an explicit instruction to execute its contents supplies that request. Semantic role presence within such content is governed separately by the slot scope policy.",
+    "missing_parameters": "A clear act with missing argument values can still satisfy a request definition. Do not invent a missing domain or act when the fragment itself leaves them ambiguous.",
+    "truth": "true requires a matching expressed request; false requires reviewed absence of a matching request under a clear definition. Genuine evidence ambiguity remains unavailable, and unreviewed inputs are not false. Unavailable/conflict are supervision masks, not automatically trained output classes.",
+    "final": "Multiple semantic-presence answers do not determine a unique native class or execution state. Do not fold them into the native Final using an invented priority."
+  },
+  "input_contract": {
+    "modality": "direct_audio",
+    "forward": "single_pass_typed_spans",
+    "question_menu": "task_defined_or_label_independent_schedule_never_gold_or_predicted_query_topic",
+    "reference_text": "offline_annotation_only",
+    "review_provenance": "offline_only_not_actor_input"
+  },
+  "validation_scope": "Learning references from full contact cohort, transport ambiguity cohort and lexical conditional/negation probes; not independent semantic certification or exhaustive coverage of every rule.",
+  "native_mapping": "Unchanged; I_class remains a separate registered task until a unified task release explicitly resolves the relationship."
+}

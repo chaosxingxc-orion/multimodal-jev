@@ -1,0 +1,61 @@
+{
+  "profiles": [
+    {
+      "container_id": "856faac5823125cc1524e941884f9250f6aa902713662ce32b99a8c363fdda4e",
+      "results": {
+        "reports": [
+          {
+            "phase": "cold",
+            "seconds": 7.585844039989752,
+            "cache_hits": 0,
+            "queries": 16
+          },
+          {
+            "phase": "hot",
+            "seconds": 0.20908874001179356,
+            "cache_hits": 16,
+            "queries": 16
+          }
+        ],
+        "scope": "CPU serial diagnostic during live cache build; contention and cold initialization confound throughput, no NPU speedup claim"
+      },
+      "files": {
+        ".local/decision-objective-research/context-cache-profile-cpu-v1-cold-profile.txt": "93cdf21626b8473ba5ad7a69e23d9aa8579fad851db86183297c845a919279e8",
+        ".local/decision-objective-research/context-cache-profile-cpu-v1-hot-profile.txt": "15be37ae5b9880de08a374093b2b9193d9211b3cca18f20c06bbc3596af96a22"
+      }
+    },
+    {
+      "container_id": "d2ef2b2d1fe64826101af20e1a4cfeededad1b6f4bf1aaf964bcb495430eb359",
+      "results": {
+        "reports": [
+          {
+            "phase": "cold",
+            "seconds": 6.963798700002371,
+            "cache_hits": 0,
+            "queries": 16
+          },
+          {
+            "phase": "hot",
+            "seconds": 0.2051130199979525,
+            "cache_hits": 16,
+            "queries": 16
+          },
+          {
+            "phase": "vocab_snapshot",
+            "seconds": 2.311632280005142,
+            "cache_hits": 0,
+            "queries": 16
+          }
+        ],
+        "all_phase_tensor_hashes_exact": true,
+        "scope": "CPU serial diagnostic during live cache build; contention and cold initialization confound throughput, no NPU speedup claim"
+      },
+      "files": {
+        ".local/decision-objective-research/context-cache-vocab-profile-cpu-v1-vocab_snapshot-profile.txt": "8487772fc49e19fdf7a7183f253e783a29bff5b6b6cdb4c0b7c086c654778a2c",
+        ".local/decision-objective-research/context-cache-vocab-profile-cpu-v1-hot-profile.txt": "c1939b3424d31c7dad68af9fa7233114748252a77ed7eb43fe88dec86c31d580",
+        ".local/decision-objective-research/context-cache-vocab-profile-cpu-v1-cold-profile.txt": "62049a5f6096bfb5bdfd9f150f1c33b5ccafd36228ceab9c3cbd678d3da5db29"
+      }
+    }
+  ],
+  "scope": "Actual fixed-image CPU profiler results collected after exit0; 16 identical input tensor hashes across cold/hot/vocab-snapshot. Sequential order and shared-host contention confound throughput ratios."
+}

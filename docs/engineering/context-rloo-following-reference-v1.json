@@ -1,0 +1,81 @@
+{
+  "schema": "context-following-reference-audit-v1",
+  "passed": true,
+  "source_container": "c7a9dbd1281556ba13773e41e55c102f2af7b3b1e21e6d577d8ab029dae1ee06",
+  "start_update": 64,
+  "stop_update": 66,
+  "snapshot_manifest_sha256": "fa432f031e38fcfa447e7b0c56bffc8d6777df8ecbfe02e204a6efa9d6473838",
+  "implementation_sha256": "879a8d3f86e5275136ac6ac7ecef447ccd10d29616f3dc40585cf9a4cf50069c",
+  "updates": [
+    {
+      "algorithm": "rloo_v1",
+      "update": 64,
+      "checked_slots": 128,
+      "real_queries": 128,
+      "padding_slots": 0,
+      "mean_reward": 0.7813476666051429,
+      "mean_group_reward_std": 0.043854422692675143,
+      "zero_signal_groups": 91,
+      "zero_signal_fraction": 0.7109375,
+      "mean_abs_advantage": 0.032048608642071486,
+      "scope": "Saved group/reward/estimator/sample audit, not model execution or task efficacy",
+      "slowest_rank_step_seconds": 99.53322438997566,
+      "rank0_timing": {
+        "preparation_seconds": 73.0062098899798,
+        "actor_seconds": 23.349534200009657,
+        "total_seconds": 99.53322438997566
+      },
+      "rollout_timing": {
+        "reference_seconds": 31.95427047999692,
+        "total_seconds": 65.72811501999968,
+        "reference_misses": 128
+      }
+    },
+    {
+      "algorithm": "rloo_v1",
+      "update": 65,
+      "checked_slots": 128,
+      "real_queries": 128,
+      "padding_slots": 0,
+      "mean_reward": 0.8271484434080776,
+      "mean_group_reward_std": 0.027532257605344057,
+      "zero_signal_groups": 104,
+      "zero_signal_fraction": 0.8125,
+      "mean_abs_advantage": 0.019401040743105114,
+      "scope": "Saved group/reward/estimator/sample audit, not model execution or task efficacy",
+      "slowest_rank_step_seconds": 98.72475126001518,
+      "rank0_timing": {
+        "preparation_seconds": 72.14714151999215,
+        "actor_seconds": 23.398920990002807,
+        "total_seconds": 98.71104029999697
+      },
+      "rollout_timing": {
+        "reference_seconds": 31.915289779979503,
+        "total_seconds": 64.13376045998302,
+        "reference_misses": 128
+      }
+    }
+  ],
+  "policy_ids": [
+    "f1188532686d324e018f9542da908789a6db3c78745b6919c1ffe49bfadd64c8",
+    "827eaec195546c494c7edd4264843c4225ae30eb8be64119af169c6b8a5e623f"
+  ],
+  "native_adapter_tensor_audit": false,
+  "following_optimizer_states_available": false,
+  "fresh_process_npu_resume_verified": false,
+  "throughput_gain_verified": false,
+  "stop_training_allowed": false,
+  "scope": "Saved continuous sample/reward/parity/publication reference; no new NPU run or comparison of unrecorded Adam states",
+  "config_provenance": {
+    "schema": "jev-resolved-config-v1",
+    "template_sha256": "949deb6ff873f3f901a5a488169038c61cac7ac1d9a641a53d76d17a11ab256c",
+    "local_bindings_sha256": "b5f9ff1325e1d67647d0fbfacdee352fac2cee58e56cb5c5b6f0f645a87b67b8",
+    "resolved_semantic_sha256": "7ecf97677288a35499e90f2fd2a3de2e2e71aa2cba6bef8f73766c8e384f3aba",
+    "macros_used": [
+      "CHECKPOINT_SNAPSHOT_ROOT",
+      "FOLLOWING_AUDIT_OUTPUT",
+      "SLURP_RELEASE_ROOT",
+      "TRAINING_SCHEDULE_ROOT"
+    ]
+  }
+}

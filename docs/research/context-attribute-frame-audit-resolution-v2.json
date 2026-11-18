@@ -1,0 +1,30 @@
+{
+  "schema": "context-attribute-frame-audit-resolution-v2",
+  "observed_unix": 1794713914.0504303,
+  "old_selection_mismatched_recordings": 866,
+  "old_selection_mismatched_requests": 1732,
+  "corrected_selection_recordings": 9226,
+  "corrected_selection_requests": 18452,
+  "selection_audit_sha256": "6cd54d3f7597e7e0258588562148fe31dec4d9676aa0570e2ece24ae45bdd5aa",
+  "fixed_image_container": "9be44ee3a69aee24052f860214a829a1e94d9898f65c98ca2aba7fedb20c2da9",
+  "fixed_image_tests": {
+    "tests": 46,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "deselected": 1,
+  "actual_feature_source_sha256": "349fcd64c57da8526748cb4cabb613a7d660e21e77800b99e9f4a22959d51961",
+  "actual_processor_source_sha256": "6429cf1bf5654534cbcfa7e64f7e582146f49a656904a369ef99d554ddfe3a67",
+  "actual_boundaries": [
+    7999,
+    16000,
+    16001,
+    27648,
+    114672
+  ],
+  "formula": "frames=floor(max(samples,8000)/160); tokens=13*(frames//100)+ceil((frames%100)/8)",
+  "mask_scope": "All 9226 selection int32 prefix masks independently reconstructed and matched tensor SHA256",
+  "unchanged": "No model, audio, reward or running/queued package modifications; sealed v1 auditor and failures retained",
+  "remaining": "TRAIN terminal collection, corrected audit and actual schedule publication; real Qwen/NPU parity/update/new-process restore"
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "6d4f04437f89da99f2865977dc04cf940bf99ddc706289e5bbf350f50c09befd",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T01:47:52.9697508Z",
+    "FinishedAt": "2026-11-16T01:48:52.54637626Z"
+  },
+  "source_files": 392,
+  "source_manifest_sha256": "bae1766b28c7dd2ca2918630601ed4926f8265ed1a3c222d9280e90acb2c9d79",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-operations-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "4c7a6608fe7da06a9a6ed3fdb1012e0fcccb3275604d4a44c011e97b177798d3",
+    "run/junit.xml": "9c258d139c8e80c2b1515c311f6db68fd4016e46fdcd300970247a2773067a5b",
+    "run/pytest.log": "4f7a4c6b6873b55f15b67203a6d49bc6b89e5fe752268a285e7a2b644d0a4930",
+    "package/FILES.json": "bae1766b28c7dd2ca2918630601ed4926f8265ed1a3c222d9280e90acb2c9d79",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 43,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794793699.9636877,
+    "finished_unix": 1794793731.0682952,
+    "source_manifest_sha256": "bae1766b28c7dd2ca2918630601ed4926f8265ed1a3c222d9280e90acb2c9d79",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-operations-cpu-v1/run/junit.xml",
+      "tests/test_context_dual_probe_operations.py",
+      "tests/test_context_dual_measurement_candidate.py",
+      "tests/test_context_batch_probe_audit_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Configured finite-probe operations, independent measurement audit and exact-handle failure behavior; mocked SSH/engine, CPU only, no real NPU execution or speed claim."
+}

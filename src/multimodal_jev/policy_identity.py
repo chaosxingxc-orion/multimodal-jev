@@ -14,6 +14,36 @@ def checkpoint_identity(checkpoint):
     return hashlib.sha256(json.dumps(files,sort_keys=True).encode()).hexdigest(),files
 
 
+def compare_adapter_artifacts(reference, candidate):
+    """Compare exact weights and PEFT config, allowing target-module set order only.
+
+    Preserve both original artifact identities. This is a comparison receipt,
+    never a replacement policy ID or permission to skip probability/state gates.
+    """
+    roots = [Path(reference), Path(candidate)]
+    identities = [checkpoint_identity(p) for p in roots]
+    files = [item[1] for item in identities]
+    required = {'adapter_config.json', 'adapter_model.safetensors'}
+    if not required <= files[0].keys() or files[0].keys() != files[1].keys():
+        raise ValueError('same complete adapter file set required')
+    for name in files[0]:
+        if name != 'adapter_config.json' and files[0][name] != files[1][name]:
+            raise ValueError('exact adapter weight/asset bytes differ: '+name)
+    configs = [json.loads((p/'adapter_config.json').read_text()) for p in roots]
+    for config in configs:
+        targets = config.get('target_modules')
+        if (not isinstance(targets, list) or not targets
+                or any(not isinstance(t, str) or not t for t in targets)
+                or len(set(targets)) != len(targets)):
+            raise ValueError('explicit unique target module list required')
+        config['target_modules'] = sorted(targets)
+    if configs[0] != configs[1]:
+        raise ValueError('adapter configuration semantics differ')
+    return dict(passed=True, reference_id=identities[0][0], candidate_id=identities[1][0],
+                reference_files=files[0], candidate_files=files[1], exact_weight_bytes=True,
+                config_equivalence='target_modules_set_order_only')
+
+
 def validate_adapter_export(base, checkpoint, adapter, *, expected_training_run=None,
                             base_files=None, checkpoint_files=None):
     """Verify persisted base/adapter/export lineage without loading a model.

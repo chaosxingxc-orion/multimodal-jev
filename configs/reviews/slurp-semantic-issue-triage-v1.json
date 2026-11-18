@@ -1,0 +1,709 @@
+{
+  "schema": "slurp-semantic-issue-triage-v1",
+  "training_dispatch_allowed": false,
+  "status": "review_agenda_not_rule_revision_or_label_admission",
+  "workpack": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v7",
+  "workpack_report_sha256": "f2bface49d8198d75b3b9526dcbc7dae01d3e65dfe23d1672abec7f1aab20998",
+  "ontology_sha256": "1e143e30b4a26b11dbaa8401de34501ce729badeea67725e1aa2a30e6f4fb948",
+  "summary": {
+    "coordinates": 61,
+    "sources": 50,
+    "unique_recordings": 168,
+    "recording_type_bindings": 210,
+    "kind_counts": {
+      "input_review": 45,
+      "definition": 16
+    },
+    "groups": 18,
+    "admitted": 0
+  },
+  "groups": {
+    "communicative_scope": {
+      "kind": "definition",
+      "priority": 1,
+      "coordinates": [
+        "6203:event_name",
+        "6203:person",
+        "6203:place_name"
+      ],
+      "question": "Do standalone reports and preferences enter the role-presence scope, and how are mixed independent acts distinguished from unrelated background?",
+      "candidate": "Include explicit main propositions without inferring operations; unresolved mixed discourse needs a uniform convention.",
+      "scope": "all55",
+      "dependency": "configs/tasks/slurp/communication-scope-candidate-v1.json",
+      "coordinate_count": 3,
+      "source_count": 1,
+      "unique_recordings": 4,
+      "recording_type_bindings": 12,
+      "types": [
+        "event_name",
+        "person",
+        "place_name"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [
+        "alarm_type",
+        "app_name",
+        "artist_name",
+        "audiobook_author",
+        "audiobook_name",
+        "business_name",
+        "business_type",
+        "change_amount",
+        "coffee_type",
+        "color_type",
+        "cooking_type",
+        "currency_name",
+        "date",
+        "definition_word",
+        "device_type",
+        "drink_type",
+        "email_address",
+        "email_folder",
+        "event_name",
+        "food_type",
+        "game_name",
+        "game_type",
+        "general_frequency",
+        "house_place",
+        "ingredient",
+        "joke_type",
+        "list_name",
+        "meal_type",
+        "media_type",
+        "movie_name",
+        "movie_type",
+        "music_album",
+        "music_descriptor",
+        "music_genre",
+        "news_topic",
+        "order_type",
+        "person",
+        "personal_info",
+        "place_name",
+        "player_setting",
+        "playlist_name",
+        "podcast_descriptor",
+        "podcast_name",
+        "radio_name",
+        "relation",
+        "song_name",
+        "sport_type",
+        "time",
+        "time_zone",
+        "timeofday",
+        "transport_agency",
+        "transport_descriptor",
+        "transport_name",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "potential_full_population_coordinates": 505560,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "collection_roles": {
+      "kind": "definition",
+      "priority": 2,
+      "coordinates": [
+        "15896:list_name",
+        "17089:list_name",
+        "7242:list_name",
+        "7414:list_name",
+        "8505:list_name"
+      ],
+      "question": "Does list_name include address books and calendar/schedule collections, or only expressly identified general item/task lists?",
+      "candidate": "Specify collection identity and functional scope consistently across contacts, calendar, general lists and musical collections; do not infer a list from tasks alone.",
+      "scope": "incident",
+      "coordinate_count": 5,
+      "source_count": 5,
+      "unique_recordings": 20,
+      "recording_type_bindings": 20,
+      "types": [
+        "list_name"
+      ],
+      "incident_boundary_pairs": [
+        [
+          "email_folder",
+          "list_name"
+        ],
+        [
+          "list_name",
+          "playlist_name"
+        ]
+      ],
+      "potential_contract_comparison_types": [
+        "email_folder",
+        "list_name",
+        "playlist_name"
+      ],
+      "potential_full_population_coordinates": 27576,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "requested_role_policy": {
+      "kind": "definition",
+      "priority": 2,
+      "coordinates": [
+        "14749:date",
+        "5388:artist_name"
+      ],
+      "question": "Does an explicitly requested role without a supplied value satisfy date and creator predicates, and which interrogatives establish its type?",
+      "candidate": "Separate type activation from missing value. Bare when still leaves granularity ambiguous even if calendar activation becomes allowed.",
+      "scope": "incident",
+      "coordinate_count": 2,
+      "source_count": 2,
+      "unique_recordings": 7,
+      "recording_type_bindings": 7,
+      "types": [
+        "artist_name",
+        "date"
+      ],
+      "incident_boundary_pairs": [
+        [
+          "artist_name",
+          "audiobook_author"
+        ],
+        [
+          "artist_name",
+          "color_type"
+        ],
+        [
+          "artist_name",
+          "person"
+        ],
+        [
+          "artist_name",
+          "song_name"
+        ],
+        [
+          "change_amount",
+          "date"
+        ],
+        [
+          "date",
+          "general_frequency"
+        ],
+        [
+          "date",
+          "time"
+        ],
+        [
+          "date",
+          "timeofday"
+        ]
+      ],
+      "potential_contract_comparison_types": [
+        "artist_name",
+        "audiobook_author",
+        "change_amount",
+        "color_type",
+        "date",
+        "general_frequency",
+        "person",
+        "song_name",
+        "time",
+        "timeofday"
+      ],
+      "potential_full_population_coordinates": 91920,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "elliptical_event_reference": {
+      "kind": "definition",
+      "priority": 2,
+      "coordinates": [
+        "8505:event_name",
+        "8698:event_name"
+      ],
+      "question": "When do calendar-entry retrieval and elliptical scheduling explicitly identify an event rather than merely imply a required parameter?",
+      "candidate": "Use a task-level reference threshold; do not infer event presence from native calendar intent.",
+      "scope": "incident",
+      "coordinate_count": 2,
+      "source_count": 2,
+      "unique_recordings": 7,
+      "recording_type_bindings": 7,
+      "types": [
+        "event_name"
+      ],
+      "incident_boundary_pairs": [
+        [
+          "alarm_type",
+          "event_name"
+        ],
+        [
+          "event_name",
+          "meal_type"
+        ],
+        [
+          "event_name",
+          "movie_name"
+        ],
+        [
+          "event_name",
+          "news_topic"
+        ],
+        [
+          "event_name",
+          "person"
+        ],
+        [
+          "event_name",
+          "sport_type"
+        ]
+      ],
+      "potential_contract_comparison_types": [
+        "alarm_type",
+        "event_name",
+        "meal_type",
+        "movie_name",
+        "news_topic",
+        "person",
+        "sport_type"
+      ],
+      "potential_full_population_coordinates": 64344,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "structural_device_scope": {
+      "kind": "definition",
+      "priority": 3,
+      "coordinates": [
+        "13534:device_type"
+      ],
+      "question": "Which physical structural objects qualify as devices without an explicit smart/electrical qualifier?",
+      "candidate": "Define physical device scope before deciding open the door; no smart-device inference from the operation alone.",
+      "scope": "incident",
+      "coordinate_count": 1,
+      "source_count": 1,
+      "unique_recordings": 2,
+      "recording_type_bindings": 2,
+      "types": [
+        "device_type"
+      ],
+      "incident_boundary_pairs": [
+        [
+          "app_name",
+          "device_type"
+        ],
+        [
+          "device_type",
+          "transport_type"
+        ],
+        [
+          "device_type",
+          "weather_descriptor"
+        ]
+      ],
+      "potential_contract_comparison_types": [
+        "app_name",
+        "device_type",
+        "transport_type",
+        "weather_descriptor"
+      ],
+      "potential_full_population_coordinates": 36768,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "platform_verb_identity": {
+      "kind": "definition",
+      "priority": 3,
+      "coordinates": [
+        "15684:app_name"
+      ],
+      "question": "Does a platform-specific communication verb satisfy named application identity?",
+      "candidate": "Separate channel/message form from explicit software identity, including conventional verbs; apply uniformly.",
+      "scope": "incident",
+      "coordinate_count": 1,
+      "source_count": 1,
+      "unique_recordings": 4,
+      "recording_type_bindings": 4,
+      "types": [
+        "app_name"
+      ],
+      "incident_boundary_pairs": [
+        [
+          "app_name",
+          "business_name"
+        ],
+        [
+          "app_name",
+          "device_type"
+        ],
+        [
+          "app_name",
+          "media_type"
+        ],
+        [
+          "app_name",
+          "radio_name"
+        ],
+        [
+          "app_name",
+          "transport_agency"
+        ]
+      ],
+      "potential_contract_comparison_types": [
+        "app_name",
+        "business_name",
+        "device_type",
+        "media_type",
+        "radio_name",
+        "transport_agency"
+      ],
+      "potential_full_population_coordinates": 55152,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "brand_company_role": {
+      "kind": "definition",
+      "priority": 3,
+      "coordinates": [
+        "868:business_name"
+      ],
+      "question": "Does a device brand modifier independently express company identity under business_name?",
+      "candidate": "Fix identity versus contextual-role policy across brands and organizations; do not equate every product modifier with company role.",
+      "scope": "incident",
+      "coordinate_count": 1,
+      "source_count": 1,
+      "unique_recordings": 10,
+      "recording_type_bindings": 10,
+      "types": [
+        "business_name"
+      ],
+      "incident_boundary_pairs": [
+        [
+          "app_name",
+          "business_name"
+        ],
+        [
+          "business_name",
+          "business_type"
+        ],
+        [
+          "business_name",
+          "game_name"
+        ],
+        [
+          "business_name",
+          "place_name"
+        ],
+        [
+          "business_name",
+          "podcast_name"
+        ],
+        [
+          "business_name",
+          "sport_type"
+        ],
+        [
+          "business_name",
+          "transport_agency"
+        ]
+      ],
+      "potential_contract_comparison_types": [
+        "app_name",
+        "business_name",
+        "business_type",
+        "game_name",
+        "place_name",
+        "podcast_name",
+        "sport_type",
+        "transport_agency"
+      ],
+      "potential_full_population_coordinates": 73536,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "solar_weather_scope": {
+      "kind": "definition",
+      "priority": 3,
+      "coordinates": [
+        "2471:weather_descriptor"
+      ],
+      "question": "Are solar-event timing properties included in meteorological predicates?",
+      "candidate": "State astronomy/meteorology boundary; sunset remains an event/time query even if weather predicate is excluded.",
+      "scope": "incident",
+      "coordinate_count": 1,
+      "source_count": 1,
+      "unique_recordings": 2,
+      "recording_type_bindings": 2,
+      "types": [
+        "weather_descriptor"
+      ],
+      "incident_boundary_pairs": [
+        [
+          "device_type",
+          "weather_descriptor"
+        ]
+      ],
+      "potential_contract_comparison_types": [
+        "device_type",
+        "weather_descriptor"
+      ],
+      "potential_full_population_coordinates": 18384,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "physical_alert_or_medium": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "1634:device_type",
+        "3985:device_type",
+        "6019:device_type",
+        "7472:device_type",
+        "5313:device_type",
+        "5313:media_type",
+        "13534:house_place"
+      ],
+      "question": "Does full input support physical equipment/domestic role or only an alert/content referent?",
+      "candidate": "Recheck negative versus unresolved using explicit evidence threshold; repeated ambiguous words are not automatic positives or mandatory masks.",
+      "scope": "none",
+      "coordinate_count": 7,
+      "source_count": 6,
+      "unique_recordings": 26,
+      "recording_type_bindings": 27,
+      "types": [
+        "device_type",
+        "house_place",
+        "media_type"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "particular_work_identity": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "10400:game_name",
+        "11314:podcast_name",
+        "11371:podcast_name",
+        "11488:podcast_name",
+        "117:song_name",
+        "1965:playlist_name",
+        "2910:movie_name"
+      ],
+      "question": "Is a particular reference and its work type expressed, versus provider/category selection or a different medium?",
+      "candidate": "Apply current work-reference policy, allowing supported possessives; distinguish missing evidence from genuine competing readings. Do not resolve identity from external trivia or native labels.",
+      "scope": "none",
+      "coordinate_count": 7,
+      "source_count": 7,
+      "unique_recordings": 19,
+      "recording_type_bindings": 19,
+      "types": [
+        "game_name",
+        "movie_name",
+        "playlist_name",
+        "podcast_name",
+        "song_name"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "property_attachment": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "11334:music_descriptor",
+        "11413:event_name",
+        "1989:music_descriptor",
+        "4756:music_descriptor",
+        "4441:color_type"
+      ],
+      "question": "What does the property qualify, and is it a property, event, identity or another kind of setting?",
+      "candidate": "Check current descriptor/event/color rules. Do not fix attachment through native annotations; use audio if it can distinguish phrasing.",
+      "scope": "none",
+      "coordinate_count": 5,
+      "source_count": 5,
+      "unique_recordings": 14,
+      "recording_type_bindings": 14,
+      "types": [
+        "color_type",
+        "event_name",
+        "music_descriptor"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "channel_subject_or_unspecified_content": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "1240:media_type",
+        "15190:media_type",
+        "15281:media_type",
+        "15644:media_type",
+        "3209:media_type",
+        "3209:news_topic"
+      ],
+      "question": "Is a content format/channel or reporting relation expressed rather than app access, account metadata or generic information?",
+      "candidate": "Separate generic absence from supported competing interpretations under current channel/news rules.",
+      "scope": "none",
+      "coordinate_count": 6,
+      "source_count": 5,
+      "unique_recordings": 9,
+      "recording_type_bindings": 12,
+      "types": [
+        "media_type",
+        "news_topic"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "unspecified_person_or_collection": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "11017:list_name",
+        "14772:personal_info",
+        "15084:personal_info",
+        "17089:person",
+        "7584:person"
+      ],
+      "question": "Does the input express the required human, attribute or collection role?",
+      "candidate": "Do not infer a list from unfinished work, a field from arbitrary facts, or a human from a contact-record category.",
+      "scope": "none",
+      "coordinate_count": 5,
+      "source_count": 5,
+      "unique_recordings": 17,
+      "recording_type_bindings": 17,
+      "types": [
+        "list_name",
+        "person",
+        "personal_info"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "weather_relation": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "4037:weather_descriptor",
+        "4437:weather_descriptor",
+        "5447:weather_descriptor",
+        "5464:weather_descriptor",
+        "5588:weather_descriptor",
+        "6007:weather_descriptor"
+      ],
+      "question": "Is a weather need actually expressed in clothing/activity/window questions?",
+      "candidate": "Review absence versus ambiguity under explicit-weather-relation rule; no use of native weather class to supply context.",
+      "scope": "none",
+      "coordinate_count": 6,
+      "source_count": 6,
+      "unique_recordings": 20,
+      "recording_type_bindings": 20,
+      "types": [
+        "weather_descriptor"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "calendar_clock_recurrence_or_corrupt_reference": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "14749:time",
+        "3548:time",
+        "7414:general_frequency",
+        "7472:time"
+      ],
+      "question": "Does the wording establish clock/duration versus calendar granularity, recurrence versus one repeat, or a malformed reference?",
+      "candidate": "Audio can help for clock, but never silently repair it from expected labels; preserve unknown granularity where needed.",
+      "scope": "none",
+      "coordinate_count": 4,
+      "source_count": 4,
+      "unique_recordings": 18,
+      "recording_type_bindings": 18,
+      "types": [
+        "general_frequency",
+        "time"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "fragment_communicative_role": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "6451:definition_word",
+        "6451:event_name"
+      ],
+      "question": "Does the fragment life goals express an explanation request or activity reference?",
+      "candidate": "Use finalized fragment/scope convention; do not infer a meaning request or planned event solely from the phrase.",
+      "scope": "none",
+      "coordinate_count": 2,
+      "source_count": 1,
+      "unique_recordings": 3,
+      "recording_type_bindings": 6,
+      "types": [
+        "definition_word",
+        "event_name"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "domestic_selector_vs_venue": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "9455:place_name",
+        "9465:place_name"
+      ],
+      "question": "Is the room an independent event venue/source or a selector of household playback equipment?",
+      "candidate": "Apply current location rule to full utterance; preserve ambiguity only if both readings remain supported.",
+      "scope": "none",
+      "coordinate_count": 2,
+      "source_count": 2,
+      "unique_recordings": 11,
+      "recording_type_bindings": 11,
+      "types": [
+        "place_name"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    },
+    "preparation_input_vs_dish": {
+      "kind": "input_review",
+      "priority": 4,
+      "coordinates": [
+        "10205:ingredient"
+      ],
+      "question": "Does rice identify the dish requested or an ingredient used to prepare another dish?",
+      "candidate": "Apply ingredient-role evidence rule; do not infer ingredient merely from a substance commonly used in recipes.",
+      "scope": "none",
+      "coordinate_count": 1,
+      "source_count": 1,
+      "unique_recordings": 2,
+      "recording_type_bindings": 2,
+      "types": [
+        "ingredient"
+      ],
+      "incident_boundary_pairs": [],
+      "potential_contract_comparison_types": [],
+      "potential_full_population_coordinates": 0,
+      "impact_is_not_actual_label_change_count": true
+    }
+  },
+  "records": {
+    "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/semantic-issue-triage-v1/coordinates.jsonl",
+    "sha256": "228d61bae8712d0acdf635a7ac4be4b126349ae2eca20ac69938f84072211a3d"
+  },
+  "policy": [
+    "Priorities order definition scope before narrower boundaries; input_review does not mean certified irreducible ambiguity.",
+    "No latest-wins, majority vote, native-intent inference or automatic negative from missing annotation.",
+    "Existing rules can support negative judgments when a role is absent; do not create hypothetical interpretations merely to preserve unknown.",
+    "Keep all population and evidence. Any new rule must state impact and rereview affected contracts before admission.",
+    "Priority schedule is offline annotation only; fixed inference Q menus and training population stay unchanged."
+  ]
+}

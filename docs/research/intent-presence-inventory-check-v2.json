@@ -1,0 +1,35 @@
+{
+  "schema": "slurp-intent-presence-inventory-check-v2",
+  "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-presence-inventory-v2/report.json",
+  "report_sha256": "8204fa253ac0c0132bec95d2b1a75c6a1a4739911caf39ce7f328f76e8ba6a6a",
+  "verifier_sha256": "1e5a1cd0f16530a54a911ef550dfd1eb456f13ffa02f3b5742bd62f1c6492d5e",
+  "summary": {
+    "recordings": 40513,
+    "sources": 9192,
+    "semantic_cards": 65,
+    "assessments": 1146,
+    "assessed_coordinates": 1146,
+    "sources_with_assessments": 530,
+    "source_coordinate_counts": {
+      "unassessed": 596334,
+      "positive": 439,
+      "negative": 609,
+      "unavailable": 98
+    },
+    "cards_with_positive_and_negative": 15,
+    "cards_without_assessments": 48,
+    "incompatible_assessments": 0,
+    "duplicate_coordinates": 0,
+    "semantic_admission": 0
+  },
+  "checks": [
+    "raw metadata and native target identities",
+    "all explicit source-to-recording bindings",
+    "proposal multiset unchanged",
+    "historical and current applicable card/policy identity",
+    "all source and recording states reconstructed",
+    "all65 per-card counts reconstructed"
+  ],
+  "scope": "Independent structural recomputation, not independent semantic review or audio listening.",
+  "training_dispatch_allowed": false
+}

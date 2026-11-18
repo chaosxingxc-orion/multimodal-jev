@@ -1,0 +1,62 @@
+{
+  "schema": "context-stage1-initial-endpoint-comparison-v1",
+  "checked_unix": 1794690218.0202968,
+  "population": 9226,
+  "same_ordered_ids_processor_inputs_and_positions": true,
+  "states": [
+    {
+      "step": 0,
+      "proof": "docs/engineering/context-stage1-selection-step0000-v2.json",
+      "proof_sha256": "cdc71f70211a0223041f561629e1f540b782ae723118c8bb389843402af6cdc4",
+      "verified_files": 9254,
+      "policy_id": "816ed39c8e2684653467558cd212686902b93fd283c527f594b1d8978e11e2d1",
+      "metrics": {
+        "query_macro_set_f1": 0.033190972570866284,
+        "top1_event_accuracy": 0.017992629525254714,
+        "top1_macro_f1": 0.0027706144204168812,
+        "candidate_binary_nll": 0.8018327216146135,
+        "candidate_brier": 0.30404206817674656,
+        "mean_selected_count": 59.247344461305005,
+        "exact_set": 0.0
+      },
+      "set_sizes": {
+        "empty": 0,
+        "single": 0,
+        "multiple": 9226,
+        "total": 9226
+      }
+    },
+    {
+      "step": 634,
+      "proof": "docs/engineering/context-stage1-selection-step0634-v2.json",
+      "proof_sha256": "7e501aaa90177a4e85ff286ba64e9fe5a35c06eac103d4a34b72ddc237ace088",
+      "verified_files": 9254,
+      "policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+      "metrics": {
+        "query_macro_set_f1": 0.7380410434279947,
+        "top1_event_accuracy": 0.8207240407543898,
+        "top1_macro_f1": 0.7743151618089749,
+        "candidate_binary_nll": 0.01874342859958838,
+        "candidate_brier": 0.004649959234100333,
+        "mean_selected_count": 0.8366572729243442,
+        "exact_set": 0.724474311727726
+      },
+      "set_sizes": {
+        "empty": 1703,
+        "single": 7328,
+        "multiple": 195,
+        "total": 9226
+      }
+    }
+  ],
+  "endpoint_minus_initial": {
+    "query_macro_set_f1": 0.7048500708571284,
+    "top1_event_accuracy": 0.802731411229135,
+    "top1_macro_f1": 0.7715445473885579,
+    "candidate_binary_nll": -0.7830892930150252,
+    "candidate_brier": -0.29939210894264623,
+    "mean_selected_count": -58.41068718838066,
+    "exact_set": 0.724474311727726
+  },
+  "scope": "Full same-population Stage1 initial/end comparison, not RL gain, not native pretrained ASR zero-shot competence, not TEST. Initial policy includes newly initialized decision head. No threshold or model selection change."
+}

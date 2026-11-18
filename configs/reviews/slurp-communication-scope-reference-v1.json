@@ -1,0 +1,656 @@
+{
+  "schema": "slurp-communication-scope-reference-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/communication-scope-candidate-v1.json",
+  "rule_sha256": "7ee0575e276d94d5cef8f8767389ba01801ec976d05fbda884b24eb5c4e6913d",
+  "workpack_report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-current-rules-v5/report.json",
+  "workpack_report_sha256": "65e76fbcb5ee2628fc79b37dd5bdf7e745f3b4e8e8269adb778ca125814801bc",
+  "records": [
+    {
+      "source_id": "6203",
+      "metadata_sha256": "f23105aaa526081eedf6fe1ea1b177fdc2a7c0536f7c06720794bb2d308baa16",
+      "reference": "i went to the park",
+      "reference_sha256": "6466d8e634c518157cc85cb58102b88025a836f46f03ae204141d8b52fe4ef8a",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "went to the park"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The park visit is the complete communicated proposition. No unstated assistant operation or visit date is inferred.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6184",
+      "metadata_sha256": "307fe1e90902c2479e140de5fe76e9c6966e59dbf65fdda3713690518229670d",
+      "reference": "we had great dinner today",
+      "reference_sha256": "9c3423ae4ff8297fb94860ab0f9be871f3d1d38a23b1f8bc4704c405d182aaf3",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "great dinner",
+        "today"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Meal event and calendar day are content of the report; no scheduling or message-send command is implied.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6355",
+      "metadata_sha256": "9e2defbe29d5827c0271a59d2a469b17103b4ba00acf69ea55dfc7328c65fc18",
+      "reference": "i had chicken for lunch and it was delicious",
+      "reference_sha256": "c174c2cbbe2029d2803f324c0049eb0aea9dd3b147020444020a74fa8547ea01",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "chicken",
+        "lunch"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Food and meal occasion are directly reported; report inclusion does not invent cooking method.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6444",
+      "metadata_sha256": "445a3969a359839f3211998e8c84acdf8bcc16523180c1546bcf7c32814c967c",
+      "reference": "i had a car accident today",
+      "reference_sha256": "9a0b96bd014776b3e6827f1411b0d278597eb83dc0f4ebd2c0aa252ee6a1bfc9",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "car accident",
+        "today"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The accident and calendar day are report content, without inferring emergency execution authority.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6498",
+      "metadata_sha256": "855a96b1a86698f30da81cf47030d6249cc23645a85f68c4323338e7ac90384f",
+      "reference": "my son was born today",
+      "reference_sha256": "72f9a6e1c04136042dd03ac83932d29e0f7a7846cc64ae1618c95c6238fd6424",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "my son",
+        "born today"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The human relation and birth event/date are explicitly asserted; no reminder operation is inferred.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "43",
+      "metadata_sha256": "5b3d52ed5f91a889b55342e68454b1b32adb4412b50d7d56c2510f4a86f6ae20",
+      "reference": "i am not tired i am actually happy",
+      "reference_sha256": "28626be4f4a21d4a2cc111f081c82453315254663b28b4473f5c2d608b427f21",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "not tired",
+        "happy"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The contrasted personal states are communicated content. Scope inclusion does not decide individual type membership or truth of the states.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "145",
+      "metadata_sha256": "27d5affda97e5c5ab3c0373ffc8069fd2d597ae7d1164298d94d529bd8b90e47",
+      "reference": "i like jazz",
+      "reference_sha256": "77ef4ee76190aef526d67ded127470553cf1340db4c95b6079512eb0b1e1f94c",
+      "discourse_kind": "standalone_preference",
+      "evidence_quotes": [
+        "jazz"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Jazz is the explicit preference object; liking it does not imply a playback request.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "69",
+      "metadata_sha256": "a4c487dd613f8f35972004bb396f6f4ef8cc353c0e4380cd53748113c718bfd2",
+      "reference": "i like rock music",
+      "reference_sha256": "fcf86def5b0b34129895c834605bbcc24c283e98483d24dd8ed6e11ab1aae0ff",
+      "discourse_kind": "standalone_preference",
+      "evidence_quotes": [
+        "rock music"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The musical preference has an explicit content object.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "2954",
+      "metadata_sha256": "fc781aea9e9d88fe454f82be1f88e112e545b23052f675b7d3b6c5c1f7db7d25",
+      "reference": "i like electronic music",
+      "reference_sha256": "7f4f3b636919d930dcd2194810fd8951166f4f29165b797815980cbe643b4384",
+      "discourse_kind": "standalone_preference",
+      "evidence_quotes": [
+        "electronic music"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Preference content explicitly identifies a music category.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "4280",
+      "metadata_sha256": "f237c8ae362aa82fab529374553e1b03ae6019882fe5216fbf3d6ce525c78a96",
+      "reference": "i like soft rock music",
+      "reference_sha256": "c9f9fcf0e1de4815dba882f7ab3b67cd4f2f219b5631c4564c4e65c945be87c8",
+      "discourse_kind": "standalone_preference",
+      "evidence_quotes": [
+        "soft rock music"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The preference object includes genre and an explicit property; type-level rules remain separate.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "2818",
+      "metadata_sha256": "7b1ae1ed2995311307c3ce2bb96086e886f5ca9897bdf6949591c86341a7bc0f",
+      "reference": "i don't like this song",
+      "reference_sha256": "5e73877a532f9a60716b543ae226f11c9a6a640725766f76b3e698ef98c2ed20",
+      "discourse_kind": "standalone_preference",
+      "evidence_quotes": [
+        "this song"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Negative preference still refers to a song; no accepted playback state is inferred.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "4950",
+      "metadata_sha256": "970a8c24f0683b3fe434c36bb5d6eac821d0d2825ecff54a4c9f339919ed5d50",
+      "reference": "i do not enjoy this song",
+      "reference_sha256": "2d3ca55643f7863677aa8169df9d34e28c10f7f62f1ae92f6cd27ba5eaf57df7",
+      "discourse_kind": "standalone_preference",
+      "evidence_quotes": [
+        "this song"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Dislike does not erase the identified object from communicative content.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "949",
+      "metadata_sha256": "e54938ac56de782dd6478e8bf9c208c82d580fa68f379ac35d1d874147504371",
+      "reference": "that song in the background is annoying",
+      "reference_sha256": "4783895d0007fadd7bae2727677a6c6b8fb29946fcafe57f8bcb594fcb1a4c16",
+      "discourse_kind": "standalone_preference",
+      "evidence_quotes": [
+        "song in the background"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Background modifies the song experience; it is not a discourse annotation saying the whole clause is unrelated.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "144",
+      "metadata_sha256": "952ddbaee8cfd91e6c21f6e4b32306d861217e752216a2bca6d212bac07ac829",
+      "reference": "i like it",
+      "reference_sha256": "4ba7a4c7b0cf99cbbcbf9dd833ce719f1d31c5bd92c348d6da0c8e396fe1ba3f",
+      "discourse_kind": "underspecified_reference",
+      "evidence_quotes": [
+        "it"
+      ],
+      "candidate_content_scope": null,
+      "rationale": "Preference act is clear but referent is unresolved; native music_likeness cannot establish a song or media type.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "143",
+      "metadata_sha256": "a33a1c44c41fb94f7a6035b655361805ad17f604f3c715cf8189515b808be1f0",
+      "reference": "i don't like it",
+      "reference_sha256": "3025092de6ae64d9f622551a38e2acd04abdec8c790c8b21ee79c5dd254f7542",
+      "discourse_kind": "underspecified_reference",
+      "evidence_quotes": [
+        "it"
+      ],
+      "candidate_content_scope": null,
+      "rationale": "Negative preference gives no recoverable referent type; native intent is not admissible context.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "542",
+      "metadata_sha256": "3659b19d8ed721fe296695647353e79b3e0261b6b49a73f64b98b8c370223f77",
+      "reference": "its peaceful",
+      "reference_sha256": "fa33ba6bebfe68290d3edd9d0caa821114196102dbbd9a0c105b8613d29175b9",
+      "discourse_kind": "underspecified_reference",
+      "evidence_quotes": [
+        "its peaceful"
+      ],
+      "candidate_content_scope": null,
+      "rationale": "A state is expressed but its referent cannot be identified; no musical property label inferred from the class.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "3969",
+      "metadata_sha256": "60e44a92c7d81d93c4f61c96e389f990151b02cca8d708cac877e933bfbcdcb8",
+      "reference": "pop",
+      "reference_sha256": "de70fa60cac227cbc13270a26ccde291af94df086959f0958122aedf154d90b5",
+      "discourse_kind": "bare_fragment",
+      "evidence_quotes": [
+        "pop"
+      ],
+      "candidate_content_scope": null,
+      "rationale": "Could be genre, sound, an operation or another sense; the input does not establish a communicative object role.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6427",
+      "metadata_sha256": "c04223807bf9d35366284d85d66a14a6c8f302fff03d6609d1ee6c1271e5c9b8",
+      "reference": "tennis",
+      "reference_sha256": "f1996a7cda48bca0dc87f700b183266eed3a770330d924fb1507b3036e37b0ff",
+      "discourse_kind": "bare_fragment",
+      "evidence_quotes": [
+        "tennis"
+      ],
+      "candidate_content_scope": null,
+      "rationale": "The lexical subject is recognizable but fragment-use policy is not settled; do not infer search or play action.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "15248",
+      "metadata_sha256": "24b9915bfa482700f77d3ed306adc484087934990d93a17cd1f0ffec7a01208c",
+      "reference": "i am bored",
+      "reference_sha256": "b1f16af04536d76877174112a9d6eb401d8250588ae137fc3241d710e1e53c75",
+      "discourse_kind": "state_with_possible_implicit_request",
+      "evidence_quotes": [
+        "bored"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Boredom itself is explicit communicated content; a game, joke or playback request remains unstated.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6657",
+      "metadata_sha256": "ab8358232a912d69cc0a904688c260312c32097607a330d33e1f62e725a3e2cd",
+      "reference": "it is cold out today",
+      "reference_sha256": "f65350a5587ab3d654fa0a53b634e994b48fb4f72d9550aa8426f488ced9cb3b",
+      "discourse_kind": "state_with_possible_implicit_request",
+      "evidence_quotes": [
+        "cold out today"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The stated weather/day content is explicit; no heating action is inferred.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6738",
+      "metadata_sha256": "1a0004c15ac63ddf494952f81c5ec4ecbdecc267e13a005523969bc04ad22441",
+      "reference": "i am taking day off tomorrow",
+      "reference_sha256": "e5b44289ee206ba7345015de58e26de0b75e6c2f204cc6ee73bed30ff5fddb86",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "day off tomorrow"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The planned absence and calendar day are content; native label does not authorize calendar insertion.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6357",
+      "metadata_sha256": "5f238c9f953fe6ce1f9ffb6cce1c1d22453484a3086e2e6768f61f8de0a01f02",
+      "reference": "i have a deadline on tuesday",
+      "reference_sha256": "437d2945b9666ee9d78c048ab5616aed6bae16fe083b3f28b7496f6249e8d4c3",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "deadline on tuesday"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "A deadline and day are explicitly asserted; no reminder action inferred.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "7809",
+      "metadata_sha256": "a8982ff92fab1ce27858d72b38d33f48e1192da77e26b99115a78f91570cbd52",
+      "reference": "i have a department head meeting friday at nine am sharp",
+      "reference_sha256": "c92766232a67a00c0169c977df1e62a2606f9e8331f20c31056217cecb132aa0",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "department head meeting friday at nine am sharp"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "An event/date/time is asserted; no automatic scheduling inference.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "3142",
+      "metadata_sha256": "ab4711afbc69c901d39a5f29c44985c39a4466bd128fec2bb30f61ed08f6237d",
+      "reference": "i hate this song do not play it again",
+      "reference_sha256": "3e0c58855000055c6c8c675c6729c5fef965e1226fa28ded8bf3b10e367f5548",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "this song",
+        "do not play it again"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Negative preference identifies the same object whose future playback is constrained.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "3113",
+      "metadata_sha256": "ed230a10dca0df33e593d0664804606828c43fdb468eb5a80206b9258dbd1189",
+      "reference": "i hate this song please remember that so that i don't hear this song ever again",
+      "reference_sha256": "2709e262af2515d3f7e1bc09c204db4775af0467f65570586647ba8af00fb70b",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "this song",
+        "remember that"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The reported dislike is explicitly the requested memory content.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "9937",
+      "metadata_sha256": "dd87540c2410a620aca6b629e5e6c1e95952e575546e5532726d2bfd787e9188",
+      "reference": "i have some salmon how do i prepare this",
+      "reference_sha256": "762fd1aaff0a5a09f8fcc5ad44bdb0c1cf05dd0a570611974bb356d862ff975d",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "salmon",
+        "prepare this"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Possession identifies the food whose preparation is queried; it is relevant context.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "10845",
+      "metadata_sha256": "cb2b4961d4d22c5cffa8a39831427bebdc9a7e4c40f2d473e91aeac0a0cecce0",
+      "reference": "i have already given mark his gift today please remove him on my christmas gift list",
+      "reference_sha256": "3bce6dc9ec42a6a37d591ffda04c2839f0e58d4da79daafa92481c494c2bf384",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "mark his gift today",
+        "remove him"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The gift report identifies and motivates the list modification; date is not automatically execution date.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "13065",
+      "metadata_sha256": "f696186b959bf2a50a70a7f31a58d8d262093c1830096a65667e8b39ead41035",
+      "reference": "i'm driving please auto answer my calls on speaker phone",
+      "reference_sha256": "d53f52a723367f2d66c61e70a76a48589e95efde74556c2f755c9293e3c74a9e",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "i'm driving",
+        "auto answer my calls"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Driving is the explicit context motivating hands-free call handling, not unrelated background.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6264",
+      "metadata_sha256": "4d81ae5240360c6df50f4110821957b399d53ceb5f2cddc01d3720861993598e",
+      "reference": "i am in bad mood tell me a joke",
+      "reference_sha256": "2ee39bd902efd334cb694bc754eaa2767318a905707bb5d4586902d67535f0b5",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "bad mood",
+        "tell me a joke"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Mood explicitly motivates the requested joke; type membership still requires its own definition.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "3132",
+      "metadata_sha256": "0d80296e51a88fd59921280c2fc9208c2db8a26dad8a096f6a6bc8011815c766",
+      "reference": "i am really feeling depressed right now can you please play my most played songs to cheer me up",
+      "reference_sha256": "63045f131fe6a68a1ae8ca0ecfeb0ef5f12373c50362ee7779d65cf8e8723e8e",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "depressed",
+        "cheer me up"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Emotional state explicitly motivates the music request and desired effect.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6235",
+      "metadata_sha256": "39d46b5fd6e8b303ea68b7e454500b9f8b022899fd1b1fa562cbf60e5b78c3ed",
+      "reference": "i watched the best movie please reserve me a copy when it releases",
+      "reference_sha256": "eccabf21b3584d853a3ef08db3511c5db9b9e8528773e7e0fa6dace9b194cc84",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "best movie",
+        "reserve me a copy"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The past viewing report identifies the work to reserve.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6233",
+      "metadata_sha256": "d8a66cb8026ba420a429ec797ec414345f2ffe58410c4ba0da373a15180dd9d4",
+      "reference": "olly i met my future wife today please set up a date next friday",
+      "reference_sha256": "43bc8a8786847fa2d20258321bb4ee31aaceca46f25b6fb2868c4eb59c97de37",
+      "discourse_kind": "explicit_request_and_related_statement",
+      "evidence_quotes": [
+        "future wife",
+        "set up a date"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The reported encounter identifies the participant and motivates the date request.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "4345",
+      "metadata_sha256": "2c7cde94c01a2039a6b0b80005efed486c071c684cbc9203b176b04f5c8c0b54",
+      "reference": "remember that this song is good but too slow to exercise to",
+      "reference_sha256": "8b8f269d5e63902bac2322a4beefd8c3db9c82a2bc7a793fa866955a36537627",
+      "discourse_kind": "explicit_payload",
+      "evidence_quotes": [
+        "this song is good but too slow to exercise to"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The whole opinion is explicitly the content to remember.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6525",
+      "metadata_sha256": "2561a82eafa7c92582509a45c8afd7fe38de0ebb0bd1aecb17b0d29f39072ccc",
+      "reference": "please note today a terrible things happened to me because my friend behaved rudely on me",
+      "reference_sha256": "0b08f5d6ec4bc0f2be8d6733d9feec5073fcd5555702287457e57bb904733c35",
+      "discourse_kind": "explicit_payload",
+      "evidence_quotes": [
+        "terrible things happened to me",
+        "my friend"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Explicit note request makes the reported event/person content relevant.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "6416",
+      "metadata_sha256": "3db06fc21ae216efcbedbec075fe8936c40e08ffd3a51a3235e59fc2fc90fde5",
+      "reference": "add note that my day is going well",
+      "reference_sha256": "7418cd19409faf617d3fc3fcfee519485e494d64f9d859c6b44095d24c6dce86",
+      "discourse_kind": "explicit_payload",
+      "evidence_quotes": [
+        "my day is going well"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "The clause is explicit note content.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "7739",
+      "metadata_sha256": "2a742d3c958ca8b5317d247bd72a3da8524c5deecae056a92999d75d7530eb4b",
+      "reference": "i am no longer going to wyatts birthday party",
+      "reference_sha256": "16f954bf11d2221aa3907ddf2a1b95661209745f4a81edd44e157189e81e6dd1",
+      "discourse_kind": "standalone_assertion",
+      "evidence_quotes": [
+        "no longer going",
+        "wyatts birthday party"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Changed attendance is explicitly stated; event presence does not assert attendance or authorize cancellation.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    },
+    {
+      "source_id": "2817",
+      "metadata_sha256": "3df87e80f0a6a37654e88caaa8e804c715cc61d5414632584885f41927ddd5fb",
+      "reference": "it's dark in the living room",
+      "reference_sha256": "eb1990aac815ebba819303bf4a4c19771497c14278d037008208a13e78166091",
+      "discourse_kind": "state_with_possible_implicit_request",
+      "evidence_quotes": [
+        "dark in the living room"
+      ],
+      "candidate_content_scope": true,
+      "rationale": "Darkness and room are stated content; no unstated brightness target or control action inferred.",
+      "scope_only_not_slot_truth": true,
+      "optimization_allowed": false,
+      "actor_input_allowed": false,
+      "independent_semantic_review": false,
+      "evidence_modality": "reference_text"
+    }
+  ],
+  "scope": "Scope-only contrasts, not complete slot annotation or admitted labels."
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "slurp-provider-boundary-check-v1",
+  "rule": "configs/tasks/slurp/provider-boundary-resolution-v1.json",
+  "rule_sha256": "49534b198014704d4d47c9f66e6409eff01dd6c5740ed949e512b75b6322b260",
+  "review": "configs/reviews/slurp-provider-boundary-reference-v1.json",
+  "review_sha256": "d06355495a8a3963b6a00d672f2325dec0621b71abb5a0cacb45cd3e24c1f947",
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v14.json",
+    "sha256": "03255ceff773ffc9f565277a0edf27b20423a9ead8e8d5d65049910b4336ba6c",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v16.json": "bf0d00419ab61c7053b8c818130a6e8f604f7bc8ceea264ffc007758674d77c9",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v16.json": "af938759e43e9ada80a98788ac78433b83f067c8fdb599e99022514ea7f4077a",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v17.json": "7ce4f0914e324a46ae4d30dd76f6c41b216938add7ba731109797b6dbf5de156"
+    }
+  },
+  "changed_rows": {
+    "definitions": [
+      "business_name",
+      "business_type",
+      "transport_agency"
+    ],
+    "policy": [
+      "business_name",
+      "business_type",
+      "transport_agency"
+    ],
+    "boundaries": [
+      [
+        "app_name",
+        "business_name"
+      ],
+      [
+        "app_name",
+        "transport_agency"
+      ],
+      [
+        "business_name",
+        "business_type"
+      ],
+      [
+        "business_name",
+        "game_name"
+      ],
+      [
+        "business_name",
+        "place_name"
+      ],
+      [
+        "business_name",
+        "podcast_name"
+      ],
+      [
+        "business_name",
+        "sport_type"
+      ],
+      [
+        "business_name",
+        "transport_agency"
+      ],
+      [
+        "business_type",
+        "order_type"
+      ],
+      [
+        "business_type",
+        "place_name"
+      ],
+      [
+        "transport_agency",
+        "transport_name"
+      ],
+      [
+        "transport_agency",
+        "transport_type"
+      ]
+    ]
+  },
+  "unchanged_type_cards": 52,
+  "review_coordinates": 54,
+  "review_sources": 18,
+  "counts": {
+    "True": 20,
+    "False": 24,
+    "unknown": 10
+  },
+  "bindings": 273,
+  "unique_recordings": 91,
+  "independent_metadata_and_recording_binding_check": true,
+  "semantic_admission": 0,
+  "training_dispatch_allowed": false,
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/provider-role-evidence-v1/review-recording-bindings.jsonl": "56b6ba9f7a97290a383db2007ad6157652ec7f4d2bbfece40027160ac768adad"
+  },
+  "scope": "Independent identities, exact row delta and original metadata/recording binding reconstruction, not independent semantic review."
+}

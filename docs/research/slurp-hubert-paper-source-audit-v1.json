@@ -1,0 +1,94 @@
+{
+  "schema": "slurp-hubert-paper-source-audit-v1",
+  "title": "A Fine-tuned Wav2vec 2.0/HuBERT Benchmark for Speech Emotion Recognition, Speaker Verification and Spoken Language Understanding",
+  "authors": [
+    "Yingzhi Wang",
+    "Abdelmoumene Boumadane",
+    "Abdelwahab Heba"
+  ],
+  "paper": "https://arxiv.org/pdf/2111.02735v1",
+  "version": "v1, 4 November 2021",
+  "receipt": {
+    "url": "https://arxiv.org/pdf/2111.02735v1",
+    "retrieved_unix": 1794537254.9698362,
+    "status": 200,
+    "bytes": 208095,
+    "sha256": "c4654f9cd09dbcebdc1a190ab389c62bfa2f2bdf0507feae6d96c819eaeb10e8"
+  },
+  "text_sha256": "5c8b4febd35a93a5bc3b5b745d7524f7e73c1436e0d9b4642702690b57231037",
+  "page4_render_sha256": "0fa000aabd78491e66c1eacd6191bdefb23bcc1edd9e4837f620ac13ce5d2435",
+  "table2_verification": "Read extracted whole paper and visually checked rendered page4 Table2; numeric rows also matched against extracted text.",
+  "table2": [
+    {
+      "model": "EF-w2v-base",
+      "intent_accuracy_percent": 87.13,
+      "SF_F1_percent_as_paper_named": 74.32
+    },
+    {
+      "model": "PF-w2v-base",
+      "intent_accuracy_percent": 86.58,
+      "SF_F1_percent_as_paper_named": 74.73
+    },
+    {
+      "model": "EF-w2v-base-960h",
+      "intent_accuracy_percent": 85.89,
+      "SF_F1_percent_as_paper_named": 74.33
+    },
+    {
+      "model": "PF-w2v-base-960h",
+      "intent_accuracy_percent": 86.13,
+      "SF_F1_percent_as_paper_named": 73.78
+    },
+    {
+      "model": "EF-hbt-base",
+      "intent_accuracy_percent": 87.44,
+      "SF_F1_percent_as_paper_named": 75.06
+    },
+    {
+      "model": "PF-hbt-base",
+      "intent_accuracy_percent": 87.51,
+      "SF_F1_percent_as_paper_named": 75.32
+    },
+    {
+      "model": "Frozen-w2v-base",
+      "intent_accuracy_percent": 47.15,
+      "SF_F1_percent_as_paper_named": 37.66
+    },
+    {
+      "model": "Frozen-hbt-base",
+      "intent_accuracy_percent": 68.74,
+      "SF_F1_percent_as_paper_named": 57.06
+    },
+    {
+      "model": "CTI[29]",
+      "intent_accuracy_percent": 86.92,
+      "SF_F1_percent_as_paper_named": 74.66
+    }
+  ],
+  "paper_settings": {
+    "SLURP_split": "official train,validation,test; no project clean release",
+    "synthetic_inclusion": "not explicitly stated in v1 paper; tagged recipe uses real+synthetic, cannot fill paper omission by inference",
+    "encoder_pretraining": "HuBERT-base12 transformer blocks,768 dimensions,LibriSpeech960h",
+    "PF": "CNN frozen, transformer contextual encoder fine-tuned",
+    "EF": "CNN and transformer fine-tuned",
+    "SLU_encoder_lr": 1e-05,
+    "SLU_decoder_lr": 0.0003,
+    "optimizer": "Adam",
+    "beam": 80,
+    "coverage_penalty": 0,
+    "decoder_description": "attentional GRU; differs from checked release/tag LSTM",
+    "output_description": "character-level semantic sequence with intents and slots; NLL",
+    "SLU_seed_count": "not specified; five-seed statements explicitly in SER/SV sections cannot be transferred",
+    "SF_metric": "paper calls it SF F1; exact scorer revision and formal variant not specified in paper v1, do not rename to typed presence F1"
+  },
+  "comparison_rules": [
+    "Keep paper87.51/75.32 separate from released README87.54/75.10; neither is a local result.",
+    "Frozen encoder rows are task-trained downstream models, not zero-shot whole-model baselines.",
+    "Paper SF includes semantic slot content; not interchangeable with S_present type-only metric.",
+    "Official original TEST literature score cannot be compared as matched gain against filtered clean TEST or internal TRAIN-selection.",
+    "Only paired source Stage1-to-RL same-population curves establish local RL gain; external supervised baselines position task capability."
+  ],
+  "local_inference": false,
+  "new_model_download": false,
+  "training_dispatch_allowed": false
+}

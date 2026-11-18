@@ -1,0 +1,113 @@
+{
+  "schema": "slurp-upstream-ontology-audit-v1",
+  "retrieved_date": "2026-11-12",
+  "sources": {
+    "nlu-guidelines.docx": "https://raw.githubusercontent.com/xliuhw/NLU-Evaluation-Data/f6071b496b17d71e6eb43f543af0707f4ff30557/AnnotationGuidelines/NLU-MLtraining-AnnotationSchma.docx",
+    "nlu-readme.md": "https://raw.githubusercontent.com/xliuhw/NLU-Evaluation-Data/f6071b496b17d71e6eb43f543af0707f4ff30557/README.md",
+    "massive-readme.md": "https://raw.githubusercontent.com/alexa/massive/f966f21846043aabef9b0f974fa7970027f43738/README.md",
+    "slurp-arxiv.pdf": "https://arxiv.org/pdf/2011.13205v1",
+    "slurp-acl.html": "https://aclanthology.org/2020.emnlp-main.588/",
+    "slurp-arxiv-query.xml": "https://export.arxiv.org/api/query?search_query=ti:SLURP&max_results=5"
+  },
+  "nlu_revision": "f6071b496b17d71e6eb43f543af0707f4ff30557",
+  "massive_revision": "f966f21846043aabef9b0f974fa7970027f43738",
+  "artifacts": {
+    "nlu-readme.md": {
+      "path": ".local/research/slurp-upstream-ontology-v1/nlu-readme.md",
+      "bytes": 3901,
+      "sha256": "e86a7485ae63b0288166e0f26facdf74b491e951dca2c468b74014cb91552f1d"
+    },
+    "massive-readme.md": {
+      "path": ".local/research/slurp-upstream-ontology-v1/massive-readme.md",
+      "bytes": 20710,
+      "sha256": "431e25247129a2ae3dc50ffe4dbb2ed01e30b632b9326511795ebee32cbb068b"
+    },
+    "nlu-guidelines.txt": {
+      "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+      "bytes": 17520,
+      "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2"
+    },
+    "slurp-acl.html": {
+      "path": ".local/research/slurp-upstream-ontology-v1/slurp-acl.html",
+      "bytes": 40901,
+      "sha256": "4b2bcc1f72cf21172cd28ca0c633f720d1d5eace370a539ecd036459323f34b2"
+    },
+    "slurp-arxiv.pdf": {
+      "path": ".local/research/slurp-upstream-ontology-v1/slurp-arxiv.pdf",
+      "bytes": 384386,
+      "sha256": "a36f97c4eaf7877655fc7723f5634ea0d7b22d8e20eca4d8e31d379648765538"
+    },
+    "massive-repo.json": {
+      "path": ".local/research/slurp-upstream-ontology-v1/massive-repo.json",
+      "bytes": 12165,
+      "sha256": "d4602968ff37cedcbc2b195fa6d744c407e412ad0a32121c31a0fb7fe2627eb9"
+    },
+    "slurp-arxiv.txt": {
+      "path": ".local/research/slurp-upstream-ontology-v1/slurp-arxiv.txt",
+      "bytes": 70792,
+      "sha256": "4ef0d0688a7696bb71c689e641cb134b836a1ab11aaddb448431872f1623512b"
+    },
+    "nlu-tree.json": {
+      "path": ".local/research/slurp-upstream-ontology-v1/nlu-tree.json",
+      "bytes": 1622953,
+      "sha256": "258cf78f7524773ede24bb04a904855e5386fc8bfc284864fcb9bf6bc5b7b0db"
+    },
+    "urls.json": {
+      "path": ".local/research/slurp-upstream-ontology-v1/urls.json",
+      "bytes": 449,
+      "sha256": "bfa30062a583b18c3942973100d7c7a888a226b76fd647c490b51c7a517661be"
+    },
+    "nlu-repo.json": {
+      "path": ".local/research/slurp-upstream-ontology-v1/nlu-repo.json",
+      "bytes": 5632,
+      "sha256": "6bb28cc975794c4c13c9d715c0b48df85fd2aab990e4e7008c23cf2803ba472e"
+    },
+    "nlu-guidelines.docx": {
+      "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.docx",
+      "bytes": 14264,
+      "sha256": "f40f66d44914a1e075a44fceed6d460e85f5cd831c080d7863c11099d95a5bf2"
+    },
+    "slurp-arxiv-query.xml": {
+      "path": ".local/research/slurp-upstream-ontology-v1/slurp-arxiv-query.xml",
+      "bytes": 10380,
+      "sha256": "9bd3ff0505f7e193afb2a4d46d7e311ead9e397502b002ed3aa46574d33532ba"
+    },
+    "massive-tree.json": {
+      "path": ".local/research/slurp-upstream-ontology-v1/massive-tree.json",
+      "bytes": 12382,
+      "sha256": "072d20af73aede27932632972f852e48b7ffe3f14c0b4d1b02a16664d3ea209a"
+    }
+  },
+  "reading_scope": [
+    "Entire 216-paragraph upstream annotation guideline and NLU README.",
+    "SLURP arXiv v1 sections 3.1,3.2,3.3 for source lineage, collection and annotation scheme; not a complete paper review.",
+    "MASSIVE README dataset origin, label schema and judgment definitions."
+  ],
+  "findings": {
+    "paper_lineage": "SLURP section3.1 identifies manually annotated text-only benchmark Liu et al.2019 as the source of spoken prompts.",
+    "historical_inventory": {
+      "intents": 63,
+      "entities": 101
+    },
+    "current_crosswalk": {
+      "intents": {
+        "same_identifier_not_semantic_equivalence": 43,
+        "candidate_rename_from_example_not_certified_mapping": 12,
+        "no_direct_mapping_established": 5
+      },
+      "slots": {
+        "same_identifier_not_semantic_equivalence": 48,
+        "candidate_role_mapping_not_certified": 4,
+        "no_direct_mapping_established": 2,
+        "example_only_missing_from_historical_inventory": 1
+      }
+    },
+    "guideline_internal_difference": "definition_word appears in paragraph192 example but not paragraph214 entity list.",
+    "massive_judgments": "en-US has no localization judgments; localized slots_score asks whether labelled terms match categories, not exhaustive absence coverage.",
+    "ontology_scope": "Guideline task-relevant key information differs from the current proposed whole-utterance mention policy; must disclose this as new task scope.",
+    "no_admission": "No labels changed or admitted; old ACL PDF failure preserved, new arXiv PDF valid."
+  },
+  "crosswalk_path": "configs/tasks/slurp/upstream-definition-crosswalk-v1.json",
+  "crosswalk_sha256": "f29244c9470d5411f1ae7809f2ca03191ae98b58a5e224ad0ef5933f04df2815",
+  "training_dispatch_allowed": false
+}

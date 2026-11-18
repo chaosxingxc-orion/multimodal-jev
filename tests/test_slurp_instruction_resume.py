@@ -20,6 +20,15 @@ def test_full_budget_continues_from_saved_update():
     validate_lineage(old, new, 2, 634)
 
 
+@pytest.mark.parametrize('key,value', [('task_mode','direct_final'), ('loss_reduction','real_request_mean'),
+                                      ('microbatch_per_rank',2)])
+def test_resume_cannot_change_task_or_loss_reduction(key, value):
+    old, new = configs()
+    new[key] = value
+    with pytest.raises(ValueError, match='changed'):
+        validate_lineage(old, new, 2, 634)
+
+
 @pytest.mark.parametrize('key', FIELDS)
 def test_no_silent_training_factor_change(key):
     old, new = configs(); new[key] = 'changed'
@@ -134,6 +143,38 @@ def test_full_schedule_keeps_epoch_and_batch_identity(tmp_path):
     batches,updates,_=load_full_schedule(config)
     assert [(e,b) for e,b,_ in batches]==[(0,0),(0,1),(1,0),(1,1)]
     assert updates==[2,2]
+
+
+def test_explicit_local_processor_receipts_preserve_original_layout(tmp_path):
+    config,processor,put=full_schedule_fixture(tmp_path)
+    paths={}
+    for name in ('launch.json','observed-final.json','config.json','run/terminal.json'):
+        original=processor/name
+        target=tmp_path/'local-run'/(name.replace('/','-'))
+        put(target,json.loads(original.read_text()))
+        paths[name]=str(target)
+        original.unlink()
+    config['processor_evidence_paths']=paths
+    assert load_full_schedule(config)[1] == [2,2]
+    paths.pop('run/terminal.json')
+    with pytest.raises(ValueError,match='complete explicit'):
+        load_full_schedule(config)
+
+
+def test_direct_final_requires_matching_independent_ledger(tmp_path):
+    config,processor,put=full_schedule_fixture(tmp_path)
+    config['task_mode']='direct_final'
+    proof_path=processor/'run/result.json'
+    proof=json.loads(proof_path.read_text());proof['records_sha256']='records';put(proof_path,proof)
+    audit=processor/'ledger-audit.json'
+    value=dict(passed=True,independently_matched_every_schedule_coordinate=True,
+               result_sha256=file_hash(proof_path),records_sha256='records',requests=4,
+               container_id='processor',image='image')
+    put(audit,value);config['processor_ledger_acceptance']=str(audit)
+    assert load_full_schedule(config)[1]==[2,2]
+    value['records_sha256']='foreign';put(audit,value)
+    with pytest.raises(ValueError,match='ledger differs'):
+        load_full_schedule(config)
 
 
 @pytest.mark.parametrize('damage',['live','failure','partial','overflow','model','budget','epoch_bytes'])

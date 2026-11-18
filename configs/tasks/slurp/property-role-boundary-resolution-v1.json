@@ -1,0 +1,85 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "explicit_property_role_v1",
+  "status": "selected_task_design_rule_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "general_frequency",
+    "time",
+    "transport_descriptor",
+    "weather_descriptor"
+  ],
+  "shared_rule": "Count an explicitly expressed property/role when its type is established, including an interrogative asking for its value. Do not require the answer value to occur in the input. Never infer a role solely because the task usually needs that parameter; generic domain words alone are not all of its properties.",
+  "definitions": {
+    "general_frequency": "An explicitly expressed recurrence, repetition schedule or occurrence-rate role, including a question asking for its rate. The answer value need not be supplied. Apply request-relevant scope.",
+    "time": "An explicitly expressed clock time, duration, temporal offset or temporal ordering, including a question asking for a clock reading, duration or offset. The answer value need not be supplied. Preserve separate calendar, day-part and recurrence boundaries and apply request-relevant scope.",
+    "transport_descriptor": "An explicitly expressed journey, ticket or transport-service property or qualifier, including a question asking for such a property. Mode, provider identity or location alone is insufficient. Apply request-relevant scope.",
+    "weather_descriptor": "An explicitly expressed meteorological condition, property or supported weather-protection criterion, including a question asking for a particular weather property. A generic weather request alone is insufficient. Apply request-relevant scope."
+  },
+  "per_type_rules": {
+    "general_frequency": [
+      "Count an expressed recurrence, repetition schedule or occurrence-rate role, including how often/how frequently questions. A single repeat instruction can refer to repeating one response and does not alone express a recurrence schedule.",
+      "Distinguish occurrence rate from elapsed duration, clock time and a one-off calendar anchor. How often is frequency, not automatically time; every three hours explicitly supplies recurrence and a duration interval, so both may hold."
+    ],
+    "time": [
+      "Count explicitly expressed clock time, duration, temporal offset or temporal ordering, and questions explicitly asking for a clock time, elapsed duration or offset, even when no answer value is supplied.",
+      "What time and temporally interpreted how long establish the role. How long is a river/wall is spatial length, not duration. A time-zone-only question does not by itself ask for a clock reading.",
+      "A bare alarm/reminder or an arrival/departure verb does not alone establish this type. How often asks for recurrence, not a clock time or duration. Bare when is unavailable for this predicate if date versus clock/duration scope is unresolved.",
+      "Keep calendar periods, day parts and recurrence under their existing type boundaries; do not turn every date, now modifier or tense into time. A requested time property is distinct from the value or executable schedule that answers it."
+    ],
+    "transport_descriptor": [
+      "Count an expressed journey/ticket/service property: fare/cost, departure/arrival or service timing/frequency, journey duration, routing qualification, return/round-trip status, accommodation or seat condition. A requested property name counts even without its value.",
+      "Transport mode, provider identity, a place or a generic booking/travel request alone is insufficient. A route relation such as via or explicit origin-to-destination routing can qualify a journey; mere location identity cannot.",
+      "Assess overlapping time/frequency/place predicates separately. Departure/arrival property evidence does not by itself imply a clock time; how often trains depart supplies frequency and a service property."
+    ],
+    "weather_descriptor": [
+      "Count an expressed meteorological condition/property or an explicitly supported weather-protection criterion, including a question asking for temperature, humidity, rainfall or another identified weather property without its answer value.",
+      "Generic weather/forecast/climate words alone do not specify a condition/property. Temperature in a cooking, body or device context is not automatically meteorological; ambiguous domain evidence remains unavailable.",
+      "A practical clothing/equipment question counts when the utterance establishes a weather-related need, for example rain protection or warmth outside. Sandals, pants, hats, jackets, windows or swimming alone can have non-weather purposes; do not use native weather intent to settle that ambiguity.",
+      "Do not require a positive forecast or committed action: asking whether it will rain expresses rain even if the answer may be no. The task detects the expressed property, not actual weather."
+    ]
+  },
+  "presence_policy": "activated_role_allowing_unspecified_value",
+  "activation_boundary": "Only input-expressed typed role; not task-required or generally associated missing parameters.",
+  "negative_rule": "Full-input reviewed absence under the current policy; native omission never establishes a negative.",
+  "ambiguity_rule": "Unavailable when property domain or temporal-versus-spatial reading cannot be established from the input.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      130,
+      134,
+      140,
+      141,
+      143,
+      144,
+      145,
+      208,
+      210
+    ],
+    "interpretation": "Upstream requested time uses query_detail while supplied values use time; weather examples name conditions. This is an explicit new semantic-task choice, not native-annotation equivalence."
+  },
+  "evidence": {
+    "native_positive_path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/property-role-boundary-evidence-v1/native-positive-sources.jsonl",
+    "native_positive_sha256": "79df6c915969f2de1870fa204a9c0689fc6a34924a625d6960c26ce83bf59fa3",
+    "native_sources": 889,
+    "native_recordings": 3939,
+    "per_type_sources": {
+      "general_frequency": 68,
+      "time": 610,
+      "transport_descriptor": 6,
+      "weather_descriptor": 243
+    },
+    "query_contrast_path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/property-role-boundary-evidence-v1/query-contrast-sources.jsonl",
+    "query_contrast_sha256": "cb45dd046d0607061598bde8e24df448f88c3047e14cbcb1dd693049434a0701",
+    "query_regex": "\\b(how often|how frequently|how long|what time|which time|what is the time|what s the time|whats the time|what is the frequency|what frequency|departure|depart|fare|price|temperature)\\b",
+    "query_sources": 280,
+    "reading": "All native-positive union and regex-selected contrast reference texts read; not population adjudication or independent review."
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v4.json",
+    "previous_sha256": "cd75d982af510be62d0f7db92968505bf03a89b692580db74fe57e631b582c00",
+    "historical_supervision_automatically_migrated": false
+  },
+  "scope": "Task-wide definitions, no generated reasoning, gold-dependent routing, answer-value recovery or automatic keyword labels."
+}

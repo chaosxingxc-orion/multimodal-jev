@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "seconds": 3.5195092097856104,
+  "full_population_control": {
+    "endpoint": "fixed_step634",
+    "recordings": 9226,
+    "source_groups": 2146,
+    "metrics": {
+      "candidate_binary_nll": {
+        "initial": 0.01874342859958838,
+        "final": 0.01874342859958838,
+        "delta": 0.0,
+        "percentile_95": [
+          0.0,
+          0.0
+        ],
+        "status": "finite"
+      },
+      "candidate_brier": {
+        "initial": 0.0046499592341003315,
+        "final": 0.0046499592341003315,
+        "delta": 0.0,
+        "percentile_95": [
+          0.0,
+          0.0
+        ],
+        "status": "finite"
+      }
+    },
+    "bootstrap": {
+      "unit": "source_group",
+      "paired": true,
+      "replicates": 2000,
+      "seed": 317,
+      "rng": "PCG64",
+      "quantile_method": "linear",
+      "estimand": "recording_weighted_mean_delta",
+      "draws_sha256": "4ed14e461625f0eda38ffbb7baf841003e654184d519ffc777c6175e6acc2f91"
+    },
+    "pairing_sha256": "7cbdc97f81f977980df734c7047e8d2f6bf049c257e72fb260d5b32ebde9144d",
+    "direction": "final_minus_initial; negative is better for both proper scores",
+    "scope": "Pointwise paired source-group sampling uncertainty conditional on fixed outputs. No seed variance, simultaneous coverage, selected-checkpoint guarantee, clipping, TEST tuning or automatic complex-training admission."
+  },
+  "incomplete_run_rejected": "complete training and 11-point curve required",
+  "sources": {
+    ".local/decision-objective-research/context-stage1-selection-step0634-v2-collected/selection/predictions.json": "77a20898d4936da144fc5fa2fd77ec3129f0cacb2f0908d59a22d54b990cde33",
+    "docs/engineering/context-stage1-selection-step0634-v2.json": "7e501aaa90177a4e85ff286ba64e9fe5a35c06eac103d4a34b72ddc237ace088",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/selection.jsonl": "f70a6abb4dcdcd36ab3804df7b577cca1fcc20db6f6523d19aa6518f1ed095e9",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/tasks.json": "ea8e34e791bcf6075fdf15dee4c490d799f9d930017887ccbe74638dee4b805e",
+    "tools/reports/context_probability_endpoint_uncertainty.py": "af8665675a3505fc23ce433d4fe4b363aa31947b4dfba6adda261a077fde0703",
+    "tests/test_context_probability_endpoint_uncertainty.py": "b3d5a7eab87c7d18216c3f96b2c513bddf0f34916c9cefd17b74a9362d879954",
+    "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/verify_probability_endpoint_population_v1.py": "9f7a89b8bf556b62caf2174023e53bfa3d588252818d3f59f17fbca9f74dc80e"
+  },
+  "scope": "Actual Stage1 predictions paired with themselves; no RL efficacy, new inference, complete RL success path or training admission."
+}

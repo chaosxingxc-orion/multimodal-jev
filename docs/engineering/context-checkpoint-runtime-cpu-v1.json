@@ -1,0 +1,37 @@
+{
+  "status": "cpu_verified_candidate_not_released",
+  "tests_passed": 10,
+  "test_files": [
+    "tests/test_context_checkpoint_runtime.py",
+    "tests/test_context_rollout_session.py"
+  ],
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_checkpoint_runtime.py tests/test_context_rollout_session.py",
+  "scope": "CPU execution of transformed publication block with mocked FSDP, collectives and policy exporter; exact model and Adam replay, not full NPU runtime",
+  "candidate": {
+    "status": "bounded_checkpoint_candidate_no_dispatch",
+    "source": "tools/jev/train_context_online_candidate.py",
+    "source_sha256": "7bb1b2259bd799907856455cf75475280dd0bbb3998f6a928c03595141e73288",
+    "files": {
+      "train_context_online_candidate.py": "941b9c89f8b61d07c11f452a29923002c40ca49280c1b00a27a9961b8b147699"
+    },
+    "changes": [
+      "full_optimizer_checkpoint_on_interval_or_segment_end",
+      "joint_policy_export_and_activation_every_update",
+      "per_step_policy_export_receipt"
+    ],
+    "retained": [
+      "engineering_only_two_update_guard",
+      "fixed_reference",
+      "native_actor_loss_and_update",
+      "all_existing_artifacts_no_deletion"
+    ],
+    "pending": [
+      "actual_continuous_and_replay_acceptance",
+      "checkpoint_variant_NPU_acceptance",
+      "formal_runtime_release",
+      "owned_transient_policy_retention"
+    ]
+  },
+  "preserved_queue_pins": true,
+  "stage2_released": false
+}

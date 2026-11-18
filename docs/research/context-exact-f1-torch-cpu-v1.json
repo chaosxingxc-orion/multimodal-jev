@@ -1,0 +1,29 @@
+{
+  "schema": "exact-singleton-f1-torch-real-probability-check-v1",
+  "torch": "2.10.0+cpu",
+  "device": "cpu",
+  "distributions": 256,
+  "candidates": 60,
+  "comparisons": [
+    {
+      "dtype": "torch.float64",
+      "max_reward_error": 2.220446049250313e-16,
+      "max_probability_gradient_error": 3.3306690738754696e-16,
+      "max_logit_gradient_error": 5.551115123125783e-17
+    },
+    {
+      "dtype": "torch.float32",
+      "max_reward_error": 4.975721860089877e-07,
+      "max_probability_gradient_error": 1.1160068765780906e-06,
+      "max_logit_gradient_error": 1.3866524541800151e-07
+    }
+  ],
+  "sources": {
+    "docs/research/context-live-reward-support-step74-v1.json": "eb65da85719f5de27134ed574ea2a477d80f15f8007cfce19ba40e29265f02e6",
+    "tools/reports/exact_singleton_f1_torch_candidate.py": "105c85207d718d96c352eef1c8a1f22acce3f07a29a43f7694de0159c310738e",
+    "tools/reports/exact_singleton_f1_gradient.py": "8848dfec3c2670f4938ad456ead744565f63959baeb48ec646639999ecc48995",
+    "tests/test_exact_singleton_f1_torch_candidate.py": "8aa502d63e1aac686fa5daea365e142f56b9d6d6bc095d4e3b2ed60d8d6856a9"
+  },
+  "training_dispatch_allowed": false,
+  "scope": "Local CPU autograd vs independent scalar recurrence; no fixed-image/NPU/actor/model-update/throughput or efficacy claim."
+}

@@ -1,0 +1,27 @@
+{
+  "status": "implemented_cpu_verified_prepared_not_npu_executed",
+  "candidate_profile": "qwen3-asr-bf16-fixed128x8-packed-inner2-candidate-v1",
+  "files": {
+    "src/multimodal_jev/span_batched_resident_rollout.py": "1932055b36ace26d8d6822f15cd5da3a8f3829d75dc7a8624e716f981cf97bb8",
+    "tools/jev/serve_span_batched_rollout.py": "fff4967f228735dd9d461fbff091ac91880c961310acb726c5519670e2904a2a",
+    "tools/jev/probe_span_batched_resident_switch.py": "eb06033ab591381cdd915eb6ad877224b4841d7f385dd09b02a40453593b1d61",
+    "tools/jev/verify_span_batched_resident_switch.py": "ef802aabfe7fb28a83a824bf2756f37723f058d5f04feb18a51108a2d8c615dd",
+    "tests/test_span_batched_resident_rollout.py": "91f2331c3ab0f1b929a53e48e8780c301838712f8f2d049743c175f99f4a74cf",
+    "tests/test_span_batched_resident_switch_audit.py": "22c93f99873538cb29976359901a4fde22361da5c2b15ccf9a87c160960695d8",
+    ".local/simple-final-v1/launch_class_spread_batch_dp4_resident_switch_v1.py": "247db449d2028e1d7a6584ef5c420935069ed78eaf43dca09510ce8657a17826"
+  },
+  "cpu_tests": {
+    "resident_transport_projection_and_switch": 44,
+    "candidate_execution_audit": 7
+  },
+  "prepared_only": true,
+  "requires_actual_npu_switch": true,
+  "scope": "Candidate resident engine and service, independent step2/step4/step2 switch entry and audit. No actual candidate resident execution, RL update or efficacy claimed.",
+  "remaining": [
+    "Actual candidate resident switch256 with unchanged accepted checkpoints",
+    "Candidate full Stage1 terminal checkpoint and selection9226 acceptance",
+    "Batched Stage2 initializer and full-payload length permutation in continuous RL loop",
+    "Candidate RL update, post-update parity, restore and full-data learning curve",
+    "Cross-task transfer evaluation"
+  ]
+}

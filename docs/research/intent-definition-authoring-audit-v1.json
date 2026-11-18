@@ -1,0 +1,213 @@
+{
+  "schema": "slurp-intent-definition-authoring-audit-v1",
+  "classes": 60,
+  "recordings": 40513,
+  "source_utterances": 9192,
+  "inspected_reference_examples": 297,
+  "cards_with_triage_findings": 30,
+  "packet": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-definition-evidence-v1/packet.json",
+  "packet_sha256": "47cca08c6a39a50122e972cdba378455ce2ca8b4f0d4de3cc5eb01696405e730",
+  "cards_sha256": "bcb8d49663e3fb8f00bb00b6dc3a76443cd6127a8c006d2c6622fed9b40ffc33",
+  "authoring_sha256": "d96e709f7e20fa72cd6373c8c7981dea7e7992f2c2e1e997e9bf12868d99d53c",
+  "audio_listening": false,
+  "selection_or_test_examples_used": false,
+  "semantic_admission": false,
+  "original_labels_modified": false,
+  "issues": {
+    "audio_volume_other": {
+      "source_ids": [
+        "4637"
+      ],
+      "finding": "Directional decrease wording appears in other; precedence needs review."
+    },
+    "audio_volume_up": {
+      "source_ids": [
+        "1299"
+      ],
+      "finding": "The isolated word slow does not establish a volume increase."
+    },
+    "calendar_set": {
+      "source_ids": [
+        "7656"
+      ],
+      "finding": "Retrieve-today-list wording conflicts with the proposed creation operation."
+    },
+    "cooking_query": {
+      "source_ids": [
+        "13479",
+        "13488"
+      ],
+      "finding": "Only two source utterances; recipe and substitution requests overlap cooking_recipe."
+    },
+    "cooking_recipe": {
+      "source_ids": [
+        "10059"
+      ],
+      "finding": "Ingredient substitution overlaps the only cooking_query evidence; no validated exclusive boundary."
+    },
+    "datetime_query": {
+      "source_ids": [
+        "1347"
+      ],
+      "finding": "Isolated ordinal wording is insufficient to establish a date/time request."
+    },
+    "email_querycontact": {
+      "source_ids": [
+        "15976"
+      ],
+      "finding": "Adding a favorite contact is an apparent modification, not retrieval."
+    },
+    "general_greet": {
+      "source_ids": [
+        "1100"
+      ],
+      "finding": "Conventional how-are-you wording overlaps general_quirky persona conversation."
+    },
+    "general_quirky": {
+      "source_ids": [
+        "6601",
+        "6441",
+        "6409",
+        "6537"
+      ],
+      "finding": "Heterogeneous fragments and assistant feelings; neither a complete semantic class nor validated OOD policy."
+    },
+    "iot_cleaning": {
+      "source_ids": [
+        "1060"
+      ],
+      "finding": "Operational question rather than activation; action-only semantics would exclude existing learning evidence."
+    },
+    "iot_hue_lightoff": {
+      "source_ids": [
+        "3597"
+      ],
+      "finding": "Sleep statement requires inferred lighting action not explicit in reference text."
+    },
+    "iot_hue_lighton": {
+      "source_ids": [
+        "6175",
+        "3428",
+        "3896"
+      ],
+      "finding": "Indirect darkness and high-setting requests blur activation versus brightness increase."
+    },
+    "iot_wemo_off": {
+      "source_ids": [
+        "4571",
+        "4572"
+      ],
+      "finding": "Both off and on occur; unresolved intended polarity."
+    },
+    "iot_wemo_on": {
+      "source_ids": [
+        "5807",
+        "13541"
+      ],
+      "finding": "Advice and laundry command do not explicitly establish smart-plug activation."
+    },
+    "lists_createoradd": {
+      "source_ids": [
+        "15122"
+      ],
+      "finding": "Grocery-order wording lacks explicit list creation/addition."
+    },
+    "music_dislikeness": {
+      "source_ids": [
+        "143"
+      ],
+      "finding": "Object of dislike requires context absent from isolated reference."
+    },
+    "music_likeness": {
+      "source_ids": [
+        "1699"
+      ],
+      "finding": "Positive preference and repeat command co-occur; primary-intent precedence unresolved."
+    },
+    "music_query": {
+      "source_ids": [
+        "4898",
+        "1021"
+      ],
+      "finding": "Fragment or music discovery request; informational boundary needs review."
+    },
+    "play_audiobook": {
+      "source_ids": [
+        "9805",
+        "9806",
+        "9770"
+      ],
+      "finding": "Song/audiobook mixed cues and underspecified title require review."
+    },
+    "play_music": {
+      "source_ids": [
+        "1240"
+      ],
+      "finding": "Platform name alone does not uniquely specify the requested operation."
+    },
+    "play_podcasts": {
+      "source_ids": [
+        "11397",
+        "3891"
+      ],
+      "finding": "Episode navigation or go back lacks a reliable media type in isolated reference."
+    },
+    "play_radio": {
+      "source_ids": [
+        "9439"
+      ],
+      "finding": "Todays hits may refer to songs or a station; no explicit station cue."
+    },
+    "qa_definition": {
+      "source_ids": [
+        "14379"
+      ],
+      "finding": "Description of a landmark overlaps general factoid interpretation."
+    },
+    "qa_maths": {
+      "source_ids": [
+        "13193",
+        "15006",
+        "12992"
+      ],
+      "finding": "Incomplete expression or declarative equation; information request may be underdetermined."
+    },
+    "recommendation_events": {
+      "source_ids": [
+        "8664"
+      ],
+      "finding": "Public events wording overlaps calendar domain if personal/public scope is not fixed."
+    },
+    "recommendation_locations": {
+      "source_ids": [
+        "14199"
+      ],
+      "finding": "Venue discovery and factual superlative can overlap factoid semantics."
+    },
+    "takeaway_order": {
+      "source_ids": [
+        "3527"
+      ],
+      "finding": "Nearby pizza shops does not establish an order request."
+    },
+    "transport_query": {
+      "source_ids": [
+        "12280"
+      ],
+      "finding": "Ticket request wording overlaps transport_ticket."
+    },
+    "transport_ticket": {
+      "source_ids": [
+        "12635",
+        "12590"
+      ],
+      "finding": "Route search and explicit schedule question overlap transport_query."
+    },
+    "weather_query": {
+      "source_ids": [
+        "326"
+      ],
+      "finding": "Evening alone does not establish a weather query."
+    }
+  }
+}

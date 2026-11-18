@@ -1,0 +1,3412 @@
+{
+  "sources": {
+    "docs/research/context-committed-step448-reward-support-v1.json": "a01615ba2cedc6fe39931855d0a6591bc229d6d8e0689fac099b9a5794faf9e1",
+    ".local/decision-objective-research/context-committed-step448-signal-input-v1.json": "647b3712c7a9636bc27ad3f09b25fd1c1f2d4be53ead021e864d41054b576965",
+    "docs/engineering/context-arithmetic-step448-independent-v1.json": "8b894cde09b6ab2203d94dedb460f554bd524be2ea4b375545132dcb5b5415c7",
+    "tools/jev/context_reward_signal.py": "88059df7ae86db05f4de1802d7d053933c2cf7f104288e427877b5cbca352cd3"
+  },
+  "actor_update": 448,
+  "summary": {
+    "all": {
+      "queries": 128,
+      "by_group_size": {
+        "16": {
+          "expected_varying_reward_groups": 3.7125264349181704,
+          "mean_varying_reward_probability": 0.029004112772798206,
+          "expected_groups_with_positive_reward": 101.49693403909917,
+          "queries_with_under_one_percent_varying_probability": 109
+        },
+        "32": {
+          "expected_varying_reward_groups": 5.128063982985102,
+          "mean_varying_reward_probability": 0.04006299986707111,
+          "expected_groups_with_positive_reward": 101.84100304680287,
+          "queries_with_under_one_percent_varying_probability": 101
+        },
+        "64": {
+          "expected_varying_reward_groups": 7.226811026322222,
+          "mean_varying_reward_probability": 0.05645946114314236,
+          "expected_groups_with_positive_reward": 102.17065393486946,
+          "queries_with_under_one_percent_varying_probability": 49
+        },
+        "128": {
+          "expected_varying_reward_groups": 10.235318122243815,
+          "mean_varying_reward_probability": 0.0799634228300298,
+          "expected_groups_with_positive_reward": 102.48811599415416,
+          "queries_with_under_one_percent_varying_probability": 16
+        },
+        "256": {
+          "expected_varying_reward_groups": 14.616001553483706,
+          "mean_varying_reward_probability": 0.11418751213659145,
+          "expected_groups_with_positive_reward": 102.95510596181802,
+          "queries_with_under_one_percent_varying_probability": 12
+        }
+      }
+    },
+    "threshold_wrong": {
+      "queries": 28,
+      "by_group_size": {
+        "16": {
+          "expected_varying_reward_groups": 1.4969340393205184,
+          "mean_varying_reward_probability": 0.0534619299757328,
+          "expected_groups_with_positive_reward": 1.496934039323909,
+          "queries_with_under_one_percent_varying_probability": 24
+        },
+        "32": {
+          "expected_varying_reward_groups": 1.8410030468028635,
+          "mean_varying_reward_probability": 0.06575010881438799,
+          "expected_groups_with_positive_reward": 1.8410030468028635,
+          "queries_with_under_one_percent_varying_probability": 24
+        },
+        "64": {
+          "expected_varying_reward_groups": 2.170653934869482,
+          "mean_varying_reward_probability": 0.07752335481676721,
+          "expected_groups_with_positive_reward": 2.170653934869482,
+          "queries_with_under_one_percent_varying_probability": 18
+        },
+        "128": {
+          "expected_varying_reward_groups": 2.48811599415417,
+          "mean_varying_reward_probability": 0.08886128550550608,
+          "expected_groups_with_positive_reward": 2.48811599415417,
+          "queries_with_under_one_percent_varying_probability": 16
+        },
+        "256": {
+          "expected_varying_reward_groups": 2.9551059618180084,
+          "mean_varying_reward_probability": 0.10553949863635745,
+          "expected_groups_with_positive_reward": 2.9551059618180084,
+          "queries_with_under_one_percent_varying_probability": 12
+        }
+      }
+    }
+  },
+  "details": [
+    {
+      "id": "slurp:audio-1501158591-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0027139826900561825,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005420599678070515,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010811816455271073,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.021506737535479714,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04255093531153942,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499090208.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003806432717102348,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.007598376504174831,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.01513901768285042,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.030048845509299205,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.05919475790215678,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502114455-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0017329661645604233,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003462929157393324,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.0069138664364374325,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.013779931323773975,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.027369976140260044,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497883937.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0028518432048992848,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.00569555340013328,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.011358667471732753,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.022588315616732024,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04466639923106297,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1488560835.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0032498703429846287,
+          "positive_reward_probability": 0.0032498703429846287
+        },
+        "32": {
+          "varying_reward_probability": 0.0064891790287230355,
+          "positive_reward_probability": 0.0064891790287230355
+        },
+        "64": {
+          "varying_reward_probability": 0.012936248612979151,
+          "positive_reward_probability": 0.012936248612979151
+        },
+        "128": {
+          "varying_reward_probability": 0.025705150697781565,
+          "positive_reward_probability": 0.025705150697781565
+        },
+        "256": {
+          "varying_reward_probability": 0.05074954662316755,
+          "positive_reward_probability": 0.05074954662316755
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497191676.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0050973552496099694,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.01016872746867925,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.020234051919026164,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.040058686980990466,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.07851267555933994,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499246329.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00017251905469295448,
+          "positive_reward_probability": 0.00017251905469295448
+        },
+        "32": {
+          "varying_reward_probability": 0.00034500834656170376,
+          "positive_reward_probability": 0.00034500834656170376
+        },
+        "64": {
+          "varying_reward_probability": 0.0006898976623642694,
+          "positive_reward_probability": 0.0006898976623642694
+        },
+        "128": {
+          "varying_reward_probability": 0.0013793193659440428,
+          "positive_reward_probability": 0.0013793193659440428
+        },
+        "256": {
+          "varying_reward_probability": 0.0027567362099747417,
+          "positive_reward_probability": 0.0027567362099747417
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501774526.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0033857899216364062,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006760116269879379,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.013474533367776598,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.026767503686073835,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.05281850811856359,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1434541520.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0005312947351741037,
+          "positive_reward_probability": 0.0005312947351741037
+        },
+        "32": {
+          "varying_reward_probability": 0.0010623071962526653,
+          "positive_reward_probability": 0.0010623071962526653
+        },
+        "64": {
+          "varying_reward_probability": 0.002123485895926147,
+          "positive_reward_probability": 0.002123485895926147
+        },
+        "128": {
+          "varying_reward_probability": 0.004242462599502117,
+          "positive_reward_probability": 0.004242462599502117
+        },
+        "256": {
+          "varying_reward_probability": 0.008466926710096079,
+          "positive_reward_probability": 0.008466926710096079
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1504193262-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.001536530932273683,
+          "positive_reward_probability": 0.001536530932273683
+        },
+        "32": {
+          "varying_reward_probability": 0.0030707009372414884,
+          "positive_reward_probability": 0.0030707009372414884
+        },
+        "64": {
+          "varying_reward_probability": 0.006131972670237018,
+          "positive_reward_probability": 0.006131972670237018
+        },
+        "128": {
+          "varying_reward_probability": 0.012226344251645593,
+          "positive_reward_probability": 0.012226344251645593
+        },
+        "256": {
+          "varying_reward_probability": 0.024303205009531426,
+          "positive_reward_probability": 0.024303205009531426
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490799388-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0011968676190037275,
+          "positive_reward_probability": 0.0011968676190037275
+        },
+        "32": {
+          "varying_reward_probability": 0.0023923027459099577,
+          "positive_reward_probability": 0.0023923027459099577
+        },
+        "64": {
+          "varying_reward_probability": 0.004778882379391947,
+          "positive_reward_probability": 0.004778882379391947
+        },
+        "128": {
+          "varying_reward_probability": 0.009534927041987773,
+          "positive_reward_probability": 0.009534927041987773
+        },
+        "256": {
+          "varying_reward_probability": 0.018978939250279492,
+          "positive_reward_probability": 0.018978939250279492
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501771861-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0018467426098484063,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0036900747614296847,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007366532871114551,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.01467879993568777,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.02914213270382371,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497886471.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.004182129277230495,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.008346768349169587,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.01662386815646444,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.03297138332044536,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.06485565452282693,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490018433-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0008227579374895377,
+          "positive_reward_probability": 0.0008227579374895377
+        },
+        "32": {
+          "varying_reward_probability": 0.001644838944355298,
+          "positive_reward_probability": 0.001644838944355298
+        },
+        "64": {
+          "varying_reward_probability": 0.0032869723935576856,
+          "positive_reward_probability": 0.0032869723935576856
+        },
+        "128": {
+          "varying_reward_probability": 0.006563140599599282,
+          "positive_reward_probability": 0.006563140599599282
+        },
+        "256": {
+          "varying_reward_probability": 0.013083206384668533,
+          "positive_reward_probability": 0.013083206384668533
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499693869.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0025764934794088035,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0051463486401681635,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010266212376010109,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02042702963547094,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.040436795731213504,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490195888-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0017443428108602221,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0034856428898786262,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.006959136073401484,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.013869842571914814,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.027547312610859964,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499690129-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0026292993098943063,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005251685404927708,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010475790610263047,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02084183903161596,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.041249295809012265,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501688669.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00041379859386436735,
+          "positive_reward_probability": 0.00041379859386436735
+        },
+        "32": {
+          "varying_reward_probability": 0.0008274259584524213,
+          "positive_reward_probability": 0.0008274259584524213
+        },
+        "64": {
+          "varying_reward_probability": 0.0016541672831881238,
+          "positive_reward_probability": 0.0016541672831881238
+        },
+        "128": {
+          "varying_reward_probability": 0.0033055982969755204,
+          "positive_reward_probability": 0.0033055982969755204
+        },
+        "256": {
+          "varying_reward_probability": 0.006600269613849963,
+          "positive_reward_probability": 0.006600269613849963
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490371492.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0017795779876864648,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003555989077558719,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.0070993330967977775,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.014148265663176285,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.028096357905076697,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490287493-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002832262167961286,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005656502626934623,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.011281009231900674,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.022434757294511165,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04436619625415872,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490368748-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.014877346715623796,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.029533357985950692,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.058194496737975054,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.11300239402536394,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.2132352469952643,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501776062.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0019444064951640305,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003885032273709621,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007754971071651351,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.015449802566980586,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.030660908734602588,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502197537.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.13383209980284905,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.2497531686680583,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.43712969207638097,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.6831770164579704,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.8996231970995268,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490366752-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002149329518518761,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004294039419658335,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008569640064779116,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.017065841398718362,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03384043985479057,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501774340.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002597044698371409,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005187344755577361,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010347780965541564,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.020588485360172326,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.040753084990918564,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501756591-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0018977481831249365,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003791894918083405,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.0075694113690969456,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.015081526749719298,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.029935601050336103,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1498574371-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.06092505564273121,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.1181382488803926,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.22231985191225956,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.39521358727023004,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.6342333949774563,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502890989-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.001805207100887829,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0036071554290986185,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.00720129928790747,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.014350739864380957,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.028495535994106813,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502199140-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003020401908266912,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006031680988846433,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.012026980802141707,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02390931333706825,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04724697140988643,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502896619.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.006179110576700952,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.012320039745882694,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.024488296112425312,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.04837691557836077,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.09441350519584568,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497436942.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0026029532624738394,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005199131159260961,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010371231353710764,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.020634900267629375,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04084400142620381,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490184177-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 7.580621861236203e-06,
+          "positive_reward_probability": 7.580621861236203e-06
+        },
+        "32": {
+          "varying_reward_probability": 1.5161186256662518e-05,
+          "positive_reward_probability": 1.5161186256662518e-05
+        },
+        "64": {
+          "varying_reward_probability": 3.0322142651639794e-05,
+          "positive_reward_probability": 3.0322142651639794e-05
+        },
+        "128": {
+          "varying_reward_probability": 6.0643365871082544e-05,
+          "positive_reward_probability": 6.0643365871082544e-05
+        },
+        "256": {
+          "varying_reward_probability": 0.00012128305412428819,
+          "positive_reward_probability": 0.00012128305412428819
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497029520-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0023000677871714004,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0045948452625173,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.00916857792204806,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.01825309302298339,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03617301064106104,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501778076.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002810469531516424,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005613040324045304,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.011194574426411141,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.022263830356233916,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04403198257033658,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1500388380-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0025556573369829305,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005104783289541781,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010183507766650224,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.020263311702867104,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04011602160456673,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490263059-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.005095973387058472,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.010165977829355355,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.02022860855348385,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.04004802050295764,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.07849219705970989,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490967015.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.017605976310008598,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.03490198221818863,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.06858581607361858,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.1324676179807529,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.24738756614801116,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502308121-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0059866998245345915,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.011937559074280069,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.023732612831908306,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.04690198875198737,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.09160418095508316,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501759234.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0033478857307662757,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006684563122666298,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.013324442861191721,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.026471344944822284,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.05224195778645668,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490367521-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003412005780414007,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006812369777382421,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.013578331172781177,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.026972291268124615,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.053217078039996646,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501756030-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0019907954118706384,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003977627557369412,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007939433593753709,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.015815832581717926,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.031381524603182887,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502375086-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003409159231810288,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006806696096952725,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.013567061082149223,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02695005701789166,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.053173808462515626,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501690427.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0017714790923604173,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0035398200465461827,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007067109767130431,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.014084275493800091,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.027970184171414947,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497367214.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0001620675441216246,
+          "positive_reward_probability": 0.0001620675441216246
+        },
+        "32": {
+          "varying_reward_probability": 0.00032410882235445193,
+          "positive_reward_probability": 0.00032410882235445193
+        },
+        "64": {
+          "varying_reward_probability": 0.0006481125981802061,
+          "positive_reward_probability": 0.0006481125981802061
+        },
+        "128": {
+          "varying_reward_probability": 0.00129580514642047,
+          "positive_reward_probability": 0.00129580514642047
+        },
+        "256": {
+          "varying_reward_probability": 0.0025899311818633475,
+          "positive_reward_probability": 0.0025899311818633475
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490356772-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0036817385614360543,
+          "positive_reward_probability": 0.0036817385614360543
+        },
+        "32": {
+          "varying_reward_probability": 0.007349921924037273,
+          "positive_reward_probability": 0.007349921924037273
+        },
+        "64": {
+          "varying_reward_probability": 0.014645822495785166,
+          "positive_reward_probability": 0.014645822495785166
+        },
+        "128": {
+          "varying_reward_probability": 0.029077144874992356,
+          "positive_reward_probability": 0.029077144874992356
+        },
+        "256": {
+          "varying_reward_probability": 0.057308809395903326,
+          "positive_reward_probability": 0.057308809395903326
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1494549004.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0031714049509530273,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006332752092543137,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.012625400436020784,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.025091400135871633,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.049553221910964784,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499689761-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0017185876923743182,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003434221841092322,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.0068566498025307565,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.013666285958546909,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.027145804545192997,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501752517.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0029741776991590863,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005939509665331966,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.011843741555599419,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.023547208897163108,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04653994674747952,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501778571-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002919651627455111,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005830778889284516,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.011627559796113296,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.023119919445414472,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04570530821566643,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501693973-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002072158899380283,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0041400239562563446,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.00826290811415431,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.016457540577805685,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03264423051374121,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499689539.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.4661331728753524,
+          "positive_reward_probability": 0.4661331728753524
+        },
+        "32": {
+          "varying_reward_probability": 0.7149862108958616,
+          "positive_reward_probability": 0.7149862108958616
+        },
+        "64": {
+          "varying_reward_probability": 0.9187671400205017,
+          "positive_reward_probability": 0.9187671400205017
+        },
+        "128": {
+          "varying_reward_probability": 0.9934012224595512,
+          "positive_reward_probability": 0.9934012224595512
+        },
+        "256": {
+          "varying_reward_probability": 0.9999564561349716,
+          "positive_reward_probability": 0.9999564561349716
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1434528529-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0005312947351741037,
+          "positive_reward_probability": 0.0005312947351741037
+        },
+        "32": {
+          "varying_reward_probability": 0.0010623071962526653,
+          "positive_reward_probability": 0.0010623071962526653
+        },
+        "64": {
+          "varying_reward_probability": 0.002123485895926147,
+          "positive_reward_probability": 0.002123485895926147
+        },
+        "128": {
+          "varying_reward_probability": 0.004242462599502117,
+          "positive_reward_probability": 0.004242462599502117
+        },
+        "256": {
+          "varying_reward_probability": 0.008466926710096079,
+          "positive_reward_probability": 0.008466926710096079
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499089803.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.004759371912470001,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.009496092203938877,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.018902008640731993,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.03744673135080967,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.07349120501275952,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502195648-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.1993501066140404,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.3589597482210516,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.5890673955991823,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.8311343946403611,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.9714844073265227,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497871881-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002604995443368119,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.00520320488547632,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010379336429872321,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.020650942235020175,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04087542305484626,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1498483647.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0035625441384824486,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.007112396556226197,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.014174206927679456,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.028147505713330245,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.055502729348778534,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1494417957-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.9669508867512235,
+          "positive_reward_probability": 0.966950886754614
+        },
+        "32": {
+          "varying_reward_probability": 0.9989077561136936,
+          "positive_reward_probability": 0.9989077561136936
+        },
+        "64": {
+          "varying_reward_probability": 0.9999988070032928,
+          "positive_reward_probability": 0.9999988070032928
+        },
+        "128": {
+          "varying_reward_probability": 0.9999999999985768,
+          "positive_reward_probability": 0.9999999999985768
+        },
+        "256": {
+          "varying_reward_probability": 1.0,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1492783798-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0008757965200796303,
+          "positive_reward_probability": 0.0008757965200796303
+        },
+        "32": {
+          "varying_reward_probability": 0.0017508260206146042,
+          "positive_reward_probability": 0.0017508260206146042
+        },
+        "64": {
+          "varying_reward_probability": 0.0034985866494747775,
+          "positive_reward_probability": 0.0034985866494747775
+        },
+        "128": {
+          "varying_reward_probability": 0.006984933190405607,
+          "positive_reward_probability": 0.006984933190405607
+        },
+        "256": {
+          "varying_reward_probability": 0.013921077089136702,
+          "positive_reward_probability": 0.013921077089136702
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1498573305-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.014035546447281111,
+          "positive_reward_probability": 0.014035546447281111
+        },
+        "32": {
+          "varying_reward_probability": 0.02787409633048854,
+          "positive_reward_probability": 0.02787409633048854
+        },
+        "64": {
+          "varying_reward_probability": 0.0549712274147357,
+          "positive_reward_probability": 0.0549712274147357
+        },
+        "128": {
+          "varying_reward_probability": 0.1069206189859887,
+          "positive_reward_probability": 0.1069206189859887
+        },
+        "256": {
+          "varying_reward_probability": 0.20240921920763044,
+          "positive_reward_probability": 0.20240921920763044
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490263053.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0018451738281417551,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003686942989827413,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007360292431044524,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.014666410957418607,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.0291177183044653,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501694984.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00381619993365212,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0076178364853706215,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.015177641538023368,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.03012492227338992,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.05934233360480212,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502309342.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0018153441152678473,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003627392756278769,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007241627534349204,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.014430813899352302,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.028653379408906776,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1495378550-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0032579107065787705,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006505207430985593,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.012968097138251089,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02576802273311496,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.05087205447065568,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501757072.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00013436069171124387,
+          "positive_reward_probability": 0.00013436069171124387
+        },
+        "32": {
+          "varying_reward_probability": 0.00026870333062711804,
+          "positive_reward_probability": 0.00026870333062711804
+        },
+        "64": {
+          "varying_reward_probability": 0.0005373344597743301,
+          "positive_reward_probability": 0.0005373344597743301
+        },
+        "128": {
+          "varying_reward_probability": 0.0010743801912270756,
+          "positive_reward_probability": 0.0010743801912270756
+        },
+        "256": {
+          "varying_reward_probability": 0.0021476060896588045,
+          "positive_reward_probability": 0.0021476060896588045
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499088074-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0020593464033944464,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004114451899179694,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.00821197508392879,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.01635651363307844,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03244549172792777,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499266667.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.014952847132574387,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.029682106627778593,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.058483185801694315,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.1135460885818731,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.2141994629315035,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501692283.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.03955745312306436,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.07755011414854518,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.14908620809263795,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.2759457187418346,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.47574539779172154,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497367136.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0051589586205673665,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.010291302387085977,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.020476693869349583,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.040534092746880024,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.07942517281894734,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1492780285.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0031151261285989884,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006220548246400837,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.012402401272315955,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.024650982987312275,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04869429501238387,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490021677-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0021441304117696403,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004283663528316661,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008548977283409531,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.017024869554226774,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.033759892925115165,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502217050-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0029020015184956227,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.00579558142417802,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.011557574084311684,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.022981570649909022,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.0454349887102814,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502114081-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 2.4855674910950754e-05,
+          "positive_reward_probability": 2.4855674910950754e-05
+        },
+        "32": {
+          "varying_reward_probability": 4.971073201731624e-05,
+          "positive_reward_probability": 4.971073201731624e-05
+        },
+        "64": {
+          "varying_reward_probability": 9.941899287790879e-05,
+          "positive_reward_probability": 9.941899287790879e-05
+        },
+        "128": {
+          "varying_reward_probability": 0.00019882810161953035,
+          "positive_reward_probability": 0.00019882810161953035
+        },
+        "256": {
+          "varying_reward_probability": 0.00039761667062521155,
+          "positive_reward_probability": 0.00039761667062521155
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1504192233.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00438413400942117,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.008749047387829667,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.017421548945464882,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.034539587523270576,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.06788619194026357,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490017793-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0020291584468150603,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004054199409627812,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008091962286402632,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.016118444719160685,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03197708517815667,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1489154427.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0038678127848801314,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.007720665594021292,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.015381722510827811,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.030526847634255616,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.06012180684202606,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499264994-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0023392945580199553,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0046731168170107695,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.00932439561323617,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.018561846872920063,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.036779151586506464,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1500978792-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00405037733291691,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.008084349109294675,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.01610334151806847,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.0319473654280894,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.06287409669838295,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502112401.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0004404800756737659,
+          "positive_reward_probability": 0.0004404800756737659
+        },
+        "32": {
+          "varying_reward_probability": 0.0008807661286504009,
+          "positive_reward_probability": 0.0008807661286504009
+        },
+        "64": {
+          "varying_reward_probability": 0.0017607565083274102,
+          "positive_reward_probability": 0.0017607565083274102
+        },
+        "128": {
+          "varying_reward_probability": 0.0035184127531731058,
+          "positive_reward_probability": 0.0035184127531731058
+        },
+        "256": {
+          "varying_reward_probability": 0.007024446278044549,
+          "positive_reward_probability": 0.007024446278044549
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1499090794.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.11398523374171976,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.21497783397228498,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.38374019884515465,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.6202238574805904,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.8557700815730771,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1505404698.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003228320812871943,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0064462195704730885,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.012850885394195322,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.025536625532975976,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.05042113182234054,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490287095-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0025238010854955473,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005041232599071965,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010057051172025822,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.020012958065774966,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03962539764100759,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502099741.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.005279785891660893,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.010531695644260042,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.020952474675376864,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.04146594315573138,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.08121246186966846,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1492785051-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.011707463952640107,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.023277863193077897,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.04601386747132019,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.08991045894297223,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.17173702725860862,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497030855.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.02708473961870861,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.053435896117203896,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.10401639724055922,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.19721338358621265,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.3555336485069026,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490369302.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.007564863870997529,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.01507250057660825,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.029917820879584722,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.05894056575298656,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.11440714121469098,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490282801.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0024572050528339773,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004908372248996207,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.009792652379857714,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.019489408719082668,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03859898038594589,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497881753-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00227155506067811,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004537950158962523,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.009055307326279793,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.018028616061786074,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03573220112646891,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1494607395-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0003430639918378109,
+          "positive_reward_probability": 0.0003430639918378109
+        },
+        "32": {
+          "varying_reward_probability": 0.000686010290773087,
+          "positive_reward_probability": 0.000686010290773087
+        },
+        "64": {
+          "varying_reward_probability": 0.0013715499714271884,
+          "positive_reward_probability": 0.0013715499714271884
+        },
+        "128": {
+          "varying_reward_probability": 0.0027412187935302867,
+          "positive_reward_probability": 0.0027412187935302867
+        },
+        "256": {
+          "varying_reward_probability": 0.005474923306586721,
+          "positive_reward_probability": 0.005474923306586721
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1506079681-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0005655500753468656,
+          "positive_reward_probability": 0.0005655500753468656
+        },
+        "32": {
+          "varying_reward_probability": 0.0011307803038059783,
+          "positive_reward_probability": 0.0011307803038059783
+        },
+        "64": {
+          "varying_reward_probability": 0.0022602819435163513,
+          "positive_reward_probability": 0.0022602819435163513
+        },
+        "128": {
+          "varying_reward_probability": 0.004515455012568559,
+          "positive_reward_probability": 0.004515455012568559
+        },
+        "256": {
+          "varying_reward_probability": 0.009010520691166701,
+          "positive_reward_probability": 0.009010520691166701
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490954803.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00018364449356422785,
+          "positive_reward_probability": 0.00018364449356422785
+        },
+        "32": {
+          "varying_reward_probability": 0.0003672552618284586,
+          "positive_reward_probability": 0.0003672552618284586
+        },
+        "64": {
+          "varying_reward_probability": 0.000734375647229446,
+          "positive_reward_probability": 0.000734375647229446
+        },
+        "128": {
+          "varying_reward_probability": 0.0014682119868677512,
+          "positive_reward_probability": 0.0014682119868677512
+        },
+        "256": {
+          "varying_reward_probability": 0.0029342683272971515,
+          "positive_reward_probability": 0.0029342683272971515
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1498569688-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0031151576503182232,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006220611093450068,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.012402526184524199,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.0246512297132907,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04869477630020391,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1505404357-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.004478133309213206,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.008936212940491406,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.017792569979265038,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.03526856441206294,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.06929325718843815,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1498565851-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0031652570920494005,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006320495331640141,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.01260104200204304,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02504329774454872,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04945942872717535,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490199507.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0036817385614360543,
+          "positive_reward_probability": 0.0036817385614360543
+        },
+        "32": {
+          "varying_reward_probability": 0.007349921924037273,
+          "positive_reward_probability": 0.007349921924037273
+        },
+        "64": {
+          "varying_reward_probability": 0.014645822495785166,
+          "positive_reward_probability": 0.014645822495785166
+        },
+        "128": {
+          "varying_reward_probability": 0.029077144874992356,
+          "positive_reward_probability": 0.029077144874992356
+        },
+        "256": {
+          "varying_reward_probability": 0.057308809395903326,
+          "positive_reward_probability": 0.057308809395903326
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1504194764.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0026240047835003333,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005241124165896727,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.01045477894927116,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02080025549566411,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.041167860362643416,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497438842.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002531969470491724,
+          "positive_reward_probability": 0.002531969470491724
+        },
+        "32": {
+          "varying_reward_probability": 0.005057528071583994,
+          "positive_reward_probability": 0.005057528071583994
+        },
+        "64": {
+          "varying_reward_probability": 0.01008947755297318,
+          "positive_reward_probability": 0.01008947755297318
+        },
+        "128": {
+          "varying_reward_probability": 0.020077157548654356,
+          "positive_reward_probability": 0.020077157548654356
+        },
+        "256": {
+          "varying_reward_probability": 0.03975122284207511,
+          "positive_reward_probability": 0.03975122284207511
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490967792-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.00216502799341034,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004325368640608396,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.00863202846733968,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.017189545019218322,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.034083609580468965,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1488992150.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003555254289194565,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.00709786874532814,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.014145357749930532,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02809062435398746,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.055392165531378046,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497557970.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002115529632255142,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004226583798885297,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008435303587161602,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.016799452827715666,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03331668404012056,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1498757813.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0020367121122208953,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.00406927602821372,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008121993049033716,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.01617801932697882,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03209431034461363,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497879905.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0019990796898379237,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003994163060069611,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007972372781588799,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.015881186835408956,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03151016157551667,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502200260-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0021778979674487164,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004351052695340751,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008683173731123928,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.01729094995620284,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03428292296201785,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1494512936.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002558707352320888,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0051108677213269615,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010195614473788916,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.020287278393079755,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04016298312156119,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501150651-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003338600926792501,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006666055597436715,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.013287674897645263,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.026398787491105025,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.052100679001209405,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1500979626.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.004382365361272678,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.00874552559638564,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.01741456697481436,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.03452586680670833,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.06785969813466208,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1498577848.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.014780163705879978,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.029341874172587268,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.057822802765214565,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.11230212901080427,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.2119924898412492,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1504193039.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.9899224287251706,
+          "positive_reward_probability": 0.9999999997752703
+        },
+        "32": {
+          "varying_reward_probability": 0.9998984425617302,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.9999999896860867,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.9999999999999999,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 1.0,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501758232-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003536037439149875,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.007059571317528657,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.014069305087869965,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.027940664830084394,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.055100648909021666,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497271963.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0025189491728502267,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0050315532407649854,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010037789953515341,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.019974822679879822,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.039550651818667126,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502195584-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002556112940330646,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005105692167297615,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010185316242088072,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.02026689181722474,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.040123036730518535,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1495375928-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0016291371137880928,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003255620139840598,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.006500641217186298,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.012959024098137872,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.025750111890699756,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1488991645.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003447633955319662,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.006883381730749427,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.013719382517447642,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.027250543578235198,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.053758495031161035,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502895744-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002165154171628547,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004325620450670198,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008632529909057163,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.017190539245483527,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03408556385141659,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490106615-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.003918695141113426,
+          "positive_reward_probability": 0.003918695141113426
+        },
+        "32": {
+          "varying_reward_probability": 0.007822034110617881,
+          "positive_reward_probability": 0.007822034110617881
+        },
+        "64": {
+          "varying_reward_probability": 0.015582884003608077,
+          "positive_reward_probability": 0.015582884003608077
+        },
+        "128": {
+          "varying_reward_probability": 0.0309229417333462,
+          "positive_reward_probability": 0.0309229417333462
+        },
+        "256": {
+          "varying_reward_probability": 0.060889655141248444,
+          "positive_reward_probability": 0.060889655141248444
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1494607704.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0018476773655820011,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.003691940819516626,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007370251212018508,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.014686181821108812,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.029156679705734878,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1497860420.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.2917533888333136,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.4983867377709045,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.7483841351558846,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.9366894565587479,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.9959917750891734,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1502894483.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0030306097850090197,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.00605203497434903,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.012067442821367402,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.023989262466487804,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04740304021928943,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501752729.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.013518929238435562,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.02685509702911737,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.05298899782179145,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.10317016175342508,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.19569624123062235,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501752499.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0020883572595716826,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.004172353283099839,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.008327298034280561,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.01658525217600937,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.03289543376227699,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1500039220.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0035116201822448234,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.007010908888185341,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.013972664932932144,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.027750094500536338,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.05473012125628396,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490184134-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.004170868616328427,
+          "positive_reward_probability": 0.004170868616328427
+        },
+        "32": {
+          "varying_reward_probability": 0.008324341087642129,
+          "positive_reward_probability": 0.008324341087642129
+        },
+        "64": {
+          "varying_reward_probability": 0.01657938752074095,
+          "positive_reward_probability": 0.01657938752074095
+        },
+        "128": {
+          "varying_reward_probability": 0.03288389895091903,
+          "positive_reward_probability": 0.03288389895091903
+        },
+        "256": {
+          "varying_reward_probability": 0.06468644709162374,
+          "positive_reward_probability": 0.06468644709162374
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1434542254.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.007026432709223984,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.014003494661830818,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.02781089146091764,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.054848337237984435,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.10668833437819714,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio--1504190676-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0008227579374895377,
+          "positive_reward_probability": 0.0008227579374895377
+        },
+        "32": {
+          "varying_reward_probability": 0.001644838944355298,
+          "positive_reward_probability": 0.001644838944355298
+        },
+        "64": {
+          "varying_reward_probability": 0.0032869723935576856,
+          "positive_reward_probability": 0.0032869723935576856
+        },
+        "128": {
+          "varying_reward_probability": 0.006563140599599282,
+          "positive_reward_probability": 0.006563140599599282
+        },
+        "256": {
+          "varying_reward_probability": 0.013083206384668533,
+          "positive_reward_probability": 0.013083206384668533
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490182792-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002645501992614374,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.005284005304435735,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.010540089896814209,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.020969086298595507,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.04149847001699314,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501152005-headset.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.014294316511928584,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.028384305539314036,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.05596294227767906,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.10879403364698326,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.20575192553678545,
+          "positive_reward_probability": 1.0
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1496265850-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.002378759302934963,
+          "positive_reward_probability": 0.002378759302934963
+        },
+        "32": {
+          "varying_reward_probability": 0.004751860110048689,
+          "positive_reward_probability": 0.004751860110048689
+        },
+        "64": {
+          "varying_reward_probability": 0.009481140045591863,
+          "positive_reward_probability": 0.009481140045591863
+        },
+        "128": {
+          "varying_reward_probability": 0.01887238807461966,
+          "positive_reward_probability": 0.01887238807461966
+        },
+        "256": {
+          "varying_reward_probability": 0.037388609117600224,
+          "positive_reward_probability": 0.037388609117600224
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1490368992-headset.flac",
+      "exact_correct": false,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0174355720156667,
+          "positive_reward_probability": 0.0174355720156667
+        },
+        "32": {
+          "varying_reward_probability": 0.03456714485981993,
+          "positive_reward_probability": 0.03456714485981993
+        },
+        "64": {
+          "varying_reward_probability": 0.06793940221588002,
+          "positive_reward_probability": 0.06793940221588002
+        },
+        "128": {
+          "varying_reward_probability": 0.13126304205830897,
+          "positive_reward_probability": 0.13126304205830897
+        },
+        "256": {
+          "varying_reward_probability": 0.24529609790621654,
+          "positive_reward_probability": 0.24529609790621654
+        }
+      }
+    },
+    {
+      "id": "slurp:audio-1501692009.flac",
+      "exact_correct": true,
+      "by_group_size": {
+        "16": {
+          "varying_reward_probability": 0.0017808882963661343,
+          "positive_reward_probability": 1.0
+        },
+        "32": {
+          "varying_reward_probability": 0.0035586050296081417,
+          "positive_reward_probability": 1.0
+        },
+        "64": {
+          "varying_reward_probability": 0.007104546389459454,
+          "positive_reward_probability": 1.0
+        },
+        "128": {
+          "varying_reward_probability": 0.014158618199518913,
+          "positive_reward_probability": 1.0
+        },
+        "256": {
+          "varying_reward_probability": 0.02811676992971801,
+          "positive_reward_probability": 1.0
+        }
+      }
+    }
+  ],
+  "scope": "Exact reward-distribution calculations at fixed archived TRAIN128 behavior447 probabilities. No new sampling, model forward, native gradients or measured speed; candidate G is not deployed and no training efficacy claim."
+}

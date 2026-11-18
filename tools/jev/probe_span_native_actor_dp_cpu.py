@@ -69,7 +69,7 @@ def snapshot(model,opt,gradients):
                 exp_avg_sq=[opt.state[p]['exp_avg_sq'].clone() for p in model.parameters()])
 
 
-def worker(rank,output):
+def worker(rank,output,algorithm='grpo_v1'):
     from multimodal_jev.span_native_actor import make_batch,build_actor,ACTOR_SHA256
     from multimodal_jev.span_native_dp import admit_rank_batch
     from multimodal_jev.span_policy import joint_logprobs,verl_joint_loss
@@ -87,15 +87,16 @@ def worker(rank,output):
                 # Rank zero owns rollout creation; scatter serialized complete
                 # DataProto chunks, preserving distinct request ownership.
                 items=make_items(reference,step)
-                chunks=list(make_batch(items,8).split(16)) if rank==0 else None
+                chunks=list(make_batch(items,8,algorithm=algorithm).split(16)) if rank==0 else None
                 incoming=[None];dist.scatter_object_list(incoming,chunks,src=0);batch=incoming[0]
                 cfg=config(micro,f'policy{step}');batch.meta_info['micro_batch_size']=micro
+                cfg.jev_advantage_algorithm=algorithm
                 admission=admit_rank_batch(batch,cfg)
                 refopt.zero_grad()
                 for item in items:
                     probabilities=reference(item['inputs'],item['positions'],item['candidates'])[1]
                     logp=joint_logprobs(probabilities,item['rollout'].actions)
-                    loss,_=verl_joint_loss(item['rollout'].old_joint_logprobs,logp,item['rewards'],item['rollout'].request_ids)
+                    loss,_=verl_joint_loss(item['rollout'].old_joint_logprobs,logp,item['rewards'],item['rollout'].request_ids,algorithm=algorithm)
                     (loss/len(items)).backward()
                 gradients=[p.grad.clone() for p in reference.parameters()]
                 torch.nn.utils.clip_grad_norm_(reference.parameters(),1.);refopt.step()
@@ -156,12 +157,13 @@ def worker(rank,output):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--algorithm',choices=('grpo_v1','rloo_v1'),default='grpo_v1')
     a=p.parse_args();a.output.mkdir(exist_ok=False)
     try:
-        mp.spawn(worker,args=(str(a.output),),nprocs=4,join=True)
+        mp.spawn(worker,args=(str(a.output),a.algorithm),nprocs=4,join=True)
         ranks=[json.loads((a.output/f'rank-{i}.json').read_text()) for i in range(4)]
         assert all(r['passed'] for r in ranks)
-        atomic_json(a.output/'result.json',dict(passed=True,ranks=ranks,world_size=4,
+        atomic_json(a.output/'result.json',dict(passed=True,ranks=ranks,world_size=4,algorithm=a.algorithm,
             requests_per_step=8,actions_per_step=64,steps_per_case=2,
             scope='Actual four-rank Gloo/DDP native typed verl actor, serialized DataProto scatter, synthetic float32 features. No audio/BF16/NPU/FSDP/Ray/vLLM lifecycle validation.'))
         atomic_json(a.output/'terminal.json',dict(exit_code=0))

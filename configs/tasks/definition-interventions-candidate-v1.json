@@ -1,0 +1,52 @@
+{
+  "schema": "jev-definition-interventions-candidate-v1",
+  "status": "task_design_pending_semantic_review_and_model_acceptance",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "operators": {
+    "I_class": {
+      "proposition": "Under the supplied exclusive task annotation policy, this audio query belongs to the supplied intent category.",
+      "paraphrase": "Applying the same supplied exclusive annotation policy, is the supplied intent category the category assigned to this audio query?",
+      "constraint": "Do not replace exclusive category membership with absence of every other possible intention."
+    },
+    "I_present": {
+      "proposition": "This audio query expresses a user intention satisfying the supplied intent definition.",
+      "paraphrase": "Does this audio query express a user intention that meets the supplied intent definition?",
+      "constraint": "A topic mention or explicitly rejected action alone does not establish an intention; use the supplied scope policy."
+    },
+    "S_present": {
+      "proposition": "This audio query expresses a semantic role satisfying the supplied type definition and its stated presence policy.",
+      "paraphrase": "Under its stated presence policy, is a semantic role meeting the supplied type definition expressed in this audio query?",
+      "constraint": "Keep the entire supplied definition, mention scope, presence policy, and coexistence rules unchanged. Presence is not applicability or binding."
+    },
+    "B_bound": {
+      "proposition": "There exists an intention instance expressed in this audio query that satisfies the supplied intent definition and has a semantic role of the supplied type bound to that instance.",
+      "paraphrase": "Is at least one expressed instance of the supplied intent associated by semantic binding with a role satisfying the supplied type definition?",
+      "constraint": "Mere co-occurrence is insufficient. Negation means no such bound instance exists, not that some unbound instance exists."
+    }
+  },
+  "templates": {
+    "affirmative": "Is the following proposition true? {proposition}",
+    "paraphrase": "{paraphrase}",
+    "complement": "Is the following proposition false? {proposition}"
+  },
+  "output": "boolean_true_or_false_no_explanation",
+  "truth_transform": {
+    "positive": {"affirmative": true, "paraphrase": true, "complement": false},
+    "negative": {"affirmative": false, "paraphrase": false, "complement": true},
+    "unavailable": {"affirmative": null, "paraphrase": null, "complement": null},
+    "conflict": {"affirmative": null, "paraphrase": null, "complement": null},
+    "unassessed": {"affirmative": null, "paraphrase": null, "complement": null}
+  },
+  "admission": "Input truth must be independently admitted for model scoring; transformation never upgrades reference-only or disputed evidence.",
+  "input_isolation": "Q template depends only on operator and configured variant; no gold, reference transcript or review rationale in actor input.",
+  "paired_calls": "Each variant is a separate one-forward request; never feed one answer to another or concatenate paired outcomes as reasoning.",
+  "definitions": "All semantic cards, presence policies and shared boundary rules remain verbatim; operator paraphrase is not a definition-card paraphrase test.",
+  "metrics": ["affirmative_accuracy", "complement_accuracy", "both_correct", "valid_opposite_rate", "opposite_but_both_wrong", "invalid_pair_rate", "paraphrase_both_correct", "paraphrase_agreement", "base_polarity_support"],
+  "coverage": "Pair scoring requires reliable base truth and both scheduled requests; invalid output counts wrong, incomplete jobs remain partial.",
+  "interpretation": "Question-polarity sensitivity and operator-wording robustness only; not sufficient evidence of audio grounding, new-concept understanding or multi-step causal reasoning.",
+  "anti_shortcut": "Always answering true on affirmative and false on complement perfectly satisfies opposite consistency but fails all base-negative both-correct cases; require polarity-stratified both-correct and audio grounding controls.",
+  "dataset_transfer": "Same operator templates can be reused only with independently valid dataset definitions and truth policies.",
+  "reward": "diagnostic_only_no_pair_bonus_added_to_reward_contract_v2",
+  "evaluation_budget": "Separate atomic diagnostic at Stage1 and preregistered terminal checkpoint; full admitted population and definitions selected before model outputs; exact expansion counts and context checks required before dispatch."
+}

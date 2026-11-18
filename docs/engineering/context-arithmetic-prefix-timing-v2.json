@@ -1,0 +1,35 @@
+{
+  "status": "bounded_acceptance_timing_recomputed",
+  "source": ".local/decision-objective-research/context-arithmetic-grpo-prefix-v2-collected",
+  "records": [
+    {
+      "update": 1,
+      "rank0_total_seconds": 110.59017598000355,
+      "rank0_preparation_seconds": 79.98481482002535,
+      "rank0_actor_seconds": 25.997126970003592,
+      "rank0_post_actor_seconds": 4.60823418997461,
+      "rollout_seconds": 70.79960955999559,
+      "fixed_reference_seconds": 37.26322206002078,
+      "fixed_reference_misses": 128,
+      "rollout_other_seconds": 33.53638749997481,
+      "preparation_outside_rollout_seconds": 9.185205260029761,
+      "slowest_rank_seconds": 110.59099887998309
+    },
+    {
+      "update": 2,
+      "rank0_total_seconds": 105.20558157001506,
+      "rank0_preparation_seconds": 77.20260325999698,
+      "rank0_actor_seconds": 23.437465530005284,
+      "rank0_post_actor_seconds": 4.565512780012796,
+      "rollout_seconds": 68.98082790002809,
+      "fixed_reference_seconds": 33.99825157999294,
+      "fixed_reference_misses": 128,
+      "rollout_other_seconds": 34.98257632003515,
+      "preparation_outside_rollout_seconds": 8.221775359968888,
+      "slowest_rank_seconds": 105.20576071998221
+    }
+  ],
+  "reference_cache_key": "policy identity + encoded input tensors + decision positions; not epoch or request occurrence",
+  "interpretation": "Reference cache is filled on first exposure; later identical encoded inputs may hit. Second-epoch timing is unobserved. Actor is only one part of each RL step; G16 samples reuse one probability vector.",
+  "scope": "Two accepted engineering updates only; not formal steady-state throughput, measured second-epoch acceleration, or a change to the frozen training configuration."
+}

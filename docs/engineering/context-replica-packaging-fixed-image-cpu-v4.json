@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "63ae88f9098cb9ce29e376162f8e9e6b40510404e10382a125ac76e5e96692d5",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-17T04:54:08.66345147Z",
+    "FinishedAt": "2026-11-17T04:55:07.29175828Z"
+  },
+  "source_files": 385,
+  "source_manifest_sha256": "9de7e4d7550726666153fe6ed2ac775a26ea3cfee19600d5d803f4ad44bdf552",
+  "collection": "/srv/multimodal-jev-xingchao/operations/context-replica-packaging-cpu-v4/context-replica-packaging-cpu-v4-collected",
+  "files": {
+    "run/terminal.json": "e864dbce22715a4bc1b188285a3c8c19bfc72fb007271e5d2eec48b8199afc18",
+    "run/junit.xml": "19e12d5359e6ef02c4b391f688b16b2d7a61eb5fceb43947205c5b39885482d8",
+    "run/pytest.log": "6991ca036d5d7778025693df5d1c107bae60466769af028a872c78efa156915d",
+    "package/FILES.json": "9de7e4d7550726666153fe6ed2ac775a26ea3cfee19600d5d803f4ad44bdf552",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 22,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 1,
+    "started_unix": 1794891275.3810737,
+    "finished_unix": 1794891305.5729601,
+    "source_manifest_sha256": "9de7e4d7550726666153fe6ed2ac775a26ea3cfee19600d5d803f4ad44bdf552",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-replica-packaging-cpu-v4/run/junit.xml",
+      "tests/test_context_replica_trainer_candidate.py",
+      "tests/test_prepare_context_replica_training_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Fixed-image CPU check that every multimodal_jev module the replica trainer transform first references is shipped by the packager (v3 failed on multimodal_jev.slurp_portable_release), plus the idempotent torchrun entrypoint and declared-topology package binding. The support file test_context_topology_batch_plan supplies the batch_config fixture. CPU only; no NPU, no audio."
+}

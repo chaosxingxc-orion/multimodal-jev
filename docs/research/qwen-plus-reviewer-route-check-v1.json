@@ -1,0 +1,39 @@
+{
+  "schema": "qwen-plus-reviewer-route-independent-check-v1",
+  "report_sha256": "38afd02e723a590c9e20025d44ffb92727e57890c5150c0162b2da7998b6c696",
+  "verifier_sha256": "abe5d06723a2502cd5295c7d12e1a704f1af6687c0c2a4300fba83ae43d7a3a8",
+  "requests": 6,
+  "http_success": 6,
+  "strict_valid": 3,
+  "failures": {
+    "bare_array": 3
+  },
+  "reference_targets": 7,
+  "reference_agreements": 3,
+  "reference_missing": 3,
+  "reference_disagreements": [
+    {
+      "source_id": "1887",
+      "semantic_id": "music_genre",
+      "expected": "negative",
+      "predicted": "unavailable",
+      "agreement": false
+    }
+  ],
+  "prior_decisions": 24,
+  "prior_decisions_equal": 8,
+  "prior_decisions_missing": 16,
+  "usage": {
+    "prompt_tokens": 136827,
+    "completion_tokens": 3593,
+    "total_tokens": 140420
+  },
+  "observed_unix": 1794529502.4212885,
+  "first_observation_utc": "2026-11-13 00:24:13 UTC",
+  "first_observation_elapsed_seconds": 617.3096122741699,
+  "semantic_admission": 0,
+  "bulk_dispatch_allowed": false,
+  "training_dispatch_allowed": false,
+  "model_identity": "Provider alias only; no attested upstream revision.",
+  "scope": "Independent raw-body, terminal, usage and all output reconstruction. Reference agreement is not independent semantic accuracy; no array salvage."
+}

@@ -1,0 +1,58 @@
+{
+  "schema": "slurp-intent-calibration-independent-check-v1",
+  "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/intent-teacher-calibration-observed-v1/report.json",
+  "report_sha256": "b5f298813048ae783f4cad1c69d5a82abbdc84c6d693b8b35f4c173c2b840287",
+  "requests": 122,
+  "valid": 115,
+  "finish_reasons": {
+    "stop": 115,
+    "length": 7
+  },
+  "target_cross_counts": [
+    {
+      "expected": "negative",
+      "predicted": "invalid",
+      "count": 3
+    },
+    {
+      "expected": "negative",
+      "predicted": "negative",
+      "count": 62
+    },
+    {
+      "expected": "positive",
+      "predicted": "positive",
+      "count": 65
+    },
+    {
+      "expected": "unavailable",
+      "predicted": "invalid",
+      "count": 4
+    },
+    {
+      "expected": "unavailable",
+      "predicted": "negative",
+      "count": 4
+    },
+    {
+      "expected": "unavailable",
+      "predicted": "positive",
+      "count": 4
+    },
+    {
+      "expected": "unavailable",
+      "predicted": "unavailable",
+      "count": 4
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 472554,
+    "completion_tokens": 144151,
+    "total_tokens": 616705
+  },
+  "all_actual_wire_identities_checked": true,
+  "all_terminal_response_ids_and_statuses_reparsed": true,
+  "semantic_admission": 0,
+  "training_dispatch_allowed": false,
+  "scope": "Independent all-request wire/response arithmetic reconstruction, not semantic certification. Reference-author calibration; agreements are not population accuracy."
+}

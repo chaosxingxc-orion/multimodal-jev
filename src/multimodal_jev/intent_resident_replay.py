@@ -1,16 +1,24 @@
 """Exact resident/reference state checks; no checkpoint mutation or tolerance."""
 
 
-def compare_state(reference,actual,*,rank,updates):
+def compare_state(reference,actual,*,rank,updates,continuous=False,formal=False):
     import torch
-    if type(rank)!=int or rank not in range(4) or type(updates)!=int or updates not in (1,2):
-        raise ValueError('fixed DP4 two-update replay required')
+    if (type(rank)!=int or rank not in range(4) or type(updates)!=int or type(continuous)!=bool
+            or type(formal)!=bool or (formal and not continuous)
+            or (not 1<=updates<=634 if continuous else updates not in (1,2))):
+        raise ValueError('fixed DP4 bounded replay required')
     for state in (reference,actual):
+        if continuous and (state.get('stage')!=('simple_stage2_rl' if formal else 'continuous_rl_engineering')
+                or state.get('next_update')!=updates):
+            raise ValueError('explicit continuous stage/cursor required')
         if (state['rank']!=rank or state['world_size']!=4 or state['updates']!=updates
                 or not state['names'] or len(set(state['names']))!=len(state['names'])
                 or set(state['parameters'])!=set(state['names'])):
             raise ValueError('complete fixed rank/cursor/layout required')
     if reference['names']!=actual['names']:raise ValueError('parameter ordering differs')
+    if continuous and any(reference.get(k)!=actual.get(k) or not reference.get(k)
+            for k in ('schedule_sha256','adapter_id','reference_policy_id','algorithm')):
+        raise ValueError('continuous state lineage differs')
     if reference['optimizer']['param_groups']!=actual['optimizer']['param_groups']:raise ValueError('optimizer groups differ')
     pairs=[(p,actual['parameters'][n]) for n,p in reference['parameters'].items()]
     a,b=reference['optimizer']['state'],actual['optimizer']['state']

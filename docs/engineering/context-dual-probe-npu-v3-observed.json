@@ -1,0 +1,62 @@
+{
+  "status": "finite_fixed_policy_inference_audited",
+  "rows": 128,
+  "policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+  "exact_probabilities_and_G16": true,
+  "timed_seconds": {
+    "serial": [
+      28.88569391000783,
+      29.79611711000325
+    ],
+    "batched": [
+      17.207295519998297,
+      17.256679310055915
+    ]
+  },
+  "mean_seconds": {
+    "serial": 29.34090551000554,
+    "batched": 17.231987415027106
+  },
+  "serial_over_batched_time_ratio": 1.7027000312464764,
+  "actual_language_calls": {
+    "serial": [
+      128,
+      128
+    ],
+    "batched": [
+      64,
+      64
+    ]
+  },
+  "actual_call_reduction": true,
+  "worker_allocator_peaks": {
+    "serial": [
+      {
+        "peak_allocated_bytes": 2935648768,
+        "peak_reserved_bytes": 2984247296
+      },
+      {
+        "peak_allocated_bytes": 2935648768,
+        "peak_reserved_bytes": 2984247296
+      }
+    ],
+    "batched": [
+      {
+        "peak_allocated_bytes": 3127068672,
+        "peak_reserved_bytes": 3300917248
+      },
+      {
+        "peak_allocated_bytes": 3127068672,
+        "peak_reserved_bytes": 3300917248
+      }
+    ]
+  },
+  "scope": "Fixed-policy finite inference and original Bernoulli G16; no dual-ranking sampling, full TRAIN saturation, actor update or resume claim",
+  "telemetry_limit": "length coverage is not an independent tensor trace inside the device kernel",
+  "exact_actual_logits": true,
+  "container_id": "b841b13a9242d0813092510e2c9ad8af88e9da28164b5cb29231e0330679c114",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "files_sha256": "cdcba45d18d8a1a035d6f346d0b2616fecb5435d75fb9ec7fbfe11cd5353e227",
+  "transport_sha256": "40ab8eb82647f51bfe4e5c049b007b15670f19c19cadb9f8b8ca247e020e708f",
+  "runtime_inspect_sha256": "887fdb93cc862c04578c53abd0cb1a18a99426cc779a8815aa5adddf632243a8"
+}

@@ -1,0 +1,29 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "tests": [
+    "tests/test_context_infonce.py",
+    "tests/test_context_topology_batch_plan.py",
+    "tests/test_context_replica_schedule.py",
+    "tests/test_context_infonce_native.py"
+  ],
+  "expected_tests": 32,
+  "scope": "Native verl CPU DP8 full512 and tail65 reduction, actual micro8 accumulation, fresh-process Adam/warmup replay; supervised InfoNCE, schedule arithmetic. No NPU/audio admission.",
+  "support_files": [
+    "tools/reports/context_infonce_actor.py",
+    "tools/reports/context_infonce_trainer.py",
+    "tools/jev/train_context_instruction_npu.py",
+    "configs/experiments/context-two-stage-v0.0.4.json",
+    "tools/jev/probe_span_native_actor_dp_cpu.py"
+  ],
+  "resources": {
+    "cpus": 8,
+    "memory_gib": 32
+  }
+}

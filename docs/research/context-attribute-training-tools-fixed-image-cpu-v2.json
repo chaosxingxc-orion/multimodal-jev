@@ -1,0 +1,62 @@
+{
+  "schema": "context-attribute-training-tools-fixed-image-cpu-v2",
+  "container_id": "9be44ee3a69aee24052f860214a829a1e94d9898f65c98ca2aba7fedb20c2da9",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T03:33:42.48164879Z",
+    "FinishedAt": "2026-11-15T03:36:10.29251196Z"
+  },
+  "source_files": 404,
+  "source_manifest_sha256": "b3a8b9c7f4f46783ed2094ccea6fe77783db4f5805ad7aa69a901942b7d04984",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-training-tools-cpu-v2-collected",
+  "files": {
+    "run/actual-feature-extractor.py": "349fcd64c57da8526748cb4cabb613a7d660e21e77800b99e9f4a22959d51961",
+    "run/actual-processor.py": "6429cf1bf5654534cbcfa7e64f7e582146f49a656904a369ef99d554ddfe3a67",
+    "run/terminal.json": "44fc5d797998e032a1af13409653e64f3bb1d3f3cab7c19ffcf28c15145b36a6",
+    "run/junit.xml": "471f9c903d92b3e4fbfec3dec3de607c64e8aadb2755cecfd7adda676c787e70",
+    "run/pytest.log": "0e4b2ae67b83293db9d6a9f2b5a184f9d43b631f009186e00cdb2a93a5c05ab7",
+    "package/FILES.json": "b3a8b9c7f4f46783ed2094ccea6fe77783db4f5805ad7aa69a901942b7d04984",
+    "package/run.py": "9bec3e67d320f6e43e3a0a2801b73965f6e929b4e82b3c1e25b80590f27c1604"
+  },
+  "counts": {
+    "tests": 46,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794713656.9834065,
+    "finished_unix": 1794713768.2168522,
+    "source_manifest_sha256": "b3a8b9c7f4f46783ed2094ccea6fe77783db4f5805ad7aa69a901942b7d04984",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-training-tools-cpu-v2/run/junit.xml",
+      "tests/test_context_attribute_training_candidate.py",
+      "tests/test_context_attribute_training_contract.py",
+      "tests/test_context_attribute_schedule_candidate.py",
+      "tests/test_context_rollout_session.py",
+      "tests/test_context_attribute_training_input_integration.py",
+      "tests/test_verify_context_attribute_population_v2.py",
+      "-k",
+      "not runtime_binds_full_dataset"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Bounded trainer derivation, full real TRAIN label binding, schedule/resume CPU checks, actual audio processor plus prefetch/session/native verl DataProto integration with synthetic model probabilities. No Qwen/NPU or efficacy proof. One full runtime wiring test deselected because original release dependency paths are unavailable in this CPU package; it passed locally."
+}

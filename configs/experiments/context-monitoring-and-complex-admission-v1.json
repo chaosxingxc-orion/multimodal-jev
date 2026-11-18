@@ -1,0 +1,27 @@
+{
+  "schema": "context-monitoring-and-complex-admission-v1",
+  "authority": "latest_user_instruction",
+  "ordinary_observation_interval_seconds": 900,
+  "applies_to": ["formal_training", "attribute_input_processing"],
+  "legacy_receipt_next_time": "recompute as observed_unix+900; older600second values are historical",
+  "exceptions": ["explicit_user_status_request", "received_terminal_or_failure_notification", "existing_exact_container_wait"],
+  "running_training_mutation": false,
+  "complex_training_allowed": false,
+  "complex_admission": {
+    "requires": [
+      "complete_fixed_selection_population_and_frozen_scoring",
+      "positive_Final_setF1_gain_over_same_Stage2_step0",
+      "full_prespecified_curve_support_not_training_reward_only_or_isolated_best_point",
+      "paired_source_group_uncertainty_and_top1_NLL_Brier_regression_review",
+      "separate_written_efficacy_decision_before_any_complex_training_dispatch",
+      "existing_task_definition_and_finite_engineering_acceptance"
+    ],
+    "threshold_status": "no numeric minimum gain or calibration tolerance invented; assess actual complete evidence before release",
+    "not_sufficient": ["training_completed", "training_reward_increased", "CPU_tests_passed", "inputs_ready"],
+    "if_not_met": "continue_simple_task_diagnostics_and_versioned_optimization; no_complex_training",
+    "data_preparation_allowed": true
+  },
+  "analysis_axes": ["objective_components_and_probability_quality", "reward_alignment_and_saturation", "advantage_support_and_credit", "rollout_actor_input_checkpoint_time"],
+  "optimization_policy": "independent_candidate_then_affected_scope_validation_then_new_experiment_identity; preserve_current_curve",
+  "current_evaluation_schedule": "original_driver_evaluates_all11_selection_points_after_training_terminal; no_live_selection_scores_claimed"
+}

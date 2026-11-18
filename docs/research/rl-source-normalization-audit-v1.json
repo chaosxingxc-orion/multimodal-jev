@@ -1,0 +1,56 @@
+{
+  "schema": "jev-rl-source-normalization-audit-v1",
+  "date_local": "2026-11-13",
+  "commit": "e9405d70b77d56a23e72bb2e40a17b906856e913",
+  "sources": {
+    "verl/trainer/ppo/core_algos.py": {
+      "url": "https://raw.githubusercontent.com/verl-project/verl/e9405d70b77d56a23e72bb2e40a17b906856e913/verl/trainer/ppo/core_algos.py",
+      "sha256": "fadfafa83d94ba40d7ac2abeedb6e99ea0716b42f8744c421ecbb371db8b4d24",
+      "functions": {
+        "compute_gae_advantage_return": {
+          "first_line": 215,
+          "last_line": 262,
+          "sha256": "d3c50341437a11b13c75dcd61ee6236fba6014a3317e5c21e978d0ed9e071e53"
+        },
+        "compute_grpo_outcome_advantage": {
+          "first_line": 267,
+          "last_line": 330,
+          "sha256": "a75e649242ad4ed3695c8d70878a83fda274fa740956d8e77ea400bac5aa60b2"
+        },
+        "compute_rloo_outcome_advantage": {
+          "first_line": 477,
+          "last_line": 525,
+          "sha256": "30303ba2c3ffd154553bf251dfd76633ad4d941e81aa7f916dd4a62770d5f66b"
+        }
+      }
+    },
+    "verl/utils/torch_functional.py": {
+      "url": "https://raw.githubusercontent.com/verl-project/verl/e9405d70b77d56a23e72bb2e40a17b906856e913/verl/utils/torch_functional.py",
+      "sha256": "8ac62195a800ba784d1cddf03ee0bc7627f20236cc11e135fdba20e8d4a01f14",
+      "functions": {
+        "masked_mean": {
+          "first_line": 287,
+          "last_line": 301,
+          "sha256": "d9319a05c6d98e2d005fbb164a9b2f97752cbd48f7b3173db00ddda458c740ad"
+        },
+        "masked_var": {
+          "first_line": 304,
+          "last_line": 319,
+          "sha256": "9582c6ca30c8a862c5ca0c7e12b80a1a2ecffd7b0cde762edd55a4f2d282a0b2"
+        },
+        "masked_whiten": {
+          "first_line": 322,
+          "last_line": 339,
+          "sha256": "58f9e9047f045aa1a4ef97a50d6910b12925fc587131d831aea569cc805a0506"
+        }
+      }
+    }
+  },
+  "observations": {
+    "ppo_gae": "Pinned function computes returns before masked_whiten; one-step raw advantage R-V but returned advantage is whitened. Prior design description omitted this.",
+    "grpo": "Same-request sample standard deviation and epsilon=1e-6; no independent per-family standardization.",
+    "rloo": "R_i minus leave-one-out group reward mean; no standard deviation normalization in pinned estimator."
+  },
+  "scope": "Source inspection only. Does not accept typed-action integration, distributed normalization, gradient parity or training.",
+  "training_dispatch_allowed": false
+}

@@ -1,0 +1,72 @@
+{
+  "status": "launched_then_failed_progress_receipt",
+  "checked_unix": 1794690268.0670393,
+  "launch": ".local/decision-objective-research/slurp-clean-test-processor-cpu-v3-launch.json",
+  "launch_sha256": "f18ccf45870a7982fc0e096854eb15f91a838173706aeebec653bda95cb29f02",
+  "container_id": "9a8845a6d8db382096d106441fc1b4b2a1e8c1929b948939e132dd4caa662add",
+  "state_at_launch": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 1131797,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T20:59:45.44578137Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "cpu_limit": 2,
+  "memory_gb": 8,
+  "npu_devices": [],
+  "model_weights_mounted": false,
+  "processor_assets_exact_to_completed_stage1": 4,
+  "actual_label_free_requests_reconstructed": 12991,
+  "tests": {
+    "passed": 28,
+    "seconds": 2.15,
+    "scope": "10 request identity tests, 12 population tests, 6 actual tensor cache checks; latter substitutes population/processor factory, not full image/NPU integration."
+  },
+  "tool_sha256": "d47640e7e19fcf902fce6859e7c0aa0473f83e781b9d9fb1a3844061e8b29ba2",
+  "test_sha256": "17b1153fe4fe9c0fdf9be809aaacc25a3f0301c86b5a2425ed12a86801746ee3",
+  "baseline_lock": {
+    "lock_id": "2ece49811d1e11eabc75f3e95e73ef532bda3fe9f16e9a399da7725ad0d95bfc",
+    "verified_files": 364,
+    "stage2_released": false,
+    "scope": "File and contract identity only; no added runtime or efficacy evidence"
+  },
+  "queued_dependencies": [
+    {
+      "path": ".local/decision-objective-research/context-baseline-sequence-v3-spec.json",
+      "verified_files": 507
+    },
+    {
+      "path": ".local/decision-objective-research/context-baseline-comparison-v5-pins.json",
+      "verified_files": 510
+    },
+    {
+      "path": ".local/decision-objective-research/fsc-context-experiment-v1-queue-pins.json",
+      "verified_files": 1071
+    },
+    {
+      "path": ".local/decision-objective-research/fsc-context-reference-v1-queue-pins.json",
+      "verified_files": 1102
+    }
+  ],
+  "failures_preserved": [
+    {
+      "version": 1,
+      "reason": "CPU launch lacked read-only Ascend driver library mount; failed before dataset processing."
+    },
+    {
+      "version": 2,
+      "reason": "Qwen3ASRProcessor first imported from concurrent worker factories; moved lazy import to main thread as in existing FSC preflight."
+    }
+  ],
+  "verification": "Driver waits on exact container; successful terminal followed by fresh-process full cache/receipt verification. Not completed yet.",
+  "scope": "Input-only engineering; no target annotations parsed, no inference/TEST score, no added SLURP RL gate.",
+  "terminal_receipt": ".local/decision-objective-research/slurp-clean-test-processor-cpu-v3-terminal.json",
+  "terminal_failure": "Progress used immutable commit_json; second update at 512 inputs failed. No completed full preflight."
+}

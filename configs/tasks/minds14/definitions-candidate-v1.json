@@ -1,0 +1,189 @@
+{
+  "schema": "minds14-exclusive-event-definition-candidate-v1",
+  "status": "project_authored_semantic_descriptions_pending_original_boundary_evidence",
+  "training_dispatch_allowed": false,
+  "evaluation_dispatch_allowed": false,
+  "task_semantics": "exclusive_event",
+  "input_policy": {
+    "modality": "direct_audio",
+    "candidate_menu": "all_14_in_fixed_order_for_every_language",
+    "definition_language": "English",
+    "transcript_input": false,
+    "label_bearing_path_input": false,
+    "gold_based_routing": false
+  },
+  "output": {
+    "kind": "independent_sigmoid_probabilities",
+    "count": 14,
+    "set_threshold": 0.5,
+    "native_readout": "top1_first_index_breaks_exact_ties"
+  },
+  "provenance": {
+    "paper": {
+      "url": "https://arxiv.org/pdf/2104.08524v1",
+      "path": ".local/decision-objective-research/minds-method-sources-v1/paper.pdf",
+      "sha256": "3b112e0ebd5d437c822975951119ed2621995b0632268e2bac1cfe076fa90fff",
+      "text_path": ".local/decision-objective-research/minds-method-sources-v1/paper.txt",
+      "text_sha256": "eba13897c14ee8a08f6b6635791121584681595c601d0c2e3ffe772a16641090",
+      "evidence": {
+        "section_2": "Intent descriptions and three examples were provided to collectors; exact descriptions are not printed here.",
+        "appendix_A1": "14 native intent names",
+        "appendix_A2": "14 variety counts matching local 8168 recordings",
+        "scope": "Original source paper read; no original task checkpoint, split identity, or intent-card definitions recovered."
+      }
+    },
+    "local_inventory": {
+      "path": "docs/research/minds-local-audio-audit-v1.json",
+      "sha256": "d022f32e4a7a362495d3911d35fd44fa90933a544a51236f505be138740c2a37"
+    },
+    "definitions": "Project-authored provisional descriptions based on native names, not quoted original collection instructions; no target transcript examples or model scores used."
+  },
+  "candidates": [
+    {
+      "id": "abroad",
+      "native_index": 0,
+      "description": "Banking or card use while abroad.",
+      "overlap_review": [
+        "card_issues",
+        "high_value_payment"
+      ],
+      "unresolved_boundary": "Whether the original class covers all banking abroad or only card use is not established."
+    },
+    {
+      "id": "address",
+      "native_index": 1,
+      "description": "Changing or checking the address recorded for the customer by the bank.",
+      "overlap_review": [
+        "joint_account"
+      ],
+      "unresolved_boundary": "Whether bank branch or recipient addresses are excluded needs original description evidence."
+    },
+    {
+      "id": "app_error",
+      "native_index": 2,
+      "description": "Reporting or seeking help with an error in the banking application.",
+      "overlap_review": [
+        "card_issues",
+        "pay_bill"
+      ],
+      "unresolved_boundary": "Application failure during a payment may overlap a payment request; native priority rule is unknown."
+    },
+    {
+      "id": "atm_limit",
+      "native_index": 3,
+      "description": "Asking about or changing the limit on cash withdrawals from an ATM.",
+      "overlap_review": [
+        "cash_deposit",
+        "high_value_payment"
+      ],
+      "unresolved_boundary": "Requested withdrawal amount and limit-change coverage need original rule confirmation."
+    },
+    {
+      "id": "balance",
+      "native_index": 4,
+      "description": "Checking the available balance or amount of money in an account.",
+      "overlap_review": [
+        "latest_transactions"
+      ],
+      "unresolved_boundary": "A request mentioning a transaction to explain a balance may overlap transaction history."
+    },
+    {
+      "id": "business_loan",
+      "native_index": 5,
+      "description": "Asking about or applying for a loan for a business.",
+      "overlap_review": [
+        "joint_account"
+      ],
+      "unresolved_boundary": "Eligibility, application and repayment coverage have not been certified."
+    },
+    {
+      "id": "card_issues",
+      "native_index": 6,
+      "description": "Reporting or seeking help with a problem with a bank card.",
+      "overlap_review": [
+        "freeze",
+        "abroad",
+        "app_error"
+      ],
+      "unresolved_boundary": "Lost, stolen, blocked and malfunctioning cards may overlap freeze; original priority rule is unknown."
+    },
+    {
+      "id": "cash_deposit",
+      "native_index": 7,
+      "description": "Asking about or making a deposit of physical cash into an account.",
+      "overlap_review": [
+        "atm_limit"
+      ],
+      "unresolved_boundary": "Deposits at an ATM concern depositing, not withdrawal limits; exact native scope remains unverified."
+    },
+    {
+      "id": "direct_debit",
+      "native_index": 8,
+      "description": "Asking about, arranging or managing a direct debit payment authorization.",
+      "overlap_review": [
+        "pay_bill",
+        "latest_transactions"
+      ],
+      "unresolved_boundary": "Recurring payments are not automatically direct debits; cancellation and dispute scope needs evidence."
+    },
+    {
+      "id": "freeze",
+      "native_index": 9,
+      "description": "Requesting or asking about freezing or blocking a banking facility.",
+      "overlap_review": [
+        "card_issues",
+        "joint_account"
+      ],
+      "unresolved_boundary": "The object could be an account or card; the original description is needed before choosing narrower wording."
+    },
+    {
+      "id": "high_value_payment",
+      "native_index": 10,
+      "description": "Asking about or arranging a payment of a large monetary amount.",
+      "overlap_review": [
+        "pay_bill",
+        "atm_limit",
+        "abroad"
+      ],
+      "unresolved_boundary": "No numerical large-amount cutoff is supplied by the paper; do not invent one."
+    },
+    {
+      "id": "joint_account",
+      "native_index": 11,
+      "description": "Asking about, opening or managing a bank account shared by multiple holders.",
+      "overlap_review": [
+        "address",
+        "freeze"
+      ],
+      "unresolved_boundary": "Information, opening and changes to holders may or may not all belong to the original task."
+    },
+    {
+      "id": "latest_transactions",
+      "native_index": 12,
+      "description": "Requesting or checking recent account transactions or transaction history.",
+      "overlap_review": [
+        "balance",
+        "card_issues"
+      ],
+      "unresolved_boundary": "A dispute about an individual transaction may exceed a history request; original scope is unknown."
+    },
+    {
+      "id": "pay_bill",
+      "native_index": 13,
+      "description": "Asking about or making a payment to settle a bill.",
+      "overlap_review": [
+        "direct_debit",
+        "high_value_payment"
+      ],
+      "unresolved_boundary": "Bill payments may also be large or use direct debit; native precedence is not established."
+    }
+  ],
+  "supervision": "Original target event index retained. Other candidate negatives mean exclusive class membership only, not complete semantic intent absence.",
+  "remaining": [
+    "Recover or document absence of original collection instructions; resolve overlapping class scope before finalizing cards.",
+    "Freeze project evaluation population and exposure rules.",
+    "Materialize opaque audio identifiers and resampling receipts.",
+    "Validate complete processor length/cost and all14 candidate runtime parity."
+  ],
+  "academic_scope": "No original 60/40 folds or AudioJev672 subset reproduced. Native paper pipeline is literature reference, not an authorized ASR-to-text execution branch."
+}

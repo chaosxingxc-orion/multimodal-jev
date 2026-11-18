@@ -1,0 +1,59 @@
+{
+  "schema": "context-attribute-training-tools-fixed-image-cpu-v1",
+  "container_id": "fc9e12476c40a370edd648ed3861bbf04f8b0b1fff66b0bcaa7de868643bff73",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 1,
+    "Error": "",
+    "StartedAt": "2026-11-15T03:29:09.44013431Z",
+    "FinishedAt": "2026-11-15T03:31:06.99277173Z"
+  },
+  "source_files": 401,
+  "source_manifest_sha256": "609fd0728d915be022e70f61bfa15262f5d03770ee1adf818ab281244186bc75",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-training-tools-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "c27c41cf50d922d65f529663f5d5b53b34aa40eb4168df415b1362e2b197dcbc",
+    "run/junit.xml": "23b62907c3f556feac1dc72381a520c2987d25ddea37718bb960cd272ac785e3",
+    "run/pytest.log": "13f2dc135b7ab415133fecf1164564e1b70669e7e3de1e03f372d73a776bf4c2",
+    "package/FILES.json": "609fd0728d915be022e70f61bfa15262f5d03770ee1adf818ab281244186bc75",
+    "package/run.py": "f911f613827f1e8584153ab0821ccbe3032a46aba15f2e330f7a70f1f2f2f161"
+  },
+  "counts": {
+    "tests": 35,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 1,
+    "started_unix": 1794713376.749025,
+    "finished_unix": 1794713465.5719478,
+    "source_manifest_sha256": "609fd0728d915be022e70f61bfa15262f5d03770ee1adf818ab281244186bc75",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-training-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_training_candidate.py",
+      "tests/test_context_attribute_training_contract.py",
+      "tests/test_context_attribute_schedule_candidate.py",
+      "tests/test_context_rollout_session.py",
+      "tests/test_context_attribute_training_input_integration.py",
+      "-k",
+      "not runtime_binds_full_dataset"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual pinned verl DataProto transport and one-rank Gloo admission with real catalog, synthetic probabilities/actions; no actor optimizer/model/NPU/efficacy evidence."
+}

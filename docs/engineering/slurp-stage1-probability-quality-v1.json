@@ -1,0 +1,843 @@
+{
+  "schema": "final-selection-probability-quality-v1",
+  "results": {
+    "base": {
+      "recordings": 9226,
+      "accuracy": 0.01669195751138088,
+      "macro_F1_fixed60": 0.0005472636815920397,
+      "nll_nats": 6.5846238399462536,
+      "multiclass_brier_sum_over60": 1.2988914830463594,
+      "top_label_ece": 0.5395847757226074,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 0,
+          "accuracy": null,
+          "confidence": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 0,
+          "accuracy": null,
+          "confidence": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 0,
+          "accuracy": null,
+          "confidence": null
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 12,
+          "accuracy": 0.0,
+          "confidence": 0.385945468633557
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 1372,
+          "accuracy": 0.01967930029154519,
+          "confidence": 0.4742581537095718
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 5966,
+          "accuracy": 0.016258799865906805,
+          "confidence": 0.5520157771658832
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 1826,
+          "accuracy": 0.01588170865279299,
+          "confidence": 0.6284662831485915
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 50,
+          "accuracy": 0.02,
+          "confidence": 0.719800974053062
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 0,
+          "accuracy": null,
+          "confidence": null
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 0,
+          "accuracy": null,
+          "confidence": null
+        }
+      ],
+      "normalization_residual_max": 2.210037561845013e-07,
+      "incorrect_mean_confidence": 0.5563288947540405,
+      "incorrect_confidence_ge_0_9": 0,
+      "incorrect_confidence_ge_0_9_population_fraction": 0.0,
+      "predicted_classes": 1,
+      "zero_recall_supported_classes": 59,
+      "top2_prediction_fraction": 1.0,
+      "top_predictions": [
+        {
+          "candidate": "qa_definition",
+          "count": 9226
+        },
+        {
+          "candidate": "alarm_query",
+          "count": 0
+        },
+        {
+          "candidate": "alarm_remove",
+          "count": 0
+        },
+        {
+          "candidate": "alarm_set",
+          "count": 0
+        },
+        {
+          "candidate": "audio_volume_down",
+          "count": 0
+        }
+      ],
+      "per_class": {
+        "alarm_query": {
+          "support": 138,
+          "nll_nats": 4.601567050540899,
+          "brier": 1.306169115726982
+        },
+        "alarm_remove": {
+          "support": 83,
+          "nll_nats": 7.1159948111788,
+          "brier": 1.3253317069398853
+        },
+        "alarm_set": {
+          "support": 229,
+          "nll_nats": 7.195797759311366,
+          "brier": 1.335144963205663
+        },
+        "audio_volume_down": {
+          "support": 59,
+          "nll_nats": 8.468848932956533,
+          "brier": 1.310577673215821
+        },
+        "audio_volume_mute": {
+          "support": 212,
+          "nll_nats": 10.156798801507728,
+          "brier": 1.306090014224055
+        },
+        "audio_volume_other": {
+          "support": 39,
+          "nll_nats": 5.936630896079255,
+          "brier": 1.3179606274467732
+        },
+        "audio_volume_up": {
+          "support": 157,
+          "nll_nats": 6.5282606070174225,
+          "brier": 1.3114250245402672
+        },
+        "calendar_query": {
+          "support": 528,
+          "nll_nats": 7.484460637529278,
+          "brier": 1.3320802432511851
+        },
+        "calendar_remove": {
+          "support": 260,
+          "nll_nats": 3.4228705895905036,
+          "brier": 1.2669165224466603
+        },
+        "calendar_set": {
+          "support": 641,
+          "nll_nats": 7.58779242329402,
+          "brier": 1.3445182072004604
+        },
+        "cooking_query": {
+          "support": 2,
+          "nll_nats": 7.187972960494651,
+          "brier": 1.3393700384413696
+        },
+        "cooking_recipe": {
+          "support": 122,
+          "nll_nats": 5.081167101718991,
+          "brier": 1.313132843201102
+        },
+        "datetime_convert": {
+          "support": 29,
+          "nll_nats": 4.063149579288634,
+          "brier": 1.316263374870372
+        },
+        "datetime_query": {
+          "support": 271,
+          "nll_nats": 5.157590352495416,
+          "brier": 1.3088689823611488
+        },
+        "email_addcontact": {
+          "support": 51,
+          "nll_nats": 10.474215118901848,
+          "brier": 1.3545207964968042
+        },
+        "email_query": {
+          "support": 288,
+          "nll_nats": 7.960714397223343,
+          "brier": 1.348983576828979
+        },
+        "email_querycontact": {
+          "support": 97,
+          "nll_nats": 13.255148932741028,
+          "brier": 1.326627451293883
+        },
+        "email_sendemail": {
+          "support": 256,
+          "nll_nats": 5.810728052760893,
+          "brier": 1.354225308759894
+        },
+        "general_greet": {
+          "support": 48,
+          "nll_nats": 4.40556083093253,
+          "brier": 1.2629022338310316
+        },
+        "general_joke": {
+          "support": 135,
+          "nll_nats": 7.14422567956674,
+          "brier": 1.3048572705630759
+        },
+        "general_quirky": {
+          "support": 353,
+          "nll_nats": 8.693238739349917,
+          "brier": 1.3186377922916497
+        },
+        "iot_cleaning": {
+          "support": 70,
+          "nll_nats": 7.257433156369863,
+          "brier": 1.3278553005071152
+        },
+        "iot_coffee": {
+          "support": 148,
+          "nll_nats": 7.771929479231838,
+          "brier": 1.3112078993770049
+        },
+        "iot_hue_lightchange": {
+          "support": 67,
+          "nll_nats": 9.322484540177438,
+          "brier": 1.329135597996753
+        },
+        "iot_hue_lightdim": {
+          "support": 112,
+          "nll_nats": 6.503041827473886,
+          "brier": 1.296371865363662
+        },
+        "iot_hue_lightoff": {
+          "support": 99,
+          "nll_nats": 10.381075147708058,
+          "brier": 1.31270628744864
+        },
+        "iot_hue_lighton": {
+          "support": 10,
+          "nll_nats": 4.18219726407496,
+          "brier": 1.3183662172519637
+        },
+        "iot_hue_lightup": {
+          "support": 68,
+          "nll_nats": 6.113156552275816,
+          "brier": 1.3053466989275222
+        },
+        "iot_wemo_off": {
+          "support": 24,
+          "nll_nats": 5.147265907967411,
+          "brier": 1.2969972344430623
+        },
+        "iot_wemo_on": {
+          "support": 15,
+          "nll_nats": 4.531536725548221,
+          "brier": 1.2935295569877874
+        },
+        "lists_createoradd": {
+          "support": 129,
+          "nll_nats": 6.286100494185973,
+          "brier": 1.311536999573253
+        },
+        "lists_query": {
+          "support": 215,
+          "nll_nats": 5.124349727594631,
+          "brier": 1.3181772424319587
+        },
+        "lists_remove": {
+          "support": 170,
+          "nll_nats": 4.881060018966396,
+          "brier": 1.3029255417200747
+        },
+        "music_dislikeness": {
+          "support": 13,
+          "nll_nats": 8.871744883384135,
+          "brier": 1.3127027154048472
+        },
+        "music_likeness": {
+          "support": 71,
+          "nll_nats": 8.168825385101668,
+          "brier": 1.3167076154213413
+        },
+        "music_query": {
+          "support": 116,
+          "nll_nats": 6.110013397150646,
+          "brier": 1.321806698194613
+        },
+        "music_settings": {
+          "support": 32,
+          "nll_nats": 5.973675808445038,
+          "brier": 1.3117591891578275
+        },
+        "news_query": {
+          "support": 384,
+          "nll_nats": 6.792410155415388,
+          "brier": 1.3265875361673884
+        },
+        "play_audiobook": {
+          "support": 221,
+          "nll_nats": 3.6090464940509124,
+          "brier": 1.2570243138743473
+        },
+        "play_game": {
+          "support": 59,
+          "nll_nats": 2.6982095806545274,
+          "brier": 1.1838344003291272
+        },
+        "play_music": {
+          "support": 440,
+          "nll_nats": 8.135285759544818,
+          "brier": 1.3305940821345799
+        },
+        "play_podcasts": {
+          "support": 236,
+          "nll_nats": 6.704392787210465,
+          "brier": 1.3289520201204061
+        },
+        "play_radio": {
+          "support": 221,
+          "nll_nats": 11.797978032352802,
+          "brier": 1.328530479387267
+        },
+        "qa_currency": {
+          "support": 101,
+          "nll_nats": 5.699258778261465,
+          "brier": 1.317922149227875
+        },
+        "qa_definition": {
+          "support": 154,
+          "nll_nats": 0.5964308456423926,
+          "brier": 0.2190120448664417
+        },
+        "qa_factoid": {
+          "support": 336,
+          "nll_nats": 4.602813656177724,
+          "brier": 1.3070990989909033
+        },
+        "qa_maths": {
+          "support": 81,
+          "nll_nats": 6.923336345375589,
+          "brier": 1.3106026658373884
+        },
+        "qa_stock": {
+          "support": 73,
+          "nll_nats": 5.653126470134304,
+          "brier": 1.3149787571011544
+        },
+        "recommendation_events": {
+          "support": 162,
+          "nll_nats": 5.320942410473578,
+          "brier": 1.3168783005548574
+        },
+        "recommendation_locations": {
+          "support": 80,
+          "nll_nats": 8.776804319716716,
+          "brier": 1.3229537362699015
+        },
+        "recommendation_movies": {
+          "support": 40,
+          "nll_nats": 5.726013439856046,
+          "brier": 1.3288638941934405
+        },
+        "social_post": {
+          "support": 181,
+          "nll_nats": 9.734485561601891,
+          "brier": 1.3570389944652734
+        },
+        "social_query": {
+          "support": 84,
+          "nll_nats": 4.568391886332741,
+          "brier": 1.3243774426261952
+        },
+        "takeaway_order": {
+          "support": 94,
+          "nll_nats": 2.8883285306840496,
+          "brier": 1.2272619786317054
+        },
+        "takeaway_query": {
+          "support": 105,
+          "nll_nats": 4.831792991763718,
+          "brier": 1.3216540870732847
+        },
+        "transport_query": {
+          "support": 151,
+          "nll_nats": 5.520064868417095,
+          "brier": 1.3285387088133171
+        },
+        "transport_taxi": {
+          "support": 47,
+          "nll_nats": 5.52577506219005,
+          "brier": 1.3375095568271498
+        },
+        "transport_ticket": {
+          "support": 76,
+          "nll_nats": 6.353909847784336,
+          "brier": 1.3327717546456532
+        },
+        "transport_traffic": {
+          "support": 72,
+          "nll_nats": 2.88382220202947,
+          "brier": 1.1964192675168668
+        },
+        "weather_query": {
+          "support": 471,
+          "nll_nats": 4.7090259403363355,
+          "brier": 1.3051234141823504
+        }
+      },
+      "scope": "Descriptive categorical probability quality; not independent applicability calibration or RL efficacy.",
+      "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:62a274b6a59546f5b8bf22cd83c65db5775894b0dfce79b3f98721d6ccb93b26"
+    },
+    "candidate": {
+      "recordings": 9226,
+      "accuracy": 0.20203771948840235,
+      "macro_F1_fixed60": 0.08710685492800148,
+      "nll_nats": 5.277224723419294,
+      "multiclass_brier_sum_over60": 1.3331357883866093,
+      "top_label_ece": 0.6194555448810114,
+      "reliability_bins": [
+        {
+          "lower": 0.0,
+          "upper": 0.1,
+          "count": 0,
+          "accuracy": null,
+          "confidence": null
+        },
+        {
+          "lower": 0.1,
+          "upper": 0.2,
+          "count": 0,
+          "accuracy": null,
+          "confidence": null
+        },
+        {
+          "lower": 0.2,
+          "upper": 0.3,
+          "count": 5,
+          "accuracy": 0.6,
+          "confidence": 0.28270204584361286
+        },
+        {
+          "lower": 0.3,
+          "upper": 0.4,
+          "count": 119,
+          "accuracy": 0.21008403361344538,
+          "confidence": 0.36402580287426745
+        },
+        {
+          "lower": 0.4,
+          "upper": 0.5,
+          "count": 491,
+          "accuracy": 0.11812627291242363,
+          "confidence": 0.4624408627135164
+        },
+        {
+          "lower": 0.5,
+          "upper": 0.6,
+          "count": 946,
+          "accuracy": 0.10993657505285412,
+          "confidence": 0.549622775365905
+        },
+        {
+          "lower": 0.6,
+          "upper": 0.7,
+          "count": 943,
+          "accuracy": 0.12089077412513255,
+          "confidence": 0.6497862617417578
+        },
+        {
+          "lower": 0.7,
+          "upper": 0.8,
+          "count": 1022,
+          "accuracy": 0.12133072407045009,
+          "confidence": 0.7498305667655909
+        },
+        {
+          "lower": 0.8,
+          "upper": 0.9,
+          "count": 1226,
+          "accuracy": 0.11256117455138662,
+          "confidence": 0.852841530481422
+        },
+        {
+          "lower": 0.9,
+          "upper": 1.0,
+          "count": 4474,
+          "accuracy": 0.2901206973625391,
+          "confidence": 0.9744145478864046
+        }
+      ],
+      "normalization_residual_max": 2.608714465557327e-07,
+      "incorrect_mean_confidence": 0.8035699451865241,
+      "incorrect_confidence_ge_0_9": 3176,
+      "incorrect_confidence_ge_0_9_population_fraction": 0.3442445263386083,
+      "predicted_classes": 24,
+      "zero_recall_supported_classes": 37,
+      "top2_prediction_fraction": 0.8996314762627358,
+      "top_predictions": [
+        {
+          "candidate": "calendar_set",
+          "count": 5515
+        },
+        {
+          "candidate": "play_music",
+          "count": 2785
+        },
+        {
+          "candidate": "weather_query",
+          "count": 365
+        },
+        {
+          "candidate": "qa_factoid",
+          "count": 204
+        },
+        {
+          "candidate": "email_query",
+          "count": 125
+        }
+      ],
+      "per_class": {
+        "alarm_query": {
+          "support": 138,
+          "nll_nats": 6.414753486378911,
+          "brier": 1.891431334615005
+        },
+        "alarm_remove": {
+          "support": 83,
+          "nll_nats": 6.35211220089698,
+          "brier": 1.5445888408039068
+        },
+        "alarm_set": {
+          "support": 229,
+          "nll_nats": 3.20396947328506,
+          "brier": 1.6203200384265095
+        },
+        "audio_volume_down": {
+          "support": 59,
+          "nll_nats": 6.725125000074051,
+          "brier": 1.6970866032972052
+        },
+        "audio_volume_mute": {
+          "support": 212,
+          "nll_nats": 4.356575739418104,
+          "brier": 1.2681834777911403
+        },
+        "audio_volume_other": {
+          "support": 39,
+          "nll_nats": 7.574688128803284,
+          "brier": 1.630913534285233
+        },
+        "audio_volume_up": {
+          "support": 157,
+          "nll_nats": 3.747702741732633,
+          "brier": 1.4695945686876126
+        },
+        "calendar_query": {
+          "support": 528,
+          "nll_nats": 6.154634274515563,
+          "brier": 1.957210088490612
+        },
+        "calendar_remove": {
+          "support": 260,
+          "nll_nats": 3.9408352976268946,
+          "brier": 1.7350627275658106
+        },
+        "calendar_set": {
+          "support": 641,
+          "nll_nats": 0.0036929727664451475,
+          "brier": 0.0007735343347268886
+        },
+        "cooking_query": {
+          "support": 2,
+          "nll_nats": 10.071762591184891,
+          "brier": 1.8709965211512136
+        },
+        "cooking_recipe": {
+          "support": 122,
+          "nll_nats": 3.438878448784318,
+          "brier": 1.0704084440002977
+        },
+        "datetime_convert": {
+          "support": 29,
+          "nll_nats": 9.508866896147637,
+          "brier": 1.7065485434972099
+        },
+        "datetime_query": {
+          "support": 271,
+          "nll_nats": 7.681758606438035,
+          "brier": 1.8999301899283074
+        },
+        "email_addcontact": {
+          "support": 51,
+          "nll_nats": 5.2656789354793885,
+          "brier": 1.6448399316576878
+        },
+        "email_query": {
+          "support": 288,
+          "nll_nats": 1.785551121054125,
+          "brier": 0.7970872794359144
+        },
+        "email_querycontact": {
+          "support": 97,
+          "nll_nats": 8.980205474833847,
+          "brier": 1.7408975468137213
+        },
+        "email_sendemail": {
+          "support": 256,
+          "nll_nats": 3.881444457474098,
+          "brier": 1.443959048825099
+        },
+        "general_greet": {
+          "support": 48,
+          "nll_nats": 13.351522359822374,
+          "brier": 1.6840469708943138
+        },
+        "general_joke": {
+          "support": 135,
+          "nll_nats": 5.956165777796379,
+          "brier": 1.6443447666896738
+        },
+        "general_quirky": {
+          "support": 353,
+          "nll_nats": 9.795949362707391,
+          "brier": 1.6244369499142683
+        },
+        "iot_cleaning": {
+          "support": 70,
+          "nll_nats": 8.464496995388108,
+          "brier": 1.5644341136554838
+        },
+        "iot_coffee": {
+          "support": 148,
+          "nll_nats": 6.335468164340607,
+          "brier": 1.6203824915918843
+        },
+        "iot_hue_lightchange": {
+          "support": 67,
+          "nll_nats": 5.428907135911011,
+          "brier": 1.2808947076088886
+        },
+        "iot_hue_lightdim": {
+          "support": 112,
+          "nll_nats": 7.226209175670845,
+          "brier": 1.4663732396676348
+        },
+        "iot_hue_lightoff": {
+          "support": 99,
+          "nll_nats": 3.196944468165282,
+          "brier": 0.9170021921328855
+        },
+        "iot_hue_lighton": {
+          "support": 10,
+          "nll_nats": 9.106684520858177,
+          "brier": 1.4938362491306674
+        },
+        "iot_hue_lightup": {
+          "support": 68,
+          "nll_nats": 8.783645402484161,
+          "brier": 1.5529086545255324
+        },
+        "iot_wemo_off": {
+          "support": 24,
+          "nll_nats": 7.816516644561209,
+          "brier": 1.5377513323338687
+        },
+        "iot_wemo_on": {
+          "support": 15,
+          "nll_nats": 8.602490188392048,
+          "brier": 1.626707734183598
+        },
+        "lists_createoradd": {
+          "support": 129,
+          "nll_nats": 8.565460333753082,
+          "brier": 1.744483132658217
+        },
+        "lists_query": {
+          "support": 215,
+          "nll_nats": 10.310435928182152,
+          "brier": 1.8404775566480196
+        },
+        "lists_remove": {
+          "support": 170,
+          "nll_nats": 5.774725960486636,
+          "brier": 1.3981162859875016
+        },
+        "music_dislikeness": {
+          "support": 13,
+          "nll_nats": 11.240385947967885,
+          "brier": 1.9629102861487537
+        },
+        "music_likeness": {
+          "support": 71,
+          "nll_nats": 9.80974066754538,
+          "brier": 1.8851426329934367
+        },
+        "music_query": {
+          "support": 116,
+          "nll_nats": 6.4361409648359995,
+          "brier": 1.8055404829071553
+        },
+        "music_settings": {
+          "support": 32,
+          "nll_nats": 13.191894081841694,
+          "brier": 1.8586283969687178
+        },
+        "news_query": {
+          "support": 384,
+          "nll_nats": 4.495062106822705,
+          "brier": 1.501942491710782
+        },
+        "play_audiobook": {
+          "support": 221,
+          "nll_nats": 5.811222165674237,
+          "brier": 1.7068940547394402
+        },
+        "play_game": {
+          "support": 59,
+          "nll_nats": 4.934711316310498,
+          "brier": 1.588656816139666
+        },
+        "play_music": {
+          "support": 440,
+          "nll_nats": 0.0929349675429736,
+          "brier": 0.05217905454787918
+        },
+        "play_podcasts": {
+          "support": 236,
+          "nll_nats": 6.674356512706916,
+          "brier": 1.6899073792325465
+        },
+        "play_radio": {
+          "support": 221,
+          "nll_nats": 5.519511651441261,
+          "brier": 1.7936812653124943
+        },
+        "qa_currency": {
+          "support": 101,
+          "nll_nats": 7.21166537647618,
+          "brier": 1.4693198082855499
+        },
+        "qa_definition": {
+          "support": 154,
+          "nll_nats": 6.0765940412865245,
+          "brier": 1.515941734161306
+        },
+        "qa_factoid": {
+          "support": 336,
+          "nll_nats": 2.2870097993838847,
+          "brier": 0.9338005989665499
+        },
+        "qa_maths": {
+          "support": 81,
+          "nll_nats": 5.359123376645984,
+          "brier": 1.2156007146304173
+        },
+        "qa_stock": {
+          "support": 73,
+          "nll_nats": 6.63844916509184,
+          "brier": 1.4803726740651442
+        },
+        "recommendation_events": {
+          "support": 162,
+          "nll_nats": 14.195687746265925,
+          "brier": 1.952426640057889
+        },
+        "recommendation_locations": {
+          "support": 80,
+          "nll_nats": 10.246251753511913,
+          "brier": 1.6026236941585519
+        },
+        "recommendation_movies": {
+          "support": 40,
+          "nll_nats": 12.286305746606418,
+          "brier": 1.782396726332895
+        },
+        "social_post": {
+          "support": 181,
+          "nll_nats": 5.50863467453157,
+          "brier": 1.3995159525956127
+        },
+        "social_query": {
+          "support": 84,
+          "nll_nats": 11.462100480970008,
+          "brier": 1.66475703100291
+        },
+        "takeaway_order": {
+          "support": 94,
+          "nll_nats": 5.928784066436194,
+          "brier": 1.3821689018400825
+        },
+        "takeaway_query": {
+          "support": 105,
+          "nll_nats": 9.197501266034465,
+          "brier": 1.7643034654541436
+        },
+        "transport_query": {
+          "support": 151,
+          "nll_nats": 6.497344998952355,
+          "brier": 1.8671664522972258
+        },
+        "transport_taxi": {
+          "support": 47,
+          "nll_nats": 8.425248547424609,
+          "brier": 1.6975559710379686
+        },
+        "transport_ticket": {
+          "support": 76,
+          "nll_nats": 6.600014625072068,
+          "brier": 1.8365092512084977
+        },
+        "transport_traffic": {
+          "support": 72,
+          "nll_nats": 6.67194365820697,
+          "brier": 1.5316610420951804
+        },
+        "weather_query": {
+          "support": 471,
+          "nll_nats": 0.9173167044747148,
+          "brier": 0.4279071126816848
+        }
+      },
+      "scope": "Descriptive categorical probability quality; not independent applicability calibration or RL efficacy.",
+      "policy_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458:d8f5ec95234786174e76b3b6246c5f514ed6f8a8eb3ea5397a2744788c26dcf0"
+    }
+  },
+  "accepted_pair": "docs/engineering/slurp-stage1-selection-paired-v1.json",
+  "accepted_pair_sha256": "6008e28db884e0032efc53e956e056b88ef32753a14d7fe57591a04725746acf",
+  "input_hashes": {
+    "inputs": "42ede01159284f5f55eed546f104cd699c11fe673829136be0b02b6c88652710",
+    "base": "07bee1048824a8beb590510420b603b25e35d63f7d9814795f38286e482e1854",
+    "candidate": "5ad71ee4ecd9b8f313cd1c102407a3245e79318ab9dab92962e4a6cfbe64a23b"
+  },
+  "source_hashes": {
+    "/home/xingchao/workspace/multimodal-jev/tools/jev/diagnose_final_selection_probabilities.py": "b9e22135ca89e4fca62997d2135631c643ad6411634928311f074d4122482d30",
+    "src/multimodal_jev/final_probability_diagnostics.py": "d5210e22dbe43338573299a542cd3b2f9650f142a4ed7c05fb0a8a05d2498895"
+  },
+  "scope": "Posthoc fixed10-bin categorical probability diagnostic, no selection-driven tuning, new inference or RL efficacy claim."
+}

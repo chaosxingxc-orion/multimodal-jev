@@ -1,0 +1,129 @@
+{
+  "container_id": "9531b8702ce9b05689e758a73428c3168ae4cc5e5f17d3ad3f738e11cb0de7b3",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T08:58:30.00748Z",
+    "FinishedAt": "2026-11-14T08:59:09.34439371Z"
+  },
+  "remote_pins_verified": 333,
+  "collection_sha256": "8615de44e89957ba80426457c9330dd02dc60a1f105f026f55d9c4e65b8d76f9",
+  "result": {
+    "schema": "decision-token-registration-cpu-v3",
+    "naive": {
+      "id": 151705,
+      "collision": [
+        "timestamp_token_id"
+      ]
+    },
+    "candidate": {
+      "id": 151706,
+      "token": "<|jev_decision|>",
+      "reservation_placeholders": [
+        {
+          "token": "<|jev_probe_reserved_id_151705|>",
+          "id": 151705,
+          "reserved_by": [
+            "timestamp_token_id"
+          ]
+        }
+      ],
+      "within_existing_embedding": true,
+      "existing_token_ids_preserved": true,
+      "existing_special_token_status_preserved": true,
+      "single_token": true,
+      "processor_roundtrip_exact": true
+    },
+    "audio_sha256": "3eeea30f9ab5aec4159c79dbb3195b481cd55099584ce02cbe45ac9ca6aa8e9b",
+    "audio_processing": {
+      "config": {
+        "preemphasis": 0.0,
+        "trim_threshold_dbfs": null,
+        "trim_frame_ms": 20.0,
+        "trim_margin_ms": 100.0,
+        "target_rms_dbfs": null,
+        "max_gain_db": 12.0,
+        "peak_limit": 0.99,
+        "speed_factor": 1.0,
+        "version": "jev-waveform-v1"
+      },
+      "sample_rate": 16000,
+      "input_samples": 41979,
+      "output_samples": 41979,
+      "input_waveform_sha256": "acfc84134fa645c92f996f86264573c38a06b38804974cad09dd3af8d27f8a71",
+      "output_waveform_sha256": "acfc84134fa645c92f996f86264573c38a06b38804974cad09dd3af8d27f8a71",
+      "retained_original_interval": [
+        0,
+        41979
+      ],
+      "applied_gain": 1.0,
+      "speed_changes_pitch": false,
+      "internal_silence_removed": false
+    },
+    "compiled": {
+      "positions": [
+        77,
+        92
+      ],
+      "readout": "marker_token_itself",
+      "tokens": 95,
+      "identities": {
+        "input_ids": {
+          "shape": [
+            1,
+            95
+          ],
+          "dtype": "torch.int64",
+          "sha256": "c3adea98ce6ec7da28671f58d76c0bb3c6a1da227affb4e1347e9a1e3520b64d"
+        },
+        "attention_mask": {
+          "shape": [
+            1,
+            95
+          ],
+          "dtype": "torch.int64",
+          "sha256": "78df0523abb9ed845dd6d89c95e38ffb602572d0537d86bf6c3f0635d92c5f53"
+        },
+        "input_features": {
+          "shape": [
+            1,
+            128,
+            300
+          ],
+          "dtype": "torch.float32",
+          "sha256": "e7208846c82b02607632fb7cf0f39a8a6c4cf1f75b4a72c2a84bfa14c1e17265"
+        },
+        "input_features_mask": {
+          "shape": [
+            1,
+            300
+          ],
+          "dtype": "torch.int32",
+          "sha256": "baa6fa75b1c5f2f0849f1a249a5aba1517e11280b0ea87f5b8e14f9ddbac75be"
+        }
+      }
+    },
+    "saved_files": {
+      "chat_template.jinja": "f50e6b694fbf4a683206e37869990d68333fe95d285730f084c838a34b0d98c2",
+      "processor_config.json": "bc0b230081b44e629dd5b9045b78495615c1831b4b9f4cffe97bd37e82a6156a",
+      "tokenizer.json": "dfc31f2e73e91521a1f664ca198cffaaa123619c10b4638270b804565e4979c8",
+      "tokenizer_config.json": "e2c2078a8c3e0394171ce4e82a76a8b38ced47cd20a34e5149ebb51198b19856"
+    },
+    "training_dispatch_allowed": false,
+    "scope": "Test-only tokenizer reservation and real audio processor roundtrip. No new embedding initialization, model forward, trained head or NPU/vLLM acceptance. Questions are structural fixtures without supervision; source tokenizer unchanged."
+  },
+  "independent_json_recheck": {
+    "original_model_vocab_exact": true,
+    "original_added_tokens_exact": true,
+    "reserved_ids_excluded": true
+  },
+  "scope": "Processor diagnostic only; placeholder guard not production token registration; real model/head and vLLM unverified."
+}

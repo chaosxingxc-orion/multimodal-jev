@@ -1,0 +1,826 @@
+{
+  "container_id": "6930f1f3b176814a75696a94496c0083779b8fea90360fbd3fcf5b0c6979203f",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-14T11:29:32.48717378Z",
+    "FinishedAt": "2026-11-14T11:30:43.96538377Z"
+  },
+  "remote_pins_verified": 350,
+  "collection_sha256": "6baef0b9b973b840f334833205007d357a08038a6b222b4067998f0c5c30c4b3",
+  "result": {
+    "passed": true,
+    "ranks": 4,
+    "cases_per_rank": 12,
+    "optimizer": {
+      "lr": 0.0001,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.0
+    },
+    "scope": "Actual native verl actor/DDP optimizer and restore with synthetic backbone and actual shared Transformer head; not Qwen/NPU or efficacy.",
+    "rank_reports": [
+      {
+        "passed": true,
+        "cases": [
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 4.3838195296075355e-08,
+              "exp_avg": 5.122274160385132e-09,
+              "exp_avg_sq": 1.8189894035458565e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 2.9802322387695312e-08,
+              "parameters": 5.0316227628854904e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 3.637978807091713e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 4.470348358154297e-08,
+              "parameters": 4.402945563697358e-08,
+              "exp_avg": 4.190951585769653e-09,
+              "exp_avg_sq": 1.3642420526593924e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 1.862645149230957e-08,
+              "parameters": 6.309241484814265e-08,
+              "exp_avg": 3.725290298461914e-09,
+              "exp_avg_sq": 2.7284841053187847e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 5.247827772336677e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 3.725290298461914e-08,
+              "parameters": 5.3032017888199334e-08,
+              "exp_avg": 4.6566128730773926e-09,
+              "exp_avg_sq": 7.275957614183426e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 1.7197884005781816e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 2.7017225789904842e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 1.0913936421275139e-11
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          }
+        ]
+      },
+      {
+        "passed": true,
+        "cases": [
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 4.3838195296075355e-08,
+              "exp_avg": 5.122274160385132e-09,
+              "exp_avg_sq": 1.8189894035458565e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 2.9802322387695312e-08,
+              "parameters": 5.0316227628854904e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 3.637978807091713e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 4.470348358154297e-08,
+              "parameters": 4.402945563697358e-08,
+              "exp_avg": 4.190951585769653e-09,
+              "exp_avg_sq": 1.3642420526593924e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 1.862645149230957e-08,
+              "parameters": 6.309241484814265e-08,
+              "exp_avg": 3.725290298461914e-09,
+              "exp_avg_sq": 2.7284841053187847e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 5.247827772336677e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 3.725290298461914e-08,
+              "parameters": 5.3032017888199334e-08,
+              "exp_avg": 4.6566128730773926e-09,
+              "exp_avg_sq": 7.275957614183426e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 1.7197884005781816e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 2.7017225789904842e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 1.0913936421275139e-11
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          }
+        ]
+      },
+      {
+        "passed": true,
+        "cases": [
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 4.3838195296075355e-08,
+              "exp_avg": 5.122274160385132e-09,
+              "exp_avg_sq": 1.8189894035458565e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 2.9802322387695312e-08,
+              "parameters": 5.0316227628854904e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 3.637978807091713e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 4.470348358154297e-08,
+              "parameters": 4.402945563697358e-08,
+              "exp_avg": 4.190951585769653e-09,
+              "exp_avg_sq": 1.3642420526593924e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 1.862645149230957e-08,
+              "parameters": 6.309241484814265e-08,
+              "exp_avg": 3.725290298461914e-09,
+              "exp_avg_sq": 2.7284841053187847e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 5.247827772336677e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 3.725290298461914e-08,
+              "parameters": 5.3032017888199334e-08,
+              "exp_avg": 4.6566128730773926e-09,
+              "exp_avg_sq": 7.275957614183426e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 1.7197884005781816e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 2.7017225789904842e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 1.0913936421275139e-11
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          }
+        ]
+      },
+      {
+        "passed": true,
+        "cases": [
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 4.3838195296075355e-08,
+              "exp_avg": 5.122274160385132e-09,
+              "exp_avg_sq": 1.8189894035458565e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 2.9802322387695312e-08,
+              "parameters": 5.0316227628854904e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 3.637978807091713e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 4.470348358154297e-08,
+              "parameters": 4.402945563697358e-08,
+              "exp_avg": 4.190951585769653e-09,
+              "exp_avg_sq": 1.3642420526593924e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "grpo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 1.862645149230957e-08,
+              "parameters": 6.309241484814265e-08,
+              "exp_avg": 3.725290298461914e-09,
+              "exp_avg_sq": 2.7284841053187847e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 0,
+            "errors": {
+              "gradients": 1.862645149230957e-09,
+              "parameters": 2.244467012246787e-08,
+              "exp_avg": 2.3283064365386963e-10,
+              "exp_avg_sq": 1.1368683772161603e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 5.247827772336677e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 1,
+            "step": 2,
+            "errors": {
+              "gradients": 3.725290298461914e-08,
+              "parameters": 5.3032017888199334e-08,
+              "exp_avg": 4.6566128730773926e-09,
+              "exp_avg_sq": 7.275957614183426e-12
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 0,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 6.677631780860338e-09,
+              "exp_avg": 4.656612873077393e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 1,
+            "errors": {
+              "gradients": 7.450580596923828e-09,
+              "parameters": 1.7197884005781816e-08,
+              "exp_avg": 9.313225746154785e-10,
+              "exp_avg_sq": 9.094947017729282e-13
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          },
+          {
+            "algorithm": "rloo_v1",
+            "micro": 2,
+            "step": 2,
+            "errors": {
+              "gradients": 5.21540641784668e-08,
+              "parameters": 2.7017225789904842e-08,
+              "exp_avg": 5.587935447692871e-09,
+              "exp_avg_sq": 1.0913936421275139e-11
+            },
+            "admission": {
+              "global_rows": 8,
+              "global_real_requests": 7,
+              "world_size": 4
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "training_dispatch_allowed": false,
+  "scope": "Four actual CPU Gloo/DDP ranks; native verl backward/Adam, shared Transformer head and synthetic backbone; independent loss, two microbatch sizes, GRPO/RLOO and restore; no NPU/Qwen/efficacy."
+}

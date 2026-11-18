@@ -1,0 +1,53 @@
+{
+  "schema": "slurp-menu-design-candidate-v2",
+  "status": "task_design_audit_only",
+  "training_dispatch_allowed": false,
+  "seed": 317,
+  "audit_epochs": 2,
+  "families": {
+    "intent": {
+      "operator": "I_class",
+      "definitions": "configs/tasks/slurp/intent-definition-candidates-v1.json"
+    },
+    "slot": {
+      "operator": "S_present",
+      "definitions": "configs/tasks/slurp/type-definition-candidates-v1.json",
+      "policy": "configs/tasks/slurp/slot-presence-policy-candidate-v1.json"
+    }
+  },
+  "arms": {
+    "direct": {
+      "intent_questions": 0,
+      "slot_questions": 0
+    },
+    "q2": {
+      "intent_questions": 1,
+      "slot_questions": 1
+    },
+    "q8": {
+      "intent_questions": 4,
+      "slot_questions": 4
+    }
+  },
+  "final": "complete_60_class_native_intent_choice_same_across_arms",
+  "family_order": "sort_semantic_ids_by_sha256_of_JSON_array_menu-order-v1_seed_family_id",
+  "source_assignment": "start_index_from_sha256_of_JSON_array_menu-source-v1_seed_family_opaque_source_group_mod_family_size",
+  "epoch_rotation": "advance_start_by_rotation_stride_times_epoch_for_both_q2_and_q8; coprime_to_60_and_55",
+  "nesting": "q2_is_first_intent_and_first_slot_of_q8_for_same_source_and_epoch",
+  "question_order": "interleave_intent_slot",
+  "actor_identifiers": "neutral_question_and_candidate_symbols_semantic_ids_remain_external",
+  "source_identity_use": "offline_schedule_only_not_actor_input_no_content_or_gold_lookup",
+  "deployment": "caller_supplies_frozen_panel_id_or_label_independent_random_panel_not_source_identity_inference",
+  "evaluation": "preregister_same_panel_assignment_across_comparison_arms_no_best_of_panels_no_multi_call_union",
+  "definition_supply": "same_complete_intent_definitions_and_same_supplied_slot_definitions_and_rules_across_arms_for_each_q_budget_comparison",
+  "supervision": "native_label_counts_diagnostic_only_new_definition_semantic_labels_pending",
+  "length_acceptance": "requires_actual_processor_audit_with_new_definitions_not_inherited_from_old_8Q_probe",
+  "balance": "report_each_definition_exposure_and_positive_rate_never_select_questions_using_target",
+  "rotation_stride": 7,
+  "supersedes": "v1_stride4_cannot_cover_all_definitions_per_source_with_q2",
+  "task_resolution_migration": {
+    "resolution": "configs/tasks/slurp/native-semantic-task-resolution-v1.json",
+    "status": "required_before_release_not_implemented",
+    "historical_values": "Retained for provenance; do not inherit I_class menus/denominators/definitions as semantic I_present settings. No new runnable profile created."
+  }
+}

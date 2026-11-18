@@ -1,0 +1,56 @@
+{
+  "schema": "jev-stage2-task-reward-design-v1",
+  "status": "offline_candidate_not_runtime_admitted",
+  "training_dispatch_allowed": false,
+  "scope": "simple_single_audio_native_exclusive_event_complete_truth",
+  "signals": ["ranking", "existence", "task_set"],
+  "task_reward": {
+    "schema": "jev-task-set-reward-v1",
+    "semantics": "exclusive_event",
+    "exact_weight": 0.5,
+    "overlap_weight": 0.5,
+    "beta": 1.0
+  },
+  "task_credit": {
+    "enabled": false,
+    "algorithm": "task_grpo_floor_v1",
+    "alternative": "task_rloo_v1",
+    "group_size": 16,
+    "advantage_std_floor": 0.25,
+    "loss_coefficient": 0.0,
+    "candidate_loss_coefficients": [0.1, 0.2],
+    "action_unit": "whole_candidate_set",
+    "sampling": "G independent full Bernoulli sets from authenticated detached behavior probabilities",
+    "likelihood": "sum of selected or rejected bit logprob across all candidates for each joint action",
+    "ratio": "joint logprob difference under current versus behavior policy, log-domain arithmetic",
+    "clip_ratio": 0.2,
+    "normalization": "per_query_over_group_before_loss_coefficient",
+    "reduction": "mean_samples_then_query_weighted_mean_excluding_padding",
+    "broadcast_to_binary_node_advantages": false,
+    "automatic_enable": false
+  },
+  "existing_signals": {
+    "ranking": "retain original paired ranking credit",
+    "existence": "retain original candidate member credit",
+    "auxiliary": "retain declared ranking and binary NLL losses; task set utility is not probability calibration",
+    "reference": "unchanged frozen Stage1 endpoint full TRAIN output cache"
+  },
+  "proposed_ablations": ["existing_dual_credit", "dual_plus_exact_only", "dual_plus_exact_and_overlap"],
+  "audit_metrics": [
+    "task_reward_mean", "task_reward_std", "zero_variance_group_fraction",
+    "exact_action_fraction", "partial_action_fraction", "empty_action_fraction",
+    "false_positive_count", "false_negative_count", "selected_count",
+    "joint_log_ratio_quantiles", "task_clip_fraction", "per_signal_gradient_norm",
+    "selection_set_f1", "selection_exact_set", "selection_top1",
+    "selection_binary_nll", "selection_brier", "reward_cpu_seconds"
+  ],
+  "release_requirements": [
+    "bind reward config hash into behavior record, checkpoint and experiment identity",
+    "reconstruct task samples and rewards from authenticated behavior and TRAIN labels",
+    "same rollout group for all task components; no extra acoustic forward",
+    "matching joint-action likelihood, clipping, padding and DP accumulation checks",
+    "NPU finite acceptance and exact export/inference parity before dispatch",
+    "preregister coefficients using TRAIN only; selection screens checkpoints without reward tuning",
+    "full source curve before frozen FSC/MINDS transfer evaluation"
+  ]
+}

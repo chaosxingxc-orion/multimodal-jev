@@ -1,0 +1,106 @@
+{
+  "schema": "slurp-attribute-relation-boundary-check-v1",
+  "training_dispatch_allowed": false,
+  "rule": "configs/tasks/slurp/attribute-relation-boundary-resolution-v1.json",
+  "rule_sha256": "42a390379aa5c47bc07a16e734aba0aca3913a1ba8d218f04e4e382034e0560b",
+  "review": "configs/reviews/slurp-attribute-relation-boundary-v1.json",
+  "review_sha256": "5c8e98668a94b9a6228c34e93732555c8a9c7a94c80281d6bac74bfa5a5dcb6a",
+  "cohort_sources": 432,
+  "cohort_recordings": 1505,
+  "query_contrast_sources": 57,
+  "unique_read_sources": 489,
+  "review_coordinates": 55,
+  "review_sources": 45,
+  "proposal_counts": {
+    "false": 19,
+    "true": 30,
+    "null": 6
+  },
+  "recording_bindings": 227,
+  "unique_recordings": 181,
+  "native_disagreements": 17,
+  "first_batch_rereview": [
+    {
+      "source_id": "13862",
+      "type": "definition_word",
+      "old_proposal": null,
+      "new_proposal": false,
+      "admitted": false
+    },
+    {
+      "source_id": "14833",
+      "type": "relation",
+      "old_proposal": null,
+      "new_proposal": false,
+      "admitted": false
+    },
+    {
+      "source_id": "14587",
+      "type": "personal_info",
+      "old_proposal": null,
+      "new_proposal": false,
+      "admitted": false
+    }
+  ],
+  "admitted": 0,
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/official-clean-intent-v1/MANIFEST.json": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/annotation-workpack-consolidated-v2/report.json": "80aab5cb2ca546a44c4b90e08c5e44ec77f36136f9b71dc93b6f4699c124a50a",
+    ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "configs/tasks/slurp/attribute-relation-boundary-resolution-v1.json": "42a390379aa5c47bc07a16e734aba0aca3913a1ba8d218f04e4e382034e0560b",
+    "configs/reviews/slurp-attribute-relation-boundary-v1.json": "5c8e98668a94b9a6228c34e93732555c8a9c7a94c80281d6bac74bfa5a5dcb6a"
+  },
+  "files": {
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/attribute-relation-boundary-evidence-v1/first-batch-migration.json": "7f7e89245299a46ebf9814b8d56589f8eb473363ae7850d368fbbf4947bd8192",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/attribute-relation-boundary-evidence-v1/review-recording-bindings.jsonl": "aebf05ed28e98dfc11e362d73aafbc67e3eccd76d28c99613275d7b5650cc973",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/attribute-relation-boundary-evidence-v1/query-contrast-sources.jsonl": "4dd14efcd3e87f8d44d8d38b1a9ed07d2e4c7d1a9f016bc80253a9aa77299056",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/attribute-relation-boundary-evidence-v1/summary.json": "c5675ae7df790d78b7daaee170537b90d6adee5da007ad1de2d2d710150e7128",
+    "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/attribute-relation-boundary-evidence-v1/native-positive-sources.jsonl": "abbb124c427e698d153f539f697e58cd5b8eceeab22f0e319db22b15f967edbe"
+  },
+  "new_package": {
+    "path": "configs/tasks/slurp/slot-consolidated-design-v6.json",
+    "sha256": "dd4bf750f1858a96f8376de39d418f0da6df2b1f71a8b3c11d4f21d438bec5ad",
+    "files": {
+      "configs/tasks/slurp/type-definition-candidates-v8.json": "2d310a0f7ca24432124f96142e2869893cb5a0401f62ffc6f435e733ce3128c3",
+      "configs/tasks/slurp/slot-presence-policy-candidate-v8.json": "12bf40de8a08143f3669a609aae352c7dec6f77ca23d7d48e5083734115da70c",
+      "configs/tasks/slurp/type-boundary-rules-candidate-v9.json": "72cf2851c7907755b19ce62bd9b8753be2973e0da7c0503e2729bb22d99eec1f"
+    },
+    "unchanged_cards": 52,
+    "changed_semantic_types": [
+      "definition_word",
+      "personal_info",
+      "relation"
+    ],
+    "changed_boundary_pairs": [
+      [
+        "definition_word",
+        "food_type"
+      ],
+      [
+        "definition_word",
+        "person"
+      ],
+      [
+        "definition_word",
+        "place_name"
+      ],
+      [
+        "email_address",
+        "personal_info"
+      ],
+      [
+        "person",
+        "personal_info"
+      ],
+      [
+        "person",
+        "relation"
+      ],
+      [
+        "personal_info",
+        "relation"
+      ]
+    ]
+  },
+  "scope": "Metadata, full learning source membership and binding reconstruction independent of workpack bindings; same-author reference judgments, no independent semantic certification, listening or optimization admission."
+}

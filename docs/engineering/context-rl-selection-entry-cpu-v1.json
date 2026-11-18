@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "kind": "local_CPU_candidate_only",
+  "tests": 44,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_rl_selection_entry.py tests/test_context_rl_evaluation_plan.py tests/test_context_selection_curve.py",
+  "files": {
+    "tools/jev/run_context_rl_selection.py": "cb086f17f7d68ca8efd0d85b4f6de727f07ec85645cd53c5b31af7ff9d91ed92",
+    "tests/test_context_rl_selection_entry.py": "d7f45fa6914d44c7266cb393e106662e9df06fccd515c579791e403a6ba48c63",
+    "tools/jev/context_rl_evaluation_plan.py": "e9aa7d62b3df804db6808cc999106daf5a644fd99e50d23695b4bd92b6bf9630"
+  },
+  "unchanged_queued_pins": {
+    "context-online-acceptance-v1-pins.json": 369,
+    "context-online-shared-npu-v2-chain-pins.json": 4,
+    "context-online-shared-resume-npu-v2-chain-pins.json": 5
+  },
+  "actual_NPU_evaluation": false,
+  "independent_collection_integrated": false,
+  "scope": "Artifact-bound formal RL point preparation, runtime orchestration candidate and synthetic phase/failure tests. Actual model/parity/9226 evaluation and launcher/collector integration remain unverified."
+}

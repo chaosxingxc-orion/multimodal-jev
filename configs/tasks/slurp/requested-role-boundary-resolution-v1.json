@@ -1,0 +1,81 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "explicit_requested_calendar_creator_v1",
+  "status": "selected_task_design_rule_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "date",
+    "artist_name",
+    "audiobook_author"
+  ],
+  "definitions": {
+    "date": "An expressed calendar date, calendar day or period, calendar-relative reference, or explicitly queried calendar property. A supplied answer value is not required. A generic temporal question without a supported calendar distinction is insufficient to decide this predicate. Apply request-relevant scope.",
+    "artist_name": "An expressed music creator or musical performer role, identified by name, description, reference, or a question explicitly asking for that role. An answer identity is not required. Celebrity identity, an unspecified artistic profession or unrelated human reference alone does not establish a musical role. Apply request-relevant scope.",
+    "audiobook_author": "An expressed author role for a book or audiobook referred to in the request, including a name, identifying description, reference or explicit question about its author. An answer identity is not required. Book ownership, narration, playback and musical authorship do not alone establish book authorship. Apply request-relevant scope."
+  },
+  "per_type_rules": {
+    "date": [
+      "What date/day/month/year and an explicitly queried weekday or calendar property establish date even without its answer. A supplied calendar expression also qualifies independently of whether the main question asks a different property.",
+      "Bare when does not select date rather than time. If the full input provides no calendar anchor or explicit calendar property and the temporal granularity remains unresolved, date is unavailable. Do not decide it from event likelihood, native intent, tense or external biographical facts.",
+      "Distinguish calendar anchoring from clock readings, durations, day parts and recurrence. Do not automatically label every temporal expression with date; an independent calendar reference can coexist with these roles.",
+      "An event, meeting, birthday, reminder or train alone does not supply its missing calendar parameter. Infer no date answer or executable schedule. Clear lack of a calendar role is negative; genuinely unresolved temporal role is unavailable."
+    ],
+    "artist_name": [
+      "Explicit singing, song creation, musical performance, or a song/music by relation establishes the musical creator/performer role. Who sings this song and who wrote this song qualify without a supplied name. That artist linked to requested music can qualify without resolving the referent.",
+      "A person known externally as a musician does not satisfy artist_name in a request that only asks their age, death, contact details or identity. Require the musical role in the utterance; native artist annotation is not sufficient.",
+      "Artist alone may mean a visual artist or another creator. If the utterance leaves the creative domain genuinely unresolved, preserve unavailable; use no gold music intent to resolve it. Explicit singer/singing establishes musical performance without needing a title.",
+      "Separate music authorship/performance from book authorship, human personhood and work identity. A band can be a musical performer without automatically being a single human person. Ordinary people, sporting roles and book authorship alone are negative for this type."
+    ],
+    "audiobook_author": [
+      "A book written by a named person or identifying description establishes author; a proper name is unnecessary. An explicit question asking who wrote the referenced book activates authorship without recovering the name. This interrogative extension is a task design rule, not an observed author-question cohort result.",
+      "Separate the writer from a narrator, reader, owner and playback source. A narration or possession relation alone does not imply authorship; when by could modify a song inside an audiobook or the book itself, unresolved attachment stays unavailable.",
+      "Music creator or performer alone does not establish book authorship. Book as a travel-booking verb, or by introducing transport or duration, supplies no book-author relation.",
+      "Book authorship does not by itself identify one particular work: a book by an author may request any work. Apply audiobook_name particular-reference policy separately. A genuinely unsupported author relation is absent, without imagining unstated authorship."
+    ]
+  },
+  "evidence": {
+    "calendar": {
+      "regex": "\\b(what|which) (is (the )?)?(date|day|month|year)\\b|\\bwhen (was|is|were|are|did|will)\\b",
+      "native_types_union": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/calendar-sources.jsonl",
+      "sha256": "ff433438f35b6e0f4060dd23859bd7ece286a492803e2c726a4741b60840e8a3",
+      "sources": 129,
+      "recordings": 673
+    },
+    "creator": {
+      "regex": "\\b(who|whose|artist|singer|author|performer|written|sang|sings|singing|wrote|composed)\\b",
+      "native_types_union": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/creator-sources.jsonl",
+      "sha256": "8aed32bbf159937b93c914908770ecd54c73919ffdf839021df6ad1af434ccd3",
+      "sources": 104,
+      "recordings": 478
+    },
+    "native_artist": {
+      "regex": "(?!)",
+      "native_types_union": [
+        "artist_name"
+      ],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/native_artist-sources.jsonl",
+      "sha256": "5308bc27bca2f0ce95f5eed74d18b474065a6131d15b0e5356982fda8f2b9ad1",
+      "sources": 177,
+      "recordings": 726
+    },
+    "book_author": {
+      "regex": "\\b(author|narrat\\w*|written by|wrote|read by)\\b|\\b(book|audiobook)\\b.*\\bby\\b",
+      "native_types_union": [
+        "audiobook_author"
+      ],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/requested-role-evidence-v1/book_author-sources.jsonl",
+      "sha256": "ee28b4a7899e3ea609cec3a53f885447560ea7f49a131f5dd343718706e6ef07",
+      "sources": 14,
+      "recordings": 127
+    }
+  },
+  "reading": "Read all129 calendar-question,104 creator-question,177 native artist and14 book-author diagnostic sources. Cohorts overlap; retrieval is not labeling. Only4 native audiobook_author sources; no book-author interrogative found in this diagnostic cohort.",
+  "scope": "Project semantic-role presence policy, not native entity-span gold or identity/date answer generation. Unrelated-background scope unchanged.",
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v9.json",
+    "previous_sha256": "243ccf163f054323af6d573ef1e550788e54d66c767405d75cd9d7af827e2b33",
+    "historical_supervision_automatically_migrated": false
+  }
+}

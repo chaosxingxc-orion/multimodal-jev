@@ -1,0 +1,30 @@
+{
+  "project": "${PROJECT_ROOT}",
+  "output": "${STARTUP_SELFCHECK_OUTPUT}",
+  "python": "${VERIFICATION_PYTHON}",
+  "scratch_root": "${VERIFICATION_SCRATCH_ROOT}",
+  "support_pythonpaths": "${VERIFICATION_SUPPORT_PATHS}",
+  "execution": {"io_workers": 4, "cpu_workers": 2},
+  "test_timeout_seconds": 240,
+  "source_patterns": ["src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py", "tools/*.py", "tests/*.py", "extensions/*.py", "configs/experiments/*.json", "context_task_reward.py"],
+  "test_groups": [
+    {"id": "entry", "category": "C1", "tests": ["tests/test_objective_safe_entry.py"]},
+    {"id": "lifecycle", "category": "C2", "tests": ["tests/test_context_process_supervisor.py", "tests/test_startup_protocol_contract.py", "tests/test_stage2_runtime_runner.py"]},
+    {"id": "proof", "category": "C3", "tests": ["tests/test_audit_content_session.py"]},
+    {"id": "inputs", "category": "C4", "tests": ["tests/test_fast_reference_inputs.py"]},
+    {"id": "snapshot", "category": "C5", "tests": ["tests/test_source_snapshot.py"]},
+    {"id": "composition", "category": "C6", "tests": ["tests/test_audit_release.py", "tests/test_fast_launch.py", "tests/test_runtime_startup.py", "tests/test_startup_release_package.py"]}
+  ],
+  "static_checks": [
+    {"id": "unreleased_controller_rewriting", "category": "C6", "paths": ["tools/reports/context_audit_release.py", "tools/reports/context_composed_reference_audit.py"]},
+    {"id": "shared_controller_composition", "category": "C6", "paths": ["tools/reports/context_composed_pipeline.py", "tools/reports/context_stage2_runtime_runner.py"]},
+    {"id": "selfcheck_composition", "category": "C7", "paths": ["tools/reports/startup_category_selfcheck.py", "src/multimodal_jev/source_snapshot.py"]}
+  ],
+  "pending_checks": [
+    {"id": "full_source_reference_differential", "category": "C3", "reason": "Requires complete real evidence on frozen source; fixture tests do not replace it."},
+    {"id": "configured_width_performance", "category": "C4", "reason": "Requires paired full-load timing and memory measurements."},
+    {"id": "packaged_fixed_image_entry", "category": "C1", "reason": "CPU host results do not prove the fixed image packaged entry."},
+    {"id": "all_stage_composed_release", "category": "C6", "reason": "prefix/recovery/tail/efficiency/formal/evaluation must share admitted components; legacy transitive rewriting remains."},
+    {"id": "finite_npu_independent_audit", "category": "C7", "reason": "Requires 4 inference passes / 2 updates, recovery, tail, collect and independent numerical audit."}
+  ]
+}

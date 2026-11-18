@@ -1,0 +1,17 @@
+{
+  "status": "cpu_verified_not_actual_formal_execution",
+  "tests": 21,
+  "seconds": 2.11,
+  "command": "PYTHONPATH=src:.local/verification-python python -m pytest -q tests/test_context_baseline_sequence.py tests/test_context_formal_experiment.py",
+  "scope": "7 sequence tests plus 14 experiment tests; publication/execution mocked, real local locks and file integrity checks",
+  "sources": {
+    "tools/jev/run_context_baseline_sequence.py": "4ca6fa815d2b941a4669a47dbcbbf776b8300ff4f027697c45e4bc7ed24d21e6",
+    "tests/test_context_baseline_sequence.py": "10647e024374b324b50b4402dd8a025f89a5a2f5ffecc35ee8027ed1ee7b4408"
+  },
+  "original_pins": {
+    "context-online-acceptance-v1-pins.json": 369,
+    "context-online-shared-npu-v2-chain-pins.json": 4,
+    "context-online-shared-resume-npu-v2-chain-pins.json": 5,
+    "context-checkpoint-shared-npu-v1-chain-pins.json": 10
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "configured-fixed-image-cpu-tests-v1",
+  "container_id": "6116a543dbb43ffc98f209cb1e191b17e0882905926dc2193c10585b96ba66b8",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-16T02:27:31.58669406Z",
+    "FinishedAt": "2026-11-16T02:29:13.48921665Z"
+  },
+  "source_files": 763,
+  "source_manifest_sha256": "342526e4f980bd5debe5c998390d7cb6050371ab9e76c4689e68ef9b859688c2",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-dual-package-cpu-v3-collected",
+  "files": {
+    "run/terminal.json": "e1bad146ea4dd320c396e35558d311156e390990a5baba8b48206426549bd0bd",
+    "run/junit.xml": "ed7977a116a2e25987e5bb99e755858152c959dd2b65058aae15f4d06da38343",
+    "run/pytest.log": "07eec3179bc3975c5e74ca3a3b77e3cf3eefd10b87a73c096e0e4fb7fb3ee24e",
+    "package/FILES.json": "342526e4f980bd5debe5c998390d7cb6050371ab9e76c4689e68ef9b859688c2",
+    "package/run.py": "16269bfbbeb25c009a19abd11943369580a418eb3e3729fad494b41171ee5573"
+  },
+  "counts": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794796078.5268075,
+    "finished_unix": 1794796152.1288974,
+    "source_manifest_sha256": "342526e4f980bd5debe5c998390d7cb6050371ab9e76c4689e68ef9b859688c2",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-dual-package-cpu-v3/run/junit.xml",
+      "tests/test_context_dual_packaged_runtime.py",
+      "tests/test_context_lora_checkpoint_scope.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Exact prepared v3 package hashes/config and isolated trainer, verl actor and vLLM worker dependency imports, plus LoRA checkpoint guard. CPU only; no audio, NPU, or efficacy acceptance."
+}

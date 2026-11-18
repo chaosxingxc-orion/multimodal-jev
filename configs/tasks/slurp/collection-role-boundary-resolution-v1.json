@@ -1,0 +1,71 @@
+{
+  "schema": "jev-slot-boundary-resolution-v1",
+  "id": "explicit_collection_role_v1",
+  "status": "selected_task_design_rule_pending_supervision_release",
+  "training_dispatch_allowed": false,
+  "affected_types": [
+    "list_name"
+  ],
+  "definitions": {
+    "list_name": "An identifying reference to a general item/task list, an event calendar or schedule functioning as a collection, or a contact-record collection/address book. The collection role must be expressed; an item, activity, scheduling verb, punctuality property or generic storage container alone is insufficient. Music playlists and mail folders alone retain their specialized roles unless a separate general item/task-list role is expressed. Apply request-relevant scope."
+  },
+  "per_type_rules": {
+    "list_name": [
+      "Identify the collection role from the full utterance, not from a proper title or native intent. My calendar, the schedule queried for its entries, contacts used for record lookup/editing, address book and named shopping/task lists can qualify without recovering all entries.",
+      "A calendar or schedule counts when used as an event/appointment collection, including asking what is on it or adding, deleting or clearing entries. Schedule as an operation verb, on schedule as punctuality, or a single appointment by itself does not establish a collection.",
+      "Contacts counts when expressed as a contact-record collection, for example lookup in contacts or add an address to contacts. People described as contacts without a collection relation do not automatically qualify. A contact collection does not by itself imply a human person or an attribute field.",
+      "Music playlists, a music library and mail-storage folders/inbox are not automatically general lists merely because they contain items. A separate expressed item/task inventory may coexist, such as a list of books to order or an explicitly managed list of recordings; keep particular playlist and mail-folder policies independent.",
+      "A verb asking to list results alone does not establish an identifying collection reference. An explicitly requested new list with a name or organizing description can qualify; generic tasks, outstanding work or things to buy alone do not establish a list object.",
+      "When the input clearly supplies only an operation, item or non-list role, list_name is absent. Keep unavailable only for genuine unresolved collection identity/scope, malformed wording, or bare-fragment request relevance; do not infer missing context from native labels."
+    ]
+  },
+  "evidence": {
+    "native": {
+      "regex": "(?!)",
+      "native_types_union": [
+        "list_name"
+      ],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/native-sources.jsonl",
+      "sha256": "f915261b6de559695bde3d94ee5d7e2cd89ad40f460c8192234a84c911da3a09",
+      "sources": 151,
+      "recordings": 582
+    },
+    "calendar": {
+      "regex": "\\b(calendar|schedule)\\b",
+      "native_types_union": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/calendar-sources.jsonl",
+      "sha256": "038d9a3a176e90180ca2eb542e7c77da1b565e792cd3b61f04b6793e3f165939",
+      "sources": 387,
+      "recordings": 1634
+    },
+    "contacts": {
+      "regex": "\\b(contacts|address book|contact list)\\b",
+      "native_types_union": [],
+      "path": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/collection-role-evidence-v1/contacts-sources.jsonl",
+      "sha256": "4edb2a4027c1df589994ca30283e4c7286c0df672dd155d39ac20b4527275a4e",
+      "sources": 48,
+      "recordings": 153
+    }
+  },
+  "reading": "All151 native list sources,387 calendar/schedule-pattern sources and48 contact-collection-pattern sources read. Diagnostic retrieval is not an automatic label rule.",
+  "upstream_evidence": {
+    "path": ".local/research/slurp-upstream-ontology-v1/nlu-guidelines.txt",
+    "sha256": "5eb4d07561953ee53faff1ac177561431dc74905a7ab595f896f694ab33d04f2",
+    "paragraphs": [
+      139,
+      140,
+      141,
+      146,
+      148,
+      174,
+      175,
+      176
+    ],
+    "interpretation": "Examples distinguish lists, calendar events and contact fields. Explicit calendar/contact collection inclusion is a project semantic choice, not identical native span tagging."
+  },
+  "migration": {
+    "previous_package": "configs/tasks/slurp/slot-consolidated-design-v8.json",
+    "previous_sha256": "895ad9f080483cc6e31b1525bef9ff0f2cf1794e0c695da60ddb968d921cb807",
+    "historical_supervision_automatically_migrated": false
+  }
+}

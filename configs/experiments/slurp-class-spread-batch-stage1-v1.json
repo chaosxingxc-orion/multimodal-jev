@@ -1,0 +1,73 @@
+{
+  "schema": "slurp-class-spread-batch-stage1-v1",
+  "status": "full_stage1_terminal_collected_independent_audit_running",
+  "training_dispatch_allowed": true,
+  "base_model": "Qwen3-ASR-0.6B",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "execution_dtype": "bfloat16",
+  "optimizer_master_dtype": "float32",
+  "lora": {
+    "targets": [
+      "q_proj",
+      "v_proj"
+    ],
+    "rank": 4,
+    "alpha": 8,
+    "dropout": 0
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "lr": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0
+  },
+  "seed": 317,
+  "schedule_sha256": "8c979d47bd77f7fa3391484a20cad127a372c7acac3fc51d84e13e66a91fb682",
+  "learning_recordings": 40513,
+  "epochs": 2,
+  "total_updates": 634,
+  "global_batch": 128,
+  "dp_world_size": 4,
+  "microbatch_per_rank": 8,
+  "accumulation_per_rank": 4,
+  "batch_order": "length_grouped",
+  "candidate_profile": "qwen3-asr-bf16-fixed128x8-packed-inner2-candidate-v1",
+  "task": "audio_direct_Final60",
+  "stage": "instruction",
+  "loss": "class_weighted_candidate_CE/global_real_request_count",
+  "rollout_engine": "vLLM",
+  "rollout_component": "full_native_lora",
+  "checkpoint_interval": 64,
+  "selection_recordings": 9226,
+  "selection_split": "TRAIN_internal_not_official_TEST",
+  "selection_use": "frozen evaluation; no gradient/reward",
+  "official_test_use": "not part of this engineering run",
+  "next_stage": {
+    "primary": "GRPO",
+    "alternative": "RLOO_clipped",
+    "auxiliary": "decaying_CE",
+    "reference": "fixed_final_Stage1_KL",
+    "status": "not_dispatched"
+  },
+  "acceptance": [
+    "exact_DP4_master_Adam_restore",
+    "resident_single_micro8_HF_vLLM_same_policy",
+    "full_epoch_coverage_and_zero_weight_tail",
+    "complete_checkpoint_export_actual_PEFT_reload",
+    "complete_selection_metrics_and_prediction_distribution"
+  ],
+  "scope": "Fixed full-data instruction configuration; does not claim RL gain, academic reproduction, or cross-dataset transfer.",
+  "training_dispatched": true,
+  "launch_receipt": ".local/simple-final-v1/class-spread-batch-dp4-full-v1-launch.json",
+  "container_id": "934b106a6563f87f29e343f66b10e75485fd7c1b5de93864f920e00f02b931df",
+  "continued_from_update": 4,
+  "dispatched_updates": 630,
+  "step4_acceptance": "docs/engineering/slurp-class-spread-batch-dp4-resume-parity-audit-v1-accepted.json",
+  "terminal_update": 634,
+  "terminal_collection": ".local/simple-final-v1/class-spread-batch-dp4-full-v1-verified.json",
+  "evaluation_status": "checkpoint_audit_running_selection_pending"
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "context-attribute-schedule-session-candidate-v1",
+  "observed_unix": 1794712448.5202043,
+  "training_dispatch_allowed": false,
+  "tests": {
+    "passed": 11,
+    "scope": "6 new scheduler/session tests plus 5 existing session tests; synthetic encoded inputs/engine, real disk reference cache and original binding/sampling"
+  },
+  "files": {
+    "tools/reports/context_attribute_schedule_candidate.py": "2dfdb901b73ac30e79e7c0e0208ece5b57530aedc3467065e2eaac5ad2e11c69",
+    "tests/test_context_attribute_schedule_candidate.py": "bf6633a4ba6b7f0f63bf624d88ae5b21b4bedc3423ac893b42679dc958aea9e3",
+    "src/multimodal_jev/cached_context_batches.py": "cfbae6a97482310f8bded2b927d8daef386d01b9829f3860e31db125a4a347db",
+    "tools/jev/context_rollout_session.py": "b8fd074165ef12fe8b2fd9dce5c29f8ec417e29399077985516643f7e8e307c8"
+  },
+  "driver_pins_verified": {
+    "context-rl-grpo-arithmetic-v2-driver.json": 1078,
+    "context-attribute-population-cpu-v1-driver-pins.json": 1073,
+    "context-attribute-selection-processor-cpu-v1-driver-pins.json": 1092
+  },
+  "remaining": [
+    "fixed_image_actual_processor_batch_session_integration",
+    "full_input_processor_audits",
+    "same_frozen_population_order_new_compact_length_group_identity",
+    "checkpoint_contract_binding_attribute_arm_catalog_objective",
+    "real_Qwen_NPU_continuous_update_new_process_optimizer_restore"
+  ],
+  "scope": "Bridges only; not a complete trainer or actual model acceptance. New-session sampling replay is not optimizer resume."
+}

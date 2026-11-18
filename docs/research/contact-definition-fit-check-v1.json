@@ -1,0 +1,71 @@
+{
+  "schema": "contact-definition-fit-check-v1",
+  "checks": {
+    "email_addcontact": {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/contact-email_addcontact-fit-v1/report.json",
+      "sha256": "629f52dc2b70f7afc948ad69a1ebd1a20989256d5ccdb3d328fcec0cb6667786",
+      "sources": 147,
+      "recordings": 557,
+      "source_fit_counts": {
+        "not_supported": 96,
+        "unresolved": 14,
+        "supported": 37
+      },
+      "recording_fit_counts": {
+        "not_supported": 388,
+        "unresolved": 58,
+        "supported": 111
+      }
+    },
+    "email_querycontact": {
+      "report": "/mnt/cephfs/xingchao/datasets/slurp-jev-benchmark/contact-email_querycontact-fit-v1/report.json",
+      "sha256": "a1f9c33c4ee75320a4cb37c08c8fc5530e45cab4e54ce4e79d853b54464e84f1",
+      "sources": 147,
+      "recordings": 557,
+      "source_fit_counts": {
+        "not_supported": 41,
+        "unresolved": 39,
+        "supported": 67
+      },
+      "recording_fit_counts": {
+        "not_supported": 120,
+        "unresolved": 146,
+        "supported": 291
+      }
+    }
+  },
+  "joint_definition_fit_counts": [
+    {
+      "modification": "not_supported",
+      "retrieval": "not_supported",
+      "sources": 7
+    },
+    {
+      "modification": "not_supported",
+      "retrieval": "supported",
+      "sources": 67
+    },
+    {
+      "modification": "not_supported",
+      "retrieval": "unresolved",
+      "sources": 22
+    },
+    {
+      "modification": "supported",
+      "retrieval": "not_supported",
+      "sources": 34
+    },
+    {
+      "modification": "supported",
+      "retrieval": "unresolved",
+      "sources": 3
+    },
+    {
+      "modification": "unresolved",
+      "retrieval": "unresolved",
+      "sources": 14
+    }
+  ],
+  "all_binding_identities_checked": true,
+  "scope": "Full selected native-class learning cohort, reference fit only, not exclusive classification or audio semantic admission. Independent binding verification, not second semantic reviewer."
+}

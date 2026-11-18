@@ -1,0 +1,100 @@
+{
+  "schema": "slurp-intent-boundary-source-check-v1",
+  "pins": {
+    "/mnt/cephfs/xingchao/datasets/slurp/metadata/train.jsonl": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e",
+    "/mnt/cephfs/xingchao/datasets/slurp-clean/clean-v7-a3cd74482c32b74f/metadata/train.jsonl": "1ad58f688d54deace851e484116d4b51b15ffcf9d099f95a453a6c5879bfaab1"
+  },
+  "records": [
+    {
+      "source_id": "326",
+      "original_equals_clean": true,
+      "intent": "weather_query",
+      "sentence": "evening",
+      "sentence_annotation": "[timeofday : evening]",
+      "record_sha256": "bc959d818265b24186a202effc27a18d3c2fdbbabb67359d198509763eb670df"
+    },
+    {
+      "source_id": "1299",
+      "original_equals_clean": true,
+      "intent": "audio_volume_up",
+      "sentence": "slow",
+      "sentence_annotation": "slow",
+      "record_sha256": "2b8440aa3c1b597f9a22ec4c62ec32097130d916f2154fea1f0961d5a2c33b92"
+    },
+    {
+      "source_id": "4571",
+      "original_equals_clean": true,
+      "intent": "iot_wemo_off",
+      "sentence": "the wemo plug should be turned off on",
+      "sentence_annotation": "the [device_type : wemo plug] should be turned off on",
+      "record_sha256": "4a4c44bebdf58966d4c80366ad26d0da548b62e3b718766621c40d612c714105"
+    },
+    {
+      "source_id": "4572",
+      "original_equals_clean": true,
+      "intent": "iot_wemo_off",
+      "sentence": "please switch off on the wemo plug socket",
+      "sentence_annotation": "please switch off on the [device_type : wemo plug socket]",
+      "record_sha256": "1d5a09cff70870bcfa05d4202188bc3563f335fb6f0037dddf0874843e1465b9"
+    },
+    {
+      "source_id": "7656",
+      "original_equals_clean": true,
+      "intent": "calendar_set",
+      "sentence": "alexa give me my to do list for today",
+      "sentence_annotation": "alexa give me my to do list for [date : today]",
+      "record_sha256": "bccbb79afec4d4e31a3e043d11866d4902c07222785e0b4eaf75eab2154f7639"
+    },
+    {
+      "source_id": "10059",
+      "original_equals_clean": true,
+      "intent": "cooking_recipe",
+      "sentence": "what is a substitute for margarine",
+      "sentence_annotation": "what is a substitute for [food_type : margarine]",
+      "record_sha256": "f80cb4eddc9a07822009b11bbffa65f60d329dd8c30046b824d0c9363c6595b0"
+    },
+    {
+      "source_id": "12280",
+      "original_equals_clean": true,
+      "intent": "transport_query",
+      "sentence": "i'd like a train ticket to this location",
+      "sentence_annotation": "i'd like a [transport_type : train] ticket to this location",
+      "record_sha256": "dae8a355d2b005e349d6e21ce29e70e5fdf4559df6a9c1fc2aab1e8b06605658"
+    },
+    {
+      "source_id": "12590",
+      "original_equals_clean": true,
+      "intent": "transport_ticket",
+      "sentence": "can you check train schedule to berkeley",
+      "sentence_annotation": "can you check [transport_type : train] schedule to [place_name : berkeley]",
+      "record_sha256": "cf554e40dd35f92939a32a9807bfba893f3b66d17291c14b2ee3d815be2854f9"
+    },
+    {
+      "source_id": "13479",
+      "original_equals_clean": true,
+      "intent": "cooking_query",
+      "sentence": "i need a recipe for chicken thighs for my pressure cooker",
+      "sentence_annotation": "i need a recipe for chicken thighs for my pressure cooker",
+      "record_sha256": "6bb23ca2127ee41d6db4101ad329e243901536963762e27abd51036165f018c5"
+    },
+    {
+      "source_id": "13488",
+      "original_equals_clean": true,
+      "intent": "cooking_query",
+      "sentence": "olly can i use brown sugar instead of white in peanut butter cookies",
+      "sentence_annotation": "olly can i use [food_type : brown sugar] instead of white in [food_type : peanut butter cookies]",
+      "record_sha256": "a7cf25d0cefad962b2e0a4a5ff8542eb6624b8beddeb86e7f2a600d308695c8c"
+    },
+    {
+      "source_id": "15976",
+      "original_equals_clean": true,
+      "intent": "email_querycontact",
+      "sentence": "add rebecca green to my list of favorite contacts",
+      "sentence_annotation": "add [person : rebecca green] to my list of favorite contacts",
+      "record_sha256": "e4a60dce94bf17a9182595790cc2720d7753412ea06cf8e589f1d9f0daba5e27"
+    }
+  ],
+  "selection_or_test_examples_used": false,
+  "audio_review": false,
+  "scope": "11 learning source records unchanged from original TRAIN to clean-v7; rules out clean-v7 relabelling for these records only. Does not establish original author intent or authorize label changes."
+}

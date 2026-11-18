@@ -1,0 +1,26 @@
+{
+  "schema": "local-operations-validation-v1",
+  "pytest": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:tools/jev:. python -m pytest -q -p no:cacheprovider tests/test_local_config.py tests/test_portable_training.py tests/test_committed_signal_report.py tests/test_probability_error_report.py tests/test_cache_cleanup.py tests/test_configured_training_schedule.py tests/test_context_training_schedule.py tests/test_context_schedule_loader.py tests/test_run_operations.py tests/test_training_trajectory_export.py tests/test_runtime_plan.py",
+    "passed": 96,
+    "duration_seconds": 2.21
+  },
+  "template_resolution": {
+    "local_example": "configs/local-macros.example.json",
+    "passed": 11,
+    "templates": [
+      "configs/portable/operations/cache-cleanup.json",
+      "configs/portable/operations/committed-signal.json",
+      "configs/portable/operations/prepare-training-configs.json",
+      "configs/portable/operations/probability-errors.json",
+      "configs/portable/operations/report-pipeline.json",
+      "configs/portable/operations/training-schedule.json",
+      "configs/portable/operations/training-trajectory.json",
+      "configs/portable/operations/trajectory-pipeline.json",
+      "configs/portable/training/ascend-runtime.json",
+      "configs/portable/training/context-grpo-actor-v1.json",
+      "configs/portable/training/context-grpo-service-v1.json"
+    ]
+  },
+  "scope": "Local engineering tests and template resolution only; no remote deployment or training efficacy certification."
+}

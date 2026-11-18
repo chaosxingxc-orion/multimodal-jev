@@ -1,0 +1,12 @@
+{
+  "schema": "local-operations-v1",
+  "output_directory": "${SAMPLE_PIPELINE_OUTPUT}",
+  "steps": [
+    {
+      "id": "sample",
+      "kind": "dataset_sample",
+      "config": "${WORKSPACE}/configs/portable/operations/dataset-sample.json",
+      "depends_on": []
+    }
+  ]
+}

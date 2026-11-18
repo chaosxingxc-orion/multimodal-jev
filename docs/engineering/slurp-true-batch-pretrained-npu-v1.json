@@ -1,0 +1,38 @@
+{
+  "passed": false,
+  "audited": true,
+  "requests": 32,
+  "results": [
+    {
+      "microbatch": 1,
+      "passed": true,
+      "maximum_logprob_error": 0.0,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 7.591819738318217,
+      "maximum_allocated_bytes": 2285578240,
+      "maximum_reserved_bytes": 7126122496
+    },
+    {
+      "microbatch": 2,
+      "passed": false,
+      "maximum_logprob_error": 0.830845832824707,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 8.155863984406151,
+      "maximum_allocated_bytes": 3001686016,
+      "maximum_reserved_bytes": 14529069056
+    }
+  ],
+  "training_promotion": false,
+  "scope": "Raw inference probabilities independently rescored; timing/memory are recorded telemetry, not independently measured. No backward, full-data stability, FSDP or direct vLLM proof.",
+  "container_id": "45be989abdb7112f4d63b0aeb69fafca101fba2e84e59cc1c42e7f80da540177",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_and_dependency_files_verified": 316,
+  "raw_sha256": {
+    "inputs.json": "a95500686e353728138354dbdf02efd7acb02918ae22ade6b6355f27bea2f7d9",
+    "serial.json": "1b309ccb8d439d12bdfd46238c5c00564cfe6f97df4090fadf4a8211079ce645",
+    "result.json": "caabbf03636d9447f1f5ee97ff926faa668dd0c6096ff54f68ffbf679bb0bc64",
+    "micro-01.json": "097da05a6c5b07e90c5247b5271f69af675e1318b58ff07dfdd1dc2f1c99018a",
+    "micro-02.json": "011ab0e59bab1ba4eb7697cab5e6faf275134fd4976bd0edf9b2ab3d5dfa9cc5"
+  },
+  "config_sha256": "d14bc2fea90ea57fc2562f63331e24786727408d700543ede48ca8f7ccbb3191"
+}

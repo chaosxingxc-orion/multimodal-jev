@@ -1,0 +1,17 @@
+{
+  "schema": "jev-collection-music-boundary-resolution-v1",
+  "status": "candidate_not_semantically_certified",
+  "training_dispatch_allowed": false,
+  "rules": {
+    "collection_object": "A general list is an explicitly represented item collection, including lists of tasks, clients, events, books or movie names. Content topic alone does not turn it into an executable calendar, address book or media library. An unqualified list is covered; an unspecified item/it without established collection context can be unavailable.",
+    "specialized_operation": "Explicit calendar/reminder scheduling, contact-record editing, mailbox operations and playable media-library/playlist operations are specialized. They do not imply general-list creation/lookup/removal merely because a list is mentioned. Assess independently expressed general lists separately; no whole-utterance veto.",
+    "answer_format": "List the available trains/news/alarms requests domain information in enumeration form, not a separate general-list object. Make/create a list can request constructing a general collection; listing a pre-existing general list or its names/content is list_information. Requests for a new list do not automatically request reading an existing list.",
+    "purpose_vs_content": "Add call the realtor to my to-do list requests recording a task, not making a call. Removing an event from a general project list is not automatically calendar cancellation. A clearly named general list may contain any subject; genuinely ambiguous specialized-versus-general containers remain unavailable.",
+    "operation_extent": "Generic edit/update without expressed addition or removal does not determine either operation. Pure rename/reorder is outside create/add and remove unless the same utterance separately requests them. Clear absence is false; unresolved edit kind is unavailable. A completion assertion alone is not an instruction to delete.",
+    "preference_vs_persistence": "A direct favorable/adverse music evaluation can express preference without a persistence request. Remember/register that evaluation adds feedback_record. Save/download content or create a playlist requests content retention but supplies no polarity by itself.",
+    "favorite_designation": "Explicitly designate music as my favorite, or add music to my favorites as an evaluative favorites category, expresses positive preference and registers it; addition also saves content. A quoted/title-like playlist name or a reference to an existing favorites folder alone is not a new preference act. Ambiguous title-versus-evaluation remains unavailable.",
+    "music_collection": "Creating an explicitly musical playlist or adding songs to a library is music_content_save, including an empty new music playlist; it is not generic list_create_add. A list of song names for shopping/research without playable-content retention does not automatically save music. Deleting content is outside the save predicate.",
+    "feedback_scope": "Saving an unspecified opinion about identified music is feedback_record with unknown polarity. Saving an opinion without music-domain evidence cannot infer the domain from native labels. Numeric scores follow the unchanged nonrequest policy: no unstated scale/polarity.",
+    "no_implicit_closure": "Only separately supported acts receive true. Information/playing/content storage do not imply preference or feedback. Semantic cards may overlap by explicit evaluative wording; no label projection, closed-world negatives or automatic consistency reward."
+  }
+}

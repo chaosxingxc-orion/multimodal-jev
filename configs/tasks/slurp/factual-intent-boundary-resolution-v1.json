@@ -1,0 +1,17 @@
+{
+  "schema": "jev-factual-intent-boundary-resolution-v1",
+  "status": "candidate_semantics_not_training_release",
+  "training_dispatch_allowed": false,
+  "rules": {
+    "positive": "The requested answer is a descriptive property, identity, existence, location, time, count, content or relation of an actual entity/event/record. Generic tell-me-about an identified entity may qualify without naming an exact attribute. The truth of the answer need not already be known.",
+    "domain_overlap": "Domain-specific descriptive queries may also satisfy this predicate, such as a contact age, current exchange rate, share price, stored listening history or events/screenings actually listed. Do not require a separate second clause to recognize two compatible definitions of the same request.",
+    "not_all_information": "Meaning/concept explanation, mathematical derivation, hypothetical/counterfactual reasoning, future forecast/probability, procedural advice and subjective recommendations alone are not descriptive facts for this registered predicate. A separate descriptive clause may still qualify.",
+    "forecast_boundary": "Present/past actual conditions and a currently published forecast record are different targets from predicting future conditions. Asking the forecast alone is excluded; asking when/where/whether a forecast was issued or what a stored record says may qualify. Do not treat future assertions as observed facts.",
+    "selection_boundary": "Objective descriptive constraints (oldest hotel, films currently showing) can seek factual attributes/sets. Best/good/should-I questions alone ask evaluation/advice, not factual-property information. Mixed recommendations with explicit factual constraints are judged by what answer is requested; a constraint alone is not a separate factual query.",
+    "time_and_conversion": "An actual current/date fact can qualify. A hypothetical input to a conversion or a requested numeric difference is a derived answer and not automatically factual-property information. Do not assume hidden calculations are explicitly requested mathematical tasks.",
+    "speech_act": "A declarative equation or instruction to record events is not itself an information request. Phatic greetings do not automatically request factual reporting; substantive identity questions can.",
+    "uncertainty": "Ambiguous time scope, referent, requested result or whether a phrase is a request remains unavailable. Clearly excluded answer kinds are negative rather than unavailable; the native class supplies neither missing evidence nor negatives.",
+    "no_complement_or_closure": "This is neither a qa_factoid residual class nor the parent of all informational predicates. Assess from the full input; no automatic domain-to-factual implication, complement labels, or automatic consistency reward."
+  },
+  "reward_consequence": "Overlapping predicates can repeat supervision and change concept weighting even with fixed family cap. Keep baseline fixed-count reward; require declared menu, pair coverage and sensitivity diagnostics rather than gold-dependent deduplication."
+}

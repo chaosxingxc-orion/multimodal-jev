@@ -1,0 +1,53 @@
+{
+  "schema": "context-attribute-input-tools-fixed-image-cpu-v1",
+  "container_id": "4c3b976198dee58eec796c62d2e81bb0cff321034fea845b1a1fcfa4ad644d24",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": {
+    "Status": "exited",
+    "Running": false,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 0,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-15T01:58:56.69663718Z",
+    "FinishedAt": "2026-11-15T02:00:09.47730065Z"
+  },
+  "source_files": 392,
+  "source_manifest_sha256": "f40c61f414b0aaee8366325b200bd98f276041b749ff804635737f0c6fe4f1ee",
+  "collection": "/home/xingchao/workspace/multimodal-jev/.local/decision-objective-research/context-attribute-input-tools-cpu-v1-collected",
+  "files": {
+    "run/terminal.json": "5483b65ed90d1b69f16f36b65f8b5fe35301dd6c476a6a596675df3ebd5e3d52",
+    "run/junit.xml": "07bf93097f6d35ae524b6cda4144ac780cfda2ed233fbeb179dc197474c028bc",
+    "run/pytest.log": "fb54353d3d479515abeeb01526c85a49c6edfa708f8406d00c977365a271c754",
+    "package/FILES.json": "f40c61f414b0aaee8366325b200bd98f276041b749ff804635737f0c6fe4f1ee",
+    "package/run.py": "8aa2f82d10530bb69e02ebda095c3e7a1ee0c4de88eb1cfa739148c830c511da"
+  },
+  "counts": {
+    "tests": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "terminal": {
+    "exit_code": 0,
+    "started_unix": 1794707964.339394,
+    "finished_unix": 1794708007.955552,
+    "source_manifest_sha256": "f40c61f414b0aaee8366325b200bd98f276041b749ff804635737f0c6fe4f1ee",
+    "argv": [
+      "/usr/local/python3.12.13/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "--junitxml=/data/xingchao/multimodal-jev/simple-final-v1/context-attribute-input-tools-cpu-v1/run/junit.xml",
+      "tests/test_context_attribute_input_candidate.py"
+    ],
+    "torch_version": "2.10.0+cpu",
+    "python_version": "3.12.13 (main, Oct  3 2026, 09:00:30) [GCC 11.4.0]"
+  },
+  "scope": "Actual processor on three TRAIN audio anchors, BF16 cache cold/warm and Q-arm reuse, label binding and native verl transport. Engine probabilities are synthetic; no model/NPU/efficacy proof."
+}

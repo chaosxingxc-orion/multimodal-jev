@@ -1,0 +1,19 @@
+{
+  "policy": {
+    "model": "${ASR_MODEL}",
+    "base_id": "${BASE_ID}",
+    "snapshot": "${INITIAL_POLICY}",
+    "policy_id": "${INITIAL_POLICY_ID}",
+    "contract": "${INITIAL_POLICY_CONTRACT}",
+    "adapter": "${INITIAL_ADAPTER}",
+    "physical_devices": "${INFERENCE_DEVICES}",
+    "max_model_len": 4096,
+    "max_decisions": 60,
+    "tensor_parallel_size": 1,
+    "kv_cache_memory_bytes": 1073741824,
+    "process_device_scope": "${INFERENCE_DEVICE_SCOPE}"
+  },
+  "pins": "${TRAIN_SOURCE_PINS}",
+  "socket_path": "${ENGINE_SOCKET}",
+  "exchange": "${ENGINE_EXCHANGE}"
+}

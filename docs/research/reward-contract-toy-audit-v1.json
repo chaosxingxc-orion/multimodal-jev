@@ -1,0 +1,31 @@
+{
+  "schema": "jev-reward-contract-toy-audit-v1",
+  "expected_reward": "13/50",
+  "exact_logit_gradient": [
+    "21/500",
+    "4/25"
+  ],
+  "conditional_gradient": [
+    "21/500",
+    "4/25"
+  ],
+  "rloo_G2_expected_gradient": [
+    "21/500",
+    "4/25"
+  ],
+  "final_only_process_gradient": "0",
+  "fixed_budget_all_correct_process": "1/5",
+  "one_of_eight_valid_process_max": "1/40",
+  "mean_valid_counterexample": "1/5 (8x larger than fixed denominator)",
+  "same_input_final_correct_minimum_margin": "4/5",
+  "grpo_unit_scale": [
+    -0.7071057811879616,
+    0.7071057811879616
+  ],
+  "grpo_scale_point025": [
+    -0.7070667834491611,
+    0.7070667834491611
+  ],
+  "grpo_scale_warning": "Group std nearly cancels small raw process reward when Final is constant; epsilon prevents exact scale invariance.",
+  "scope": "Exact independent Bernoulli policy algebra and G2 expectation, no clipping away from old policy, no shared-backbone gradient or empirical efficacy claim."
+}

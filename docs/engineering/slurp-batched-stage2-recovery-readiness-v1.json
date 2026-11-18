@@ -1,0 +1,40 @@
+{
+  "status": "candidate_recovery_and_audit_cpu_tested_not_npu_admitted",
+  "files": {
+    "src/multimodal_jev/batched_stage2_audit.py": "55401b2b3adee75ce300e7342311b5111574901e7476bf4ea09908c8b5eaffa6",
+    "src/multimodal_jev/batched_continuous_resume.py": "b182a9e63b153d335d0a0713f765f76eadcc5747ec95801d56532cad397dc30c",
+    "src/multimodal_jev/batched_stage2_resume.py": "68a21712adff894c3efa2632e9e5283e9aa3f011a2db8b8ae8fcd5a02e7e45c5",
+    "tools/jev/verify_batched_stage2_training.py": "1b2368f9c423108c2e1498cf116625bf9e78f941ab231e2c02d29a93196abc03",
+    "tools/jev/initialize_batched_stage2_actor.py": "6a0bce99ca52651fee3a5f3288bed3b7159c7217378d6193d91ec2b505d1d788",
+    "tools/jev/run_batched_stage2_loop.py": "80d20f7b9d9c07b60a3e89c7790b0a47ed00e60557f3603e4b724d851ca38dee",
+    "tests/test_batched_stage2_resume.py": "7e3eb2534417b3969b1e0c04845168dbb5a11ddb0f61ba849136398d22845bd6",
+    "tests/test_batched_stage2_audit.py": "a644837220ec496f4c1e0874715468810a1be0f65e5af38209101ad99edc3468",
+    "tests/test_batched_stage2_training_audit.py": "1e1a3832c1628cda1d7493d6b5d61afdcfc81278941b6f5d762f4ff5470f61b2",
+    "tests/test_batched_stage2_resume_composition.py": "d5db9c84ae5ad51b19f478fb23228624d7dd1de064b5b94df60c150078720477"
+  },
+  "tests": {
+    "candidate_resume": 9,
+    "boundary_and_shared_state": 36,
+    "per_update_candidate_audit": 5,
+    "reference_selection_composition": 6
+  },
+  "original_rc2_files_unchanged": 1360,
+  "training_dispatch_allowed": false,
+  "scope": "Actual CPU tensor restore/next Adam step and synthetic real-file provenance/permutation/probability tests. Model loading, device execution and real full selection are not established by fixtures.",
+  "remaining": [
+    "Restore-time candidate resident probabilities against authenticated pre-crash endpoint before first new optimizer update",
+    "Actual candidate resident switch256",
+    "Final Stage1 terminal634 checkpoint and selection9226",
+    "Candidate Qwen BF16 NPU RL update and fresh-process restored probability/next-update validation",
+    "Immutable formal candidate RL configuration/release and launcher",
+    "Full-data RL curves and cross-task transfer"
+  ],
+  "host181_preflight": {
+    "observed_unix": 1794638559.9706874,
+    "all_eight_cards_occupied": true,
+    "worker_memory_mib_approximately": 58300,
+    "pinned_image_present": false,
+    "task_dispatched": false,
+    "scope": "Read-only npu-smi and exact docker image inspect; no device preemption or deployment."
+  }
+}

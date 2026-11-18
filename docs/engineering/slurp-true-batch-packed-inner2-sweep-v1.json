@@ -1,0 +1,80 @@
+{
+  "passed": true,
+  "audited": true,
+  "requests": 32,
+  "results": [
+    {
+      "microbatch": 1,
+      "passed": true,
+      "maximum_logprob_error": 0.0,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 4.194246172669283,
+      "maximum_allocated_bytes": 4687863808,
+      "maximum_reserved_bytes": 5035261952
+    },
+    {
+      "microbatch": 2,
+      "passed": true,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 7.363396590523931,
+      "maximum_allocated_bytes": 4692503040,
+      "maximum_reserved_bytes": 5031067648
+    },
+    {
+      "microbatch": 4,
+      "passed": true,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 10.29741681448509,
+      "maximum_allocated_bytes": 4702013952,
+      "maximum_reserved_bytes": 5249171456
+    },
+    {
+      "microbatch": 8,
+      "passed": true,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 12.077140986832436,
+      "maximum_allocated_bytes": 4721300992,
+      "maximum_reserved_bytes": 5440012288
+    },
+    {
+      "microbatch": 16,
+      "passed": true,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 11.514631993727527,
+      "maximum_allocated_bytes": 5070893568,
+      "maximum_reserved_bytes": 6276775936
+    },
+    {
+      "microbatch": 32,
+      "passed": true,
+      "maximum_logprob_error": 9.5367431640625e-07,
+      "argmax_changed_requests": 0,
+      "requests_per_second": 11.2467495268392,
+      "maximum_allocated_bytes": 5772477440,
+      "maximum_reserved_bytes": 8577351680
+    }
+  ],
+  "training_promotion": false,
+  "scope": "Raw inference probabilities independently rescored; timing/memory are recorded telemetry, not independently measured. No backward, full-data stability, FSDP or direct vLLM proof.",
+  "container_id": "1c876fd9ad3b933e95c26e922b6327102832b860bb255606c90671c5b57d4db9",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "source_and_dependency_files_verified": 318,
+  "raw_sha256": {
+    "inputs.json": "a95500686e353728138354dbdf02efd7acb02918ae22ade6b6355f27bea2f7d9",
+    "serial.json": "56589ba65acc26b08bf038a0656d0593e4041454c0f457d8704a5cfa34c505f2",
+    "result.json": "f800572ee4d1661edc3e1a4171ddd38128b4e98a55a889f9dce3e88e6739779e",
+    "micro-01.json": "010812e140ccd32af42dc3d9b1663d7841c16aa28b9445b3a0233cc1217a4399",
+    "micro-02.json": "104cc289e41f42b31c4145a5478af1c99cef9bcf4a76e49d7d98c3e603ccf04e",
+    "micro-04.json": "0e59c89b51a4af94ba9038645706fff16c7a27e793652b562f2d3e5733415110",
+    "micro-08.json": "1c87793fcc05f2476253a391a12b730719e7afc44c033339cce55f1dcc9d6c1d",
+    "micro-16.json": "3c7af4d984b80a9691054a90f0628b8da35b146ecde892894c5207b54b5db9ff",
+    "micro-32.json": "43a9af720321ad6bda47b965e2b8b7c65fa30e2ba82a39b1d93f31ad49b73ba4"
+  },
+  "config_sha256": "feaf07473ab418685e317812ec61589cdc2be8e8782ddeebd10900ef69a61095",
+  "runner_archive_verified": true,
+  "experimental_attention_variant": "masked_rows_inner2"
+}

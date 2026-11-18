@@ -1,0 +1,21 @@
+{
+  "schema": "context-attribute-parity-v2-fixed-image-input-match-v1",
+  "passed": true,
+  "inputs": 6,
+  "old_prepared_sha256": "2cd987fb61852c834892a9899069062717e7b3e3786738144207fc9ea8454764",
+  "new_prepared_sha256": "bd5a38aaf842ebdeaa6b43b3f5eacdf48081c263b8f5ea7e31406c9882596a8b",
+  "policy_id": "9164eddffd9e3fdb21c060a72827b1a4324f3d45e60eb0d491b589b194db0e66",
+  "code_hashes": {
+    "tools/reports/probe_context_attribute_parity_v2.py": "33e15b6be4bb6e2e8d9628d52e611eaa22411b3280b126e132e97bbe6fd5f98f",
+    "tools/reports/run_context_attribute_parity_pair_v2.py": "37cb45bd16612402ae16ffb8de304c3950e9205fbf0e5ef97bcc00ee6dbc601e"
+  },
+  "prepared_npu_package": ".local/decision-objective-research/context-attribute-parity-npu-v2-prepared/package",
+  "fixed_image_evidence": "docs/research/context-attribute-parity-prepare-fixed-image-cpu-v4.json",
+  "input_tensors_and_positions_exact": true,
+  "scope": "All six actual processor outputs exactly match original token/mask/BF16 feature hashes and positions; path-sensitive model-input request hashes differ because package audio paths changed. Not Qwen/NPU output parity.",
+  "npu_payload_matching_executed_cpu_files": 404,
+  "excluded_comparison": {
+    "probe-config.json": "Relocated package paths and payload pins",
+    "run.py": "Historical CPU runner retained unused in NPU package; NPU argv invokes pair_v2 instead"
+  }
+}
