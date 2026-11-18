@@ -2,7 +2,7 @@
 
 2026-11-12。检查SLURP已准入89条学习来源、60类公开本体，以及FSC配置的31命令本体。
 未读取FSC测试标签、未训练模型，也未改变冻结D/Q/P和迁移矩阵。
-后续[实际D12/Q6消歧切片](../engineering/intent-composition-outcomes-v1.md)显示：
+后续[实际D12/Q6消歧切片](../engineering/archive/raw/intent-rl/intent-composition-outcomes-v1.md)显示：
 Q6结构模板在26条共同消歧来源上修复1条、退化1条，净正确数不变；
 概率上升不能作为该组判决提升或组合推理证据。
 可复算凭证：[完整结果](../engineering/intent-composition-support-v2.json)、

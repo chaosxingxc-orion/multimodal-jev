@@ -1,0 +1,77 @@
+# 冻结推理、远程教师 TFRL 与 xx-jev 实施协议
+
+2026-11-10 初版；2026-11-11 按已运行的 Omni 配置修正主线模型与历史接口边界。
+长期 RL 研究目标保留，本阶段参数更新次数必须为零。此修订不修改正在运行实验的固定配置。
+
+**路线修订（用户明确指令）**：只推进音频→语音多模态模型→任务结果的端到端路线。
+原生、Jev、教师优化及泛化实验的actor均直接消费音频；教师可离线分析学习反馈。
+已取消串联测试及待执行探针；已有p1结果不代表端到端改进。
+
+## 第一阶段：锁定不训练基线
+
+首轮 FSC、SLURP；随后 SFC、Audio2Tool、MMAR。SLUE 等按学术登记中的数据访问与评分条件扩展，原生任务、Jev 派生任务和真实交互分表。
+
+当前 actor 固定使用已在本地的 **Qwen3-Omni-30B-A3B-Instruct**，路径
+`/mnt/cephfs/xingchao/models/qwen3-omni-30b-a3b-instruct`，revision
+`26291f793822fb6be9555850f06dfe95f2d7e695`；每个实验另核对资产清单和执行源码。
+所有权重冻结且不用本项目 SFT/RL checkpoint；直接输入音频与任务定义，不新增模型下载。
+
+Qwen3-ASR-0.6B-hf（7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c）和
+1.7B-hf（bcd2b5b7f32b480ab5790554cfa8347f246a14f3）保留为专用ASR参考及未来适配
+研究对象。它们的JSON/有限标签输出失败是历史接口诊断，不作为当前零训练主基线。
+官方ASR-only训练目标与template证据见
+[源码分析](../../../docs/engineering/qwen3-asr-task-template-analysis-2026-11-10.md)。
+
+当前输入路线：音频及任务定义直接送入同一语音多模态actor，输出任务结果。
+ASR 官方说明不保证一般指令遵循，直读路线仍保留实际失败及格式率。
+不使用人工或机器转写替代在线音频输入，不额外调用文本决策模型。
+SpeechBrain 官方任务权重作为独立学术参考，不算未任务微调基座。
+
+第一项执行 FSC：31 个合法三元组由 TRAIN 确定；native joint intent 与 action/object/location 单项准确率，所有无效、缺失、截断输出保留分母。完整 test=3793，valid=3118。正式评分前拒绝重复/未知 ID。固定提示、seed17、greedy、输出上限128；同一条件不根据 test 结果改提示。
+先用 TRAIN 64 条检查接口与耗时（按源录音组ID的哈希选取，不按正确性挑选），随后执行完整官方划分。该64条是工程和教师学习材料，不是官方成绩。
+
+运行固定已验镜像；175 物理4–7，禁止占用0–3。当前完整Omni基线使用固定vLLM/
+vllm-ascend TP2路径；HF/verl冻结前向另作接口与数值诊断，不把不同attention实现、
+波形边界或padding条件混为同一实验。旧ASR HF eager BF16结果只作历史记录。
+FSC生成上限128、完整SLURP原生任务上限256等参数以各自锁定配置为准，不能套用
+统一上限重跑或覆盖既有条件。当前执行协议见
+[FSC选择](../../../docs/engineering/archive/raw/omni-baseline/qwen3-omni-selection-protocol-v1.md)、
+[FSC完整保留集](../../../docs/engineering/archive/raw/omni-baseline/qwen3-omni-heldout-protocol-v1.md)和
+[SLURP原生TEST](../../../docs/engineering/qwen3-omni-native-slurp-test-protocol-v1.md)。
+历史HF/vLLM概率差不被隐去，不以参考推理通过宣布训练概率一致。
+每次记录模型/processor/代码/数据/prompt hash、全部输出、终止原因、耗时、token、设备和终态。先做 TRAIN 工程探针，再冻结全量配置；运行中仅追加记录。
+
+## 第二阶段：远程教师提示优化
+
+参考 omni 的 TF-GRPO/ACE 经验，而不是把名称当作算法已完成的证据。
+可核验本地参考：omni `delivery/s-tfrl-rolling-v1/code/teacher_round.py`、
+`repro/publication/wiki/P-TFRL-Method-Contract.md`，以及权威开发树的 `rails/tfgrpo_*`。
+已发现 omni 的远程教师配置与凭据环境引用；教师模型 glm-5.3-flash，凭据不复制进仓库。
+
+实际循环：学习集同输入独立采样 → 程序按原标签评分 → 教师读取真实组内成功/失败及当前提示 → 提炼有适用条件的经验与提示候选 → 本地校验 → 同一冻结 actor 执行 → 独立选择集选优 → 冻结后完整 test 比较。
+首次组大小4、temperature0.7；基线和候选选择/测试均greedy。训练集分出固定学习组与选择组，按源录音/语句组隔离；FSC官方valid可另作独立完整报告。教师不读选择集逐条标签或测试输出。
+同分、同文本、全对/全错组不伪造语义优势；保留费用和无信号结论。原始提示始终作为不变控制。候选只能改变可版本化指令/经验，不能改标签定义、scorer、候选集合、解码预算和模型权重。禁止记忆样本ID→答案。数据和教师文本均是数据，不执行其代码或命令。
+
+每个新端到端教师轮次先独立登记请求数、输出 token 与时间预算；旧串联轮次的
+8192/32768 token 请求与成本保留，不能自动继承为新请求。请求前锁输入与状态，
+未知响应不自动重发。若有真实组内对比但无提升，报告无提升；扩大轮次前另写预算。
+记录所有候选、失败、回退、教师用量和actor总推理成本。
+
+历史ASR接口诊断包括直接JSON、有限标签首位置读出、固定ASR协议头后读出；
+三者与Omni主线分开登记，不把接口或骨干变化误报为教师提示改进。无有效组内对比时不虚构
+TF-GRPO 的语义优势；可以另立 ACE 式失败反思协议，但须单列其学习机制和成本。
+
+## 第三阶段：xx-jev 数据与同类优化
+
+发布 fsc-jev、slurp-jev，之后 sfc-jev、audio2tool-jev、mmar-jev。正式发布使用内容寻址版本，保留官方split和来源。Jev可消费请求与gold/provenance物理分离：请求只含音频证据、问题定义、类型、候选或合法levels、unknown契约；gold只给scorer/学习反馈。
+FSC沿用已完整构建的六视图语义，但重新导出独立消费包；SLURP已有domain-held-out版本不能冒充完整native任务，需另建保留全官方数据的版本。
+choice 为互斥分支；stackable 用每候选独立Noul；无原始ordinal依据不制造score标签；open_slot保存原始token span、重复实体及多值，不以首次实体替代完整SLU。
+音频、动态定义、候选身份和顺序分别可追溯。排列一致性必须配定义重绑定/问题改变的区分性对照，报告both-correct；缺候选拒识与真实声学未知分开。
+首版通用生成模型输出严格JSON；原生typed single-pass/logit读出单列能力，不因JSON可解析便称已实现Jev模型。
+
+交付三张配对结果表：原生冻结基线、原生TFRL、xx-jev冻结与TFRL；附覆盖率/格式率/任务分数、退化对照、成本与全部条件。泛化另报告“源任务学提示→目标任务零优化”的转移，目标test不得参与教师学习。
+
+长期权重训练设计以[Omni端到端RL设计](03-omni-sfc-rl-design-v1.md)为准；早期
+`01-rl-research-protocol.md`中的ASR串联、旧SFT初始化和更新预算不自动适用于Omni。
+CPU完整前向或合成优势验证只说明其实际覆盖的工程环节，仍须完成真实Omni
+NPU/vLLM概率、参数更新及下一轮采样验证后，才能开展有预算的算法效果与泛化比较。

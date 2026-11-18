@@ -30,5 +30,5 @@ experiment directory. `git` is installed so the runner can verify source state.
 Then execute the existing `tools/jev/infer_audiojev_mmar.py` with its committed
 config, via a detached supervisor retaining launch intent, exact Docker ID,
 terminal state and logs. Full1000-item inference and independent official scoring
-are still required by `experiments/audiojev-mmar.md`. A successful environment
+are still required by `../../experiments/archive/raw/frozen-baselines/audiojev-mmar.md`. A successful environment
 check must not be reported as a reproduced baseline score.

@@ -36,11 +36,11 @@ The public API's `_prepare` sorts unique Choice/Noul descriptions by UTF-8 text
 and strips whitespace; it also rejects blank descriptions. The model card and
 paper use original-order evaluation. MMAR includes four blank-candidate
 questions and six references that are not a single option. The dedicated
-[MMAR protocol](../../experiments/audiojev-mmar.md) preserves these inputs and
+[MMAR protocol](../../experiments/archive/raw/frozen-baselines/audiojev-mmar.md) preserves these inputs and
 calls the official renderer/backend directly. No model inference has been run
 through this entrypoint yet. A canonical service score must not be labeled as
 the published original-order result.
 
 SFC data and the unmodified official scorer are usable without this CUDA backend.
-See [SFC protocol](../../experiments/sfc-external-evaluation.md) for the input
+See [SFC protocol](../../experiments/archive/raw/complex-deferred/sfc-external-evaluation.md) for the input
 release, scorer differences, and remaining model reproduction gates.

@@ -78,7 +78,7 @@ clean TEST 为 12,991 个录音，devel 为 8,690。依据：[清洗对齐](../e
 重复同类型实体在类型检测中折叠为集合，在完整抽取中保留次数。原始 TRAIN 中的合成来源与 dev/test 重叠风险未隔离前，不整包混入 real-only 实验。
 
 原始未经清洗 TEST 的已完成 Omni 成绩只作诊断：joint intent 39.9067%、SLU-F1 0.3141268，不能用于优化或与 clean 分数计算算法提升。
-[运行凭证](../../experiments/slurp-omni-native-test-v1.md)。作者报告的 SpeechBrain HuBERT 75.10 SLU-F1 / 87.54% intent 为 real+synth 条件；HerMiT 70.84 SLU-F1 为历史串联条件。
+[运行凭证](../../experiments/archive/raw/frozen-baselines/slurp-omni-native-test-v1.md)。作者报告的 SpeechBrain HuBERT 75.10 SLU-F1 / 87.54% intent 为 real+synth 条件；HerMiT 70.84 SLU-F1 为历史串联条件。
 它们只进入原生参考表；比较 clean 条件时需要在同一 clean 面板重评，不能拿旧论文分数直接排名。
 
 ### 3.2 FSC：保留简单任务的诊断价值
@@ -90,7 +90,7 @@ FSC 的 action/object/location 是有限标签，并不提供开放槽值抽取�
 
 学术参考 Lugosch 冻结预训练声学模块 98.8%；SpeechBrain 官方报告 99.60%，本地公开任务权重复测 **99.4991%**。
 本地 frozen Omni 严格候选接口父提示→教师 p1 为 **46.1904%→91.7743%**，但六视图全对仅 **0.2373%→0.6327%**。
-这些是不同训练/接口条件，不能合成同条件排行榜。[完整结果](../../experiments/fsc-omni-official-test-v2-comparison.md)。
+这些是不同训练/接口条件，不能合成同条件排行榜。[完整结果](../../experiments/archive/raw/frozen-baselines/fsc-omni-official-test-v2-comparison.md)。
 不再以 FSC 先导训练阻塞 SLURP；已看过的 TEST 结果不能继续用于本轮提示选择。
 
 ### 3.3 MAC-SLU：最有价值的中文多意图扩展
@@ -117,7 +117,7 @@ FSC 的 action/object/location 是有限标签，并不提供开放槽值抽取�
 决策主指标为函数集合 EM、active precision/recall/F1、balanced accuracy、多轮 both-correct；完整任务另报 strict call-multiset EM 和 function-bound slot F1。
 官方 Overall/函数/槽位指标保留独立列，已知 parser 对数组、参数归属、重复调用处理有缺陷，不静默替换。
 已有 learning 审计中 inactive 占 **73.6238%**，全空策略获得同等比例旧奖励却完成 **0/4,428** 个任务，见
-[奖励退化分析](../engineering/sfc-reward-balance-numerical-v1.md)。不能以函数逐行 accuracy 为论文主要结论。
+[奖励退化分析](../engineering/archive/raw/complex-tasks-deferred/sfc-reward-balance-numerical-v1.md)。不能以函数逐行 accuracy 为论文主要结论。
 
 必须区分三种训练暴露：SLURP-only transfer；SFC TRAIN 提示/教师适配；SFC TRAIN 权重适配。
 后两者都不能写成 SFC 零样本迁移。现有 SFC learning/selection 准备及历史暴露见
@@ -144,8 +144,8 @@ FSC 的 action/object/location 是有限标签，并不提供开放槽值抽取�
 同时固定“上游函数+本地全分母”指标和本地 strict 指标，名称注明 scorer；不声称完整复现论文。
 主调用+附加调用的标注顺序也不自动等于可执行时间顺序。
 作者 Qwen2.5-Omni-7B 的 Tier1 tool Acc **79.5**、Tier2 EM **14.7** 只能在对应原生条件参考。
-依据：[官方代码审计](audio2tool-official-code-audit-v1.md)、[评分契约](../engineering/audio2tool-score-contract-v1.md)、
-[全量 Jev 与退化控制](../engineering/audio2tool-jev-v1.md)。
+依据：[官方代码审计](audio2tool-official-code-audit-v1.md)、[评分契约](../engineering/archive/raw/complex-tasks-deferred/audio2tool-score-contract-v1.md)、
+[全量 Jev 与退化控制](../engineering/archive/raw/complex-tasks-deferred/audio2tool-jev-v1.md)。
 
 ### 3.6 SLUE Phase 1 / Phase 2：自然语音及任务边界
 
@@ -190,7 +190,7 @@ fixed test 与论文版本需对齐；离线 Inform/Success/BLEU 不等于实际
 **MMAR**：1,000 题保持全音频和原始候选顺序；4 条含空候选、6 条多 reference，其中 5 条在固定单候选 publisher 契约下无可满足答案，均保留并标明。
 publisher word-set 判定与严格候选匹配并报，不修 gold 或只挑可答题。
 [AudioJev](https://arxiv.org/html/2610.01293v1) 三 seed **55.33±0.84%**、公开单权重 **56.30%**、Frozen Omni3B **53.50%** 分开登记；原 MMAR Qwen2-Audio **30.0%** 是外部生成式参考。
-本地没有已完成的 AudioJev 模型复测；CUDA backend 移到 NPU 必须标 port 并验证。[本地协议](../../experiments/audiojev-mmar.md)。
+本地没有已完成的 AudioJev 模型复测；CUDA backend 移到 NPU 必须标 port 并验证。[本地协议](../../experiments/archive/raw/frozen-baselines/audiojev-mmar.md)。
 
 **MMSU**：full 5,000/47 tasks 与 AudioJev short 3,931/39 families 独立。
 官方 Qwen2.5-Omni-7B **60.57** 与 AudioJev short **62.45** 不能作 full 提升。
@@ -226,7 +226,7 @@ mini 是公开测试集，不能默认为调参集；hidden 使用官方服务�
 单 cell pilot 只报该 cell；历史论文 278 tasks 与此版本独立。
 任务成功需 actor 真实调用、环境状态变更、完整判定与轨迹；oracle DB 重放仅证明桥接组件。
 私有用户目标/gold 仅 simulator/evaluator 可见，固定 provider/voices/控制条件与成本。
-同版 text-v1 可作外部环境参照，不替代用户要求的直接音频 actor。[环境桥](../../experiments/tau2-environment-bridge.md)。
+同版 text-v1 可作外部环境参照，不替代用户要求的直接音频 actor。[环境桥](../../experiments/archive/raw/complex-deferred/tau2-environment-bridge.md)。
 
 **EVA-Bench**：clean 213 scenarios/3 domains/k=5；扰动 90/k=3。
 EVA-A 与 EVA-X 分列；pass@1 为单次成功，pass@k 为至少一次成功，pass^k 为全部 k 次成功，不能互换。
@@ -246,7 +246,7 @@ VoiceAgentBench、From Text to Voice 保留为工具候选；VGBench/VoxGate 和
 
 ## 4. 统一 Jev 数据契约
 
-遵循 [NGA 借鉴方案](../../proposal/04-speech-jev-dataset-v2.md) 的来源闭包、定义重算和配对验证；不照搬其文本截断/70:30 参数。
+遵循 [NGA 借鉴方案](../../proposal/archive/raw/04-speech-jev-dataset-v2.md) 的来源闭包、定义重算和配对验证；不照搬其文本截断/70:30 参数。
 每份 `xx-jev` 保留源发布与原生任务，派生数据以新 release/hash 发布。
 
 | 文件/字段 | 必须保存的内容 |
@@ -332,7 +332,7 @@ SFC 已有不平衡审计可指导其独立训练轨道；Audio2Tool TEST 退化
 
 ## 7. 当前证据、发布门槛与下一阶段
 
-最新工程补记：原生LM head多Span一次前向、候选CE和BF16 LoRA已实现；40条均衡录音20次更新，在48条学习诊断上93/142，静音80/142。48条HF保存重载候选logprob最大差0；HF/vLLM同BF16 adapter单条概率gate失败（最大差0.140574，一项判决翻转），未执行RL更新。下列历史计划中“typed待实现”和旧SFT分数不再代表最新工程状态；学术复现、独立泛化及因果CoT收益仍未完成。最新证据见[BF16实验](../../experiments/slurp-native-spans-bf16-v1.md)。
+最新工程补记：原生LM head多Span一次前向、候选CE和BF16 LoRA已实现；40条均衡录音20次更新，在48条学习诊断上93/142，静音80/142。48条HF保存重载候选logprob最大差0；HF/vLLM同BF16 adapter单条概率gate失败（最大差0.140574，一项判决翻转），未执行RL更新。下列历史计划中“typed待实现”和旧SFT分数不再代表最新工程状态；学术复现、独立泛化及因果CoT收益仍未完成。最新证据见[BF16实验](../../experiments/archive/raw/span-rl-probes/slurp-native-spans-bf16-v1.md)。
 
 | 事项 | 已有证据 | 尚不能声称 |
 |---|---|---|
@@ -353,7 +353,7 @@ SFC 已有不平衡审计可指导其独立训练轨道；Audio2Tool TEST 退化
 
 每个新 release 必须有数据/代码/scorer hash、许可、来源隔离审计、未知/冲突覆盖、人工反例、完整分母和曝光登记。
 结果表固定列：方法、输入、训练来源/预算、数据版本/split、指标、覆盖、seed/CI、成本、证据层级（作者报告/本地复测/新训练/控制）。
-最新局部证据见[SLURP 先导](../engineering/slurp-temporal-pilot-v1.md)、[数据与决策链协同](11-decision-chain-dataset-codesign.md)；NPU 当前策略[概率审计](../../experiments/slurp-temporal-rl-parity-v1.md)三个臂均未通过既定阈值，尚未准入 RL 更新。此局部进展不替代全量学术基线复现。
+最新局部证据见[SLURP 先导](../engineering/archive/raw/complex-tasks-deferred/slurp-temporal-pilot-v1.md)、[数据与决策链协同](11-decision-chain-dataset-codesign.md)；NPU 当前策略[概率审计](../../experiments/archive/raw/complex-deferred/slurp-temporal-rl-parity-v1.md)三个臂均未通过既定阈值，尚未准入 RL 更新。此局部进展不替代全量学术基线复现。
 本指南不改变历史发布、不启动新训练、不自动重试任务，也不要求新增模型下载。
 
 用户后续需要确定的研究取舍只有两项：是否正式将首轮主张限定在“意图+槽位类型/函数适用性”；是否将 MAC-SLU/SFC 保持为纯迁移，还是另设监督适配轨道。

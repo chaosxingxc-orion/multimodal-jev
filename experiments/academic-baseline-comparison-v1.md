@@ -1,5 +1,58 @@
 # 学术横向比较冻结方案 v1
 
+> 当前阶段范围（用户再次确认）：仅简单任务的RL效率、源任务效果和迁移验证。
+> 训练使用全量clean SLURP单音频意图判决；FSC/MINDS作为简单跨数据集验证。
+> 下方SFC、Audio2Tool、MMAR、Agentic交互及其他复杂任务表仅保留为下一阶段资料，
+> 本阶段不继续其数据加工、训练或评测，也不将其作为当前交付门槛。
+
+> 最新执行口径（2026-11-16，覆盖下方历史状态）：RLOO已停止，聚焦简单
+> 任务双信用GRPO。service batch32完整100步比batch4吞吐提升2.70%；长度分桶100步
+> 仅+1.05%，暂不晋升。声学完整100步审核通过，训练吞吐+8.41%；KV16GiB
+> 完整训练对照已运行，最近固定记录55/100步，尚无完整收益结论。固定策略推理的
+> +19.41%与+21.81%单列，不能代替训练或任务效果收益。
+> DP2/micro8/global128，双TP1/service32；micro16曾OOM，micro32未执行。
+> tail v2及FSC/MINDS/SLURP TEST有限面板HF/macro一致性验证已按固定队列接续，尚无
+> 新NPU终态；新版全量学习曲线及迁移成绩仍未完成。历史GRPO曲线不能代替新版结果。
+> 学术缺口仍为SLURP HuBERT固定资产与复测；FSC官方权重复测为监督参考。复杂任务
+> 延后。执行证据见[效率实验](../docs/engineering/context-acoustic-bucket-efficiency-v1.md)，
+> 任务与迁移规则见[简单任务协议](../docs/research/context-grpo-transfer-macro-batch-v1.md)。
+
+> GRPO 固定终点完整复核及来源组配对区间已完成：集合 F1 改善区间为
+> [+0.059904,+0.082831]；Top1 跨零，NLL/Brier 均恶化。详见
+> [终点实测结论](../docs/research/context-grpo-fixed-endpoint-conclusions-v2.md)。
+> 当前仍不宣称整体决策质量提升、TEST 收益或跨任务泛化已验证。
+
+> 当前状态更正（2026-11-16）：GRPO 已完成全量 634 步训练及 11 点 selection 曲线。
+> 固定终点 step634 的 set-F1 为 0.8089999（step0 为 0.738041），top1 为 0.8211576
+> （step0 为 0.820724）；binary NLL 由 0.0187434 变为 0.046675，Brier 由
+> 0.00464996 变为 0.00586627。集合指标提高与概率质量恶化同时存在，不能表述为
+> 整体决策能力或校准全面提升。来源为本地 `context-rl-grpo-arithmetic-v2-experiment/curve.json`。
+> RLOO 已在训练；最新消费原 900 秒监听收据为四 rank step115，无 OOM。
+> FSC/clean TEST/MINDS 本轮迁移结果仍待后继队列，学术复测缺口仍按下文记录。
+
+> 当前执行入口：[context-prob-v1](../docs/engineering/context-prob-v1-baseline.md)。
+> 下文2026-11-10/11的“训练暂停”“FSC优先”及待验栈描述保留为历史，不能覆盖已发布的
+> arithmetic-v2 GRPO与排队RLOO-clipped。当前简单事件任务输出独立概率集合，主指标为
+> set-F1@0.5，同时报告原生top1；没有开放槽值输出，不能直接填写SLU-F1或声称完整SLU复现。
+>
+> 当前学术证据：FSC SpeechBrain官方权重已完成3793录音复测，3774正确（99.4991%），
+> 是FSC监督训练参考；当前Jev迁移尚待运行。其同人口比较已接入现有FSC队列，参见
+> [参考比较入口](../docs/engineering/fsc-external-reference-comparison-v1.md)。
+> SLURP HuBERT复测仍缺4项固定资产、共788105608字节，已检查共享目录及两机可访问范围，
+> 覆盖限制及文件校验身份见[资产清单](../docs/research/slurp-hubert-offline-asset-inventory-v1.md)。
+> 作者87.54% intent和75.10 SLU-F1仅属文献值。AudioJev官方CUDA路线尚无可用CUDA资源。
+> 这些缺口仍属于项目未完成工作；不以工程验收、Stage1选择集成绩替代学术复测结果。
+>
+> 当前先完成全量SLURP GRPO/RLOO曲线及既定迁移/TEST队列，保持当前模型下载边界。
+> 下列扩展表是研究登记，不意味着所有任务已启动或具备完整运行条件。
+
+> 2026-11-15 16:41 UTC 执行更正：GRPO 全量训练已完成，完整 selection 曲线仍在恢复；
+> step64 原推理已完成并经 Python3.12 求和兼容重审通过。RLOO 尚未训练，FSC、clean
+> TEST、MINDS 尚无本轮模型结果。旧后继已停止，新统一后继已启动等待准确恢复进程，
+> 见[接续与证据](../docs/engineering/recovered-research-successors-v1.md)。
+> 因此以下成绩性质保持分开：FSC 3774/3793 是已有官方权重本地复测；HuBERT 的
+> 87.54% intent / 75.10 SLU-F1 是文献报告；当前 Jev 的完整 RL、TEST 和迁移成绩待产出。
+
 > 2026-11-11 执行方向更新：已转向 clean SLURP / Qwen3-ASR 训练准备，FSC 为简单控制，停止扩展 Omni 验证。以下学术来源/历史协议保留；旧文中的长期冻结、FSC 优先及“p1 仍在运行”等状态已被后续记录取代。当前数据角色、质量限制与指标指南见[工作基线](../docs/research/08-dataset-metrics-working-guide.md)；这不表示新训练已派发。
 
 日期：2026-11-10 Asia/Shanghai。关联 [学术报告](../docs/research/07-academic-baseline-lock.md) 与 [机器登记](../docs/research/academic-baseline-lock.json)。此文件锁定后续比较规则和必需对照；**不启动任何实验，不改动既有协议、运行状态、容器或 CPU 后台任务**。`locked` 指当前即可执行的研究约束，不表示某运行已经完成；`proposed` 指仍须生成具体配置、资源预算与启动凭证的实验。
@@ -59,7 +112,7 @@ L1 原生官方任务、L2 派生 schema 决策、L3 真实交互执行分别建
 
 不变性目标各自配区分性测试：排列保持候选含义时应保持答案；重绑定含义、改变语音命令或补齐缺参时应改变答案。不能仅靠常量/全 null 取得高一致性。概率输出还报告 NLL/Brier、固定分桶 ECE、风险—覆盖；没有可比概率的生成/API 方法不虚构概率，相关栏留空。
 
-完整性硬门槛：官方预定 split 的有效预测覆盖 **100%**，重复/未知 ID **0**，结果/原始预测/scorer hash 一致，终态 exit code **0**。失败和超时仍计完整分母；若 official scorer 不接受缺失，不能用剩余样本分数当完整官方成绩。覆盖不足只报告 partial，不用于胜负结论。
+完整性硬门槛：预先声明的评测人口必须有 **100% 预测记录覆盖**，重复/未知 ID **0**，结果/原始预测/scorer hash 一致，终态 exit code **0**。记录覆盖不等于格式有效率；SLURP 解析失败保留为无效预测并计入完整分母，不过滤后评分。缺失记录必须先补齐可追溯的失败记录，不能用剩余样本分数当完整成绩；覆盖不足只报告 partial。官方 split 与 clean/selection 子集分别标明，不混称官方完整成绩。
 
 统计方案建议见下一节，不以文献小数差异判定我们复现成功。首次权重复测报告和作者数字的差值并排查版本、顺序、采样率、dtype、parser；不存在本文件擅自规定的“接近就算复现成功”。
 
@@ -89,6 +142,6 @@ L1 原生官方任务、L2 派生 schema 决策、L3 真实交互执行分别建
 
 ## 7. 与既有协议的关系和待决策项
 
-继续保留 [FSC schema](fsc-schema-evaluation.md)、[SLURP transfer](slurp-transfer-v1.md)、[SFC external](sfc-external-evaluation.md)、[AudioJev-MMAR](audiojev-mmar.md)、[τ 环境桥](tau2-environment-bridge.md)、[算法开发比较](algorithm-comparison-v1.md) 和 text v1/v2 的原始数据、配置与结论。本方案不回写其训练池、scorer 或运行记录。现有机会匹配矩阵不是计算量匹配；新 full-data 比较必须另立配置。
+继续保留 [FSC schema](archive/raw/frozen-baselines/fsc-schema-evaluation.md)、[SLURP transfer](archive/raw/frozen-baselines/slurp-transfer-v1.md)、[SFC external](archive/raw/complex-deferred/sfc-external-evaluation.md)、[AudioJev-MMAR](archive/raw/frozen-baselines/audiojev-mmar.md)、[τ 环境桥](archive/raw/complex-deferred/tau2-environment-bridge.md)、[算法开发比较](archive/raw/early-rl-engineering/algorithm-comparison-v1.md) 和 text v1/v2 的原始数据、配置与结论。本方案不回写其训练池、scorer 或运行记录。现有机会匹配矩阵不是计算量匹配；新 full-data 比较必须另立配置。
 
 待主进程决定：全量各臂训练/推理预算；独立 CUDA 资源或明确 port 轨道；是否进行 SFC 内域重训；Audio2Tool 当前官方代码与论文协议差异的适配范围；L3 先跑哪个 voice-v2 cell/provider 及费用上限。上述决定影响运行，不影响本次学术登记完成。

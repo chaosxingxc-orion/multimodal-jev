@@ -1,0 +1,154 @@
+{
+  "schema": "slurp-simple-base-selection-result-v1",
+  "task": "direct_audio_native_Final60",
+  "model": "Qwen3-ASR-0.6B",
+  "training_updates": 0,
+  "evaluation_role": "TRAIN_internal_selection",
+  "model_config": "configs/experiments/slurp-simple-final-v1.json",
+  "metrics": {
+    "passed": true,
+    "recordings": 9226,
+    "correct": 154,
+    "accuracy": 0.01669195751138088,
+    "macro_F1_fixed60": 0.0005472636815920397,
+    "macro_recall_supported": 0.016666666666666666,
+    "invalid": 0,
+    "failed": 0,
+    "invalid_rate": 0.0,
+    "container_id": "e6c8923b866a6a3541c400df73ed17864b6064a8f9b04e9fb85307d202076d32",
+    "metrics_sha256": "15f4a8992e5e8ae42172c1f1656e45cbc237e6fe8fc1dd699641d111b1797582",
+    "prediction_sha256": "07bee1048824a8beb590510420b603b25e35d63f7d9814795f38286e482e1854",
+    "role": "TRAIN_internal_selection_not_official_TEST",
+    "scope": "Independent complete raw logprob argmax/count/confusion recomputation; original fixed-image scorer separately authenticates every input and runtime receipt",
+    "top_confusions": [
+      {
+        "gold": "calendar_set",
+        "predicted": "qa_definition",
+        "count": 641
+      },
+      {
+        "gold": "calendar_query",
+        "predicted": "qa_definition",
+        "count": 528
+      },
+      {
+        "gold": "weather_query",
+        "predicted": "qa_definition",
+        "count": 471
+      },
+      {
+        "gold": "play_music",
+        "predicted": "qa_definition",
+        "count": 440
+      },
+      {
+        "gold": "news_query",
+        "predicted": "qa_definition",
+        "count": 384
+      },
+      {
+        "gold": "general_quirky",
+        "predicted": "qa_definition",
+        "count": 353
+      },
+      {
+        "gold": "qa_factoid",
+        "predicted": "qa_definition",
+        "count": 336
+      },
+      {
+        "gold": "email_query",
+        "predicted": "qa_definition",
+        "count": 288
+      },
+      {
+        "gold": "datetime_query",
+        "predicted": "qa_definition",
+        "count": 271
+      },
+      {
+        "gold": "calendar_remove",
+        "predicted": "qa_definition",
+        "count": 260
+      },
+      {
+        "gold": "email_sendemail",
+        "predicted": "qa_definition",
+        "count": 256
+      },
+      {
+        "gold": "play_podcasts",
+        "predicted": "qa_definition",
+        "count": 236
+      },
+      {
+        "gold": "alarm_set",
+        "predicted": "qa_definition",
+        "count": 229
+      },
+      {
+        "gold": "play_audiobook",
+        "predicted": "qa_definition",
+        "count": 221
+      },
+      {
+        "gold": "play_radio",
+        "predicted": "qa_definition",
+        "count": 221
+      },
+      {
+        "gold": "lists_query",
+        "predicted": "qa_definition",
+        "count": 215
+      },
+      {
+        "gold": "audio_volume_mute",
+        "predicted": "qa_definition",
+        "count": 212
+      },
+      {
+        "gold": "social_post",
+        "predicted": "qa_definition",
+        "count": 181
+      },
+      {
+        "gold": "lists_remove",
+        "predicted": "qa_definition",
+        "count": 170
+      },
+      {
+        "gold": "recommendation_events",
+        "predicted": "qa_definition",
+        "count": 162
+      }
+    ]
+  },
+  "diagnostic": {
+    "records": 9226,
+    "distinct_probability_vectors": 9226,
+    "predicted_histogram": {
+      "qa_definition": 9226
+    },
+    "mean_top_probability": 0.5562767333884423,
+    "minimum_top_probability": 0.34723352757830583,
+    "maximum_top_probability": 0.7908412334888039,
+    "mean_entropy_nats": 2.006319227117821,
+    "scope": "Descriptive full selection diagnosis only; no label/template changes or model tuning"
+  },
+  "evidence": {
+    ".local/simple-final-v1/base-selection-config.json": "30a5e3903570a592cb9eed84a4d3271ae09d34239e0d3de1b3247006991f8ca6",
+    ".local/simple-final-v1/base-selection-launch.json": "eb422533715b4cfcf4b3da1e5cd9614830de84c47b4ced78707e1e364f913d4f",
+    ".local/simple-final-v1/base-selection-observed.json": "7a3f7df6ec555291e9011cbcec2cf434619d8264f432d4659855651ee2eb10fc",
+    ".local/simple-final-v1/base-score-config.json": "ad2fdbc2cfc14c107015f57c522ae25e3dc64b92d7aa891ef7befa92d2591c03",
+    ".local/simple-final-v1/base-score-launch.json": "336fb510ad481f44017e2f0dc262e5d095a8487c3b12509f241ae593b32e04b3",
+    ".local/simple-final-v1/base-score-observed.json": "0ac76e358685615cb2dd515d64df463e4ea3b1c9de78853e2b454b5f7dc8dff1",
+    ".local/simple-final-v1/base-metrics.json": "15f4a8992e5e8ae42172c1f1656e45cbc237e6fe8fc1dd699641d111b1797582",
+    ".local/simple-final-v1/base-metrics-verified.json": "0336754665ed7bb009e702eb3afa0674c0b84095262ba7bc6ae6c5cffd4cef80",
+    ".local/simple-final-v1/base-zero-adapter-verified.json": "36941a7f9ba4c5f0eaf7edbb0c6ea1399b2716478ab3b98ec6b357f5ff4c50dd"
+  },
+  "comparison_limits": [
+    "Not official SLURP TEST or direct comparison to paper numbers",
+    "Zero-LoRA BF16 typed Final60 readout, not transcription or free-text decoding",
+    "No efficacy claim for ongoing Stage1 or RL"
+  ]
+}

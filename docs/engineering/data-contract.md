@@ -48,7 +48,7 @@ unknown precision/recall、Brier 及成对正确率。总体派生样本准确�
 保留 native intent/action/entities，构造 scenario Choice 及 date/time/person/place_name
 开放槽位。所有视图共享原录音划分；同一句话的多录音保留 utterance_group。
 
-[协议](../../experiments/slurp-transfer-v1.md) 与
+[协议](../../experiments/archive/raw/frozen-baselines/slurp-transfer-v1.md) 与
 [发布记录](slurp-transfer-v1-receipt.json) 包含原始哈希、排除量和说话人重叠。
 独立验证器 `tools/jev/verify_slurp_release.py` 对写出的所有记录重新检查类型、
 划分、域留出、ID 唯一性和派生视图数。它不声称已完成模型评估或官方 SLU scorer。

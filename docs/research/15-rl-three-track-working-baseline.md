@@ -5,11 +5,11 @@
 主线比较RL更新的收益、结构奖励的收益和跨数据集收益，不增设RL/SFT效果比较。
 
 执行排期更新：全量FSC矩阵移至既定短程训练、奖励候选与常驻验收之后，
-实验预算和人口不变，见[实际队列迁移](../engineering/intent-priority-schedule-v2.md)。
-Q已完成并归档[全部12步](../engineering/intent-q12-learning-v1.md)，末点从
+实验预算和人口不变，见[实际队列迁移](../engineering/archive/raw/intent-rl/intent-priority-schedule-v2.md)。
+Q已完成并归档[全部12步](../engineering/archive/raw/intent-rl/intent-q12-learning-v1.md)，末点从
 1/89回升至3/89，其中一条正确判决为最高概率并列；起点1/89，全部更新点
 NLL仍差于起点。无可靠持续分类改善证据，不是独立评测成绩。
-Q7资源等待经[固定监听目录审计及接续](../engineering/intent-resource-listener-handoff-v1.md)
+Q7资源等待经[固定监听目录审计及接续](../engineering/archive/raw/intent-rl/intent-resource-listener-handoff-v1.md)
 解除，独立suite已实际退出0并通过完整验收，原训练未重跑。
 
 ## 1. 简单判决：先锁定目标，再处理弱信用
@@ -32,7 +32,7 @@ p0、优势和来源权重均不反传；实际实现另固定verl版本的dual 
 类别均衡在来源抽样/外层w_i实现，不在组内标准化时抹掉它。
 当前仅使用逆频率外层权重，并非严格均衡batch；固定12步按批归一化后的
 类别累计目标系数最大/最小为2.4。重复来源与批分母均需披露，见
-[实际日程审计](../engineering/intent-schedule-balance-v1.md)。D/Q/P同日程仍匹配。
+[实际日程审计](../engineering/archive/raw/intent-rl/intent-schedule-balance-v1.md)。D/Q/P同日程仍匹配。
 有限候选枚举避免随机采样全错而无信用；它不保证低概率样本获得足够梯度。
 在同策略点，正确性目标的梯度含p0(y)系数，容易集中到少数已有优势的来源。
 
@@ -44,7 +44,7 @@ p0、优势和来源权重均不反传；实际实现另固定verl版本的dual 
 因此仅调小clip_ratio不能约束该次Adam更新后的偏移；应检验更新后效用与KL，
 并用已登记的低学习率对照测有限步影响。相对本轮旧策略的精确KL在同策略点
 梯度也为零，不能把加入该项视作单步稳定性的保证。
-详见[冻结源码与作用边界](../engineering/intent-q7-update-mechanism-v1.md#单次更新下裁剪与kl的作用边界)。
+详见[冻结源码与作用边界](../engineering/archive/raw/intent-rl/intent-q7-update-mechanism-v1.md#单次更新下裁剪与kl的作用边界)。
 
 当前D的0–12步全部为1/89、只预测一个类别，正确概率均值却从0.01518升至0.01915。
 这是约一遍89条学习人口的短程结果，支持排查信用/初始化/配置消费，

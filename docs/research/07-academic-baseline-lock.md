@@ -4,7 +4,7 @@
 
 > 2026-11-12补记：Qwen3-ASR-0.6B的真实四卡BF16 LoRA RL已进入受限intent先导，D/Q/P及FSC配置迁移协议见[当前主线](14-rl-decision-credit-and-transfer.md)。下文“主actor为冻结Omni”“不新增权重训练”只描述历史锁定阶段；当前不新增模型下载、不做RL/SFT效果比较。作者报告与官方权重复测仍分别列示，不能将不同训练来源的参考分数当作RL增益。FSC官方权重已有完整TEST复测；SLURP HuBERT缺本地权重，仍未运行。
 
-> Omni项目84.56%的历史意图参照另经[输入条件审计](../engineering/omni-intent-reference-coverage-v1.md)：每请求9–21个候选，并非固定60类；与当前89条学习音频仅3条哈希相同，且这3条候选也不相同。保留历史参照，不作为同条件ASR-Jev差值或本项目复现结果。
+> Omni项目84.56%的历史意图参照另经[输入条件审计](../engineering/archive/raw/omni-baseline/omni-intent-reference-coverage-v1.md)：每请求9–21个候选，并非固定60类；与当前89条学习音频仅3条哈希相同，且这3条候选也不相同。保留历史参照，不作为同条件ASR-Jev差值或本项目复现结果。
 
 调研日期：2026-11-10（Asia/Shanghai；来源访问时间保留 UTC）。本次锁定的是**比较对象、证据口径和复现路径**，调研子进程没有运行训练、模型评测或设备验证；主进程同期运行验证在下文另引工程凭证。不是穷尽最新 SOTA 的排行榜。机器登记见 [academic-baseline-lock.json](academic-baseline-lock.json)，来源和失败记录见 [academic-baseline-sources-v1.json](academic-baseline-sources-v1.json)，执行门槛见 [横比方案](../../experiments/academic-baseline-comparison-v1.md)。
 
@@ -52,11 +52,11 @@ Qwen3-Omni，直接消费音频和任务定义。四项历史 `ours-*-asr-text/g
 
 原实现 [end-to-end-SLU](https://github.com/lorenlugosch/end-to-end-SLU/tree/e94bd479de1a82663c38363979309089acebcd36) 已核 README 和 `experiments/no_unfreezing.cfg`，其中 `unfreezing_type=0`、全量 real、synthetic speaker 比例为零；README 声明提供 LibriSpeech 预训练模型，本次未读取 checkpoint。公开 [SpeechBrain 权重](https://huggingface.co/speechbrain/slu-direct-fluent-speech-commands-librispeech-asr/tree/9163a11ee29a14241356a7cc2cc05672b73ba5fe) 已核 HF revision 与文件元数据。主进程随后下载并校验该权重及独立 LibriSpeech ASR 依赖，官方 `decode_batch` 已完成一条 TRAIN 音频推理；见 [资产记录](../engineering/fsc-speechbrain-assets-v1.json) 和 [探针结果](../engineering/fsc-speechbrain-probe-v1-result.json)，后续主进程已完成完整 TEST3793 的公开权重复测：joint 3774/3793（99.4991%），序列精确匹配同值，见 [独立复核结果](../engineering/fsc-speechbrain-official-v1-test-result.json)。这比作者报告99.60%低0.1009个百分点，属于当前固定官方推理/CPU环境的任务训练权重复测，不是零训练基座，也不是历史训练全过程复现。原学术调研与后续实测证据分别保留。当前 recipe commit 不是历史训练 commit，不能由两者同时可访问推断逐参数复现。后续已解析模型卡短 hash 为 `f1f421b3bb58dabc75d67c3fd5f6e3359943b927` 并读取历史配方；默认值不证明实际训练覆盖项，历史脚本的 WER/CER 也不能替代 accuracy，详见 [历史源码追溯](speechbrain-history-v1.md)。当前 recipe 的 beam=80、temperature=1.25 只作为已读配置，权重复测须以随权重 hyperparams 为准。FSC 数据仍受原发布方专用学术许可约束，模型卡的 CC0 标签不覆盖语料许可。
 
-FSC 已完整下载的状态继承本地验收。本项目 **94.1522% ± 0.2275 pp** 是 [frozen head valid 三 seed 结果](../../experiments/fsc-frozen-audio-full.md)，不是 test，也不是上述学术方法复现。现有 **31 条训练录音 / 186 视图**的 SFT/RL 是开发诊断；六视图来自同源录音，不能算独立扩大的样本量。后续要同时交付全量 native test 和独立的六视图 test 表。
+FSC 已完整下载的状态继承本地验收。本项目 **94.1522% ± 0.2275 pp** 是 [frozen head valid 三 seed 结果](../../experiments/archive/raw/frozen-baselines/fsc-frozen-audio-full.md)，不是 test，也不是上述学术方法复现。现有 **31 条训练录音 / 186 视图**的 SFT/RL 是开发诊断；六视图来自同源录音，不能算独立扩大的样本量。后续要同时交付全量 native test 和独立的六视图 test 表。
 
 冻结Qwen3-Omni父提示后续已完成完整官方TEST的3793录音×6视图并独立复核：
 native严格JSON候选选择1752/3793（46.1904%），六视图全对9/3793（0.2373%），
-见[完整结果表](../../experiments/fsc-omni-official-test-v2-parent.md)。这是无FSC权重
+见[完整结果表](../../experiments/archive/raw/frozen-baselines/fsc-omni-official-test-v2-parent.md)。这是无FSC权重
 训练、带严格消费格式的端到端基线，与上述监督训练分类器的条件不同；不能
 将它称为学术模型复现。已冻结p1的同协议TEST对照仍在运行，尚无完整提升结论。
 
@@ -84,7 +84,7 @@ ESPnet 的两个官方 HF 权重 revision 已登记；README 声称的历史 git
 
 **官方评分实现已复核**：[SLURP commit 8eb1654](https://github.com/pswietojanski/slurp/tree/8eb16545762be97ace75334109d73824217311f1/scripts/evaluation) 的 `evaluate.py`、`util.py`、`metrics/metrics.py`、`metrics/distance.py`。`SLUF1` 合并 word/char 的混淆计数；不是简单拿两个 F1 求平均。`--load-gold` 以文本 `slurp_id` 评分，普通音频预测以录音 filename 评分；二者分母不等。`load_predictions` 用字典写入，重复 ID 会覆盖；`evaluate.py` 对缺失预测只警告且不进入该例计数。正式复测须在官方 scorer 前独立要求 ID 一一对应、全覆盖、拒绝重复，不能以少输出获得好分数。scorer 本次为代码静态审阅，尚未运行新 fixtures。
 
-[已有 SLURP transfer 协议](../../experiments/slurp-transfer-v1.md) 留出业务域并生成不同任务，不能把其选取录音数、accuracy 或 null 指标与官方全 test SLU-F1 混排。本报告不修订它。
+[已有 SLURP transfer 协议](../../experiments/archive/raw/frozen-baselines/slurp-transfer-v1.md) 留出业务域并生成不同任务，不能把其选取录音数、accuracy 或 null 指标与官方全 test SLU-F1 混排。本报告不修订它。
 
 ### 2.3 SFC-Bench/SpokenFC：训练轨道与外部 transfer 分开
 
@@ -100,7 +100,7 @@ ESPnet 的两个官方 HF 权重 revision 已登记；README 声称的历史 git
 
 论文 §5.3 Post-Training 描述只对 LLM backbone 做 LoRA，冻结 audio/vision/talker，训练一个 epoch；原硬件为 NVIDIA A800。仓库明确 SFT 使用 LLaMA-Factory，未在此完整复制；GRPO 默认 BF16 / 8 generations 与论文最终 FP16 / 32 不同。**本次未找到已核验 SpokenFC task checkpoint**；基座 Omni 权重不能充当论文 SFT/GRPO 权重。将来自己重训需要独立预算和配方，不承诺立即复现。
 
-沿用 [现存 SFC external protocol](../../experiments/sfc-external-evaluation.md)：当前 Jev 仅从 FSC/SLURP 训练，SFC train 为参考，不混入训练。若要比较 SFC 内域重训，是另一个 proposed 实验，必须另立协议。所有级别、多轮两段音频、官方 supplied assistant clarification、原始 `NAN`、数组与调用重数全部保留。论文称 speaker isolation，但发布记录不提供 speaker ID，本项目只可声明已验音频哈希/函数集合隔离，不能自行认证说话人隔离。
+沿用 [现存 SFC external protocol](../../experiments/archive/raw/complex-deferred/sfc-external-evaluation.md)：当前 Jev 仅从 FSC/SLURP 训练，SFC train 为参考，不混入训练。若要比较 SFC 内域重训，是另一个 proposed 实验，必须另立协议。所有级别、多轮两段音频、官方 supplied assistant clarification、原始 `NAN`、数组与调用重数全部保留。论文称 speaker isolation，但发布记录不提供 speaker ID，本项目只可声明已验音频哈希/函数集合隔离，不能自行认证说话人隔离。
 
 官方 scorer 与 strict scorer 并列，保留原始 prediction 和官方 stdout。已知官方 parser 对数组、跨函数参数归属、重复调用等有问题，证据见既有 [scorer audit](../engineering/sfc-scorer-audit.json)。strict 补充列用 call-multiset exact、function-bound slot F1、两轮 both-correct；不能静默把 strict 替换为官方数。现有 two-audio CPU engine check 输出是转写，只证明请求路径接受，未证明任务成功或两段音频因果使用。
 
@@ -142,7 +142,7 @@ ESPnet 的两个官方 HF 权重 revision 已登记；README 声称的历史 git
 
 代码固定 `8eeeab5e77d2c410fd6058e7bdf2b4125f11903e`，HF 权重 `d23dddb9669021bb2ef8cae5c07fe24b3e35702d`。此次重读 [backend](https://github.com/SihanLv/AudioJev-Inference/blob/8eeeab5e77d2c410fd6058e7bdf2b4125f11903e/audiojev_inference/backend.py) 确认显式 CUDA 检查和 BF16。175 的 NPU 4–7 使用授权不能解决 CUDA 依赖；未经验证的 Ascend 移植必须单列为 port，不叫忠实官方复现。
 
-延用 [MMAR 冻结协议](../../experiments/audiojev-mmar.md)：完整音频、原始候选顺序、重复/空白候选和非单选 reference 保留；使用官方 renderer/backend 绕过服务 wrapper 的 canonical 排序。已有完整 1,000 条输入、publisher scorer/oracle 控制，**没有模型成绩**。不能用 always-first/参考可满足上界代替模型结果，也不因五个 reference 在该单候选输出契约下不满足而删除它们。
+延用 [MMAR 冻结协议](../../experiments/archive/raw/frozen-baselines/audiojev-mmar.md)：完整音频、原始候选顺序、重复/空白候选和非单选 reference 保留；使用官方 renderer/backend 绕过服务 wrapper 的 canonical 排序。已有完整 1,000 条输入、publisher scorer/oracle 控制，**没有模型成绩**。不能用 always-first/参考可满足上界代替模型结果，也不因五个 reference 在该单候选输出契约下不满足而删除它们。
 
 ## 3. 已计划扩展集：逐项基线与纳表决定
 
@@ -171,7 +171,7 @@ MASSIVE/ATIS/SNIPS 文本版、VoiceAgentBench、From Text to Voice、VGBench、
 
 [原 τ-Voice 2603.13686v1](https://arxiv.org/html/2603.13686v1) Table 3/6 的英语 **278 tasks**、Clean/Realistic、GPT-4.1 用户 simulator 是历史文献栏。固定当前仓库也有 voice-v1 manifest，但“同名任务数”不足以证明重现论文旧运行栈。原论文与 voice-v2 不混排。
 
-现有 [环境桥](../../experiments/tau2-environment-bridge.md) 只重放 TRAIN task 的参考动作、验证 DB 变化、重放一致性和反例；没有语音 provider、模型生成轨迹、完整 NL assertion/交互评分。它是启动门槛的一部分，不是 L3 学术基线结果。
+现有 [环境桥](../../experiments/archive/raw/complex-deferred/tau2-environment-bridge.md) 只重放 TRAIN task 的参考动作、验证 DB 变化、重放一致性和反例；没有语音 provider、模型生成轨迹、完整 NL assertion/交互评分。它是启动门槛的一部分，不是 L3 学术基线结果。
 
 ## 5. 同骨干公平对照和资源归因
 

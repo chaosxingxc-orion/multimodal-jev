@@ -9,7 +9,7 @@
 以及真实已验收策略的离线信用诊断，尚未派发该候选的NPU训练。
 
 后续开发源码已接入训练入口、独立信用验收及恢复目标身份检查，
-新增固定统一缩放控制接口，见[目标接入记录](../engineering/intent-objective-integration-v1.md)。
+新增固定统一缩放控制接口，见[目标接入记录](../engineering/archive/raw/intent-rl/intent-objective-integration-v1.md)。
 53项固定镜像CPU测试及经目标分派的真实verl四rank合成验证通过；
 仍未派发候选NPU更新。下文v1结果对应原冻结源码，不能当作新源码的哈希证据。
 

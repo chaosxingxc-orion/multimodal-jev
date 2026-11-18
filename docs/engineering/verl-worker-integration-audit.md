@@ -28,38 +28,38 @@
 
 补充实测：原生 actor 的 CPU 前向在 log-prob 阶段失败，固定版本的
 `utils/torch_functional.py` 根据已安装算子而非 logits 设备选择 NPU 交叉熵。
-见[失败与显式 CPU 适配协议](../../experiments/native-verl-actor-forward-v1.md)。
+见[失败与显式 CPU 适配协议](../../experiments/archive/raw/span-rl-probes/native-verl-actor-forward-v1.md)。
 v2 在独立进程中显式替换 log-prob 分发，已通过真实音频前向对照，最大误差
 3.0517578125e-5；见[结果](native-verl-actor-forward-v2-result.json)。不得称为
 未修改 worker 的成功执行。真实模型梯度/AdamW 对照仍在运行。
 
-后续[原生 update_policy 验证](../../experiments/native-verl-update-policy-v1.md)
+后续[原生 update_policy 验证](../../experiments/archive/raw/span-rl-probes/native-verl-update-policy-v1.md)
 已登记并排队，必须等待上述梯度对照成功。它直接调用 compute_log_prob 和
 update_policy，显式保留 rollout 概率、验证零 dropout，并与同一初始化器的
 参考梯度/参数/优化器状态比较；CPU 设备与 log-prob 适配均明确记录。
 本次仅验证单个完整微批；变长微批缩放、零优势动量处理与真实分布式模型路径
 仍是独立的必要验收，不能用这个队列代替。
 
-原生 update_policy 的[静态微批损失验证](../../experiments/native-verl-microbatch-loss-v1.md)
+原生 update_policy 的[静态微批损失验证](../../experiments/archive/raw/span-rl-probes/native-verl-microbatch-loss-v1.md)
 已经通过。通过注册损失显式补偿原生微批平均，8/12 行微批梯度与全批参考误差
 均小于5e-9；未补偿负例误差约5.46e-4。这里使用三参数 log-prob 前向夹具及
 48 个真实采样回答，不能替代 Qwen 模型的微批、分布式或 NPU 验证。
 该适配器目前明确拒绝多 rank、多 epoch、动态微批与 KL/entropy 等未验证组合，
 尚未接入正式训练配置。
 
-异步音频引擎边界已实现并[排队验证](../../experiments/async-vllm-audio-v1.md)：
+异步音频引擎边界已实现并[排队验证](../../experiments/archive/raw/early-rl-engineering/async-vllm-audio-v1.md)：
 使用实际 AsyncLLM、原始单占位符提示和 actor 特征，保留全部采样副本，并要求
 引擎展开后的 prompt IDs 与 actor 完全一致。其成功也只证明引擎边界；尚未替换
 上表中的原生 Ray manager/server、agent-loop 多模态后处理与位置编码。
 默认 server 只取 outputs[0]，后续接入还必须明确保持 replicate 分组，不能丢失
 其余回答后仍声称完成 GRPO 采样。
 
-Omni 单/双音频现有独立的 [异步采样边界](omni-async-boundary-v1.md)，
+Omni 单/双音频现有独立的 [异步采样边界](archive/raw/omni-baseline/omni-async-boundary-v1.md)，
 固定镜像 34 项测试通过（真实 SamplingParams、模拟引擎）。它保留 K 副本并避免
 原生 server 将整数 logprobs=0 当作关闭开关；尚无真实 AsyncLLM Omni 运行或
 原生 Ray 集成证据。旧 ASR 异步接口不能代替此模型专用契约。
 
-[两进程 Gloo 损失验证](../../experiments/distributed-verl-loss-v1.md)已通过：
+[两进程 Gloo 损失验证](../../experiments/archive/raw/early-rl-engineering/distributed-verl-loss-v1.md)已通过：
 固定 core_algos.py 的 global_batch_info 在不等 token 分片和不等微批数下恢复
 全 batch 梯度，错误的局部平均负例能明显区分。此结果仅覆盖损失与 collective，
 不覆盖模型 forward/backward、原生 update_policy 或分布式状态保存恢复。

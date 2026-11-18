@@ -2,9 +2,27 @@
 
 此目录随本仓库版本管理，不是独立的 GitHub Wiki 仓库。
 
+> 状态快照：2026-11-17 UTC。本页只保留当前记录入口和有效结论；历史运行记录归档到
+> [`archive/`](archive/)，原始文件在 `archive/raw/`。
+
 每个实验建立一份 [模板](TEMPLATE.md) 记录：启动前填写目的、假设、协议和配置，
 完成后依据实际产物补充结果、成本和结论。修正采用带日期的说明，保留原始证据。
+当前任务、算法与发布边界以 [工程索引](../docs/engineering/README.md) 为准，wiki 不复制实时状态。
 
-- [2026-11-10：开发集基线、SFT 与文本对照运行状态](2026-11-10-development-baselines.md)
-- [2026-11-11：FSC 冻结 Omni 完整 TEST 提示词对照](../experiments/fsc-omni-official-test-v2-comparison.md)：父提示及p1完整结果、逐录音配对和独立验收。
-- [2026-11-11：SLURP 冻结 Omni 原生完整 TEST](../experiments/slurp-omni-native-test-v1.md)：独立验收完成；原始标签诊断，不用于优化。
+## 有效结论
+
+| 主题 | 结论 | 边界 |
+| --- | --- | --- |
+| SLURP SFT 格式学习 | 168/168 格式有效；非空目标正确 0/81，低于全 null 控制 87/168 | 只有格式学习，没有语义迁移 |
+| vLLM 预处理对齐 | waveform 路径误差 0.16854；feature v4 单条 0.0000802、完整批次 0.0000566 | 固定录音/身份；工程一致性，不是训练收益 |
+| FSC 数据人口 | 30,043 WAV；train/valid/test = 23,132/3,118/3,793 | 数据事实，不是模型成绩 |
+| 早期原始音频策略 | FSC 186、SLURP 168 个开发决策全部格式无效 | 历史接口失败，已被概率头路线取代 |
+
+## 归档
+
+| 记录 | 总结 | 内容 |
+| --- | --- | --- |
+| 2026-11-10 开发集基线 | [总结](archive/2026-11-10-development-baselines-v1.md) | SFT、原始音频、vLLM 预处理、文本对照的当时状态 |
+
+已归档的 FSC/SLURP 冻结 Omni 完整 TEST 记录属于 `experiments` 冻结基线家族，见
+[冻结基线归档总结](../experiments/archive/frozen-baselines-v1.md)。

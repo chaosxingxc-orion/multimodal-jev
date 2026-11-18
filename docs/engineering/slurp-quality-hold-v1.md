@@ -62,7 +62,7 @@ selection可用9673录音；另1条冲突录音标记conflict，不参与监督�
 SFT/RL 训练入口，旧 SLURP 或无审核样本拒绝优化。真实 learning 全量空审核
 预检输出 0 条训练样本。此实现不解除语义审核与可训练 release 的质量限制。
 
-后续已单独发布并训练[时间角色工程先导](slurp-temporal-pilot-v1.md)：48 个 learning
+后续已单独发布并训练[时间角色工程先导](archive/raw/complex-tasks-deferred/slurp-temporal-pilot-v1.md)：48 个 learning
 来源经参考文本语义审核，142 项判断准入、2 项隔离；录音 hash 重新验证但未逐条
 听审。物理 4 号卡完成 24 次 SFT 更新。仅限该明确版本，其他 SLURP 数据仍受
 原限制；此次没有整体基线、决策链收益或泛化成绩。
