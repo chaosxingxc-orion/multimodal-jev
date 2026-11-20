@@ -8,12 +8,14 @@
 | --- | --- |
 | 数据封存 | 官方 VALID 全量 3,118 条、10 位说话人、31 类。音频引用共享原 WAV，四组共用同一音频清单和计分文件。FSC TEST 保留作已有冻结迁移对照。 |
 | CPU 准备 | 分组使用 `tools.reports.prepare_native_seal_cache` 与 `configs/portable/operations/native-seal-cache.json` 生成有限及全量缓存，再用同入口独立 `--verify`。按既有入口将复核收据保存为 `VERIFIED.json`。 |
-| 目标机准入 | 181 上每组先对同一批 256 条无标签 VALID 样本运行 HF 和对应的两实例服务对照。每组分别使用自身的提示缓存。原生运行器按请求、候选顺序、logit、设备和运行时身份验收。若失败，保留证据，暂停四组正式比较。 |
+| 目标机准入 | 每组在本地宏指定的主机上，先对同一批 256 条无标签 VALID 样本运行 HF 和对应的两实例服务对照。每组使用自身的提示缓存。原生运行器按请求、候选顺序、logit、设备和运行时身份验收。若失败，保留证据，暂停四组正式比较。 |
 | 全量推理 | 每组两名单卡服务副本，四组共八卡。核对目标机设备、镜像和租约后统一派发。独立 CPU 审核和评分不持卡租约。每条录音只使用所属组的一个副本，主比较共 12,472 次请求。 |
 | 配对比较 | 主对照为关键词组减原定义组。主报 Top‑1 macro‑F1、只差动作的正确候选胜率、只差地点的正确候选胜率。并报准确率、平均 Top‑1 原始概率及只差对象的胜率。对全部合法单字段邻居计分，平分按半次胜出。按说话人配对 bootstrap，三项主指标的区间下界均大于零才判为有信号。 |
 
 准备入口为 `python -m tools.reports.fsc_keyword_evaluation --config configs/portable/operations/fsc-keyword-evaluation.json --local <本地宏>`。本地宏绑定 `FSC_DATASET_ROOT`、`FSC_KEYWORD_SOURCE_PLAN`、`FSC_KEYWORD_EVALUATION_ROOT`。缓存宏 `NATIVE_SEAL_CACHE_CONFIG` 每次绑定一个 `MANIFEST.json` 中的 dataset key、seal 根及 SHA-256、step 160 的处理器及其 SHA-256、输出根、编码配置和并行参数。面板另填 `panel_size=256`。正式收集使用 `--results-local <本地宏>`，以 `FSC_KEYWORD_RESULTS` 绑定 `seal: {root, sha256}`、四组 `arms: {组名: {audit, audit_sha256, predictions}}` 及 `report` 路径。
 
 封存 SHA-256 为 `5f5c2f9d4f7f80c07057bdfc891840a1abe0a52f5af33401a1aab02c5fb17153`。 [共享评测集清单](/mnt/cephfs/xingchao/experiments/multimodal-jev/fsc-keyword-evaluation-v3/MANIFEST.json)
+
+本轮按临时授权派发到 69，运行标签为 `jev-fsc-keywords-host69-190`。原定义使用 0–1 卡，关键词使用 2–3 卡，短句使用 4–5 卡，关键词加短句使用 6–7 卡。
 
 CPU 复用了 step 160 的真实处理器。最长 VALID 录音在四组分别编码为 2529、3178、2881、3530 tokens，均保留 31 个读出标记，音频特征逐元素一致。v3 是当前发布入口。v1 手写词表和 v2 初版统计产物均未派发。当前证据覆盖数据和 CPU 输入编译，NPU 推理和效果待运行。
