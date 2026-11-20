@@ -54,7 +54,7 @@
 
 ### MINDS 末点评测
 
-MINDS native14 的 Stage1 和 Stage2 末点可以直接选用独立 HF 分片。先用同一检查点在目标机生成无标签 HF 对照面板，再冻结分片配置。每个单卡分片必须精确重现其所分配的对照记录，全量才能启动。SLURP 和 FSC 的服务评测继续使用各自的数值一致性门槛。
+当前简单跨数据集评测使用 MINDS native14。Stage1 和 Stage2 末点可以直接选用独立 HF 分片。先用同一检查点在目标机生成无标签 HF 对照面板，再冻结分片配置。每个单卡分片必须精确重现其所分配的对照记录，全量才能启动。SLURP 服务评测沿用数值一致性门槛。
 
 从已有端点封包接续时，使用 `tools.reports.prepare_stage2_view_selection` 与
 `configs/portable/operations/prepare-stage2-view-selection.json`。本地宏
@@ -64,9 +64,13 @@ HF 原始输出的 SHA-256，以及新输出、目标机与设备。遇到已发
 交给 `tools.reports.native_seal_operations`。以 `run/audit-hf-shards-collected.json` 中的完整
 分母、检查点和预测哈希确认结果。评测主报平均 Top‑1 原始概率、Top‑1 macro‑F1 和准确率。
 
-### FSC 词级线索评测
+Stage2 的 SLURP selection 可在新评测包的本地宏中用 `selection_steps` 指定已审核检查点的有序子集。
+`selection_cache` 可绑定旧封存清单的路径及 SHA-256 与目标机只读缓存目录。封包时须确认两份封存的
+录音清单、候选定义和评分标签逐字节一致。推理时按已验证的缓存收据核对张量与 processor 身份。
 
-固定 step 160 的 FSC 官方 VALID 提示对照，复用原生评测入口。关键词与整句示例均从官方 TRAIN 的书面文本标注按固定脚本提取。见 [封存与评分方案](fsc-keyword-evaluation-v3.md)。
+### FSC 历史评测
+
+FSC 归入历史参考，从新评测队列移除。step 160 的官方 VALID 提示对照、封存配置与已审核结果见 [封存与评分方案](fsc-keyword-evaluation-v3.md)。关键词与整句示例均从官方 TRAIN 的书面文本标注按固定脚本提取。
 
 ## 已记录的状态快照
 

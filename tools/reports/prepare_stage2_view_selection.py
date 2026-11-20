@@ -42,6 +42,31 @@ def heldout_plan(c, selection):
                 fixed_terminal_step=steps[-1], source_selection_sha256=c['seal']['sha256'])
 
 
+def selection_cache_seal(binding, source_seal, entry):
+    """Reuse a selection cache whose sealed inputs and targets are byte-identical."""
+    old_root = Path(binding['seal']['root'])
+    old_sha = binding['seal']['sha256']
+    old = pinned(old_root/'MANIFEST.json', old_sha)
+    if any(old[k] != source_seal[k] for k in (
+            'schema', 'datasets', 'prompt_layout', 'threshold', 'target_tuning_allowed')):
+        raise ValueError('previous selection cache has a different data contract')
+    for name in (f'inference/{DATASET}/panel.json', f'inference/{DATASET}/rows.json',
+                 f'scoring/{DATASET}/targets.json'):
+        if old['files'][name] != source_seal['files'][name]:
+            raise ValueError('previous selection cache has different sealed data: '+name)
+    target = entry/'selection-cache-seal'
+    target.mkdir()
+    for name, expected in old['files'].items():
+        destination = target/name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(regular(old_root, name), destination)
+        if file_hash(destination) != expected:
+            raise ValueError('previous selection seal changed: '+name)
+    shutil.copyfile(old_root/'MANIFEST.json', target/'MANIFEST.json')
+    pinned(target/'MANIFEST.json', old_sha)
+    return dict(root='/jev-entry/selection-cache-seal', sha256=old_sha)
+
+
 def bind_forward(snapshot, request_pin, *, image, base_id):
     """Install the training request's exact forward sources into a fresh evaluation tree."""
     from multimodal_jev.context_execution import map_io
@@ -227,6 +252,10 @@ def prepare(c, provenance):
     if plan['schema'] != 'jev-stage2-view-selection-source-v1':
         raise ValueError('audited Stage2 source plan required')
     heldout = c.get('heldout')
+    selection_cache = c.get('selection_cache')
+    selected_steps = c.get('selection_steps')
+    if heldout and (selection_cache is not None or selected_steps is not None):
+        raise ValueError('selection options cannot override a held-out endpoint')
     if heldout:
         plan = heldout_plan(c, plan)
         plan_path = entry/'source-plan.json'
@@ -237,6 +266,15 @@ def prepare(c, provenance):
         shutil.copytree(seal_root, entry/'selection')
         source = dict(path='/jev-entry/selection/source-plan.json', sha256=seal['files']['source-plan.json'])
         cache_seal = dict(root='/jev-entry/selection',sha256=c['seal']['sha256'])
+        if selection_cache is not None:
+            cache_seal = selection_cache_seal(selection_cache, seal, entry)
+    if selected_steps is not None:
+        steps = [point['step'] for point in plan['checkpoints']]
+        if (not isinstance(selected_steps, list) or not selected_steps
+                or any(type(step) is not int for step in selected_steps)
+                or [step for step in steps if step in selected_steps] != selected_steps):
+            raise ValueError('evaluation steps must be an ordered subset of the audited roster')
+        plan = dict(plan, checkpoints=[point for point in plan['checkpoints'] if point['step'] in selected_steps])
     old = c['runtime_archive']
     if file_hash(old['path']) != old['sha256']:
         raise ValueError('native runtime archive changed')
@@ -293,7 +331,8 @@ def prepare(c, provenance):
     initial = plan['checkpoints'][0]['step']
     cache = dict(c['cache'], dataset=plan['evaluation_dataset'], seal=cache_seal,
                  processor=dict(policy=f'/jev-entry/policy-{initial}',sha256=runtime['processor_sha256']))
-    cache_mount = '/jev-inputs' if heldout else '/jev-work'
+    existing_cache = heldout or selection_cache
+    cache_mount = '/jev-inputs' if existing_cache else '/jev-work'
     panel = dict(cache, output=cache_mount+'/panel-cache', panel_size=c['panel_size'])
     full = dict(cache, output=cache_mount+'/full-cache')
     stages, other = [], []
@@ -321,7 +360,7 @@ def prepare(c, provenance):
         stages.append([role('audit-hf-shards', 'audit-hf-shards', collect='audit-hf-shards/metrics.json',
                             endpoint=dict(common, hf_shards=spec, physical_devices=[], cache=full,
                             cache_verification=full['output']+'/VERIFIED.json', output='/jev-work/audit-hf-shards'))])
-    if not heldout:
+    if not existing_cache:
         stages = [[role('panel-encode','encode',cache=panel)], [role('panel-verify','verify',cache=panel)]]
         other = [[role('full-encode','encode',cache=full)], [role('full-verify','verify',cache=full)]]
     for offset in range(0, len(plan['checkpoints']) if hf_shards is None else 0, len(devices)):
@@ -381,13 +420,17 @@ def prepare(c, provenance):
     operations_root = root/'run'
     for point in plan['checkpoints'] if hf_shards is None else []:
         groups = score_jobs(point,'full',full)
-        if not heldout:
+        if not existing_cache:
             groups[0][0]['wait_for'] = str(operations_root/'full-verify-wait.json')
         stages.extend(groups)
     (entry/'native-seal-container.json').write_text('"${NATIVE_SEAL_CONTAINER_CONFIG}"\n')
     operations = dict(c['operations'])
-    if heldout:
-        operations['read_only_mounts'] = [f"{heldout['cache_root']}/{name}:{cache_mount}/{name}"
+    if existing_cache:
+        cache_root = Path(existing_cache['cache_root'])
+        if (not cache_root.is_absolute() or '..' in cache_root.parts or ':' in str(cache_root)
+                or cache_root.is_relative_to(operations['shared_root']) or 'read_only_mounts' in operations):
+            raise ValueError('an isolated read-only evaluation cache root is required')
+        operations['read_only_mounts'] = [f"{cache_root}/{name}:{cache_mount}/{name}"
                                          for name in ('panel-cache', 'full-cache')]
     return write_prepared(root, entry, operations, stages, other, dict(
         schema='jev-stage2-view-heldout-prepared-v1' if heldout else 'jev-stage2-view-selection-prepared-v1',
