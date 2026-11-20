@@ -60,7 +60,26 @@ def render_context_request(request):
     return system, context + '\n' + '\n'.join(readouts)
 
 
-def encode_context_request(processor, request, audio, *, decision_token_id, audio_token_id, max_tokens):
+PREFIX_LAYOUT = 'jev-stable-prefix-audio-readout-v1'
+
+
+def render_prefix_context_request(request):
+    """Stable rules precede variable history/audio; every readout follows audio.
+
+    Candidate order/definitions are preserved. No labels, sample IDs, audio
+    paths or prior answers are injected into the reusable prefix.
+    """
+    system, _ = render_context_request(request)
+    stable = json.dumps(dict(layout=PREFIX_LAYOUT, version=request.version,
+        requirements=request.requirements, questions=[asdict(q) for q in request.questions]),
+        ensure_ascii=False, separators=(',', ':'))
+    history = json.dumps(dict(history=request.history), ensure_ascii=False, separators=(',', ':')) if request.history else ''
+    readouts = '\n'.join(json.dumps({'decision_id':q.id},ensure_ascii=False,separators=(',', ':'))
+                         + '\n' + DECISION_TOKEN for q in request.questions)
+    return system + '\n' + stable, history, readouts
+
+
+def encode_context_request(processor, request, audio, *, decision_token_id, audio_token_id, max_tokens, prompt_layout=None):
     """Use a previously audited tokenizer; never allocate or initialize tokens here."""
     import torch
     if (type(decision_token_id) is not int or type(audio_token_id) is not int
@@ -73,9 +92,16 @@ def encode_context_request(processor, request, audio, *, decision_token_id, audi
             or DECISION_TOKEN not in tokenizer.all_special_tokens
             or tokenizer.encode(DECISION_TOKEN, add_special_tokens=False) != [decision_token_id]):
         raise ValueError('audited single special decision token required')
-    system, content = render_context_request(request)
+    if prompt_layout is None:
+        system, content = render_context_request(request)
+        user_content = [{'type': 'audio', 'audio': audio}]
+    elif prompt_layout == PREFIX_LAYOUT:
+        system, history, content = render_prefix_context_request(request)
+        user_content = ([{'type': 'text', 'text': history}] if history else []) + [{'type': 'audio', 'audio': audio}]
+    else:
+        raise ValueError('unknown prompt layout')
     messages = [{'role': 'system', 'content': [{'type': 'text', 'text': system}]},
-                {'role': 'user', 'content': [{'type': 'audio', 'audio': audio}]},
+                {'role': 'user', 'content': user_content},
                 {'role': 'assistant', 'content': content}]
     text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
     if system not in text or content not in text or text.count(DECISION_TOKEN) != len(request.questions):

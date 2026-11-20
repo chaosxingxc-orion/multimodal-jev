@@ -63,13 +63,13 @@ def load_evidence(config,population,*,release_manifest,processor_sha256):
         release_manifest=release_manifest,processor_sha256=processor_sha256)
 
 
-def encoder(cache_root,requests,candidate_ids,receipts,*,processor_sha256,decision_token_id,audio_token_id):
+def encoder(cache_root,requests,candidate_ids,receipts,*,processor_sha256,decision_token_id,audio_token_id,prompt_layout=None):
     root=Path(cache_root)
     if not root.is_dir():raise ValueError('existing audited cache directory required')
     cache=EncodedAudioCache(root)
     def no_processor():raise ValueError('evaluation cache rebuild forbidden')
     prepare=CachedContextPreparer(no_processor,cache,processor_sha256=processor_sha256,
-        decision_token_id=decision_token_id,audio_token_id=audio_token_id,max_tokens=4096)
+        decision_token_id=decision_token_id,audio_token_id=audio_token_id,max_tokens=4096,prompt_layout=prompt_layout)
     by_id={r['id']:r for r in receipts}
     if len(by_id)!=len(receipts) or set(by_id)!=set(requests):raise ValueError('complete cache/request identities required')
     def encode(asset):

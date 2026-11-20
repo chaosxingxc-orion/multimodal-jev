@@ -41,7 +41,7 @@ class PreparedContextInput:
 
 class CachedContextPreparer:
     def __init__(self,processor_factory,cache,*,processor_sha256,decision_token_id,
-                 audio_token_id,max_tokens,preprocessing=None,audio_mirror=None):
+                 audio_token_id,max_tokens,preprocessing=None,audio_mirror=None,prompt_layout=None):
         if (any(type(v) is not int or v<0 for v in (decision_token_id,audio_token_id)) or
                 decision_token_id==audio_token_id or type(max_tokens) is not int or max_tokens<1):
             raise ValueError('explicit distinct marker/audio IDs and context budget required')
@@ -49,6 +49,10 @@ class CachedContextPreparer:
         self.processor_sha256=processor_sha256;self.preprocessing=preprocessing
         self.audio_mirror=audio_mirror
         self.encoding=dict(decision_token_id=decision_token_id,audio_token_id=audio_token_id,max_tokens=max_tokens)
+        if prompt_layout is not None:
+            from .context_decision_contract import PREFIX_LAYOUT
+            if prompt_layout!=PREFIX_LAYOUT:raise ValueError("unknown prompt layout")
+            self.encoding["prompt_layout"]=prompt_layout
         self.local=threading.local()
 
     def identity(self,request,expected_audio_sha256):

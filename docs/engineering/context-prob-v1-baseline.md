@@ -52,6 +52,18 @@
 `tools.reports.committed_signal_report --config ...`。真实step512归档输出一致及幂等验收
 已完成；具体命令、能力限制及剩余范围见[日常操作归并登记](routine-operations-v1.md)。
 
+### MINDS 末点评测
+
+MINDS native14 的 Stage1 和 Stage2 末点可以直接选用独立 HF 分片。先用同一检查点在目标机生成无标签 HF 对照面板，再冻结分片配置。每个单卡分片必须精确重现其所分配的对照记录，全量才能启动。SLURP 和 FSC 的服务评测继续使用各自的数值一致性门槛。
+
+从已有端点封包接续时，使用 `tools.reports.prepare_stage2_view_selection` 与
+`configs/portable/operations/prepare-stage2-view-selection.json`。本地宏
+`STAGE2_VIEW_SELECTION_PREPARE.hf_successor` 绑定先前封包、有限与全量配置、对照面板和
+HF 原始输出的 SHA-256，以及新输出、目标机与设备。遇到已发生的服务对照失败可附上
+`pins.comparison`，直接计划 HF 时只需同策略 HF 对照。用生成的 `operations-local.json`
+交给 `tools.reports.native_seal_operations`。以 `run/audit-hf-shards-collected.json` 中的完整
+分母、检查点和预测哈希确认结果。评测主报平均 Top‑1 原始概率、Top‑1 macro‑F1 和准确率。
+
 ## 已记录的状态快照
 
 较新本地终态证据：原GRPO容器`e564df04`于`2026-11-15T12:51:47.17520631Z`
