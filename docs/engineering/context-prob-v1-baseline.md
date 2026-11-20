@@ -64,6 +64,10 @@ HF 原始输出的 SHA-256，以及新输出、目标机与设备。遇到已发
 交给 `tools.reports.native_seal_operations`。以 `run/audit-hf-shards-collected.json` 中的完整
 分母、检查点和预测哈希确认结果。评测主报平均 Top‑1 原始概率、Top‑1 macro‑F1 和准确率。
 
+### FSC 词级线索评测
+
+固定 step 160 的 FSC 官方 VALID 提示对照，复用原生评测入口。关键词与整句示例均从官方 TRAIN 的书面文本标注按固定脚本提取。见 [封存与评分方案](fsc-keyword-evaluation-v3.md)。
+
 ## 已记录的状态快照
 
 较新本地终态证据：原GRPO容器`e564df04`于`2026-11-15T12:51:47.17520631Z`

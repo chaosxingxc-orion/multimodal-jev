@@ -1,0 +1,109 @@
+{
+  "schema": "jev-fsc-keyword-evaluation-v1",
+  "dataset": "FSC_native31_VALID",
+  "split": "valid",
+  "population": {
+    "recordings": 3118,
+    "speakers": 10
+  },
+  "source_csv_sha256": {
+    "train": "df1b87b7122c7a9fa1555fda61ba45436c4bbb33428e1ea54adcc1c3c1317ea4",
+    "valid": "5ac95de1cfad131cf85457fa404977b305377c8f25efb31879774b8c4fbd5197",
+    "test": "663a12e4f7e7b86c1ab72a96b78bb1d797dbc878424f94ec249f3dd5c21ca488"
+  },
+  "native_task_sha256": "d08fb6acbbb3ff936557b29f8c1f32113a4fff93892f18c6d35c7d23f195bef4",
+  "endpoint": {
+    "step": 160,
+    "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+    "source_plan_sha256": "8e915219e7735978bb37a11284d312ec45463d72f869a38734f054acdead49b3"
+  },
+  "arms": {
+    "baseline": {
+      "keywords": false,
+      "examples": false
+    },
+    "keywords": {
+      "keywords": true,
+      "examples": false
+    },
+    "examples": {
+      "keywords": false,
+      "examples": true
+    },
+    "keywords_examples": {
+      "keywords": true,
+      "examples": true
+    }
+  },
+  "analysis": {
+    "paired_bootstrap_samples": 10000,
+    "seed": 317,
+    "confidence_level": 0.95,
+    "primary_contrast": "keywords",
+    "primary_metrics": [
+      "top1_macro_f1",
+      "matched_action",
+      "matched_location"
+    ],
+    "min_primary_delta": 0.0
+  },
+  "execution": {
+    "parallel_arms": 4,
+    "replicas_per_arm": 2,
+    "admission_recordings_per_arm": 256,
+    "max_tokens": 4096,
+    "torch_threads": 1,
+    "io_workers": 16,
+    "prefetch": 24,
+    "progress_interval": 256
+  },
+  "annotation_mining": {
+    "source_split": "train",
+    "source_text_column": "transcription",
+    "source_text_kind": "publisher_supplied_written_recording_prompt",
+    "keywords_per_field": 3,
+    "min_distinct_annotations": 2,
+    "min_speakers": 5,
+    "min_precision": 0.7,
+    "min_occurrence_rate_gap": 0.1,
+    "max_example_words": 12,
+    "excluded_words": [
+      "a",
+      "an",
+      "and",
+      "are",
+      "as",
+      "at",
+      "be",
+      "can",
+      "could",
+      "do",
+      "for",
+      "from",
+      "have",
+      "i",
+      "in",
+      "is",
+      "it",
+      "me",
+      "my",
+      "of",
+      "please",
+      "so",
+      "some",
+      "than",
+      "that",
+      "the",
+      "them",
+      "there",
+      "this",
+      "to",
+      "would",
+      "you",
+      "your",
+      "just",
+      "too",
+      "very"
+    ]
+  }
+}
