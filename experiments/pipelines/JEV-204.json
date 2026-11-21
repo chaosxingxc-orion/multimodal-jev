@@ -26,37 +26,188 @@
     ],
     "train": [
       {
-        "id": "formal-training",
+        "id": "formal-training-restart-v1",
         "checks": [
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204/terminal.json",
-            "cite": "tpo-single-stage-full/ops-204/terminal.json",
-            "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]
-          },
-          {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204/tpo-collected.json",
-            "cite": "tpo-single-stage-full/ops-204/tpo-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204-restart-v1/terminal.json",
+            "cite": "tpo-single-stage-full/ops-204-restart-v1/terminal.json",
             "equals": [
-              [["passed"], true],
-              [["window"], "formal"],
-              [["arm"], "tpo"],
-              [["updates"], 212],
-              [["binding", "target_sha"], "9090d4c9db13c297a4228fc8f482a16afca32d380c9a9805a070e976dff3e95a"],
-              [["binding", "joint_sha"], "3907a93ca9d31b81b84e2b54bd14a940d2f59187ac1c3b59391d5833f30c1b28"]
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204-restart-v1/tpo-collected.json",
+            "cite": "tpo-single-stage-full/ops-204-restart-v1/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "formal"
+              ],
+              [
+                [
+                  "arm"
+                ],
+                "tpo"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                212
+              ],
+              [
+                [
+                  "binding",
+                  "target_sha"
+                ],
+                "9090d4c9db13c297a4228fc8f482a16afca32d380c9a9805a070e976dff3e95a"
+              ],
+              [
+                [
+                  "binding",
+                  "joint_sha"
+                ],
+                "3907a93ca9d31b81b84e2b54bd14a940d2f59187ac1c3b59391d5833f30c1b28"
+              ]
             ],
-            "report": {"更新": ["updates"], "末点策略": ["endpoint"], "固定参考": ["anchor_sha256"]}
+            "report": {
+              "更新": [
+                "updates"
+              ],
+              "末点策略": [
+                "endpoint"
+              ],
+              "固定参考": [
+                "anchor_sha256"
+              ]
+            }
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204/terminal.json",
-            "cite": "tpo-single-stage-full/custody-204/terminal.json",
-            "equals": [[["exit_code"], 0], [["status"], "formal_training_collected_and_audited"]]
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204-restart-v1/terminal.json",
+            "cite": "tpo-single-stage-full/custody-204-restart-v1/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "formal_training_collected_and_audited"
+              ]
+            ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204/formal-audit.json",
-            "cite": "tpo-single-stage-full/custody-204/formal-audit.json",
-            "equals": [[["status"], "formal_training_collected_and_audited"], [["updates"], 212], [["real_exposures"], 81026]],
-            "report": {"训练步耗时秒": ["training_step_seconds"], "正式容器": ["container_id"]}
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204-restart-v1/formal-audit.json",
+            "cite": "tpo-single-stage-full/custody-204-restart-v1/formal-audit.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "formal_training_collected_and_audited"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                212
+              ],
+              [
+                [
+                  "real_exposures"
+                ],
+                81026
+              ]
+            ],
+            "report": {
+              "训练步耗时秒": [
+                "training_step_seconds"
+              ],
+              "正式容器": [
+                "container_id"
+              ]
+            }
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204-restart-v1/first-three.json",
+            "cite": "tpo-single-stage-full/ops-204-restart-v1/first-three.json",
+            "equals": [
+              [
+                [
+                  "binding",
+                  "joint_sha"
+                ],
+                "3907a93ca9d31b81b84e2b54bd14a940d2f59187ac1c3b59391d5833f30c1b28"
+              ]
+            ]
           }
+        ],
+        "config": "configs/portable/operations/tpo-joint-formal-restart-204.json",
+        "python": "${JEV_204_PYTHON}",
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/package-204-restart-v1",
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204-restart-v1",
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204-restart-v1"
+        ],
+        "inputs": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-probability-panels-v1"
+              ]
+            ]
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.run_full_joint_tpo",
+            "configs/portable/operations/tpo-joint-formal-restart-204.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
         ]
       }
     ],
@@ -80,8 +231,8 @@
             ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204/tpo-collected.json",
-            "cite": "tpo-single-stage-full/ops-204/tpo-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204-restart-v1/tpo-collected.json",
+            "cite": "tpo-single-stage-full/ops-204-restart-v1/tpo-collected.json",
             "equals": [
               [["passed"], true],
               [["window"], "formal"],
@@ -93,13 +244,13 @@
             "report": {"更新": ["updates"], "末点策略": ["endpoint"], "固定参考": ["anchor_sha256"]}
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204/terminal.json",
-            "cite": "tpo-single-stage-full/custody-204/terminal.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204-restart-v1/terminal.json",
+            "cite": "tpo-single-stage-full/custody-204-restart-v1/terminal.json",
             "equals": [[["exit_code"], 0], [["status"], "formal_training_collected_and_audited"]]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204/formal-audit.json",
-            "cite": "tpo-single-stage-full/custody-204/formal-audit.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204-restart-v1/formal-audit.json",
+            "cite": "tpo-single-stage-full/custody-204-restart-v1/formal-audit.json",
             "equals": [[["status"], "formal_training_collected_and_audited"], [["updates"], 212], [["real_exposures"], 81026]],
             "report": {"训练步耗时秒": ["training_step_seconds"], "正式容器": ["container_id"]}
           }

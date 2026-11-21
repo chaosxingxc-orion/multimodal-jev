@@ -1,0 +1,26 @@
+{
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/package-204-restart-v1",
+  "io_workers": 8,
+  "deployment": {
+    "host": "${EXPERIMENT_TARGET_HOST}",
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204-restart-v1",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-tpo-single-full-204-restart-v1",
+    "tag": "jev-tpo-single-full-204-restart-v1"
+  },
+  "custody": {
+    "root": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204-restart-v1",
+    "ordinary_seconds": 900,
+    "collection_timeout_seconds": 900
+  },
+  "reuse_admission": {
+    "package": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/package-204",
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204",
+    "operations_sha256": "96f9372b60308ad4cbf7fd32f1ea7309a51e672b036debaee8e56a862670a5f6",
+    "receipt_sha256": {
+      "finite-anchor": "dfbea688139215591ad81972d349f3fa8583a7882013b7a5ef5eb92119efc659",
+      "finite": "b43c728eb13f3aa74f4b67a50bacb472ce6945d919d809f3e3eabb8b22bcf5b4",
+      "anchor": "3935d894cbc16e9f874a20e3ca2afd661b6daf59d4caa65944f793c84f2bafe2"
+    },
+    "preceding_evaluation": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops"
+  }
+}

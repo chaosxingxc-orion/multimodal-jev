@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -148,8 +149,9 @@ def collect(c, deployment, ops, plan, root):
                target_sha=plan['target_sha'],parent_sha=plan['parent_sha'],
                world_size=len(plan['training_devices']),initial_policy=plan['source_policy'])
     checked_endpoint(receipt,(dest/'policy/MANIFEST.json').read_bytes(),steps,bound)
+    admission = Path(deployment.get('admission_operations', ops))
     if (receipt != read(ops/'tpo-collected.json')
-            or receipt['anchor_sha256'] != file_hash(ops/'anchor-collected.json')):
+            or receipt['anchor_sha256'] != file_hash(admission/'anchor-collected.json')):
         raise ValueError('formal receipt or fixed anchor changed on collection')
     if 'offline_reference_devices' in plan:
         anchor = read(ops/'anchor-collected.json')
@@ -244,6 +246,74 @@ def operations(c):
     return data['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
 
 
+def reuse_admission(c):
+    """Bind a new formal attempt to the complete admission of an identical frozen package."""
+    reuse = c['reuse_admission']
+    evaluate = Path(reuse['preceding_evaluation'])
+    if (read(evaluate/'terminal.json') != {'exit_code': 0, 'status': 'declared_stages_finished'}
+            or read(evaluate/'score-collected.json')['schema'] != 'jev-audited-probability-panels-v1'):
+        raise ValueError('preceding evaluation must have completed independent scoring')
+    old_package = Path(reuse['package'])
+    old_ops = Path(reuse['operations'])
+    existing = read(verified(old_package/'operations-local.json', reuse['operations_sha256']))['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+    if str(old_ops) != existing['operations'] or c['deployment']['host'] != existing['host']:
+        raise ValueError('admission is bound to a different host or operation')
+    entry = old_package/'entry'
+    plan = read(verified(entry/'joint.json', existing['entry_pins']['joint.json']))
+    window = read(verified(entry/'tpo.json', existing['entry_pins']['tpo.json']))['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+    if (window['training']['window'] != 'formal' or plan.get('initialization') != 'pre_task_policy'
+            or 'offline_reference_devices' in plan):
+        raise ValueError('reuse requires a formal joint window and the audited rank-file anchor layout')
+    binding = dict(joint_sha=existing['entry_pins']['joint.json'], source=window['source']['sha256'],
+                   parent_sha=plan['parent_sha'], target_sha=plan['target_sha'],
+                   initial_policy=plan['source_policy'], world_size=len(plan['training_devices']))
+    if window['training']['joint_sha'] != binding['joint_sha']:
+        raise ValueError('formal joint plan identity differs')
+    roles = {'finite-anchor': 2, 'finite': 2, 'anchor': plan['updates']}
+    receipts = {role: read(verified(old_ops/f'{role}-collected.json', reuse['receipt_sha256'][role])) for role in roles}
+    if (any(proof['binding'] != binding or proof['window'] != role or proof['passed'] is not True
+            or proof['updates'] != roles[role] for role, proof in receipts.items())
+            or receipts['finite']['anchor_sha256'] != reuse['receipt_sha256']['finite-anchor']):
+        raise ValueError('admission proof does not bind the formal policy, source and target')
+    remote = Path(existing['remote_root'])
+    files = {str(remote/role/'receipt.json'): reuse['receipt_sha256'][role] for role in roles}
+    devices = plan['inference_devices']
+    for role in ('finite-anchor', 'anchor'):
+        for i, (replica, card) in enumerate(zip(receipts[role]['replicas'], devices, strict=True)):
+            expected = {str(r) for r in range(i, binding['world_size'], len(devices))}
+            if (replica['card'] != card or replica['updates'] != roles[role]
+                    or replica['joint_sha'] != binding['joint_sha'] or replica['target_sha'] != binding['target_sha']
+                    or replica['source_policy'] != binding['initial_policy'] or set(replica['rank_files']) != expected):
+                raise ValueError('reused anchor rank coverage differs')
+            sub = remote/role/f'reference-{i}'
+            actual = json.loads(ssh(existing['host'], ['cat', str(sub/'receipt.json')]))
+            if actual != replica:
+                raise ValueError('reused anchor replica receipt differs')
+            files.update({str(sub/f'rank-{rank}.pt'): sha for rank, sha in replica['rank_files'].items()})
+    hashes = {path: sha for sha, path in (row.split(maxsplit=1) for row in
+              ssh(existing['host'], ['sha256sum', *files]).decode().splitlines())}
+    if files != hashes:
+        raise ValueError('reused admission bytes differ from the collected hashes')
+    formal, = [job for chain in existing['chains'] for group in chain for job in group if job['name'] == 'tpo']
+    if formal['devices'] != plan['training_devices'] + devices:
+        raise ValueError('formal device map differs')
+    package = Path(c['package'])
+    if package.exists():
+        raise FileExistsError(package)
+    archive = verified(old_package/'entry.tar', existing['entry_archive_sha256'])
+    dep = dict(existing, **c['deployment'])
+    if dep['remote_root'] == existing['remote_root'] or dep['operations'] == str(old_ops) or dep['tag'] == existing['tag']:
+        raise ValueError('formal restart requires fresh paths and a new container name')
+    dep.update(archive=str(package/'entry.tar'), chains=[[[formal]]], admission_operations=str(old_ops),
+               read_only_mounts=[*existing['read_only_mounts'], *(f'{remote/role}:/jev-work/{role}' for role in roles)])
+    check_paths({'restart package': package})
+    package.mkdir()
+    shutil.copytree(entry, package/'entry', copy_function=os.link)
+    (package/'entry.tar').symlink_to(archive)
+    commit_json(package/'operations-local.json', {'schema': 'jev-local-macros-v1', 'macros': {'NATIVE_SEAL_OPERATIONS_CONFIG': dep}})
+    return dep
+
+
 def prepare_driver(c, root):
     source = Path(c['package'])/'entry/source'
     if not root.is_absolute() or not source.is_absolute():
@@ -286,6 +356,17 @@ def main():
         p.error('--detach and --resolved are mutually exclusive')
     c=read(Path(a.config)) if a.resolved else load_config(a.config,a.local)[0]
     root=Path(c['custody']['root'])
+    if 'reuse_admission' in c and not a.resolved:
+        if a.detach:
+            p.error('use the experiment entry point to supervise formal restarts')
+        reuse_admission(c)
+        prepare_driver(c, root)
+        from tools.reports.collect_tpo_first_updates import collect as collect_first
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            observer = pool.submit(collect_first, Path(c['package']), root/'terminal.json')
+            run(c, root)
+            observer.result()
+        return
     if a.resolved:
         if Path(a.config) != root/'config.json' or Path.cwd() != (Path(c['package'])/'entry/source').resolve():
             p.error('resolved execution requires the frozen source and controller configuration')

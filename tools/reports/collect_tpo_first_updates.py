@@ -24,12 +24,14 @@ def check_fixed_update(row, step, batch_real):
         raise ValueError('invalid formal fixed reference update')
 
 
-def collect(package):
+def collect(package, controller_terminal=None):
     config = read(package/'operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
     binding = read(package/'entry/tpo.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
     ops = Path(config['operations'])
     event = Events()
     try:
+        if controller_terminal is not None:
+            event.add(controller_terminal.parent)
         while True:
             event.add(ops)
             launch = ops/'tpo-launch.json'
@@ -37,9 +39,12 @@ def collect(package):
                 break
             if (ops/'terminal.json').exists():
                 raise RuntimeError(read(ops/'terminal.json'))
+            if controller_terminal is not None and controller_terminal.exists():
+                raise RuntimeError(read(controller_terminal))
             event.wait()
         handle = read(launch)
-        receipt = read(ops/'finite-collected.json')
+        admission = Path(config.get('admission_operations', ops))
+        receipt = read(admission/'finite-collected.json')
         training = binding['training']
         joint=binding['phase']=='joint_tpo'
         dynamic='next_macro_sha' in training
@@ -55,10 +60,16 @@ def collect(package):
             expected=dict(joint_sha=file_hash(package/'entry/joint.json'),source=binding['source']['sha256'],
                 target_sha=plan['target_sha'],parent_sha=plan['parent_sha'],
                 world_size=len(plan['training_devices']),initial_policy=plan['source_policy'])
-            fixed=read(ops/'anchor-collected.json')
+            fixed=read(admission/'anchor-collected.json')
+            finite_role='finite-anchor' if plan.get('initialization')=='pre_task_policy' else 'anchor'
+            finite_anchor_path=admission/f'{finite_role}-collected.json'
+            finite_anchor=read(finite_anchor_path)
             if (expected['joint_sha']!=training['joint_sha'] or expected!=fixed['binding'] or
                     not fixed['passed'] or fixed['window']!='anchor' or
-                    receipt['anchor_sha256']!=file_hash(ops/'anchor-collected.json')):
+                    fixed['updates']!=plan['updates'] or finite_anchor['binding']!=expected or
+                    finite_anchor['passed'] is not True or finite_anchor['window']!=finite_role or
+                    (finite_role=='finite-anchor' and finite_anchor['updates']!=2) or receipt['updates']!=2 or
+                    receipt['anchor_sha256']!=file_hash(finite_anchor_path)):
                 raise ValueError('fixed anchor is not bound to this formal config')
         else:
             keys = ('target_sha','parent_sha','world_size') + (('next_macro_sha',) if dynamic else ())
