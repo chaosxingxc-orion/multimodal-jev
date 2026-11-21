@@ -1,0 +1,27 @@
+{
+  "baseline": "${JEV_206_BASELINE_TARGETS}",
+  "baseline_sha256": "9fd6ec10e3df3d92307b180d3e021ea50a4a6fb8ba4c36d4842d2e88f9cb3847",
+  "parent_config": "${TPO_PARENT_CONFIG}",
+  "parent_sha256": "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb",
+  "reference": "${JEV_206_REFERENCE}",
+  "release": "${JEV_206_RELEASE}",
+  "output": "${TPO_TARGET_OUTPUT}",
+  "recordings": 6248,
+  "updates": 34,
+  "schedule": {
+    "seed": 317,
+    "epochs": 2,
+    "global_batch": 384,
+    "microbatch": 8,
+    "confusion_fraction": 0.25
+  },
+  "reward": {
+    "temperature": 1.0,
+    "probability_epsilon": 1e-06,
+    "max_displacement": 1.0,
+    "audio_to_label": 0.5,
+    "label_to_audio": 0.5,
+    "brier": 1.0
+  },
+  "cpu_threads": 8
+}

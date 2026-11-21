@@ -114,11 +114,11 @@ def prepare(c):
     ctl.update(archive=str(archive),chains=[groups],read_only_mounts=[
         str(remote_parent)+':'+str(remote_parent),remote_ref+':'+remote_ref],
         device_group_lease=True,wait_for_lease=True)
-    if 'ranking_repair' in m:
+    if 'ranking_repair' in m or 'bidirectional_contrast' in m:
         ctl['entry_archive_sha256'] = file_hash(archive)
-        ctl['entry_pins'] = {name: file_hash(entry/name) for name in (
-            'source/FILES.json', 'finite.json', 'tpo.json', 'targets/MANIFEST.json',
-            'targets/targets.pt', 'targets/rows.json', 'targets/batches.json')}
+        names = ['source/FILES.json', 'finite.json', 'tpo.json', 'targets/MANIFEST.json',
+                 *(f'targets/{name}' for name in m['files'])]
+        ctl['entry_pins'] = {name: file_hash(entry/name) for name in names}
         ctl['idle_devices'] = devices
     if dynamic:
         ctl['read_only_mounts'].append(dynamic['control_root']+':/jev-control')

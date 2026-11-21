@@ -1,0 +1,277 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/tpo-choice-coverage-206.md",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "stages": {
+    "data": [
+      {
+        "id": "bidirectional-targets",
+        "config": "configs/portable/operations/tpo-bidirectional-206.json",
+        "python": "${JEV_206_PYTHON}",
+        "run": [
+          [
+            "tools.reports.build_tpo_bidirectional_targets",
+            "configs/portable/operations/tpo-bidirectional-206.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/targets/MANIFEST.json",
+            "cite": "tpo-bidirectional-206/targets/MANIFEST.json",
+            "sha256": "3b8df38222fdb4b029f728bd70c878373ae8fad0ec9e190012a6b1878f3569e5",
+            "report": {
+              "录音": [
+                "recordings"
+              ],
+              "更新": [
+                "updates"
+              ],
+              "曝光": [
+                "real_exposures"
+              ],
+              "校准": [
+                "calibration",
+                "recordings"
+              ],
+              "校准缺类": [
+                "calibration",
+                "absent_classes"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "frozen-training-package",
+        "config": "configs/portable/operations/tpo-bidirectional-206-package.json",
+        "python": "${JEV_206_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_tpo_windows",
+            "configs/portable/operations/tpo-bidirectional-206-package.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/package/entry/finite.json",
+            "cite": "tpo-bidirectional-206/package/entry/finite.json",
+            "sha256": "eef9104361e813a807b8ee10500cee3637e7995b1fda7da0c70519af6cc69987"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/package/entry/tpo.json",
+            "cite": "tpo-bidirectional-206/package/entry/tpo.json",
+            "sha256": "7a259497afb27599a6299a2aea88fab23a6f4f7b59a337171153b946ce576485"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/package/operations-local.json",
+            "cite": "tpo-bidirectional-206/package/operations-local.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-local-macros-v1"
+              ],
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_OPERATIONS_CONFIG",
+                  "entry_pins",
+                  "targets/MANIFEST.json"
+                ],
+                "3b8df38222fdb4b029f728bd70c878373ae8fad0ec9e190012a6b1878f3569e5"
+              ],
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_OPERATIONS_CONFIG",
+                  "entry_pins",
+                  "source/FILES.json"
+                ],
+                "3b7883a0778948d606fcea09aa79d2a273817e7ac3fa203b36ffbc484c970df7"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "train": [
+      {
+        "id": "candidate-training",
+        "python": "${JEV_206_PYTHON}",
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/ops"
+        ],
+        "run": [
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/package/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/ops/terminal.json",
+            "cite": "tpo-bidirectional-206/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/ops/finite-collected.json",
+            "cite": "tpo-bidirectional-206/ops/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "finite"
+              ],
+              [
+                [
+                  "arm"
+                ],
+                "tpo"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                2
+              ],
+              [
+                [
+                  "binding",
+                  "target_sha"
+                ],
+                "3b8df38222fdb4b029f728bd70c878373ae8fad0ec9e190012a6b1878f3569e5"
+              ],
+              [
+                [
+                  "binding",
+                  "parent_sha"
+                ],
+                "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb"
+              ],
+              [
+                [
+                  "binding",
+                  "source"
+                ],
+                "3b7883a0778948d606fcea09aa79d2a273817e7ac3fa203b36ffbc484c970df7"
+              ],
+              [
+                [
+                  "binding",
+                  "world_size"
+                ],
+                6
+              ]
+            ],
+            "report": {
+              "更新": [
+                "updates"
+              ],
+              "策略": [
+                "endpoint"
+              ]
+            }
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/ops/tpo-collected.json",
+            "cite": "tpo-bidirectional-206/ops/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "formal"
+              ],
+              [
+                [
+                  "arm"
+                ],
+                "tpo"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                34
+              ],
+              [
+                [
+                  "binding",
+                  "target_sha"
+                ],
+                "3b8df38222fdb4b029f728bd70c878373ae8fad0ec9e190012a6b1878f3569e5"
+              ],
+              [
+                [
+                  "binding",
+                  "parent_sha"
+                ],
+                "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb"
+              ],
+              [
+                [
+                  "binding",
+                  "source"
+                ],
+                "3b7883a0778948d606fcea09aa79d2a273817e7ac3fa203b36ffbc484c970df7"
+              ],
+              [
+                [
+                  "binding",
+                  "world_size"
+                ],
+                6
+              ]
+            ],
+            "report": {
+              "更新": [
+                "updates"
+              ],
+              "策略": [
+                "endpoint"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "held-out-panels",
+        "pending": "正式训练审核后绑定源 TRAIN 校准、SLURP TEST、MINDS native14、SIB-FLEURS 及 MMSU。"
+      }
+    ]
+  }
+}

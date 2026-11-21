@@ -1,0 +1,17 @@
+{
+  "repository": "${PROJECT_ROOT}",
+  "package": "${TPO_PACKAGE}",
+  "targets": "${TPO_TARGET_OUTPUT}",
+  "parent_config": "${TPO_PARENT_CONFIG}",
+  "deployment": "${TPO_DEPLOYMENT}",
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "reuse_frozen_source": {
+    "path": "${JEV_206_FROZEN_SOURCE}",
+    "sha256": "3b7883a0778948d606fcea09aa79d2a273817e7ac3fa203b36ffbc484c970df7"
+  }
+}
