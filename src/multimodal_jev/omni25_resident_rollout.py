@@ -12,6 +12,7 @@ class FixedOmniRollout(FixedContextRollout):
     worker_extension = 'multimodal_jev.vllm_omni25_jev.OmniJevWorkerExtension'
     profiles = (PROFILE,)
     return_logits = True
+    modality_limits = {'audio': 1, 'image': 0, 'video': 0}
     packed_targets = staticmethod(packed_targets)
 
     def prepare_adapter(self, config, bundle):

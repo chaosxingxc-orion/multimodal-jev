@@ -19,6 +19,7 @@ class FixedContextRollout:
     worker_extension = 'multimodal_jev.context_worker_extension.ContextBootstrapWorkerExtension'
     profiles = (NATIVE_DIAGNOSTIC, PROFILE)
     return_logits = False
+    modality_limits = {'audio': 1}
 
     def prepare_adapter(self, config, bundle):
         verify_native_adapter(config['adapter'], bundle)
@@ -74,7 +75,7 @@ class FixedContextRollout:
                 tensor_parallel_size=1,enforce_eager=True,max_num_seqs=1,seed=317,
                 worker_extension_cls=self.worker_extension,
                 enable_chunked_prefill=False,enable_prefix_caching=False,enable_mm_embeds=True,
-                limit_mm_per_prompt={'audio':1},enable_lora=True,max_loras=1,max_cpu_loras=1,
+                limit_mm_per_prompt=self.modality_limits,enable_lora=True,max_loras=1,max_cpu_loras=1,
                 max_lora_rank=max(8,max(s['rank'] for s in specs.values())),
                 lora_dtype=torch.bfloat16,lora_target_modules=self.packed_targets(specs))
             self.startup = self.engine.llm_engine.collective_rpc('finish_jev_context_startup',
