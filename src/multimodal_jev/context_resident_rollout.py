@@ -15,11 +15,32 @@ from .context_runtime_profile import PROFILE, NATIVE_DIAGNOSTIC, install_rollout
 
 
 class FixedContextRollout:
+    architecture = 'Qwen3ASRForContextDecisions'
+    worker_extension = 'multimodal_jev.context_worker_extension.ContextBootstrapWorkerExtension'
+    profiles = (NATIVE_DIAGNOSTIC, PROFILE)
+    return_logits = False
+
+    def prepare_adapter(self, config, bundle):
+        verify_native_adapter(config['adapter'], bundle)
+        return config['adapter']
+
+    def register_model(self):
+        from .vllm_audio_features import enable_feature_passthrough
+        from .vllm_context_model import register_context_model
+        register_context_model()
+        enable_feature_passthrough()
+
+    def packed_targets(self, specs):
+        return sorted({n.replace('language_model.','language_model.model.',1).rsplit('.',1)[0]+'.qkv_proj'
+                       for n in specs})
+
+    def runtime_receipt(self, profile):
+        return (install_rollout(self.engine, profile) if profile == PROFILE
+                else dict(profile=profile, training_dispatch_allowed=False))
+
     def __init__(self, config):
         from .local_ipc import require_local_ipc
         from .span_device_scope import validate_tp1
-        from .vllm_audio_features import enable_feature_passthrough
-        from .vllm_context_model import register_context_model
         from vllm import LLM
         from vllm.lora.request import LoRARequest
         require_local_ipc()
@@ -28,9 +49,8 @@ class FixedContextRollout:
             raise ValueError('actual base differs from joint policy base')
         bundle = read_execution_bundle(config['snapshot'],expected_policy_id=config['policy_id'],
             expected_contract=config['contract'],expected_base_id=config['base_id'])
-        verify_native_adapter(config['adapter'],bundle)
         profile = config['contract']['runtime_profile']
-        if profile not in (NATIVE_DIAGNOSTIC, PROFILE):
+        if profile not in self.profiles:
             raise ValueError('explicit candidate native runtime identity required')
         self.bundle = bundle
         self.engine = None
@@ -40,32 +60,29 @@ class FixedContextRollout:
         if (type(self.max_model_len) is not int or self.max_model_len < 1 or
                 type(self.max_decisions) is not int or self.max_decisions < 1):
             raise ValueError('positive context and decision capacity required')
-        self.lora = LoRARequest('context-'+bundle['policy_id'],1,str(config['adapter']))
+        adapter = self.prepare_adapter(config, bundle)
+        self.lora = LoRARequest('context-'+bundle['policy_id'],1,str(adapter))
         specs = bundle['contract']['lora']
-        packed = sorted({n.replace('language_model.','language_model.model.',1).rsplit('.',1)[0]+'.qkv_proj'
-                         for n in specs})
-        register_context_model()
-        enable_feature_passthrough()
+        self.register_model()
         try:
             self.engine = LLM(model=config['model'],tokenizer=bundle['processor'],runner='pooling',
-                hf_overrides=dict(architectures=['Qwen3ASRForContextDecisions'],head_dtype='model',
+                hf_overrides=dict(architectures=[self.architecture],head_dtype='model',
                     jev_context_policy=dict(snapshot=str(config['snapshot']),policy_id=bundle['policy_id'],
                         contract=bundle['contract'],base_id=config['base_id'],profiling_decisions=self.max_decisions)),
                 pooler_config=dict(task='token_classify',tok_pooling_type='ALL',use_activation=False),
                 dtype='bfloat16',max_model_len=self.max_model_len,gpu_memory_utilization=.4,
                 tensor_parallel_size=1,enforce_eager=True,max_num_seqs=1,seed=317,
-                worker_extension_cls='multimodal_jev.context_worker_extension.ContextBootstrapWorkerExtension',
+                worker_extension_cls=self.worker_extension,
                 enable_chunked_prefill=False,enable_prefix_caching=False,enable_mm_embeds=True,
                 limit_mm_per_prompt={'audio':1},enable_lora=True,max_loras=1,max_cpu_loras=1,
                 max_lora_rank=max(8,max(s['rank'] for s in specs.values())),
-                lora_dtype=torch.bfloat16,lora_target_modules=packed)
+                lora_dtype=torch.bfloat16,lora_target_modules=self.packed_targets(specs))
             self.startup = self.engine.llm_engine.collective_rpc('finish_jev_context_startup',
                                                                   args=(bundle['policy_id'],))
             if (len(self.startup) != 1 or self.startup[0]['policy_id'] != bundle['policy_id'] or
                     self.startup[0]['head_dtype'] != 'torch.bfloat16' or self.startup[0]['profiling']):
                 raise ValueError('worker context startup differs')
-            self.runtime = (install_rollout(self.engine, profile) if profile == PROFILE
-                            else dict(profile=profile, training_dispatch_allowed=False))
+            self.runtime = self.runtime_receipt(profile)
         except BaseException:
             self.phase = 'failed'
             self.close()
@@ -103,7 +120,7 @@ class FixedContextRollout:
         if positions[0].tolist() != markers:
             raise ValueError('marker coverage differs')
         at = [i for i,t in enumerate(ids) if t == audio_token_id]
-        if not at or at != list(range(at[0],at[-1]+1)):
+        if not at or not markers or at[-1] >= markers[0] or at != list(range(at[0],at[-1]+1)):
             raise ValueError('one contiguous expanded audio region required')
         features, mask = inputs['input_features'],inputs['input_features_mask']
         if (features.ndim != 3 or features.shape[0] != 1 or not torch.isfinite(features).all() or
@@ -123,12 +140,18 @@ class FixedContextRollout:
             marker_positions=markers,expected_input_ids=ids))
         result = self.engine.encode([prompt],pooling_params=params,pooling_task='token_classify',
                                     use_tqdm=False,lora_request=self.lora)[0]
-        prob = result.outputs.data
-        if (result.prompt_token_ids != ids or prob.shape != (len(markers),1) or
-                not torch.isfinite(prob).all() or ((prob < 0) | (prob > 1)).any()):
-            raise ValueError('complete expanded prompt and finite probabilities required')
-        return dict(request_id=rid,request_identity=identity,prob=prob[:,0].float().tolist(),
-                    policy_id=self.bundle['policy_id'])
+        values = result.outputs.data
+        if (result.prompt_token_ids != ids or values.shape != (len(markers),1) or
+                not torch.isfinite(values).all()
+                or (not self.return_logits and ((values < 0) | (values > 1)).any())):
+            raise ValueError('complete expanded prompt and finite readouts required')
+        values = values[:,0].float()
+        result = dict(request_id=rid,request_identity=identity, policy_id=self.bundle['policy_id'])
+        if self.return_logits:
+            result['logits'] = values.tolist()
+            values = values.sigmoid()
+        result['prob'] = values.tolist()
+        return result
 
     def close(self):
         if self.engine is not None:

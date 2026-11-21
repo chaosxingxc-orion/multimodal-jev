@@ -31,12 +31,9 @@ def validate_context_runtime(config):
     return spec
 
 
-@MULTIMODAL_REGISTRY.register_processor(
-    Qwen3ASRMultiModalProcessor, info=Qwen3ASRProcessingInfo,
-    dummy_inputs=Qwen3ASRDummyInputsBuilder,
-)
-class Qwen3ASRForContextDecisions(Qwen3ASRForConditionalGeneration):
+class ContextPolicyModel:
     is_pooling_model = True
+    jev_return_logits = False
 
     def __init__(self, *, vllm_config, prefix=''):
         spec = validate_context_runtime(vllm_config)
@@ -54,12 +51,13 @@ class Qwen3ASRForContextDecisions(Qwen3ASRForConditionalGeneration):
         head.load_state_dict({k.removeprefix('decision_head.'):v for k,v in bundle['tensors'].items()
                               if k.startswith('decision_head.')},strict=True)
         self.pooler = ContextProbabilityPooler(head,bundle['contract']['token']['id'],
-            bundle['policy_id'],spec['profiling_decisions'])
+            bundle['policy_id'],spec['profiling_decisions'],return_logits=self.jev_return_logits)
         self.pooler.memory_profiling = True
         # Plain CPU tensor, deliberately not a base checkpoint parameter.
         self._jev_marker_row = bundle['tensors']['decision_token_row']
         self._jev_base_weights_loaded = False
         self._jev_policy_id = bundle['policy_id']
+        self._jev_policy_spec = spec
 
     def load_weights(self, weights):
         loaded = super().load_weights(weights)
@@ -72,6 +70,14 @@ class Qwen3ASRForContextDecisions(Qwen3ASRForConditionalGeneration):
         # The head was authenticated/loaded separately from the base archive.
         loaded.update(n for n,_ in self.named_parameters() if n.startswith('pooler.'))
         return loaded
+
+
+@MULTIMODAL_REGISTRY.register_processor(
+    Qwen3ASRMultiModalProcessor, info=Qwen3ASRProcessingInfo,
+    dummy_inputs=Qwen3ASRDummyInputsBuilder,
+)
+class Qwen3ASRForContextDecisions(ContextPolicyModel, Qwen3ASRForConditionalGeneration):
+    pass
 
 
 class ContextPolicyWorkerExtension:
@@ -103,7 +109,7 @@ class ContextPolicyWorkerExtension:
 
     def finish_jev_context_startup(self, expected_policy_id):
         model = self.get_model()
-        if (type(model).__name__ != 'Qwen3ASRForContextDecisions' or
+        if (not isinstance(model, ContextPolicyModel) or
                 not model._jev_base_weights_loaded or model._jev_policy_id != expected_policy_id):
             raise ValueError('complete fixed context policy startup required')
         row = model.language_model.model.embed_tokens.weight[model.pooler.readout.decision_token_id]

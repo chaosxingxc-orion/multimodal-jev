@@ -118,6 +118,13 @@ class Qwen25Omni:
     choice_compiler = staticmethod(ChoiceInputs)
 
     @staticmethod
+    def load_vllm(config, bundle):
+        from .omni25_resident_rollout import FixedOmniRollout
+        if bundle['policy_id'] != config['policy_id'] or bundle['contract'] != config['contract']:
+            raise ValueError('Omni serving policy differs')
+        return FixedOmniRollout(config)
+
+    @staticmethod
     def processor(path):
         from transformers import Qwen2_5OmniProcessor
 

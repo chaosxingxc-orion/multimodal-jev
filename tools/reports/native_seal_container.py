@@ -63,6 +63,9 @@ def main():
     if c['phase'] == 'model_provider_probe':
         from tools.reports.probe_audio_model_provider import run
         result = run(c['probe'])
+        if not result['passed']:
+            print(json.dumps(result))
+            raise SystemExit(1)
     elif c['phase'] == 'tpo_score':
         from tools.reports.evaluate_tpo_endpoints import collect
         result = collect(c)

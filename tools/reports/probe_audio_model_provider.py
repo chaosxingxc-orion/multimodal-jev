@@ -82,11 +82,24 @@ def run(config):
             max_tokens=config['max_tokens'], prompt_layout=PREFIX_LAYOUT)
         item = dict(request_id=source['sha256'], policy_id=app['policy_id'], inputs=inputs, positions=positions)
         native.append(item)
-        variant = dict(item)
-        compiler.render(variant, request, 'open', config['choice_indices'])
-        if variant['positions'].numel() != len(config['choice_indices'])+1:
-            raise ValueError('Choice marker count must include NONE')
-        choice.append(variant)
+        choice.append((item, request))
+    choices = {}
+    for width in config.get('choice_widths', [len(config['choice_indices'])]):
+        slate = config['choice_indices'][:width]
+        if type(width) is not int or not 0 < width == len(slate) or width in choices:
+            raise ValueError('distinct Choice probe widths within the configured slate required')
+        variants = []
+        for item, request in choice:
+            variant = dict(item)
+            compiler.render(variant, request, 'open', slate)
+            if variant['positions'].numel() != width+1:
+                raise ValueError('Choice marker count must include NONE')
+            variants.append(variant)
+        choices[width] = variants
+    if not choices:
+        raise ValueError('a Choice probe is required')
+    panels = {'noul': native, **{f'choice_none_{w}': items for w, items in choices.items()}}
+    choice = choices[max(choices)]
     if len({item['inputs']['input_features'].shape[-1] for item in native}) < 2:
         raise ValueError('probe must include a variable-length audio batch')
 
@@ -99,10 +112,10 @@ def run(config):
             return logits(items, policy_id).cpu()
 
     initial_metrics = {}
-    for name, items in (('noul', native), ('choice_none', choice)):
+    for name, items in panels.items():
         batch = score(items, app['policy_id'])
         singleton = torch.cat([score([item], app['policy_id']) for item in items])
-        initial_metrics[name] = compare(batch, singleton, choice=name == 'choice_none')
+        initial_metrics[name] = compare(batch, singleton, choice=name != 'noul')
     commit_json(out/'initial-parity.json', initial_metrics)
     params = {key: p for key, p in model.named_parameters() if p.requires_grad}
     model.train()
@@ -121,32 +134,62 @@ def run(config):
     optimizer.step()
     updated_train = score(choice, app['policy_id'])
     model.eval()
-    updated_eval = score(choice, app['policy_id'])
-    updated_native = score(native, app['policy_id'])
+    expected = {name: score(items, app['policy_id']) for name, items in panels.items()}
+    updated_eval = expected[f'choice_none_{max(choices)}']
     updated = out/'updated'
     new_id = export_policy(updated, model, snapshot/'processor', contract)
     del optimizer, params, param, grad, model
     gc.collect()
     if device.type == 'npu':
         torch.npu.empty_cache()
-    model = provider.load_snapshot(dict(app, snapshot=str(updated), policy_id=new_id), device)
+    updated_app = dict(app, snapshot=str(updated), policy_id=new_id)
+    model = provider.load_snapshot(updated_app, device)
+    reloaded = {name: score([dict(item, policy_id=new_id) for item in items], new_id)
+                for name, items in panels.items()}
     comparisons = dict(
         singleton_vs_batch=initial_metrics,
         updated_train_vs_eval=compare(updated_train, updated_eval, choice=True),
-        updated_reload_choice=compare(updated_eval, score(
-            [dict(item, policy_id=new_id) for item in choice], new_id), choice=True),
-        updated_reload_noul=compare(updated_native, score(
-            [dict(item, policy_id=new_id) for item in native], new_id)),
+        **{f'updated_reload_{name}': compare(expected[name], reloaded[name], choice=name != 'noul')
+           for name in panels},
     )
     metrics = list(initial_metrics.values()) + [v for k, v in comparisons.items() if k != 'singleton_vs_batch']
-    passed = all(max(m['max_probability_error'], m['max_decision_probability_error']) <= config['max_probability_error']
-                 and not (m['top1_flips'] or m['threshold_flips']) for m in metrics)
+    def passes(measures):
+        return all(max(m['max_probability_error'], m['max_decision_probability_error']) <= config['max_probability_error']
+                   and not (m['top1_flips'] or m['threshold_flips']) for m in measures)
+
     result = dict(schema='jev-model-provider-probe-v1', engine='HF eager', dtype='bfloat16',
                   device=str(device), base_id=initial['base_id'], geometry=contract['branch'],
                   policy_id=initial['policy_id'], updated_policy_id=new_id,
                   audio_sha256=[row['sha256'] for row in config['audio']], gradient=gradient,
                   comparisons=comparisons, max_probability_error=config['max_probability_error'],
-                  passed=passed)
+                  passed=passes(metrics))
+    if 'vllm' in config:
+        commit_json(out/'hf-result.json', result)
+        if device.type != 'npu':
+            raise ValueError('vLLM provider probe requires an isolated NPU')
+        del model
+        gc.collect()
+        torch.npu.empty_cache()
+        from multimodal_jev.context_policy_artifacts import read_execution_bundle
+        bundle = read_execution_bundle(updated, expected_policy_id=new_id, expected_contract=contract,
+                                       expected_base_id=config['base_id'])
+        vllm_config = dict(updated_app, adapter=str(out/'vllm-adapter'), tensor_parallel_size=1,
+                           max_model_len=config['vllm']['context_tokens'],
+                           max_decisions=max(item['positions'].numel() for items in panels.values() for item in items))
+        engine = provider.load_vllm(vllm_config, bundle)
+        try:
+            comparison = {}
+            for name, items in panels.items():
+                outputs = [engine.score(item['inputs'], item['positions'], audio_token_id=collation['audio_token_id'])
+                           for item in items]
+                if any(record['policy_id'] != new_id for record in outputs):
+                    raise ValueError('serving probe selected a different policy')
+                served = torch.tensor([record['logits'] for record in outputs], dtype=torch.float32)
+                comparison[name] = compare(reloaded[name], served, choice=name != 'noul')
+            result['vllm'] = dict(comparisons=comparison, runtime=engine.runtime, passed=passes(comparison.values()))
+            result['passed'] &= result['vllm']['passed']
+        finally:
+            engine.close()
     commit_json(out/'result.json', result)
     return result
 

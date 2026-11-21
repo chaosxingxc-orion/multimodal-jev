@@ -11,11 +11,11 @@ from .context_pooling import ContextHistoryReadout
 
 
 class ContextProbabilityPooler(Pooler):
-    def __init__(self, head, decision_token_id, policy_id, profiling_decisions=60):
+    def __init__(self, head, decision_token_id, policy_id, profiling_decisions=60, *, return_logits=False):
         super().__init__()
         if type(profiling_decisions) is not int or profiling_decisions <= 0:
             raise ValueError('positive profiling decision budget required')
-        self.readout = ContextHistoryReadout(head, decision_token_id, policy_id)
+        self.readout = ContextHistoryReadout(head, decision_token_id, policy_id, return_logits=return_logits)
         self.profiling_decisions = profiling_decisions
         self.memory_profiling = False
 

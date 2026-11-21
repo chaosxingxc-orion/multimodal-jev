@@ -8,7 +8,7 @@ from torch import nn
 
 
 class ContextHistoryReadout(nn.Module):
-    def __init__(self, head, decision_token_id, policy_id):
+    def __init__(self, head, decision_token_id, policy_id, *, return_logits=False):
         super().__init__()
         if type(decision_token_id) is not int or decision_token_id <= 0:
             raise ValueError('positive registered marker ID required')
@@ -18,9 +18,10 @@ class ContextHistoryReadout(nn.Module):
         self.head = head
         self.decision_token_id = decision_token_id
         self.policy_id = policy_id
+        self.return_logits = return_logits
 
     def forward(self, hidden, lengths, prompts, extras):
-        """Return one [decisions, 1] probability tensor per complete request.
+        """Return one [decisions, 1] tensor per complete request.
 
         Flattened states must include every prompt token, including the audio
         expansion. Validate the complete batch before invoking the branch.
@@ -55,9 +56,11 @@ class ContextHistoryReadout(nn.Module):
         for chunk, pos in zip(hidden.split(lengths), positions, strict=True):
             indices = torch.tensor([pos], dtype=torch.long, device=chunk.device)
             valid = torch.ones((1, len(chunk)), dtype=torch.bool, device=chunk.device)
-            prob = self.head(chunk[None], indices, valid)[0, :, None]
-            if not torch.isfinite(prob).all() or ((prob < 0) | (prob > 1)).any():
-                raise ValueError('finite applicability probabilities required')
-            outputs.append(prob)
+            values = self.head(chunk[None], indices, valid, return_logits=True) if self.return_logits else (
+                self.head(chunk[None], indices, valid))
+            if not torch.isfinite(values).all() or (
+                    not self.return_logits and ((values < 0) | (values > 1)).any()):
+                raise ValueError('invalid applicability readout')
+            outputs.append(values[0, :, None])
         return outputs
 

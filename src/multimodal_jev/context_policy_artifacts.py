@@ -111,6 +111,11 @@ def native_peft_payload(bundle):
     """
     if bundle['contract']['runtime_profile'].startswith('provider:'):
         raise ValueError('external model provider requires its own serving mapper')
+    return peft_payload(bundle, lambda name: 'model.' + name)
+
+
+def peft_payload(bundle, target_name):
+    """Keep matrix bytes unchanged while translating the provider's targets."""
     lora = bundle['contract']['lora']
     settings = {(s['rank'],s['alpha']) for s in lora.values()}
     if len(settings) != 1:
@@ -118,17 +123,19 @@ def native_peft_payload(bundle):
     rank, alpha = next(iter(settings))
     config = dict(peft_type='LORA',task_type='CAUSAL_LM',inference_mode=True,
         r=rank,lora_alpha=alpha,lora_dropout=0.,bias='none',fan_in_fan_out=False,
-        use_rslora=False,use_dora=False,target_modules=sorted('model.'+n for n in lora))
+        use_rslora=False,use_dora=False,target_modules=sorted(target_name(n) for n in lora))
     weights = {}
     for name in sorted(lora):
         for matrix in ('A','B'):
             source = f'backbone.{name}.lora_{matrix}.default.weight'
-            dest = f'base_model.model.model.{name}.lora_{matrix}.weight'
+            dest = f'base_model.model.{target_name(name)}.lora_{matrix}.weight'
+            if dest in weights:
+                raise ValueError('duplicate translated LoRA target')
             weights[dest] = bundle['tensors'][source].contiguous().clone()
     return config, weights
 
 
-def export_native_adapter(destination, bundle):
+def export_native_adapter(destination, bundle, *, payload=native_peft_payload):
     """Publish a derived immutable adapter with source-policy provenance.
 
     The joint snapshot remains authoritative for marker/head/processor. This
@@ -141,7 +148,7 @@ def export_native_adapter(destination, bundle):
     check_paths({'native_adapter':destination})
     if destination.exists():
         raise FileExistsError(destination)
-    config, tensors = native_peft_payload(bundle)
+    config, tensors = payload(bundle)
     stage = Path(tempfile.mkdtemp(prefix='.'+destination.name+'-',dir=destination.parent))
     try:
         (stage/'adapter_config.json').write_text(json.dumps(config,sort_keys=True)+'\n')
@@ -166,7 +173,7 @@ def export_native_adapter(destination, bundle):
     return provenance
 
 
-def verify_native_adapter(path, bundle):
+def verify_native_adapter(path, bundle, *, payload=native_peft_payload):
     """Authenticate source binding and independently rederive every matrix."""
     from safetensors.torch import load_file
     path = Path(path)
@@ -181,7 +188,7 @@ def verify_native_adapter(path, bundle):
         complete_context_policy=False)
     if receipt != expected:
         raise ValueError('derived adapter provenance differs')
-    config, tensors = native_peft_payload(bundle)
+    config, tensors = payload(bundle)
     actual = load_file(str(path/'adapter_model.safetensors'),device='cpu')
     if (json.loads((path/'adapter_config.json').read_text()) != config or actual.keys() != tensors.keys() or
             any(actual[k].dtype != tensors[k].dtype or actual[k].shape != tensors[k].shape or

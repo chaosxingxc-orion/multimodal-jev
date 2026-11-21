@@ -55,7 +55,8 @@ def run(c,out):
         request=compile_candidates(asset['audio'],candidates,task['thinking']['requirements'],semantics='exclusive_event')
         value=prepare((request,asset['audio_sha256']))
         return asset,request,value
-    engine_config={k:c[k] for k in ('model','base_id','snapshot','policy_id','contract','adapter','physical_devices')}
+    engine_config={k:c[k] for k in ('model','base_id','snapshot','policy_id','contract','physical_devices')}
+    engine_config['adapter'] = c.get('adapter', str(out/'native-adapter'))
     if 'model_provider' in c:
         engine_config['model_provider']=c['model_provider']
     engine_config.update(tensor_parallel_size=1,max_model_len=c.get('max_model_len',4096),max_decisions=60)
@@ -65,11 +66,12 @@ def run(c,out):
         raise ValueError('serving model differs from evaluation base')
     engine=provider.load_vllm(engine_config,bundle)
     try:
-        atomic_json(out/'runtime.json',engine.runtime)
         with OrderedPrefetch(encode,assets,workers=1,ahead=2) as prepared:
             for index,(asset,request,value) in enumerate(prepared):
                 begin=time.monotonic()
                 row=engine.score(value.inputs,value.positions,audio_token_id=c['audio_token_id'])
+                if index == 0:
+                    atomic_json(out/'runtime.json',engine.runtime)
                 expected=dict(policy_id=c['policy_id'],positions=value.positions[0].tolist(),
                     inputs={k:tensor_identity(v) for k,v in sorted(value.inputs.items())})
                 if row['request_identity']!=expected:raise ValueError('engine consumed different input tensors')
