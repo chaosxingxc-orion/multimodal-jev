@@ -1,0 +1,73 @@
+{
+  "host": "${EXPERIMENT_TARGET_HOST}",
+  "seal": {
+    "root": "${SHARED_ROOT}/experiments/multimodal-jev/native-evaluation-seal-v0.0.129",
+    "sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+  },
+  "output": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-native-pairs-v1/score.json",
+  "transfer_timeout": 180,
+  "io_workers": 4,
+  "cpu_workers": 2,
+  "interval": {
+    "method": "paired_cluster_percentile_bootstrap",
+    "confidence": 0.95,
+    "samples": 2000,
+    "seed": 317
+  },
+  "datasets": [
+    "SLURP_clean_TEST60",
+    "MINDS_native14"
+  ],
+  "arms": [
+    {
+      "operations": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/operations-local.json",
+        "sha256": "be2eb46beed325b3d29037d527b4f5eb63d5c9228d9c16c4c54794e9ae53df7e"
+      },
+      "entry": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
+        "sha256": "f057f66bdb80e39a8d811ed45b663100707abcf871f7c63dbc80e4cd65830c01"
+      },
+      "score": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-ops-full-native-198/score-collected.json",
+        "sha256": "52ee4f19d4d2c47c715661bd7ad183f95ebdfed7799e4a7362802408bd70b618"
+      },
+      "terminal": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-ops-full-native-198/terminal.json",
+      "readouts": {
+        "noul": {
+          "arm": "prior",
+          "policy_id": "840b2f6ad23ae3c6c58bf7fcf9a8452e1448da925eb7a2c94a26538ee412229c"
+        },
+        "choice": {
+          "arm": "tpo",
+          "policy_id": "b69cf4f733bd78d3b8bc1ff0ecd9bc784f1dc879006a3544fd5472376a62a64d"
+        }
+      }
+    },
+    {
+      "operations": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-package/operations-local.json",
+        "sha256": "49f8b370512a4f33ab37db13a0b0eeba0abf2fa0f4159c11e2558d22d2f4ecb0"
+      },
+      "entry": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-package/entry/score.json",
+        "sha256": "5a0e7a3d80d689b83da04888dbc3db898d5e5cbcf965bffff239c988e626ed99"
+      },
+      "score": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops/score-collected.json",
+        "sha256": "939ed31b506f4090419ac024ab9cb6c18946e0d4411ad931bf26eb11d5ab7c4d"
+      },
+      "terminal": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops/terminal.json",
+      "readouts": {
+        "noul": {
+          "arm": "tpo",
+          "policy_id": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912"
+        },
+        "choice": {
+          "arm": "tpo",
+          "policy_id": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912"
+        }
+      }
+    }
+  ]
+}
