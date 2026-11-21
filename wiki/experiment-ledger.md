@@ -27,7 +27,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 
 | 实验 ID | 优先级 | 状态 | 协议 | 下一步 |
 | --- | ---: | --- | --- | --- |
-| JEV-205 | 40 | blocked | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 设计讨论；待冻结对照、判据与可执行配置，不领取训练 |
+| JEV-205 | 40 | planned | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 使用 181 的 0–5 卡，先验收两步，再训练候选 34 步 |
 | JEV-206 | 41 | blocked | [业务边界与 NONE：讨论稿](../experiments/tpo-choice-coverage-206.md) | 等待讨论，不锁定方案、预算或派发 |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | stopped | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 暂停训练。保留固定参考、前四步收据及第 4 步推理权重，续训另行登记 |

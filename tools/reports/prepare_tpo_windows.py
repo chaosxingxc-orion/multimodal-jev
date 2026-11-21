@@ -8,7 +8,7 @@ import tarfile
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
-from multimodal_jev.source_snapshot import freeze
+from multimodal_jev.source_snapshot import freeze, verify
 from multimodal_jev.tpo_anchor_layout import partition, window_device_plan
 from tools.reports.build_tpo_view import verified
 
@@ -36,7 +36,15 @@ def prepare(c):
     if full:
         from tools.reports.prepare_full_joint_tpo import publish
         parent,plan=publish(c,parent,entry,repo)
-    frozen=freeze(repo,entry/'source',patterns=c['source_patterns'],io_workers=c['io_workers'])
+    if c.get('reuse_frozen_source'):
+        archived = Path(c['reuse_frozen_source']['path'])
+        expected = c['reuse_frozen_source']['sha256']
+        verify(archived, manifest_sha256=expected, io_workers=c['io_workers'])
+        shutil.copytree(archived, entry/'source')
+        verify(entry/'source', manifest_sha256=expected, io_workers=c['io_workers'])
+        frozen = {'manifest_sha256': expected}
+    else:
+        frozen=freeze(repo,entry/'source',patterns=c['source_patterns'],io_workers=c['io_workers'])
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json',entry/'native-seal-container.json')
     ctl=c['deployment'].copy()
     devices=parent['physical_devices']
@@ -89,7 +97,7 @@ def prepare(c):
         prepare_next(dynamic,entry,data,m,file_hash(orig),world,repo)
     if not dynamic and m['schema'] == 'jev-tpo-choices-v1':
         windows.insert(0,('reference','tpo','reference'))
-    if m['schema'] == 'jev-tpo-view-v1':
+    if m['schema'] == 'jev-tpo-view-v1' and 'ranking_repair' not in m:
         windows.append(('direct','direct','formal'))
     for name,arm,window in windows:
         opts=dict(phase='tpo_train',source=dict(root='/jev-entry/source',sha256=frozen['manifest_sha256']),
@@ -106,6 +114,12 @@ def prepare(c):
     ctl.update(archive=str(archive),chains=[groups],read_only_mounts=[
         str(remote_parent)+':'+str(remote_parent),remote_ref+':'+remote_ref],
         device_group_lease=True,wait_for_lease=True)
+    if 'ranking_repair' in m:
+        ctl['entry_archive_sha256'] = file_hash(archive)
+        ctl['entry_pins'] = {name: file_hash(entry/name) for name in (
+            'source/FILES.json', 'finite.json', 'tpo.json', 'targets/MANIFEST.json',
+            'targets/targets.pt', 'targets/rows.json', 'targets/batches.json')}
+        ctl['idle_devices'] = devices
     if dynamic:
         ctl['read_only_mounts'].append(dynamic['control_root']+':/jev-control')
     commit_json(pkg/'operations-local.json',macros('NATIVE_SEAL_OPERATIONS_CONFIG',ctl))

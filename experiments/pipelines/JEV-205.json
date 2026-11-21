@@ -1,0 +1,239 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/tpo-ranking-repair-205.md",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "stages": {
+    "data": [
+      {
+        "id": "ranking-targets",
+        "config": "configs/portable/operations/tpo-ranking-repair-205.json",
+        "python": "${JEV_205_PYTHON}",
+        "run": [
+          [
+            "tools.reports.build_tpo_ranking_repair",
+            "configs/portable/operations/tpo-ranking-repair-205.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/targets/MANIFEST.json",
+            "cite": "tpo-ranking-repair-205/targets/MANIFEST.json",
+            "sha256": "a8ecf0d2b1fabf7717bd1385d9df57582423f98933f273c2bdf44f5256e07905"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-stage2-contrast-v1/ops-194/tpo-collected.json",
+            "cite": "tpo-stage2-contrast-v1/ops-194/tpo-collected.json",
+            "sha256": "f1e13d7e7f0188d5f2516ad98610c54a45a13da18e8c5b9697bdb033080ea5a7"
+          }
+        ]
+      },
+      {
+        "id": "frozen-training-package",
+        "config": "configs/portable/operations/tpo-ranking-repair-205-package.json",
+        "python": "${JEV_205_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_tpo_windows",
+            "configs/portable/operations/tpo-ranking-repair-205-package.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/package/entry/finite.json",
+            "cite": "tpo-ranking-repair-205/package/entry/finite.json",
+            "equals": [
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_CONTAINER_CONFIG",
+                  "training",
+                  "target_sha"
+                ],
+                "a8ecf0d2b1fabf7717bd1385d9df57582423f98933f273c2bdf44f5256e07905"
+              ],
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_CONTAINER_CONFIG",
+                  "training",
+                  "parent_sha"
+                ],
+                "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/package/entry/tpo.json",
+            "cite": "tpo-ranking-repair-205/package/entry/tpo.json",
+            "equals": [
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_CONTAINER_CONFIG",
+                  "training",
+                  "target_sha"
+                ],
+                "a8ecf0d2b1fabf7717bd1385d9df57582423f98933f273c2bdf44f5256e07905"
+              ],
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_CONTAINER_CONFIG",
+                  "training",
+                  "parent_sha"
+                ],
+                "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/package/operations-local.json",
+            "cite": "tpo-ranking-repair-205/package/operations-local.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-local-macros-v1"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "train": [
+      {
+        "id": "candidate-training",
+        "python": "${JEV_205_PYTHON}",
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/ops"
+        ],
+        "run": [
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/package/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/ops/terminal.json",
+            "cite": "tpo-ranking-repair-205/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/ops/finite-collected.json",
+            "cite": "tpo-ranking-repair-205/ops/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "finite"
+              ],
+              [
+                [
+                  "arm"
+                ],
+                "tpo"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                2
+              ],
+              [
+                [
+                  "binding",
+                  "target_sha"
+                ],
+                "a8ecf0d2b1fabf7717bd1385d9df57582423f98933f273c2bdf44f5256e07905"
+              ],
+              [
+                [
+                  "binding",
+                  "parent_sha"
+                ],
+                "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/ops/tpo-collected.json",
+            "cite": "tpo-ranking-repair-205/ops/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "formal"
+              ],
+              [
+                [
+                  "arm"
+                ],
+                "tpo"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                34
+              ],
+              [
+                [
+                  "binding",
+                  "target_sha"
+                ],
+                "a8ecf0d2b1fabf7717bd1385d9df57582423f98933f273c2bdf44f5256e07905"
+              ],
+              [
+                [
+                  "binding",
+                  "parent_sha"
+                ],
+                "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "held-out-panels",
+        "pending": "训练审核后再绑定登记评测面板。"
+      }
+    ]
+  }
+}
