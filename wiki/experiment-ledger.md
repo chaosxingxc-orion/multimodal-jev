@@ -27,7 +27,7 @@ JEV-201 已审核 **34/34 步**训练及 SLURP TEST、MINDS、SIB-FLEURS 和 MMS
 | --- | ---: | --- | --- | --- |
 | JEV-201 | 10 | in_progress | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 四个数据集已审，变长 Choice 及原生面板配对诊断待补。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | stopped | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 暂停训练。保留固定参考、前四步收据及第 4 步推理权重，续训另行登记 |
-| JEV-R64-S2 | 25 | planned | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 复用 step 0 审核，只补 181 上的 step 68 |
+| JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
 
 状态使用 `planned`、`in_progress`、`blocked`、`complete`、`failed` 或 `stopped`；
 `planned` 专用于协议、依赖与预算已登记、可准备且尚未开工的行。领取时保存对应台账提交、行和冻结协议。
@@ -37,7 +37,7 @@ JEV-201 已审核 **34/34 步**训练及 SLURP TEST、MINDS、SIB-FLEURS 和 MMS
 | 实验 ID | 研究问题与预算 | 训练 / 评测状态 | 已知结果与决定 |
 | --- | --- | --- | --- |
 | JEV-R64-S1 | 0.6B r64，40,513 条 clean TRAIN、160 步；作为同轮 Stage2/TPO 的起点 | 正式端点及源域、迁移评测已审 | SLURP TEST / MINDS Noul macro-F1 为 80.97% / 71.64%；保留作为配对起点 |
-| JEV-R64-S2 | 两阶段 r64 对照，分层难例加回放，正式 68 步 | 训练与 SLURP TEST、MINDS 末点评测已审；selection 末点未跑全 | 80.43% / 66.05%；比 Stage1 分别低 0.53 / 5.59 个百分点（原始值计算），即使平均 Top-1 概率升高也未守住分类护栏。[详细报告](reports/JEV-R64-S2.md) |
+| JEV-R64-S2 | 两阶段 r64 对照，分层难例加回放，正式 68 步 | 训练、SLURP TEST、MINDS 及 selection step 0/68 已审 | 80.43% / 66.05%；比 Stage1 分别低 0.53 / 5.59 个百分点（原始值计算），selection macro-F1 为 82.78%（−0.27 点）。[详细报告](reports/JEV-R64-S2.md) |
 | JEV-194 | 34 步 TPO 投影与 34 步 direct；同起点、同数据及日程，只关闭投影项作为对照 | 两臂训练和完整留出评测已审；193 有限窗口失败，194 完成 | TPO 为 81.66% / 71.82%，direct 为 79.14% / 68.14%；投影在该种子有效，源域概率损失仍略升，采样贡献未隔离。[详细报告](reports/JEV-194.md) |
 | JEV-195 | 改为独立 Bernoulli 的固定奖励投影；同起点、34 步 | 训练及 Noul 评测已审 | 81.39% / 70.42%；SLURP 的 NLL 比 194 低，但 MINDS macro-F1 低 1.40 点，不能视作全面提升 |
 | JEV-196 | 交替训练 Noul、封闭 Choice 与 5 项开放 Choice；34 步 | 训练及留出评测已审 | Noul 81.04% / 72.08%；5 项开放面板的整体正确率恰等于 gold 缺席率，不能用零误接证明会选标签 |
