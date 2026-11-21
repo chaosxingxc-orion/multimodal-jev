@@ -116,7 +116,8 @@ def run(spec):
                     raise ValueError('nonfinite endpoint probabilities')
                 predictions.extend(dict(id=item['request_id'],prob=v) for item,v in zip(items,prob.tolist(),strict=True))
         commit_json(out/(arm+'.json'),dict(policy_id=pid,records=predictions))
-    return dict(dataset=c['cache']['dataset'],shard=index,recordings=len(rows))
+    dataset = 'source_train_calibration' if 'calibration' in spec else c['cache']['dataset']
+    return dict(dataset=dataset,shard=index,recordings=len(assets))
 
 
 def collect_predictions(shards, filename, assets):

@@ -217,9 +217,22 @@ def prepare(config):
         threshold_file = '/jev-work/thresholds.json'
         fit = dict(common, **parent_args, phase='tpo_score', calibration_fit=True,
                    shards=shards, output=threshold_file)
+        prior_predictions = config.get('reused_calibration_predictions')
+        if prior_predictions is not None:
+            if (set(prior_predictions) != set(calibration['policy_ids']) or any(
+                    len(parts) != len(calibration['devices']) or len({p['path'] for p in parts}) != len(parts)
+                    for parts in prior_predictions.values())):
+                raise ValueError('complete pinned predictions for the registered calibration shards required')
+            paths = [Path(p['path']) for parts in prior_predictions.values() for p in parts]
+            if any(not path.is_absolute() for path in paths):
+                raise ValueError('reused calibration predictions require absolute paths')
+            mounts.update(str(path.parent) for path in paths)
+            fit.pop('shards')
+            fit['reused_calibration_predictions'] = prior_predictions
         commit_json(entry/'calibration-fit.json', macros('NATIVE_SEAL_CONTAINER_CONFIG',fit))
-        calibration_groups = [calibration_jobs, [dict(name='calibration-fit', devices=[],
-                                                       collect='thresholds.json', **config['cache_container'])]]
+        calibration_groups = [calibration_jobs] if prior_predictions is None else []
+        calibration_groups.append([dict(name='calibration-fit', devices=[],
+                                        collect='thresholds.json', **config['cache_container'])])
     cache_store_used = False
     if 'choice_baseline' in common:mounts.add(common['choice_baseline']['root'])
     datasets=config['datasets']

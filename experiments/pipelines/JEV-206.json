@@ -269,17 +269,17 @@
     ],
     "evaluate": [
       {
-        "id": "probability-eval-v1",
-        "config": "configs/portable/operations/tpo-probability-evaluation-206.json",
+        "id": "probability-eval-v2",
+        "config": "configs/portable/operations/tpo-probability-evaluation-206-recovery.json",
         "python": "${TPO_EVAL_PYTHON}",
         "dispatch_guards": [
-          "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-package",
-          "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops"
+          "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-package",
+          "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops"
         ],
         "run": [
           [
             "tools.reports.prepare_tpo_evaluation",
-            "configs/portable/operations/tpo-probability-evaluation-206.json",
+            "configs/portable/operations/tpo-probability-evaluation-206-recovery.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -287,13 +287,13 @@
             "--config",
             "configs/portable/operations/native-seal-operations.json",
             "--local",
-            "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-package/operations-local.json"
+            "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-package/operations-local.json"
           ]
         ],
         "checks": [
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/score-collected.json",
-            "cite": "tpo-bidirectional-206/eval-v1-ops/score-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops/score-collected.json",
+            "cite": "tpo-bidirectional-206/eval-v2-ops/score-collected.json",
             "equals": [
               [
                 [
@@ -411,8 +411,8 @@
             }
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/slurp-cache-check-collected.json",
-            "cite": "tpo-bidirectional-206/eval-v1-ops/slurp-cache-check-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops/slurp-cache-check-collected.json",
+            "cite": "tpo-bidirectional-206/eval-v2-ops/slurp-cache-check-collected.json",
             "equals": [
               [
                 [
@@ -435,8 +435,8 @@
             ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/minds-cache-check-collected.json",
-            "cite": "tpo-bidirectional-206/eval-v1-ops/minds-cache-check-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops/minds-cache-check-collected.json",
+            "cite": "tpo-bidirectional-206/eval-v2-ops/minds-cache-check-collected.json",
             "equals": [
               [
                 [
@@ -459,8 +459,8 @@
             ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/sib-cache-check-collected.json",
-            "cite": "tpo-bidirectional-206/eval-v1-ops/sib-cache-check-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops/sib-cache-check-collected.json",
+            "cite": "tpo-bidirectional-206/eval-v2-ops/sib-cache-check-collected.json",
             "equals": [
               [
                 [
@@ -483,8 +483,8 @@
             ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/mmsu-cache-check-collected.json",
-            "cite": "tpo-bidirectional-206/eval-v1-ops/mmsu-cache-check-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops/mmsu-cache-check-collected.json",
+            "cite": "tpo-bidirectional-206/eval-v2-ops/mmsu-cache-check-collected.json",
             "equals": [
               [
                 [
@@ -507,8 +507,8 @@
             ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/selection-cache-check-collected.json",
-            "cite": "tpo-bidirectional-206/eval-v1-ops/selection-cache-check-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops/selection-cache-check-collected.json",
+            "cite": "tpo-bidirectional-206/eval-v2-ops/selection-cache-check-collected.json",
             "equals": [
               [
                 [
@@ -531,8 +531,8 @@
             ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops/calibration-fit-collected.json",
-            "cite": "tpo-bidirectional-206/eval-v1-ops/calibration-fit-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-ops/calibration-fit-collected.json",
+            "cite": "tpo-bidirectional-206/eval-v2-ops/calibration-fit-collected.json",
             "equals": [
               [
                 [

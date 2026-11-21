@@ -28,9 +28,9 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | 实验 ID | 优先级 | 状态 | 协议 | 下一步 |
 | --- | ---: | --- | --- | --- |
 | JEV-205 | 40 | complete | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 五组评测已审核；源域 selection 未达标，保留 194。[执行报告](reports/JEV-205.md) |
-| JEV-206 | 41 | in_progress | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 已排队接续 205；先做源 TRAIN 校准，再跑留出评测。[执行报告](reports/JEV-206.md) |
+| JEV-206 | 41 | in_progress | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 校准收尾报错；后继复用八个分片的原始预测，再跑留出评测。[执行报告](reports/JEV-206.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
-| JEV-204 | 20 | planned | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 206 评测审核后，复用固定参考与有限验收，从同一初始策略重新跑 212 步。[执行报告](reports/JEV-204.md) |
+| JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 等待 206 后继评测收据，再从原初始策略启动正式训练。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
 
 状态使用 `planned`、`in_progress`、`blocked`、`complete`、`failed` 或 `stopped`；

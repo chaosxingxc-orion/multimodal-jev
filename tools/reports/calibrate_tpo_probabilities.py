@@ -120,7 +120,8 @@ def collect(spec, parent):
     gold = [ids.index(row["intent"]) for row in roster]
     results = {}
     for arm, expected in spec["calibration"]["policy_ids"].items():
-        records, policy = collect_predictions(spec["shards"], arm + ".json", assets)
+        shards = spec["reused_calibration_predictions"][arm] if "reused_calibration_predictions" in spec else spec["shards"]
+        records, policy = collect_predictions(shards, arm + ".json", assets)
         if policy != expected:
             raise ValueError("calibration policy differs")
         results[arm] = dict(policy_id=policy, **thresholds([records[row["id"]]["prob"] for row in assets], gold))
