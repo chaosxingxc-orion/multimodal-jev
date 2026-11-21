@@ -6,6 +6,7 @@ import shutil
 import tarfile
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.context_execution import content_key
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.source_snapshot import freeze
@@ -55,6 +56,75 @@ def evaluation_cache(source, dataset, parent, initial, *, defer_audit=False):
     if cache.get('panel_size') is not None or cache['dataset'] != dataset:
         raise ValueError('full frozen test required')
     return cache
+
+
+def block_queue(config, common, datasets):
+    queue = config.get('sample_blocks')
+    if queue is None:
+        return None
+    allowed = {'devices', 'batches_per_block', 'prefetch', 'resume_from', 'parity'}
+    if (not isinstance(queue, dict) or queue.keys() - allowed
+            or not {'devices', 'batches_per_block', 'prefetch'} <= queue.keys()):
+        raise ValueError('invalid sample block scheduling configuration')
+    devices = queue['devices']
+    if (not isinstance(devices, list) or not devices or any(type(i) is not int or i < 0 for i in devices)
+            or len(set(devices)) != len(devices)
+            or any(type(queue[k]) is not int or queue[k] < 1 for k in ('batches_per_block', 'prefetch'))):
+        raise ValueError('distinct device pool and positive block size and prefetch required')
+    if 'choice' in common and (not common.get('full_ontology_only') or common.get('choice_only')
+            or 'candidate_lengths' in common['choice'] or 'paired_lengths' in common):
+        raise ValueError('variable Choice records depend on legacy shard/batch indices')
+    for dataset, source in datasets.items():
+        if type(source.get('logical_partitions')) is not int or source['logical_partitions'] < 1:
+            raise ValueError(f'positive logical_partitions required for {dataset}')
+    return queue
+
+
+def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, image):
+    settings = block_queue(config, common, datasets)
+    parent = dict(common, phase='tpo_eval_block_worker', endpoints=endpoints, inferred_arms=inferred)
+    queue = dict(root='/jev-work/sample-blocks', batches_per_block=settings['batches_per_block'],
+                 prefetch=settings['prefetch'],
+                 partitions={dataset: source['logical_partitions'] for dataset, source in datasets.items()})
+    if 'parity' in settings:
+        parity = settings['parity']
+        if (set(parity) != {'blocks_per_dataset', 'legacy'}
+                or type(parity['blocks_per_dataset']) is not int or parity['blocks_per_dataset'] < 1
+                or set(parity['legacy']) != set(datasets)):
+            raise ValueError('limited parity requires pinned legacy shards for every dataset')
+        for dataset, arms in parity['legacy'].items():
+            if set(arms) != set(inferred[dataset]):
+                raise ValueError('limited parity requires references for every inferred policy')
+            for pins in arms.values():
+                if len(pins) != queue['partitions'][dataset]:
+                    raise ValueError('limited parity requires the legacy logical partition layout')
+                for pin in pins:
+                    path = Path(pin['path'])
+                    if not path.is_absolute():
+                        raise ValueError('limited parity references require absolute remote paths')
+                    mounts.add(str(path.parent))
+        queue['parity'] = parity
+    queue['namespace'] = content_key(parent, queue, image)
+    parent['queue'] = queue
+    plan = dict(parent, phase='tpo_eval_block_plan', devices=[], result_path='/jev-work/blocks-planned.json')
+    if 'resume_from' in settings:
+        resume = Path(settings['resume_from'])
+        target = Path(config['deployment']['remote_root'])
+        if (not resume.is_absolute() or '..' in resume.parts or resume.name != 'sample-blocks'
+                or resume.is_relative_to(target) or target.is_relative_to(resume)):
+            raise ValueError('resume requires a distinct, absolute past sample-blocks directory')
+        mounts.add(str(resume))
+        plan['queue'] = dict(queue, resume_from=str(resume))
+    commit_json(entry/'block-plan.json', macros('NATIVE_SEAL_CONTAINER_CONFIG', plan))
+    prep = dict(name='block-plan', devices=[], collect='blocks-planned.json', **config['cache_container'])
+    workers = []
+    for index, device in enumerate(settings['devices']):
+        name = f'block-worker-{index}'
+        receipt = name + '.json'
+        commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',
+            dict(parent, devices=[device], output='/jev-work/'+name, result_path='/jev-work/'+receipt)))
+        workers.append(dict(name=name, devices=[device], collect=receipt, **config['eval_container']))
+    return prep, workers, queue
 
 
 def prepare(config):
@@ -243,6 +313,7 @@ def prepare(config):
         if not selected or len(set(selected))!=len(selected):
             raise ValueError('unique formal dataset IDs required')
         datasets={key:datasets[key] for key in selected}
+    pooled = block_queue(config, common, datasets)
     for dataset,source in datasets.items():
         if 'encode' in source:
             if full or not config.get('full_ontology_only') or not config.get('publish_seals'):
@@ -326,8 +397,10 @@ def prepare(config):
                 mounts.update(str(Path(part['path']).parent) for part in proof['shards'])
             reused_predictions[dataset] = historical
         arms = [arm for arm in common.get('arms', ('stage1', 'direct', 'tpo')) if arm not in historical]
-        if historical:
+        if historical or pooled:
             inferred_arms[dataset] = arms
+        if pooled:
+            continue
         for i,device in enumerate(source['devices']):
             name=f"{source['name']}-{i}"
             opts=dict(common,phase='tpo_eval',endpoint=c,devices=[device],shard=i,shards=len(source['devices']),
@@ -348,6 +421,18 @@ def prepare(config):
         scoring['semantic_scoring'] = semantic
     if config.get('publish_seals'):
         scoring['publish_seals'] = True
+    block_groups = []
+    if pooled:
+        opts = dict(common, trained=prior['remote_root'], batch=config['batch'], binding=binding,
+                    updates=steps, parent=str(parent_file), parent_sha=binding['parent_sha'])
+        prep, jobs, queue = queue_jobs(config, entry, opts, datasets, sets, inferred_arms, mounts, prior['image'])
+        block_groups = [[prep]]
+        scoring['queue'] = queue
+        scoring['inferred_arms'] = inferred_arms
+        if 'parity' in queue:
+            if 'choice' in common:
+                raise ValueError('limited probability parity does not accept Choice panels')
+            scoring['phase'] = 'tpo_eval_block_parity'
     commit_json(entry/'score.json',macros('NATIVE_SEAL_CONTAINER_CONFIG',scoring))
     archive=pkg/'entry.tar'
     with tarfile.open(archive,'x') as tar:tar.add(entry,arcname='entry')
@@ -356,8 +441,16 @@ def prepare(config):
         custody = Path(config['training_custody'])
         if read(custody/'operations.json') != prior:
             raise ValueError('training custody belongs to a different sealed operation')
-        predecessor = dict(driver=read(custody/'started.json'), terminal=str(custody/'terminal.json'),
-                           required_status='formal_training_collected_and_audited')
+        terminal = custody/'terminal.json'
+        predecessor = dict(terminal=str(terminal), required_status='formal_training_collected_and_audited')
+        if terminal.is_file():
+            proof = read(terminal)
+            if (proof['exit_code'] != 0 or proof['status'] != predecessor['required_status']
+                    or proof['endpoint'] != read(ops/'tpo-collected.json')['endpoint']):
+                raise ValueError('matching audited training terminal required')
+            predecessor['terminal_sha256'] = file_hash(terminal)
+        else:
+            predecessor['driver'] = read(custody/'started.json')
     elif 'collected_predecessor' in config:
         terminal = ops/'terminal.json'
         required = config['collected_predecessor']
@@ -374,7 +467,7 @@ def prepare(config):
     else:
         predecessor = dict(driver=read(ops.with_suffix('.started.json')), terminal=str(ops/'terminal.json'))
     groups = [*([encode_jobs, verify_jobs] if encode_jobs else []),
-              *([cache_jobs] if cache_jobs else []), *calibration_groups, jobs,
+              *([cache_jobs] if cache_jobs else []), *calibration_groups, *block_groups, jobs,
               [dict(name='score', devices=[], collect='metrics.json', **config['eval_container'])]]
     ctl.update(config['deployment'],archive=str(archive),read_only_mounts=[p+':'+p for p in sorted(mounts)],
         device_group_lease=True,wait_for_lease=True,predecessor=predecessor,
@@ -383,7 +476,7 @@ def prepare(config):
         ctl['evaluation_cache_store'] = reuse['store']
     if cache_paths:
         ctl['evaluation_cache_plan'] = cache_paths
-    if config.get('publish_seals') or reuse or calibration:
+    if config.get('publish_seals') or reuse or calibration or pooled:
         ctl['entry_archive_sha256'] = file_hash(archive)
         ctl['entry_pins'] = {f'{job["name"]}.json': file_hash(entry/f'{job["name"]}.json')
                              for group in groups for job in group}

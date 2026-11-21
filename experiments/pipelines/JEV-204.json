@@ -213,17 +213,73 @@
     ],
     "evaluate": [
       {
+        "id": "sample-block-parity",
+        "python": "${TPO_EVAL_PYTHON}",
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-ops/terminal.json",
+            "cite": "tpo-ranking-repair-205/eval-v2-block-parity-ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-ops/score-collected.json",
+            "cite": "tpo-ranking-repair-205/eval-v2-block-parity-ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "evaluation_block_parity_passed"
+              ]
+            ]
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_tpo_evaluation",
+            "configs/portable/operations/tpo-probability-evaluation-205-block-parity.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-package/operations-local.json"
+          ]
+        ],
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-ops",
+          "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-ops.started.json",
+          "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-package"
+        ],
+        "config": "configs/portable/operations/tpo-probability-evaluation-205-block-parity.json"
+      },
+      {
         "id": "native-endpoints",
         "python": "${TPO_EVAL_PYTHON}",
         "checks": [
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-ops/terminal.json",
-            "cite": "tpo-single-stage-full/eval-204-ledger-v1-ops/terminal.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-blocks-v2-ops/terminal.json",
+            "cite": "tpo-single-stage-full/eval-204-blocks-v2-ops/terminal.json",
             "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-ops/score-collected.json",
-            "cite": "tpo-single-stage-full/eval-204-ledger-v1-ops/score-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-blocks-v2-ops/score-collected.json",
+            "cite": "tpo-single-stage-full/eval-204-blocks-v2-ops/score-collected.json",
             "equals": [
               [["schema"], "jev-audited-tpo-evaluation-v1"],
               [["seals", "SLURP_clean_TEST60"], "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"],
@@ -375,6 +431,10 @@
         ],
         "inputs": [
           {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-ops/score-collected.json",
+            "equals": [[["status"], "evaluation_block_parity_passed"]]
+          },
+          {
             "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
             "cite": "tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
             "sha256": "f057f66bdb80e39a8d811ed45b663100707abcf871f7c63dbc80e4cd65830c01"
@@ -386,11 +446,18 @@
           }
         ],
         "run": [
-          ["tools.reports.prepare_tpo_evaluation", "experiments/pipelines/JEV-204-native.json", "${EXPERIMENT_LOCAL_CONFIG}"],
-          ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-package/operations-local.json"]
+          ["tools.reports.prepare_tpo_evaluation", "experiments/pipelines/JEV-204-native-blocks-v2.json", "${EXPERIMENT_LOCAL_CONFIG}"],
+          ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-blocks-v2-package/operations-local.json"]
         ],
-        "dispatch_guards": ["${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-ops", "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-ops.started.json", "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-package"],
-        "config": "experiments/pipelines/JEV-204-native.json"
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-blocks-v2-ops",
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-blocks-v2-ops.started.json",
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-blocks-v2-package",
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-ops",
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-ops.started.json",
+          "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-package"
+        ],
+        "config": "experiments/pipelines/JEV-204-native-blocks-v2.json"
       },
       {"id": "paired-diagnostics", "pending": "待接入全量 Noul/Choice 正误四格、变长 Choice 误拒/误接及配对区间审核。"},
       {"id": "sib-fleurs", "pending": "待绑定 SIB-FLEURS 英语话题封存评测和按句配对审核。"},

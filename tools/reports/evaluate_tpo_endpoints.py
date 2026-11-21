@@ -12,40 +12,38 @@ from multimodal_jev.cached_context_preparation import processor_cache_identity
 from tools.reports.run_native_seal_endpoint import load, read, score
 
 
-def run(spec):
-    out=Path(spec['output'])
-    out.mkdir(parents=True,exist_ok=False)
-    parent=read(spec['parent'])
+def read_parent(spec):
+    parent = read(spec['parent'])
     if (file_hash(spec['parent']) != spec['parent_sha'] or
-            checkpoint_identity(parent['model'])[0]!=parent['base_id']):
+            checkpoint_identity(parent['model'])[0] != parent['base_id']):
         raise ValueError('training parent or base changed')
-    c=dict(spec['endpoint'],base_id=parent['base_id'],model=parent['model'],contract=parent['source_contract'],
-           snapshot=parent['source_policy'],physical_devices=spec['devices'],policy_id=parent['source_policy_id'])
-    require_same_provider(parent,c['cache'])
+    return parent
+
+
+def endpoint_config(spec, parent, endpoint):
+    c = dict(endpoint, base_id=parent['base_id'], model=parent['model'], contract=parent['source_contract'],
+             snapshot=parent['source_policy'], physical_devices=spec['devices'], policy_id=parent['source_policy_id'])
+    require_same_provider(parent, c['cache'])
     if 'model_provider' in c:
-        require_same_provider(parent,c)
+        require_same_provider(parent, c)
     if 'model_provider' in parent:
         c['model_provider'] = parent['model_provider']
+    c['cache'] = dict(c['cache'], processor=dict(c['cache']['processor'], policy=c['snapshot']))
+    return c
+
+
+def start_model(c, out):
     provider = resolve_provider(c)
-    c['cache']['processor']['policy']=c['snapshot']
-    stage1=read_execution_bundle(c['snapshot'],expected_policy_id=c['policy_id'],
-        expected_contract=c['contract'],expected_base_id=c['base_id'])
-    if 'calibration' in spec:
-        from tools.reports.calibrate_tpo_probabilities import cached_source
-        assets, candidates, encode = cached_source(spec['calibration'], parent)
-    else:
-        assets, candidates, encode = load(c)
-    # Each container owns one card and one frozen dataset. Reuse model construction,
-    # audited input tensors and candidate layout over all three endpoints.
-    width=spec['batch']
-    index=spec['shard']
-    assets=assets[index::spec['shards']]
-    processor=processor_cache_identity(c['snapshot'])
-    rows = [] if 'calibration' in spec else [(asset, encode(asset)[0]) for asset in assets]
-    model,device,base,handle=provider.load_reference(c,stage1,out)
-    tokenizer_processor = provider.processor(stage1['processor'])
-    collate = provider.collation(base,tokenizer_processor,model)
-    arms=spec.get('arms',['stage1','direct','tpo'])
+    stage1 = read_execution_bundle(c['snapshot'], expected_policy_id=c['policy_id'],
+        expected_contract=c['contract'], expected_base_id=c['base_id'])
+    model, device, base, handle = provider.load_reference(c, stage1, out)
+    processor = provider.processor(stage1['processor'])
+    return provider, model, device, processor, provider.collation(base, processor, model), handle
+
+
+def policy_sources(spec, c, arms=None):
+    if arms is None:
+        arms=spec.get('arms',['stage1','direct','tpo'])
     checkpoints=spec.get('checkpoints', {})
     external=spec.get('audited_endpoints', {})
     if not arms or len(set(arms))!=len(arms) or set(arms)-{'stage1','direct','tpo',*checkpoints,*external}:
@@ -80,6 +78,48 @@ def run(spec):
                 file_hash(root/'policy/MANIFEST.json')!=receipt['manifest_sha256']):
             raise ValueError('unverified terminal policy')
         sources[arm]=(str(root/'policy'),receipt['endpoint'])
+    return sources
+
+
+def probabilities(model, device, provider, collate, pid, rows, width, *, check_singleton=True):
+    from itertools import islice
+    predictions=[]
+    with torch.inference_mode():
+        inputs=iter(rows)
+        while group := list(islice(inputs, width)):
+            items=[dict(row,request_id=asset['id'],policy_id=pid) for asset,row in group]
+            z=provider.forward(model,items,device=device,dtype=torch.bfloat16,policy_id=pid,**collate)
+            prob=z.float().sigmoid().cpu()
+            if check_singleton and not predictions:
+                single=provider.forward(model,items[:1],device=device,dtype=torch.bfloat16,
+                    policy_id=pid,**collate).float().sigmoid().cpu()
+                if not torch.equal(prob[:1],single):
+                    raise ValueError('batched endpoint differs from singleton')
+            if not torch.isfinite(prob).all():
+                raise ValueError('nonfinite endpoint probabilities')
+            predictions.extend(dict(id=item['request_id'],prob=v) for item,v in zip(items,prob.tolist(),strict=True))
+    return dict(policy_id=pid, records=predictions)
+
+
+def run(spec):
+    from contextlib import nullcontext
+    from multimodal_jev.ordered_prefetch import OrderedPrefetch
+
+    out=Path(spec['output'])
+    out.mkdir(parents=True,exist_ok=False)
+    parent=read_parent(spec)
+    c=endpoint_config(spec, parent, spec['endpoint'])
+    if 'calibration' in spec:
+        from tools.reports.calibrate_tpo_probabilities import cached_source
+        assets, _, encode = cached_source(spec['calibration'], parent)
+    else:
+        assets, _, encode = load(c)
+    index=spec['shard']
+    assets=assets[index::spec['shards']]
+    processor=processor_cache_identity(c['snapshot'])
+    rows=[] if 'calibration' in spec else [(asset, encode(asset)[0]) for asset in assets]
+    provider, model, device, tokenizer_processor, collate, handle = start_model(c, out)
+    sources=policy_sources(spec, c)
     if 'choice' in spec:
         from tools.reports.evaluate_choice_tasks import evaluate
         evaluate(spec,c,parent,model,device,tokenizer_processor,collate,rows,sources,provider)
@@ -92,42 +132,27 @@ def run(spec):
         if processor_cache_identity(path)!=processor:
             raise ValueError('changed processor invalidates paired evaluation')
         load_policy(path,model,expected_policy_id=pid,expected_contract=c['contract'],expected_base_id=c['base_id'])
-        predictions=[]
-        from contextlib import nullcontext
-        from itertools import islice
-        from multimodal_jev.ordered_prefetch import OrderedPrefetch
-        newly_encoded = not rows
-        stream = OrderedPrefetch(lambda asset: (asset, encode(asset)[0]), assets,
-                                 workers=spec['io_workers'], ahead=spec['prefetch']) if newly_encoded else nullcontext(rows)
-        with torch.inference_mode(), stream as queue:
-            inputs = iter(queue)
-            while group := list(islice(inputs, width)):
+        newly_encoded=not rows
+        stream=OrderedPrefetch(lambda asset: (asset, encode(asset)[0]), assets,
+                               workers=spec['io_workers'], ahead=spec['prefetch']) if newly_encoded else nullcontext(rows)
+        def remembered(queue):
+            for item in queue:
                 if newly_encoded:
-                    rows.extend(group)
-                items=[dict(row,request_id=asset['id'],policy_id=pid) for asset,row in group]
-                z=provider.forward(model,items,device=device,dtype=torch.bfloat16,policy_id=pid,**collate)
-                prob=z.float().sigmoid().cpu()
-                if not predictions:
-                    single=provider.forward(model,items[:1],device=device,dtype=torch.bfloat16,
-                        policy_id=pid,**collate).float().sigmoid().cpu()
-                    if not torch.equal(prob[:1],single):
-                        raise ValueError('batched endpoint differs from singleton')
-                if not torch.isfinite(prob).all():
-                    raise ValueError('nonfinite endpoint probabilities')
-                predictions.extend(dict(id=item['request_id'],prob=v) for item,v in zip(items,prob.tolist(),strict=True))
-        commit_json(out/(arm+'.json'),dict(policy_id=pid,records=predictions))
+                    rows.append(item)
+                yield item
+        with stream as queue:
+            result=probabilities(model,device,provider,collate,pid,remembered(queue),spec['batch'])
+        commit_json(out/(arm+'.json'),result)
     dataset = 'source_train_calibration' if 'calibration' in spec else c['cache']['dataset']
     return dict(dataset=dataset,shard=index,recordings=len(assets))
 
 
-def collect_predictions(shards, filename, assets):
+def collect_predictions(shards, filename, assets, *, publications=()):
     records, policies = {}, set()
-    for part in shards:
-        if isinstance(part, dict):
-            from tools.reports.run_native_seal_endpoint import bound
-            publication = bound(part)
-        else:
-            publication = read(Path(part)/filename)
+    from itertools import chain
+    from tools.reports.run_native_seal_endpoint import bound
+    frozen = (bound(part) if isinstance(part, dict) else read(Path(part)/filename) for part in shards)
+    for publication in chain(frozen, publications):
         policies.add(publication['policy_id'])
         for row in publication['records']:
             if row['id'] in records:
@@ -153,6 +178,18 @@ def collect(spec):
         if (thresholds['schema'] != 'jev-source-train-harness-thresholds-v1'
                 or thresholds['roster_sha256'] != spec['calibration_roster_sha256']):
             raise ValueError('frozen source TRAIN calibration required')
+    queued = None
+    if 'queue' in spec:
+        from tools.reports.tpo_evaluation_blocks import publications
+        queued = publications(spec)
+
+    def predictions_for(dataset, arm, assets, *, choice=False):
+        kind = 'choices' if choice else 'prob'
+        filename = arm + ('-choices.json' if choice else '.json')
+        if queued is None:
+            return collect_predictions(spec['shards'][dataset], filename, assets)
+        return collect_predictions((), filename, assets, publications=queued[(dataset, arm, kind)])
+
     for dataset,c in spec['endpoints'].items():
         jobs=plan(c['cache'])
         assets=[dict(id=r['id'],audio_sha256=r['audio_sha256']) for _,r,_ in jobs]
@@ -160,7 +197,7 @@ def collect(spec):
         if 'probability_panels' in spec:
             from tools.reports.score_probability_panels import score_panel
             inferred = spec.get('inferred_arms', {}).get(dataset, spec['arms'])
-            predictions = {arm: collect_predictions(spec['shards'][dataset], arm+'.json', assets)
+            predictions = {arm: predictions_for(dataset, arm, assets)
                            for arm in inferred}
             for arm, proof in spec.get('reused_predictions', {}).get(dataset, {}).items():
                 predictions[arm] = collect_predictions(proof['shards'], arm+'.json', assets)
@@ -174,8 +211,8 @@ def collect(spec):
             from tools.reports.score_semantic_tpo import score as score_semantic
             noul, choice, policies = {}, {}, {}
             for arm in spec['arms']:
-                noul[arm], policies[arm] = collect_predictions(spec['shards'][dataset], arm+'.json', assets)
-                choice[arm], choice_policy = collect_predictions(spec['shards'][dataset], arm+'-choices.json', assets)
+                noul[arm], policies[arm] = predictions_for(dataset, arm, assets)
+                choice[arm], choice_policy = predictions_for(dataset, arm, assets, choice=True)
                 if policies[arm] != choice_policy:
                     raise ValueError('Noul/Choice policy mismatch')
             result[dataset] = score_semantic(c['cache'], jobs, noul, choice, policies, semantic_protocol)
@@ -186,17 +223,10 @@ def collect(spec):
             *spec.get('arms', ['stage1', 'direct', 'tpo']),
             *(prior if spec.get('full_ontology_only') else [])]
         for arm in noul_arms:
-            records={};policies=set()
-            for part in spec['shards'][dataset]:
-                publication=read(Path(part)/(arm+'.json')); policies.add(publication['policy_id'])
-                for r in publication['records']:
-                    if r['id'] in records:raise ValueError('overlapping evaluation shards')
-                    records[r['id']]=r
-            if len(policies)!=1 or set(records)!={a['id'] for a in assets}:
-                raise ValueError('incomplete endpoint populations')
+            records, policy = predictions_for(dataset, arm, assets)
             c['point']={'step':spec['steps'].get(arm,spec['steps']['tpo'])}
             metric=score(c,assets,candidates,[records[a['id']] for a in assets])['metrics']
-            result[dataset][arm]=dict(policy_id=next(iter(policies)),**{k:metric[k] for k in
+            result[dataset][arm]=dict(policy_id=policy,**{k:metric[k] for k in
                 ('queries','top1_macro_f1','top1_event_accuracy','mean_top1_probability',
                  'candidate_binary_nll','candidate_brier')})
         if 'choice' in spec:
@@ -208,20 +238,14 @@ def collect(spec):
             gold=bound(dict(path=base/rel,sha256=manifest['files'][rel]))
             choices={}
             for arm in [*spec['arms'],*prior]:
-                ordered={}; ids=set()
-                for part in spec['shards'][dataset]:
-                    pub=read(Path(part)/(arm+'-choices.json'));ids.add(pub['policy_id'])
-                    for row in pub['records']:
-                        if row['id'] in ordered:raise ValueError('duplicate Choice prediction')
-                        ordered[row['id']]=row
-                if len(ids)!=1 or set(ordered)!={a['id'] for a in assets}:raise ValueError('incomplete Choice results')
+                ordered, policy = predictions_for(dataset, arm, assets, choice=True)
                 if spec.get('full_ontology_only'):
                     from multimodal_jev.choice_metrics import full_ontology_metrics
-                    if ids!={result[dataset][arm]['policy_id']}:raise ValueError('Noul/Choice policy mismatch')
-                    choices[arm]=dict(policy_id=next(iter(ids)),**full_ontology_metrics(assets,gold,
+                    if policy!=result[dataset][arm]['policy_id']:raise ValueError('Noul/Choice policy mismatch')
+                    choices[arm]=dict(policy_id=policy,**full_ontology_metrics(assets,gold,
                         [ordered[a['id']] for a in assets],candidates))
                     continue
-                choices[arm]=dict(policy_id=next(iter(ids)),**choice_metrics(assets,gold,
+                choices[arm]=dict(policy_id=policy,**choice_metrics(assets,gold,
                     [ordered[a['id']] for a in assets],candidates))
                 if spec.get('choice_only'):
                     # Compare frozen policies on the same label-free candidate order for each recording.

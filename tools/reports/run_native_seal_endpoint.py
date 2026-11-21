@@ -34,7 +34,7 @@ def selected_panel(c, assets, candidates, encode):
                 input_receipts=[encode(asset)[1] for asset in assets], labels_used=False)
 
 
-def load(c):
+def load(c, *, expected_cache=None, include_requests=False):
     from multimodal_jev.model_provider import cache_namespace, require_same_provider
     spec = c['cache']
     require_same_provider(c,spec)
@@ -42,6 +42,10 @@ def load(c):
     root = Path(spec['output'])
     receipts = root/'inputs.jsonl'
     m, verification = read_verified(spec, c['cache_verification'])
+    if expected_cache is not None and (
+            verification['manifest_sha256'] != expected_cache['manifest_sha256']
+            or m['inputs_sha256'] != expected_cache['inputs_sha256']):
+        raise ValueError('worker inputs differ from block plan')
     if m['processor_sha256'] != processor_cache_identity(c['snapshot']):
         raise ValueError('frozen endpoint processor differs from cache')
     jobs = plan(spec)
@@ -72,7 +76,8 @@ def load(c):
         row, receipt = encode(asset)
         return row, {k: v for k, v in receipt.items() if k != 'audio_receipt'}
 
-    return assets, candidates, prepare
+    result = assets, candidates, prepare
+    return (*result, requests) if include_requests else result
 
 
 def hf_partition(assets, index, width):

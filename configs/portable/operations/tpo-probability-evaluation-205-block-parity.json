@@ -1,0 +1,439 @@
+{
+  "repository": ".",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-package",
+  "parent_config": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+  "deployment": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v2-block-parity-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v2-block-parity",
+    "tag": "jev-eval-205-v2-block-parity"
+  },
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/ops",
+  "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/package/operations-local.json",
+  "batch": 8,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "arms": [
+    "stage1",
+    "baseline",
+    "tpo"
+  ],
+  "evaluation_cache_reuse": {
+    "catalog": "configs/portable/operations/native-evaluation-cache-catalog-v1.json",
+    "catalog_host": "${TPO_EVALUATION_CACHE_CATALOG_HOST}",
+    "catalog_root": "${EXPERIMENT_TARGET_HOT_ROOT}",
+    "catalog_seal_root": "${SHARED_ROOT}",
+    "store": "${TPO_EVALUATION_CACHE_STORE}",
+    "build": {
+      "prefetch": 16,
+      "progress_interval": 128
+    }
+  },
+  "cache_container": {
+    "cpus": 8,
+    "memory": "16g",
+    "shm": "2g"
+  },
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "collected_predecessor": {
+    "terminal_sha256": "5d7e7862ce75250b6f2c13901d5bdacc7352a92c4db3868670a02c9afd78c5e5",
+    "receipt_sha256": "e4c44f667aa3f899c401f859b4f49225350e78e54504f354949e3f41e6c6f642"
+  },
+  "audited_endpoints": {
+    "baseline": {
+      "root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-tpo-contrast-v0.0.194/tpo",
+      "receipt_sha256": "f1e13d7e7f0188d5f2516ad98610c54a45a13da18e8c5b9697bdb033080ea5a7",
+      "policy_id": "34992e12d6d8b53a696fdb042dbc86a11be19b735ace6ba8718daf2203ee77fd",
+      "updates": 34
+    }
+  },
+  "datasets": {
+    "SLURP_clean_TEST60": {
+      "name": "slurp",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/experiments/multimodal-jev/native-evaluation-seal-v0.0.129",
+          "sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "logical_partitions": 3
+    },
+    "MINDS_native14": {
+      "name": "minds",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/experiments/multimodal-jev/native-evaluation-seal-v0.0.129",
+          "sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "logical_partitions": 1
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "name": "sib",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/datasets/sib-fleurs-jev/eng-topic-v1",
+          "sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "logical_partitions": 1
+    },
+    "MMSU_polysemy": {
+      "name": "mmsu",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/datasets/mmsu-jev/polysemy-v1",
+          "sha256": "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "logical_partitions": 1
+    },
+    "SLURP_clean_SELECTION60": {
+      "name": "selection",
+      "catalog_cache": {
+        "seal": {
+          "root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-r64-selection-181-v2/entry/selection-cache-seal",
+          "sha256": "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        },
+        "output": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-selection-156/full-cache",
+        "cache_identity": {
+          "manifest_sha256": "627ee48f16d1528dd70a4865c59374e4c7aa3b0f04aaf40aaf716e0acbcc6dce",
+          "verification_sha256": "c66fc9d8e7a6f502d4bb375f148068abedcdcd9b895554f078d2c0d5d8adfb57"
+        }
+      },
+      "logical_partitions": 2
+    }
+  },
+  "probability_panels": {
+    "SLURP_clean_TEST60": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MINDS_native14": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MMSU_polysemy": {
+      "primary": "top1_accuracy",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SLURP_clean_SELECTION60": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    }
+  },
+  "sample_blocks": {
+    "devices": "${TPO_OFFLINE_REFERENCE_DEVICES}",
+    "batches_per_block": 4,
+    "prefetch": 16,
+    "parity": {
+      "blocks_per_dataset": 2,
+      "legacy": {
+        "SLURP_clean_TEST60": {
+          "stage1": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-0/stage1.json",
+              "sha256": "01d9cc29a9265d4b1881bc0dd4eab3d3092411e7ba342763a563282ac8f5e0ed"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-1/stage1.json",
+              "sha256": "302f249cb86a5421e86c927e8c74ef3dadb8a2ebda0cce55284eb1ef40fe3aa3"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-2/stage1.json",
+              "sha256": "a426492e6750df8a538011d82b5b3211fffaa22068c95572e5d423eba01bef8d"
+            }
+          ],
+          "baseline": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-0/baseline.json",
+              "sha256": "2bf8ef33b3969e4629e6d86661012b6308873dadbce01e6fa86921097fbc0de3"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-1/baseline.json",
+              "sha256": "1944418dc2005d76738551b665ef9f541b5686469d38b38b54698b4b52b17c2c"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-2/baseline.json",
+              "sha256": "ef87f5e2fad14f66e777e4dda28aae3d39ab38ac1cd4c2dd7f2239e360a331ac"
+            }
+          ],
+          "tpo": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-0/tpo.json",
+              "sha256": "8cceb195b5b5f3bb0330856bed563dddf2d7add9cceba51af70a494b9c34b849"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-1/tpo.json",
+              "sha256": "f246be02fefbfb786511ca23c2b0130190bac769b384bad27594f189e202741f"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/slurp-2/tpo.json",
+              "sha256": "6c8e60e5613f781a7c1d961a386bec5de30b8babc8ee5d9b449a2c243afe7a20"
+            }
+          ]
+        },
+        "MINDS_native14": {
+          "stage1": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/minds-0/stage1.json",
+              "sha256": "46ee3f9c6b12fcf40c3b6a1c856bed86199e0e13839124c802eb7887d7937759"
+            }
+          ],
+          "baseline": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/minds-0/baseline.json",
+              "sha256": "7b8b60685b2697fc5df6f9cc1fb5d296dbfdc1c1a8f632076a3134c12a4718b8"
+            }
+          ],
+          "tpo": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/minds-0/tpo.json",
+              "sha256": "3781b1eb5e751d8ad5a48c27c437ed23b7bdbbb4d59b798819dec43c8580b50f"
+            }
+          ]
+        },
+        "SIB_FLEURS_eng_topic7": {
+          "stage1": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/sib-0/stage1.json",
+              "sha256": "793d4ee88192b1d80e3ab01b551a51eeca5f452de17229ffcd13e1f724f47bdf"
+            }
+          ],
+          "baseline": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/sib-0/baseline.json",
+              "sha256": "28b92a85392eacb6bc15e33e71a50e83de7b769b5a86360db890d0a77af175da"
+            }
+          ],
+          "tpo": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/sib-0/tpo.json",
+              "sha256": "bf62c3bbaeb9fc1f5c76527ef912bd3eae0ed70584f81023b915e4950f650ccc"
+            }
+          ]
+        },
+        "MMSU_polysemy": {
+          "stage1": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/mmsu-0/stage1.json",
+              "sha256": "c26286515edc25a5c096e2c10d963da4488c4bcf2e4c4ef0143cfd63e5020b89"
+            }
+          ],
+          "baseline": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/mmsu-0/baseline.json",
+              "sha256": "523028a9da42942abf6509fde79f7b7817c0135f359d9cb0e9d9de1583a14053"
+            }
+          ],
+          "tpo": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/mmsu-0/tpo.json",
+              "sha256": "eae71ac844f1fae82a6d770efbc4896ede0bded8eb6d15731df031b4e156fd7f"
+            }
+          ]
+        },
+        "SLURP_clean_SELECTION60": {
+          "stage1": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/selection-0/stage1.json",
+              "sha256": "04ec6bc154467bfc5ee05c985ff574f0c0893bf6cc4c7e6a47434ccab208e9cc"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/selection-1/stage1.json",
+              "sha256": "649a07b20b82c3cfff8a759a564abec92cd616a90a3a989c269519509043c990"
+            }
+          ],
+          "baseline": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/selection-0/baseline.json",
+              "sha256": "bbd543e6aa156bdd1d19ba5eb7bcb13ad8c7f7f6dd3c7cc0312f81ad3c74290b"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/selection-1/baseline.json",
+              "sha256": "f4d0e327ad67c57281412294ac569135c29ae635df6d0235fe4e612f53f36ef5"
+            }
+          ],
+          "tpo": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/selection-0/tpo.json",
+              "sha256": "9a4946073ef6064da68a91810aee1d79df68e9bdc157c5df36d647da2deeac37"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1/selection-1/tpo.json",
+              "sha256": "ab587163f191b61bd333810d20830f3a2acef26ba8bea07e1587dbf3fb083ff9"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

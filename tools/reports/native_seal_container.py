@@ -63,6 +63,14 @@ def main():
     if c['phase'] == 'model_provider_probe':
         from tools.reports.probe_audio_model_provider import run
         result = run(c['probe'])
+    elif c['phase'] in {'tpo_eval_block_plan', 'tpo_eval_block_worker', 'tpo_eval_block_parity'}:
+        from tools.reports import tpo_evaluation_blocks
+        handler = {
+            'tpo_eval_block_plan': tpo_evaluation_blocks.build,
+            'tpo_eval_block_worker': tpo_evaluation_blocks.worker,
+            'tpo_eval_block_parity': tpo_evaluation_blocks.parity,
+        }[c['phase']]
+        result = handler(c)
     elif c['phase'] == 'tpo_score':
         from tools.reports.evaluate_tpo_endpoints import collect
         result = collect(c)

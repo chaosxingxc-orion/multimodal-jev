@@ -23,24 +23,32 @@ def evaluate(spec,c,parent,model,device,processor,collate,rows,sources,provider)
         return provider.forward(model,batch,device=device,dtype=torch.bfloat16,policy_id=pid,**collate).float()
     def input_row(row,uid,pid):return dict(row,policy_id=pid,request_id=uid)
     if spec.get('full_ontology_only'):
-        with torch.inference_mode():
-            for arm,(path,pid) in policies.items():
-                if processor_cache_identity(path)!=processor_cache_identity(c['snapshot']):
-                    raise ValueError('incompatible Choice processor')
-                load_policy(path,model,expected_policy_id=pid,expected_contract=c['contract'],expected_base_id=c['base_id'])
-                records=[]
-                for start in range(0,len(rows),width):
-                    group=[]
-                    for asset,row in rows[start:start+width]:
-                        uid=asset['id'];req=assets[uid];x=input_row(row,uid,pid)
-                        compiler.render(x,req,'open',list(range(len(req.questions))))
-                        group.append(x)
-                    logp=distribution(forward(group,pid),'open',criterion['temperature']).cpu()
-                    if not torch.isfinite(logp).all():raise ValueError('invalid action log probability')
-                    records.extend(dict(id=x['request_id'],logp=v) for x,v in zip(group,logp.tolist(),strict=True))
-                commit_json(Path(spec['output'])/(arm+'-choices.json'),dict(policy_id=pid,records=records))
+        for arm,(path,pid) in policies.items():
+            if processor_cache_identity(path)!=processor_cache_identity(c['snapshot']):
+                raise ValueError('incompatible Choice processor')
+            load_policy(path,model,expected_policy_id=pid,expected_contract=c['contract'],expected_base_id=c['base_id'])
+            result=full_ontology(rows, assets, compiler, width, criterion['temperature'], forward, pid)
+            commit_json(Path(spec['output'])/(arm+'-choices.json'),result)
         return
     evaluate_shortlists(spec,c,model,processor,rows,policies,criterion,assets,compiler,width,proposals,profiles,paired,forward,input_row)
+
+
+def full_ontology(rows, assets, compiler, width, temperature, forward, pid):
+    records=[]
+    with torch.inference_mode():
+        for start in range(0,len(rows),width):
+            group=[]
+            for asset,row in rows[start:start+width]:
+                uid=asset['id']
+                req=assets[uid]
+                x=dict(row,policy_id=pid,request_id=uid)
+                compiler.render(x,req,'open',list(range(len(req.questions))))
+                group.append(x)
+            logp=distribution(forward(group,pid),'open',temperature).cpu()
+            if not torch.isfinite(logp).all():
+                raise ValueError('invalid action log probability')
+            records.extend(dict(id=x['request_id'],logp=v) for x,v in zip(group,logp.tolist(),strict=True))
+    return dict(policy_id=pid, records=records)
 
 
 def with_baseline(spec,sources):
