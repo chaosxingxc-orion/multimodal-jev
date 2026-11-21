@@ -6,6 +6,7 @@
 | --- | --- |
 | 研究范围 | 单音频意图判决、训练效率、同任务跨数据集迁移。多音频、多意图组合、多步判决、SFC 和 Audio2Tool 暂缓。 |
 | 数据 | 全量 clean SLURP TRAIN 是源数据。selection 用于选择，SLURP clean TEST 和 MINDS native14 用于独立评测。FSC native31 留在历史对照。 |
+| 补充评测 | 范围固定为 [SIB-FLEURS 英语话题和 MMSU 多义词](../docs/research/speech-semantic-transfer-targets.md)。WolBanking77 只保留已审核的历史诊断，YUE-PUB-Speech 不进入派发范围。 |
 | 评测 | 单标签报告 Top-1 macro-F1、准确率及平均 Top-1 原始概率。Harness 阈值仅在源域 TRAIN 校准并冻结。固定阈值集合指标用于诊断。 |
 | 资源 | 实验在 181 接续，69 的记录用于历史追溯。每次派发重新核对可用设备、镜像、路径、锁和内容身份。 |
 | 运行观察 | 普通远程状态检查间隔 900 秒。用户询问或收到终态通知时可即时核验。已冻结运行的监督器继续使用原配置。 |

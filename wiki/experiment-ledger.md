@@ -2,6 +2,7 @@
 
 2026-11-21，JEV-204 应用户要求暂停，181 的正式容器在保留 **4/212 步更新收据**后退出。
 JEV-201 已审核 **34/34 步**训练及 SLURP TEST、MINDS、SIB-FLEURS、MMSU 和 WolBanking77 末点评测。
+后续补充评测固定为 SIB-FLEURS 英语话题和 MMSU 多义词。WolBanking77 仅保留历史诊断，YUE-PUB-Speech 不加入队列。[评测范围](../experiments/simple-speech-baselines.md)
 
 ## 编号和状态
 
