@@ -1,0 +1,293 @@
+{
+  "repository": ".",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-package",
+  "parent_config": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+  "deployment": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-205-v1",
+    "tag": "jev-eval-205-v1"
+  },
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/ops",
+  "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/package/operations-local.json",
+  "batch": 8,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "arms": [
+    "stage1",
+    "baseline",
+    "tpo"
+  ],
+  "evaluation_cache_reuse": {
+    "catalog": "configs/portable/operations/native-evaluation-cache-catalog-v1.json",
+    "catalog_host": "${TPO_EVALUATION_CACHE_CATALOG_HOST}",
+    "catalog_root": "${EXPERIMENT_TARGET_HOT_ROOT}",
+    "catalog_seal_root": "${SHARED_ROOT}",
+    "store": "${TPO_EVALUATION_CACHE_STORE}",
+    "build": {
+      "prefetch": 16,
+      "progress_interval": 128
+    }
+  },
+  "cache_container": {
+    "cpus": 8,
+    "memory": "16g",
+    "shm": "2g"
+  },
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "collected_predecessor": {
+    "terminal_sha256": "5d7e7862ce75250b6f2c13901d5bdacc7352a92c4db3868670a02c9afd78c5e5",
+    "receipt_sha256": "e4c44f667aa3f899c401f859b4f49225350e78e54504f354949e3f41e6c6f642"
+  },
+  "audited_endpoints": {
+    "baseline": {
+      "root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-tpo-contrast-v0.0.194/tpo",
+      "receipt_sha256": "f1e13d7e7f0188d5f2516ad98610c54a45a13da18e8c5b9697bdb033080ea5a7",
+      "policy_id": "34992e12d6d8b53a696fdb042dbc86a11be19b735ace6ba8718daf2203ee77fd",
+      "updates": 34
+    }
+  },
+  "datasets": {
+    "SLURP_clean_TEST60": {
+      "name": "slurp",
+      "devices": "${TPO_205_SLURP_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/experiments/multimodal-jev/native-evaluation-seal-v0.0.129",
+          "sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      }
+    },
+    "MINDS_native14": {
+      "name": "minds",
+      "devices": "${TPO_205_MINDS_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/experiments/multimodal-jev/native-evaluation-seal-v0.0.129",
+          "sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      }
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "name": "sib",
+      "devices": "${TPO_205_SIB_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/datasets/sib-fleurs-jev/eng-topic-v1",
+          "sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      }
+    },
+    "MMSU_polysemy": {
+      "name": "mmsu",
+      "devices": "${TPO_205_MMSU_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/datasets/mmsu-jev/polysemy-v1",
+          "sha256": "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      }
+    },
+    "SLURP_clean_SELECTION60": {
+      "name": "selection",
+      "devices": "${TPO_205_SELECTION_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-r64-selection-181-v2/entry/selection-cache-seal",
+          "sha256": "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        },
+        "output": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-selection-156/full-cache",
+        "cache_identity": {
+          "manifest_sha256": "627ee48f16d1528dd70a4865c59374e4c7aa3b0f04aaf40aaf716e0acbcc6dce",
+          "verification_sha256": "c66fc9d8e7a6f502d4bb375f148068abedcdcd9b895554f078d2c0d5d8adfb57"
+        }
+      }
+    }
+  },
+  "probability_panels": {
+    "SLURP_clean_TEST60": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MINDS_native14": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MMSU_polysemy": {
+      "primary": "top1_accuracy",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SLURP_clean_SELECTION60": {
+      "primary": "top1_macro_f1",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    }
+  }
+}

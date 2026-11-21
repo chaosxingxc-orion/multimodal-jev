@@ -231,8 +231,547 @@
     ],
     "evaluate": [
       {
-        "id": "held-out-panels",
-        "pending": "训练审核后再绑定登记评测面板。"
+        "id": "probability-eval-v1",
+        "config": "configs/portable/operations/tpo-probability-evaluation-205.json",
+        "python": "${TPO_EVAL_PYTHON}",
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-package",
+          "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops"
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_tpo_evaluation",
+            "configs/portable/operations/tpo-probability-evaluation-205.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-package/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops/score-collected.json",
+            "cite": "tpo-ranking-repair-205/eval-v1-ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-probability-panels-v1"
+              ],
+              [
+                [
+                  "seals",
+                  "SLURP_clean_TEST60"
+                ],
+                "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+              ],
+              [
+                [
+                  "seals",
+                  "MINDS_native14"
+                ],
+                "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+              ],
+              [
+                [
+                  "seals",
+                  "SIB_FLEURS_eng_topic7"
+                ],
+                "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"
+              ],
+              [
+                [
+                  "seals",
+                  "MMSU_polysemy"
+                ],
+                "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"
+              ],
+              [
+                [
+                  "seals",
+                  "SLURP_clean_SELECTION60"
+                ],
+                "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+              ]
+            ],
+            "report": {
+              "slurp 相对 194 95% 区间": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "slurp 相对 step 0 95% 区间": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "minds 相对 194 95% 区间": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "minds 相对 step 0 95% 区间": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "sib 相对 194 95% 区间": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "sib 相对 step 0 95% 区间": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "mmsu 相对 194 95% 区间": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "mmsu 相对 step 0 95% 区间": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "selection 相对 194 95% 区间": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "selection 相对 step 0 95% 区间": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "stage1",
+                "interval"
+              ]
+            }
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops/slurp-cache-check-collected.json",
+            "cite": "tpo-ranking-repair-205/eval-v1-ops/slurp-cache-check-collected.json",
+            "equals": [
+              [
+                [
+                  "recordings"
+                ],
+                12991
+              ],
+              [
+                [
+                  "manifest_sha256"
+                ],
+                "f4963444d79c97bebb33b8345191a1b817f6fe79a2c611c744a658d92d048dd7"
+              ],
+              [
+                [
+                  "cache_reused"
+                ],
+                true
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops/minds-cache-check-collected.json",
+            "cite": "tpo-ranking-repair-205/eval-v1-ops/minds-cache-check-collected.json",
+            "equals": [
+              [
+                [
+                  "recordings"
+                ],
+                8168
+              ],
+              [
+                [
+                  "manifest_sha256"
+                ],
+                "3c50faa807c1fdce1e05261bf1d48d8c3070ce216e8ba899ff6cf3f33c2d23ad"
+              ],
+              [
+                [
+                  "cache_reused"
+                ],
+                true
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops/sib-cache-check-collected.json",
+            "cite": "tpo-ranking-repair-205/eval-v1-ops/sib-cache-check-collected.json",
+            "equals": [
+              [
+                [
+                  "recordings"
+                ],
+                320
+              ],
+              [
+                [
+                  "manifest_sha256"
+                ],
+                "9a79bb4c9fbff44d47bbdbb9c878ae322ef19fbb4395cfb3656a0b7a7d5884a1"
+              ],
+              [
+                [
+                  "cache_reused"
+                ],
+                true
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops/mmsu-cache-check-collected.json",
+            "cite": "tpo-ranking-repair-205/eval-v1-ops/mmsu-cache-check-collected.json",
+            "equals": [
+              [
+                [
+                  "recordings"
+                ],
+                98
+              ],
+              [
+                [
+                  "manifest_sha256"
+                ],
+                "623cbd810b8a6a3d660fc8c1dd8be6eeffeec578b7e9d66bf4a6b970d5f7eb15"
+              ],
+              [
+                [
+                  "cache_reused"
+                ],
+                true
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-ranking-repair-205/eval-v1-ops/selection-cache-check-collected.json",
+            "cite": "tpo-ranking-repair-205/eval-v1-ops/selection-cache-check-collected.json",
+            "equals": [
+              [
+                [
+                  "recordings"
+                ],
+                9226
+              ],
+              [
+                [
+                  "manifest_sha256"
+                ],
+                "627ee48f16d1528dd70a4865c59374e4c7aa3b0f04aaf40aaf716e0acbcc6dce"
+              ],
+              [
+                [
+                  "cache_reused"
+                ],
+                true
+              ]
+            ]
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60",
+            "scope": "源域测试",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-205",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "9c647fc356573842a0df868dfeff10c37cb3fd12877dd88cc1c635d67476bfae",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "JEV-194",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "34992e12d6d8b53a696fdb042dbc86a11be19b735ace6ba8718daf2203ee77fd",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14",
+            "scope": "同任务跨数据集迁移",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-205",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "9c647fc356573842a0df868dfeff10c37cb3fd12877dd88cc1c635d67476bfae",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "JEV-194",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "34992e12d6d8b53a696fdb042dbc86a11be19b735ace6ba8718daf2203ee77fd",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SIB_FLEURS_eng_topic7",
+            "scope": "跨任务话题分类",
+            "population": 320,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-205",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "9c647fc356573842a0df868dfeff10c37cb3fd12877dd88cc1c635d67476bfae",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "JEV-194",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "34992e12d6d8b53a696fdb042dbc86a11be19b735ace6ba8718daf2203ee77fd",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MMSU_polysemy",
+            "scope": "跨任务多义词",
+            "population": 98,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "JEV-205",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "9c647fc356573842a0df868dfeff10c37cb3fd12877dd88cc1c635d67476bfae",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability"
+                }
+              },
+              {
+                "label": "JEV-194",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "34992e12d6d8b53a696fdb042dbc86a11be19b735ace6ba8718daf2203ee77fd",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_clean_SELECTION60",
+            "scope": "源域 selection",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-205",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "9c647fc356573842a0df868dfeff10c37cb3fd12877dd88cc1c635d67476bfae",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "JEV-194",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "34992e12d6d8b53a696fdb042dbc86a11be19b735ace6ba8718daf2203ee77fd",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
   }

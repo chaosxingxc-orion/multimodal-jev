@@ -43,10 +43,25 @@ def run(spec):
     collate = provider.collation(base,tokenizer_processor,model)
     arms=spec.get('arms',['stage1','direct','tpo'])
     checkpoints=spec.get('checkpoints', {})
-    if not arms or len(set(arms))!=len(arms) or set(arms)-{'stage1','direct','tpo',*checkpoints}:
+    external=spec.get('audited_endpoints', {})
+    if not arms or len(set(arms))!=len(arms) or set(arms)-{'stage1','direct','tpo',*checkpoints,*external}:
         raise ValueError('invalid evaluation endpoints')
     sources={'stage1':(c['snapshot'],c['policy_id'])} if 'stage1' in arms else {}
     for arm in (a for a in arms if a!='stage1'):
+        if arm in external:
+            pin = external[arm]
+            root = Path(pin['root'])
+            receipt_path = root/'receipt.json'
+            if file_hash(receipt_path) != pin['receipt_sha256']:
+                raise ValueError('registered endpoint receipt changed')
+            receipt = read(receipt_path)
+            manifest = root/'policy/MANIFEST.json'
+            if (receipt['endpoint'] != pin['policy_id'] or receipt['passed'] is not True
+                    or receipt['window'] != 'formal' or receipt['updates'] != pin['updates']
+                    or file_hash(manifest) != receipt['manifest_sha256']):
+                raise ValueError('registered endpoint differs from audited training')
+            sources[arm] = (str(manifest.parent), pin['policy_id'])
+            continue
         if arm in checkpoints:
             proof = checkpoints[arm]
             path = Path(spec['trained'])/'tpo'/f'policy-{arm}'
@@ -113,6 +128,12 @@ def collect(spec):
         jobs=plan(c['cache'])
         assets=[dict(id=r['id'],audio_sha256=r['audio_sha256']) for _,r,_ in jobs]
         candidates=[q.id for q in jobs[0][2].questions]
+        if 'probability_panels' in spec:
+            from tools.reports.score_probability_panels import score_panel
+            predictions = {arm: collect_predictions(spec['shards'][dataset], arm+'.json', assets)
+                           for arm in spec['arms']}
+            result[dataset] = score_panel(c['cache'], jobs, predictions, spec['probability_panels'][dataset])
+            continue
         semantic_protocol = spec.get('semantic_scoring', {}).get(dataset)
         if semantic_protocol is not None:
             from tools.reports.score_semantic_tpo import score as score_semantic
@@ -190,7 +211,10 @@ def collect(spec):
                         panel_results[str(k)]=dict(**metric['by_length'][str(k)],by_proposal=metric['by_proposal'])
                     choices[arm]['paired_lengths']=panel_results
             result[dataset]['choices']=choices
-    if spec.get('publish_seals'):
+    if 'probability_panels' in spec:
+        result = dict(schema='jev-audited-probability-panels-v1', datasets=result,
+                      seals={ds: c['cache']['seal']['sha256'] for ds,c in spec['endpoints'].items()})
+    elif spec.get('publish_seals'):
         result = dict(schema='jev-audited-tpo-evaluation-v1', datasets=result,
                       seals={dataset: c['cache']['seal']['sha256']
                              for dataset, c in spec['endpoints'].items()})

@@ -215,8 +215,12 @@ def run(c):
             if not isinstance(status, str) or not status:
                 raise ValueError('explicit predecessor success status required')
             commit_json(root/'waiting.json', p)
-            wait_driver(p['driver'], Path(p['terminal']))
-            terminal = json.loads(Path(p['terminal']).read_text())
+            terminal_path = Path(p['terminal'])
+            if 'driver' in p:
+                wait_driver(p['driver'], terminal_path)
+            elif file_hash(terminal_path) != p['terminal_sha256']:
+                raise ValueError('collected predecessor terminal changed')
+            terminal = json.loads(terminal_path.read_text())
             if (type(terminal.get('exit_code')) is not int or terminal['exit_code'] != 0
                     or terminal.get('status') != status):
                 raise ValueError('exact prerequisite preparation did not finish successfully')

@@ -21,9 +21,12 @@ def evaluation_cache(source, dataset, parent, initial, *, defer_audit=False):
     if 'catalog_cache' in source:
         cache = dict(source['catalog_cache'])
         if (not {'seal', 'processor', 'encoding'} <= set(cache)
-                or set(cache) - {'dataset', 'seal', 'processor', 'encoding', 'model_provider', 'panel_size'}):
+                or set(cache) - {'dataset', 'seal', 'processor', 'encoding', 'model_provider', 'panel_size',
+                                 'output', 'cache_identity'}):
             raise ValueError('catalog cache must declare only the sealed input identity')
         cache.setdefault('dataset', dataset)
+        if ('output' in cache) != ('cache_identity' in cache):
+            raise ValueError('explicit cache location requires pinned audit evidence')
     elif 'cache_config' in source:
         ref = source['cache_config']
         path = Path(ref['path'])
@@ -163,6 +166,11 @@ def prepare(config):
         raise ValueError('single-stage run has only initial and TPO endpoints')
     if 'arms' in config:
         common['arms']=config['arms']
+    endpoint_bindings = config.get('audited_endpoints', {})
+    if endpoint_bindings:
+        common['audited_endpoints'] = endpoint_bindings
+    if 'probability_panels' in config:
+        common['probability_panels'] = config['probability_panels']
     checkpoint_steps = config.get('checkpoint_steps', {})
     if checkpoint_steps:
         if (not full or not config.get('training_custody')
@@ -176,6 +184,7 @@ def prepare(config):
             raise ValueError('formal checkpoint audit required')
         common['checkpoints'] = {arm: proof['checkpoints'][f'policy-{arm}'] for arm in checkpoint_steps}
     jobs=[];mounts={str(remote_parent),prior['remote_root']};sets={};pieces={}
+    mounts.update(str(Path(endpoint['root']).parent) for endpoint in endpoint_bindings.values())
     encode_jobs, verify_jobs, cache_jobs, semantic = [], [], [], {}
     cache_store_used = False
     if 'choice_baseline' in common:mounts.add(common['choice_baseline']['root'])
@@ -277,6 +286,19 @@ def prepare(config):
             raise ValueError('training custody belongs to a different sealed operation')
         predecessor = dict(driver=read(custody/'started.json'), terminal=str(custody/'terminal.json'),
                            required_status='formal_training_collected_and_audited')
+    elif 'collected_predecessor' in config:
+        terminal = ops/'terminal.json'
+        required = config['collected_predecessor']
+        receipt = ops/'tpo-collected.json'
+        if (file_hash(terminal) != required['terminal_sha256']
+                or read(terminal) != {'exit_code': 0, 'status': 'declared_stages_finished'}
+                or file_hash(receipt) != required['receipt_sha256']):
+            raise ValueError('pinned completed training evidence required')
+        proof = read(receipt)
+        if (proof['binding'] != binding or proof['updates'] != steps or proof['passed'] is not True
+                or proof['window'] != 'formal' or proof['arm'] != 'tpo'):
+            raise ValueError('collected training does not match the frozen plan')
+        predecessor = dict(terminal=str(terminal), terminal_sha256=required['terminal_sha256'])
     else:
         predecessor = dict(driver=read(ops.with_suffix('.started.json')), terminal=str(ops/'terminal.json'))
     groups = [*([encode_jobs, verify_jobs] if encode_jobs else []),
