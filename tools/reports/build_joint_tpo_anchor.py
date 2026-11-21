@@ -10,6 +10,7 @@ from multimodal_jev.context_choice_inputs import identity
 from multimodal_jev.context_policy_artifacts import read_execution_bundle
 from multimodal_jev.local_checkpoint import commit_file, commit_json
 from multimodal_jev.policy_identity import checkpoint_identity
+from multimodal_jev.tpo_anchor_layout import part_name, partition
 from tools.reports.build_tpo_view import read, verified
 from tools.reports.joint_tpo_inputs import load, stream
 
@@ -25,8 +26,8 @@ def run(args):
     processor = provider.processor(bundle['processor'])
     root=args.output
     root.mkdir()
-    card=plan['inference_devices'][args.replica]
-    devices=plan['inference_devices']
+    devices=plan.get('offline_reference_devices', plan['inference_devices'])
+    card=devices[args.replica]
     app=dict(c,snapshot=c['source_policy'],policy_id=c['source_policy_id'],contract=c['source_contract'],
         physical_devices=[card],
         max_model_len=c['view_execution']['max_input_tokens'],process_device_scope=dict(
@@ -48,12 +49,17 @@ def run(args):
     result={}
     stop = args.steps if args.steps is not None else len(batches)
     if not 0 < stop <= len(batches): raise ValueError('invalid fixed anchor window')
-    for rank in range(args.replica,len(plan['training_devices']),len(devices)):
+    world = len(plan['training_devices'])
+    split = 'offline_reference_devices' in plan
+    parts = (partition(world, stop, len(devices))[args.replica] if split else
+             [(rank, 0, stop) for rank in range(args.replica, world, len(devices))])
+    for rank, first, end in parts:
         historic=Path(f'/jev-control/reference/rank-{rank}/choice.pt')
         by_input={} if fresh else torch.load(verified(historic,old['rank_files'][rank]),map_location='cpu',weights_only=True)
         anchor=[]
-        with stream(c,task,rows,pop,batches,processor,collate,provider=provider,rank=rank,start=0,stop=stop) as consume:
-            for step,b in enumerate(batches[:stop]):
+        with stream(c,task,rows,pop,batches,processor,collate,provider=provider,rank=rank,start=first,stop=end) as consume:
+            for step in range(first, end):
+                b = batches[step]
                 n,choice,meta,slots=consume(step,source)
                 views=[]
                 for start in range(0,len(choice),micro):
@@ -81,10 +87,12 @@ def run(args):
                             raise ValueError('fixed Choice geometry differs')
                         views.append((uid,rows[uid]['request_key'],k,prob,z.clone()))
                 anchor.append(views)
-        path=root/f'rank-{rank}.pt'
+        key = part_name(rank, first, end) if split else str(rank)
+        path = root / (key if split else f'rank-{rank}.pt')
         commit_file(path,lambda f:torch.save(anchor,f))
-        result[str(rank)]=file_hash(path)
-    commit_json(root/'receipt.json',dict(rank_files=result,source_policy=source,target_sha=plan['target_sha'],joint_sha=file_hash(args.plan),card=card,updates=stop))
+        result[key]=file_hash(path)
+    files = dict(parts=result) if split else dict(rank_files=result)
+    commit_json(root/'receipt.json',dict(**files,source_policy=source,target_sha=plan['target_sha'],joint_sha=file_hash(args.plan),card=card,updates=stop))
 
 
 def main():

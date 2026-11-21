@@ -9,6 +9,7 @@ from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.source_snapshot import freeze
+from multimodal_jev.tpo_anchor_layout import partition, window_device_plan
 from tools.reports.build_tpo_view import verified
 
 
@@ -19,6 +20,8 @@ def prepare(c):
     pkg,repo=Path(c['package']),Path(c['repository'])
     orig=Path(c['parent_config'])
     full=c.get('full_joint')
+    joint=c.get('joint')
+    allocation = window_device_plan(c) if full or joint else None
     parent=json.loads((verified(orig,full['runtime_sha256']) if full else orig).read_bytes())
     if not full:
         data=Path(c['targets'])
@@ -40,17 +43,23 @@ def prepare(c):
     world=len(devices)
     geometry=parent['view_execution']['container']
     groups=[]
-    joint=c.get('joint')
     if joint or full:
         if joint:
             from tools.reports.prepare_joint_tpo import prepare as prepare_joint
             plan=prepare_joint(joint,entry,data,orig,parent,repo)
         parent_in='/jev-entry/parent.json' if full else str(remote_parent/'config.json')
+        offline = allocation['fixed_reference']
+        if (plan['training_devices'] != devices or devices != allocation['actor']
+                or plan['inference_devices'] != allocation['online_reference']):
+            raise ValueError('Packaged training geometry differs from the device plan')
+        for steps in ([2, plan['updates']] if full else [plan['updates']]):
+            partition(world, steps, len(offline))
+        plan['offline_reference_devices'] = offline
         commit_json(entry/'joint.json',plan)
         digest=file_hash(entry/'joint.json')
         infer=plan['inference_devices']
-        stages=([('finite-anchor','finite-anchor',infer),('finite','finite',devices+infer),('anchor','anchor',infer)]
-                if full else [('anchor','anchor',infer),('finite','finite',devices+infer)])
+        stages=([('finite-anchor','finite-anchor',offline),('finite','finite',devices+infer),('anchor','anchor',offline)]
+                if full else [('anchor','anchor',offline),('finite','finite',devices+infer)])
         for role,window,scope in [*stages,('tpo','formal',devices+infer)]:
             opts=dict(phase='joint_tpo',source=dict(root='/jev-entry/source',sha256=frozen['manifest_sha256']),
                 io_workers=c['io_workers'],training=dict(parent=parent_in,plan='/jev-entry/joint.json',
@@ -104,4 +113,9 @@ def prepare(c):
 
 if __name__=='__main__':
     ap=argparse.ArgumentParser();ap.add_argument('config');ap.add_argument('local');a=ap.parse_args()
-    prepare(load_config(a.config,a.local)[0])
+    config = load_config(a.config,a.local)[0]
+    # Under run_experiment.py this is the committed checkout, even when the
+    # operator also has a mutable working checkout on the same machine.
+    if config.get('full_joint') or config.get('joint'):
+        config['repository'] = str(Path(__file__).resolve().parents[2])
+    prepare(config)

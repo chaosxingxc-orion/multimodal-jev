@@ -18,7 +18,20 @@
   `TPO_EVAL_MINDS_DEVICES`）、`TPO_EVAL_PYTHON` 和 `EXPERIMENT_PACKAGE_STATE_ROOT`。
   阶段脚本从选中的 Git 提交执行，阶段产物写到宏绑定的持久目录。
 
+新 TPO 实验用 `./run_experiment.py plan --experiment <ID>` 查看阶段分工，确认后用同一入口的
+`run` 执行。封包项登记 `config` 并调用 `tools.reports.prepare_tpo_windows`，传同一模板与
+`${EXPERIMENT_LOCAL_CONFIG}`。正式全量单阶段训练用 `tools.reports.run_full_joint_tpo` 接续，
+参数仍是这份模板和本地宏，由驱动等待收集与独立审核。数据和训练分阶段登记；训练项的 `checks`
+包含审核控制器的终态和 `formal-audit.json`。其他联合 TPO 使用现有容器后端及其审核收据。
+
+181 的 TPO 布局：本地宏 `FULL_TPO_OFFLINE_REFERENCE_DEVICES` 绑定 8 张卡，必须等于
+`FULL_TPO_TRAINING_DEVICES`（6 卡）和 `FULL_TPO_INFERENCE_DEVICES`（2 卡）的并集。
+联合对照模板以 `TPO_OFFLINE_REFERENCE_DEVICES` 绑定离线卡，训练卡由父配置绑定。
+离线阶段每卡一个实例，按训练 rank 与步号分片；训练阶段仍是 DP6 加两路 TP1。
+`plan` 和 `status` 显示配置分工，运行日志落同一计划，生成的分片清单须通过完整性校验才能训练。
+这是新封包的规则，已派发的 201 和 204 继续读取各自的冻结配置与收据。
+
 新实验可将 `tools.reports.prepare_stage2_dataset --action release` 登记为难例视图的数据步骤，
 并以 `stage2_dataset_release_audited` 为收据。训练配置须绑定能够消费该视图且已通过
 验收的运行器；现有 full-source runner 的准入不覆盖难例视图。评测项按预登记的端点和数据集挂接。
-201、204 已有训练派发，配置从原收据接续；201 的原生评测复用 197、198 已审核的对照评分。
+201 的原生评测复用 197、198 已审核的对照评分。

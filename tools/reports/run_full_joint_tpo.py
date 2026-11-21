@@ -1,4 +1,4 @@
-"""Wait for the exact predecessor, run the sealed 181 chain, and audit collection."""
+"""Wait for the exact predecessor, run the sealed TPO chain, and audit collection."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
@@ -20,18 +20,16 @@ from multimodal_jev.local_checkpoint import commit_file, commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.local_runtime_storage import check_paths
 from multimodal_jev.source_snapshot import verify
+from multimodal_jev.tpo_anchor_layout import checked_parts, window_device_plan
 from tools.reports.build_tpo_view import read, verified
 from tools.reports.context_macro_probe_operations import inspect_runtime
 from tools.reports.finalize_context_infonce import wait_exact
 from tools.reports.joint_tpo_window import check_update
 from tools.reports.native_seal_operations import run as dispatch
 
-HOST = '100.100.135.181'
-
-
 def ssh(host, args, timeout=55):
-    if host.rsplit('@',1)[-1] != HOST:
-        raise ValueError('only host 181 is allowed')
+    if not re.fullmatch(r'[\w.@-]+', host) or host.startswith('-'):
+        raise ValueError('explicit SSH host required')
     return subprocess.check_output(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10',
                                     host,shlex.join(args)],timeout=timeout)
 
@@ -143,7 +141,7 @@ def collect(c, deployment, ops, plan, root):
             or lifecycle['forced_cleanup'] is not False
             or len(lifecycle['services'])!=len(plan['inference_devices'])
             or any(x['exit_code']!=0 for x in lifecycle['services'])):
-        raise ValueError('formal process lifecycle does not match two successful TP1 services')
+        raise ValueError('formal process lifecycle does not match the registered TP1 services')
     pkg = Path(deployment['archive']).parent/'entry'
     window = read(pkg/'tpo.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
     bound=dict(joint_sha=file_hash(pkg/'joint.json'),source=window['source']['sha256'],
@@ -153,6 +151,12 @@ def collect(c, deployment, ops, plan, root):
     if (receipt != read(ops/'tpo-collected.json')
             or receipt['anchor_sha256'] != file_hash(ops/'anchor-collected.json')):
         raise ValueError('formal receipt or fixed anchor changed on collection')
+    if 'offline_reference_devices' in plan:
+        anchor = read(ops/'anchor-collected.json')
+        if (anchor['passed'] is not True or anchor['binding'] != bound or anchor['window'] != 'anchor'
+                or anchor['updates'] != steps or anchor['offline_reference_devices'] != plan['offline_reference_devices']):
+            raise ValueError('collected fixed reference does not match the registered window')
+        checked_parts(anchor['replicas'], plan, bound['joint_sha'], steps)
     # JSON copies use the same durable serialization as the original receipt.
     schedule = read(verified(pkg/'targets/batches.json',read(pkg/'targets/MANIFEST.json')['files']['batches.json']))
     parent = read(verified(pkg/'parent.json',plan['parent_sha']))
@@ -208,8 +212,8 @@ def run(c, root):
     import torch
     torch.set_num_threads(c['io_workers'])
     dep = operations(c)
-    if dep != read(root/'operations.json') or dep['host'].rsplit('@',1)[-1]!=HOST:
-        raise ValueError('operations do not match the frozen 181 dispatch')
+    if dep != read(root/'operations.json') or dep['host'] != c['deployment']['host']:
+        raise ValueError('operations do not match the frozen dispatch')
     entry=Path(c['package'])/'entry'
     plan=read(verified(entry/'joint.json',dep['entry_pins']['joint.json']))
     stated=read(entry/'tpo.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['source']['sha256']
@@ -222,7 +226,8 @@ def run(c, root):
     try:
         verify(entry/'source',manifest_sha256=stated,io_workers=c['io_workers'])
         observer.start()
-        await_predecessor(ctl,dep['host'],root)
+        if 'predecessor' in ctl:
+            await_predecessor(ctl,dep['host'],root)
         if dispatch(dep) != 0:
             raise ValueError('sealed device chain failed')
         result=collect(ctl,dep,ops,plan,root)
@@ -239,6 +244,37 @@ def operations(c):
     return data['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
 
 
+def prepare_driver(c, root):
+    source = Path(c['package'])/'entry/source'
+    if not root.is_absolute() or not source.is_absolute():
+        raise ValueError('absolute package and custody paths required')
+    check_paths({'custody': root})
+    dep = operations(c)
+    if dep['host'] != c['deployment']['host']:
+        raise ValueError('frozen package host differs from the registered deployment')
+    entry = source.parent
+    if 'offline_reference_devices' in c:
+        allocation = window_device_plan(c)
+        plan = read(verified(entry/'joint.json', dep['entry_pins']['joint.json']))
+        actor, online, offline = (allocation[k] for k in ('actor', 'online_reference', 'fixed_reference'))
+        expected = {'finite-anchor': offline, 'finite': actor + online, 'anchor': offline, 'tpo': actor + online}
+        chain = [[(job['name'], job['devices']) for job in group] for group in dep['chains'][0]]
+        if (plan['training_devices'] != actor or plan['inference_devices'] != online
+                or plan['offline_reference_devices'] != offline or len(dep['chains']) != 1
+                or chain != [[item] for item in expected.items()]):
+            raise ValueError('Frozen full TPO package differs from the registered device plan')
+    formal = read(verified(entry/'tpo.json', dep['entry_pins']['tpo.json']))
+    stated = formal['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['source']['sha256']
+    verify(source, manifest_sha256=stated, io_workers=c['io_workers'])
+    root.mkdir(exist_ok=False, parents=True)
+    commit_json(root/'operations.json', dep)
+    config = root/'config.json'
+    commit_json(config, c)
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(map(str, (source/'src', source, source/'tools/jev'))))
+    argv = [sys.executable, '-B', '-m', 'tools.reports.run_full_joint_tpo', str(config), str(config), '--resolved']
+    return source, env, argv
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('config')
@@ -246,20 +282,17 @@ def main():
     p.add_argument('--detach',action='store_true')
     p.add_argument('--resolved',action='store_true')
     a=p.parse_args()
+    if a.detach and a.resolved:
+        p.error('--detach and --resolved are mutually exclusive')
     c=read(Path(a.config)) if a.resolved else load_config(a.config,a.local)[0]
     root=Path(c['custody']['root'])
+    if a.resolved:
+        if Path(a.config) != root/'config.json' or Path.cwd() != (Path(c['package'])/'entry/source').resolve():
+            p.error('resolved execution requires the frozen source and controller configuration')
+        run(c, root)
+        return
+    source, env, argv = prepare_driver(c, root)
     if a.detach:
-        check_paths({'custody':root})
-        root.mkdir(exist_ok=False,parents=True)
-        dep=operations(c)
-        commit_json(root/'operations.json',dep)
-        # Freeze the resolved controller inputs separately from the caller's template/macros.
-        commit_json(root/'config.json',c)
-        source=Path(c['package'])/'entry/source'
-        env=dict(os.environ,PYTHONPATH=os.pathsep.join(map(str,(source/'src',source,source/'tools/jev'))))
-        argv=[sys.executable,'-B','-m','tools.reports.run_full_joint_tpo',str(root/'config.json'),
-              str(root/'config.json'),'--resolved']
-        # Python resolves the working directory before PYTHONPATH; execute from the snapshot.
         with (root/'driver.log').open('x') as log:
             child=subprocess.Popen(argv,cwd=source,env=env,start_new_session=True,stdin=subprocess.DEVNULL,
                                    stdout=log,stderr=subprocess.STDOUT)
@@ -267,7 +300,9 @@ def main():
         commit_json(root/'started.json',record)
         print(json.dumps(record))
     else:
-        run(c,root)
+        # Preserve the package driver's inherited lock and exit status.
+        os.chdir(source)
+        os.execve(sys.executable, argv, env)
 
 
 if __name__=='__main__':

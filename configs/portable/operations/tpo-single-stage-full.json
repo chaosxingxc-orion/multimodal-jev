@@ -1,6 +1,7 @@
 {
   "repository": "${PROJECT_ROOT}",
   "package": "${FULL_TPO_PACKAGE}",
+  "offline_reference_devices": "${FULL_TPO_OFFLINE_REFERENCE_DEVICES}",
   "parent_config": "${FULL_TPO_RUNTIME}",
   "deployment": "${FULL_TPO_DEPLOYMENT}",
   "source_patterns": ["src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py"],
@@ -14,8 +15,8 @@
     "runtime_sha256": "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb",
     "input_identity_publication": "${FULL_TPO_INPUT_IDENTITIES}",
     "input_identity_sha256": "ddd6325117857b1598651bc59c5a802fd828293a36000c6fbbf183b6a7c89130",
-    "training_devices": [0, 1, 2, 3, 4, 5],
-    "inference_devices": [6, 7]
+    "training_devices": "${FULL_TPO_TRAINING_DEVICES}",
+    "inference_devices": "${FULL_TPO_INFERENCE_DEVICES}"
   },
   "custody": {
     "root": "${FULL_TPO_CUSTODY}",

@@ -7,6 +7,7 @@ import sys
 
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
+from multimodal_jev.tpo_anchor_layout import checked_parts
 from tools.reports.build_tpo_view import read, verified
 from tools.reports.joint_tpo_reference import path_for
 
@@ -33,8 +34,20 @@ def run(c):
     bound=dict(joint_sha=t['joint_sha'],source=c['source']['sha256'],target_sha=plan['target_sha'],
                parent_sha=plan['parent_sha'],world_size=world,initial_policy=plan['source_policy'])
     worker_os=dict(os.environ,HCCL_DETERMINISTIC='true',LCCL_DETERMINISTIC='1')
+
+    def env(name,ordinals):
+        cache=Path(os.environ['TMPDIR'])/name
+        cache.mkdir()
+        out=dict(worker_os,ASCEND_RT_VISIBLE_DEVICES=ordinals)
+        for key in ('TMPDIR','HF_HOME','XDG_CACHE_HOME','TRITON_CACHE_DIR','TORCHINDUCTOR_CACHE_DIR',
+                    'ASCEND_WORK_PATH','ASCEND_CACHE_PATH','VLLM_RPC_BASE_PATH'):
+            out[key]=str(cache)
+        return out
+
     if t['window'] in ('anchor','finite-anchor'):
         from concurrent.futures import ThreadPoolExecutor
+        offline = plan.get('offline_reference_devices', ref)
+        split = 'offline_reference_devices' in plan
         steps=2 if t['window']=='finite-anchor' else plan['updates']
         if fresh and t['window']=='anchor':
             accepted=read(root.parent/'finite/receipt.json')
@@ -42,20 +55,29 @@ def run(c):
                     or accepted['window']!='finite' or accepted['anchor_sha256']!=file_hash(root.parent/'finite-anchor/receipt.json')):
                 raise ValueError('full anchor requires matching finite approval')
         def anchor(replica):
-            env=dict(worker_os,ASCEND_RT_VISIBLE_DEVICES=str(replica))
             sub=root/f'reference-{replica}'
             subprocess.run([sys.executable,'-m','tools.reports.build_joint_tpo_anchor','--parent',str(parent),
-                '--plan',str(spec),'--output',str(sub),'--replica',str(replica),'--steps',str(steps)],env=env,check=True)
+                '--plan',str(spec),'--output',str(sub),'--replica',str(replica),'--steps',str(steps)],
+                env=env(f'anchor_{replica}',str(replica)),check=True)
             r=read(sub/'receipt.json')
-            if (r['card']!=ref[replica] or r['source_policy']!=plan['source_policy'] or
+            if split:
+                return r
+            if (r['card']!=offline[replica] or r['source_policy']!=plan['source_policy'] or
                     r['target_sha']!=plan['target_sha'] or r['joint_sha']!=t['joint_sha'] or r['updates']!=steps or
                     set(map(int,r['rank_files']))!=set(range(replica,world,len(ref)))):
                 raise ValueError('incomplete fixed reference shard')
             for rank,sha in r['rank_files'].items(): verified(sub/f'rank-{rank}.pt',sha)
             return r
-        with ThreadPoolExecutor(max_workers=len(ref)) as pool:
-            receipts=list(pool.map(anchor,range(len(ref))))
+        with ThreadPoolExecutor(max_workers=len(offline)) as pool:
+            receipts=list(pool.map(anchor,range(len(offline))))
+        if split:
+            checked_parts(receipts, plan, t['joint_sha'], steps)
+            for replica, receipt in enumerate(receipts):
+                for name, sha in receipt['parts'].items():
+                    verified(root/f'reference-{replica}'/name, sha)
         receipt=dict(binding=bound,passed=True,window=t['window'],updates=steps,replicas=receipts)
+        if split:
+            receipt['offline_reference_devices'] = offline
         commit_json(root/'receipt.json',receipt)
         return receipt
     finite_anchor='finite-anchor' if fresh else 'anchor'
@@ -64,6 +86,12 @@ def run(c):
     anchor=read(anchor_path)
     if anchor['binding']!=bound or anchor['passed'] is not True or anchor['window']!=anchor_role:
         raise ValueError('complete pinned fixed reference required')
+    if 'offline_reference_devices' in plan:
+        anchor_updates = 2 if anchor_role == 'finite-anchor' else plan['updates']
+        if (anchor.get('offline_reference_devices') != plan['offline_reference_devices']
+                or anchor['updates'] != anchor_updates):
+            raise ValueError('fixed reference was built with a different execution plan')
+        checked_parts(anchor['replicas'], plan, t['joint_sha'], anchor_updates)
     if t['window']=='formal':
         accepted=read(root.parent/'finite/receipt.json')
         if (accepted['binding']!=bound or not accepted['passed'] or accepted['window']!='finite' or
@@ -73,14 +101,6 @@ def run(c):
         raise ValueError('unknown joint window')
     steps=2 if t['window']=='finite' else plan['updates']
     from context_process_supervisor import supervise_services
-    def env(name,ordinals):
-        cache=Path(os.environ['TMPDIR'])/name
-        cache.mkdir()
-        out=dict(worker_os,ASCEND_RT_VISIBLE_DEVICES=ordinals)
-        for key in ('TMPDIR','HF_HOME','XDG_CACHE_HOME','TRITON_CACHE_DIR','TORCHINDUCTOR_CACHE_DIR',
-                    'ASCEND_WORK_PATH','ASCEND_CACHE_PATH','VLLM_RPC_BASE_PATH'):
-            out[key]=str(cache)
-        return out
     services=[]
     common=['--parent',str(parent),'--plan',str(spec),'--output',str(root)]
     for i,card in enumerate(ref):

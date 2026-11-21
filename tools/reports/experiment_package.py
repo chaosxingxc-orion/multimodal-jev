@@ -15,6 +15,7 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 from multimodal_jev.local_checkpoint import commit_json, sync_directory
 from multimodal_jev.local_config import resolve
 from multimodal_jev.local_runtime_storage import check_paths
+from multimodal_jev.tpo_anchor_layout import window_device_plan
 from tools.reports.experiment_ledger import LEDGER, git_output, plan, queue_rows
 
 PHASES = ("data", "train", "evaluate")
@@ -125,7 +126,7 @@ def check_commands(commands, checkout):
             raise ValueError("Backends must run in the foreground inside the package driver")
 
 
-def run_commands(step, state, lock, selection, binding):
+def run_commands(step, state, lock, selection, binding, resources):
     commands = step["run"]
     if git_output("rev-parse", "HEAD").decode().strip() != selection["commit"]:
         raise ValueError("Checkout changed since selection")
@@ -147,6 +148,8 @@ def run_commands(step, state, lock, selection, binding):
                                  commands=commands, python=str(python)))
         env = dict(os.environ, PYTHONPATH=os.pathsep.join(map(str, (source / "src", source))))
         with (state / f"{step['id']}.log").open("x") as log:
+            if resources:
+                print(json.dumps(resources), file=log, flush=True)
             for module, *args in commands:
                 result = subprocess.run([str(python), "-B", "-m", module, *args],
                                         cwd=source, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
@@ -196,6 +199,7 @@ def step_result(template, macros, state, selection, lock, upstream):
     if unready:
         return dict(id=name, status="awaiting_evidence", detail="、".join(unready))
     config, config_hash = None, None
+    resource_plan = {}
     if "config" in step:
         template_config = json.loads(committed(selection["commit"], step["config"]))
         resolved, issue = resolve_step(template_config, macros)
@@ -203,6 +207,12 @@ def step_result(template, macros, state, selection, lock, upstream):
             return dict(id=name, status="unbound", detail=issue)
         config, used = resolved
         config_hash = fingerprint(config)
+    for module, *args in step.get("run", []):
+        if module in {"tools.reports.prepare_tpo_windows", "tools.reports.run_full_joint_tpo"}:
+            if config is None or args != [step["config"], macros["EXPERIMENT_LOCAL_CONFIG"]]:
+                raise ValueError("Register the actual TPO package template as the step config")
+            if config.get("joint") or config.get("full_joint"):
+                resource_plan["device_plan"] = window_device_plan(config)
     binding = fingerprint([step, config_hash, upstream, [p["sha256"] for p in prerequisites]])
     pinned = json.loads(done.read_bytes()) if done.is_file() else None
     proofs, missing = attest(step["checks"])
@@ -217,7 +227,8 @@ def step_result(template, macros, state, selection, lock, upstream):
         raise ValueError("Dispatch guards require absolute paths")
     occupied = [path.name for path in guards if path.exists()]
     if missing and occupied and not intent.exists():
-        return dict(id=name, status="awaiting_evidence", detail="Existing output: " + "、".join(occupied))
+        return dict(id=name, status="awaiting_evidence", detail="Existing output: " + "、".join(occupied),
+                    **resource_plan)
     if missing and step.get("run") and lock is not None and not intent.exists():
         if config is not None:
             config_path = state / f"{name}.macros.json"
@@ -235,12 +246,12 @@ def step_result(template, macros, state, selection, lock, upstream):
                 sync_directory(state)
             step["run"] = [[str(config_path) if arg == macros["EXPERIMENT_LOCAL_CONFIG"] else arg for arg in command]
                            for command in step["run"]]
-        if run_commands(step, state, lock, selection, binding):
+        if run_commands(step, state, lock, selection, binding, resource_plan):
             proofs, missing = attest(step["checks"])
         else:
-            return dict(id=name, status="failed", detail=f"See {name}.log")
+            return dict(id=name, status="failed", detail=f"See {name}.log", **resource_plan)
     if terminal.exists() and json.loads(terminal.read_bytes())["exit_code"] != 0:
-        return dict(id=name, status="failed", detail=f"See {name}.log")
+        return dict(id=name, status="failed", detail=f"See {name}.log", **resource_plan)
     if missing:
         if intent.exists() and terminal.exists():
             status = "failed"
@@ -248,7 +259,7 @@ def step_result(template, macros, state, selection, lock, upstream):
             status = "awaiting_evidence"
         else:
             status = "ready"
-        return dict(id=name, status=status, detail="、".join(missing))
+        return dict(id=name, status=status, detail="、".join(missing), **resource_plan)
 
     evidence = [{k: r[k] for k in ("file", "sha256")} for r in proofs]
     for check, proof, identity in zip(step["checks"], proofs, evidence, strict=True):
@@ -265,7 +276,7 @@ def step_result(template, macros, state, selection, lock, upstream):
         raise ValueError(f"Previously audited stage changed: {name}")
     if lock is not None and pinned is None:
         commit_json(done, receipt)
-    return result
+    return dict(result, **resource_plan)
 
 
 def workflow(spec, macros, state, selection, lock=None):

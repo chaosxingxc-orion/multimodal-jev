@@ -14,6 +14,7 @@ from multimodal_jev.context_choice_inputs import identity
 from multimodal_jev.context_joint_tpo import targets
 from multimodal_jev.local_checkpoint import commit_file, commit_json
 from multimodal_jev.local_runtime_storage import require_training_storage
+from multimodal_jev.tpo_anchor_layout import checked_parts
 from tools.reports.build_tpo_view import read, verified
 from tools.reports.joint_tpo_inputs import load, stream
 from tools.reports.joint_tpo_reference import score
@@ -32,6 +33,25 @@ def publish_recent(wrapped, model, root, step, rank):
     dist.barrier()
 
 
+def load_anchor_parts(root, plan, joint_sha, rank, expected):
+    seal = read(root/'receipt.json')
+    expected_anchor = seal['updates']
+    if (seal['passed'] is not True or seal['offline_reference_devices'] != plan['offline_reference_devices']
+            or seal['binding']['joint_sha'] != joint_sha
+            or expected_anchor != (2 if root.name == 'finite-anchor' else plan['updates'])):
+        raise ValueError('unbound fixed-reference publication')
+    anchors = []
+    for replica, name, sha, length in checked_parts(seal['replicas'], plan, joint_sha, expected_anchor, rank):
+        values = torch.load(verified(root/f'reference-{replica}'/name, sha), map_location='cpu', weights_only=True)
+        if len(values) != length or any(len(batch) != plan['global_batch']//len(plan['training_devices'])
+                                        for batch in values):
+            raise ValueError('fixed-reference shard dimensions differ')
+        anchors.extend(values)
+    if len(anchors) != expected_anchor or expected > expected_anchor:
+        raise ValueError('incomplete fixed-reference population')
+    return anchors[:expected]
+
+
 def run(args):
     root=args.output
     require_training_storage(root)
@@ -45,14 +65,18 @@ def run(args):
     fresh=plan.get('initialization') == 'pre_task_policy'
     expected_steps=2 if args.window=='finite' else plan['updates']
     anchor_role='finite-anchor' if fresh and args.window=='finite' else 'anchor'
-    anchor=root.parent/anchor_role/f'reference-{rank%len(devices)}'
-    seal=read(anchor/'receipt.json')
-    if (seal['source_policy']!=plan['source_policy'] or seal['target_sha']!=plan['target_sha'] or
-            seal['card']!=devices[rank%len(devices)] or seal['joint_sha']!=args.joint_sha):
-        raise ValueError('unbound fixed reference')
-    anchors=torch.load(verified(anchor/f'rank-{rank}.pt',seal['rank_files'][str(rank)]),map_location='cpu',weights_only=True)
-    if fresh and (seal['updates']!=expected_steps or len(anchors)!=expected_steps):
-        raise ValueError('fixed anchor does not cover the selected window')
+    anchor=root.parent/anchor_role
+    if 'offline_reference_devices' in plan:
+        anchors=load_anchor_parts(anchor,plan,args.joint_sha,rank,expected_steps)
+    else:
+        anchor=anchor/f'reference-{rank%len(devices)}'
+        seal=read(anchor/'receipt.json')
+        if (seal['source_policy']!=plan['source_policy'] or seal['target_sha']!=plan['target_sha'] or
+                seal['card']!=devices[rank%len(devices)] or seal['joint_sha']!=args.joint_sha):
+            raise ValueError('unbound fixed reference')
+        anchors=torch.load(verified(anchor/f'rank-{rank}.pt',seal['rank_files'][str(rank)]),map_location='cpu',weights_only=True)
+        if fresh and (seal['updates']!=expected_steps or len(anchors)!=expected_steps):
+            raise ValueError('fixed anchor does not cover the selected window')
     from multimodal_jev.model_provider import resolve_provider
     provider = resolve_provider(c)
     provider.initialize_actor_runtime()

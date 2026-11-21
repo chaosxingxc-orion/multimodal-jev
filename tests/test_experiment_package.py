@@ -25,6 +25,7 @@ def package(tmp_path):
         "run_experiment.py", "tools/reports/experiment_ledger.py",
         "tools/reports/experiment_package.py", "src/multimodal_jev/local_config.py",
         "src/multimodal_jev/local_checkpoint.py", "src/multimodal_jev/local_runtime_storage.py",
+        "src/multimodal_jev/tpo_anchor_layout.py",
     ):
         (repo / name).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, repo / name)
@@ -136,3 +137,57 @@ def test_exit_without_audit_is_not_resubmitted_and_resume_uses_receipts(package)
     (state / "data.json").write_text('{"audited":true,"different":true}')
     invalid = json.loads(cli("status", "--experiment", EXP, code=1).stdout)
     assert invalid["steps"][0]["status"] == "failed"
+
+
+def test_registered_tpo_device_plan_controls_dispatch(package, tmp_path):
+    repo, state, cli = package
+    config = "configs/portable/operations/tpo-single-stage-full.json"
+    (repo / config).parent.mkdir(parents=True)
+    shutil.copyfile(ROOT / config, repo / config)
+    local = tmp_path / "local.json"
+    macros = dict(PROJECT_ROOT=str(repo), FULL_TPO_PACKAGE=str(state / "package"),
+                  FULL_TPO_RUNTIME=str(state / "parent.json"), FULL_TPO_DEPLOYMENT={},
+                  FULL_TPO_INITIAL=str(state / "initial"), FULL_TPO_INITIAL_CONFIG_SHA="fixture",
+                  FULL_TPO_INPUT_IDENTITIES=str(state / "input"), FULL_TPO_CUSTODY=str(state / "custody"),
+                  FULL_TPO_PREDECESSOR=str(state / "predecessor"),
+                  FULL_TPO_TRAINING_DEVICES=[0, 1, 2, 3, 4, 5], FULL_TPO_INFERENCE_DEVICES=[6, 7],
+                  FULL_TPO_OFFLINE_REFERENCE_DEVICES=list(range(8)))
+
+    def bind():
+        local.write_text(json.dumps(dict(schema="jev-local-macros-v1", macros=macros)))
+
+    pipeline = repo / "experiments/pipelines/JEV-TEST.json"
+    spec = json.loads(pipeline.read_bytes())
+    data = spec["stages"]["data"][0]
+    data.update(config=config, run=[["tools.reports.prepare_tpo_windows", config, "${EXPERIMENT_LOCAL_CONFIG}"],
+                                    ["tools.reports.run_full_joint_tpo", config, "${EXPERIMENT_LOCAL_CONFIG}"]])
+    pipeline.write_text(json.dumps(spec))
+    stub = """\
+from pathlib import Path
+import sys
+from multimodal_jev.local_config import load_config
+c, _ = load_config(*sys.argv[1:])
+assert c['offline_reference_devices'] == list(range(8))
+assert Path.cwd() != Path(c['repository'])
+"""
+    (repo / "tools/reports/prepare_tpo_windows.py").write_text(stub + "Path(c['package']).mkdir()\n")
+    (repo / "tools/reports/run_full_joint_tpo.py").write_text(stub +
+        "assert Path(c['package']).is_dir()\n"
+        "Path(c['package']).parent.joinpath('data.json').write_text('{\"audited\": true}')\n")
+    git(repo, "add", ".")
+    git(repo, "commit", "-qm", "Register TPO test")
+
+    macros["FULL_TPO_OFFLINE_REFERENCE_DEVICES"] = [6, 7]
+    bind()
+    rejected = json.loads(cli("plan", code=1).stdout)["steps"][0]
+    assert rejected["status"] == "failed" and "Offline fixed reference" in rejected["detail"]
+    assert not state.exists()
+
+    macros["FULL_TPO_OFFLINE_REFERENCE_DEVICES"] = list(range(8))
+    bind()
+    expected = dict(fixed_reference=list(range(8)), actor=list(range(6)), online_reference=[6, 7])
+    for action in ("plan", "status", "run"):
+        result = json.loads(cli(action).stdout)
+        assert result["steps"][0]["device_plan"] == expected
+    assert result["status"] == "complete"
+    assert json.loads((state / EXP / "data.log").read_text())["device_plan"] == expected
