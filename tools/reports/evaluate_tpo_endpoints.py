@@ -64,6 +64,8 @@ def run(spec):
     if 'choice' in spec:
         from tools.reports.evaluate_choice_tasks import evaluate
         evaluate(spec,c,parent,model,device,tokenizer_processor,collate,rows,sources,provider)
+        if spec.get('choice_only'):
+            return dict(dataset=c['cache']['dataset'],shard=index,recordings=len(rows))
         if spec.get('full_ontology_only'):
             from tools.reports.evaluate_choice_tasks import with_baseline
             sources=with_baseline(spec,sources)
@@ -124,8 +126,10 @@ def collect(spec):
             continue
         result[dataset]={}
         prior = ['prior'] if 'choice_baseline' in spec else []
-        for arm in [*spec.get('arms',['stage1','direct','tpo']),*(
-                prior if spec.get('full_ontology_only') else [])]:
+        noul_arms = [] if spec.get('choice_only') else [
+            *spec.get('arms', ['stage1', 'direct', 'tpo']),
+            *(prior if spec.get('full_ontology_only') else [])]
+        for arm in noul_arms:
             records={};policies=set()
             for part in spec['shards'][dataset]:
                 publication=read(Path(part)/(arm+'.json')); policies.add(publication['policy_id'])
@@ -163,6 +167,19 @@ def collect(spec):
                     continue
                 choices[arm]=dict(policy_id=next(iter(ids)),**choice_metrics(assets,gold,
                     [ordered[a['id']] for a in assets],candidates))
+                if spec.get('choice_only'):
+                    # Compare frozen policies on the same label-free candidate order for each recording.
+                    roster = [(a['id'], ordered[a['id']]['slate'], ordered[a['id']]['proposal']) for a in assets]
+                    if arm == spec['arms'][0]:
+                        matched_roster = roster
+                    elif matched_roster != roster:
+                        raise ValueError('Variable Choice proposals differ across policies')
+                    by_length = choices[arm]['by_length']
+                    hits = sum(row['hits'] for row in by_length.values())
+                    if hits != choices[arm]['coverage_hits'] or hits == 0:
+                        raise ValueError('Expected auditable gold-present strata')
+                    choices[arm]['false_none_rate'] = sum(
+                        row['false_none_rate'] * row['hits'] for row in by_length.values() if row['hits']) / hits
                 if 'paired_lengths' in spec:
                     from multimodal_jev.context_choice import lengths
                     panel_results={}

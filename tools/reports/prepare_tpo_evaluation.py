@@ -129,8 +129,23 @@ def prepare(config):
         elif 'stage1' not in config.get('arms', ()):
             raise ValueError('register an audited Choice comparison endpoint')
     elif 'choice_protocol' in config:
+        choice_baseline = config['choice_baseline']
+        if config.get('choice_only'):
+            if (not joint or config.get('full_ontology_only') or 'paired_lengths' in config
+                    or file_hash(config['choice_protocol']) != config['choice_protocol_sha256']):
+                raise ValueError('Choice-only comparison requires a pinned external variable protocol')
+            if file_hash(choice_baseline['operations']) != choice_baseline['operations_sha256']:
+                raise ValueError('Choice comparison deployment changed')
+            baseline_ops = read(choice_baseline['operations'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+            if baseline_ops['host'] != prior['host']:
+                raise ValueError('Choice baseline deployment must share the evaluation host')
+            choice_baseline = dict(root=str(Path(baseline_ops['remote_root'])/'tpo'),
+                                   receipt_sha256=choice_baseline['receipt_sha256'])
+            common['choice_only'] = True
         spec=read(config['choice_protocol'])
-        common.update(choice=spec['choice'],choice_baseline=config['choice_baseline'])
+        if common.get('choice_only') and not spec['choice'].get('candidate_lengths'):
+            raise ValueError('Choice-only comparison requires variable candidate lengths')
+        common.update(choice=spec['choice'],choice_baseline=choice_baseline)
         if config.get('full_ontology_only'):
             if 'paired_lengths' in config or file_hash(config['choice_protocol'])!=binding['target_sha']:
                 raise ValueError('expected bound full-ontology protocol')

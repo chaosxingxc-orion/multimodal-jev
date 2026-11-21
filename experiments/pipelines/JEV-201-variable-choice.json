@@ -1,0 +1,58 @@
+{
+  "repository": ".",
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-variable-choice-v1-package",
+  "parent_config": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+  "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201",
+  "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/package-201/operations-local.json",
+  "deployment": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-variable-choice-v1-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-variable-choice-v1",
+    "tag": "jev-eval-201-variable-choice-v1"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "io_workers": 8,
+  "batch": 8,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "datasets": {
+    "SLURP_clean_TEST60": {
+      "name": "slurp",
+      "devices": "${TPO_EVAL_SLURP_DEVICES}",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
+        "sha256": "f057f66bdb80e39a8d811ed45b663100707abcf871f7c63dbc80e4cd65830c01"
+      },
+      "seal_sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+    },
+    "MINDS_native14": {
+      "name": "minds",
+      "devices": "${TPO_EVAL_MINDS_DEVICES}",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
+        "sha256": "f057f66bdb80e39a8d811ed45b663100707abcf871f7c63dbc80e4cd65830c01"
+      },
+      "seal_sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+    }
+  },
+  "arms": [
+    "tpo"
+  ],
+  "publish_seals": true,
+  "choice_only": true,
+  "choice_protocol": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/targets/MANIFEST.json",
+  "choice_protocol_sha256": "47f35c34ca2a25977a41a8445993d1ff5358d3353307cae4cbe0970df71fd5d9",
+  "choice_baseline": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/package-198/operations-local.json",
+    "operations_sha256": "5ff8495e25fd999ce064e90b8e3f47abe3a83244684d457f0c7f23ea33c9948c",
+    "receipt_sha256": "c104140c5ccece0704b57959f28686549ff80747106a275719110070bb777cc0"
+  }
+}

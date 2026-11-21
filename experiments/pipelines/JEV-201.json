@@ -233,7 +233,6 @@
         "dispatch_guards": ["${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops.started.json", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-package"],
         "config": "experiments/pipelines/JEV-201-native.json"
       },
-      {"id": "variable-choice", "pending": "变长 Choice 误拒与误接评测待补。"},
       {
         "id": "semantic-transfer-v2",
         "python": "${TPO_EVAL_PYTHON}",
@@ -637,6 +636,187 @@
         ],
         "dispatch_guards": [
           "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-native-pairs-v1/score.json"
+        ]
+      },
+      {
+        "id": "variable-choice-v1",
+        "config": "experiments/pipelines/JEV-201-variable-choice.json",
+        "python": "${TPO_EVAL_PYTHON}",
+        "inputs": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/targets/MANIFEST.json",
+            "cite": "tpo-variable-choice-v2/targets/MANIFEST.json",
+            "sha256": "47f35c34ca2a25977a41a8445993d1ff5358d3353307cae4cbe0970df71fd5d9"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/package-198/operations-local.json",
+            "cite": "tpo-variable-choice-v2/package-198/operations-local.json",
+            "sha256": "5ff8495e25fd999ce064e90b8e3f47abe3a83244684d457f0c7f23ea33c9948c"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/ops-198/tpo-collected.json",
+            "cite": "tpo-variable-choice-v2/ops-198/tpo-collected.json",
+            "sha256": "c104140c5ccece0704b57959f28686549ff80747106a275719110070bb777cc0"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201/tpo-collected.json",
+            "cite": "tpo-joint-top1/ops-201/tpo-collected.json",
+            "sha256": "1ed0ad04dbc6c8a74f479443213d044207bdc0c36785fea7e4544ad8fd80ef48"
+          }
+        ],
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-variable-choice-v1-ops/terminal.json",
+            "cite": "tpo-joint-top1/eval-201-variable-choice-v1-ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-variable-choice-v1-ops/score-collected.json",
+            "cite": "tpo-joint-top1/eval-201-variable-choice-v1-ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-tpo-evaluation-v1"
+              ],
+              [
+                [
+                  "seals",
+                  "SLURP_clean_TEST60"
+                ],
+                "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+              ],
+              [
+                [
+                  "seals",
+                  "MINDS_native14"
+                ],
+                "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+              ]
+            ]
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60 / 变长 Choice",
+            "scope": "SLURP TEST（源数据集）",
+            "population": 12991,
+            "primary": "Open accuracy",
+            "arms": [
+              {
+                "label": "JEV-201 step 34",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "choices",
+                  "tpo"
+                ],
+                "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+                "metrics": {
+                  "Open accuracy": "open_accuracy",
+                  "有真类的候选内准确率": "conditional_accuracy",
+                  "候选覆盖率": "coverage_rate",
+                  "真类缺席误接率": "false_accept_rate",
+                "真类在场误拒率": "false_none_rate"
+                }
+              },
+              {
+                "label": "JEV-198",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "choices",
+                  "prior"
+                ],
+                "policy": "b69cf4f733bd78d3b8bc1ff0ecd9bc784f1dc879006a3544fd5472376a62a64d",
+                "metrics": {
+                  "Open accuracy": "open_accuracy",
+                  "有真类的候选内准确率": "conditional_accuracy",
+                  "候选覆盖率": "coverage_rate",
+                  "真类缺席误接率": "false_accept_rate",
+                "真类在场误拒率": "false_none_rate"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14 / 变长 Choice",
+            "scope": "MINDS native14（跨数据集同任务）",
+            "population": 8168,
+            "primary": "Open accuracy",
+            "arms": [
+              {
+                "label": "JEV-201 step 34",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "choices",
+                  "tpo"
+                ],
+                "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+                "metrics": {
+                  "Open accuracy": "open_accuracy",
+                  "有真类的候选内准确率": "conditional_accuracy",
+                  "候选覆盖率": "coverage_rate",
+                  "真类缺席误接率": "false_accept_rate",
+                "真类在场误拒率": "false_none_rate"
+                }
+              },
+              {
+                "label": "JEV-198",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "choices",
+                  "prior"
+                ],
+                "policy": "b69cf4f733bd78d3b8bc1ff0ecd9bc784f1dc879006a3544fd5472376a62a64d",
+                "metrics": {
+                  "Open accuracy": "open_accuracy",
+                  "有真类的候选内准确率": "conditional_accuracy",
+                  "候选覆盖率": "coverage_rate",
+                  "真类缺席误接率": "false_accept_rate",
+                "真类在场误拒率": "false_none_rate"
+                }
+              }
+            ]
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_tpo_evaluation",
+            "experiments/pipelines/JEV-201-variable-choice.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-variable-choice-v1-package/operations-local.json"
+          ]
+        ],
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-variable-choice-v1-ops",
+          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-variable-choice-v1-package"
         ]
       }
     ]
