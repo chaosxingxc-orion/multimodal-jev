@@ -15,6 +15,7 @@ from multimodal_jev.policy_identity import checkpoint_identity
 from multimodal_jev.slurp_training import content_hash
 from multimodal_jev.context_macro_rollout import digest
 from tools.reports.prepare_native_seal_cache import plan
+from tools.reports.native_evaluation_cache import read_verified
 from tools.reports.context_selection_audited_cache import encoder
 
 
@@ -39,21 +40,10 @@ def load(c):
     require_same_provider(c,spec)
     namespace = cache_namespace(c)
     root = Path(spec['output'])
-    manifest = root/'MANIFEST.json'
     receipts = root/'inputs.jsonl'
-    verification = read(c['cache_verification'])
-    m = read(manifest)
-    if (verification.get('status') != 'full_stable_prefix_cache_verified'
-            or verification['manifest_sha256'] != file_hash(manifest)
-            or m['schema'] != 'jev-native-seal-encoded-cache-v1'
-            or m['inputs_sha256'] != file_hash(receipts)
-            or m['seal_sha256'] != spec['seal']['sha256']
-            or m.get('model_provider_sha256') != namespace
-            or m['encoding'] != spec['encoding']
-            or m['prompt_layout'] != PREFIX_LAYOUT
-            or m['processor_sha256'] != processor_cache_identity(c['snapshot'])
-            or m['processor_sha256'] != spec['processor']['sha256']):
-        raise ValueError('audited stable-prefix cache is required')
+    m, verification = read_verified(spec, c['cache_verification'])
+    if m['processor_sha256'] != processor_cache_identity(c['snapshot']):
+        raise ValueError('frozen endpoint processor differs from cache')
     jobs = plan(spec)
     candidates = [q.id for q in jobs[0][2].questions]
     requests, assets, priors = {}, [], []

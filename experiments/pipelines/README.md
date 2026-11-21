@@ -35,3 +35,6 @@
 并以 `stage2_dataset_release_audited` 为收据。训练配置须绑定能够消费该视图且已通过
 验收的运行器；现有 full-source runner 的准入不覆盖难例视图。评测项按预登记的端点和数据集挂接。
 201 的原生评测复用 197、198 已审核的对照评分。
+
+通用 TPO 评测模板按[缓存复用规约](../../docs/engineering/evaluation-cache-reuse-v1.md)先复用已审核缓存，
+再按内容身份准备缺失输入。评测分片申请设备之前完成 CPU 校验；报告记录产物身份。

@@ -75,6 +75,16 @@ def main():
     elif c['phase'] == 'tpo_train':
         from tools.reports.tpo_training_window import run
         result = run(c)
+    elif c['phase'] in ('publish_eval_cache', 'preflight_eval_cache'):
+        from multimodal_jev.cached_context_preparation import processor_cache_identity
+        from tools.reports.native_evaluation_cache import materialize, preflight
+        cache = c['cache']
+        if processor_cache_identity(cache['processor']['policy']) != cache['processor']['sha256']:
+            raise ValueError('evaluation processor differs from the sealed cache identity')
+        if c['phase'] == 'publish_eval_cache':
+            result = materialize(cache, provenance, run=cache_run, io_workers=c['io_workers'])
+        else:
+            result = preflight(cache, io_workers=c['io_workers'])
     elif c['phase'] in ('encode', 'verify'):
         cache = c['cache']
         result = cache_run(cache, provenance, verify=c['phase']=='verify')
@@ -84,6 +94,8 @@ def main():
         result = run_services(c, a)
     else:
         result = endpoint_run(endpoint_config(c), provenance, c['phase'])
+    if c['phase'] in ('publish_eval_cache', 'preflight_eval_cache'):
+        commit_json(Path(c['result_path']), dict(result, cache_root=c['cache']['output']))
     print(json.dumps({k: v for k,v in result.items() if k!='records'}))
 
 

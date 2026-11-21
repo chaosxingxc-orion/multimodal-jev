@@ -115,8 +115,33 @@ def compile_schedule(c, rows, batches, order, probs):
     return target, schedule, expected, dict(audit), digest_after
 
 
+def reuse_targets(c, dst):
+    """Admit an independently pinned target release without projecting it again."""
+    m = read(verified(dst / "MANIFEST.json", c["reuse_manifest_sha256"]))
+    contrast = m["bidirectional_contrast"]
+    baseline = read(verified(Path(c["baseline"]) / "MANIFEST.json", c["baseline_sha256"]))
+    parent = read(verified(Path(c["parent_config"]), c["parent_sha256"]))
+    verified(Path(c["reference"]) / "MANIFEST.json", m["reference_sha256"])
+    verified(Path(c["release"]) / "MANIFEST.json", m["release_sha256"])
+    if (m["schema"] != "jev-tpo-reward-view-v1"
+            or m["source_policy"] != baseline["source_policy"]
+            or m["view_sha256"] != parent["training_dataset"]["manifest_sha256"]
+            or m["reference_sha256"] != baseline["reference_sha256"]
+            or m["release_sha256"] != baseline["release_sha256"]
+            or m["candidate_ids"] != baseline["candidate_ids"]
+            or any(m[name] != c[name] for name in ("schedule", "recordings", "updates"))
+            or any(contrast[name] != c[name] for name in ("baseline_sha256", "parent_sha256", "reward"))
+            or set(m["files"]) != {"rows.json", "batches.json", "calibration.json", "targets.pt"}):
+        raise ValueError("audited training targets do not match the requested inputs")
+    for name in m["files"]:
+        pinned(dst, m, name)
+    return m
+
+
 def build(c):
     dst = Path(c["output"])
+    if "reuse_manifest_sha256" in c:
+        return reuse_targets(c, dst)
     check_paths({"bidirectional_targets": dst})
     torch.set_num_threads(c["cpu_threads"])
     rows, batches, order, probs, calibration, coverage, source = frozen_inputs(c)

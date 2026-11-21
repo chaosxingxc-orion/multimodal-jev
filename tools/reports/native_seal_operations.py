@@ -80,6 +80,14 @@ def run(c):
     if (not re.fullmatch(r'[\w.@-]+', host) or host.startswith('-')
             or not re.fullmatch(r'/[\w./-]+', remote_root) or '..' in Path(remote_root).parts):
         raise ValueError('explicit host and isolated absolute destination required')
+    cache_store = c.get('evaluation_cache_store')
+    if cache_store is not None and (not re.fullmatch(r'/[\w./-]+', cache_store)
+            or '..' in Path(cache_store).parts or Path(cache_store) in (Path('/'), Path(c['shared_root']))
+            or Path(cache_store).is_relative_to(c['shared_root'])
+            or Path(c['shared_root']).is_relative_to(cache_store)
+            or Path(cache_store).is_relative_to(remote_root)
+            or Path(remote_root).is_relative_to(cache_store)):
+        raise ValueError('isolated local evaluation cache store required')
     group_lease = c.get('device_group_lease', False)
     wait = c.get('wait_for_lease', False)
     predecessors = c.get('device_predecessors', [])
@@ -164,6 +172,11 @@ def run(c):
             argv += ['-v',mount]
         for mount in c.get('read_only_mounts', []):
             argv += ['-v',mount+':ro']
+        publisher = job.get('publish_eval_cache', False)
+        if type(publisher) is not bool or (publisher and (devices or not cache_store)):
+            raise ValueError('only an isolated CPU cache publisher may write the cache store')
+        if cache_store:
+            argv += ['-v',cache_store+':'+cache_store+('' if publisher else ':ro')]
         env = dict(PYTHONPATH='/jev-entry/source/src:/jev-entry/source:/jev-entry/source/tools/jev',
                    PYTHONDONTWRITEBYTECODE='1',OMP_NUM_THREADS='2',HCCL_DETERMINISTIC='true',
                    HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',VLLM_WORKER_MULTIPROC_METHOD='spawn')
@@ -210,6 +223,8 @@ def run(c):
         with nullcontext() if group_lease else lease():
             checked(['mkdir','-p',str(Path(remote_root).parent)])
             checked(['mkdir',remote_root])
+            if cache_store:
+                checked(['mkdir','-p',cache_store])
             roles = [j['name'] for chain in c['chains'] for group in chain for j in group]
             checked(['mkdir',*(remote_root+'/'+r+s for r in roles for s in ('-tmp','-home'))])
             if 'entry_archive_sha256' in c and file_hash(c['archive'])!=c['entry_archive_sha256']:

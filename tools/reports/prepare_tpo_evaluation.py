@@ -9,56 +9,46 @@ from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.source_snapshot import freeze
-from multimodal_jev.model_provider import cache_namespace, require_same_provider
+from multimodal_jev.model_provider import require_same_provider
 from tools.reports.prepare_tpo_windows import macros
+from tools.reports.native_evaluation_cache import catalog_match, shared_publication, read_verified
 
 
 def read(p):return json.loads(Path(p).read_bytes())
 
 
-def evaluation_cache(source, dataset, parent, initial):
-    if 'cache_config' in source:
+def evaluation_cache(source, dataset, parent, initial, *, defer_audit=False):
+    if 'catalog_cache' in source:
+        cache = dict(source['catalog_cache'])
+        if (not {'seal', 'processor', 'encoding'} <= set(cache)
+                or set(cache) - {'dataset', 'seal', 'processor', 'encoding', 'model_provider', 'panel_size'}):
+            raise ValueError('catalog cache must declare only the sealed input identity')
+        cache.setdefault('dataset', dataset)
+    elif 'cache_config' in source:
         ref = source['cache_config']
         path = Path(ref['path'])
         if file_hash(path) != ref['sha256']:
             raise ValueError('evaluation cache config changed')
         cache = read(path)
-        require_same_provider(parent, cache)
-        root = Path(cache['output'])
-        manifest = root/'MANIFEST.json'
-        verification = read(root/'VERIFIED.json')
-        metadata = read(manifest)
-        if (metadata['schema'] != 'jev-native-seal-encoded-cache-v1'
-                or metadata['encoding'] != cache['encoding']
-                or metadata['seal_sha256'] != cache['seal']['sha256']
-                or metadata['processor_sha256'] != cache['processor']['sha256']
-                or metadata.get('model_provider_sha256') != cache_namespace(parent)
-                or verification['status'] != 'full_stable_prefix_cache_verified'
-                or verification['recordings'] != metadata['recordings']
-                or verification['manifest_sha256'] != file_hash(manifest)):
-            raise ValueError('model-specific evaluation cache requires a matching independent receipt')
-        if initial is not None:
-            from multimodal_jev.cached_context_preparation import processor_cache_identity
-            if cache['processor']['sha256'] != processor_cache_identity(initial):
-                raise ValueError('evaluation processor differs from the initialized model')
     elif 'scored_cache' in source:
         ref = source['scored_cache']
         if file_hash(ref['path']) != ref['sha256']:
             raise ValueError('previously scored cache configuration changed')
         cache = read(ref['path'])['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['endpoints'][dataset]['cache']
-        require_same_provider(parent, cache)
-        if initial is not None:
-            from multimodal_jev.cached_context_preparation import processor_cache_identity
-            if cache['processor']['sha256'] != processor_cache_identity(initial):
-                raise ValueError('evaluation processor differs from the initialized model')
     else:
         old = Path(source['package'])
         endpoint = read(old/'entry/full-102.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['endpoint']
         cache = dict(endpoint['cache'])
-        require_same_provider(parent, cache)
         old_ops = read(old/'operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
         cache['output'], = [p.split(':')[0] for p in old_ops['read_only_mounts']
                             if p.endswith(':/jev-inputs/full-cache')]
+    require_same_provider(parent, cache)
+    if 'cache_config' in source and not defer_audit:
+        read_verified(cache, strict=False)
+    if initial is not None and any(k in source for k in ('catalog_cache', 'cache_config', 'scored_cache')):
+        from multimodal_jev.cached_context_preparation import processor_cache_identity
+        if cache['processor']['sha256'] != processor_cache_identity(initial):
+            raise ValueError('evaluation processor differs from the initialized model')
     if cache.get('panel_size') is not None or cache['dataset'] != dataset:
         raise ValueError('full frozen test required')
     return cache
@@ -91,7 +81,13 @@ def prepare(config):
     orig=Path(config['parent_config'])
     parent=read(orig)
     full = joint is not None and joint.get('initialization') == 'pre_task_policy'
-    steps = joint['updates'] if joint else parent['total_updates']
+    if joint:
+        steps = joint['updates']
+    else:
+        targets_path = training_entry/'targets/MANIFEST.json'
+        if file_hash(targets_path) != binding['target_sha']:
+            raise ValueError('frozen training target manifest changed')
+        steps = read(targets_path)['updates']
     remote_parent = Path(prior['remote_root'])/'entry' if full else Path(parent['source_policy']).parents[1]
     parent_file = remote_parent/('parent.json' if full else 'config.json')
     if 'model_provider' in config:
@@ -101,6 +97,16 @@ def prepare(config):
     entry=pkg/'entry'
     entry.mkdir(parents=True,exist_ok=False)
     frozen=freeze(repo,entry/'source',patterns=config['source_patterns'],io_workers=config['io_workers'])
+    reuse = config.get('evaluation_cache_reuse')
+    catalog = []
+    cache_paths = {}
+    if reuse:
+        catalog_path = repo / reuse['catalog']
+        catalog = read(catalog_path)
+        if catalog['schema'] != 'jev-native-evaluation-cache-catalog-v1':
+            raise ValueError('invalid native evaluation cache catalog')
+        catalog = catalog['entries'] if reuse.get('catalog_host') == prior['host'] else []
+        source_identity = read(entry/'source/FILES.json')
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json',entry/'native-seal-container.json')
     common=dict(source=dict(root='/jev-entry/source',sha256=frozen['manifest_sha256']),io_workers=config['io_workers'])
     if full:
@@ -170,7 +176,8 @@ def prepare(config):
             raise ValueError('formal checkpoint audit required')
         common['checkpoints'] = {arm: proof['checkpoints'][f'policy-{arm}'] for arm in checkpoint_steps}
     jobs=[];mounts={str(remote_parent),prior['remote_root']};sets={};pieces={}
-    encode_jobs, verify_jobs, semantic = [], [], {}
+    encode_jobs, verify_jobs, cache_jobs, semantic = [], [], [], {}
+    cache_store_used = False
     if 'choice_baseline' in common:mounts.add(common['choice_baseline']['root'])
     datasets=config['datasets']
     if 'formal_datasets' in config:
@@ -186,19 +193,21 @@ def prepare(config):
             cache = dict(encode['cache'], dataset=dataset, output='/jev-work/'+source['name']+'-cache',
                          processor=dict(policy=parent['source_policy'], sha256=encode['processor_sha256']))
             require_same_provider(parent, cache)
+            if cache.get('panel_size') is not None:
+                raise ValueError('full frozen test required')
             semantic[dataset] = encode['scoring']
             if 'reuse_verified_cache' in source:
-                reuse = source['reuse_verified_cache']
-                if file_hash(reuse['operations']) != reuse['operations_sha256']:
+                legacy = source['reuse_verified_cache']
+                if file_hash(legacy['operations']) != legacy['operations_sha256']:
                     raise ValueError('previous semantic cache deployment changed')
-                predecessor = read(reuse['operations'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+                predecessor = read(legacy['operations'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
                 if predecessor['host'] != prior['host']:
                     raise ValueError('verified cache must be on the registered host')
                 cache['output'] = predecessor['remote_root'] + '/' + source['name'] + '-cache'
-                cache['cache_identity'] = dict(manifest_sha256=reuse['manifest_sha256'],
-                                               verification_sha256=reuse['verification_sha256'])
+                cache['cache_identity'] = dict(manifest_sha256=legacy['manifest_sha256'],
+                                               verification_sha256=legacy['verification_sha256'])
                 mounts.add(cache['output'])
-            else:
+            elif not reuse:
                 for phase, group in (('encode', encode_jobs), ('verify', verify_jobs)):
                     name = source['name']+'-'+phase
                     commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',
@@ -206,11 +215,41 @@ def prepare(config):
                     group.append(dict(name=name, devices=[], **config['cache_container']))
             mounts.add(cache['seal']['root'])
         else:
-            cache=evaluation_cache(source,dataset,parent,initial if full else None)
+            cache = evaluation_cache(source, dataset, parent, initial if full else None, defer_audit=bool(reuse))
+        if reuse:
+            cache['processor'] = dict(cache['processor'], policy=parent['source_policy'])
+            mode = 'verified'
+            if 'cache_identity' not in cache:
+                match = catalog_match(cache, reuse['catalog_root'], reuse['catalog_seal_root'], catalog)
+                if match:
+                    cache, mode = match, 'catalog'
+                elif 'catalog_cache' in source or 'encode' in source or 'publication_key' in cache:
+                    # Use the store on this host even if the source came from a prior scored package.
+                    cache, mode = shared_publication(
+                        cache, reuse['store'], image=prior['image'], source=source_identity)
+            cache_paths[dataset] = dict(mode=mode, output=cache['output'])
+            publish = mode == 'shared'
+            if publish:
+                if 'catalog_cache' in source:
+                    cache.update(reuse['build'], io_workers=config['io_workers'])
+                cache_store_used = True
+                cache_paths[dataset]['publication_key'] = cache['publication_key']
+            else:
+                mounts.add(cache['output'])
+            role = source['name'] + ('-cache' if publish else '-cache-check')
+            receipt = role+'-receipt.json'
+            phase = 'publish_eval_cache' if publish else 'preflight_eval_cache'
+            commit_json(entry/(role+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',
+                        dict(common, phase=phase, cache=cache, result_path='/jev-work/'+receipt)))
+            cache_jobs.append(dict(name=role, devices=[], publish_eval_cache=publish,
+                                   collect=receipt, **config['cache_container']))
+        elif 'encode' not in source:
+            if 'output' not in cache:
+                raise ValueError('catalog cache requires evaluation_cache_reuse')
             mounts.add(cache['output'])
         if 'seal_sha256' in source and cache['seal']['sha256'] != source['seal_sha256']:
             raise ValueError('comparison and evaluated population must share the registered seal')
-        if 'cache_config' in source or 'scored_cache' in source:
+        if 'cache_config' in source or 'scored_cache' in source or 'catalog_cache' in source or reuse:
             mounts.add(cache['seal']['root'])
         c=dict(cache=cache,cache_verification=cache['output']+'/VERIFIED.json',audio_token_id=cache['encoding']['audio_token_id'] if full else parent['audio_token_id'])
         sets[dataset]=c;pieces[dataset]=[]
@@ -240,17 +279,26 @@ def prepare(config):
                            required_status='formal_training_collected_and_audited')
     else:
         predecessor = dict(driver=read(ops.with_suffix('.started.json')), terminal=str(ops/'terminal.json'))
-    groups = [*([encode_jobs, verify_jobs] if encode_jobs else []), jobs,
+    groups = [*([encode_jobs, verify_jobs] if encode_jobs else []),
+              *([cache_jobs] if cache_jobs else []), jobs,
               [dict(name='score', devices=[], collect='metrics.json', **config['eval_container'])]]
     ctl.update(config['deployment'],archive=str(archive),read_only_mounts=[p+':'+p for p in sorted(mounts)],
         device_group_lease=True,wait_for_lease=True,predecessor=predecessor,
         chains=[groups])
-    if config.get('publish_seals'):
+    if cache_store_used:
+        ctl['evaluation_cache_store'] = reuse['store']
+    if cache_paths:
+        ctl['evaluation_cache_plan'] = cache_paths
+    if config.get('publish_seals') or reuse:
         ctl['entry_archive_sha256'] = file_hash(archive)
-        ctl['entry_pins'] = {f'{job["name"]}.json': file_hash(entry/f'{job["name"]}.json') for job in jobs}
+        ctl['entry_pins'] = {f'{job["name"]}.json': file_hash(entry/f'{job["name"]}.json')
+                             for group in groups for job in group}
     commit_json(pkg/'operations-local.json',macros('NATIVE_SEAL_OPERATIONS_CONFIG',ctl))
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('config');p.add_argument('local');a=p.parse_args()
-    prepare(load_config(a.config,a.local)[0])
+    config = load_config(a.config,a.local)[0]
+    if config.get('evaluation_cache_reuse'):
+        config['repository'] = str(Path(__file__).resolve().parents[2])
+    prepare(config)

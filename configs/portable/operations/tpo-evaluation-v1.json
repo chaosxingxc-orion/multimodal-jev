@@ -18,5 +18,21 @@
     "memory": "32g",
     "shm": "2g"
   },
-  "datasets": "${TPO_EVAL_DATASETS}"
+  "datasets": "${TPO_EVAL_DATASETS}",
+  "evaluation_cache_reuse": {
+    "catalog": "configs/portable/operations/native-evaluation-cache-catalog-v1.json",
+    "catalog_host": "${TPO_EVALUATION_CACHE_CATALOG_HOST}",
+    "catalog_root": "${EXPERIMENT_TARGET_HOT_ROOT}",
+    "catalog_seal_root": "${SHARED_ROOT}",
+    "store": "${TPO_EVALUATION_CACHE_STORE}",
+    "build": {
+      "prefetch": 16,
+      "progress_interval": 128
+    }
+  },
+  "cache_container": {
+    "cpus": 8,
+    "memory": "16g",
+    "shm": "2g"
+  }
 }

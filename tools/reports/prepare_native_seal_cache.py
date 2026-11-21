@@ -1,6 +1,7 @@
 """Encode or independently verify the label-free inputs of a native evaluation seal."""
 import argparse
 from itertools import chain
+import os
 import json
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.local_runtime_storage import check_paths
 from multimodal_jev.slurp_training import content_hash
+from tools.reports.native_evaluation_cache import identity
 
 
 def plan(c):
@@ -75,7 +77,7 @@ def plan(c):
     return jobs
 
 
-def run(c, provenance, *, verify=False):
+def run(c, provenance, *, verify=False, resume=False):
     import torch
     from multimodal_jev.cached_context_preparation import CachedContextPreparer, processor_cache_identity
     from multimodal_jev.encoded_audio_cache import EncodedAudioCache, key_for
@@ -92,21 +94,23 @@ def run(c, provenance, *, verify=False):
     if not jobs:
         raise ValueError('a nonempty evaluation population is required')
     source = Path(c['processor']['policy'])
-    identity = processor_cache_identity(source)
-    if identity != c['processor']['sha256']:
+    processor_sha = processor_cache_identity(source)
+    if processor_sha != c['processor']['sha256']:
         raise ValueError('frozen processor identity differs')
     root = Path(c['output'])
     check_paths({'encoded evaluation inputs': root})
     if not verify:
-        root.mkdir(parents=True, exist_ok=False)
+        root.mkdir(parents=True, exist_ok=resume)
     receipts = root/'inputs.jsonl'
     manifest = root/'MANIFEST.json'
     if verify:
         m = json.loads(manifest.read_text())
         if (m['inputs_sha256'] != file_hash(receipts)
                 or m['recordings'] != len(jobs) or m['seal_sha256'] != c['seal']['sha256']
-                or m['processor_sha256'] != identity or m['prompt_layout'] != PREFIX_LAYOUT
-                or m.get('model_provider_sha256') != namespace or m['encoding'] != c['encoding']):
+                or m['processor_sha256'] != processor_sha or m['prompt_layout'] != PREFIX_LAYOUT
+                or m.get('model_provider_sha256') != namespace or m['encoding'] != c['encoding']
+                or ('publication_key' in c and (m.get('publication_key') != c['publication_key']
+                                               or m.get('cache_input') != identity(c)))):
             raise ValueError('complete cache manifest for this release required')
         cache = ReadOnlyEncodedAudioCache(root/'cache')
 
@@ -118,7 +122,7 @@ def run(c, provenance, *, verify=False):
         def factory():
             return provider.processor(source/'processor')
 
-    prepare = CachedContextPreparer(factory, cache, processor_sha256=identity,
+    prepare = CachedContextPreparer(factory, cache, processor_sha256=processor_sha,
                                     prompt_layout=PREFIX_LAYOUT, provider_namespace=namespace, encode=provider.encode, **c['encoding'])
 
     def encode(job):
@@ -143,23 +147,29 @@ def run(c, provenance, *, verify=False):
                 for new, old in zip(work, stream, strict=True):
                     if new != json.loads(old):
                         raise ValueError('independent verification differs: ' + new['id'])
-            return dict(status='full_stable_prefix_cache_verified', recordings=len(jobs),
-                        manifest_sha256=file_hash(manifest), model_calls=0, npu_executed=False)
-        with receipts.open('x') as stream:
+            proof = dict(status='full_stable_prefix_cache_verified', recordings=len(jobs),
+                         manifest_sha256=file_hash(manifest), model_calls=0, npu_executed=False)
+            if 'publication_key' in c:
+                proof['publication_key'] = c['publication_key']
+            return proof
+        # A partial build keeps its immutable tensor entries. The ordered index
+        # is cheap to rebuild from those validated entries; do not re-encode hits.
+        with receipts.open('w' if resume else 'x') as stream:
             for index, row in enumerate(chain(first, work), 1):
                 stream.write(json.dumps(row, separators=(',', ':'))+'\n')
                 if index % c['progress_interval'] == 0:
                     stream.flush()
                     atomic_json(root/'progress.json', dict(completed=index, total=len(jobs)))
             stream.flush()
-            import os
             os.fsync(stream.fileno())
     result = dict(schema='jev-native-seal-encoded-cache-v1', recordings=len(jobs),
-                  seal_sha256=c['seal']['sha256'], processor_sha256=identity,
+                  seal_sha256=c['seal']['sha256'], processor_sha256=processor_sha,
                   prompt_layout=PREFIX_LAYOUT, encoding=c['encoding'], inputs_sha256=file_hash(receipts),
                   model_calls=0, npu_executed=False, provenance=provenance)
     if namespace is not None:
         result['model_provider_sha256'] = namespace
+    if 'publication_key' in c:
+        result.update(publication_key=c['publication_key'], cache_input=identity(c))
     commit_json(manifest, result)
     return result
 
