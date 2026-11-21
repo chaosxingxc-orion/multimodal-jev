@@ -52,7 +52,7 @@ def queue_rows(markdown):
     return rows
 
 
-def plan(experiment=None):
+def plan(experiment=None, *, states=("planned",)):
     commit = git_output("rev-parse", "--verify", "HEAD^{commit}").decode("ascii").strip()
     rows = queue_rows(git_output("show", f"{commit}:{LEDGER}").decode("utf-8"))
     receipt = {"schema": "jev-experiment-selection-v1", "ledger": LEDGER, "commit": commit}
@@ -60,11 +60,12 @@ def plan(experiment=None):
         if experiment not in rows:
             raise ValueError(f"Experiment is absent from the queue: {experiment}")
         selected = rows[experiment]
-        if selected["queue_status"] != "planned":
-            raise ValueError(f"{experiment} has queue status {selected['queue_status']}, expected planned")
+        if selected["queue_status"] not in states:
+            raise ValueError(f"{experiment} has queue status {selected['queue_status']}, expected {' or '.join(states)}")
     else:
-        candidates = (row for row in rows.values() if row["queue_status"] == "planned")
-        selected = min(candidates, key=lambda row: (row["priority"], row["experiment_id"]), default=None)
+        candidates = (row for row in rows.values() if row["queue_status"] in states)
+        selected = min(candidates, key=lambda row: (states.index(row["queue_status"]),
+                       row["priority"], row["experiment_id"]), default=None)
         if selected is None:
             return dict(receipt, status="no_planned_experiment")
 

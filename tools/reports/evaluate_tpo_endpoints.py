@@ -42,10 +42,18 @@ def run(spec):
     tokenizer_processor = provider.processor(stage1['processor'])
     collate = provider.collation(base,tokenizer_processor,model)
     arms=spec.get('arms',['stage1','direct','tpo'])
-    if not arms or len(set(arms))!=len(arms) or set(arms)-{'stage1','direct','tpo'}:
+    checkpoints=spec.get('checkpoints', {})
+    if not arms or len(set(arms))!=len(arms) or set(arms)-{'stage1','direct','tpo',*checkpoints}:
         raise ValueError('invalid evaluation endpoints')
     sources={'stage1':(c['snapshot'],c['policy_id'])} if 'stage1' in arms else {}
     for arm in (a for a in arms if a!='stage1'):
+        if arm in checkpoints:
+            proof = checkpoints[arm]
+            path = Path(spec['trained'])/'tpo'/f'policy-{arm}'
+            if file_hash(path/'MANIFEST.json') != proof['manifest_sha256']:
+                raise ValueError('audited checkpoint manifest changed')
+            sources[arm] = (str(path), proof['policy_id'])
+            continue
         root=Path(spec['trained'])/arm
         receipt=read(root/'receipt.json')
         if (receipt['binding']!=spec['binding'] or not receipt['passed'] or receipt['arm']!=arm or
@@ -104,7 +112,8 @@ def collect(spec):
             c['point']={'step':spec['steps'].get(arm,spec['steps']['tpo'])}
             metric=score(c,assets,candidates,[records[a['id']] for a in assets])['metrics']
             result[dataset][arm]=dict(policy_id=next(iter(policies)),**{k:metric[k] for k in
-                ('queries','top1_macro_f1','top1_event_accuracy','candidate_binary_nll','candidate_brier')})
+                ('queries','top1_macro_f1','top1_event_accuracy','mean_top1_probability',
+                 'candidate_binary_nll','candidate_brier')})
         if 'choice' in spec:
             from tools.reports.run_native_seal_endpoint import bound
             from multimodal_jev.choice_metrics import choice_metrics
@@ -139,6 +148,10 @@ def collect(spec):
                         panel_results[str(k)]=dict(**metric['by_length'][str(k)],by_proposal=metric['by_proposal'])
                     choices[arm]['paired_lengths']=panel_results
             result[dataset]['choices']=choices
+    if spec.get('publish_seals'):
+        result = dict(schema='jev-audited-tpo-evaluation-v1', datasets=result,
+                      seals={dataset: c['cache']['seal']['sha256']
+                             for dataset, c in spec['endpoints'].items()})
     commit_json(Path(spec['output']),result)
     return result
 

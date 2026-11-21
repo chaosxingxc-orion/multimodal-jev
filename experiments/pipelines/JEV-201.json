@@ -1,0 +1,241 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/tpo-joint-comparison.md",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "stages": {
+    "data": [
+      {
+        "id": "train-view",
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/package-201/entry/targets/MANIFEST.json",
+            "cite": "tpo-joint-top1/package-201/entry/targets/MANIFEST.json",
+            "sha256": "9fd6ec10e3df3d92307b180d3e021ea50a4a6fb8ba4c36d4842d2e88f9cb3847",
+            "equals": [[["schema"], "jev-tpo-joint-view-v1"], [["updates"], 34], [["real_exposures"], 12496]],
+            "report": {"更新": ["updates"], "真实曝光": ["real_exposures"], "源发布": ["release_sha256"]}
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/package-201/entry/joint.json",
+            "cite": "tpo-joint-top1/package-201/entry/joint.json",
+            "sha256": "03705498230f7ac1b3a237b9f8c6fe4af695d98923ce27cc378537243e33b457",
+            "equals": [[["target_sha"], "9fd6ec10e3df3d92307b180d3e021ea50a4a6fb8ba4c36d4842d2e88f9cb3847"]],
+            "report": {"录音": ["recordings"], "种子": ["seed"]}
+          }
+        ]
+      }
+    ],
+    "train": [
+      {
+        "id": "formal-training",
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201/terminal.json",
+            "cite": "tpo-joint-top1/ops-201/terminal.json",
+            "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201/tpo-collected.json",
+            "cite": "tpo-joint-top1/ops-201/tpo-collected.json",
+            "sha256": "1ed0ad04dbc6c8a74f479443213d044207bdc0c36785fea7e4544ad8fd80ef48",
+            "equals": [
+              [["passed"], true],
+              [["window"], "formal"],
+              [["arm"], "tpo"],
+              [["updates"], 34],
+              [["binding", "target_sha"], "9fd6ec10e3df3d92307b180d3e021ea50a4a6fb8ba4c36d4842d2e88f9cb3847"],
+              [["binding", "joint_sha"], "03705498230f7ac1b3a237b9f8c6fe4af695d98923ce27cc378537243e33b457"]
+            ],
+            "report": {"更新": ["updates"], "末点策略": ["endpoint"], "固定参考": ["anchor_sha256"]}
+          }
+        ]
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "native-endpoints",
+        "python": "${TPO_EVAL_PYTHON}",
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops/terminal.json",
+            "cite": "tpo-joint-top1/eval-201-ledger-v1-ops/terminal.json",
+            "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops/score-collected.json",
+            "cite": "tpo-joint-top1/eval-201-ledger-v1-ops/score-collected.json",
+            "equals": [
+              [["schema"], "jev-audited-tpo-evaluation-v1"],
+              [["seals", "SLURP_clean_TEST60"], "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"],
+              [["seals", "MINDS_native14"], "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201/tpo-collected.json",
+            "cite": "tpo-joint-top1/ops-201/tpo-collected.json",
+            "sha256": "1ed0ad04dbc6c8a74f479443213d044207bdc0c36785fea7e4544ad8fd80ef48",
+            "equals": [
+              [["passed"], true],
+              [["window"], "formal"],
+              [["arm"], "tpo"],
+              [["updates"], 34],
+              [["binding", "target_sha"], "9fd6ec10e3df3d92307b180d3e021ea50a4a6fb8ba4c36d4842d2e88f9cb3847"],
+              [["binding", "joint_sha"], "03705498230f7ac1b3a237b9f8c6fe4af695d98923ce27cc378537243e33b457"]
+            ],
+            "report": {"更新": ["updates"], "末点策略": ["endpoint"], "固定参考": ["anchor_sha256"]}
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-ops-full-native/score-collected.json",
+            "cite": "tpo-variable-choice-v2/eval-ops-full-native/score-collected.json",
+            "sha256": "1a5703bd9b9d6fc55c3db41067565b1b7d8a3a0938ab02466e6b07da06f2cabc"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-ops-full-native-198/score-collected.json",
+            "cite": "tpo-variable-choice-v2/eval-ops-full-native-198/score-collected.json",
+            "sha256": "52ee4f19d4d2c47c715661bd7ad183f95ebdfed7799e4a7362802408bd70b618"
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60 / Noul",
+            "scope": "SLURP TEST（源数据集）",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Step 34",
+                "proof": 1,
+                "path": ["datasets", "SLURP_clean_TEST60", "tpo"],
+                "policy": {"proof": 2, "path": ["endpoint"]},
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_event_accuracy", "平均原始 Top-1 概率": "mean_top1_probability"}
+              },
+              {
+                "label": "JEV-197",
+                "proof": 3,
+                "path": ["SLURP_clean_TEST60", "tpo"],
+                "policy": "840b2f6ad23ae3c6c58bf7fcf9a8452e1448da925eb7a2c94a26538ee412229c",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_event_accuracy"}
+              },
+              {
+                "label": "JEV-198",
+                "proof": 4,
+                "path": ["SLURP_clean_TEST60", "tpo"],
+                "policy": "b69cf4f733bd78d3b8bc1ff0ecd9bc784f1dc879006a3544fd5472376a62a64d",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_event_accuracy"}
+              }
+            ]
+          },
+          {
+            "id": "SLURP_clean_TEST60 / Choice",
+            "scope": "SLURP TEST（源数据集）",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Step 34",
+                "proof": 1,
+                "path": ["datasets", "SLURP_clean_TEST60", "choices", "tpo"],
+                "policy": {"proof": 2, "path": ["endpoint"]},
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "全量候选误拒率": "false_none_rate"}
+              },
+              {
+                "label": "JEV-198",
+                "proof": 4,
+                "path": ["SLURP_clean_TEST60", "choices", "tpo"],
+                "policy": "b69cf4f733bd78d3b8bc1ff0ecd9bc784f1dc879006a3544fd5472376a62a64d",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "全量候选误拒率": "false_none_rate"}
+              },
+              {
+                "label": "JEV-197",
+                "proof": 3,
+                "path": ["SLURP_clean_TEST60", "choices", "tpo"],
+                "policy": "840b2f6ad23ae3c6c58bf7fcf9a8452e1448da925eb7a2c94a26538ee412229c",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "全量候选误拒率": "false_none_rate"}
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14 / Noul",
+            "scope": "MINDS native14（跨数据集同任务）",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Step 34",
+                "proof": 1,
+                "path": ["datasets", "MINDS_native14", "tpo"],
+                "policy": {"proof": 2, "path": ["endpoint"]},
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_event_accuracy", "平均原始 Top-1 概率": "mean_top1_probability"}
+              },
+              {
+                "label": "JEV-197",
+                "proof": 3,
+                "path": ["MINDS_native14", "tpo"],
+                "policy": "840b2f6ad23ae3c6c58bf7fcf9a8452e1448da925eb7a2c94a26538ee412229c",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_event_accuracy"}
+              },
+              {
+                "label": "JEV-198",
+                "proof": 4,
+                "path": ["MINDS_native14", "tpo"],
+                "policy": "b69cf4f733bd78d3b8bc1ff0ecd9bc784f1dc879006a3544fd5472376a62a64d",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_event_accuracy"}
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14 / Choice",
+            "scope": "MINDS native14（跨数据集同任务）",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Step 34",
+                "proof": 1,
+                "path": ["datasets", "MINDS_native14", "choices", "tpo"],
+                "policy": {"proof": 2, "path": ["endpoint"]},
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "全量候选误拒率": "false_none_rate"}
+              },
+              {
+                "label": "JEV-198",
+                "proof": 4,
+                "path": ["MINDS_native14", "choices", "tpo"],
+                "policy": "b69cf4f733bd78d3b8bc1ff0ecd9bc784f1dc879006a3544fd5472376a62a64d",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "全量候选误拒率": "false_none_rate"}
+              },
+              {
+                "label": "JEV-197",
+                "proof": 3,
+                "path": ["MINDS_native14", "choices", "tpo"],
+                "policy": "840b2f6ad23ae3c6c58bf7fcf9a8452e1448da925eb7a2c94a26538ee412229c",
+                "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "全量候选误拒率": "false_none_rate"}
+              }
+            ]
+          }
+        ],
+        "inputs": [
+          {"path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-ops-full-native-198/score-collected.json", "cite": "tpo-variable-choice-v2/eval-ops-full-native-198/score-collected.json", "sha256": "52ee4f19d4d2c47c715661bd7ad183f95ebdfed7799e4a7362802408bd70b618"},
+          {"path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-ops-full-native/score-collected.json", "cite": "tpo-variable-choice-v2/eval-ops-full-native/score-collected.json", "sha256": "1a5703bd9b9d6fc55c3db41067565b1b7d8a3a0938ab02466e6b07da06f2cabc"},
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
+            "cite": "tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
+            "sha256": "f057f66bdb80e39a8d811ed45b663100707abcf871f7c63dbc80e4cd65830c01"
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+            "cite": "full-train-stratified-v1/packages-192/formal/config.json",
+            "equals": [[["source_policy_id"], "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b"]]
+          }
+        ],
+        "run": [
+          ["tools.reports.prepare_tpo_evaluation", "experiments/pipelines/JEV-201-native.json", "${EXPERIMENT_LOCAL_CONFIG}"],
+          ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-package/operations-local.json"]
+        ],
+        "dispatch_guards": ["${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-ops.started.json", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-ledger-v1-package"],
+        "config": "experiments/pipelines/JEV-201-native.json"
+      },
+      {"id": "paired-diagnostics", "pending": "待接入全量 Noul/Choice 正误四格、变长 Choice 误拒/误接及配对区间审核。"},
+      {"id": "sib-fleurs", "pending": "待绑定 SIB-FLEURS 英语话题封存评测和按句配对审核。"},
+      {"id": "mmsu-polysemy", "pending": "待绑定独立 MMSU 词义评测人口和评分审核。"}
+    ]
+  }
+}

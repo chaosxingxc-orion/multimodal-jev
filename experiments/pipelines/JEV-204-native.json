@@ -1,0 +1,57 @@
+{
+  "repository": ".",
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-package",
+  "parent_config": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/package-204/entry/parent.json",
+  "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/ops-204",
+  "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/package-204/operations-local.json",
+  "deployment": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/eval-204-ledger-v1-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-204-ledger-v1",
+    "tag": "jev-eval-204-ledger-v1"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "io_workers": 8,
+  "batch": 8,
+  "stage1_step": 0,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "datasets": {
+    "SLURP_clean_TEST60": {
+      "name": "slurp",
+      "devices": "${TPO_EVAL_SLURP_DEVICES}",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
+        "sha256": "f057f66bdb80e39a8d811ed45b663100707abcf871f7c63dbc80e4cd65830c01"
+      },
+      "seal_sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+    },
+    "MINDS_native14": {
+      "name": "minds",
+      "devices": "${TPO_EVAL_MINDS_DEVICES}",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-variable-choice-v2/eval-package-full-native-198/entry/score.json",
+        "sha256": "f057f66bdb80e39a8d811ed45b663100707abcf871f7c63dbc80e4cd65830c01"
+      },
+      "seal_sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+    }
+  },
+  "arms": [
+    "stage1",
+    "step-106",
+    "tpo"
+  ],
+  "full_ontology_only": true,
+  "publish_seals": true,
+  "training_custody": "${TPO_EVIDENCE_ROOT}/tpo-single-stage-full/custody-204",
+  "checkpoint_steps": {
+    "step-106": 106
+  }
+}

@@ -4,7 +4,7 @@
 
 - 实验协议及配置索引放在 `experiments/`。执行器实际加载的配置通过相对链接引用原有模板与冻结发布件。机器私有地址和路径由本地宏解析。
 - 协议和配置用于登记预期。过程状态、审核收据、分数据集成绩与结论在 Wiki 更新。[实验台账](../wiki/experiment-ledger.md) · [报告目录](../wiki/reports/README.md)
-- 新实验按台账领取。配置清楚后，依次构建或复用数据、训练、评测并回填报告。[五步规约](../wiki/experiment-package.md)
+- 在 [pipelines/](pipelines/README.md) 将实验 ID 绑定到已有脚本、审核收据和评测清单。由根目录入口领取台账、执行并回填报告。[五步规约](../wiki/experiment-package.md)
 
 | 入口 | 内容 |
 | --- | --- |

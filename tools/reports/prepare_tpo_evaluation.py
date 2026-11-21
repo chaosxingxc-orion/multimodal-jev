@@ -41,6 +41,16 @@ def evaluation_cache(source, dataset, parent, initial):
             from multimodal_jev.cached_context_preparation import processor_cache_identity
             if cache['processor']['sha256'] != processor_cache_identity(initial):
                 raise ValueError('evaluation processor differs from the initialized model')
+    elif 'scored_cache' in source:
+        ref = source['scored_cache']
+        if file_hash(ref['path']) != ref['sha256']:
+            raise ValueError('previously scored cache configuration changed')
+        cache = read(ref['path'])['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['endpoints'][dataset]['cache']
+        require_same_provider(parent, cache)
+        if initial is not None:
+            from multimodal_jev.cached_context_preparation import processor_cache_identity
+            if cache['processor']['sha256'] != processor_cache_identity(initial):
+                raise ValueError('evaluation processor differs from the initialized model')
     else:
         old = Path(source['package'])
         endpoint = read(old/'entry/full-102.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['endpoint']
@@ -58,6 +68,8 @@ def prepare(config):
     pkg,repo = Path(config['package']),Path(config['repository'])
     ops=Path(config['training_ops'])
     prior=read(config['training_operations_local'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+    if 'expected_host' in config and prior['host'] != config['expected_host']:
+        raise ValueError('evaluation host differs from the registered deployment')
     job=read(Path(config['training_operations_local']).parent/'entry/finite.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
     training_entry = Path(config['training_operations_local']).parent/'entry'
     joint = None
@@ -101,9 +113,21 @@ def prepare(config):
         shutil.copytree(initial, entry/'initial/policy')
     if full and 'model_provider' in parent and config.get('full_ontology_only'):
         if ('choice_protocol' in config or 'choice_baseline' in config or 'paired_lengths' in config
-                or set(config.get('arms', ())) != {'stage1', 'tpo'}):
-            raise ValueError('use the bound Joint TPO objective and its two policy endpoints')
+                or set(config.get('arms', ())) != {'stage1', 'tpo', *config.get('checkpoint_steps', {})}):
+            raise ValueError('use the bound Joint TPO objective and its policy endpoints')
         common.update(choice={'temperature':joint['objective']['temperature']},full_ontology_only=True)
+    elif joint and config.get('full_ontology_only') and 'choice_protocol' not in config:
+        if 'paired_lengths' in config:
+            raise ValueError('full ontology and variable Choice must be scored separately')
+        common.update(choice={'temperature':joint['objective']['temperature']},full_ontology_only=True)
+        if config.get('external_comparisons') is True:
+            if 'choice_baseline' in config:
+                raise ValueError('external comparisons cannot also rerun a baseline')
+            common['external_comparisons'] = True
+        elif 'choice_baseline' in config:
+            common['choice_baseline'] = config['choice_baseline']
+        elif 'stage1' not in config.get('arms', ()):
+            raise ValueError('register an audited Choice comparison endpoint')
     elif 'choice_protocol' in config:
         spec=read(config['choice_protocol'])
         common.update(choice=spec['choice'],choice_baseline=config['choice_baseline'])
@@ -118,6 +142,18 @@ def prepare(config):
         raise ValueError('single-stage run has only initial and TPO endpoints')
     if 'arms' in config:
         common['arms']=config['arms']
+    checkpoint_steps = config.get('checkpoint_steps', {})
+    if checkpoint_steps:
+        if (not full or not config.get('training_custody')
+                or set(checkpoint_steps.values()) - set(joint['intermediate_export_updates'])
+                or any(arm != f'step-{step}' for arm, step in checkpoint_steps.items())
+                or set(checkpoint_steps) - set(common['arms'])):
+            raise ValueError('only audited pre-registered intermediate checkpoints may be evaluated')
+        proof = read(Path(config['training_custody'])/'formal-audit.json')
+        if (proof['status'] != 'formal_training_collected_and_audited' or proof['updates'] != steps
+                or proof['endpoint'] != read(ops/'tpo-collected.json')['endpoint']):
+            raise ValueError('formal checkpoint audit required')
+        common['checkpoints'] = {arm: proof['checkpoints'][f'policy-{arm}'] for arm in checkpoint_steps}
     jobs=[];mounts={str(remote_parent),prior['remote_root']};sets={};pieces={}
     if 'choice_baseline' in common:mounts.add(common['choice_baseline']['root'])
     datasets=config['datasets']
@@ -128,8 +164,10 @@ def prepare(config):
         datasets={key:datasets[key] for key in selected}
     for dataset,source in datasets.items():
         cache=evaluation_cache(source,dataset,parent,initial if full else None)
+        if 'seal_sha256' in source and cache['seal']['sha256'] != source['seal_sha256']:
+            raise ValueError('comparison and evaluated population must share the registered seal')
         mounts.add(cache['output'])
-        if 'cache_config' in source:
+        if 'cache_config' in source or 'scored_cache' in source:
             mounts.add(cache['seal']['root'])
         c=dict(cache=cache,cache_verification=cache['output']+'/VERIFIED.json',audio_token_id=cache['encoding']['audio_token_id'] if full else parent['audio_token_id'])
         sets[dataset]=c;pieces[dataset]=[]
@@ -142,7 +180,9 @@ def prepare(config):
             pieces[dataset].append(opts['output'])
             jobs.append(dict(name=name,devices=[device],**config['eval_container']))
     scoring=dict(common,phase='tpo_score',output='/jev-work/metrics.json',endpoints=sets,shards=pieces,
-                 steps=dict(stage1=config['stage1_step'],direct=steps,tpo=steps))
+                 steps=dict(stage1=config['stage1_step'],direct=steps,tpo=steps,**checkpoint_steps))
+    if config.get('publish_seals'):
+        scoring['publish_seals'] = True
     commit_json(entry/'score.json',macros('NATIVE_SEAL_CONTAINER_CONFIG',scoring))
     archive=pkg/'entry.tar'
     with tarfile.open(archive,'x') as tar:tar.add(entry,arcname='entry')
@@ -158,6 +198,9 @@ def prepare(config):
     ctl.update(config['deployment'],archive=str(archive),read_only_mounts=[p+':'+p for p in sorted(mounts)],
         device_group_lease=True,wait_for_lease=True,predecessor=predecessor,
         chains=[[jobs,[dict(name='score',devices=[],collect='metrics.json',**config['eval_container'])]]])
+    if config.get('publish_seals'):
+        ctl['entry_archive_sha256'] = file_hash(archive)
+        ctl['entry_pins'] = {f'{job["name"]}.json': file_hash(entry/f'{job["name"]}.json') for job in jobs}
     commit_json(pkg/'operations-local.json',macros('NATIVE_SEAL_OPERATIONS_CONFIG',ctl))
 
 

@@ -45,7 +45,8 @@ def evaluate(spec,c,parent,model,device,processor,collate,rows,sources,provider)
 
 def with_baseline(spec,sources):
     if 'choice_baseline' not in spec:
-        if not spec.get('full_ontology_only') or 'stage1' not in sources:
+        if not spec.get('full_ontology_only') or (
+                'stage1' not in sources and spec.get('external_comparisons') is not True):
             raise ValueError('missing comparable Choice baseline')
         return sources
     spec_baseline=spec['choice_baseline']

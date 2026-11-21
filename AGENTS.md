@@ -6,7 +6,7 @@
 
 - 开展新实验，或调整模型、数据版本、目标、预算、设备布局和评测口径时，先在 [experiments/](experiments/README.md) 登记或修订协议与版本化配置入口。
 - 领取实验、通过验收、遇到阻塞、结束训练或完成评测时，更新 [Wiki 台账](wiki/experiment-ledger.md) 同一行。进展、失败原因、成本和结论写入 [Wiki 报告](wiki/reports/README.md)，经核验后同步主线。
-- 实验包按 **读取一行台账 → 构建或复用数据 → 训练 → 评测 → 回填台账** 交付。修复和续跑沿用研究 ID，另记包版本和运行句柄。[五步规约](wiki/experiment-package.md)
+- 使用根目录 [run_experiment.py](run_experiment.py) 驱动实验包：**读取一行台账 → 构建或复用数据 → 训练 → 评测 → 回填台账**。修复和续跑沿用研究 ID，另记包版本和运行句柄。[五步规约](wiki/experiment-package.md)
 
 ## 工程与执行
 
