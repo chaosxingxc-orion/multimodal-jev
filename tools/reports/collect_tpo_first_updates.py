@@ -1,4 +1,4 @@
-"""Collect the first three committed updates of a packaged dynamic TPO run."""
+"""Collect the first three committed updates of a packaged TPO run."""
 import argparse
 import json
 import math
@@ -13,6 +13,15 @@ from tools.reports.watch_stage2_first_losses import Events
 
 def read(path):
     return json.loads(path.read_bytes())
+
+
+def check_fixed_update(row, step, batch_real):
+    metrics = row['metrics']
+    loss = metrics['jev/tpo_loss']
+    if (row['step'] != step or row['real'] != batch_real[step-1] or 'reference' in row
+            or metrics['jev/reward_projection_kl'] != loss
+            or not all(math.isfinite(v) and v > 0 for v in (loss, metrics['actor/grad_norm'], row['seconds']))):
+        raise ValueError('invalid formal fixed reference update')
 
 
 def collect(package):
@@ -33,6 +42,14 @@ def collect(package):
         receipt = read(ops/'finite-collected.json')
         training = binding['training']
         joint=binding['phase']=='joint_tpo'
+        dynamic='next_macro_sha' in training
+        fixed_view = None
+        if not (joint or dynamic):
+            path = package/'entry/targets/MANIFEST.json'
+            fixed_view = read(path)
+            if (file_hash(path) != training['target_sha'] or fixed_view['schema'] != 'jev-tpo-reward-view-v1'
+                    or not fixed_view.get('bidirectional_contrast')):
+                raise ValueError('fixed bidirectional target manifest is not bound')
         if joint:
             plan=read(package/'entry/joint.json')
             expected=dict(joint_sha=file_hash(package/'entry/joint.json'),source=binding['source']['sha256'],
@@ -44,8 +61,8 @@ def collect(package):
                     receipt['anchor_sha256']!=file_hash(ops/'anchor-collected.json')):
                 raise ValueError('fixed anchor is not bound to this formal config')
         else:
-            expected=dict(source=binding['source']['sha256'],
-                **{k:training[k] for k in ('target_sha','parent_sha','world_size','next_macro_sha')})
+            keys = ('target_sha','parent_sha','world_size') + (('next_macro_sha',) if dynamic else ())
+            expected=dict(source=binding['source']['sha256'], **{k:training[k] for k in keys})
         if (training['window'] != 'formal' or receipt['passed'] is not True or receipt['window'] != 'finite'
                 or receipt['binding'] != expected):
             raise ValueError('finite and formal bindings differ')
@@ -59,6 +76,11 @@ def collect(package):
             remote.update(config_files={name:file_hash(package/'entry'/name) for name in
                 ('tpo.json','joint.json','targets/MANIFEST.json','source/FILES.json')},
                 devices=plan['training_devices']+plan['inference_devices'])
+        elif fixed_view:
+            groups = config['chains'][0]
+            formal, = [job for group in groups for job in group if job['name']=='tpo']
+            remote.update(config_files={name: file_hash(package/'entry'/name) for name in
+                ('tpo.json', 'targets/MANIFEST.json', 'source/FILES.json')}, devices=formal['devices'])
         command = shlex.join(['python3','-','--remote-json',json.dumps(remote)])
         result = subprocess.run(['ssh','-o','BatchMode=yes',handle['host'],command],input=observer,
                                 text=True,capture_output=True)
@@ -73,6 +95,9 @@ def collect(package):
                 from tools.reports.joint_tpo_window import check_update
                 check_update(row,i,plan,expected,previous)
                 previous=row['reference']['next_policy']
+                continue
+            if fixed_view:
+                check_fixed_update(row, i, fixed_view['batch_real'])
                 continue
             ref = row['reference']
             metrics = row['metrics']
