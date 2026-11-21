@@ -64,7 +64,7 @@ python3 -m venv .venv
 - 长任务应可脱离会话运行、可恢复，保存启动命令、进度、成本和带退出码的完成标记。
 
 来源与初始化边界见 [参考说明](docs/references.md)，协作规则见 [AGENTS.md](AGENTS.md)。
-本地 `wiki/` 是仓库内文档，尚未配置独立 GitHub Wiki 同步。
+[实验台账](wiki/experiment-ledger.md)位于仓库的 `wiki/`，随主线同步。
 
 长期算法问题、受控对照与泛化判据见 [Omni RL 设计](proposal/archive/raw/03-omni-sfc-rl-design-v1.md)；
 镜像兼容性见 [运行时说明](docs/engineering/runtime.md)，数据与奖励入口见 [数据契约](docs/engineering/data-contract.md)。
