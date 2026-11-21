@@ -27,7 +27,7 @@
 | 实验 ID | 优先级 | 状态 | 协议 | 下一步 |
 | --- | ---: | --- | --- | --- |
 | JEV-201 | 10 | in_progress | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 复用封存评测集，完成末点评测和报告 |
-| JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 全量固定参考审核通过后进入正式训练 |
+| JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 正式训练容器已启动，收集并审核 212 步曲线后接续评测 |
 
 状态使用 `planned`、`in_progress`、`blocked`、`complete`、`failed` 或 `stopped`；
 `planned` 专用于协议、依赖与预算已登记、可准备且尚未开工的行。领取时保存对应台账提交、行和冻结协议。
@@ -44,7 +44,7 @@
 | JEV-197 | 变长 Choice 统一支持 NONE，固定 reference；34 步 | 训练及完整原生面板评测已审 | Noul 81.32% / 71.94%；完整 Choice 的误拒为 99.87% / 100%，因此保留为 Noul 对照 |
 | JEV-198 | 相对 197 逐步用上一次提交的 actor 刷新先验，保持冻结奖励位移和 34 步预算 | **34/34，训练和 SLURP TEST、MINDS 评测均已审** | Choice 误拒下降；Noul 和 Choice 候选内排序退化。保留为动态参考的反例和 201 的 Choice 对照。[详细报告](reports/JEV-198.md) |
 | JEV-201 | 从 0.6B Stage1 step 160 接续、6,248 条 TRAIN × 2 轮、34 步；用配对 Noul/Choice、动态竞争者与固定长期锚共同训练 | **34/34，独立训练审核通过**；199/200 未进入正式训练；无末点评测收据 | 作为联合方案对照。依冻结协议评第 34 步，Noul 对 197、Choice 对 198；分开报告 SLURP 与 MINDS。[报告](reports/JEV-201.md) |
-| JEV-204 | 取消独立 Stage1；从 Qwen3-ASR-0.6B 加新初始化的任务参数起步，一套目标跑全量 clean TRAIN，40,513 条 × 2 轮，212 步 | **两步有限验收通过，全量固定参考生成中**；正式 212 步未启动 | 201 是设备与执行顺序依赖，不提供初始化权重。依次核对 201 终态、独立首两步固定参考、两步有限验收、全量固定参考和正式训练；全链路独立审核。[报告](reports/JEV-204.md) |
+| JEV-204 | 取消独立 Stage1；从 Qwen3-ASR-0.6B 加新初始化的任务参数起步，一套目标跑全量 clean TRAIN，40,513 条 × 2 轮，212 步 | 两步有限验收通过，全量固定参考已收集。正式训练容器于 2026-11-21 12:03 UTC 启动 | 201 是设备与执行顺序依赖，不提供初始化权重。正式曲线和留出评测等待审核收据。[报告](reports/JEV-204.md) |
 
 未逐号回填更早的工程包。旧实验以[归档](archive/)和既有研究文档为准；FSC 数字留在
 历史收据里，当前主参考为 SLURP 与 MINDS。仅比较相同封存人口、候选和指标；
