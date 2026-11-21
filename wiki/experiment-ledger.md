@@ -27,7 +27,8 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | 实验 ID | 优先级 | 状态 | 协议 | 下一步 |
 | --- | ---: | --- | --- | --- |
 | JEV-205 | 40 | blocked | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 设计讨论；待冻结对照、判据与可执行配置，不领取训练 |
-| JEV-206 | 41 | blocked | [201 开放 Choice 的确认与拒绝](../experiments/tpo-choice-coverage-206.md) | 设计讨论；先区分覆盖目标、读出及列表构造，不领取训练 |
+| JEV-206 | 41 | stopped | [201 开放 Choice 的确认与拒绝](../experiments/tpo-choice-coverage-206.md) | 开放列表仅留作历史诊断；未派发，第二组研究由 JEV-207 接替 |
+| JEV-207 | 41 | blocked | [封闭业务意图与范围外类](../experiments/tpo-closed-scope-207.md) | 设计讨论；按数据集审核业务范围与原生标签映射，再冻结对照 |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | stopped | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 暂停训练。保留固定参考、前四步收据及第 4 步推理权重，续训另行登记 |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
