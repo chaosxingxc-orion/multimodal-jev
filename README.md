@@ -1,106 +1,23 @@
 # multimodal-jev
 
-[GitHub](https://github.com/chaosxingxc-orion/multimodal-jev)
+Jev 让语音模型直接听音频，并根据任务定义为候选判决打分。我们用 Qwen3-ASR-0.6B 验证这条路线，在 SLURP 上学习意图判决，再用 MINDS 检查同一能力能否迁移到另一套语音数据。
 
-围绕**语音多模态 Jev 的设计与实现**开展研究与工程工作。主要参考模型为 **Qwen 系列最新开源 ASR 模型**，
-参考数据集和任务为现存的 **SLU（Spoken Language Understanding）** 与 **Agentic Speech** 任务。
-参考 [nga](https://github.com/chaosxingxc-orion/nga)
-的类型化决策读出、语义一致性评估方法，以及 [omni](https://github.com/chaosxingxc-orion/omni)
-的多模态证据处理与可复现实验组织方式。
+## 已验证的结果
 
-当前主线使用本地 **Qwen3-ASR-0.6B-hf**，直接消费音频和完整问题模板，
-一次前向填充多个 typed Span，不进行自回归文本解码。优先使用清理并审核的 SLURP 学习数据，
-已确认错误标签不进入训练、奖励或模型选择。Omni 冻结基线保留为历史证据。
-详细结论见 [研究报告](docs/research/README.md)，本地资产见 [本地资源](docs/research/06-local-assets.md)。
-研究范围与初步工作项见 [课题说明](proposal/00-research-scope.md)。
+下表使用 Top-1 macro-F1。SLURP 为 12,991 条 clean TEST 录音，MINDS 为 8,168 条项目留出录音。
 
-当前工程基座与优先级以 [工程索引](docs/engineering/README.md) 为准：全量 clean SLURP
-单音频原生意图成员判决；Stage1 指令/候选绑定 + Stage2 双信用 GRPO；FSC/MINDS 用同一接口
-做跨数据集迁移验证。当前效率候选为声学批处理 + KV16，100 步对照合计 +12.5783%，
-但 MINDS 有限面板仍有一致性失败，尚未准入全量训练；效率数字不是任务收益。
+| 对照 | SLURP | MINDS |
+| --- | ---: | ---: |
+| 0.6B Stage1 端点 | 80.97% | 71.64% |
+| JEV-194 等预算对照，关闭投影 → 启用投影 | 79.14% → 81.66% | 68.14% → 71.82% |
+| 双信用 GRPO，Stage1 → Stage2 末点 | 80.97% → 80.43% | 71.64% → 66.05% |
 
-历史工程证据（2026-11-12 前后）：BF16 LoRA 训练/重载、HF/vLLM 概率一致性和单步 verl
-更新曾通过固定录音/身份验收（最大候选 log-prob 误差 1.19×10⁻⁷）；真实四卡 FSDP 完成
-一次 8 条语音更新。这些是工程链路证据，不构成完整训练或任务收益；原始记录见
-[单步训练验收](experiments/archive/raw/span-rl-probes/span-actor-update-v1.md)、
-[BF16 训推一致性](docs/engineering/verl-vllm-lora-span-alignment-v1.md)和
-[四卡语音验证](docs/engineering/span-fsdp-audio-npu4-v1.md)。
-早期[冻结基线与 TFRL 协议](proposal/archive/raw/02-frozen-baselines-tfrl-jev.md)及下文旧实验用于追溯，不代表当前训练安排。
+JEV-194 在同起点、同数据、同预算的单种子对照中启用投影，SLURP / MINDS 分别提升 2.51 / 3.68 个百分点（按未舍入值计算）。双信用 GRPO 的末点在 SLURP 上把准确率从 84.54% 提到 85.19%，同时两个数据集的 macro-F1 均下降。MINDS 结果支持评估同任务的跨数据集迁移。独立跨任务收益仍待验证。[JEV-194 对照报告](wiki/reports/JEV-194.md) · [Stage2 对照报告](wiki/reports/JEV-R64-S2.md)
 
-## 目录
+## 怎样验证
 
-| 路径 | 用途 |
-| --- | --- |
-| `src/multimodal_jev/` | 可安装的 Python 包，后续存放可复用实现 |
-| `configs/` | 可版本化配置；不包含凭据和机器私有设置 |
-| `docs/` | 设计说明、参考来源与工程决策 |
-| `proposal/` | 研究问题、假设和阶段计划 |
-| `experiments/` | 实验协议、数据清单和实验入口 |
-| `tests/` | 后续实现对应的自动化测试 |
-| `tools/` | 数据准备、运行和结果检查工具 |
-| `wiki/` | 随代码版本管理的实验记录与索引 |
+1. 从台账找到对应实验的策略、冻结包、数据清单和评分收据。复核基线与候选使用相同录音、候选顺序、评测接口和评分口径。[实验台账](wiki/experiment-ledger.md)
+2. 用已封存的原始预测复算 Top-1 macro-F1、准确率及平均最高候选概率，核对分片哈希和样本覆盖。原始预测和权重由运行证据路径定位，需要对应资产的访问权限。[复算命令和证据路径](wiki/reports/JEV-R64-S2.md#复算)
+3. 若复跑推理，用报告标识的同一模型与输入人口加载冻结检查点，再按原评测口径评分。[实验协议与配置](experiments/README.md)
 
-## 本地开发
-
-需要 Python 3.11 或更新版本。
-
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -e '.[dev]'
-.venv/bin/python -c "import multimodal_jev; print(multimodal_jev.__version__)"
-```
-
-当前包没有运行时第三方依赖；`dev` 提供 pytest，`assets` 提供下载工具所需 requests。
-使用 `.venv/bin/python -m pip install -e '.[dev,assets]'` 安装工具依赖，`.venv/bin/python -m pytest` 验证共享资源工具的校验与不覆盖行为。
-加速器、深度学习框架和多模态模型依赖固定在独立实验镜像中，见运行时说明。
-
-## 研究与实验约定
-
-- 在运行前记录假设、数据划分、指标、阈值和失败判据；测试集不参与调优。
-- 一致性目标须配套相关事实变化的区分测试，避免常量预测等退化解。
-- 区分类型化读出、生成式标签评分和外围规则处理，不将设计目标写成已验证能力。
-- 模态缺失、冲突证据及未知状态的处理应在实验协议中明确。
-- 模型、数据、特征、checkpoint 和完整日志存放在 Git 之外；仓库保留清单、版本和结果摘要。
-- 长任务应可脱离会话运行、可恢复，保存启动命令、进度、成本和带退出码的完成标记。
-
-来源与初始化边界见 [参考说明](docs/references.md)，协作规则见 [AGENTS.md](AGENTS.md)。
-[实验台账](wiki/experiment-ledger.md)位于仓库的 `wiki/`，随主线同步。
-
-长期算法问题、受控对照与泛化判据见 [Omni RL 设计](proposal/archive/raw/03-omni-sfc-rl-design-v1.md)；
-镜像兼容性见 [运行时说明](docs/engineering/runtime.md)，数据与奖励入口见 [数据契约](docs/engineering/data-contract.md)。
-
-工程证据入口包括[完整CPU数值修复候选](docs/engineering/archive/raw/omni-baseline/omni-compact-keys-diagnostic-v1.md)、
-[真实verl冻结actor比较](docs/engineering/archive/raw/omni-baseline/omni-compact-verl-v1.md)和
-[Audio2Tool原生/Jev解码成本测量](docs/engineering/archive/raw/complex-tasks-deferred/audio2tool-decode-profile-v1.md)。
-六条CPU候选响应logits与参考一致不证明NPU概率一致、训练收益或任务泛化。
-
-## 历史实验记录
-
-以下保留早期ASR、SFT与转写对照记录供追溯，所述“已启动”“等待执行”均为当时
-状态，不是当前任务安排。串联文本模型和参考转写替换不再派发；旧SFT/RL配置不能
-直接用于当前Omni actor。原始设计见[历史RL协议](proposal/archive/raw/01-rl-research-protocol.md)。
-
-实现进度：已加入 [冻结声学头开发实验](experiments/archive/raw/frozen-baselines/fsc-frozen-audio-pilot.md)、
-[音频策略与 verl 接入审计](docs/engineering/archive/raw/span-engine/audio-rl-integration.md)，以及成对正确性奖励。
-这些是基线/RL 研究组件；正式学界复现、跨任务泛化和 RL 提升仍需实验验证。
-
-跨任务数据已扩展到 [SLURP 域留出协议](experiments/archive/raw/frozen-baselines/slurp-transfer-v1.md)：
-59,014 条真实录音、413,098 条派生决策，覆盖 scenario Choice 和四类开放槽位；
-已完成全量数据校验和固定开发子集的原始模型、SFT 迁移评测。
-SFT 输出格式全部有效，但非空目标正确数为 0/81，尚未显示语义迁移收益；
-见 [SLURP 结果](docs/engineering/slurp-sft-development-v1-result.json)。
-
-[vLLM rollout 与 verl 更新入口](docs/engineering/archive/raw/span-engine/rollout-training.md) 已实现；
-实际 NPU engine rollout 和完整 RL 更新尚待验证。原始 ASR 模型的实际采样暴露了
-结构化输出失败，因此先进行 SFT 初始化，并运行完整 FSC 冻结基线作为对照。
-
-SFT 初始化现已完成 47 次更新并通过合并/重载数值校验，见
-[完成收据](docs/engineering/fsc-sft-init-v1-receipt.json)。FSC/SLURP 开发集评测已启动，
-完整 FSC 冻结基线仍在运行；尚无 SFT 泛化或 RL 提升结论。
-[SFT 起点的两轮 RL 配置](configs/experiments/rl-schedule-sft-smoke.json)
-已通过真实资产预检，仍待分配空闲 NPU 执行 vLLM 采样与 verl 更新。
-
-[转写文本对照](experiments/archive/raw/early-rl-engineering/text-evidence-baselines.md)已在 FSC、SLURP 固定开发子集启动：
-使用同一个 Qwen3-0.6B，比较 ASR 转写与参考转写对决策的影响。
-四组均已产出预测，完成后自动生成成对说话人 bootstrap 比较；当前无完整文本对照结果。
-实验状态与证据索引见 [运行记录](wiki/archive/raw/2026-11-10-development-baselines.md)。
+[实验报告](wiki/README.md) · [工程规约](AGENTS.md) · [研究范围](proposal/00-research-scope.md)
