@@ -1,6 +1,6 @@
 # 2025 年起的语音语义判决参考集
 
-正式队列移除 FSC，已冻结的历史实验保留。当前全量评测只含 SLURP 源任务和 MINDS 意图迁移；以下是新增候选，不代表已经本地验收或跑出效果。选择标准为基准首次公开于 2025 年起、语音输入、意义判决、可固定的有限答案和独立监督。原始录音或文本的年份与新任务发布年份分别看待。
+正式队列移除 FSC，已冻结的历史实验保留。SLURP 和 MINDS 分别用于源任务和意图迁移评测。SIB-FLEURS 英语话题和 MMSU 多义词已封存，并在 [JEV-201](../../wiki/reports/JEV-201.md) 完成全量评测。WolBanking77 和 YUE-PUB-Speech 仍是候选。选择标准为基准首次公开于 2025 年起、语音输入、意义判决、可固定的有限答案和独立监督。原始录音或文本的年份与新任务发布年份分别看待。
 
 | 用途 | 官方出处与已核验事实 | 采用边界 |
 |---|---|---|
@@ -18,4 +18,4 @@ Speech-MASSIVE 为 2024 年工作，且 MASSIVE 由 SLURP 本地化得到；ATIS
 两套可移植视图的目录由本地宏 SHARED_DATASETS 绑定。SIB 为 sib-fleurs-jev/eng-topic-v1（320 份录音、177 个原句、7 个话题）；MMSU 为 mmsu-jev/polysemy-v1（扫描全部 5,000 行，按精确 task_name=polysemy_reasoning 选中 98 个不同题目，4 个原始选项）。两者皆可提供 Noul 或 Choice + NONE，金标只在 scoring 子目录读取。MMSU 每题的题干和候选文本进上下文；A/B/C/D 仅标记本题的位置，不能拿位置的 macro-F1 当语义指标。SIB 保留原句组用于聚类区间。两者的监督都包含正确答案，NONE 仅能测误拒。
 
 版本与入口：configs/portable/operations/semantic-transfer-sources.json；用 tools.reports.materialize_semantic_sources 核对固定 git revision 的普通文件及 LFS 字节。带 pyarrow、numpy、soundfile 和 scipy 的 Python 环境运行
-`python -m tools.reports.build_semantic_transfer_views <config> <local-macros> sib` 或 `mmsu`。重复执行会在已发布目录全量复核。tools.reports.prepare_native_seal_cache.plan 以 MANIFEST.json 的 SHA256 和数据集 ID 加载相对路径、任务定义及逐题候选。当前发布是数据与 CPU 输入验收，未派发 NPU 评测，未报告模型效果。
+`python -m tools.reports.build_semantic_transfer_views <config> <local-macros> sib` 或 `mmsu`。重复执行会在已发布目录全量复核。评测入口为 `./run_experiment.py resume --experiment JEV-201`，按已封存的清单和登记的端点执行。

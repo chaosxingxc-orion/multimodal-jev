@@ -8,5 +8,5 @@
 | JEV-R64-S2 | [双信用 GRPO 末点评测](JEV-R64-S2.md) | SLURP TEST 和 MINDS 已审 |
 | 零训练对照 | [SLURP selection](slurp-simple-base-selection-v1.md) | 已复算 |
 | JEV-198 | [固定与动态 reference 的配对评测](JEV-198.md) | SLURP 和 MINDS 完整面板已审，跨任务证据待补 |
-| JEV-201 | [新版联合 TPO](JEV-201.md) | 训练已审，SLURP TEST 与 MINDS 末点评测已派发 |
+| JEV-201 | [新版联合 TPO](JEV-201.md) | SLURP TEST、MINDS、SIB-FLEURS 与 MMSU 末点评测已审 |
 | JEV-204 | [全量单阶段联合 TPO](JEV-204.md) | 正式训练暂停，保留四步更新收据和全量固定参考 |
