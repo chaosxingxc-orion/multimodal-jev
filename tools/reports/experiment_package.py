@@ -408,7 +408,7 @@ def update_wiki(claim, selection, results, status):
     write_wiki(ledger, original, "".join(lines))
 
 
-def execute(action, experiment, local, *, publish=False):
+def execute(action, experiment, local, *, publish=False, wait_for_ledger=False):
     if action == "publish":
         if not experiment or not re.fullmatch(r"JEV-[A-Z0-9]+(?:-[A-Z0-9]+)*", experiment):
             raise ValueError("Specify --experiment for Wiki publication")
@@ -450,7 +450,7 @@ def execute(action, experiment, local, *, publish=False):
     root.mkdir(parents=True, exist_ok=True)
     # The inherited lock stays held if the launcher dies before its backend exits.
     with (root / "ledger.lock").open("a") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        fcntl.flock(lock, fcntl.LOCK_EX | (0 if wait_for_ledger else fcntl.LOCK_NB))
         if git_output("rev-parse", "HEAD").decode().strip() != selection["commit"]:
             raise ValueError("Queue row changed since selection")
         work_row = queue_rows(Path(LEDGER).read_text())[selection["experiment_id"]]
@@ -521,11 +521,13 @@ def main():
     parser.add_argument("--experiment", help="Experiment ID in the committed queue")
     parser.add_argument("--local", type=Path, default=LOCAL)
     parser.add_argument("--publish", action="store_true", help="Sync the generated Wiki changes to origin/main")
+    parser.add_argument("--wait-for-ledger", action="store_true", help="Wait for the current experiment to release the ledger")
     args = parser.parse_args()
     if args.publish and args.action not in {"run", "resume"}:
         parser.error("--publish is available with run or resume")
     try:
-        result = execute(args.action, args.experiment, args.local, publish=args.publish)
+        result = execute(args.action, args.experiment, args.local, publish=args.publish,
+                         wait_for_ledger=args.wait_for_ledger)
     except (KeyError, OSError, TypeError, ValueError, subprocess.CalledProcessError) as exc:
         parser.exit(2, f"{exc}\n")
     print(json.dumps(result, ensure_ascii=False, indent=2))

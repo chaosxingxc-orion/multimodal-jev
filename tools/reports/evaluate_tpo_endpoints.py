@@ -30,14 +30,18 @@ def run(spec):
     c['cache']['processor']['policy']=c['snapshot']
     stage1=read_execution_bundle(c['snapshot'],expected_policy_id=c['policy_id'],
         expected_contract=c['contract'],expected_base_id=c['base_id'])
-    assets,candidates,encode=load(c)
+    if 'calibration' in spec:
+        from tools.reports.calibrate_tpo_probabilities import cached_source
+        assets, candidates, encode = cached_source(spec['calibration'], parent)
+    else:
+        assets, candidates, encode = load(c)
     # Each container owns one card and one frozen dataset. Reuse model construction,
     # audited input tensors and candidate layout over all three endpoints.
     width=spec['batch']
     index=spec['shard']
     assets=assets[index::spec['shards']]
     processor=processor_cache_identity(c['snapshot'])
-    rows=[(asset,encode(asset)[0]) for asset in assets]
+    rows = [] if 'calibration' in spec else [(asset, encode(asset)[0]) for asset in assets]
     model,device,base,handle=provider.load_reference(c,stage1,out)
     tokenizer_processor = provider.processor(stage1['processor'])
     collate = provider.collation(base,tokenizer_processor,model)
@@ -89,12 +93,21 @@ def run(spec):
             raise ValueError('changed processor invalidates paired evaluation')
         load_policy(path,model,expected_policy_id=pid,expected_contract=c['contract'],expected_base_id=c['base_id'])
         predictions=[]
-        with torch.inference_mode():
-            for start in range(0,len(rows),width):
-                items=[dict(row,request_id=asset['id'],policy_id=pid) for asset,row in rows[start:start+width]]
+        from contextlib import nullcontext
+        from itertools import islice
+        from multimodal_jev.ordered_prefetch import OrderedPrefetch
+        newly_encoded = not rows
+        stream = OrderedPrefetch(lambda asset: (asset, encode(asset)[0]), assets,
+                                 workers=spec['io_workers'], ahead=spec['prefetch']) if newly_encoded else nullcontext(rows)
+        with torch.inference_mode(), stream as queue:
+            inputs = iter(queue)
+            while group := list(islice(inputs, width)):
+                if newly_encoded:
+                    rows.extend(group)
+                items=[dict(row,request_id=asset['id'],policy_id=pid) for asset,row in group]
                 z=provider.forward(model,items,device=device,dtype=torch.bfloat16,policy_id=pid,**collate)
                 prob=z.float().sigmoid().cpu()
-                if start==0:
+                if not predictions:
                     single=provider.forward(model,items[:1],device=device,dtype=torch.bfloat16,
                         policy_id=pid,**collate).float().sigmoid().cpu()
                     if not torch.equal(prob[:1],single):
@@ -109,7 +122,11 @@ def run(spec):
 def collect_predictions(shards, filename, assets):
     records, policies = {}, set()
     for part in shards:
-        publication = read(Path(part)/filename)
+        if isinstance(part, dict):
+            from tools.reports.run_native_seal_endpoint import bound
+            publication = bound(part)
+        else:
+            publication = read(Path(part)/filename)
         policies.add(publication['policy_id'])
         for row in publication['records']:
             if row['id'] in records:
@@ -123,16 +140,33 @@ def collect_predictions(shards, filename, assets):
 def collect(spec):
     # score() checks the complete ordered test population and independent sealed gold.
     from tools.reports.prepare_native_seal_cache import plan
+    if 'calibration_fit' in spec:
+        from tools.reports.calibrate_tpo_probabilities import collect as calibrate
+        if file_hash(spec['parent']) != spec['parent_sha']:
+            raise ValueError('calibration parent changed')
+        return calibrate(spec, read(spec['parent']))
     result={}
+    thresholds = None
+    if 'thresholds' in spec:
+        thresholds = read(spec['thresholds'])
+        if (thresholds['schema'] != 'jev-source-train-harness-thresholds-v1'
+                or thresholds['roster_sha256'] != spec['calibration_roster_sha256']):
+            raise ValueError('frozen source TRAIN calibration required')
     for dataset,c in spec['endpoints'].items():
         jobs=plan(c['cache'])
         assets=[dict(id=r['id'],audio_sha256=r['audio_sha256']) for _,r,_ in jobs]
         candidates=[q.id for q in jobs[0][2].questions]
         if 'probability_panels' in spec:
             from tools.reports.score_probability_panels import score_panel
+            inferred = spec.get('inferred_arms', {}).get(dataset, spec['arms'])
             predictions = {arm: collect_predictions(spec['shards'][dataset], arm+'.json', assets)
-                           for arm in spec['arms']}
-            result[dataset] = score_panel(c['cache'], jobs, predictions, spec['probability_panels'][dataset])
+                           for arm in inferred}
+            for arm, proof in spec.get('reused_predictions', {}).get(dataset, {}).items():
+                predictions[arm] = collect_predictions(proof['shards'], arm+'.json', assets)
+                if predictions[arm][1] != proof['policy_id']:
+                    raise ValueError('historical prediction policy differs')
+            result[dataset] = score_panel(c['cache'], jobs, predictions, spec['probability_panels'][dataset],
+                                          thresholds=thresholds['arms'] if thresholds else None)
             continue
         semantic_protocol = spec.get('semantic_scoring', {}).get(dataset)
         if semantic_protocol is not None:
@@ -214,6 +248,8 @@ def collect(spec):
     if 'probability_panels' in spec:
         result = dict(schema='jev-audited-probability-panels-v1', datasets=result,
                       seals={ds: c['cache']['seal']['sha256'] for ds,c in spec['endpoints'].items()})
+        if thresholds:
+            result['thresholds_sha256'] = file_hash(spec['thresholds'])
     elif spec.get('publish_seals'):
         result = dict(schema='jev-audited-tpo-evaluation-v1', datasets=result,
                       seals={dataset: c['cache']['seal']['sha256']

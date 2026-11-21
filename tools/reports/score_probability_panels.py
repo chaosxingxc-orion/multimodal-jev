@@ -8,7 +8,7 @@ from multimodal_jev.paired_event_decisions import compare
 from tools.reports.run_native_seal_endpoint import bound
 
 
-def score_panel(cache, jobs, predictions, protocol):
+def score_panel(cache, jobs, predictions, protocol, *, thresholds=None):
     root = Path(cache["seal"]["root"])
     seal = bound(dict(path=root / "MANIFEST.json", sha256=cache["seal"]["sha256"]))
     dataset = cache["dataset"]
@@ -58,6 +58,12 @@ def score_panel(cache, jobs, predictions, protocol):
             returned = np.bincount(winner, minlength=len(ids))
             correct = np.bincount(gold[hit], minlength=len(ids))
             metric["top1_macro_f1"] = math.fsum(2*a/b if b else 0 for a,b in zip(correct, support+returned))/len(ids)
+        if thresholds is not None:
+            from tools.reports.calibrate_tpo_probabilities import routing
+            locked = thresholds[arm]
+            if locked["policy_id"] != policy or not 0 <= locked["threshold"] <= 1:
+                raise ValueError("frozen threshold does not belong to this policy")
+            metric["harness"] = routing(confidence, hit, locked["threshold"])
         rows[arm] = metric
         winners[arm] = hit
         values[arm] = {t["id"]: dict(zip(ids, p.tolist(), strict=True))

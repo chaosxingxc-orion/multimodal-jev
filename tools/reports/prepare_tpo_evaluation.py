@@ -186,9 +186,45 @@ def prepare(config):
     jobs=[];mounts={str(remote_parent),prior['remote_root']};sets={};pieces={}
     mounts.update(str(Path(endpoint['root']).parent) for endpoint in endpoint_bindings.values())
     encode_jobs, verify_jobs, cache_jobs, semantic = [], [], [], {}
+    calibration_groups = []
+    calibration = config.get('calibration')
+    if calibration:
+        if (full or 'probability_panels' not in common or 'choice' in common
+                or set(calibration['policy_ids']) != set(common['arms'])
+                or not calibration['devices'] or len(set(calibration['devices'])) != len(calibration['devices'])):
+            raise ValueError('source calibration requires paired raw probabilities and distinct devices')
+        roster = Path(calibration['roster']['path'])
+        if (file_hash(roster) != calibration['roster']['sha256']
+                or file_hash(training_entry/'targets'/roster.name) != calibration['roster']['sha256']):
+            raise ValueError('calibration roster differs from the frozen training design')
+        shutil.copyfile(roster, entry/'calibration-roster.json')
+        rule = dict(calibration, roster=dict(path='/jev-entry/calibration-roster.json',
+                                             sha256=calibration['roster']['sha256']))
+        parent_args = dict(parent=str(parent_file), parent_sha=binding['parent_sha'], calibration=rule)
+        mounts.add(parent['encoded_audio_cache'])
+        calibration_jobs, shards = [], []
+        for i, device in enumerate(calibration['devices']):
+            name = f'calibration-{i}'
+            output = '/jev-work/'+name
+            opts = dict(common, **parent_args, phase='tpo_eval',
+                        endpoint=dict(cache=dict(processor={}), audio_token_id=parent['audio_token_id']),
+                        devices=[device], shard=i, shards=len(calibration['devices']), output=output,
+                        trained=prior['remote_root'], batch=config['batch'], binding=binding,
+                        updates=steps, prefetch=calibration['prefetch'])
+            commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
+            calibration_jobs.append(dict(name=name, devices=[device], **config['eval_container']))
+            shards.append(output)
+        threshold_file = '/jev-work/thresholds.json'
+        fit = dict(common, **parent_args, phase='tpo_score', calibration_fit=True,
+                   shards=shards, output=threshold_file)
+        commit_json(entry/'calibration-fit.json', macros('NATIVE_SEAL_CONTAINER_CONFIG',fit))
+        calibration_groups = [calibration_jobs, [dict(name='calibration-fit', devices=[],
+                                                       collect='thresholds.json', **config['cache_container'])]]
     cache_store_used = False
     if 'choice_baseline' in common:mounts.add(common['choice_baseline']['root'])
     datasets=config['datasets']
+    reused_predictions = {}
+    inferred_arms = {}
     if 'formal_datasets' in config:
         selected=config['formal_datasets']
         if not selected or len(set(selected))!=len(selected):
@@ -262,16 +298,39 @@ def prepare(config):
             mounts.add(cache['seal']['root'])
         c=dict(cache=cache,cache_verification=cache['output']+'/VERIFIED.json',audio_token_id=cache['encoding']['audio_token_id'] if full else parent['audio_token_id'])
         sets[dataset]=c;pieces[dataset]=[]
+        historical = source.get('reused_predictions', {})
+        if historical:
+            if 'probability_panels' not in common or 'choice' in common:
+                raise ValueError('raw audited predictions can only be reused for probability panels')
+            expected_policies = {'stage1': parent['source_policy_id'],
+                                 **{arm: proof['policy_id'] for arm, proof in endpoint_bindings.items()}}
+            for arm, proof in historical.items():
+                if (arm not in common['arms'] or arm not in expected_policies
+                        or proof['policy_id'] != expected_policies[arm]
+                        or proof['manifest_sha256'] != cache['cache_identity']['manifest_sha256']
+                        or not proof['shards']):
+                    raise ValueError('historical policy or input cache identity differs')
+                mounts.update(str(Path(part['path']).parent) for part in proof['shards'])
+            reused_predictions[dataset] = historical
+        arms = [arm for arm in common.get('arms', ('stage1', 'direct', 'tpo')) if arm not in historical]
+        if historical:
+            inferred_arms[dataset] = arms
         for i,device in enumerate(source['devices']):
             name=f"{source['name']}-{i}"
             opts=dict(common,phase='tpo_eval',endpoint=c,devices=[device],shard=i,shards=len(source['devices']),
                 trained=prior['remote_root'],output='/jev-work/'+name,batch=config['batch'],binding=binding,
                 updates=steps,parent=str(parent_file),parent_sha=binding['parent_sha'])
+            if historical:
+                opts['arms'] = arms
             commit_json(entry/(name+'.json'),macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
             pieces[dataset].append(opts['output'])
             jobs.append(dict(name=name,devices=[device],**config['eval_container']))
     scoring=dict(common,phase='tpo_score',output='/jev-work/metrics.json',endpoints=sets,shards=pieces,
                  steps=dict(stage1=config['stage1_step'],direct=steps,tpo=steps,**checkpoint_steps))
+    if calibration:
+        scoring.update(thresholds=threshold_file, calibration_roster_sha256=calibration['roster']['sha256'])
+    if reused_predictions:
+        scoring.update(reused_predictions=reused_predictions, inferred_arms=inferred_arms)
     if semantic:
         scoring['semantic_scoring'] = semantic
     if config.get('publish_seals'):
@@ -302,7 +361,7 @@ def prepare(config):
     else:
         predecessor = dict(driver=read(ops.with_suffix('.started.json')), terminal=str(ops/'terminal.json'))
     groups = [*([encode_jobs, verify_jobs] if encode_jobs else []),
-              *([cache_jobs] if cache_jobs else []), jobs,
+              *([cache_jobs] if cache_jobs else []), *calibration_groups, jobs,
               [dict(name='score', devices=[], collect='metrics.json', **config['eval_container'])]]
     ctl.update(config['deployment'],archive=str(archive),read_only_mounts=[p+':'+p for p in sorted(mounts)],
         device_group_lease=True,wait_for_lease=True,predecessor=predecessor,
@@ -311,7 +370,7 @@ def prepare(config):
         ctl['evaluation_cache_store'] = reuse['store']
     if cache_paths:
         ctl['evaluation_cache_plan'] = cache_paths
-    if config.get('publish_seals') or reuse:
+    if config.get('publish_seals') or reuse or calibration:
         ctl['entry_archive_sha256'] = file_hash(archive)
         ctl['entry_pins'] = {f'{job["name"]}.json': file_hash(entry/f'{job["name"]}.json')
                              for group in groups for job in group}

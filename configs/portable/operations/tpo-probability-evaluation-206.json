@@ -1,0 +1,450 @@
+{
+  "repository": ".",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-package",
+  "parent_config": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+  "deployment": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v1-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1",
+    "tag": "jev-eval-206-v1"
+  },
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/ops",
+  "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/package/operations-local.json",
+  "batch": 8,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "arms": [
+    "stage1",
+    "baseline",
+    "tpo"
+  ],
+  "evaluation_cache_reuse": {
+    "catalog": "configs/portable/operations/native-evaluation-cache-catalog-v1.json",
+    "catalog_host": "${TPO_EVALUATION_CACHE_CATALOG_HOST}",
+    "catalog_root": "${EXPERIMENT_TARGET_HOT_ROOT}",
+    "catalog_seal_root": "${SHARED_ROOT}",
+    "store": "${TPO_EVALUATION_CACHE_STORE}",
+    "build": {
+      "prefetch": 16,
+      "progress_interval": 128
+    }
+  },
+  "cache_container": {
+    "cpus": 8,
+    "memory": "16g",
+    "shm": "2g"
+  },
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "collected_predecessor": {
+    "terminal_sha256": "5d7e7862ce75250b6f2c13901d5bdacc7352a92c4db3868670a02c9afd78c5e5",
+    "receipt_sha256": "78b818061aca8b8d5bf6a8f39c9f42b4b52656bdc77353e93aa4480b8de1d457"
+  },
+  "audited_endpoints": {
+    "baseline": {
+      "root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-tpo-joint-v0.0.201/tpo",
+      "receipt_sha256": "1ed0ad04dbc6c8a74f479443213d044207bdc0c36785fea7e4544ad8fd80ef48",
+      "policy_id": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+      "updates": 34
+    }
+  },
+  "datasets": {
+    "SLURP_clean_TEST60": {
+      "name": "slurp",
+      "devices": "${TPO_206_SLURP_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/experiments/multimodal-jev/native-evaluation-seal-v0.0.129",
+          "sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "reused_predictions": {
+        "baseline": {
+          "policy_id": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+          "manifest_sha256": "f4963444d79c97bebb33b8345191a1b817f6fe79a2c611c744a658d92d048dd7",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/slurp-0/tpo.json",
+              "sha256": "cb9abe01b51ceb0e0297e7efc3f1e611f687f70bc32513187a15e6cfbab513e5"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/slurp-1/tpo.json",
+              "sha256": "0a10a363cbe294432076b6762667ac09cb07d26a6c4dd4e0f8517e60de83b443"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/slurp-2/tpo.json",
+              "sha256": "591f054247ed66ecde19b1d4536310cc57b7c3de92b879acc1f6e73228031c24"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/slurp-3/tpo.json",
+              "sha256": "4ee4f1fe1b166bcdd44e91e6d5389a7343253bb6eafc060421483e26a31eb77e"
+            }
+          ]
+        }
+      }
+    },
+    "MINDS_native14": {
+      "name": "minds",
+      "devices": "${TPO_206_MINDS_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/experiments/multimodal-jev/native-evaluation-seal-v0.0.129",
+          "sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "reused_predictions": {
+        "baseline": {
+          "policy_id": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+          "manifest_sha256": "3c50faa807c1fdce1e05261bf1d48d8c3070ce216e8ba899ff6cf3f33c2d23ad",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/minds-0/tpo.json",
+              "sha256": "e28a277c610882a84dfa49ed1c1586b8b178581221381b979c0c79fd2b1b36d9"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/minds-1/tpo.json",
+              "sha256": "0ce58445fb370116cba17eaecc904bc40393792d2dba0e3ec8496ff841c974af"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/minds-2/tpo.json",
+              "sha256": "f04cf99f4eb06c5420a60b4cc94f89d8fc5f3d9e2ff93f65fec2858a7ae4a470"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-ledger-v1/minds-3/tpo.json",
+              "sha256": "1bdf494c9498c6159e539f49cbb0b7d62ff1bf4ec1c43301ae209aefb6caace6"
+            }
+          ]
+        }
+      }
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "name": "sib",
+      "devices": "${TPO_206_SIB_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/datasets/sib-fleurs-jev/eng-topic-v1",
+          "sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "reused_predictions": {
+        "stage1": {
+          "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+          "manifest_sha256": "9a79bb4c9fbff44d47bbdbb9c878ae322ef19fbb4395cfb3656a0b7a7d5884a1",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-0/stage1.json",
+              "sha256": "0b76ae7ac613b3777aaf7e621dbc7da7c897ae1b68369a9c21456a428f0f14db"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-1/stage1.json",
+              "sha256": "0bbd18a678cbb3f2433af170159f9c6b3efbf91c5e180fd7bfe86beea7c5aac4"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-2/stage1.json",
+              "sha256": "00c3b31e374a3430b741c3e22ef617b5af092d3abc8d716b8d9a423ae1c9eddb"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-3/stage1.json",
+              "sha256": "2d01f2375439d8cdaa2e8f4aeaf543e009a8a9d06f79a37d469d3877a5f757e5"
+            }
+          ]
+        },
+        "baseline": {
+          "policy_id": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+          "manifest_sha256": "9a79bb4c9fbff44d47bbdbb9c878ae322ef19fbb4395cfb3656a0b7a7d5884a1",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-0/tpo.json",
+              "sha256": "3975d15887d2f350c9f43ea5aa7b0f4db007ac5a8b2788999f42db5601767f9f"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-1/tpo.json",
+              "sha256": "a05983c0d2573ffadfecbcf5dc63a6ccb6b52f6718671ff0a7e376d8bdbe9a0b"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-2/tpo.json",
+              "sha256": "21a88d1a7673c8b3f3db8890fa3441bf87170d6d242d975ea43eba4bfd0bfea3"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-3/tpo.json",
+              "sha256": "19e2c64d922661c424e899680e32d048923f78f46554f2d7a0c94a6910656b30"
+            }
+          ]
+        }
+      }
+    },
+    "MMSU_polysemy": {
+      "name": "mmsu",
+      "devices": "${TPO_206_MMSU_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${SHARED_ROOT}/datasets/mmsu-jev/polysemy-v1",
+          "sha256": "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        }
+      },
+      "reused_predictions": {
+        "stage1": {
+          "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+          "manifest_sha256": "623cbd810b8a6a3d660fc8c1dd8be6eeffeec578b7e9d66bf4a6b970d5f7eb15",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-0/stage1.json",
+              "sha256": "1b6df2c8b3e9cf1be21b73add45d7e9b98a2930253bd98da0983e86acee4468a"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-1/stage1.json",
+              "sha256": "bede802199942cb89db051bdd007991241a8c36f87ad1e05258a0461a0cbe311"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-2/stage1.json",
+              "sha256": "1dfe498396b9648e2bc21c4467d750afc971f43c8d0bc42bb5a8bfd4740d0472"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-3/stage1.json",
+              "sha256": "3ed4fe8f7988c21a3824dec8aa6f6b3eba9debf073a980c97140b2793b949730"
+            }
+          ]
+        },
+        "baseline": {
+          "policy_id": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+          "manifest_sha256": "623cbd810b8a6a3d660fc8c1dd8be6eeffeec578b7e9d66bf4a6b970d5f7eb15",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-0/tpo.json",
+              "sha256": "61bc44e3fff12e25bfc1a39ddb22c7c66e921c47a92af12007a7ea175efa6e6e"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-1/tpo.json",
+              "sha256": "37f46255a10e9b8ebfeee89f1183e1793a640887bd3d901095bfabc67e17e15b"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-2/tpo.json",
+              "sha256": "4c8cfb4f03f4262d171b7e57e8b54929b8242763f50d0089b0444d4c17d199c0"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-3/tpo.json",
+              "sha256": "1a5c4ff56102d02edb68446d7bd1475f8a5e83065e0c98c24df55940776ad010"
+            }
+          ]
+        }
+      }
+    },
+    "SLURP_clean_SELECTION60": {
+      "name": "selection",
+      "devices": "${TPO_206_SELECTION_DEVICES}",
+      "catalog_cache": {
+        "seal": {
+          "root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-r64-selection-181-v2/entry/selection-cache-seal",
+          "sha256": "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+        },
+        "processor": {
+          "sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe"
+        },
+        "encoding": {
+          "decision_token_id": 151706,
+          "audio_token_id": 151676,
+          "max_tokens": 4096
+        },
+        "output": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-selection-156/full-cache",
+        "cache_identity": {
+          "manifest_sha256": "627ee48f16d1528dd70a4865c59374e4c7aa3b0f04aaf40aaf716e0acbcc6dce",
+          "verification_sha256": "c66fc9d8e7a6f502d4bb375f148068abedcdcd9b895554f078d2c0d5d8adfb57"
+        }
+      }
+    }
+  },
+  "probability_panels": {
+    "SLURP_clean_TEST60": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MINDS_native14": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MMSU_polysemy": {
+      "primary": "top1_accuracy",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SLURP_clean_SELECTION60": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    }
+  },
+  "calibration": {
+    "roster": {
+      "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/targets/calibration.json",
+      "sha256": "11f979070100b1983e55abc1664c4a10c91fdd4cc70b040257f22dd482d906a9"
+    },
+    "recordings": 21244,
+    "absent_classes": [
+      "cooking_query"
+    ],
+    "devices": "${TPO_206_CALIBRATION_DEVICES}",
+    "prefetch": 32,
+    "policy_ids": {
+      "stage1": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+      "baseline": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+      "tpo": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071"
+    }
+  }
+}
