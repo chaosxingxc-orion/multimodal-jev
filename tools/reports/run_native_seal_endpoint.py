@@ -34,7 +34,10 @@ def selected_panel(c, assets, candidates, encode):
 
 
 def load(c):
+    from multimodal_jev.model_provider import cache_namespace, require_same_provider
     spec = c['cache']
+    require_same_provider(c,spec)
+    namespace = cache_namespace(c)
     root = Path(spec['output'])
     manifest = root/'MANIFEST.json'
     receipts = root/'inputs.jsonl'
@@ -45,6 +48,7 @@ def load(c):
             or m['schema'] != 'jev-native-seal-encoded-cache-v1'
             or m['inputs_sha256'] != file_hash(receipts)
             or m['seal_sha256'] != spec['seal']['sha256']
+            or m.get('model_provider_sha256') != namespace
             or m['encoding'] != spec['encoding']
             or m['prompt_layout'] != PREFIX_LAYOUT
             or m['processor_sha256'] != processor_cache_identity(c['snapshot'])
@@ -71,7 +75,8 @@ def load(c):
         raise ValueError('processor and endpoint markers differ')
     encode = encoder(root/'cache', requests, candidates, priors,
                      processor_sha256=m['processor_sha256'], decision_token_id=enc['decision_token_id'],
-                     audio_token_id=enc['audio_token_id'], prompt_layout=PREFIX_LAYOUT)
+                     audio_token_id=enc['audio_token_id'], prompt_layout=PREFIX_LAYOUT,
+                     provider_namespace=namespace,max_tokens=enc['max_tokens'])
 
     def prepare(asset):
         row, receipt = encode(asset)

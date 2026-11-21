@@ -1,0 +1,16 @@
+{
+  "schema": "jev-local-macros-v1",
+  "macros": {
+    "SIMPLE_RECIPE": "configs/experiments/simple-two-stage-recipe.json",
+    "STAGE1_PIPELINE_LOCAL": "${ATTEMPT_ROOT}/pipeline-local.json",
+    "FINALIZATION_CONFIG": "${ATTEMPT_ROOT}/finalization/config.json",
+    "FINALIZER_DRIVER": "${ATTEMPT_ROOT}/finalization-driver/started.json",
+    "RUNTIME_PACKAGE": "${ATTEMPT_ROOT}/code-runtime",
+    "REFERENCE_SCHEDULE": "${ATTEMPT_ROOT}/reference-full-schedule",
+    "STAGE2_OFFLINE_SCORING_DEVICES": [0, 1, 2, 3, 4, 5, 6, 7],
+    "PARITY_LOCAL": "${ATTEMPT_ROOT}/parity-input-audit-local.json",
+    "IMAGE_LOCAL": "${ATTEMPT_ROOT}/stage2-image-local.json",
+    "STAGE2_RUN_ROOT": "${ATTEMPT_ROOT}",
+    "STAGE2_ATTEMPT": "${ATTEMPT_TAG}"
+  }
+}

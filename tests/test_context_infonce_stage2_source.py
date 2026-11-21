@@ -99,3 +99,38 @@ def test_rehashed_extra_checkpoint_is_not_allowed_in_source_package(tmp_path,mon
     write(root/'PACKAGE.json',m)
     with pytest.raises(ValueError,match='unexpected assets'):
         module.audit(dict(c,manifest_sha256=module.file_hash(root/'PACKAGE.json')), {})
+
+
+def test_new_design_endpoint_drives_source_view_and_reference(tmp_path,monkeypatch):
+    from multimodal_jev.stage_experiment_contract import source_curve
+    from multimodal_jev.context_topology_batch_plan import derive
+    from tools.reports.prepare_context_reference_job import reference_source
+    c,plan=setup(tmp_path,monkeypatch)
+    d=module.read('configs/experiments/context-two-stage-margin-r64-dp8-v1.json')
+    # Real small adapter tensors from fixture, independent of the batch geometry.
+    for key in ('stage1','stage2'):
+        d[key]['lora']=plan['stage_lora_transition'][key]
+    curve=source_curve(d);s=d['stage1'];steps=curve['steps']
+    write(Path(c['design']),d);c['design_sha256']=module.file_hash(c['design'])
+    t=Path(plan['source_operations']['package'])/'config.json';training=module.read(t)
+    training.update(batch_config=s['batch_config'],instruction_objective=s['instruction_objective'],
+                    lr_schedule=s['lr_schedule'],global_batch=s['global_batch'])
+    write(t,training);plan['training_config_sha256']=module.file_hash(t)
+    plan['source_curve']=curve
+    for p,step in zip(plan['checkpoints'],steps,strict=True):p['step']=step
+    cp=plan['checkpoints'][-1]['commit'];commit=module.read(cp['path'])
+    commit.update(updates=steps[-1],contract=module.expected_contract(training))
+    write(Path(cp['path']),commit);cp['sha256']=module.file_hash(cp['path'])
+    plan['reference_endpoint']['step']=steps[-1]
+    plan['source_audit'].update(world_size=curve['world_size'],updates=list(range(steps[-1])))
+    plan['experiment']['task_stage']['updates']=steps[-1]
+    plan['experiment']['evaluation']['checkpoints']=steps
+    bound,_,_=module.binding(c,plan)
+    assert bound['source_step']==160 and bound['objective_config']==d['stage2']['objective_config']
+    assert derive(bound['batch_config'])['global_batch']==384
+    assert d['stage2']['batch_config']['source_queries'] is None
+    root=tmp_path/'job';write(root/'initial/endpoint-commit.json',commit)
+    origin=dict(source_policy_id=bound['source_policy_id'],reference_source=dict(endpoint=160,population=40513,max_tokens=4096))
+    assert reference_source(root,origin)==origin['reference_source']
+    with pytest.raises(ValueError,match='declared reference source'):
+        reference_source(root,dict(origin,reference_source=dict(origin['reference_source'],endpoint=318)))

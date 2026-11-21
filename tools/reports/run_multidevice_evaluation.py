@@ -38,6 +38,8 @@ def scoped(engine):
 
 
 def validate(c):
+    from multimodal_jev.evaluation_performance_gate import require_performance_admission
+    require_performance_admission(c)
     if c['monitor_interval_seconds']!=900:raise ValueError('900-second ordinary monitoring required')
     for b in c['pins']:read_bound(b)
     proof=json.loads(read_bound(c['cpu_report']))

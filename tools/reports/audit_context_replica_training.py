@@ -188,7 +188,7 @@ def check_schedule(batches, plan):
         raise ValueError('total real exposures differ')
 
 
-def audit_outputs(package, collection, *, initial_policy):
+def audit_outputs(package, collection, *, initial_policy, **locations):
     from multimodal_jev.context_policy_artifacts import read_execution_bundle, verify_native_adapter
     from multimodal_jev.context_replica_macro_rollout import plan_rollouts
     from multimodal_jev.context_replica_schedule import load_schedule, rank_indices
@@ -204,7 +204,18 @@ def audit_outputs(package, collection, *, initial_policy):
     plan = derive(c['batch_config']); world = plan['dp_replicas']
     start, stop = c['start_update'], c['stop_update']
     formal = None
-    if c.get('experiment_kind', 'engineering_prefix') == 'formal_source':
+    view = 'view_binding' in c
+    if view:
+        from multimodal_jev.stage2_view_runtime import indices, checkpoint_contract, consume
+        from tools.reports.audit_context_cached_training import ReferenceConsumption,expected_contract as cached_contract
+        from tools.reports.audit_objective_training import packaged_plugin
+        from multimodal_jev.objective_plugin import ObjectivePlugin
+        selected=indices(c)
+        engineering=c['view_window']!='formal'
+        if not engineering:
+            from tools.reports.context_replica_formal_candidate import contract as formal_contract
+            formal=formal_contract(c)
+    elif c.get('experiment_kind', 'engineering_prefix') == 'formal_source':
         from tools.reports.context_replica_formal_candidate import contract as formal_contract
         formal = formal_contract(c)
         engineering = False
@@ -221,7 +232,13 @@ def audit_outputs(package, collection, *, initial_policy):
         raise ValueError('declared service order differs from the packaged layout')
     mounted = mounted_names(manifest)
     layout = replica_topology(c, world, mounted)
-    contract = expected_contract(c, mounted)
+    if view:
+        contract=cached_contract(dict(c,schedule_release_sha256=c['mirror_release_sha256']),mounted)
+        from multimodal_jev.stage2_view_runtime import actor_contract
+        contract.update(actor_contract(c))
+        contract.update(training_dataset=checkpoint_contract(c),objective_plugin=ObjectivePlugin(packaged_plugin(package,c)).identity)
+        if formal:contract['formal_experiment']=formal
+    else:contract = expected_contract(c, mounted)
     check_result(read(run/'result.json'), start, stop, plan, engineering)
     report = read(collection/'supervision'/'terminal.json')
     if (report['passed'] is not True or report['actor_started'] is not True
@@ -233,24 +250,34 @@ def audit_outputs(package, collection, *, initial_policy):
         expected_contract=c['source_contract'], expected_base_id=c['base_id'])
     rows, task, _ = load(c['release'], c['release_sha256'], 'learning', purpose='optimize')
     population = {r['id']: r for r in rows}; candidates = [v['id'] for v in task['schema']['candidates']]
-    batches, _ = load_schedule(package/'source/schedule', c['schedule_sha256'],
-        release_sha256=c['release_sha256'], population=population, batch_config=c['batch_config'],
-        parent_root=package/'source/parent-schedule',
-        parent_manifest_sha256=c['parent_schedule_sha256'],
-        parent_release_sha256=c['schedule_release_sha256'])
-    if len(population) != plan['configuration']['source_queries'] or len(candidates) != 60:
-        raise ValueError('full frozen TRAIN population and candidate panel required')
-    check_schedule(batches, plan)
-    if formal:
-        from tools.reports.context_replica_formal_candidate import validate_schedule
-        validate_schedule(batches, population.keys(), c['batch_config'])
+    if view:
+        population,batches,_=consume(c,rows,task,directory=package/'view-data')
+        if len(candidates)!=60:raise ValueError('complete SLURP candidate panel required')
+        verifier=ReferenceConsumption(c['reference_dataset'],locations.get('reference_root',c['reference_dataset']['root']))
+        if c['view_window']=='recovery':
+            restored=read(package/'resume/checkpoint-0001-committed.json')
+            if restored['contract']!=contract or restored['updates']!=1:raise ValueError('foreign resume checkpoint')
+            initial=read_execution_bundle(package/'resume/policy-0001',expected_policy_id=restored['joint_policy']['policy_id'],
+                expected_contract=c['source_contract'],expected_base_id=c['base_id'])
+    else:
+        batches, _ = load_schedule(package/'source/schedule', c['schedule_sha256'],
+            release_sha256=c['release_sha256'], population=population, batch_config=c['batch_config'],
+            parent_root=package/'source/parent-schedule',
+            parent_manifest_sha256=c['parent_schedule_sha256'],
+            parent_release_sha256=c['schedule_release_sha256'])
+        if len(population) != plan['configuration']['source_queries'] or len(candidates) != 60:
+            raise ValueError('full frozen TRAIN population and candidate panel required')
+        check_schedule(batches, plan)
+        if formal:
+            from tools.reports.context_replica_formal_candidate import validate_schedule
+            validate_schedule(batches, population.keys(), c['batch_config'])
     for name, binding in zip(service_names, manifest['inference_services'], strict=True):
         service = read(package/manifest['layout']['services'][name])
         ready = read(collection/f'service-{name}/ready.json')
         if (binding['name'] != name
                 or read(collection/f'service-{name}/terminal.json')['exit_code'] != 0
                 or ready['physical_devices'] != [binding['device']]
-                or ready['policy_id'] != c['source_policy_id']
+                or ready['policy_id'] != (initial['policy_id'] if view else c['source_policy_id'])
                 or ready['contract'] != c['source_contract']
                 or ready['max_batch_queries'] != service['policy']['max_batch_queries']
                 or ready['model_forward_mode'] != runtime['profile']):
@@ -260,6 +287,7 @@ def audit_outputs(package, collection, *, initial_policy):
     scheduler = lambda costs, n: plan_rollouts(costs, n, replicas=replicas)
     sequence = 0; macros = []; summaries = []
     current = c['source_policy_id']; prior = initial['tensors']; reference_seen = {}
+    if view:current=initial['policy_id']
     for index in range(start, stop):
         step = index+1
         receipt = read(run/f'rollout-{index:04d}.json'); batch = read(run/f'batch-{index:04d}.json')
@@ -271,16 +299,21 @@ def audit_outputs(package, collection, *, initial_policy):
         planned = dict(batches[index],
                        rank_indices=rank_indices(batches[index], lengths, c['batch_config']))
         padded = [s for s in planned['slots'] if s['padding']]
+        if view and padded and selected[index]%plan['updates_per_epoch']!=plan['updates_per_epoch']-1:
+            raise ValueError('padding outside authenticated view tail')
         if padded and (engineering
                 or index % plan['updates_per_epoch'] != plan['updates_per_epoch'] - 1):
-            raise ValueError('only the declared epoch tail may pad zero-weight slots')
+            if not view:raise ValueError('only the declared epoch tail may pad zero-weight slots')
         if padded and (len(padded) != plan['tail_padding_slots']
                        or batches[index]['real_queries'] != plan['tail_real_queries']):
             raise ValueError('tail padding count differs from the authenticated schedule')
         targets = update_targets(batch, receipt, planned, population, task, update=index,
             policy_id=current, reference_id=c['source_policy_id'], global_batch=plan['global_batch'])
-        missing = reference_transition(receipt, reference_seen, current=current,
-            reference=c['source_policy_id'], replicas=replicas)
+        if view:
+            verifier.check(receipt,batch);missing=[]
+        else:
+            missing = reference_transition(receipt, reference_seen, current=current,
+                reference=c['source_policy_id'], replicas=replicas)
         if missing:
             directory = journal/f'batch-{sequence:08d}'; entry = read(directory/'INPUT.json')
             full = [None]*len(missing)
@@ -302,7 +335,8 @@ def audit_outputs(package, collection, *, initial_policy):
             raise ValueError('actual declared-width schedule grouping differs')
         summary = audit_groups(groups, receipt['queries'], targets, candidates=candidates,
             algorithm=c['algorithm'], arm=c['dual_arm'], update=index, policy_id=current,
-            reference_policy_id=c['source_policy_id'])
+            reference_policy_id=c['source_policy_id'],
+            **({'actor_options':contract['dual_objective']} if view and 'objective_config' in c else {}))
         if summary['real_queries'] != batches[index]['real_queries']:
             raise ValueError('actual real-query denominator differs from the authenticated schedule')
         saved = engineering or step in formal['recovery_checkpoint_steps']
@@ -384,6 +418,9 @@ def audit_outputs(package, collection, *, initial_policy):
                 or result['stop_update'] != stop or len(result['executions']) != 113
                 or set(result['executions'].values()) != {'bfloat16'}):
             raise ValueError('all-rank BF16 completion required')
+    if view:
+        if sum(r['real_queries'] for r in summaries)!=sum(batches[i]['real_queries'] for i in range(start,stop)) or verifier.samples!=(stop-start)*plan['global_batch']:
+            raise ValueError('selected view exposure differs')
     return dict(status=('formal_replica_training_audited' if formal
                         else 'finite_replica_training_audited'),
                 schema='context-replica-training-audit-v1', world_size=world,

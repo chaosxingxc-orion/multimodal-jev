@@ -31,13 +31,13 @@ def fixture(tmp_path,monkeypatch):
     spec['parent']['manifest_sha256']=module.file_hash(parent/'PREPARED.json')
     spec['manifest_sha256']=reference.prepare(spec,{})['manifest_sha256']
     inputs=tmp_path/'inputs'
-    write(inputs/'inputs.json',{'source':{'release_sha256':training['release_sha256'],
+    write(inputs/'inputs.json',{'panel':{'ids':list(range(256)),'population':40513},'source':{'release_sha256':training['release_sha256'],
         'processor_sha256':training['dual_runtime_identity']['processor_sha256']}})
     write(inputs/'MANIFEST.json',{'fixture':True})
     input_spec=dict(output=str(inputs),manifest_sha256=module.file_hash(inputs/'MANIFEST.json'),
         cache_root=training['encoded_audio_cache'],**spec['input_evidence'])
     monkeypatch.setattr(parity,'audit_parent',lambda *a:{'fixture':'NPU-parent'})
-    monkeypatch.setattr(parity,'audit_inputs',lambda *a:{'fixture':'input-audit'})
+    monkeypatch.setattr(parity,'audit_inputs',lambda *a:{'fixture':'input-audit','recordings':256})
     monkeypatch.setattr(parity,'check_paths',lambda _:None)
     ps=dict(parent=spec['parent'],inputs=input_spec,output=str(tmp_path/'parity'),remote_root='/data/parity-job')
     ps['manifest_sha256']=parity.prepare(ps,{})['manifest_sha256']
@@ -117,7 +117,38 @@ def test_reference_launch_uses_its_own_gate_in_shared_lifecycle(tmp_path,monkeyp
     assert len(called)==1 and called[0]['finite_inference_dispatch_allowed'] is True
 
 
-@pytest.mark.parametrize('fault',[None,'wait','archive','config','service','parity'])
+def test_single_admission_handoff_rechecks_payload_before_remote_calls(tmp_path,monkeypatch):
+    from tools.reports import context_composed_pipeline as composed
+    from multimodal_jev import local_checkpoint
+    root=tmp_path/'package'
+    root.mkdir()
+    payload=root/'payload'
+    payload.write_text('checked')
+    manifest=root/'PREPARED.json'
+    write(manifest,{'files':{'payload':module.file_hash(payload)}})
+    lease=tmp_path/'lease'
+    lease.touch()
+    c=dict(package=str(root),manifest_sha256=module.file_hash(manifest),lease=str(lease),
+        operations_root=str(tmp_path/'ops'),tag='test',reference_dispatch_allowed=True,
+        single_admission_launch=True,admission_execution={'io_workers':2})
+    monkeypatch.setattr(local_checkpoint,'check_paths',lambda _:None)
+    monkeypatch.setattr(composed.EFFECTS,'check_paths',lambda _:None)
+    monkeypatch.setattr('tools.reports.context_cached_storage_operations.command',lambda *a,**k:[])
+    monkeypatch.setattr(composed.EFFECTS.subprocess,'run',lambda *a,**k:pytest.fail('remote launch attempted'))
+    seen=[]
+
+    def validate(value):
+        seen.append(value)
+        payload.write_text('modified after admission')
+        return {},{},{}
+
+    monkeypatch.setattr(module,'validate',validate)
+    with pytest.raises(ValueError,match='receipt dependency changed'):
+        module.launch(c,{})
+    assert len(seen)==1
+
+
+@pytest.mark.parametrize('fault',[None,'wait','archive','config','service','parity','host','lease'])
 def test_reference_result_gate_binds_wait_archive_and_independent_output_audit(tmp_path,monkeypatch,fault):
     c,_,_=fixture(tmp_path,monkeypatch);spec=c['reference_job'];root=Path(spec['output'])
     m=module.read(root/'PREPARED.json');cid='d'*64
@@ -137,6 +168,17 @@ def test_reference_result_gate_binds_wait_archive_and_independent_output_audit(t
     c.update(archive=str(archive),deployment=dict(tag='reference-test',shared_root='/shared',
         driver_root='/usr/local/Ascend/driver'),inspect='fixture-inspect',collection='fixture-collected',
         results_audit_output=str(tmp_path/'independent-reference.json'))
+    # The lifecycle seals host and lease under deployment in collected audits.
+    # Keep package construction independent of the eight-card execution here.
+    if fault in (None,'host','lease'):
+        original_package_audit=module.audit_package
+        monkeypatch.setattr(module,'audit_package',lambda spec,p:original_package_audit(
+            {k:v for k,v in spec.items() if k!='scoring_devices'},p))
+        spec['scoring_devices']=c['parity_audit']['parity_package']['scoring_devices']=list(range(8))
+        c['deployment'].update(host='reference-host',lease='reference-lease')
+        c['parity_audit']['deployment']={k:c['deployment'][k] for k in ('host','lease')}
+        if fault in ('host','lease'):
+            c['deployment'][fault]='mismatch'
     calls=[]
     # Exact transport and full output replay are separately exercised through
     # prepare_context_reference_job tests; check this gate composes them intact.

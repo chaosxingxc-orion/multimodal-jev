@@ -95,7 +95,7 @@ def wait_source(c):
         source_curve_sha256=file_hash(source_root/'curve/curve.json'),source_selection_used_for_initialization=False)
 
 
-def monitored_training(ops,provenance,root):
+def monitored_training(ops,provenance,root,*,run_stage=None):
     """Reuse the exact-handle observer at 900s; never affect training decisions."""
     config={k:ops[k] for k in ('host','tag','operations_root','manifest_sha256')}
     config['interval_seconds']=INTERVAL
@@ -110,7 +110,7 @@ def monitored_training(ops,provenance,root):
             state=result.get('state') or {}
             if not state.get('Running',True) and state.get('Status') in ('exited','dead'):return
     worker=threading.Thread(target=monitor,name='formal-900s-observer',daemon=True);worker.start()
-    try:return formal.run(ops,provenance)
+    try:return (formal.run if run_stage is None else run_stage)(ops,provenance)
     finally:
         stop.set();worker.join(timeout=60)
         commit_json(root/'monitor-terminal.json',dict(owner_finished=True,observer_stopped=not worker.is_alive(),

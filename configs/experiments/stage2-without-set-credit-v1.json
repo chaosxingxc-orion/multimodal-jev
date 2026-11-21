@@ -1,0 +1,28 @@
+{
+  "status": "single_factor_ablation_not_npu_admitted",
+  "scope": "simple_exclusive_event_stage2_only",
+  "objective_source": "extensions/stage2_probability_margin_objective.py",
+  "definition": "Disable the sampled whole-set reward contribution only; same per-query ranking/existence, GRPO group, probability terms and reference.",
+  "options": {
+    "ranking_rl_weight": 0.25,
+    "existence_rl_weight": 0.25,
+    "task_rl_weight": 0.0,
+    "exact_weight": 0.5,
+    "overlap_weight": 0.5,
+    "beta": 1.0,
+    "ranking_auxiliary_coefficient": 0.1,
+    "probability_nll_sum_coefficient": 0.05,
+    "reference_kl_mean_coefficient": 0.01,
+    "probability_margin": 0.1,
+    "probability_margin_coefficient": 0.1
+  },
+  "coefficient_status": "comparison_with_formal_step102_parent_only_no_redistribution",
+  "supervision": "trusted_TRAIN_only",
+  "stage1_changed": false,
+  "training_dispatch_allowed": false,
+  "execution": {
+    "source": "configs/experiments/stage2-view-execution-v0.0.126.json",
+    "sha256": "06c424ea6574ef73efcfba237992ec50d1766ef0b31b3ab0bf6d2584ec829910"
+  },
+  "objective_sha256": "835fe90a9d90ffed7a009fa80ad8f71f6edd20a671b351bcff1077370f94b070"
+}

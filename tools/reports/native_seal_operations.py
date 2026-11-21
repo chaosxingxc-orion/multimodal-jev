@@ -17,6 +17,7 @@ from tools.reports.launch_context_batch_probe_candidate import wait_exact
 from tools.reports.context_macro_probe_operations import inspect_runtime
 from tools.reports.finalize_context_infonce import wait_exact as wait_driver
 from multimodal_jev.local_runtime_storage import check_paths
+from multimodal_jev.baseline import file_hash
 
 
 def run_group(group, launch, failed):
@@ -132,15 +133,25 @@ def run(c):
             if json.loads(Path(prerequisite).read_text()) != {'exit_code':0}:
                 raise ValueError('prerequisite failed: '+prerequisite)
         if devices:
+            required_idle = c.get('idle_devices',devices)
             smi = checked(['npu-smi','info'])
-            if any(f'No running processes found in NPU {i}' not in smi for i in devices):
-                raise ValueError('assigned devices are busy: '+str(devices))
+            if any(f'No running processes found in NPU {i}' not in smi for i in required_idle):
+                raise ValueError('assigned devices are busy: '+str(required_idle))
             active = checked(['docker','ps','-q']).split()
             if active:
                 for obj in json.loads(checked(['docker','inspect',*active])):
                     occupied = {d['PathOnHost'] for d in obj['HostConfig']['Devices'] or []}
-                    if occupied & {f'/dev/davinci{i}' for i in devices}:
+                    if occupied & {f'/dev/davinci{i}' for i in required_idle}:
                         raise ValueError('assigned devices are mapped by '+obj['Name'])
+            if 'entry_pins' in c:
+                if checked(['docker','image','inspect','--format','{{.Id}}',c['image']]).strip()!=c['image']:
+                    raise ValueError('frozen runtime image differs')
+                paths = {remote_root+'/entry/'+p:h for p,h in c['entry_pins'].items()}
+                remote_pins = {line.split(maxsplit=1)[1]:line.split(maxsplit=1)[0]
+                               for line in checked(['sha256sum',*paths]).splitlines()}
+                if remote_pins != paths:
+                    raise ValueError('remote frozen entry changed')
+                commit_json(root/(role+'-admission.json'),dict(entry_pins=c['entry_pins'],idle_devices=required_idle))
         argv = ['docker','create','--pull=never','--network=none','--name',c['tag']+'-'+role,
                 '--cpus',str(job['cpus']),'--memory',job['memory'],'--shm-size',job['shm'],
                 '--log-driver=json-file','--log-opt','max-size=100m','--log-opt','max-file=3']
@@ -201,7 +212,12 @@ def run(c):
             checked(['mkdir',remote_root])
             roles = [j['name'] for chain in c['chains'] for group in chain for j in group]
             checked(['mkdir',*(remote_root+'/'+r+s for r in roles for s in ('-tmp','-home'))])
+            if 'entry_archive_sha256' in c and file_hash(c['archive'])!=c['entry_archive_sha256']:
+                raise ValueError('frozen entry archive changed')
             subprocess.run(['scp',c['archive'],host+':'+remote_root+'/entry.tar'],check=True,timeout=c['transfer_timeout'])
+            if ('entry_archive_sha256' in c and
+                    checked(['sha256sum',remote_root+'/entry.tar']).split()[0]!=c['entry_archive_sha256']):
+                raise ValueError('transferred entry archive changed')
             checked(['tar','-xf',remote_root+'/entry.tar','-C',remote_root])
             if predecessors:
                 wait_for_devices(predecessors, checked, remote,

@@ -16,7 +16,7 @@ from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.local_runtime_storage import check_paths
 from tools.reports.finalize_context_infonce import wait_exact
-from tools.reports.context_infonce_selection import STEPS,reconstruct_plan
+from tools.reports.context_infonce_selection import configured_steps,reconstruct_plan
 from tools.reports.context_release_deployment import inherited
 from tools.reports import context_cached_efficiency_successor as efficiency_sequence
 from tools.reports import context_cached_efficiency as efficiency
@@ -31,8 +31,8 @@ def read(path):return json.loads(Path(path).read_text())
 def validate(c):
     if c.get('selection_dispatch_allowed') is not True:raise ValueError('explicit complete selection dispatch required')
     entries=c['points']
-    if [e['step'] for e in entries]!=STEPS or any(type(e['step']) is not int for e in entries):
-        raise ValueError('all eleven ordered InfoNCE points required')
+    if [e['step'] for e in entries]!=configured_steps(c['point_template']) or any(type(e['step']) is not int for e in entries):
+        raise ValueError('all registered ordered InfoNCE points required')
     prior=c['predecessor'];previous=read(prior['config']);base=Path(previous['output'])
     expected=dict(config=base/'config.json',terminal=base/'terminal.json',
         driver=base.with_name(base.name+'-driver')/'started.json')

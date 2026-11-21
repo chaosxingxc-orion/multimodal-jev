@@ -51,3 +51,17 @@ def test_two_topologies_preserve_identical_full_epoch_real_order():
         assert all(len(indices)==64 for b in batches for indices in b['rank_indices'])
         assert sum(s['weight'] for b in batches for s in b['slots'])==len(rows)
     assert orders[0]==orders[1] and len(set(orders[0]))==len(rows)
+
+
+def test_stage1_micro64_preserves_global_batch_and_removes_accumulation():
+    c=config(devices=4);c['microbatch']=64
+    p=derive(c)
+    assert p['global_batch']==256 and p['accumulation']==1
+    c.update(training_devices=2,inference_instances=2)
+    with pytest.raises(ValueError):derive(c)
+
+
+def test_stage1_local128_micro32_full_population():
+    c=config(devices=4);c.update(per_dp_replica_batch=128,microbatch=32)
+    p=derive(c)
+    assert (p['global_batch'],p['accumulation'],p['total_updates'],p['tail_real_queries'])==(512,4,160,65)

@@ -132,6 +132,7 @@ class FixedContextRollout:
 
     def close(self):
         if self.engine is not None:
-            self.engine.llm_engine.engine_core.shutdown(timeout=30.)
+            self.engine.llm_engine.engine_core.shutdown(
+                timeout=getattr(self, 'engine_shutdown_timeout_seconds', 30.))
             self.engine = None
         self.phase = 'closed'

@@ -18,18 +18,18 @@ def derive(config):
     model_parallel = c['tensor_parallel'] * c['pipeline_parallel']
     if c['training_devices'] % model_parallel:
         raise ValueError('training devices must contain complete TP/PP replicas')
-    if (c['per_dp_replica_batch'] != 64 or c['microbatch'] not in (8, 16, 32)
+    if (c['per_dp_replica_batch'] not in ((64,128) if c['inference_instances']==0 else (64,)) or c['microbatch'] not in ((2, 4, 8, 16, 32, 64) if c['inference_instances']==0 else (8, 16, 32))
             or c['inference_batch_queries'] not in (32, 48)
             or c['efficiency_steps'] > 100):
-        raise ValueError('local effective64, micro8/16/32, inference32/48, at most100 steps required')
+        raise ValueError('local effective64 (Stage1 also128), micro8/16/32 (Stage1 also2/4/64), inference32/48, at most100 steps required')
     dp = c['training_devices'] // model_parallel
     global_batch = c['per_dp_replica_batch'] * dp
     per_epoch = math.ceil(c['source_queries'] / global_batch)
     tail = c['source_queries'] - (per_epoch - 1) * global_batch
     return dict(schema='jev-topology-batch-plan-v1', configuration=dict(c),
-        dp_replicas=dp, local_effective_batch=64,
+        dp_replicas=dp, local_effective_batch=c['per_dp_replica_batch'],
         global_batch_formula='per_dp_replica_batch * training_devices / (TP * PP)',
-        global_batch=global_batch, accumulation=64 // c['microbatch'],
+        global_batch=global_batch, accumulation=c['per_dp_replica_batch'] // c['microbatch'],
         macro_queries=global_batch, inference_batch_queries=c['inference_batch_queries'],
         inference_delivery='complete_macro_to_pool_complete_rollout_to_one_instance',
         internal_batches='bounded_by_query_count_and_measured_token_audio_capacity',

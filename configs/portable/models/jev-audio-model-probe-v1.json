@@ -1,0 +1,23 @@
+{
+  "model": "${JEV_BASE_MODEL}",
+  "base_id": "${JEV_BASE_ID}",
+  "model_provider": "${JEV_MODEL_PROVIDER}",
+  "output": "${JEV_PROBE_OUTPUT}",
+  "probe_device": "${JEV_PROBE_DEVICE}",
+  "audio": "${JEV_PROBE_AUDIO}",
+  "questions": [
+    {"id": "timer", "definition": "Set or change a timer.", "question": "Does the speaker request a timer?"},
+    {"id": "music", "definition": "Play audio or music.", "question": "Does the speaker request playback?"},
+    {"id": "weather", "definition": "Ask for a weather forecast.", "question": "Does the speaker request a forecast?"}
+  ],
+  "requirements": ["Evaluate applicability to the supplied speech."],
+  "choice_indices": [2, 0],
+  "marker_init_symbols": ["?", "."],
+  "lora": {"rank": 64, "alpha": 128},
+  "seed": 42,
+  "io_workers": 4,
+  "cpu_workers": 8,
+  "max_tokens": 2048,
+  "probe_lr": 0.01,
+  "max_probability_error": 2e-7
+}

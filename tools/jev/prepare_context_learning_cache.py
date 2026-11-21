@@ -10,7 +10,9 @@ from multimodal_jev.baseline import atomic_json,file_hash
 
 def run(c,out):
     import torch
-    from transformers import Qwen3ASRProcessor
+    from multimodal_jev.model_provider import resolve_provider, cache_namespace
+    provider = resolve_provider(c)
+    namespace = cache_namespace(c)
     from multimodal_jev.cached_context_preparation import CachedContextPreparer,processor_cache_identity
     from multimodal_jev.context_candidate_task import compile_candidates
     from multimodal_jev.encoded_audio_cache import EncodedAudioCache,key_for
@@ -45,14 +47,16 @@ def run(c,out):
     candidates=[dict(id=x['id'],definition=x['description']) for x in task['schema']['candidates']]
     if len(candidates)!=60:raise ValueError('complete candidate menu required')
     processor_sha=processor_cache_identity(c['source_policy'])
-    factory=lambda:Qwen3ASRProcessor.from_pretrained(Path(c['source_policy'])/'processor',local_files_only=True)
+    factory=lambda:provider.processor(Path(c['source_policy'])/'processor')
     cache=EncodedAudioCache(out/'cache');mirror=LocalAudioMirror(Path(c['audio_mirror_root'])/'audio',read_only=True)
     prepare=CachedContextPreparer(factory,cache,processor_sha256=processor_sha,
-        decision_token_id=151706,audio_token_id=c['audio_token_id'],max_tokens=4096,audio_mirror=mirror)
+        decision_token_id=json.loads((Path(c['source_policy'])/'MANIFEST.json').read_bytes())['contract']['token']['id'],audio_token_id=c['audio_token_id'],max_tokens=c.get('max_tokens',4096),audio_mirror=mirror,
+        prompt_layout=c.get('prompt_layout'),provider_namespace=namespace,encode=provider.encode)
     def one(row):
         request=compile_candidates(row['audio'],candidates,task['thinking']['requirements'],semantics='exclusive_event')
         prior=ledger[row['id']]
-        if (prior['audio_sha256']!=row['audio_sha256'] or prior['audio']!=row['audio'] or
+        if (prior.get('prompt_layout')!=c.get('prompt_layout') or
+                prior['audio_sha256']!=row['audio_sha256'] or prior['audio']!=row['audio'] or
                 prior['request_sha256']!=content_hash(request.model_input())):
             raise ValueError('input differs from independent preflight')
         value=prepare((request,row['audio_sha256']))
@@ -62,7 +66,7 @@ def run(c,out):
                 list(value.inputs['input_features'].shape)!=prior['input_features']['shape']):
             raise ValueError('local processor differs from preflight')
         key=key_for(prepare.identity(request,row['audio_sha256']))
-        return dict(id=row['id'],cache_key=key,cache_sha256=file_hash(cache.root/(key+'.pt')),
+        return dict(id=row['id'],positions=value.positions[0].tolist(),cache_key=key,cache_sha256=file_hash(cache.root/(key+'.pt')),
             request_sha256=prior['request_sha256'],audio_sha256=row['audio_sha256'],cache_hit=value.cache_hit,
             tensors={k:tensor_identity(v) for k,v in dict(value.inputs,positions=value.positions).items()})
     started=time.monotonic();hits=0
@@ -78,10 +82,14 @@ def run(c,out):
         import os
         os.fsync(stream.fileno())
     report=dict(schema='context-full-learning-cache-v1',recordings=len(rows),release_sha256=c['release_sha256'],
-        processor_sha256=processor_sha,request_version='jev-context-exclusive_event-v1',
+        processor_sha256=processor_sha,prompt_layout=c.get('prompt_layout'),request_version='jev-context-exclusive_event-v1',
         inputs_sha256=file_hash(out/'inputs.jsonl'),cache_root=str(cache.root),
         seconds=time.monotonic()-started,existing_hits=hits,
         scope='Full CPU cache built with trainer identity; tokens/positions/audio receipt checked against independent preflight. No NPU throughput or task gain implied.')
+    if namespace is not None:
+        report['model_provider_sha256'] = namespace
+        report['base_id'] = json.loads((Path(c['source_policy'])/'MANIFEST.json').read_bytes())['contract']['base_id']
+        report['candidate_ids'] = [candidate['id'] for candidate in candidates]
     commit_json(out/'MANIFEST.json',report)
     return report
 

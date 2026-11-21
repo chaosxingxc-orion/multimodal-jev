@@ -3,6 +3,7 @@ import copy
 from pathlib import Path
 
 import pytest
+from tools.reports.context_infonce_selection import STEPS
 
 from multimodal_jev import local_checkpoint
 from tools.reports import context_replica_selection_sequence as module
@@ -17,13 +18,15 @@ def setup(tmp_path,monkeypatch):
     write(root/'terminal.json',dict(exit_code=0,status='cached_efficiency_collected_audited_and_measured',
         updates=100,formal_training_dispatched=False))
     refops=module.read(finite['reference_predecessor']['config']);deployment=module.inherited(refops)
-    source=tmp_path/'source-plan.json';write(source,{'fixture':'source'})
+    from test_context_infonce_selection import plan_from
+    source=tmp_path/'source-plan.json'
+    write(source,plan_from(dict(checkpoints=[dict(policy_id=str(s)) for s in STEPS],experiment={})))
     c=dict(output=str(tmp_path/'selection'),selection_dispatch_allowed=True,deployment=deployment,
         predecessor=dict(config=str(root/'config.json'),driver=str(driver),terminal=str(root/'terminal.json')),
         point_template=dict(parent=refops['reference_job']['parent'],source_plan=str(source),
             source_plan_sha256=module.file_hash(source),source_finalization={},selection_inputs={}),
         points=[dict(step=s,package=str(tmp_path/f'select-{s}-package'),remote_root=f'/data/select-{s}',
-            operations_root=str(tmp_path/f'select-{s}-ops'),tag=f'select-{s}') for s in module.STEPS])
+            operations_root=str(tmp_path/f'select-{s}-ops'),tag=f'select-{s}') for s in STEPS])
     for k in ('driver','config'):c['predecessor'][k+'_sha256']=module.file_hash(c['predecessor'][k])
     ops=dict(deployment,**eff['experiment']);bound=dict(deployment=ops,
         training_package={'remote_root':eff['experiment']['remote_root']})
@@ -84,7 +87,7 @@ def test_serial_points_stop_on_failure_and_never_retry(tmp_path,monkeypatch,fail
             source_step=step,runtime_provenance_verified=True)
     def collect(spec,p):
         calls.append('curve')
-        assert [e['step'] for e in spec['evaluations']]==module.STEPS
+        assert [e['step'] for e in spec['evaluations']]==STEPS
         for e in spec['evaluations']:assert module.file_hash(e['audit_config'])==e['audit_config_sha256']
         if failure=='curve':raise ValueError('incomparable points')
         return {'status':'complete_infonce_source_curve_audited'}
@@ -101,7 +104,7 @@ def test_serial_points_stop_on_failure_and_never_retry(tmp_path,monkeypatch,fail
     if failure in ('predecessor','prepare'):assert runs==[]
     elif failure=='point':assert runs==[0,32]
     elif failure=='status':assert runs==[0]
-    else:assert runs==module.STEPS and ('reuse',318) in calls
+    else:assert runs==STEPS and ('reuse',318) in calls
     before=copy.deepcopy(calls)
     with pytest.raises(FileExistsError):module.run(c,{})
     assert calls==before

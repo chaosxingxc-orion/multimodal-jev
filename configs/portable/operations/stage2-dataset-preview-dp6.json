@@ -1,0 +1,34 @@
+{
+  "schema": "jev-stage2-dataset-preview-v1",
+  "reference_job": "${STAGE2_PREVIEW_REFERENCE_JOB}",
+  "stage1_expected": "${STAGE1_DATASET_ENDPOINT}",
+  "receipt": "${STAGE2_PREVIEW_RECEIPT}",
+  "sampling": {
+    "seed": 317,
+    "decision_threshold": 0.5,
+    "probability_margin": 0.1,
+    "easy_fraction": 0.2,
+    "min_easy_per_class": 16
+  },
+  "batch_config": {
+    "training_devices": 6,
+    "tensor_parallel": 1,
+    "pipeline_parallel": 1,
+    "per_dp_replica_batch": 64,
+    "microbatch": 8,
+    "inference_instances": 2,
+    "inference_batch_queries": 32,
+    "epochs": 2,
+    "efficiency_steps": 100
+  },
+  "evaluation": {
+    "interval_updates": 64
+  },
+  "execution": {
+    "io_workers": 4,
+    "cpu_workers": 4,
+    "min_parallel": 50000,
+    "chunk": 512,
+    "window": 8
+  }
+}

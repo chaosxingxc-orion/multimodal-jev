@@ -10,7 +10,7 @@ from tools.reports import prepare_context_stage2_runtime as module
 def inputs():
     from tools.reports.context_cached_reference_trainer import BASELINE_OBJECTIVE
     design=json.loads((Path.cwd()/'configs/experiments/context-two-stage-v0.0.11.json').read_text())
-    binding=dict(base_id='base',source_policy_id='new-policy',source_contract={'base_id':'base'},
+    binding=dict(source_step=design['stage1']['reference_endpoint'],base_id='base',source_policy_id='new-policy',source_contract={'base_id':'base'},
         release_sha256='release',stage_lora_transition={'mode':'reuse'},
         stage2_objective=dict(BASELINE_OBJECTIVE),batch_config=design['stage2']['batch_config'])
     original=dict(base_id='base',source_policy_id='old-policy',source_contract={'base_id':'base'},
@@ -66,6 +66,49 @@ def test_conflicting_topology_and_source_rejected(fault):
     elif fault=='release':old['release_sha256']='other'
     else:c['attempt_id']='../escape'
     with pytest.raises(ValueError):module.configured(*a)
+
+
+def test_explicit_model_binding_updates_actor_services_and_pins(tmp_path):
+    from test_context_model_profile import LARGE_CONFIG, write_model
+    from multimodal_jev.cached_context_preparation import processor_cache_identity
+    original,services,c,binding,runtime,remote=inputs()
+    c['model_binding']={'io_workers':2}
+    model=write_model(tmp_path,dict(LARGE_CONFIG,audio_token_id=151676))
+    weights=model/'model.safetensors';weights.write_bytes(b'fixture only')
+    base_id,files=module.checkpoint_identity(model)
+    profile=module.from_hf(model)
+    interface=dict(runtime_profile='profile',request_version='request',output={'field':'prob'},
+                   token={'id':151706})
+    original.update(model='/shared/old',runtime_profile='profile',context_runtime_profile='profile',
+                    audio_token_id=151676,decision_token_id=151706,
+                    source_contract=dict(interface,base_id=original['base_id']),
+                    pins={'/shared/old/weights':'obsolete','/shared/data':'stay'})
+    binding.update(base_id=base_id,source_contract=dict(interface,base_id=base_id,
+                   lora=dict.fromkeys(profile.lora_targets()),branch=profile.decision_head()))
+    pins={str(model/n):h for n,h in files.items()}
+    training=dict(model=str(model),pins=pins,runtime_profile='profile',
+                  **{k:binding[k] for k in ('base_id','source_contract','release_sha256')})
+    training_path=tmp_path/'config.json';training_path.write_text(json.dumps(training))
+    initial=tmp_path/'initial';(initial/'policy/processor').mkdir(parents=True)
+    assets={}
+    for name in ('tokenizer.json','tokenizer_config.json'):
+        processor=initial/'policy/processor'/name;processor.write_text('{}')
+        assets['processor/'+name]=module.file_hash(processor)
+    (initial/'policy/MANIFEST.json').write_text(json.dumps(
+        {'files':assets}))
+    (initial/'source-plan.json').write_text(json.dumps(dict(
+        source_operations={'package':str(tmp_path)},training_config_sha256=module.file_hash(training_path))))
+    (initial/'design.json').write_text((Path.cwd()/'configs/experiments/context-model-profile-1.7b-v1.json').read_text())
+    runtime['processor_sha256']=processor_cache_identity(initial/'policy')
+    geometry=module.model_from_endpoint(c,initial,binding,runtime)
+    config,replicas,_=module.configured(original,services,c,binding,runtime,remote,geometry)
+    assert (config['model'],config['base_id'],config['source_contract']['branch']['hidden_size'])==(str(model),base_id,2048)
+    assert all((s['policy']['model'],s['policy']['base_id'],s['policy']['contract'])==
+               (str(model),base_id,binding['source_contract']) for s in replicas.values())
+    assert module.external_pins(original,c,'/data/old',geometry)==dict(pins,**{'/shared/data':'stay'})
+    weights.write_bytes(b'changed')
+    with pytest.raises(ValueError,match='model bytes differ'):
+        module.model_from_endpoint(c,initial,binding,runtime)
 
 
 def test_package_keeps_source_identity_and_replaces_old_external_policy_pins(tmp_path,monkeypatch):

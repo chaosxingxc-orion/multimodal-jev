@@ -1,0 +1,32 @@
+{
+  "schema": "jev-next-simple-two-stage-v1",
+  "status": "proposed_not_npu_admitted",
+  "training": {
+    "layouts": [
+      "native",
+      "both"
+    ],
+    "assignment_seed": 317,
+    "permutation_seed": 317
+  },
+  "stage1": {
+    "path": "configs/experiments/context-two-stage-margin-v0.0.123.json",
+    "sha256": "38c090ae6302650b89b5bbd896ce8a3262d7ba0659707d9a19553b500a5c4b4d"
+  },
+  "stage2": {
+    "path": "configs/experiments/stage2-without-set-credit-v1.json",
+    "sha256": "ad24d0425f09e8aab6325cb900bdf43fd6be507b9f799e5bee918bd6b5f87964"
+  },
+  "dataset": {
+    "path": "configs/portable/operations/stage2-dataset-dp6.json",
+    "sha256": "d246b9ea90261533f19ad3942eef72689fe71f711e4f90c19b92f756c5be19ff"
+  },
+  "evidence_population": "clean native SLURP TRAIN",
+  "interval": {
+    "method": "paired_cluster_percentile_bootstrap",
+    "confidence": 0.95,
+    "samples": 2000,
+    "seed": 317
+  },
+  "training_dispatch_allowed": false
+}

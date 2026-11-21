@@ -13,17 +13,15 @@ from .local_checkpoint import commit_file
 from .local_runtime_storage import check_paths,mount_for,LOCAL_FILESYSTEMS
 
 
-class LocalAudioMirror:
-    def __init__(self, root, *, read_only=False):
+class ReadOnlyAudioMirror:
+    """Read published content by hash, including Ceph behind a read-only bind."""
+    def __init__(self, root):
         self.root = Path(root)
-        self.read_only = read_only
-        if read_only:
-            mount=mount_for(self.root,Path('/proc/self/mountinfo').read_text())
-            if mount['filesystem'] not in LOCAL_FILESYSTEMS or not self.root.is_dir():
-                raise ValueError('existing local audio mirror required')
-        else:
-            check_paths({'audio_mirror': self.root})
-            self.root.mkdir(parents=True, exist_ok=True)
+        mount = mount_for(self.root, Path('/proc/self/mountinfo').read_text())
+        if (self.root.is_symlink() or not self.root.is_dir()
+                or not (mount['filesystem'] in LOCAL_FILESYSTEMS
+                        or (mount['filesystem'] == 'ceph' and 'ro' in mount['options'].split(',')))):
+            raise ValueError('published audio directory on local disk or read-only Ceph required')
 
     def _path(self, digest):
         if (type(digest) is not str or len(digest) != 64 or
@@ -34,8 +32,21 @@ class LocalAudioMirror:
     def resolve(self, digest):
         path = self._path(digest)
         if path.is_symlink() or not path.is_file() or file_hash(path) != digest:
-            raise ValueError('local audio missing or changed: ' + digest)
+            raise ValueError('mirrored audio missing or changed: ' + digest)
         return path
+
+
+class LocalAudioMirror(ReadOnlyAudioMirror):
+    def __init__(self, root, *, read_only=False):
+        self.root = Path(root)
+        self.read_only = read_only
+        if read_only:
+            mount=mount_for(self.root,Path('/proc/self/mountinfo').read_text())
+            if mount['filesystem'] not in LOCAL_FILESYSTEMS or not self.root.is_dir():
+                raise ValueError('existing local audio mirror required')
+        else:
+            check_paths({'audio_mirror': self.root})
+            self.root.mkdir(parents=True, exist_ok=True)
 
     def publish(self, source, digest):
         if self.read_only:

@@ -9,11 +9,12 @@ import copy
 from .context_candidate_task import compile_candidates
 from .context_logits_wire import validate_logits_record
 from .context_reference_dataset import digest,publish,validate_identity,validate_record
+from .ordered_prefetch import OrderedPrefetch
 from .span_request_identity import tensor_identity
 
 
 def build(root, *, assets, candidates, requirements, preparer, engine, identity,
-          macro_queries, audio_token_id, producer):
+          macro_queries, audio_token_id, producer, prefetch=None):
     """assets is {sample_id: {audio, audio_sha256}} with no label access."""
     identity=copy.deepcopy(identity)
     if (not isinstance(assets,dict) or not assets
@@ -52,7 +53,7 @@ def build(root, *, assets, candidates, requirements, preparer, engine, identity,
         batches.append(dict(index=len(batches),queries=len(keys),seconds=elapsed))
         pending.clear()
 
-    for sample_id in sorted(assets):
+    def prepare(sample_id):
         asset=assets[sample_id];begin=time.monotonic()
         request=compile_candidates(asset['audio'],candidates,requirements,semantics='exclusive_event')
         value=preparer((request,asset['audio_sha256']))
@@ -63,18 +64,42 @@ def build(root, *, assets, candidates, requirements, preparer, engine, identity,
             raise ValueError('prepared reference request differs from source')
         binding=dict(policy_id=policy,positions=value.positions[0].tolist(),
                      inputs={k:tensor_identity(v) for k,v in sorted(value.inputs.items())})
-        key=digest(binding);population[sample_id]=key
-        if key not in records and key not in pending:
-            pending[key]=(dict(inputs=value.inputs,positions=value.positions),binding)
-        preparation_seconds+=time.monotonic()-begin
-        if len(pending)==macro_queries:flush()
-    flush()
+        return sample_id,digest(binding),dict(inputs=value.inputs,positions=value.positions),binding,time.monotonic()-begin
+
+    def consume(prepared):
+        nonlocal preparation_seconds
+        for sample_id,key,inputs,binding,elapsed in prepared:
+            preparation_seconds+=elapsed
+            population[sample_id]=key
+            if key not in records and key not in pending:
+                pending[key]=(inputs,binding)
+            if len(pending)==macro_queries:flush()
+        flush()
+
+    ids=sorted(assets)
+    if prefetch is None:
+        consume(map(prepare,ids))
+    else:
+        prefetch=validate_prefetch(prefetch,macro_queries)
+        with OrderedPrefetch(prepare,ids,workers=prefetch['io_workers'],ahead=prefetch['ahead']) as work:
+            consume(work)
     if engine.runtime_identity!=identity['runtime_identity']:
         raise ValueError('reference runtime changed during build')
     final_identity=dict(identity,population_sha256=digest(population))
     timing=dict(preparation_seconds=preparation_seconds,scoring_seconds=scoring_seconds,
                 build_before_publication_seconds=time.monotonic()-started)
+    if prefetch is not None:
+        timing.update(input_prefetch=prefetch,preparation_seconds_scope='sum_of_input_worker_times')
     publication=publish(root,identity=final_identity,records=list(records.values()),population=population,
         producer=dict(producer,timing=timing,macro_batches=batches,actor_updates=0))
     return dict(publication,identity=final_identity,population=population,timing=timing,
                 batches=len(batches),numerical_admission_claim=False)
+
+
+def validate_prefetch(value, macro_queries):
+    from .context_execution import width
+    if (type(value) is not dict or set(value)!={'io_workers','ahead'}
+            or type(value['ahead']) is not int or not 1<=value['ahead']<=macro_queries
+            or width(value['io_workers'])>value['ahead']):
+        raise ValueError('reference input prefetch requires bounded workers and at most one macro ahead')
+    return dict(value)

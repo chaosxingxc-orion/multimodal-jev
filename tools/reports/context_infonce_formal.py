@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 import shutil
 import re
+import subprocess
+import time
 from types import FunctionType, SimpleNamespace
 
 from multimodal_jev.baseline import file_hash
@@ -91,7 +93,7 @@ def prepare(c,provenance):
 
 
 def validate(c):
-    if (not re.fullmatch('[a-zA-Z0-9][a-zA-Z0-9_.-]*',c['host'])
+    if (not re.fullmatch(r'(?:[a-zA-Z0-9][a-zA-Z0-9_.-]*@)?[a-zA-Z0-9][a-zA-Z0-9_.-]*',c['host'])
             or not re.fullmatch('[a-z0-9][a-z0-9-]*',c['tag'])):
         raise ValueError('safe host alias and tag required')
     ops,pm,original,_,_=parent(c);evidence=admission(c,pm)
@@ -123,14 +125,48 @@ def validate(c):
     return m,t,{}
 
 
+def lease_wait(remote, cid, *, deadline, stop_grace):
+    """Wait for this immutable container ID; never let it run past the lease."""
+    remaining = deadline - time.time() - stop_grace - 30
+    # The transport is only the observer; closing it does not stop the job.
+    # Run an independent guard on the host so a controller disconnect cannot
+    # leave the container running after the allocation expires.
+    grace = str(stop_grace)
+    guard = remote(['sh', '-c',
+        'nohup sh -c \'sleep "$1"; exec docker stop --time "$2" "$3"\' guard "$1" "$2" "$3" '
+        '>/dev/null 2>&1 </dev/null &', 'guard', str(max(0, int(remaining))), grace, cid])
+    if guard.returncode:
+        stopped = remote(['docker', 'stop', '--time', grace, cid])
+        if stopped.returncode:
+            raise RuntimeError('exact container deadline guard and stop both failed')
+        raise RuntimeError('exact container stopped because deadline guard could not be armed')
+    return shared.lifecycle.wait_exact(remote, cid)
+
+
+def check_formal_budget(training, design):
+    batch = training['batch_config']
+    if (batch != design['stage1']['batch_config'] or batch['inference_instances'] != 0
+            or batch['training_devices'] != design['total_device_budget']):
+        raise ValueError('Stage1 must use exactly the declared training device budget')
+    world = derive(batch)['dp_replicas']
+    shared.topology(training, world, ['davinci'+str(d) for d in training['physical_devices']])
+
+
 def launch(c,provenance):
     if c.get('formal_training_dispatch_allowed') is not True:
         raise ValueError('explicit formal training dispatch required')
     training=json.loads((Path(c['package'])/'config.json').read_text())
-    if training['batch_config']['training_devices']!=4 or training['batch_config']['inference_instances']!=0:
-        raise ValueError('current formal Stage1 budget is four training devices')
-    lifecycle_launch=FunctionType(shared.lifecycle.launch.__code__,
-        dict(shared.lifecycle.launch.__globals__,validate=validate,command=shared.command),'formal_launch')
+    if not c.get('design'):
+        raise ValueError('explicit Stage1 budget design required')
+    check_formal_budget(training, json.loads(Path(c['design']).read_bytes()))
+    bindings = dict(shared.lifecycle.launch.__globals__, validate=validate, command=shared.command)
+    if 'lease_deadline_unix' in c:
+        from functools import partial
+        deadline = c['lease_deadline_unix']; grace = c['lease_stop_grace_seconds']
+        if type(deadline) not in (int, float) or type(grace) is not int or grace < 1 or deadline <= time.time()+grace+30:
+            raise ValueError('valid unexpired formal resource lease required')
+        bindings['wait_exact'] = partial(lease_wait, deadline=deadline, stop_grace=grace)
+    lifecycle_launch=FunctionType(shared.lifecycle.launch.__code__,bindings,'formal_launch')
     proxy=SimpleNamespace(IMAGE=shared.lifecycle.IMAGE,launch=lifecycle_launch)
     runner=FunctionType(shared.launch.__code__,dict(shared.launch.__globals__,
         lifecycle=proxy,validate=validate,command=shared.command),'launch')

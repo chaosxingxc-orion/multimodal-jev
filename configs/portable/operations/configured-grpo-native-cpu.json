@@ -1,0 +1,23 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "resources": {
+    "cpus": 2,
+    "memory_gib": 8
+  },
+  "tests": [
+    "tests/test_configured_grpo_native.py"
+  ],
+  "expected_tests": 2,
+  "support_files": [
+    "configs/experiments/stage2-without-set-credit-v1.json",
+    "extensions/stage2_probability_margin_objective.py"
+  ],
+  "scope": "CPU native verl configured numerical behavior; no NPU dispatch"
+}

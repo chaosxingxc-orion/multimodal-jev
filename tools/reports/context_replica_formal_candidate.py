@@ -39,7 +39,8 @@ def contract(config):
             or config.get('engineering_prefix') is not False
             or config.get('training_dispatch_allowed') is not True
             or any(type(s) is not int for s in config['evaluation_steps'])
-            or config.get('seed') != 317 or type(config.get('seed')) is not int
+            or type(config.get('seed')) is not int or config['seed'] < 0
+            or ('view_binding' not in config and config['seed'] != 317)
             or config.get('algorithm') != 'dual_credit_grpo_floor_clipped_v1'
             or config.get('dual_arm') != 'joint'):
         raise ValueError('fresh formal source-only joint GRPO and declared curve required')
@@ -47,7 +48,7 @@ def contract(config):
         world_size=plan['dp_replicas'], global_batch=plan['global_batch'],
         updates_per_epoch=plan['updates_per_epoch'],
         tail_real_queries=plan['tail_real_queries'],
-        tail_padding_slots=plan['tail_padding_slots'], seed=317,
+        tail_padding_slots=plan['tail_padding_slots'], seed=config['seed'],
         evaluation_steps=list(steps),
         recovery_checkpoint_steps=steps[1:],
         behavior_export='every_update_before_dual_replica_ack',

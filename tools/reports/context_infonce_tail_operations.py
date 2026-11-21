@@ -28,16 +28,17 @@ def replay(c):
     return report
 
 
-def prepare(c,provenance):
+def prepare(c,provenance,*,tested_source=None):
     ops,m,original,_,report=parent(c);r=replay(c)
     dest=Path(c['package']);remote=shared.lifecycle.path(c['remote_root'])
     check_paths({'tail_package':dest});dest.mkdir(parents=True,exist_ok=False)
     shutil.copytree(Path(ops['package'])/'source',dest/'source')
-    shutil.copy2(ENTRY,dest/'source'/ENTRY)
-    # Schedule validation is reused by the new tail entry.
-    for name in ('tools/reports/context_replica_formal_candidate.py','tools/reports/context_replica_trainer_candidate.py',
-                 'tools/reports/context_macro_trainer_candidate.py','tools/reports/context_dual_trainer_candidate.py'):
-        shutil.copy2(name,dest/'source'/name)
+    from multimodal_jev.stage1_package_sources import TAIL, copy_checked
+    if tested_source is None:
+        for name in TAIL:shutil.copy2(name,dest/'source'/name)
+    else:
+        project,inventory=tested_source
+        copy_checked(project,dest/'source',TAIL,inventory)
     config=json.loads(json.dumps(original));old=m['remote_root']
     for key in ('source_root','schedule','parent_schedule'):config[key]=remote+config[key][len(old):]
     config['pins']={k:v for k,v in config['pins'].items() if not k.startswith(old+'/')}
@@ -55,7 +56,7 @@ def prepare(c,provenance):
 
 def validate(c):
     import re
-    if (not re.fullmatch('[a-zA-Z0-9][a-zA-Z0-9_.-]*',c['host'])
+    if (not re.fullmatch(r'(?:[a-zA-Z0-9][a-zA-Z0-9_.-]*@)?[a-zA-Z0-9][a-zA-Z0-9_.-]*',c['host'])
             or not re.fullmatch('[a-z0-9][a-z0-9-]*',c['tag'])):raise ValueError('safe host/tag required')
     ops,pm,original,_,report=parent(c);r=replay(c)
     root=Path(c['package']);m=json.loads((root/'PREPARED.json').read_text());t=json.loads((root/'config.json').read_text())

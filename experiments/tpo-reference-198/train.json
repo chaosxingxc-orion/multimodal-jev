@@ -1,0 +1,59 @@
+{
+  "noul_real": 4224,
+  "old_gold_median_shift": 2.529193898525784,
+  "old_strongest_negative_median_shift": -1.4839938152118874,
+  "other_and_hard_negatives_median_shift": -0.00500236577557285,
+  "positive_shift_fraction_on_negatives": 0.0031097521828454032,
+  "train_tasks": {
+    "open_miss": 2829,
+    "open_hit": 5443,
+    "noul": 4224
+  },
+  "reward_coefficients": {
+    "temperature": 1.0,
+    "existence": 0.3,
+    "hard_negative": 0.3,
+    "margin": 1.0,
+    "probability_gap": 0.1,
+    "consistency": 0.1,
+    "contrast": 0.3,
+    "class_utility": 1.0,
+    "rank": 1.0,
+    "log_rank_margin": 0.6931471805599453,
+    "per_term_cap": 1.0
+  },
+  "arms": {
+    "prior": {
+      "noul": {
+        "steps": 11,
+        "median_grad_norm": 0.13437455892562866,
+        "grad_clip": 1.0,
+        "norm_above_clip": 1,
+        "median_projection_loss": 0.01203196169808507
+      },
+      "open": {
+        "steps": 23,
+        "median_grad_norm": 1.8541474342346191,
+        "grad_clip": 1.0,
+        "norm_above_clip": 22,
+        "median_projection_loss": 0.0875538947681586
+      }
+    },
+    "tpo": {
+      "noul": {
+        "steps": 11,
+        "median_grad_norm": 0.08055577427148819,
+        "grad_clip": 1.0,
+        "norm_above_clip": 0,
+        "median_projection_loss": 0.002839183007987837
+      },
+      "open": {
+        "steps": 23,
+        "median_grad_norm": 1.8090596199035645,
+        "grad_clip": 1.0,
+        "norm_above_clip": 23,
+        "median_projection_loss": 0.04769612724582354
+      }
+    }
+  }
+}

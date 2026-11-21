@@ -140,17 +140,17 @@ def admit(batch,config):
 
 
 def registered_loss(old_log_prob,log_prob,advantages,response_mask,loss_agg_mode='token-mean',
-                    config=None,rollout_is_weights=None,**kwargs):
+                    config=None,rollout_is_weights=None,*,mode=MODE,loss_fn=loss,metric_keys=(),**kwargs):
     state=_active.get()
     if (state is None or state['consumed'] or state['log_probs'] is not log_prob or
-            config.policy_loss.loss_mode!=MODE or loss_agg_mode!='token-mean' or rollout_is_weights is not None):
+            config.policy_loss.loss_mode!=mode or loss_agg_mode!='token-mean' or rollout_is_weights is not None):
         raise ValueError('one exact context forward per native loss required')
     state['consumed']=True
     total=log_prob.sum()*0;metrics={}
     for i,p in enumerate(state['payload']):
         device=log_prob.device
         move=lambda v:None if v is None else v.to(device)
-        value,_=loss(state['logits'][i:i+1],move(p['labels']),move(p['observed']),
+        value,parts=loss_fn(state['logits'][i:i+1],move(p['labels']),move(p['observed']),
             log_prob.new_tensor([p['request_weight']]),torch.tensor([p['real_request']],device=device),
             stage=p['stage'],global_real_requests=p['global_real_requests'],world_size=dist.get_world_size(),
             ranking_coefficient=p['ranking_coefficient'],probability_coefficient=p['probability_coefficient'],
@@ -158,16 +158,20 @@ def registered_loss(old_log_prob,log_prob,advantages,response_mask,loss_agg_mode
             reference_policy=None if p['reference_policy'] is None else tuple(move(v) for v in p['reference_policy']),
             kl_coefficient=p['kl_coefficient'],clip_ratio=config.clip_ratio)
         total=total+value
+        for key in metric_keys:
+            name='jev/'+key
+            metrics[name]=metrics.get(name,0.)+parts.get(key,0.)
     metrics['jev/context_loss']=float(total.detach())
     return total*(config.ppo_mini_batch_size//config.ppo_micro_batch_size_per_gpu),metrics
 
 
-def build_actor(config,module,optimizer,*,collation):
+def build_actor(config,module,optimizer,*,collation,objective=None,forward=forward_context_audio_batch):
     from verl.workers.actor.dp_actor import DataParallelPPOActor
     from verl.trainer.ppo import core_algos
     from verl.trainer.ppo.core_algos import POLICY_LOSS_REGISTRY,register_policy_loss
     if file_hash(inspect.getfile(DataParallelPPOActor))!=ACTOR_SHA256:raise ValueError('native actor source changed')
     if file_hash(inspect.getfile(core_algos))!=CORE_SHA256:raise ValueError('native loss source changed')
+    mode, loss_fn, admit_fn = (MODE, registered_loss, admit) if objective is None else objective
     validate_bounds(dict(config.jev_context_parity))
     size,micro=config.ppo_mini_batch_size,config.ppo_micro_batch_size_per_gpu
     if (any(type(v) is not int or v<1 for v in (size,micro)) or size%micro or
@@ -175,11 +179,11 @@ def build_actor(config,module,optimizer,*,collation):
             config.use_prefix_grouper or config.ulysses_sequence_parallel_size!=1 or config.use_kl_loss or
             config.calculate_entropy or config.entropy_coeff!=0 or config.calculate_sum_pi_squared or
             not config.use_rollout_log_probs or config.loss_agg_mode!='token-mean' or config.global_batch_info or
-            config.policy_loss.loss_mode!=MODE):raise ValueError('static single-update context actor required')
+            config.policy_loss.loss_mode!=mode):raise ValueError('static single-update context actor required')
     if any(isinstance(m,torch.nn.modules.dropout._DropoutNd) and m.p for m in module.modules()):
         raise ValueError('nonzero dropout invalidates parity')
-    if MODE in POLICY_LOSS_REGISTRY and POLICY_LOSS_REGISTRY[MODE] is not registered_loss:raise ValueError('registry collision')
-    register_policy_loss(MODE)(registered_loss)
+    if mode in POLICY_LOSS_REGISTRY and POLICY_LOSS_REGISTRY[mode] is not loss_fn:raise ValueError('registry collision')
+    register_policy_loss(mode)(loss_fn)
 
     class ContextActor(DataParallelPPOActor):
         def _forward_micro_batch(self,micro_batch,temperature,calculate_entropy=False):
@@ -188,7 +192,7 @@ def build_actor(config,module,optimizer,*,collation):
             if state is not None and not state['consumed']:raise ValueError('unconsumed previous microbatch')
             payload=list(micro_batch['multi_modal_inputs'])
             inputs=[{k:p[k] for k in ('request_id','policy_id','inputs','positions')} for p in payload]
-            logits=forward_context_audio_batch(self.actor_module,inputs,
+            logits=forward(self.actor_module,inputs,
                 device=next(self.actor_module.parameters()).device,dtype=self.param_dtype,
                 policy_id=self.config.jev_policy_id,**collation)
             logp=torch.cat(binary_logprobs(logits),-1)
@@ -205,7 +209,7 @@ def build_actor(config,module,optimizer,*,collation):
 
         def update_policy(self,data):
             self.behavior_parity_history=[]
-            self.last_admission=admit(data,self.config)
+            self.last_admission=admit_fn(data,self.config)
             if _active.get() is not None:raise ValueError('nested context update')
             token=_active.set(dict(consumed=True))
             try:

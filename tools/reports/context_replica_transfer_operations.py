@@ -24,6 +24,8 @@ def read(p):
 
 
 def validate(c):
+    from multimodal_jev.evaluation_performance_gate import require_performance_admission
+    require_performance_admission(c)
     spec = c['transfer_package']
     preparation.audit(spec, {'source':'transfer_lifecycle'})
     fn = FunctionType(lifecycle.validate.__code__, dict(lifecycle.validate.__globals__, audit_package=lambda *a:None))

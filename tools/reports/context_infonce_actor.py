@@ -1,25 +1,29 @@
-"""Reuse the pinned verl actor with a supervised InfoNCE loss hook only."""
-from contextvars import ContextVar
-import hashlib
+"""Bind supervised InfoNCE to the shared native actor."""
+from functools import partial
 from pathlib import Path
-import types
+from types import SimpleNamespace
 
-from multimodal_jev.context_infonce import loss
+from multimodal_jev import context_native_actor as native
+from multimodal_jev.context_infonce import loss, validate_margin
 
-ACTOR_SHA = '067297bc726d2b607776d40cf6e155f98649ba9405f1d025b43d803e9c1215b0'
 MODE = 'jev_context_infonce_v1'
+MARGIN_METRICS = (
+    'infonce_numerator',
+    'probability_margin_numerator',
+    'threshold_anchor_numerator',
+    'probability_gap_sum',
+    'margin_satisfied_count',
+    'anchored_count',
+    'local_real_queries',
+)
 
 
-def load(source_root, *, temperature):
-    path = Path(source_root) / 'src/multimodal_jev/context_native_actor.py'
-    raw = path.read_bytes()
-    if hashlib.sha256(raw).hexdigest() != ACTOR_SHA:
-        raise ValueError('pinned native actor changed')
-    module = types.ModuleType('multimodal_jev._infonce_actor')
-    module.__package__ = 'multimodal_jev'
-    exec(compile(raw, str(path), 'exec'), module.__dict__)
-    module.MODE = MODE
-    module._active = ContextVar('jev_infonce_active', default=None)
+def load(source_root, *, temperature, probability_margin=None):
+    expected_actor = Path(source_root) / 'src' / 'multimodal_jev' / 'context_native_actor.py'
+    if not expected_actor.is_file() or not expected_actor.samefile(native.__file__):
+        raise ValueError('native actor must be imported from the declared source root')
+    if probability_margin is not None:
+        validate_margin(probability_margin)
 
     def instruction_loss(logits, labels, observed, weights, real, **kwargs):
         if (kwargs['stage'] != 'instruction' or kwargs['ranking_coefficient'] != 1.
@@ -27,9 +31,27 @@ def load(source_root, *, temperature):
                 or any(kwargs[k] is not None for k in
                        ('actions', 'old_joint', 'advantages', 'reference_policy'))):
             raise ValueError('pure supervised InfoNCE stage without rollout/reference required')
-        return loss(logits, labels, observed, weights, real,
+        return loss(
+            logits, labels, observed, weights, real,
             global_real_requests=kwargs['global_real_requests'],
-            world_size=kwargs['world_size'], temperature=temperature)
+            world_size=kwargs['world_size'], temperature=temperature,
+            probability_margin=probability_margin,
+        )
 
-    module.loss = instruction_loss
-    return module
+    registered_loss = partial(
+        native.registered_loss, mode=MODE, loss_fn=instruction_loss,
+        metric_keys=MARGIN_METRICS if probability_margin is not None else (),
+    )
+
+    def build_actor(config, model, optimizer, *, collation):
+        return native.build_actor(
+            config, model, optimizer, collation=collation,
+            objective=(MODE, registered_loss, native.admit),
+            forward=adapter.forward_context_audio_batch,
+        )
+
+    adapter = SimpleNamespace(
+        MODE=MODE, loss=instruction_loss, make_batch=native.make_batch, build_actor=build_actor,
+        forward_context_audio_batch=native.forward_context_audio_batch,
+    )
+    return adapter

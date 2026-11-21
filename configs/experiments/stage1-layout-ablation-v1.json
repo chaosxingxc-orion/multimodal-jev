@@ -1,0 +1,12 @@
+{
+  "status": "cpu_candidate_not_npu_admitted",
+  "stage1_design": "configs/experiments/context-two-stage-margin-v0.0.123.json",
+  "control": {"layouts":["native"],"assignment_seed":317,"permutation_seed":317},
+  "one_factor_arms": {
+    "definition_position":{"layouts":["native","definitions"],"assignment_seed":317,"permutation_seed":317},
+    "readout_position":{"layouts":["native","readouts"],"assignment_seed":317,"permutation_seed":317}
+  },
+  "data": "full clean source TRAIN only; each recording exactly once per epoch",
+  "loss": "unchanged native InfoNCE plus probability margin and threshold anchors; no consistency loss in first comparison",
+  "training_dispatch_allowed": false
+}

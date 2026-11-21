@@ -6,6 +6,8 @@ it never loads labels, samples actions for learning, switches policies or scores
 targets. Independent collection/runtime audits remain required.
 """
 import copy
+from contextlib import nullcontext
+import re
 from itertools import islice
 from pathlib import Path
 import time
@@ -19,12 +21,17 @@ from multimodal_jev.span_request_identity import tensor_identity
 
 
 def evaluate(pool, population, encode, *, candidate_ids, policy_id,
-             runtime_identity, audio_token_id, macro_queries, output):
+             runtime_identity, audio_token_id, macro_queries, output,
+             batch_namespace=None, timeline=None):
     """encode(label-free asset) returns tensors and an independently bound receipt.
 
     All queries use the same ordered candidate panel. Variable candidate panels
     (e.g. SFC functions) require a separate admitted task/input adapter.
     """
+    if batch_namespace is not None and not re.fullmatch('[A-Za-z0-9_-]+',batch_namespace):
+        raise ValueError('safe campaign batch namespace required')
+    def timed(stage):
+        return nullcontext() if timeline is None else timeline.stage(stage,batch_namespace)
     candidates=list(candidate_ids)
     if (not candidates or any(type(x) is not str or not x for x in candidates)
             or len(set(candidates))!=len(candidates) or not population
@@ -49,6 +56,7 @@ def evaluate(pool, population, encode, *, candidate_ids, policy_id,
         iterator=iter(population)
         while assets:=list(islice(iterator,macro_queries)):
             check_policy();rows=[];bound=[]
+            preparation_started=time.monotonic()
             for asset in assets:
                 row,receipt=encode(copy.deepcopy(asset))
                 if set(row)!={'inputs','positions'}:raise ValueError('label-free tensor row required')
@@ -62,8 +70,18 @@ def evaluate(pool, population, encode, *, candidate_ids, policy_id,
                         or receipt.get('positions')!=identity['positions']):
                     raise ValueError('encoded inputs differ from candidate/asset receipt')
                 rows.append(row);bound.append((identity,copy.deepcopy(receipt)))
+            if timeline is not None:
+                # This aggregate includes immutable tensor validation; loading
+                # into the resident corpus is timed once by the campaign owner.
+                with timeline.lock:
+                    now=time.monotonic()
+                    timeline.events.append(dict(stage='input_bind',job_id=batch_namespace,
+                        start=preparation_started-timeline.origin,end=now-timeline.origin,
+                        seconds=now-preparation_started,status='complete'))
             batch_id=f'evaluation-{len(batches):08d}'
-            values=pool.score_macro(batch_id,rows,audio_token_id=audio_token_id)
+            if batch_namespace is not None:batch_id=batch_namespace+'-'+batch_id
+            with timed('inference'):
+                values=pool.score_macro(batch_id,rows,audio_token_id=audio_token_id)
             check_policy();macro=copy.deepcopy(pool.last_receipt)
             if (len(values)!=len(assets) or macro['batch_id']!=batch_id
                     or macro['status']!='complete_macro_inference'
@@ -84,15 +102,17 @@ def evaluate(pool, population, encode, *, candidate_ids, policy_id,
                 batch_receipts.append(dict(receipt,engine_request_id=value['request_id']))
             # No partial batch becomes a published prediction file.
             name=f'batch-{len(batches):08d}.json'
-            commit_json(root/name,dict(predictions=predictions,input_receipts=batch_receipts,macro_receipt=macro))
+            with timed('output_write'):
+                commit_json(root/name,dict(predictions=predictions,input_receipts=batch_receipts,macro_receipt=macro))
             records.extend(predictions);receipts.extend(batch_receipts)
             batches.append(dict(path=name,sha256=file_hash(root/name),queries=len(assets)))
             atomic_json(root/'progress.json',dict(completed=len(records),total=len(population),
                 seconds=time.monotonic()-started,policy_id=policy_id))
         if [r['id'] for r in records]!=ids:raise ValueError('complete ordered population required')
         check_policy()
-        commit_json(root/'predictions.json',dict(records=records))
-        commit_json(root/'input-receipts.json',receipts)
+        with timed('output_write'):
+            commit_json(root/'predictions.json',dict(records=records))
+            commit_json(root/'input-receipts.json',receipts)
         result=dict(policy_id=policy_id,runtime_identity=runtime_identity,
             recordings=len(records),decisions=len(candidates),batches=batches,
             population_sha256=file_hash(root/'population.json'),

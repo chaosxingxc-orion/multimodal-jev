@@ -49,7 +49,7 @@ def accepted(report,c,remote_c):
     if (report.get('status')!='finite_objective_traces_replayed' or report.get('replay_device')!='npu:0'
             or report.get('evidence')!=remote_c['updates']
             or report.get('objective')!=dict(api='jev-stage2-objective-v1',
-                sha256=c['objective_plugin']['sha256'],options=c['objective_plugin']['options'])
+                **{k:v for k,v in c['objective_plugin'].items() if k!='path'})
             or len(report.get('updates',[]))!=len(c['updates'])):
         raise ValueError('complete same-backend objective replay required')
     for result,u in zip(report['updates'],c['updates'],strict=True):
@@ -64,7 +64,7 @@ class TraceReplayEngine:
     def __init__(self,config):
         self.c=config;self.cache={}
         if (config['image']!=IMAGE or type(config['device'])is not int or config['device']not in (4,5,6,7)
-                or not re.fullmatch('[a-zA-Z0-9_.-]+',config['host'])):
+                or not re.fullmatch(r'(?:[a-zA-Z0-9_][a-zA-Z0-9_.-]*@)?[a-zA-Z0-9][a-zA-Z0-9_.-]*',config['host'])):
             raise ValueError('fixed-image authorized-device backend replay required')
         self.source=Path(config['source']);self.manifest=json.loads((self.source/'FILES.json').read_text())
         self.sources={n:h for n,h in self.manifest.items() if n.endswith('.py') and
@@ -104,7 +104,10 @@ class TraceReplayEngine:
             if r.returncode:raise RuntimeError(r.stderr)
             return r.stdout
         with Path(cfg['lease']).open('r') as lease:
-            fcntl.flock(lease,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            wait = cfg.get('wait_for_lease', False)
+            if type(wait) is not bool:
+                raise ValueError('explicit Boolean lease wait required')
+            fcntl.flock(lease,fcntl.LOCK_EX | (0 if wait else fcntl.LOCK_NB))
             if f'No running processes found in NPU {cfg["device"]}' not in run(['npu-smi','info']):
                 raise ValueError('backend replay device occupied')
             storage=(self.source/'src/multimodal_jev/local_runtime_storage.py').read_text()
@@ -127,10 +130,20 @@ class TraceReplayEngine:
             for name,value in env.items():argv+=['-e',name+'='+value]
             argv+=['--entrypoint','/opt/multimodal-jev/runtime-entrypoint.sh',IMAGE,'python','-B','-m',
                    'tools.reports.context_backend_trace_replay','--worker-root',remote]
+            waiter=wait_exact
+            if 'lease_deadline_unix' in cfg:
+                from functools import partial
+                import time
+                from tools.reports.context_infonce_formal import lease_wait
+                deadline,grace=cfg['lease_deadline_unix'],cfg['lease_stop_grace_seconds']
+                if (type(deadline) not in (int,float) or type(grace) is not int or grace<1
+                        or deadline<=time.time()+grace+30):
+                    raise ValueError('allocation expired before replay container creation')
+                waiter=partial(lease_wait,deadline=deadline,stop_grace=grace)
             cid=run(argv).strip()
             if not re.fullmatch('[0-9a-f]{64}',cid):raise ValueError('exact replay container required')
             commit_json(root/'launch.json',dict(container_id=cid,argv=argv,files=files,config=c,remote_config=remote_c))
-            run(['docker','start',cid]);code=wait_exact(remote_run,cid)
+            run(['docker','start',cid]);code=waiter(remote_run,cid)
             inspection=json.loads(run(['docker','inspect',cid]))[0];commit_json(root/'inspect.json',inspection)
             log=remote_run(['docker','logs',cid]);(root/'container.log').write_text(log.stdout+log.stderr)
             if (code or inspection['Id']!=cid or inspection['Image']!=IMAGE or inspection['State']['Running']

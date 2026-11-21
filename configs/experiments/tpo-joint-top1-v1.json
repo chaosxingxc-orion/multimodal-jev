@@ -1,0 +1,11 @@
+{
+  "schema": "jev-tpo-joint-plan-v1",
+  "proposal": "proposal/06-tpo-joint-top1.md",
+  "comparison": "experiments/tpo-reference-198/lock.json",
+  "source_policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+  "source_manifest_sha256": "f3b1a58be3ed13056e7aea3d376761552a466cd474ff626666eb9cd792e67e29",
+  "recordings": 6248, "epochs": 2, "updates": 34, "seed": 317,
+  "global_batch": 384, "microbatch": 8,
+  "reference": {"anchor": "same_initial_policy", "recent": "previous_update", "refresh_updates": 1},
+  "objective": {"rho": 0.25, "tau": 1.0, "temperature": 1.0, "margin": 0.1, "classification_weight": 1.0, "ranking_weight": 1.0, "probability_weight": 0.3, "consistency_weight": 0.1}
+}

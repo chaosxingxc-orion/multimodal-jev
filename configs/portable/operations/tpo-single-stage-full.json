@@ -1,0 +1,31 @@
+{
+  "repository": "${PROJECT_ROOT}",
+  "package": "${FULL_TPO_PACKAGE}",
+  "parent_config": "${FULL_TPO_RUNTIME}",
+  "deployment": "${FULL_TPO_DEPLOYMENT}",
+  "source_patterns": ["src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py"],
+  "io_workers": 8,
+  "full_joint": {
+    "design": "configs/experiments/tpo-single-stage-full-v1.json",
+    "initial": "${FULL_TPO_INITIAL}",
+    "initial_result_sha256": "cfbef92a389cb633cb7c8b1a3d3641d870b2294467b743550b94b2dd8c0df0bc",
+    "initial_terminal_sha256": "de9ac8f9ae80072ec3be0a263f04fccef09798a004e1c34064d7bf224c97a799",
+    "initial_config_sha256": "${FULL_TPO_INITIAL_CONFIG_SHA}",
+    "runtime_sha256": "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb",
+    "input_identity_publication": "${FULL_TPO_INPUT_IDENTITIES}",
+    "input_identity_sha256": "ddd6325117857b1598651bc59c5a802fd828293a36000c6fbbf183b6a7c89130",
+    "training_devices": [0, 1, 2, 3, 4, 5],
+    "inference_devices": [6, 7]
+  },
+  "custody": {
+    "root": "${FULL_TPO_CUSTODY}",
+    "ordinary_seconds": 900,
+    "predecessor": "${FULL_TPO_PREDECESSOR}",
+    "predecessor_driver_sha256": "3dec2098dcaf3a0c700f6c3ecf93086a1f799495f4d6f2c7448ed9ea6b588c6f",
+    "predecessor_launch_sha256": "594032bd6cb1065afefc6278e2552f9ed9e30ce9b3d547bc51905dbd47e037a9",
+    "predecessor_finite_sha256": "d7d11c931b016f803b4365d47f4b0e409746ac566fec8dba3cbbb6b0191186ab",
+    "predecessor_joint_sha256": "03705498230f7ac1b3a237b9f8c6fe4af695d98923ce27cc378537243e33b457",
+    "predecessor_updates": 34,
+    "collection_timeout_seconds": 900
+  }
+}

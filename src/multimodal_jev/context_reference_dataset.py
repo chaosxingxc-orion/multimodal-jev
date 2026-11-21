@@ -99,18 +99,33 @@ def publish(root, *, identity, records, population, producer):
                 distinct_inputs=len(by_request))
 
 
+def _validate_indexed_record(item):
+    key,record,identity=item
+    validate_record(record,identity)
+    if key!=record['request_id']:raise ValueError('reference index differs')
+    return True
+
+
 class ReferenceDataset:
     """Read-only in-memory table. Missing/stale input fails before any rollout."""
-    def __init__(self,root,*,manifest_sha256,expected_identity,expected_population):
+    def __init__(self,root,*,manifest_sha256,expected_identity,expected_population,execution=None):
         root=Path(root)
         names=('MANIFEST.json','records.json','population.json')
         if any((root/n).is_symlink() for n in names) or sha(root/'MANIFEST.json')!=manifest_sha256:
             raise ValueError('pinned regular reference publication required')
         manifest=json.loads((root/'MANIFEST.json').read_text())
         validate_identity(expected_identity)
+        if set(manifest['files'])!=set(names[1:]):raise ValueError('reference file names differ')
+        if execution is None:
+            hashes={n:sha(root/n) for n in manifest['files']}
+        else:
+            from .context_execution import map_io
+            names_to_hash=list(names[1:])
+            values,_=map_io(sha,[root/n for n in names_to_hash],workers=execution['io_workers'])
+            hashes=dict(zip(names_to_hash,values))
         if (manifest['identity']!=expected_identity
                 or set(manifest['files'])!=set(names[1:])
-                or any(sha(root/n)!=h for n,h in manifest['files'].items())):
+                or hashes!=manifest['files']):
             raise ValueError('reference publication identity or content differs')
         population=json.loads((root/'population.json').read_text())
         if (population!=expected_population or digest(population)!=expected_identity['population_sha256']
@@ -119,9 +134,13 @@ class ReferenceDataset:
         self._records=json.loads((root/'records.json').read_text())
         if set(self._records)!=set(population.values()) or manifest['distinct_inputs']!=len(self._records):
             raise ValueError('incomplete reference dataset')
-        for key,record in self._records.items():
-            validate_record(record,expected_identity)
-            if key!=record['request_id']:raise ValueError('reference index differs')
+        jobs=[(key,record,expected_identity) for key,record in self._records.items()]
+        if execution is None:
+            for job in jobs:_validate_indexed_record(job)
+        else:
+            from .context_execution import map_cpu
+            map_cpu(_validate_indexed_record,jobs,workers=execution['cpu_workers'],
+                min_parallel=execution['min_parallel'],chunk=execution['chunk'],window=execution['window'])
         self.identity=copy.deepcopy(expected_identity)
         self.policy_id=expected_identity['policy_id']
         self.runtime_identity=copy.deepcopy(expected_identity['runtime_identity'])
@@ -143,3 +162,9 @@ class ReferenceDataset:
 
     def write(self,*args,**kwargs):
         raise ValueError('reference dataset is read-only; publish a new version')
+
+    def read_sample(self, sample_id):
+        """Offline TRAIN mining uses the authenticated sample-to-request map."""
+        if sample_id not in self.population:
+            raise ValueError('sample outside reference population')
+        return copy.deepcopy(self._records[self.population[sample_id]])

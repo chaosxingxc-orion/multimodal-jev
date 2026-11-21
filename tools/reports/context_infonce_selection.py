@@ -24,7 +24,11 @@ from tools.reports.context_selection_audited_cache import load_evidence
 from tools.reports.run_context_batch_probe_candidate import verify
 from tools.reports.selection_macro_cache_operations import audit_receipts, IMAGE
 
-STEPS = [0, *range(32, 318, 32), 318]
+from multimodal_jev.stage_experiment_contract import source_curve
+
+# Only unversioned historical plans use this frozen design.
+_LEGACY = Path(__file__).resolve().parents[2]/'configs/experiments/context-two-stage-v0.0.11.json'
+STEPS = json.loads(_LEGACY.read_bytes())['stage1']['evaluation_steps']
 
 
 def read(path):
@@ -32,29 +36,47 @@ def read(path):
 
 
 def validate_plan(plan):
+    curve = plan.get('source_curve')
+    if curve is None:
+        curve = source_curve(read(_LEGACY))
+    steps = curve['steps']
+    if (not steps or len(steps)<2 or steps[0]!=0 or steps!=sorted(set(steps))
+            or any(type(i) is not int for i in steps)):
+        raise ValueError('ordered preregistered source curve required')
     experiment = plan['experiment']
     evaluation = experiment['evaluation']
+    primary='query_macro_set_f1'
+    if 'stage1_layout' in plan:
+        from multimodal_jev.stage2_dataset_release import require_endpoint_layout
+        require_endpoint_layout(plan,plan['stage1_layout'])
+        primary='top1_macro_f1'
     if (plan['schema'] != 'jev-infonce-source-evaluation-plan-v1'
             or plan['status'] != 'audited_source_policies_bound_evaluation_pending'
             or plan['algorithm'] != 'candidate_infonce'
             or plan['source_audit']['status'] != 'formal_infonce_artifacts_audited'
-            or plan['source_audit']['world_size'] != 4
-            or plan['source_audit']['real_exposures'] != 81026
-            or len(plan['source_audit']['updates']) != 318
-            or [p['step'] for p in plan['checkpoints']] != STEPS
+            or plan['source_audit']['world_size'] != curve['world_size']
+            or plan['source_audit']['real_exposures'] != curve['real_exposures']
+            or len(plan['source_audit']['updates']) != steps[-1]
+            or [p['step'] for p in plan['checkpoints']] != steps
             or any(type(p['step']) is not int for p in plan['checkpoints'])
             or plan['checkpoints'][0]['policy_id'] != plan['initial_policy_id']
-            or plan['reference_endpoint'] != dict(step=318, policy_id=plan['checkpoints'][-1]['policy_id'])
-            or experiment['task_stage']['updates'] != 318
-            or experiment['selection_recordings'] != 9226
-            or evaluation['checkpoints'] != STEPS
-            or evaluation['primary'] != 'query_macro_set_f1'
+            or plan['reference_endpoint'] != dict(step=steps[-1], policy_id=plan['checkpoints'][-1]['policy_id'])
+            or experiment['task_stage']['updates'] != steps[-1]
+            or experiment['selection_recordings'] != curve['selection_recordings']
+            or evaluation['checkpoints'] != steps
+            or evaluation['primary'] != primary
             or evaluation['set_threshold'] != .5
-            or not {'candidate_binary_nll','candidate_brier','top1_event_accuracy','top1_macro_f1'} <= set(evaluation['secondary'])
+            or not {'candidate_binary_nll','candidate_brier','top1_event_accuracy','top1_macro_f1'} <= set([evaluation['primary'],*evaluation['secondary']])
             or plan['target_tuning_allowed'] is not False
             or plan['model_selection_performed'] is not False):
-        raise ValueError('complete four-device InfoNCE source and preregistered curve required')
+        raise ValueError('complete declared InfoNCE source and preregistered curve required')
     return plan
+
+
+def configured_steps(config):
+    if file_hash(config['source_plan'])!=config['source_plan_sha256']:
+        raise ValueError('source plan changed')
+    return validate_plan(read(config['source_plan']))['experiment']['evaluation']['checkpoints']
 
 
 def reconstruct_plan(config):

@@ -1,0 +1,13 @@
+{
+  "actor_threads": 2,
+  "actor_seed": 317,
+  "collective_timeout_seconds": 900,
+  "master_port": 29617,
+  "max_input_tokens": 4096,
+  "optimizer": {"lr": 0.0001, "betas": [0.9, 0.999], "eps": 1e-8, "weight_decay": 0.0},
+  "grad_clip": 1.0,
+  "policy_clip": {"clip_ratio": 0.2, "clip_ratio_low": null, "clip_ratio_high": null, "clip_ratio_c": 3.0},
+  "dual_coefficients": {"ranking_coefficient": 0.1, "probability_coefficient": 0.3, "kl_coefficient": 0.01},
+  "objective_group_size": 16,
+  "container": {"cpus": 24, "memory_gib": 128, "shm_gib": 8, "log_max_size_mib": 20, "log_max_files": 2}
+}

@@ -61,9 +61,19 @@ def command(c,m,config,*,producer=False):
         raise ValueError('reference publication must be disjoint from writable runtime')
     train=m['training_devices'];services=m['inference_services']
     devices=[*train,*[s['device'] for s in services]]
-    if (len(train)!=2 or len(services)!=2 or len(set(devices))!=4
+    shape=(len(train),len(services))
+    if 'batch_config' in config and train:
+        batch=config['batch_config']
+        expected=(batch['training_devices'],batch['inference_instances'])
+        shape_ok=shape==expected and train==config['physical_devices']
+    elif producer and not train:
+        shape_ok=len(services)==len(config['macro_client']['replicas']) and bool(services)
+    else:
+        shape_ok=shape==(2,2)
+    if (not shape_ok
+            or len(set(devices))!=len(devices)
             or any(type(d)is not int or d<0 for d in devices)):
-        raise ValueError('four distinct DP2 plus two inference devices required')
+        raise ValueError('supported disjoint cached training or TRAIN scoring devices required')
     # Transform only storage decisions. The original launcher remains frozen;
     # common image, runtime environment, resource limits and argv stay shared.
     source=inspect.getsource(shared.command)
@@ -85,8 +95,7 @@ def command(c,m,config,*,producer=False):
         resume=shared.path(config['resume_root'])
         if producer or resume!=remote+'/resume' or config.get('start_update')!=1 or config.get('stop_update')!=2:
             raise ValueError('packaged first-step recovery input required')
-        for name in ('checkpoint-0001-committed.json','rank-0/checkpoint-0001.pt',
-                     'rank-1/checkpoint-0001.pt','policy-0001/MANIFEST.json'):
+        for name in ('checkpoint-0001-committed.json',*(f'rank-{i}/checkpoint-0001.pt' for i in range(len(train))),'policy-0001/MANIFEST.json'):
             if resume+'/'+name not in config['pins']:raise ValueError('recovery asset pin missing: '+name)
         i=argv.index('--entrypoint');argv[i:i]=['-v',resume+':'+resume+':ro']
     # Source binding/audit receipts at the package top are dependencies too;
@@ -130,10 +139,10 @@ def storage_preflight(config,remote,*,producer=False):
         ' assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name\n')
 
 
-def audit_container(argv,config,handle,observed,*,producer=False):
+def audit_container(argv,config,handle,observed,*,producer=False,expected_exit=0):
     """Require actual terminal inspect to agree with every source/access bind."""
     from tools.reports.context_dual_probe_operations import check_runtime
-    check_runtime(dict(argv=argv,image=shared.IMAGE),handle,observed)
+    check_runtime(dict(argv=argv,image=shared.IMAGE),handle,observed,expected_exit=expected_exit)
     declared=mounts(argv);actual=observed.get('Mounts')
     if not isinstance(actual,list):raise ValueError('actual container mounts required')
     expected={dst:(src,not ro) for src,dst,ro in declared}
@@ -155,7 +164,7 @@ def audit_container(argv,config,handle,observed,*,producer=False):
 
 def reference_command(c,m,config):
     if (m.get('status')!='full_train_reference_job_prepared_only'
-            or m.get('actor_updates')!=0 or m.get('expected_population')!=40513):
+            or m.get('actor_updates')!=0 or m.get('expected_population')!=config.get('reference_source',{'population':40513})['population']):
         raise ValueError('full TRAIN reference-only package required')
     return command(c,m,config,producer=True)
 

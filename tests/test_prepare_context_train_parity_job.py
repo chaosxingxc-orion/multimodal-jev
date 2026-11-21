@@ -43,6 +43,7 @@ def test_runner_waits_for_real_hf_child_before_starting_services(tmp_path,monkey
         +"(r/'hf/reference.json').write_text('{}')\nraise SystemExit("+str(code)+')\n')
     write(tmp_path/'parity-hf.json',dict(expected_population=40513,stage1_endpoint=318,
         process_device_scope={'visible_ordinal':'0'}))
+    write(tmp_path/'initial/endpoint-commit.json',dict(updates=318,contract={'batch_config':{'source_queries':40513}}))
     for name in ('a','b'):write(tmp_path/f'service-{name}.json',{'socket_path':str(tmp_path/name/'socket')})
     script=module.runner(m).replace("Path('/jev-tmp')",'Path('+repr(str(tmp_path/'cache'))+')')
     (tmp_path/'cache').mkdir()
@@ -67,13 +68,13 @@ def fixture(tmp_path,monkeypatch):
     write(parent/'RUNTIME-SOURCES.json',{str(p.relative_to(parent/'source')):module.file_hash(p)
         for p in (parent/'source').rglob('*.py')})
     inputs=tmp_path/'inputs'
-    write(inputs/'inputs.json',{'source':{'release_sha256':training['release_sha256'],
+    write(inputs/'inputs.json',{'panel':{'ids':list(range(256)),'population':40513},'source':{'release_sha256':training['release_sha256'],
         'processor_sha256':training['dual_runtime_identity']['processor_sha256']}})
     write(inputs/'MANIFEST.json',{'fixture':True})
     c['inputs']=dict(output=str(inputs),manifest_sha256=module.file_hash(inputs/'MANIFEST.json'),
         cache_root=training['encoded_audio_cache'])
     monkeypatch.setattr(module,'audit_parent',lambda *a:{'fixture':'NPU-parent'})
-    monkeypatch.setattr(module,'audit_inputs',lambda *a:{'fixture':'input-audit'})
+    monkeypatch.setattr(module,'audit_inputs',lambda *a:{'fixture':'input-audit','recordings':256})
     monkeypatch.setattr(module,'check_paths',lambda _:None)
     return c
 
@@ -96,6 +97,18 @@ def test_package_preserves_runtime_and_uses_separate_phase_outputs(tmp_path,monk
     proof=module.audit(dict(c,manifest_sha256=result['manifest_sha256']),{'fresh_audit':True})
     assert proof['recordings']==256 and proof['actor_updates']==0
     assert not proof['npu_executed'] and not proof['numerical_admission']
+
+
+def test_eight_card_parity_matches_one_complete_macro(tmp_path,monkeypatch):
+    c=fixture(tmp_path,monkeypatch)
+    c['scoring_devices']=list(range(8))
+    result=module.prepare(c,{})
+    root=Path(c['output']); macro=module.read(root/'parity-macro.json')
+    assert macro['physical_devices']==[0]
+    assert macro['process_device_scope']['mounted_physical']==list(range(8))
+    assert len(macro['macro_client']['replicas'])==8
+    assert macro['macro_client']['max_queries']==256
+    module.audit(dict(c,manifest_sha256=result['manifest_sha256']),{})
 
 
 @pytest.mark.parametrize('fault',['cache','release','processor','runtime-code','budget','overlap'])

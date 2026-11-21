@@ -1,0 +1,14 @@
+{
+  "schema": "jev-logic-support-clean-train-v1",
+  "clean": "${JEV_BOUNDARY_CLEAN}",
+  "predicates": {
+    "A": {"native_field": "scenario", "equals": "calendar"},
+    "B": {"native_field": "action", "equals": "query"}
+  },
+  "expressions": {
+    "Q1": ["IS", "A"],
+    "Q2": ["IS", "B"],
+    "Q3": ["OR", "A", "B"],
+    "Q4": ["NOT", ["OR", "A", "B"]]
+  }
+}

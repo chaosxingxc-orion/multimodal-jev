@@ -1,0 +1,25 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "tests": [
+    "tests/test_next_simple_real_credit_native.py"
+  ],
+  "expected_tests": 1,
+  "scope": "Native verl CPU replay of eight authenticated formal TRAIN rows; only credit removal, no NPU model",
+  "support_files": [
+    "configs/experiments/stage2-without-set-credit-v1.json",
+    "configs/experiments/stage2-probability-margin-candidate-v0.0.126.json",
+    "extensions/stage2_probability_margin_objective.py"
+  ],
+  "resources": {
+    "cpus": 4,
+    "memory_gib": 12
+  },
+  "fixtures": "${JEV_REPLAY_FIXTURES}"
+}

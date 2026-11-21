@@ -1,0 +1,14 @@
+{
+  "schema": "stage1-local-cues-v1",
+  "clean": "${JEV_BOUNDARY_CLEAN}",
+  "native": "${JEV_BOUNDARY_NATIVE}",
+  "output": "${JEV_STAGE1_CUES_OUTPUT}",
+  "max_changed_words": 3,
+  "min_shared_words": 3,
+  "intent_pairs": [
+    ["calendar_query", "calendar_set"],
+    ["audio_volume_up", "audio_volume_down"],
+    ["play_music", "play_audiobook"],
+    ["general_quirky", "qa_factoid"]
+  ]
+}

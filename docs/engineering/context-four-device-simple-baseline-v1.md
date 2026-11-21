@@ -278,6 +278,7 @@ audit还重建服务/训练配置、检查复制策略资产及依赖pins；篡�
 - `source`：上一节来源包审核所需全部参数（含`output`、`manifest_sha256`和训练重构来源）。
 - `output`、`remote_root`、`training_devices`、`inference_devices`、`attempt_id`。
 - `schedule`、`schedule_sha256`、`parent_schedule`、`parent_schedule_sha256`、`parent_release_sha256`。
+- 可选 `model_binding: {"io_workers": 4}`：由已审核 Stage1 训练配置导出基座路径，独立重算基座指纹和各文件 pin，并验证模型几何、LoRA 目标、决策头和 token。训练端和推理端同时切换到该模型。跨模型只接受相同 processor、token 和输入输出协议的共享 runtime；不得沿用另一模型的 reference 或数值准入。
 - audit追加新配置包的`manifest_sha256`与`audit_output`。
 
 执行`--action prepare`或`--action audit`，均不远程派发。相关41项CPU回归通过；封包测试

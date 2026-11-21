@@ -154,6 +154,23 @@ def test_independent_audit_reloads_reference_and_reconstructs_package(tmp_path,m
     assert result['reference_manifest_sha256']==prepared['reference_manifest_sha256']
 
 
+def test_cross_host_reference_keeps_producer_identity_and_content_pins(tmp_path,monkeypatch):
+    c,_,result,_=setup(tmp_path,monkeypatch)
+    c['reference_destination']='/data/reference-copy'
+    c['manifest_sha256']=module.prepare(c,{})['manifest_sha256']
+    cfg=module.read(Path(c['output'])/'config.json')
+    assert cfg['reference_dataset']==dict(root='/data/reference-copy',
+        manifest_sha256=result['manifest_sha256'],identity=result['identity'],
+        population=result['population'])
+    dataset=Path(c['reference_job']['collection'])/'reference-build/dataset'
+    for name in ('MANIFEST.json','records.json','population.json'):
+        assert cfg['pins']['/data/reference-copy/'+name]==module.file_hash(dataset/name)
+        assert '/data/producer/reference-build/dataset/'+name not in cfg['pins']
+    module.audit(c,{})
+    with pytest.raises(ValueError,match='configuration differs'):
+        module.audit(dict(c,reference_destination='/data/unverified-copy'),{})
+
+
 @pytest.mark.parametrize('fault',['budget','online-reference','service','source','runner','audit',
     'extra','layout','topology','admission','manifest','symlink','population'])
 def test_independent_audit_rejects_rehashed_substitutions(tmp_path,monkeypatch,fault):

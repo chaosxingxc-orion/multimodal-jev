@@ -242,7 +242,11 @@ def launch(c, provenance):
                 raise ValueError(f'leased NPU {device} occupied; retain existing work')
         root = m['remote_root']; package = Path(c['package'])
         storage = (package / 'source/src/multimodal_jev/local_runtime_storage.py').read_text()
-        check = storage + '\ncheck_paths(' + repr({'run': root, 'cache': config['encoded_audio_cache']}) + ')\n'
+        readonly_cache = (config['encoded_audio_cache']+':'+config['encoded_audio_cache']+':ro') in argv
+        locations = {'run': root} if readonly_cache else {'run': root, 'cache': config['encoded_audio_cache']}
+        check = storage + '\ncheck_paths(' + repr(locations) + ')\n'
+        if readonly_cache:
+            check += 'assert Path(' + repr(config['encoded_audio_cache']) + ').is_dir()\n'
         check += 'assert not Path(' + repr(root) + ').exists()\n'
         external = {k: v for k, v in config['pins'].items() if not k.startswith(root + '/')}
         check += ('import hashlib\nfor name,digest in ' + repr(external) + '.items():\n'

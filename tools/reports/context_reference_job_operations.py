@@ -4,9 +4,9 @@ Reuse the parity/shared container lifecycle. A self-reported parity JSON or a
 different endpoint/runtime cannot authorize building the fixed reference table.
 """
 import argparse
+from functools import partial
 import json
 from pathlib import Path
-from types import FunctionType
 import subprocess
 import sys
 import time
@@ -24,17 +24,19 @@ from tools.reports.audit_context_train_parity import audit as audit_parity
 def read(p):return json.loads(Path(p).read_text())
 
 
-def admission(c):
+def admission(c, *, parity_auditor=None, package_auditor=None):
     spec=c['reference_job'];parity=c['parity_audit']
     # Reconstruct source/runtime and all numerical/transport evidence. Stored
     # status strings or a copied report are not independent admission evidence.
-    reference=audit_package(spec,{'source':'reference_lifecycle_validation'})
-    checked=audit_parity(parity,{'source':'reference_lifecycle_parity'})
+    reference=(package_auditor or audit_package)(spec,{'source':'reference_lifecycle_validation'})
+    checked=(parity_auditor or audit_parity)(parity,{'source':'reference_lifecycle_parity'})
     ps=parity['parity_package']
-    if (spec['parent']!=ps['parent'] or checked['runtime_provenance_verified'] is not True
-            or checked['comparison']['exact'] is not True or checked['comparison']['queries']!=256
+    if (spec['parent']!=ps['parent'] or spec.get('scoring_devices')!=ps.get('scoring_devices')
+            or ('scoring_devices' in spec and any(c[k]!=parity['deployment'][k] for k in ('host','lease')))
+            or checked['runtime_provenance_verified'] is not True
+            or checked['comparison']['exact'] is not True or checked['comparison']['queries']!=read(Path(ps['output'])/'PREPARED.json')['recordings']
             or checked['comparison']['decisions']!=60 or checked['actor_updates']!=0):
-        raise ValueError('same independently audited endpoint/runtime and TRAIN256 parity required')
+        raise ValueError('same independently audited endpoint/runtime and full declared TRAIN panel parity required')
     root=Path(spec['output']);other=Path(ps['output'])
     build=read(root/'reference-build-config.json');tested=read(other/'parity-macro.json')
     for key in ('source_policy_id','source_contract','base_id','release_sha256','audio_token_id',
@@ -52,16 +54,13 @@ def admission(c):
         full_population_parity=False,training_dispatch_allowed=False)
 
 
-def validate(c):
-    admission(c)
+def validate(c, *, admit=None):
+    (admit or admission)(c)
     spec=c['reference_job']
     # Reuse common host/tag/path/mount/preflight validation after independently
     # validating this operation's reference package instead of a parity package.
-    def authenticated_parent(*args):return None
-    validate_shared=FunctionType(lifecycle.validate.__code__,
-        dict(lifecycle.validate.__globals__,audit_package=authenticated_parent),'validate_reference_lifecycle')
     proxy=dict(c,parity_package=spec)
-    result=validate_shared(proxy)
+    result=lifecycle.validate(proxy,package_auditor=lambda *_:None)
     from tools.reports.context_release_deployment import audit as audit_release
     audit_release(lifecycle.command(c,result[0],result[1],producer=True),result[1])
     return result
@@ -70,16 +69,51 @@ def validate(c):
 def launch(c,provenance):
     if c.get('reference_dispatch_allowed') is not True:
         raise ValueError('explicit full TRAIN reference dispatch required')
-    runner=FunctionType(lifecycle.launch.__code__,dict(lifecycle.launch.__globals__,validate=validate),
-        'launch_admitted_reference')
+    if c.get('single_admission_launch') is True:
+        return launch_once_admitted(c,provenance)
     # The shared implementation's inference flag only controls its generic
     # service/client launcher. Public authorization is the explicit gate above.
-    result=runner(dict(c,finite_inference_dispatch_allowed=True),provenance)
+    result=lifecycle.launch(dict(c,finite_inference_dispatch_allowed=True),provenance,validator=validate)
     return dict(result,status='collected_independent_reference_output_audit_required')
 
 
-def audit(c,provenance):
-    gate=admission(c);spec=dict(c['reference_job']);root=Path(spec['output'])
+def launch_once_admitted(c, provenance, *, validator=None):
+    """Replay admission once; retain the lease, byte checks and exact collection."""
+    if c.get('reference_dispatch_allowed') is not True:
+        raise ValueError('explicit full TRAIN reference dispatch required')
+    from tools.reports import context_composed_pipeline as composed
+    from tools.reports.context_async_pipeline import ReadyQueue
+    from tools.reports.context_cached_storage_operations import command
+    from tools.reports.context_completed_stage_receipts import check_tree
+    from types import SimpleNamespace
+
+    def check_locked(paths):
+        composed.EFFECTS.check_paths(paths)
+        # Under the lease the payload still has to match the audited manifest.
+        # The lifecycle independently rehashes the extracted payload and checks
+        # external pins and physical-device availability on the destination.
+        root=Path(c['package'])
+        manifest=root/'PREPARED.json'
+        digest=c['manifest_sha256']
+        if manifest.is_symlink() or file_hash(manifest)!=digest:
+            raise ValueError('reference manifest changed after admission')
+        check_tree(root,dict(read(manifest)['files'], **{'PREPARED.json':digest}),
+                   workers=c['admission_execution']['io_workers'])
+
+    from multimodal_jev.context_execution import width
+    width(c['admission_execution']['io_workers'])
+    effects=SimpleNamespace(**dict(vars(composed.EFFECTS),check_paths=check_locked,stage_command=command))
+    queue=ReadyQueue(Path(c['operations_root'])/'dispatch-events')
+    result=composed.run_stage(c,provenance,validate=validator or validate,queue=queue,priority=0,producer=True,
+                              authorization='reference_dispatch_allowed',effects=effects)
+    return dict(result,status='collected_independent_reference_output_audit_required')
+
+
+def audit(c,provenance,*, parity_auditor=None, package_auditor=None):
+    spec=dict(c['reference_job']);root=Path(spec['output'])
+    spec_gate=dict(c['deployment'],reference_job=spec,parity_audit=c['parity_audit'])
+    gate=admission(spec_gate,parity_auditor=parity_auditor,package_auditor=package_auditor) if (
+        parity_auditor or package_auditor) else admission(spec_gate)
     handle=read(c['launch']);transport=read(c['transport']);m=read(root/'PREPARED.json')
     if (read(c['wait'])!=dict(container_id=handle['container_id'],exit_code=0)
             or file_hash(c['archive'])!=transport['archive_sha256']
@@ -89,9 +123,34 @@ def audit(c,provenance):
     spec.update({key:c[key] for key in ('deployment','launch','inspect','transport','collection','results_audit_output')})
     config=read(root/'config.json')
     spec['expected_argv']=lifecycle.command(c['deployment'],m,config,producer=True)
-    result=audit_results(spec,provenance)
+    result=(audit_results(spec,provenance,package_auditor=package_auditor)
+            if package_auditor else audit_results(spec,provenance))
     return dict(result,status='reference_job_and_same_endpoint_parity_audited',numerical_admission=gate,
         full_population_parity=False,training_dispatch_allowed=False)
+
+
+def audit_existing(c, provenance):
+    """Publish a fresh audit of an already collected attempt."""
+    terminal = c.get('audit_terminal')
+    output_paths = [c['audit_output'], c['results_audit_output']]
+    if terminal is not None:
+        output_paths.append(terminal)
+    check_paths({f'audit output {i}': path for i, path in enumerate(output_paths)})
+    resolved = [Path(path).resolve() for path in output_paths]
+    if len(set(resolved)) != len(resolved) or any(path.exists() for path in resolved):
+        raise ValueError('fresh, distinct audit outputs required')
+    try:
+        proof = audit(c, provenance)
+        commit_json(c['results_audit_output'], proof['output_audit'])
+        commit_json(c['audit_output'], proof)
+        if terminal is not None:
+            commit_json(terminal, dict(exit_code=0, status=proof['status'],
+                recordings=proof['output_audit']['recordings'], training_dispatched=False))
+        return proof
+    except Exception as error:
+        if terminal is not None:
+            commit_json(terminal, dict(exit_code=1, error=repr(error), restart=False))
+        raise
 
 
 def wait_for_parity(c):
@@ -117,7 +176,7 @@ def wait_for_parity(c):
         raise ValueError('parity audit inputs differ from exact predecessor')
 
 
-def run_and_audit(c,provenance):
+def run_and_audit(c,provenance,*, parity_auditor=None, package_auditor=None):
     if c.get('reference_dispatch_allowed') is not True:
         raise ValueError('explicit full TRAIN reference dispatch required')
     root=Path(c['operations_root'])/'finalization'
@@ -125,7 +184,14 @@ def run_and_audit(c,provenance):
     commit_json(root/'config.json',c);commit_json(root/'provenance.json',provenance)
     try:
         wait_for_parity(c)
-        result=launch(c,provenance)
+        auditors=dict(parity_auditor=parity_auditor,package_auditor=package_auditor) if (
+            parity_auditor or package_auditor) else {}
+        if not auditors:
+            result=launch(c,provenance)
+        elif c.get('single_admission_launch') is True:
+            result=launch_once_admitted(c,provenance,validator=partial(validate,admit=partial(admission,**auditors)))
+        else:
+            raise ValueError('in-process parity reuse requires single admission launch')
         if result.get('status')!='collected_independent_reference_output_audit_required':
             raise ValueError('complete reference collection required')
         stem=Path(c['operations_root'])/c['tag']
@@ -135,7 +201,7 @@ def run_and_audit(c,provenance):
                 ('launch','-launch.json'),('inspect','-inspect.json'),('wait','-wait.json'),
                 ('transport','-collected.transport.json'),('collection','-collected'),('archive','-collected.tar'))})
         commit_json(root/'audit-config.json',audit_config)
-        proof=audit(audit_config,provenance)
+        proof=audit(audit_config,provenance,**auditors)
         commit_json(audit_config['results_audit_output'],proof['output_audit'])
         commit_json(root/'audit.json',proof)
         commit_json(root/'terminal.json',dict(exit_code=0,status='reference_collected_and_audited',
@@ -172,9 +238,7 @@ if __name__=='__main__':
     elif a.action=='run':result=run_and_audit(c,provenance)
     elif a.action=='launch':result=launch(c,provenance)
     elif a.action=='audit':
-        result=audit(c,provenance)
-        commit_json(c['results_audit_output'],result['output_audit'])
-        commit_json(c['audit_output'],result)
+        result=audit_existing(c,provenance)
     else:
         m,config,_=validate(c)
         result=dict(status='reference_lifecycle_validated_not_executed',

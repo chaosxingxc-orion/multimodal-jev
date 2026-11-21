@@ -20,10 +20,10 @@ from tools.reports.context_cached_storage_operations import command,storage_pref
 from tools.reports.prepare_context_train_parity_job import audit as audit_package
 
 
-def validate(c):
-    spec=c['parity_package'];audit_package(spec,{'source':'parity_lifecycle_validation'})
+def validate(c,*, package_auditor=None):
+    spec=c['parity_package'];(package_auditor or audit_package)(spec,{'source':'parity_lifecycle_validation'})
     if (c['package']!=spec['output'] or c['manifest_sha256']!=spec['manifest_sha256']
-            or not re.fullmatch('[a-zA-Z0-9][a-zA-Z0-9_.-]*',c['host'])
+            or not re.fullmatch(r'(?:[A-Za-z0-9][A-Za-z0-9_.-]*@)?[A-Za-z0-9][A-Za-z0-9_.-]*',c['host'])
             or not re.fullmatch('[a-z0-9][a-z0-9-]*',c['tag'])):
         raise ValueError('bound parity package and safe host/tag required')
     root=Path(c['package']);m=json.loads((root/'PREPARED.json').read_text())
@@ -39,9 +39,18 @@ def validate(c):
     return m,config,{}
 
 
-def launch(c,provenance):
+def launch(c,provenance,*, validator=None):
     if c.get('finite_inference_dispatch_allowed') is not True:
         raise ValueError('explicit finite inference dispatch required')
+    if 'lease_deadline_unix' in c or c.get('use_composed_lifecycle') is True:
+        from types import SimpleNamespace
+        from tools.reports import context_composed_pipeline as composed
+        from tools.reports.context_async_pipeline import ReadyQueue
+        effects = SimpleNamespace(**vars(composed.EFFECTS), stage_command=command)
+        queue = ReadyQueue(Path(c['operations_root'])/'dispatch-events')
+        result = composed.run_stage(c,provenance,validate=validator or validate,queue=queue,priority=0,
+            producer=True,authorization='finite_inference_dispatch_allowed',effects=effects)
+        return dict(result,status='collected_independent_train_parity_audit_required')
     # Only validation, readonly preflight and the result label differ. Preserve
     # the common image/device check, nonblocking locks, one-attempt policy,
     # archive transfer, exact container handle, wait and collector implementation.
@@ -58,19 +67,23 @@ def launch(c,provenance):
     source=source[:left]+"        check = storage + '\\n' + storage_preflight(config,root,producer=True)\n"+source[right:]
     source=source.replace("status='collected_independent_training_audit_required'",
         "status='collected_independent_train_parity_audit_required'")
-    namespace=dict(shared.launch.__globals__,validate=validate,
+    namespace=dict(shared.launch.__globals__,validate=validator or validate,
         command=lambda c,m,config:command(c,m,config,producer=True),storage_preflight=storage_preflight)
     exec(compile(source,'<shared-train-parity-lifecycle>','exec'),namespace)
     return namespace['launch'](c,provenance)
 
 
-def run_and_audit(c, provenance):
+def run_and_audit(c, provenance, *, package_auditor=None, result_auditor=None):
     """One exact launch/collect followed by independent output reconstruction."""
     root=Path(c['operations_root'])/'finalization'
     check_paths({'parity_finalization':root});root.mkdir(parents=True,exist_ok=False)
     commit_json(root/'config.json',c);commit_json(root/'provenance.json',provenance)
     try:
-        result=launch(c,provenance)
+        if package_auditor is None:
+            result=launch(c,provenance)
+        else:
+            from functools import partial
+            result=launch(c,provenance,validator=partial(validate,package_auditor=package_auditor))
         if result['status']!='collected_independent_train_parity_audit_required':
             raise ValueError('complete parity collection required')
         base=Path(c['operations_root']);stem=base/c['tag']
@@ -80,7 +93,7 @@ def run_and_audit(c, provenance):
                 ('transport','-collected.transport.json'),('collection','-collected'),('archive','-collected.tar'))})
         commit_json(root/'audit-config.json',audit_config)
         from tools.reports.audit_context_train_parity import audit
-        proof=audit(audit_config,provenance)
+        proof=(result_auditor or audit)(audit_config,provenance)
         commit_json(root/'audit.json',proof)
         commit_json(root/'terminal.json',dict(exit_code=0,status='train_parity_collected_and_audited',
             training_dispatched=False))

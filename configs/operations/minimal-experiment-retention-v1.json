@@ -1,0 +1,35 @@
+{
+  "schema": "jev-minimal-experiment-retention-policy-v1",
+  "scope": "simple_task_experiments",
+  "long_term": {
+    "runtime": "one_content_addressed_source_and_image_reference",
+    "shared_assets": "model_dataset_processor_feature_reference_by_identity",
+    "parameters": ["final_lora_head_marker", "source_selected_lora_head_marker"],
+    "metrics": "compact_per_step_per_rank_scalars_and_metric_vectors",
+    "evaluation": "one_probability_table_per_preregistered_point_plus_scoring_contract",
+    "provenance": ["resolved_config", "portable_template", "seed", "split_identity", "runtime_identity", "audit_conclusion"]
+  },
+  "temporary": {
+    "active_policy": "current_and_inflight_until_consumer_ack",
+    "optimizer": "latest_resume_only_until_run_closed",
+    "evaluation_checkpoints": "until_registered_evaluation_and_selection_complete",
+    "training_trajectories": "until_current_legacy_audit_complete_then_delete",
+    "transport_archives": "until_consuming_audit_complete_then_delete"
+  },
+  "deletion": {
+    "archive_before_deleting_process_artifacts": false,
+    "explicit_manifest": true,
+    "verify_minimal_result_first": true,
+    "protect_active_consumers": true,
+    "automatic_retry": false,
+    "poll_seconds": 900
+  },
+  "reproduction": {
+    "rescore_saved_predictions": true,
+    "reload_final_or_selected_model": true,
+    "reconstruct_training_metric_curve": true,
+    "replay_every_training_step_from_raw_trajectories": false,
+    "bitwise_training_reproduction_claimed": false
+  },
+  "rollout_status": "policy_defined; v93_local_post_audit_retention_queued; future_training_producer_migration_pending"
+}

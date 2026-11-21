@@ -57,6 +57,8 @@ def local_config(package,e):
 
 
 def validate(c):
+    from multimodal_jev.evaluation_performance_gate import require_performance_admission
+    require_performance_admission(c)
     root=c['remote_root'];package=Path(c['prepared'])/'package'
     receipt=read(package.parent/'PREPARED.json');e=read(package/'evaluation.json');hf=read(package/'hf.json')
     if (receipt['status']!='full_portable_transfer_prepared_only' or receipt['image']!=IMAGE

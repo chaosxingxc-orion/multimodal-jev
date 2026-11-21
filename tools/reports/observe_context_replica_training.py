@@ -49,7 +49,7 @@ def handle(c):
     return base, launch
 
 
-def observe(c, *, now=None, remote=None):
+def observe(c, *, now=None, remote=None, read_progress=None):
     base, launch = handle(c)
     root = Path(c.get('observations_root') or (base / (c['tag'] + '-observations')))
     root.mkdir(exist_ok=True)
@@ -86,9 +86,12 @@ def observe(c, *, now=None, remote=None):
             raise ValueError('observed container/image identity differs')
         record['state'] = inspected['State']
         if inspected['State']['Running']:
-            record['progress'] = json.loads(remote(
-                ['docker', 'exec', launch['container_id'], 'python', '-c',
-                 REMOTE.replace('ROOT', repr(launch['remote_root']))]))
+            if read_progress is None:
+                record['progress'] = json.loads(remote(
+                    ['docker', 'exec', launch['container_id'], 'python', '-c',
+                     REMOTE.replace('ROOT', repr(launch['remote_root']))]))
+            else:
+                record['progress'] = read_progress(launch, remote)
         record['status'] = 'observed_exact_handle'
         write_new(root / (stem + '-result.json'), record)
         return record

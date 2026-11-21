@@ -19,6 +19,27 @@ def plan(c):
     if file_hash(manifest) != c['seal']['sha256']:
         raise ValueError('evaluation seal manifest changed')
     m = json.loads(manifest.read_text())
+    if m['schema']=='jev-semantic-evaluation-seal-v1':
+        if m['prompt_layout']!=PREFIX_LAYOUT or c.get('panel_size') is not None:
+            raise ValueError('full semantic evaluation required')
+        jobs=[]
+        for name in [c['dataset']] if 'dataset' in c else m['datasets']:
+            def bound(file):
+                rel=f'inference/{name}/{file}.json'
+                if file_hash(root/rel)!=m['files'][rel]:raise ValueError('semantic input changed')
+                return json.loads((root/rel).read_bytes())
+            panels,rows=bound('panels'),bound('rows')
+            if len(rows)!=m['datasets'][name]['recordings'] or len(set(r['id'] for r in rows))!=len(rows):
+                raise ValueError('incomplete population')
+            for row in rows:
+                if set(row)!={'id','audio','audio_sha256','panel'} or row['audio']!='audio/'+row['audio_sha256']+'.wav':
+                    raise ValueError('invalid label-free semantic input')
+                panel=panels[row['panel']]
+                qs=tuple(ApplicabilityQuestion(**q) for q in panel['questions'])
+                if len(qs)!=m['datasets'][name]['candidates']:raise ValueError('invalid width')
+                asset=dict(id=row['id'],audio=str(root/row['audio']),audio_sha256=row['audio_sha256'])
+                jobs.append((name,asset,ContextDecisionRequest(asset['audio'],qs,tuple(panel['requirements']),version=panel['version'])))
+        return jobs
     if m['schema'] != 'jev-native-evaluation-seal-v1' or m['prompt_layout'] != PREFIX_LAYOUT:
         raise ValueError('native stable-prefix evaluation seal required')
     datasets = [c['dataset']] if 'dataset' in c else list(m['datasets'])
@@ -62,6 +83,9 @@ def run(c, provenance, *, verify=False):
     from multimodal_jev.span_request_identity import tensor_identity
     if list(Path('/dev').glob('davinci[0-9]*')):
         raise ValueError('CPU-only input preparation requires no NPU')
+    from multimodal_jev.model_provider import resolve_provider, cache_namespace
+    provider = resolve_provider(c)
+    namespace = cache_namespace(c)
     torch.set_num_threads(1)
     jobs = plan(c)
     source = Path(c['processor']['policy'])
@@ -79,21 +103,20 @@ def run(c, provenance, *, verify=False):
         if (m['inputs_sha256'] != file_hash(receipts)
                 or m['recordings'] != len(jobs) or m['seal_sha256'] != c['seal']['sha256']
                 or m['processor_sha256'] != identity or m['prompt_layout'] != PREFIX_LAYOUT
-                or m['encoding'] != c['encoding']):
+                or m.get('model_provider_sha256') != namespace or m['encoding'] != c['encoding']):
             raise ValueError('complete cache manifest for this release required')
         cache = ReadOnlyEncodedAudioCache(root/'cache')
 
         def factory():
             raise ValueError('missing frozen evaluation input')
     else:
-        from transformers import Qwen3ASRProcessor
         cache = EncodedAudioCache(root/'cache')
 
         def factory():
-            return Qwen3ASRProcessor.from_pretrained(source/'processor', local_files_only=True)
+            return provider.processor(source/'processor')
 
     prepare = CachedContextPreparer(factory, cache, processor_sha256=identity,
-                                    prompt_layout=PREFIX_LAYOUT, **c['encoding'])
+                                    prompt_layout=PREFIX_LAYOUT, provider_namespace=namespace, encode=provider.encode, **c['encoding'])
 
     def encode(job):
         name, row, request = job
@@ -129,6 +152,8 @@ def run(c, provenance, *, verify=False):
                   seal_sha256=c['seal']['sha256'], processor_sha256=identity,
                   prompt_layout=PREFIX_LAYOUT, encoding=c['encoding'], inputs_sha256=file_hash(receipts),
                   model_calls=0, npu_executed=False, provenance=provenance)
+    if namespace is not None:
+        result['model_provider_sha256'] = namespace
     commit_json(manifest, result)
     return result
 

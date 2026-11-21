@@ -9,4 +9,4 @@
 | 零训练对照 | [SLURP selection](slurp-simple-base-selection-v1.md) | 已复算 |
 | JEV-198 | [固定与动态 reference 的配对评测](JEV-198.md) | SLURP 和 MINDS 完整面板已审，跨任务证据待补 |
 | JEV-201 | [新版联合 TPO](JEV-201.md) | 训练已审，末点评测待登记 |
-| JEV-204 | [全量单阶段联合 TPO](JEV-204.md) | 固定参考计算的已登记快照见报告 |
+| JEV-204 | [全量单阶段联合 TPO](JEV-204.md) | 已通过两步有限验收，正在生成全量固定参考 |

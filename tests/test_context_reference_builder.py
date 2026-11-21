@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+from threading import Event
 
 import pytest
 import torch
@@ -56,6 +57,34 @@ def test_full_sample_mapping_duplicate_inputs_and_complete_macros(tmp_path,monke
     reader=ReferenceDataset(tmp_path/'reference',manifest_sha256=result['manifest_sha256'],
         expected_identity=result['identity'],expected_population=result['population'])
     assert len(reader.population)==4
+
+
+def test_next_input_is_prepared_during_scoring_without_changing_outputs(tmp_path,monkeypatch):
+    serial=setup(monkeypatch)
+    expected=build(tmp_path/'serial',**serial)
+    parallel=setup(monkeypatch)
+    scoring=Event()
+    next_input=Event()
+    prepare=parallel['preparer']
+    score=parallel['engine'].score_many
+
+    def checked_prepare(job):
+        if job[0].audio=='/audio/2.wav':
+            assert scoring.wait(5)
+            next_input.set()
+        return prepare(job)
+
+    def checked_score(rows,**kwargs):
+        scoring.set()
+        assert next_input.wait(5)
+        return score(rows,**kwargs)
+
+    parallel['preparer']=checked_prepare
+    parallel['engine'].score_many=checked_score
+    actual=build(tmp_path/'parallel',**parallel,prefetch={'io_workers':2,'ahead':2})
+    assert actual['population']==expected['population']
+    assert actual['identity']==expected['identity']
+    assert parallel['engine'].calls==serial['engine'].calls==[2,1]
 
 
 @pytest.mark.parametrize('fault',['order','policy','missing','labels','candidate'])

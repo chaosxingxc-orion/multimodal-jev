@@ -1,0 +1,43 @@
+{
+  "datasets": "${SHARED_DATASETS}",
+  "clones": "${STAGING_ROOT}",
+  "io_workers": 16,
+  "sources": {
+    "sib": {
+      "id": "WueNLP/sib-fleurs",
+      "revision": "cca3194c3b179faec8b67a05d1a8d4ab47390e7a",
+      "checkout": "sib-fleurs",
+      "directory": "sib-fleurs",
+      "eval": {
+        "dataset": "SIB_FLEURS_eng_topic7",
+        "release": "sib-fleurs-jev/eng-topic-v1",
+        "split": "official_english_test",
+        "population": [
+          177,
+          320,
+          177
+        ],
+        "shards": "data/eng_Latn/test-*.parquet",
+        "question": "Which topic best describes what the speaker is talking about?"
+      }
+    },
+    "mmsu": {
+      "id": "ddwang2000/MMSU",
+      "revision": "548e2283105825bf908a7db5c09c00dbcf42bd4c",
+      "checkout": "MMSU",
+      "directory": "mmsu",
+      "eval": {
+        "dataset": "MMSU_polysemy",
+        "release": "mmsu-jev/polysemy-v1",
+        "split": "external_frozen_benchmark_upstream_train",
+        "population": [
+          5000,
+          98,
+          98
+        ],
+        "shards": "data/train-*.parquet",
+        "task_name": "polysemy_reasoning"
+      }
+    }
+  }
+}

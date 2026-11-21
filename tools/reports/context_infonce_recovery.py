@@ -73,7 +73,7 @@ def prepare(c,provenance):
 
 
 def validate(c):
-    if (not re.fullmatch('[a-zA-Z0-9][a-zA-Z0-9_.-]*',c['host'])
+    if (not re.fullmatch(r'(?:[a-zA-Z0-9][a-zA-Z0-9_.-]*@)?[a-zA-Z0-9][a-zA-Z0-9_.-]*',c['host'])
             or not re.fullmatch('[a-z0-9][a-z0-9-]*',c['tag'])):
         raise ValueError('safe host alias and tag required')
     ops,pm,original,collected,report=parent(c)

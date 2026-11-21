@@ -5,10 +5,16 @@ from pathlib import Path
 from .baseline import file_hash
 
 
-def checkpoint_identity(checkpoint):
+def checkpoint_identity(checkpoint, *, io_workers=None):
     root=Path(checkpoint)
-    files={str(p.relative_to(root)):file_hash(p) for p in sorted(root.rglob('*'))
-           if p.is_file() and p.suffix in {'.json','.jinja','.safetensors','.model','.txt'}}
+    paths=[p for p in sorted(root.rglob('*'))
+           if p.is_file() and p.suffix in {'.json','.jinja','.safetensors','.model','.txt'}]
+    if io_workers is None:
+        hashes=map(file_hash,paths)
+    else:
+        from .context_execution import map_io
+        hashes,_=map_io(file_hash,paths,workers=io_workers)
+    files={str(p.relative_to(root)):digest for p,digest in zip(paths,hashes,strict=True)}
     if not any(name.endswith('.safetensors') for name in files):
         raise ValueError('model weights missing')
     return hashlib.sha256(json.dumps(files,sort_keys=True).encode()).hexdigest(),files

@@ -17,28 +17,29 @@ from multimodal_jev.baseline import atomic_json, file_hash
 
 def initialize(config, candidates, requirements):
     import torch
-    from transformers import Qwen3ASRProcessor
-    global PROCESSOR, CANDIDATES, REQUIREMENTS, CONFIG
+    from multimodal_jev.model_provider import resolve_provider
+    global PROVIDER, PROCESSOR, CANDIDATES, REQUIREMENTS, CONFIG
     torch.set_num_threads(1)
     CONFIG, CANDIDATES, REQUIREMENTS = config, candidates, requirements
-    PROCESSOR = Qwen3ASRProcessor.from_pretrained(config['processor'], local_files_only=True)
+    PROVIDER = resolve_provider(config)
+    PROCESSOR = PROVIDER.processor(config['processor'])
 
 
 def inspect(job):
     from multimodal_jev.audio_policy import load_audio
     from multimodal_jev.context_candidate_task import compile_candidates
-    from multimodal_jev.context_decision_contract import encode_context_request
     from multimodal_jev.span_request_identity import tensor_identity
     from multimodal_jev.slurp_training import content_hash
     if file_hash(job['audio']) != job['audio_sha256']:
         raise ValueError('audio identity changed: '+job['id'])
     request=compile_candidates(job['audio'],CANDIDATES,REQUIREMENTS,semantics='exclusive_event')
     wave,receipt=load_audio(job['audio'],return_receipt=True)
-    inputs,positions=encode_context_request(PROCESSOR,request,wave,
-        decision_token_id=CONFIG['decision_token_id'],audio_token_id=CONFIG['audio_token_id'],max_tokens=32768)
+    inputs,positions=PROVIDER.encode(PROCESSOR,request,wave,
+        decision_token_id=CONFIG['decision_token_id'],audio_token_id=CONFIG['audio_token_id'],max_tokens=32768,
+        prompt_layout=CONFIG.get('prompt_layout'))
     length=inputs['input_ids'].shape[-1]
     if positions.shape!=(1,60):raise ValueError('full 60 markers required')
-    return dict(**job,request_sha256=content_hash(request.model_input()),tokens=length,
+    return dict(**job,prompt_layout=CONFIG.get('prompt_layout'),request_sha256=content_hash(request.model_input()),tokens=length,
         positions=positions.tolist(),input_ids=tensor_identity(inputs['input_ids']),
         input_features=tensor_identity(inputs['input_features']),audio_receipt_sha256=content_hash(receipt),
         fits_context=length<=CONFIG['context_limit'])

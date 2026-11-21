@@ -7,6 +7,11 @@
 
 ## 当前有效入口
 
+- [0.6B 联合 TPO：以最终 Top‑1 判决验收](06-tpo-joint-top1.md)：197/198 后续研究方案；源域、跨数据集与跨任务按接口分别报告。
+
+- [下一代简单 Jev 统一训练 proposal](05-next-generation-simple-jev.md)：本轮单一配置、问题类别、多轮反证及效果判据。
+
+- [Jev 四阶段研究协议](04-jev-logic-capability-scaling.md)：前置逻辑规约、能力与迁移、两段式训练目标、规模验证；附首个 clean TRAIN 真值覆盖检查。
 - [课题范围与初步工作项](00-research-scope.md)：语音多模态 Jev 的研究目标、任务/数据方向与评估原则。
 - [端到端语音任务路线修订](03-end-to-end-audio-task.md)：音频与任务定义直接进入同一语音多模态模型，
   禁止 ASR 转写后接独立文本模型。

@@ -12,7 +12,8 @@ from .ordered_prefetch import OrderedPrefetch
 
 
 class CachedContextBatches:
-    def __init__(self,batches,population,task,preparer,*,start_update,stop_update,global_batch=128):
+    def __init__(self,batches,population,task,preparer,*,start_update,stop_update,global_batch=128,
+                 slot_request=None):
         if (type(start_update) is not int or type(stop_update) is not int or
                 not 0<=start_update<stop_update<=len(batches) or
                 type(global_batch) is not int or global_batch<1):
@@ -21,11 +22,17 @@ class CachedContextBatches:
         self.assets={k:{n:r[n] for n in ('audio','audio_sha256')} for k,r in population.items()}
         self.candidates=[dict(id=x['id'],definition=x['description']) for x in task['schema']['candidates']]
         self.requirements=task['thinking']['requirements'];self.global_batch=global_batch
+        self.slot_request=slot_request
         self.cursor=start_update;self.stop=stop_update;self.last_timing=None
         self.queue=OrderedPrefetch(self._prepare,range(start_update,stop_update),workers=1,ahead=1)
 
     def _request(self,audio):
         return compile_candidates(audio,self.candidates,self.requirements,semantics='exclusive_event')
+
+    def _slot_request(self,batch,slot):
+        uid=slot['id'];audio=self.assets[uid]['audio']
+        factory=getattr(self,'slot_request',None)
+        return self._request(audio) if factory is None else factory(audio,uid,batch['epoch'])
 
     def _prepare(self,step):
         begin=time.monotonic();batch=self.batches[step]
@@ -33,7 +40,7 @@ class CachedContextBatches:
         values=[]
         for slot in batch['slots']:
             asset=self.assets[slot['id']]
-            values.append(self.preparer((self._request(asset['audio']),asset['audio_sha256'])))
+            values.append(self.preparer((self._slot_request(batch,slot),asset['audio_sha256'])))
         return step,values,dict(worker_seconds=time.monotonic()-begin,cache_hits=sum(x.cache_hit for x in values))
 
     def consume(self,step,policy_id):
@@ -44,7 +51,7 @@ class CachedContextBatches:
         if actual!=step:raise ValueError('prefetch order differs')
         begin=time.monotonic();batch=self.batches[step];items=[];metadata=[]
         for i,(slot,encoded) in enumerate(zip(batch['slots'],values,strict=True)):
-            row=self.population[slot['id']];request=self._request(row['audio'])
+            row=self.population[slot['id']];request=self._slot_request(batch,slot)
             if encoded.request!=canonical(request.model_input()):raise ValueError('prepared request differs')
             if (type(slot['padding']) is not bool or type(slot['weight']) not in (int,float) or
                     slot['weight']!=(0. if slot['padding'] else 1.)):

@@ -1,0 +1,16 @@
+{
+  "schema": "jev-simple-endpoint-comparison-v1",
+  "design": "${ENDPOINT_DESIGN}",
+  "mode": "${ENDPOINT_MODE}",
+  "baseline_receipt": "${ENDPOINT_BASELINE_RECEIPT}",
+  "baseline": "${ENDPOINT_BASELINE}",
+  "candidate": "${ENDPOINT_CANDIDATE}",
+  "output": "${ENDPOINT_REPORT}",
+  "execution": {"cpu_workers": 2, "chunk": 1, "window": 2, "min_parallel": 2},
+  "datasets": {
+    "SLURP_clean_SELECTION60": {"split":"source_selection","recordings":9226,"classes":60,"cluster":"source_group"},
+    "SLURP_clean_TEST60": {"split":"official_test_clean","recordings":12991,"classes":60,"cluster":"source_group"},
+    "FSC_native31": {"split":"official_test","recordings":3793,"classes":31,"cluster":"speaker"},
+    "MINDS_native14": {"split":"frozen_transfer_upstream_train","recordings":8168,"classes":14,"cluster":"language"}
+  }
+}

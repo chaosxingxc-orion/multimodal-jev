@@ -1,0 +1,25 @@
+{
+  "repository": "${PROJECT_ROOT}",
+  "package": "${TPO_PACKAGE}",
+  "parent_config": "${TPO_PARENT_CONFIG}",
+  "deployment": "${TPO_DEPLOYMENT}",
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "training_ops": "${TPO_TRAIN_OPS}",
+  "training_operations_local": "${TPO_TRAIN_OPS_LOCAL}",
+  "batch": 8,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "datasets": "${TPO_EVAL_DATASETS}",
+  "arms": [
+    "tpo"
+  ]
+}

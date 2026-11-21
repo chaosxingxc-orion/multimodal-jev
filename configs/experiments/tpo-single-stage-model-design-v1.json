@@ -1,0 +1,35 @@
+{
+  "schema": "jev-tpo-joint-plan-v1",
+  "proposal": "proposal/07-single-stage-jev-tpo.md",
+  "initialization": "pre_task_policy",
+  "recordings": 40513,
+  "epochs": 2,
+  "seed": 317,
+  "global_batch": 384,
+  "microbatch": 8,
+  "warmup_updates": 10,
+  "candidate_lengths": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    60
+  ],
+  "reference": {
+    "anchor": "same_initial_policy_raw_logits",
+    "recent": "previous_update",
+    "refresh_updates": 1
+  },
+  "objective": {
+    "rho": 0.25,
+    "tau": 1.0,
+    "temperature": 1.0,
+    "margin": 0.1,
+    "classification_weight": 1.0,
+    "ranking_weight": 1.0,
+    "probability_weight": 0.3,
+    "consistency_weight": 0.1
+  }
+}

@@ -41,7 +41,8 @@ class PreparedContextInput:
 
 class CachedContextPreparer:
     def __init__(self,processor_factory,cache,*,processor_sha256,decision_token_id,
-                 audio_token_id,max_tokens,preprocessing=None,audio_mirror=None,prompt_layout=None):
+                 audio_token_id,max_tokens,preprocessing=None,audio_mirror=None,prompt_layout=None,
+                 provider_namespace=None,encode=None):
         if (any(type(v) is not int or v<0 for v in (decision_token_id,audio_token_id)) or
                 decision_token_id==audio_token_id or type(max_tokens) is not int or max_tokens<1):
             raise ValueError('explicit distinct marker/audio IDs and context budget required')
@@ -53,12 +54,16 @@ class CachedContextPreparer:
             from .context_decision_contract import PREFIX_LAYOUT
             if prompt_layout!=PREFIX_LAYOUT:raise ValueError("unknown prompt layout")
             self.encoding["prompt_layout"]=prompt_layout
+        self.encode=encode_context_request if encode is None else encode
+        self.provider_namespace=provider_namespace
         self.local=threading.local()
 
     def identity(self,request,expected_audio_sha256):
         identity=binding(request=request,audio_sha256=expected_audio_sha256,
                          processor_sha256=self.processor_sha256,preprocessing=self.preprocessing)
         identity['context_encoding']=dict(self.encoding,features_dtype='bfloat16',version='context-cache-v1')
+        if self.provider_namespace is not None:
+            identity['model_provider_sha256']=self.provider_namespace
         return identity
 
     def __call__(self,job):
@@ -72,7 +77,7 @@ class CachedContextPreparer:
         if value is None:
             if not hasattr(self.local,'processor'):self.local.processor=self.processor_factory()
             audio,receipt=load_audio(audio_path,self.preprocessing,return_receipt=True)
-            inputs,positions=encode_context_request(self.local.processor,request,audio,**self.encoding)
+            inputs,positions=self.encode(self.local.processor,request,audio,**self.encoding)
             inputs={k:v.to(torch.bfloat16) if v.is_floating_point() else v for k,v in inputs.items()}
             self.cache.write(identity,inputs,positions,receipt)
         else:inputs,positions,receipt=value

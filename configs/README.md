@@ -38,6 +38,11 @@ JSON模板解析成现有工具可读取的普通JSON，不执行训练。
 不要批量替换历史路径、修改hash或把旧训练许可复制到新环境。完整配置库存及远程
 训练队列尚未迁移，现有任务继续消费原包。
 
+Stage2 的激活重计算由执行配置的 `activation_checkpointing` 字段声明。
+`enabled` 控制开关，`module_lists` 是相对模型根的模块列表路径。
+关闭时使用 `false` 和空列表。新配置由目标设计按 SHA-256 引用，并随训练包封存。
+[Stage2 执行配置示例](experiments/stage2-view-execution-v0.0.183.json)
+
 新增入口的宏示例分别为[抽样](dataset-sampling-macros.example.json)、
 [收集](training-collection-macros.example.json)、[保留清单](retention-pipeline-macros.example.json)。
 按所选流程将需要的宏合并到同一份本地绑定；收集→轨迹还需要配置TRAJECTORY_OUTPUT。

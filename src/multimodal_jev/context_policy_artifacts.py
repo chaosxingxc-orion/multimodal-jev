@@ -69,11 +69,14 @@ def read_execution_bundle(path, *, expected_policy_id, expected_contract, expect
     lora = contract['lora']
     if type(lora) is not dict or not lora:
         raise ValueError('explicit language LoRA required')
+    pattern = (r'(?:[a-zA-Z_]\w*|[0-9]+)(?:\.(?:[a-zA-Z_]\w*|[0-9]+))*'
+               if contract['runtime_profile'].startswith('provider:')
+               else r'language_model\.layers\.\d+\.self_attn\.[qv]_proj')
     for name, spec in lora.items():
-        if (not re.fullmatch(r'language_model\.layers\.\d+\.self_attn\.[qv]_proj',name) or
+        if (not re.fullmatch(pattern,name) or
                 set(spec) != {'rank','alpha','scaling','fan_in_fan_out','active_adapter',
                               'a_shape','b_shape','dropout','use_dora'}):
-            raise ValueError('explicit language q/v LoRA only')
+            raise ValueError('invalid LoRA target or tensor contract')
         rank, alpha = spec['rank'], spec['alpha']
         if (type(rank) is not int or rank <= 0 or type(alpha) not in (int,float) or
                 not 0 < alpha < float('inf') or spec['scaling'] != alpha/rank or
@@ -106,6 +109,8 @@ def native_peft_payload(bundle):
     native vLLM Qwen3-ASR mapper consumes model.language_model.* targets.
     Heterogeneous rank/alpha is rejected until a runtime path is tested.
     """
+    if bundle['contract']['runtime_profile'].startswith('provider:'):
+        raise ValueError('external model provider requires its own serving mapper')
     lora = bundle['contract']['lora']
     settings = {(s['rank'],s['alpha']) for s in lora.values()}
     if len(settings) != 1:

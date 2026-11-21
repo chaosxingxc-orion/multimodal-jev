@@ -71,7 +71,7 @@ def finalization(c,p,*,launch,auditor,recovery=False):
         commit_json(root/'terminal.json',dict(exit_code=1,error=repr(error),restart=False,preserve_handles=True));raise
 
 
-def graph(engine,queue,trace_auditor=None):
+def graph(engine,queue,trace_auditor=None,completed=None):
     names=(*MODULES,'audit_context_cached_training','context_cached_efficiency','context_cached_formal',
            'prepare_stage2_objective_run','stage2_objective_run_operations','context_stage2_package_components')
     modules=[importlib.import_module('tools.reports.'+name) for name in dict.fromkeys(names)]
@@ -94,6 +94,15 @@ def graph(engine,queue,trace_auditor=None):
             for key,current in list(vars(value).items()):
                 if current is old:setattr(value,key,fn)
         setattr(module,name,fn)
+    if completed is not None:
+        replace(view('audit_objective_training'),'audit',lambda c,p:completed.audit('prefix',c,p))
+        replace(view('audit_objective_recovery'),'audit',lambda c,p:completed.audit('recovery',c,p))
+        original_stage_audit=view('stage2_objective_run_operations').audit
+        def stage_audit(c,p):
+            if c['training_package']['kind']=='tail':return completed.audit('tail',c,p)
+            return original_stage_audit(c,p)
+        replace(view('stage2_objective_run_operations'),'audit',stage_audit)
+        replace(view('prepare_objective_training_candidate'),'audit',completed.prefix_package)
     parts=view('context_stage2_package_components')
     replace(view('prepare_objective_training_candidate'),'expected',parts.expected)
     replace(view('prepare_stage2_objective_run'),'expected',parts.stage_expected)
@@ -119,10 +128,18 @@ def graph(engine,queue,trace_auditor=None):
     def launcher(module,authorization,status):
         def launch(c,p):
             if c.get(authorization) is not True:raise ValueError('explicit stage dispatch required')
-            # Keep full validation inside lease; only source/reference leaf
-            # proofs reuse authenticated results. No generic audit-hook cache.
+            # Numerical acceptance is already bound before ownership. Under the
+            # lease recheck bytes/resources, never recursively replay numerics.
             def locked_check(paths):
-                lifecycle.EFFECTS.check_paths(paths);module.validate(c);engine.verify()
+                lifecycle.EFFECTS.check_paths(paths)
+                if completed is None:
+                    module.validate(c);engine.verify()
+                else:
+                    completed.verify()
+                    from tools.reports.context_completed_stage_receipts import check_tree
+                    package=Path(c['package'])
+                    manifest=json.loads((package/'PREPARED.json').read_text())
+                    check_tree(package,dict(manifest['files'],**{'PREPARED.json':c['manifest_sha256']}))
             effects=SimpleNamespace(**dict(vars(lifecycle.EFFECTS),check_paths=locked_check))
             fn=FunctionType(lifecycle._launch.__code__,dict(lifecycle._launch.__globals__,command=command))
             result=fn(dict(c,finite_training_dispatch_allowed=True),p,validate=module.validate,

@@ -78,6 +78,9 @@ def run(c,root):
             raise ValueError('engineering prefix is at most two updates')
         contract={k:c[k] for k in ('base_id','source_policy_id','source_contract','runtime_profile',
             'release_sha256','schedule_sha256','global_batch','microbatch','stage')}
+        if 'stage1_layout' in c:
+            from multimodal_jev.stage1_training_layout import Stage1TrainingLayout, checkpoint_layout
+            contract['stage1_layout']=checkpoint_layout(c)
         contract.update(optimizer=dict(lr=1e-4,betas=[.9,.999],eps=1e-8,weight_decay=0.),
             objective=dict(ranking=1.,binary_nll=1.),grad_clip=1.,world_size=4)
         progress('load')
@@ -94,7 +97,10 @@ def run(c,root):
             validate_processor_extension(c['model'],bundle['processor'])
         processor=Qwen3ASRProcessor.from_pretrained(bundle['processor'],local_files_only=True)
         _,base=load_runtime(c['model'],device,'bfloat16')
-        adapted=initialize_adapter(base,dict(lora_rank=4,lora_alpha=8,lora_execution_dtype='bfloat16')).eval()
+        from multimodal_jev.context_stage_lora import from_policy
+        lora=from_policy(bundle['contract'])
+        adapted=initialize_adapter(base,dict(lora_rank=lora['rank'],lora_alpha=lora['alpha'],
+            lora_execution_dtype=lora['execution_dtype'])).eval()
         head=ContextDecisionHead(1024,8,1024,.1).to(device=device,dtype=torch.bfloat16).eval()
         model=ContextDecisionModel(adapted.get_base_model().model,head,bundle['contract']['token']['id']).eval()
         load_policy(c['source_policy'],model,expected_policy_id=c['source_policy_id'],
@@ -172,10 +178,18 @@ def run(c,root):
                         if r['local']!=str(mirror_root/'audio'/(r['sha256']+'.audio')):
                             raise ValueError('mirror physical path differs')
                     audio_mirror=LocalAudioMirror(mirror_root/'audio',read_only=True)
-                preparer=CachedContextPreparer(factory,EncodedAudioCache(c['encoded_audio_cache']),
+                cache=EncodedAudioCache(c['encoded_audio_cache'])
+                layout_reader=None
+                if 'stage1_layout' in c:
+                    from multimodal_jev.stage1_layout_cache import ViewCache,read_view
+                    from multimodal_jev.stage1_training_layout import source_pin
+                    layout_reader=Stage1TrainingLayout.open(c,list(population),task)
+                    cache=ViewCache(cache,read_view(source_pin(c,c['layout_cache']),layout_reader,c))
+                preparer=CachedContextPreparer(factory,cache,
                     processor_sha256=processor_identity,decision_token_id=model.decision_token_id,
                     audio_token_id=base.config.audio_token_id,max_tokens=4096,audio_mirror=audio_mirror)
                 stream=CachedContextBatches(batches,population,task,preparer,
+                    slot_request=layout_reader,
                     start_update=start_update,stop_update=stop_update,global_batch=128)
                 signal[0]=dict(error=None,schedule=manifest)
             except Exception as exc:signal[0]=dict(error=repr(exc))

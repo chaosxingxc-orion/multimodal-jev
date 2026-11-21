@@ -57,6 +57,8 @@ def generate(source_root, *, formal=False):
     else:
         source=finite_source(source_root)
     edits=[
+        ("max_tokens=4096,audio_mirror=audio_mirror)",
+         "max_tokens=4096,audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))"),
         ('def run(c,root):\n',
          'def run(c,root):\n'
          '    from tools.reports.context_cached_reference_trainer import validate_objective,no_online_processor\n'

@@ -1,0 +1,350 @@
+{
+  "SLURP_clean_TEST60": {
+    "prior": {
+      "n": 12991,
+      "k": 60,
+      "nll_positive": 0.009784397226793355,
+      "nll_negative": 0.00883911797743927,
+      "brier_positive": 0.002752395632147314,
+      "brier_negative": 0.0018346852444971653,
+      "median_gold": 0.8740772008895874,
+      "median_hardest_negative": 0.13477592170238495,
+      "median_signed_gap": 0.6801281571388245,
+      "mean_negative": 0.0071971508496956466,
+      "mean_false_positives_per_audio": 0.12200754368408899,
+      "missed_gold_under_threshold": 2810,
+      "multiple_selected": 793,
+      "tied_top": 7,
+      "conditional_choice_accuracy": 0.8447386652297745,
+      "median_choice_none": 0.9817357216389426
+    },
+    "tpo": {
+      "n": 12991,
+      "k": 60,
+      "nll_positive": 0.007051649986748536,
+      "nll_negative": 0.15244960182805226,
+      "brier_positive": 0.0013859384400317918,
+      "brier_negative": 0.034144470641278915,
+      "median_gold": 0.999841570854187,
+      "median_hardest_negative": 0.9896718263626099,
+      "median_signed_gap": 0.00426936149597168,
+      "mean_negative": 0.04684654593506301,
+      "mean_false_positives_per_audio": 2.53167577553691,
+      "missed_gold_under_threshold": 1234,
+      "multiple_selected": 11517,
+      "tied_top": 54,
+      "conditional_choice_accuracy": 0.7500577322761912,
+      "median_choice_none": 0.00013135176466982094
+    },
+    "paired": {
+      "retained": 9252,
+      "fixed": 436,
+      "regressed": 1796,
+      "both_wrong": 1507,
+      "gold_rank_worse": 2644,
+      "gold_rank_improved": 777,
+      "regressed_tied_gold": 22,
+      "regressed_gold_down": 489,
+      "regressed_negative_up": 1794,
+      "regressed_both_up": 1306,
+      "regressed_wrong_lead_ge_margin": 630,
+      "regressed_gold_above_threshold": 1371,
+      "regressed_median_margin": [
+        0.42481742054224014,
+        -0.014196842908859253
+      ],
+      "regressed_median_gold": [
+        0.7306742370128632,
+        0.9808759689331055
+      ],
+      "regressed_median_hardest_negative": [
+        0.1859472095966339,
+        0.9996540546417236
+      ]
+    },
+    "regressed_confusions": [
+      {
+        "gold": "datetime_query",
+        "winner": "qa_factoid",
+        "count": 148,
+        "median_gap_example": "slurp:audio-1501764456-headset.flac",
+        "gold_prob": [
+          0.4012185037136078,
+          0.9930961728096008
+        ],
+        "strongest_wrong_prob": [
+          0.1127954050898552,
+          0.999290406703949
+        ],
+        "gold_rank": [
+          1,
+          2
+        ]
+      },
+      {
+        "gold": "general_quirky",
+        "winner": "qa_factoid",
+        "count": 126,
+        "median_gap_example": "slurp:audio-1434532712-headset.flac",
+        "gold_prob": [
+          0.3793783485889435,
+          0.0030753696337342262
+        ],
+        "strongest_wrong_prob": [
+          0.18476749956607819,
+          0.854884684085846
+        ],
+        "gold_rank": [
+          1,
+          11
+        ]
+      },
+      {
+        "gold": "weather_query",
+        "winner": "qa_factoid",
+        "count": 112,
+        "median_gap_example": "slurp:audio-1502308780-headset.flac",
+        "gold_prob": [
+          0.9559813141822815,
+          0.974821150302887
+        ],
+        "strongest_wrong_prob": [
+          0.060086652636528015,
+          0.999929666519165
+        ],
+        "gold_rank": [
+          1,
+          2
+        ]
+      },
+      {
+        "gold": "qa_currency",
+        "winner": "qa_factoid",
+        "count": 77,
+        "median_gap_example": "slurp:audio-1490184606.flac",
+        "gold_prob": [
+          0.9585376977920532,
+          0.999929666519165
+        ],
+        "strongest_wrong_prob": [
+          0.11757213622331619,
+          0.9999645948410034
+        ],
+        "gold_rank": [
+          1,
+          2
+        ]
+      },
+      {
+        "gold": "general_quirky",
+        "winner": "social_post",
+        "count": 62,
+        "median_gap_example": "slurp:audio-1494512985.flac",
+        "gold_prob": [
+          0.6334102749824524,
+          0.048136770725250244
+        ],
+        "strongest_wrong_prob": [
+          0.042722199112176895,
+          0.894789457321167
+        ],
+        "gold_rank": [
+          1,
+          3
+        ]
+      }
+    ],
+    "shard_sha256": {
+      "slurp-0/prior.json": "4f1c843b4787ee416b27049f27975bb444b12b5a1de52a89a8ae9e8726526077",
+      "slurp-1/prior.json": "e925adf004044c1de0a07def7b9869fd67206b12cc18f996e5b0bb2e739f109d",
+      "slurp-2/prior.json": "63cbaef083e7e005d98821a97a48399a5a0aad5603b66fdc4f4d530bf2c32c93",
+      "slurp-3/prior.json": "8d6ebcc5393f126bff5398bdca2fe56fc6336b5b934bf50223bcf18a08b21c7e",
+      "slurp-0/prior-choices.json": "653c197d2b77e42da2824e0f13deb98513c7d5cbf9e4b1fd99c94b34103da730",
+      "slurp-1/prior-choices.json": "e2fb4aa4a3efa888a06846b61e5a33d9b39cc2b0701ffa71aefbde69ba1af895",
+      "slurp-2/prior-choices.json": "97922f81ea4c4dc7a708f409febeb73a3587b36c6b5ecbcffd8faf4c39a72a7d",
+      "slurp-3/prior-choices.json": "a7febffc1f2e99ece9564a389db88c5ee58ea580906a7e611fe1ab90c1b918bb",
+      "slurp-0/tpo.json": "deda1d77fe2ffeb1d47b5a328a814b3712cd2cf11fa1470b3909aca768d68601",
+      "slurp-1/tpo.json": "39f7dcd484b2e97a9c408546402bb2688de7ef62ad125b25bc58faed4eed7612",
+      "slurp-2/tpo.json": "e830d15d0c57fd53bc1f8e4caae7b6b55573bcc8d0ab894d5cc2771507674526",
+      "slurp-3/tpo.json": "e3d7bd1dcd48b0528b089c367b89cdf7409217b982db933b619bde090d6ce61a",
+      "slurp-0/tpo-choices.json": "152111eca297c8cae6ac932e02366e3c920c9f77f3bae2009e8a0e0d41aab478",
+      "slurp-1/tpo-choices.json": "08951c6f48d672a13a97c21c609c7f36e69c1cb495694b7353892915d8a2068a",
+      "slurp-2/tpo-choices.json": "81760222e1a0e974ec31e8638627d55fc738619244c9c0b1bf08f042da0ee40e",
+      "slurp-3/tpo-choices.json": "f7e7849ccdce1ee5720718dac42fa8c29334872c854764ed0bb4c0f8ba243a48"
+    }
+  },
+  "MINDS_native14": {
+    "prior": {
+      "n": 8168,
+      "k": 14,
+      "nll_positive": 0.11664016897312143,
+      "nll_negative": 0.01809266308987687,
+      "brier_positive": 0.03176643927431124,
+      "brier_negative": 0.0031807373101759217,
+      "median_gold": 0.3851434290409088,
+      "median_hardest_negative": 0.06465348601341248,
+      "median_signed_gap": 0.26904037594795227,
+      "mean_negative": 0.016621279987848903,
+      "mean_false_positives_per_audio": 0.04199314397649363,
+      "missed_gold_under_threshold": 4601,
+      "multiple_selected": 47,
+      "tied_top": 15,
+      "conditional_choice_accuracy": 0.7165768854064642,
+      "median_choice_none": 0.9859363721117853
+    },
+    "tpo": {
+      "n": 8168,
+      "k": 14,
+      "nll_positive": 0.09551607838425867,
+      "nll_negative": 0.15184010556594268,
+      "brier_positive": 0.0191589355545572,
+      "brier_negative": 0.03832308905127408,
+      "median_gold": 0.9525741338729858,
+      "median_hardest_negative": 0.49738313257694244,
+      "median_signed_gap": 0.10806474089622498,
+      "mean_negative": 0.06135724341226989,
+      "mean_false_positives_per_audio": 0.685847208619001,
+      "missed_gold_under_threshold": 2567,
+      "multiple_selected": 3312,
+      "tied_top": 15,
+      "conditional_choice_accuracy": 0.6563418217433888,
+      "median_choice_none": 0.10669059229582412
+    },
+    "paired": {
+      "retained": 5002,
+      "fixed": 307,
+      "regressed": 884,
+      "both_wrong": 1975,
+      "gold_rank_worse": 1732,
+      "gold_rank_improved": 895,
+      "regressed_tied_gold": 4,
+      "regressed_gold_down": 327,
+      "regressed_negative_up": 839,
+      "regressed_both_up": 557,
+      "regressed_wrong_lead_ge_margin": 537,
+      "regressed_gold_above_threshold": 389,
+      "regressed_median_margin": [
+        0.09250655537471175,
+        -0.17459721118211746
+      ],
+      "regressed_median_gold": [
+        0.18713268637657166,
+        0.38954663276672363
+      ],
+      "regressed_median_hardest_negative": [
+        0.06754668802022934,
+        0.8489722013473511
+      ]
+    },
+    "regressed_confusions": [
+      {
+        "gold": "cash_deposit",
+        "winner": "direct_debit",
+        "count": 166,
+        "median_gap_example": "minds14:c8eb459d1bd3a1e3a5c7a884de6c1cf70dbd1b8b0eea6c4ffa03d1de8693412b",
+        "gold_prob": [
+          0.4821852743625641,
+          0.6315943002700806
+        ],
+        "strongest_wrong_prob": [
+          0.04742587357759476,
+          0.9230391979217529
+        ],
+        "gold_rank": [
+          1,
+          2
+        ]
+      },
+      {
+        "gold": "high_value_payment",
+        "winner": "card_issues",
+        "count": 80,
+        "median_gap_example": "minds14:c09c05c90cf013acd85fdaae15a642b98dd556687cb9b9d3dc5d55eef7f0aad2",
+        "gold_prob": [
+          0.1037486344575882,
+          0.0792103260755539
+        ],
+        "strongest_wrong_prob": [
+          0.039048291742801666,
+          0.35042136907577515
+        ],
+        "gold_rank": [
+          1,
+          3
+        ]
+      },
+      {
+        "gold": "abroad",
+        "winner": "card_issues",
+        "count": 58,
+        "median_gap_example": "minds14:8bff7d0805eacd2ba08216c4c6068993e0e3b17e9c2d16ccb0db430a7d1e1517",
+        "gold_prob": [
+          0.055005285888910294,
+          0.10521054267883301
+        ],
+        "strongest_wrong_prob": [
+          0.05108273774385452,
+          0.23091977834701538
+        ],
+        "gold_rank": [
+          1,
+          4
+        ]
+      },
+      {
+        "gold": "pay_bill",
+        "winner": "direct_debit",
+        "count": 52,
+        "median_gap_example": "minds14:1cab3191cf6735e83ea85cdc98499d320906284c5e767881a7ddb42e4c1dac35",
+        "gold_prob": [
+          0.15817435085773468,
+          0.7130321860313416
+        ],
+        "strongest_wrong_prob": [
+          0.06853749603033066,
+          0.8255897164344788
+        ],
+        "gold_rank": [
+          1,
+          2
+        ]
+      },
+      {
+        "gold": "high_value_payment",
+        "winner": "app_error",
+        "count": 50,
+        "median_gap_example": "minds14:1d8035d06aadea1c5b770305bfb632e5a99370f248f04040fa20cd75632ec135",
+        "gold_prob": [
+          0.12168575823307037,
+          0.2267836481332779
+        ],
+        "strongest_wrong_prob": [
+          0.026759283617138863,
+          0.7620701193809509
+        ],
+        "gold_rank": [
+          1,
+          3
+        ]
+      }
+    ],
+    "shard_sha256": {
+      "minds-0/prior.json": "e81023a96b845d3c25b80c467a2d7baedf237818dcb20c839a554e43131c8f04",
+      "minds-1/prior.json": "4710aed3c9aec11e2449b8a3b7c44728faaee5e82cb9ba8326dbd6749e533a31",
+      "minds-2/prior.json": "e1974ebd595ced43b5d4dba74b7769268dbcda890b6b034412aaa478d51cb946",
+      "minds-3/prior.json": "79af697cd0c11ba1868e608aa9e19f1932567bb1920d6285d69b0d96254e2f65",
+      "minds-0/prior-choices.json": "8fbeddce66c6c795afb7989c8c15f28fb09ff4f4be7542e029822103ffaed3d8",
+      "minds-1/prior-choices.json": "317b9e3e9d3a9558e7bc6ae1fe1ea48c551828e0ac33f595011c78057129b0a8",
+      "minds-2/prior-choices.json": "3547a638a0312c726ccc26ed3201887c5ddb455b5e821d96591b2f643b926e21",
+      "minds-3/prior-choices.json": "b683c2abfe3ac2f01aaf867ee4332a36c72f96b10e1d33c856ad5651902270ef",
+      "minds-0/tpo.json": "6c68ee6109389ba2bc9fc075f00d507df2c631a7eb9bef689231b3db17ea5325",
+      "minds-1/tpo.json": "ba5f0f8ae457560b9af21af3bd14af9415193e44f8cc6cbdd9ec91b5655a8c36",
+      "minds-2/tpo.json": "a0edb297890ae14d012519e0adc7c6bb0a2b6265aa3044aa8917787e17c9abe3",
+      "minds-3/tpo.json": "670f52d7200c1e6131403d7074c843ffff5d49c78940358168f7ab112a340ae8",
+      "minds-0/tpo-choices.json": "663a657567239b2d598886414aaa5d5ff309c340c7b9fe0a6717ae61301cff88",
+      "minds-1/tpo-choices.json": "100f106d79144cc7e3e5ce7d7f177a8ceb1930f6b3cb489bc176db16800c175e",
+      "minds-2/tpo-choices.json": "de2bfbf695630256c6c2878335e5010872f51e87511485bd26ada1ae515f7a6b",
+      "minds-3/tpo-choices.json": "bd8d7d112f5a3630a8494aea4711fb90b961fcfcb2c08fe4792fec8331e0f8a8"
+    }
+  }
+}

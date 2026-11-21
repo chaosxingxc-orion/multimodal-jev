@@ -200,6 +200,9 @@ def current_terms(logits, record, *, policy_id, input_id, query_id, update):
     return terms
 
 
+from .grpo_numerics import current as grpo_settings
+
+
 def native_surrogate(terms):
     """Per-query weighted component mean through the pinned verl surrogate."""
     from omegaconf import OmegaConf
@@ -212,8 +215,10 @@ def native_surrogate(terms):
     if new.shape[0] == 0:
         return new.sum()*0
     weights = terms['weight'][:,None].expand_as(new)
-    config=OmegaConf.create(dict(clip_ratio=.2,clip_ratio_low=None,clip_ratio_high=None,
-                                clip_ratio_c=3.,global_batch_info={}))
+    active=grpo_settings()
+    clip=(active['policy_clip'] if active is not None else
+          dict(clip_ratio=.2,clip_ratio_low=None,clip_ratio_high=None,clip_ratio_c=3.))
+    config=OmegaConf.create(dict(**clip,global_batch_info={}))
     value,_ = core_algos.compute_policy_loss_vanilla(old.reshape(-1,1),new.reshape(-1,1),
         adv.reshape(-1,1),torch.ones_like(new).reshape(-1,1),config=config,
         rollout_is_weights=weights.reshape(-1,1))

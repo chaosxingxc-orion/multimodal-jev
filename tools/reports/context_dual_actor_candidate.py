@@ -5,6 +5,7 @@ forward collation, gradient accumulation, clipping and optimizer remain intact.
 This module does not dispatch training or certify the live model identity.
 """
 from contextvars import ContextVar
+import math
 import hashlib
 import json
 from pathlib import Path
@@ -25,7 +26,14 @@ _loaded=None
 
 
 def options_check(options):
-    if (set(options)!=set(OPTION_KEYS) or options['algorithm'] not in ALGORITHMS
+    extra={'group_size','sampling_seed','clip_ratio'}
+    editable=set(options)==set(OPTION_KEYS)|extra
+    if editable and (type(options['group_size']) is not int or options['group_size']<2
+            or type(options['sampling_seed']) is not int or options['sampling_seed']<0
+            or type(options['clip_ratio']) not in (int,float) or not math.isfinite(options['clip_ratio'])
+            or options['clip_ratio']<0):
+        raise ValueError('invalid configured rollout protocol')
+    if ((not editable and set(options)!=set(OPTION_KEYS)) or options['algorithm'] not in ALGORITHMS
             or options['arm'] not in ARMS or options['ranking_coefficient']!=.1
             or options['probability_coefficient']!=.3 or options['kl_coefficient']!=.01
             or type(options['reference_policy_id'])!=str or not options['reference_policy_id']):
@@ -39,7 +47,7 @@ def validate_item(p,options):
             or any(ident[k]!=b[k] for k in ident)
             or p['request_id']!=b['query_id'] or p['policy_id']!=b['policy_id']
             or list(p['candidate_ids'])!=b['candidates'] or b['algorithm']!=options['algorithm']
-            or b['group_size']!=16 or b['seed']!=317
+            or b['group_size']!=options.get('group_size',16) or b['seed']!=options.get('sampling_seed',317)
             or type(p['real_request'])!=bool or p['request_weight']!=(1. if p['real_request'] else 0.)):
         raise ValueError('dual behavior/query/options binding differs')
     labels=p['labels'];observed=p['observed'];positions=p['positions'];n=len(b['candidates'])
@@ -160,7 +168,7 @@ def load(source_root):
         state=module._active.get()
         if (state is None or state['consumed'] or state['log_probs'] is not log_prob
                 or config.policy_loss.loss_mode!=MODE or loss_agg_mode!='token-mean'
-                or rollout_is_weights is not None or config.clip_ratio!=.2):
+                or rollout_is_weights is not None or config.clip_ratio!=state['payload'][0]['dual_options'].get('clip_ratio',.2)):
             raise ValueError('one exact dual forward per native loss required')
         state['consumed']=True;p=state['payload']
         total,detail=hybrid_loss(state['logits'],[v['dual_credit'] for v in p],

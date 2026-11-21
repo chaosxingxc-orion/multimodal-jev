@@ -116,27 +116,44 @@ def compare(reference,records,expected,*,policy_id):
         runtime_provenance_verified=False,target_scored=False)
 
 
-def hf_reference(config,admitted,selected,bundle,encode,output):
+def load_reference_model(config,bundle,output):
     import torch_npu
     from multimodal_jev.asr import load_runtime
     from multimodal_jev.sft import initialize_adapter
-    from multimodal_jev.context_decision_head import ContextDecisionHead
+    from multimodal_jev.context_model_profile import from_hf,build_head
     from multimodal_jev.context_decision_model import ContextDecisionModel
     from multimodal_jev.context_policy_snapshot import load_policy
     from multimodal_jev.context_runtime_profile import PROFILE,install_actor
     devices=config['physical_devices']
-    if len(devices)!=1 or sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=['davinci'+str(devices[0])]:
+    if config.get('process_device_scope') is not None:
+        from tools.jev.context_configurable_device_scope import validate_tp1
+        validate_tp1(config)
+    elif len(devices)!=1 or sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=['davinci'+str(devices[0])]:
         raise ValueError('one isolated HF NPU required')
+    profile=from_hf(config['model'])
+    contract=bundle['contract']
+    if (set(profile.lora_targets())!=set(contract['lora'])
+            or any(contract['branch'].get(k)!=v for k,v in profile.decision_head().items())):
+        raise ValueError('HF endpoint decision head or LoRA targets differ from model geometry')
+    ranks_alpha={(item['rank'],item['alpha']) for item in contract['lora'].values()}
+    if len(ranks_alpha)!=1:
+        raise ValueError('HF endpoint requires uniform LoRA rank and alpha')
+    rank,alpha=next(iter(ranks_alpha))
     torch.set_num_threads(2);torch.npu.set_device(0);torch.manual_seed(317);torch.npu.manual_seed_all(317)
     device=torch.device('npu',0)
     _,base=load_runtime(config['model'],device,'bfloat16')
-    adapted=initialize_adapter(base,dict(lora_rank=4,lora_alpha=8,lora_execution_dtype='bfloat16')).eval()
-    head=ContextDecisionHead(1024,8,1024,.1).to(device=device,dtype=torch.bfloat16).eval()
+    adapted=initialize_adapter(base,dict(lora_rank=rank,lora_alpha=alpha,lora_execution_dtype='bfloat16')).eval()
+    head=build_head(profile).to(device=device,dtype=torch.bfloat16).eval()
     model=ContextDecisionModel(adapted.get_base_model().model,head,bundle['contract']['token']['id']).eval()
     load_policy(config['snapshot'],model,expected_policy_id=config['policy_id'],
         expected_contract=config['contract'],expected_base_id=config['base_id'])
     handle,runtime=install_actor(adapted,model,PROFILE)
     commit_json(output/'hf-runtime.json',runtime)
+    return model,device,base,handle
+
+
+def hf_reference(config,admitted,selected,bundle,encode,output):
+    model,device,base,handle=load_reference_model(config,bundle,output)
     records=[]
     for asset,receipt in zip(selected['assets'],selected['input_receipts'],strict=True):
         row,actual=encode(asset)

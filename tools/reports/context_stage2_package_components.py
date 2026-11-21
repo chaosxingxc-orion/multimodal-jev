@@ -37,8 +37,11 @@ def expected(c,provenance):
     report=json.loads(read_bound(c['extension_cpu_report']))
     snapshot=Path(c['extension_source'])
     manifest=json.loads((snapshot/'FILES.json').read_text())
+    expected_tests=c.get('extension_expected_tests',47)
+    if type(expected_tests) is not int or expected_tests<47:
+        raise ValueError('complete extension CPU acceptance required')
     if (sha((snapshot/'FILES.json').read_bytes())!=report['source_manifest_sha256']
-            or report['counts']!=dict(tests=47,failures=0,errors=0,skipped=0)
+            or report['counts']!=dict(tests=expected_tests,failures=0,errors=0,skipped=0)
             or report['image']!=old['image'] or report['state']['ExitCode']!=0
             or report['state']['OOMKilled'] or report['terminal']['exit_code']!=0):
         raise ValueError('exact successful trace CPU evidence required')

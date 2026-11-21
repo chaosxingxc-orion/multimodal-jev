@@ -53,7 +53,7 @@ RUNNER = LEGACY_RUNNER.replace("'--standalone',", "'--nnodes=1','--node-rank=0',
 
 
 def validate(c):
-    if (not re.fullmatch('[a-zA-Z0-9][a-zA-Z0-9_.-]*', c['host'])
+    if (not re.fullmatch(r'(?:[a-zA-Z0-9][a-zA-Z0-9_.-]*@)?[a-zA-Z0-9][a-zA-Z0-9_.-]*', c['host'])
             or not re.fullmatch('[a-z0-9][a-z0-9-]*', c['tag'])):
         raise ValueError('safe host alias and unique tag required')
     root=Path(c['package']);manifest=json.loads((root/'PREPARED.json').read_text())
@@ -93,7 +93,7 @@ def validate(c):
     return manifest,config,{}
 
 
-def prepare(c,provenance):
+def prepare(c,provenance,*,tested_runtime=None):
     project=Path(c['project']);dest=Path(c['package']);remote=lifecycle.path(c['remote_root'])
     design=json.loads(Path(c['design']).read_text());sft=design['stage1']
     if design['training_dispatch_allowed'] is not False:
@@ -107,7 +107,7 @@ def prepare(c,provenance):
     if 'lora' in sft:
         from multimodal_jev.context_stage_lora import bind_design
         stage_lora=bind_design(design,m['contract'])
-    rows,_,_=load_release(c['release'],c['release_sha256'],'learning',purpose='optimize')
+    rows,task,_=load_release(c['release'],c['release_sha256'],'learning',purpose='optimize')
     schedule=Path(c['schedule']);parent=Path(c['parent_schedule'])
     batches,_=load_schedule(schedule,c['schedule_sha256'],release_sha256=c['release_sha256'],
         population={r['id']:r for r in rows},batch_config=sft['batch_config'],
@@ -116,13 +116,31 @@ def prepare(c,provenance):
     plan=derive(sft['batch_config'])
     if len(rows)!=sft['batch_config']['source_queries'] or len(batches)!=plan['total_updates']:
         raise ValueError('full declared-DP source schedule required')
+    if 'stage1_layout' in c:
+        from multimodal_jev.stage1_training_layout import Stage1TrainingLayout
+        from tools.reports.context_infonce_trainer import SOURCE_SHA
+        if file_hash(project/'tools/jev/train_context_instruction_npu.py')!=SOURCE_SHA:
+            raise ValueError('legacy trainer cannot consume layout experiments')
+        input_spec=c['stage1_layout']
+        layout_reader=Stage1TrainingLayout.open(dict(stage='instruction',stage1_layout=input_spec,
+            release_sha256=c['release_sha256'],instruction_objective=sft['instruction_objective']),
+            [r['id'] for r in rows],task)
+        from multimodal_jev.stage1_layout_cache import read_view
+        cache_spec=c.get('layout_cache')
+        if not cache_spec:raise ValueError('complete native and permuted TRAIN cache proof required')
+        read_view(cache_spec,layout_reader,dict(c,batch_config=sft['batch_config'],pins=c['external_pins']))
+        if json.loads(Path(input_spec['design']['path']).read_bytes())['stage1']['sha256']!=file_hash(c['design']):
+            raise ValueError('native Stage1 design differs from the unified design')
     check_paths({'instruction_package':dest});dest.mkdir(parents=True,exist_ok=False)
     source=dest/'source'
-    for p in (project/'src/multimodal_jev').glob('*.py'):
-        target=source/p.relative_to(project);target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,target)
-    for name in ['tools/jev/train_context_instruction_npu.py','tools/jev/context_process_supervisor.py',
-                 'tools/reports/context_infonce_actor.py','tools/reports/context_infonce_trainer.py']:
-        target=source/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(project/name,target)
+    from multimodal_jev.stage1_package_sources import FINITE, copy_checked
+    if tested_runtime is None:  # standalone development packaging
+        names=[str(p.relative_to(project)) for p in (project/'src/multimodal_jev').glob('*.py')]+list(FINITE)
+        for name in names:
+            target=source/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(project/name,target)
+    else:
+        names=[name for name in tested_runtime if name.startswith('src/') or name in FINITE]
+        copy_checked(project,source,names,tested_runtime)
     shutil.copytree(schedule,source/'schedule');shutil.copytree(parent,source/'parent-schedule')
     generate(source)
     pins={remote+'/source/'+str(p.relative_to(source)):file_hash(p) for p in source.rglob('*') if p.is_file()}
@@ -142,6 +160,21 @@ def prepare(c,provenance):
         microbatch=sft['batch_config']['microbatch'],instruction_objective=sft['instruction_objective'],
         lr_schedule=sft['lr_schedule'],pins=pins)
     if stage_lora is not None:config['stage_lora_transition']=stage_lora
+    if 'stage1_layout' in c:
+        config['stage1_layout']={}
+        for key,spec in dict(c['stage1_layout'],cache=c['layout_cache']).items():
+            name='layout-'+key+'.json'
+            target=source/name
+            shutil.copyfile(spec['path'],target)
+            if file_hash(target)!=spec['sha256']:raise ValueError('layout input changed during packaging')
+            binding=dict(path=name,sha256=spec['sha256'])
+            if key=='cache':config['layout_cache']=binding
+            else:config['stage1_layout'][key]=binding
+            pins[remote+'/source/'+name]=spec['sha256']
+    if c.get('prompt_layout') is not None:
+        from multimodal_jev.context_decision_contract import PREFIX_LAYOUT
+        if c['prompt_layout']!=PREFIX_LAYOUT:raise ValueError('unknown instruction prompt layout')
+        config['prompt_layout']=c['prompt_layout']
     commit_json(dest/'config.json',config)
     (dest/'run.py').write_text(RUNNER)
     manifest=dict(status='instruction_finite_prepared_only',image=lifecycle.IMAGE,remote_root=remote,
@@ -203,11 +236,29 @@ def launch(c,provenance):
         expected='test_native_full_and_tail_update_with_fresh_resume['+str(width)+']'
         if not any(node.attrib.get('name')==expected and not list(node) for node in cases):
             raise ValueError('CPU acceptance must exercise declared DP width')
+    if training['instruction_objective']['kind']=='candidate_infonce_probability_margin_v1':
+        import xml.etree.ElementTree as ET
+        junit=Path(report['collection'])/'run/junit.xml'
+        if file_hash(junit)!=report['files'].get('run/junit.xml'):raise ValueError('margin CPU evidence changed')
+        cases=list(ET.parse(junit).getroot().iter('testcase'))
+        if not any(n.attrib.get('name')=='test_native_margin_full_tail_and_fresh_resume' and not list(n) for n in cases):
+            raise ValueError('new margin objective requires native CPU gradient/replay acceptance')
+    layout_sources=()
+    if 'stage1_layout' in training:
+        import xml.etree.ElementTree as ET
+        junit=Path(report['collection'])/'run/junit.xml'
+        if file_hash(junit)!=report['files'].get('run/junit.xml'):raise ValueError('layout CPU evidence changed')
+        passed={n.get('name') for n in ET.parse(junit).getroot().iter('testcase') if not list(n)}
+        if not {'test_actual_stage1_batch_rebinds_layout_on_prefetch_and_fresh_resume',
+                'test_text_view_rejects_misbound_native_and_unknown_order'} <= passed:
+            raise ValueError('actual layout consumer and cache rejection checks required')
+        layout_sources=tuple('src/multimodal_jev/'+n+'.py' for n in
+                ('stage1_candidate_layout','stage1_training_layout','stage1_layout_cache','cached_context_batches'))
     tested=Path(report['collection'])/'package/FILES.json'
     if file_hash(tested)!=report['source_manifest_sha256']:
         raise ValueError('CPU acceptance source manifest changed')
     sources=json.loads(tested.read_text());package=Path(c['package'])/'source'
-    for name in ('src/multimodal_jev/context_infonce.py','src/multimodal_jev/context_warmup.py',
+    for name in (*layout_sources,'src/multimodal_jev/context_infonce.py','src/multimodal_jev/context_warmup.py',
                  'src/multimodal_jev/context_native_actor.py',
                  'src/multimodal_jev/readonly_encoded_audio_cache.py',
                  'tools/reports/context_infonce_actor.py','tools/reports/context_infonce_trainer.py',

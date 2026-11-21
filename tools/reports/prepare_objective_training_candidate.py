@@ -104,10 +104,10 @@ def expected(c,provenance):
     return files,m
 
 
-def prepare(c,provenance):
+def prepare(c,provenance,*,builder=None):
     root=Path(c['output'])
     if root.exists():raise ValueError('fresh training candidate required')
-    files,manifest=expected(c,provenance)
+    files,manifest=(expected if builder is None else builder)(c,provenance)
     check_paths({'objective_training_candidate':root});root.mkdir(parents=True,exist_ok=False)
     for name,raw in files.items():
         p=root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(raw)

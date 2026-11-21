@@ -1,0 +1,44 @@
+{
+  "schema": "jev-next-stage-prompt-layout-v1",
+  "status": "compiler_cpu_verified_npu_training_pending",
+  "training_dispatch_allowed": false,
+  "prompt_layout": "jev-stable-prefix-audio-readout-v1",
+  "scope": "simple_native_intent_membership",
+  "stable_prefix": ["system_instructions", "request_version", "requirements", "complete_ordered_candidate_definitions_and_questions"],
+  "variable_suffix": ["supplied_history_if_any", "audio", "ordered_decision_id_and_marker"],
+  "preserve": ["candidate_ids", "candidate_order", "all_candidate_definitions", "question_semantics", "thresholds", "audio_before_every_decision_marker", "no_gold_in_model_input"],
+  "shared_compiler": "multimodal_jev.context_decision_contract.encode_context_request",
+  "preprocessing": {
+    "entrypoint": "multimodal_jev.cached_context_preparation.CachedContextPreparer",
+    "prompt_layout_in_cache_identity": true,
+    "rebuild_policy_free_cache": true,
+    "reuse_old_logits_or_reference_cache": false
+  },
+  "stage1": {
+    "objective": "InfoNCE",
+    "use_new_layout_from_first_update": true,
+    "train_inference_same_layout": true
+  },
+  "stage2": {
+    "algorithm": "GRPO",
+    "use_same_layout_as_stage1": true,
+    "reference": "new_stage1_model_outputs_on_new_layout",
+    "policy_kv_reuse_across_optimizer_updates": false,
+    "policy_kv_reuse_within_fixed_policy": true
+  },
+  "cache_acceptance": {
+    "prefix_caching": true,
+    "skip_reading_prefix_cache": false,
+    "history_hidden_states_required": true,
+    "token_prefix_identity_measured_with_actual_processor": true,
+    "cold_warm_and_frozen_runtime_parity_required": true,
+    "report_shared_prefix_tokens_and_hit_rate": true,
+    "keep_stable_candidate_order_across_datasets_only_when_task_is_same": true
+  },
+  "rollout_limitations": [
+    "Old checkpoint is not admitted on the new layout without a separately named evaluation.",
+    "Moving definitions before audio changes causal representations and requires a new training run.",
+    "Trainable language KV cannot be detached and reused across optimizer updates without changing training gradients.",
+    "No prefix cache speedup or task score is claimed by CPU compiler tests."
+  ]
+}

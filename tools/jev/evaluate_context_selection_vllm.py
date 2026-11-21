@@ -11,12 +11,11 @@ from multimodal_jev.baseline import atomic_json,file_hash
 def run(c,out):
     import torch
     import torch_npu
-    from transformers import Qwen3ASRProcessor
+    from multimodal_jev.model_provider import resolve_provider, cache_namespace
+    provider = resolve_provider(c)
     from multimodal_jev.cached_context_preparation import CachedContextPreparer,processor_cache_identity
     from multimodal_jev.context_candidate_task import compile_candidates
-    from multimodal_jev.context_policy_artifacts import read_execution_bundle,verify_native_adapter
-    from multimodal_jev.context_resident_rollout import FixedContextRollout
-    from multimodal_jev.context_runtime_profile import PROFILE
+    from multimodal_jev.context_policy_artifacts import read_execution_bundle
     from multimodal_jev.encoded_audio_cache import EncodedAudioCache
     from multimodal_jev.local_checkpoint import commit_json
     from multimodal_jev.local_runtime_storage import require_training_storage
@@ -35,9 +34,10 @@ def run(c,out):
     bundle=read_execution_bundle(c['snapshot'],expected_policy_id=c['policy_id'],
         expected_contract=c['contract'],expected_base_id=c['base_id'])
     if (bundle['contract']['request_version']!='jev-context-exclusive_event-v1' or
-            bundle['contract']['runtime_profile']!=PROFILE):
+            bundle['contract']['runtime_profile']!=provider.runtime_profile):
         raise ValueError('actual exclusive-event request and runtime contract required')
-    verify_native_adapter(c['adapter'],bundle)
+    if not callable(getattr(provider,'load_vllm',None)):
+        raise ValueError('selected model_provider does not implement vLLM serving')
     rows,task,release=load(c['release'],c['release_sha256'],'selection',purpose='evaluate')
     if len(rows)!=9226 or release['counts']['selection']['recordings']!=9226:
         raise ValueError('complete fixed selection population required')
@@ -47,17 +47,23 @@ def run(c,out):
     candidates=[dict(id=x['id'],definition=x['description']) for x in task['schema']['candidates']]
     if len(candidates)!=60:raise ValueError('full candidate ontology required')
     prepare=CachedContextPreparer(
-        lambda:Qwen3ASRProcessor.from_pretrained(bundle['processor'],local_files_only=True),
+        lambda:provider.processor(bundle['processor']),
         EncodedAudioCache(c['encoded_audio_cache']),processor_sha256=processor_cache_identity(c['snapshot']),
-        decision_token_id=bundle['contract']['token']['id'],audio_token_id=c['audio_token_id'],max_tokens=4096)
+        decision_token_id=bundle['contract']['token']['id'],audio_token_id=c['audio_token_id'],max_tokens=c.get('max_model_len',4096),
+        encode=provider.encode,provider_namespace=cache_namespace(c),prompt_layout=c.get('prompt_layout'))
     def encode(asset):
         request=compile_candidates(asset['audio'],candidates,task['thinking']['requirements'],semantics='exclusive_event')
         value=prepare((request,asset['audio_sha256']))
         return asset,request,value
     engine_config={k:c[k] for k in ('model','base_id','snapshot','policy_id','contract','adapter','physical_devices')}
-    engine_config.update(tensor_parallel_size=1,max_model_len=4096,max_decisions=60)
+    if 'model_provider' in c:
+        engine_config['model_provider']=c['model_provider']
+    engine_config.update(tensor_parallel_size=1,max_model_len=c.get('max_model_len',4096),max_decisions=60)
     records=[];input_receipts=[];started=time.monotonic()
-    engine=FixedContextRollout(engine_config)
+    from multimodal_jev.policy_identity import checkpoint_identity
+    if checkpoint_identity(c['model'])[0] != c['base_id']:
+        raise ValueError('serving model differs from evaluation base')
+    engine=provider.load_vllm(engine_config,bundle)
     try:
         atomic_json(out/'runtime.json',engine.runtime)
         with OrderedPrefetch(encode,assets,workers=1,ahead=2) as prepared:

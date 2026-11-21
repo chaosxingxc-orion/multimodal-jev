@@ -63,13 +63,13 @@ def load_evidence(config,population,*,release_manifest,processor_sha256):
         release_manifest=release_manifest,processor_sha256=processor_sha256)
 
 
-def encoder(cache_root,requests,candidate_ids,receipts,*,processor_sha256,decision_token_id,audio_token_id,prompt_layout=None):
+def encoder(cache_root,requests,candidate_ids,receipts,*,processor_sha256,decision_token_id,audio_token_id,prompt_layout=None,provider_namespace=None,max_tokens=4096):
     root=Path(cache_root)
     if not root.is_dir():raise ValueError('existing audited cache directory required')
     cache=EncodedAudioCache(root)
     def no_processor():raise ValueError('evaluation cache rebuild forbidden')
     prepare=CachedContextPreparer(no_processor,cache,processor_sha256=processor_sha256,
-        decision_token_id=decision_token_id,audio_token_id=audio_token_id,max_tokens=4096,prompt_layout=prompt_layout)
+        decision_token_id=decision_token_id,audio_token_id=audio_token_id,max_tokens=max_tokens,prompt_layout=prompt_layout,provider_namespace=provider_namespace)
     by_id={r['id']:r for r in receipts}
     if len(by_id)!=len(receipts) or set(by_id)!=set(requests):raise ValueError('complete cache/request identities required')
     def encode(asset):
@@ -86,7 +86,7 @@ def encoder(cache_root,requests,candidate_ids,receipts,*,processor_sha256,decisi
         if actual!=prior['tensors']:raise ValueError('cache tensor differs from independent audit')
         markers=(inputs['input_ids'][0]==decision_token_id).nonzero().flatten()
         if (positions.shape!=(1,len(candidate_ids)) or not torch.equal(markers,positions[0])
-                or inputs['input_ids'].shape[1]>4096):
+                or inputs['input_ids'].shape[1]>max_tokens):
             raise ValueError('full ordered candidate marker positions required')
         return dict(inputs=inputs,positions=positions),dict(asset,candidate_ids=candidate_ids,
             inputs={k:v for k,v in actual.items() if k!='positions'},positions=positions[0].tolist(),

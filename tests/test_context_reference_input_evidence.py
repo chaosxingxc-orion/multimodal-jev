@@ -59,9 +59,9 @@ def test_selection_or_partial_audit_cannot_supply_train_evidence():
         bind(proof,stream,rows=[{}],task={},release_sha256='r',processor_sha256='p')
 
 
-def test_reference_build_requires_explicit_local_audio_mirror():
+def test_reference_build_requires_explicit_published_audio_mirror():
     from tools.reports.build_context_reference_dataset import audio_mirror
-    with pytest.raises(ValueError,match='local readonly'):audio_mirror({})
+    with pytest.raises(ValueError,match='explicit published audio mirror'):audio_mirror({})
 
 
 @pytest.mark.parametrize('fault',[None,'tensor','unknown','conflict'])

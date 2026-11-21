@@ -5,6 +5,7 @@ the declared window, preflights the actor before loading any inference model,
 and delegates ownership and cleanup to the shared supervisor.
 """
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,10 @@ import sys
 
 def window(config):
     kind=config['experiment_kind']
+    if 'view_binding' in config:
+        if config['view_window'] not in ('prefix','recovery','tail','formal'):
+            raise ValueError('unknown view window')
+        return kind
     if kind=='formal_source':
         from tools.reports.context_replica_formal_candidate import contract
         contract(config)
@@ -43,10 +48,11 @@ def environment(role,visible,cache_root,base=None):
     return env
 
 
-def plan(root,config,manifest):
+def plan(root,config,manifest,*,package_root=None):
     # This helper is pinned beside run.py: the inherited model source does
     # not contain it and must remain byte-identical to the parity baseline.
-    helper=Path(root)/'device-visibility.py'
+    package=Path(root if package_root is None else package_root)
+    helper=package/'device-visibility.py'
     if helper.is_file():
         spec=importlib.util.spec_from_file_location('pinned_device_visibility',helper)
         module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
@@ -55,18 +61,34 @@ def plan(root,config,manifest):
         from tools.reports.context_device_visibility import visibility
     root=Path(root);kind=window(config)
     train=manifest['training_devices'];services=manifest['inference_services']
-    if len(train)!=2 or len(services)!=2 or config['physical_devices']!=train:
-        raise ValueError('four-card DP2/two-instance manifest required')
+    view='view_binding' in config
+    if view:
+        source=package/'view-runtime.py'
+        if (source.is_symlink() or not source.is_file()
+                or hashlib.sha256(source.read_bytes()).hexdigest()!=config['pins'][str(root/'view-runtime.py')]):
+            raise ValueError('pinned packaged view runtime required')
+        spec=importlib.util.spec_from_file_location('pinned_view_runtime',source)
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        batch = module.layout(config)
+        expected_world = batch['dp_replicas']
+        expected_services = batch['configuration']['inference_instances']
+    else:
+        expected_world = expected_services = 2
+    if len(train)!=expected_world or len(services)!=expected_services or config['physical_devices']!=train:
+        raise ValueError('training and inference devices differ from the Stage2 topology')
     train_visible,service_visible=visibility(manifest)
     if str(root)!=config['objective_extension']['root'].rsplit('/',1)[0]:
         raise ValueError('runner must execute inside its packaged root')
     entry=root/('objective-tail-entry.py' if kind=='cached_reference_tail_admission'
                 else 'objective-extension/bootstrap.py')
+    if view:entry=root/'view-entry.py'
+    port = config['view_execution']['master_port'] if view else 29617
     return dict(train_visible=train_visible,services=service_visible,
         actor_command=['torchrun','--nnodes=1','--node-rank=0','--master-addr=127.0.0.1',
-                       '--master-port=29617','--nproc-per-node='+str(len(train)),str(entry),
+                       '--master-port='+str(port),'--nproc-per-node='+str(len(train)),str(entry),
                        '--config',str(root/'config.json'),'--output',str(root/'run')],
-        preflight_command=[sys.executable,str(root/'runtime-startup.py'),'--config',str(root/'config.json')])
+        preflight_command=([sys.executable,str(entry),'--preflight','--config',str(root/'config.json')] if view else
+                           [sys.executable,str(root/'runtime-startup.py'),'--config',str(root/'config.json')]))
 
 
 def run(root,*,cache_root='/jev-tmp',command_runner=subprocess.run,supervisor=None):

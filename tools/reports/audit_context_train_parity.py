@@ -27,21 +27,21 @@ from multimodal_jev.context_replica_macro_rollout import plan_rollouts
 def read(p):return json.loads(Path(p).read_text())
 
 
-def audit_dispatch(inference,journal,client,*,policy_id):
+def audit_dispatch(inference,journal,client,*,policy_id, panel_size):
     """Rebuild actual rollout32 ownership using the training journal verifier."""
-    if (client['max_queries']!=128 or client['rollout_queries']!=32
-            or len(client['replicas'])!=2):
-        raise ValueError('TRAIN parity requires macro128 rollout32 and two replicas')
+    replicas=len(client['replicas']); queries=client['max_queries']
+    if not 1<=client['rollout_queries']<=queries<=panel_size or replicas<1:
+        raise ValueError('complete configured parity macro required')
     result=read(Path(inference)/'result.json');proofs=[]
     for index,entry in enumerate(result['batches']):
         batch=read(Path(inference)/entry['path'])
         records=[{k:v for k,v in row.items() if k!='id'} for row in batch['predictions']]
-        if len(records)!=128:raise ValueError('two full 128-query parity macros required')
+        if len(records)!=min(queries,panel_size-index*queries):raise ValueError('parity macro length differs')
         proofs.append(audit_journal(Path(journal)/f'evaluation-{index:08d}',records,
             policy=policy_id,client=client,
-            planner=lambda costs,width:plan_rollouts(costs,width,replicas=2)))
-    if len(proofs)!=2:raise ValueError('complete 256-query dispatch evidence required')
-    return dict(macro_queries=128,rollout_queries=32,replicas=2,macros=proofs,
+            planner=lambda costs,width:plan_rollouts(costs,width,replicas=replicas)))
+    if sum(p['rows'] for p in proofs)!=panel_size:raise ValueError('complete panel dispatch evidence required')
+    return dict(macro_queries=queries,rollout_queries=client['rollout_queries'],replicas=replicas,macros=proofs,
         ownership_reconstructed=True,engine_internal_batching_verified=False)
 
 
@@ -92,7 +92,7 @@ def audit_outputs(package,collection):
     supervision=read(collection/'supervision/terminal.json')
     if (supervision.get('passed') is not True or supervision.get('actor_started') is not True
             or supervision.get('actor_exit_code')!=0 or supervision.get('forced_cleanup') is not False
-            or supervision.get('child_exit_codes')!=[0,0,0]
+            or supervision.get('child_exit_codes')!=[0]*(1+len(m['inference_services']))
             or [s['name'] for s in supervision['services']]!=[s['name'] for s in m['inference_services']]
             or any(s.get('exit_code')!=0 for s in supervision['services'])):
         raise ValueError('successful owned macro client and services required')
@@ -111,9 +111,10 @@ def audit_outputs(package,collection):
     proof=audit_macros(inference,collection/'parity-journal'/client['attempt_id'],
         population=selected['assets'],candidate_ids=selected['candidate_ids'],
         input_receipts=selected['input_receipts'],policy_id=c['source_policy_id'],
-        runtime_identity=client['runtime_identity'],macro_queries=128)
+        runtime_identity=client['runtime_identity'],macro_queries=client['max_queries'],
+        replicas=len(client['replicas']))
     dispatch=audit_dispatch(inference,collection/'parity-journal'/client['attempt_id'],client,
-        policy_id=c['source_policy_id'])
+        policy_id=c['source_policy_id'],panel_size=len(selected['assets']))
     reference=collection/'hf/reference.json'
     result=compare(read(reference),read(inference/'predictions.json')['records'],selected,policy_id=c['source_policy_id'])
     reported=read(collection/'evaluation/comparison.json')
@@ -129,8 +130,8 @@ def audit_outputs(package,collection):
         full_population_parity=False,training_dispatch_allowed=False)
 
 
-def audit(c,provenance):
-    spec=c['parity_package'];package=Path(spec['output']);preparation=audit_package(spec,provenance)
+def audit(c,provenance,*, package_auditor=None):
+    spec=c['parity_package'];package=Path(spec['output']);preparation=(package_auditor or audit_package)(spec,provenance)
     m=read(package/'PREPARED.json');config=read(package/'config.json')
     argv=command(c['deployment'],m,config,producer=True)
     handle=read(c['launch']);observed=read(c['inspect']);transport=read(c['transport'])
@@ -156,7 +157,7 @@ def audit(c,provenance):
     return dict(result,package_audit=preparation,storage_audit=storage,
         container_id=handle['container_id'],image=observed['Image'],manifest_sha256=spec['manifest_sha256'],
         transport_sha256=file_hash(c['transport']),runtime_provenance_verified=True,
-        scope='endpoint318 TRAIN256 native60, macro128/rollout32, two TP1 services; no training or full population claim',
+        scope='finite TRAIN endpoint comparison on the declared TP1 services',
         provenance=provenance)
 
 

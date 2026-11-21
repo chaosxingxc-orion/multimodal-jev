@@ -1,7 +1,8 @@
 """Bind independently audited full reference results to a two-update trainer.
 
-The reference stays at its producer path and is mounted read-only. Preparation
-does not admit numerical parity or dispatch NPU training.
+The reference is mounted read-only. A different training host can bind an
+explicit destination for the same three content-pinned reference files.
+Preparation does not admit numerical parity or dispatch NPU training.
 """
 import argparse
 import copy
@@ -32,8 +33,8 @@ def reference_binding(training,result,proof,*,population,candidate_ids,remote_da
     if (proof['status']!='reference_dataset_journal_audited'
             or proof['manifest_sha256']!=result['manifest_sha256']
             or proof['policy_id']!=training['source_policy_id']
-            or proof['recordings']!=40513 or result['recordings']!=40513
-            or set(result['population'])!=set(population) or len(population)!=40513
+            or not population or proof['recordings']!=len(population) or result['recordings']!=len(population)
+            or set(result['population'])!=set(population)
             or identity['policy_id']!=training['source_policy_id']
             or identity['base_id']!=training['base_id']
             or identity['contract']!=training['source_contract']
@@ -48,31 +49,33 @@ def reference_binding(training,result,proof,*,population,candidate_ids,remote_da
 def runner(m,kind='engineering_prefix'):
     from tools.reports.context_device_visibility import visibility
     train=m['training_devices'];services=m['inference_services']
-    if len(train)!=2 or len(services)!=2 or len(set(train+[s['device'] for s in services]))!=4:
-        raise ValueError('two ranks and two single-device inference services required')
+    if not train:raise ValueError('at least one training rank required')
     if kind not in ('engineering_prefix','cached_reference_tail_admission'):
         raise ValueError('known finite cached acceptance kind required')
     entry=('context_cached_tail_trainer.py' if kind=='cached_reference_tail_admission'
            else 'context_cached_reference_trainer.py')
     train_visible,service_visible=visibility(m)
     return (RUN_PY.replace('{SERVICES}',repr(service_visible))
-        .replace('{world}','2').replace('{train_visible}',repr(train_visible))
+        .replace('{world}',str(len(train))).replace('{train_visible}',repr(train_visible))
         .replace('{entry}',entry)
         .replace('{GATE}',ENGINEERING_GATE))
 
 
-def inputs(c,provenance):
+def inputs(c,provenance,*, parent_auditor=None):
     """Recheck independent producers before binding their immutable outputs."""
-    parent_proof=audit_parent(c['parent'],provenance)
+    parent_proof=(parent_auditor or audit_parent)(c['parent'],provenance)
     ref_proof=audit_results(c['reference_job'],provenance)
     parent=Path(c['parent']['output']);m=read(parent/'PREPARED.json');original=read(parent/'config.json')
     job=c['reference_job'];collection=Path(job['collection'])
     build=read(Path(job['output'])/'reference-build-config.json')
     result=read(collection/'reference-build/result.json')
     rows,task,_=load(original['release'],original['release_sha256'],'learning',purpose='optimize')
+    remote_dataset=build['output']+'/dataset'
+    if 'reference_destination' in c:
+        remote_dataset=path(c['reference_destination'])
     reference=reference_binding(original,result,ref_proof['output_audit'],
         population={r['id'] for r in rows},candidate_ids=[v['id'] for v in task['schema']['candidates']],
-        remote_dataset=build['output']+'/dataset')
+        remote_dataset=remote_dataset)
     ReferenceDataset(collection/'reference-build/dataset',manifest_sha256=reference['manifest_sha256'],
         expected_identity=reference['identity'],expected_population=reference['population'])
     return parent,m,original,reference,parent_proof,ref_proof
@@ -86,13 +89,19 @@ def configured(original,old,remote,reference,kind='engineering_prefix'):
         experiment_kind=kind,engineering_prefix=True,checkpoint_interval=1,
         training_dispatch_allowed=False,runtime_preparation_only=False)
     config.pop('reference_cache',None);config.pop('resume_root',None)
-    validate_objective(config)
+    if 'objective_config' in config:
+        if kind!='engineering_prefix':
+            raise ValueError('editable objective requires a bound training view')
+        from multimodal_jev.stage2_view_runtime import validate_objective_design
+        validate_objective_design(config)
+    else:
+        validate_objective(config)
     if kind=='cached_reference_tail_admission':tail_contract(config)
     return config
 
 
-def prepare(c,provenance):
-    parent,m,original,reference,parent_proof,ref_proof=inputs(c,provenance)
+def prepare(c,provenance,*, parent_auditor=None):
+    parent,m,original,reference,parent_proof,ref_proof=inputs(c,provenance,parent_auditor=parent_auditor)
     job=c['reference_job'];collection=Path(job['collection'])
     output=Path(c['output']);remote=path(c['remote_root']);old=m['remote_root']
     forbidden=[old,reference['root'],job['remote_root']]
@@ -205,7 +214,7 @@ def audit(c,provenance):
     if m['layout']!=layout:raise ValueError('cached training collection layout differs')
     return dict(status='cached_training_independently_audited_not_npu_admitted',
         manifest_sha256=c['manifest_sha256'],reference_manifest_sha256=reference['manifest_sha256'],
-        source_policy_id=original['source_policy_id'],recordings=40513,actor_updates=2,
+        source_policy_id=original['source_policy_id'],recordings=len(reference['population']),actor_updates=2,
         finite_npu_dispatch_allowed=False,training_dispatch_allowed=False,npu_executed=False,
         provenance=provenance)
 

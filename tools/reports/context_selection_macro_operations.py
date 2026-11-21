@@ -28,7 +28,7 @@ def validate(c,*,source_curve=False,source_kind='grpo'):
             from tools.reports.context_infonce_selection import validate_plan
             validate_plan(plan)
         schema='jev-infonce-source-evaluation-plan-v1' if source_kind=='infonce' else 'jev-macro-source-evaluation-plan-v1'
-        steps=[0,*range(32,318,32),318] if source_kind=='infonce' else [0,*range(64,634,64),634]
+        steps=plan['experiment']['evaluation']['checkpoints'] if source_kind=='infonce' else [0,*range(64,634,64),634]
         algorithm='candidate_infonce' if source_kind=='infonce' else 'dual_credit_grpo_floor_clipped_v1'
         points=[p for p in plan['checkpoints'] if p['step']==receipt['source_step']]
         if (file_hash(package/'SOURCE-PLAN.json')!=receipt['source_plan_sha256']
@@ -104,7 +104,7 @@ verify_native_adapter(r/'adapter',b)
 population,requests,candidates=inputs(c)
 p=processor_cache_identity(c['snapshot'])
 receipts,proof=load_evidence(c,population,release_manifest=json.loads((Path(c['release'])/'MANIFEST.json').read_text()),processor_sha256=p)
-encode=encoder(c['encoded_audio_cache'],requests,candidates,receipts,processor_sha256=p,decision_token_id=b['contract']['token']['id'],audio_token_id=c['audio_token_id'])
+encode=encoder(c['encoded_audio_cache'],requests,candidates,receipts,processor_sha256=p,decision_token_id=b['contract']['token']['id'],audio_token_id=c['audio_token_id'],prompt_layout=c.get('prompt_layout'))
 for asset in (population[0],population[-1]):encode(asset)
 assert len(population)==9226
 print('full selection evidence and first/last actual cache/policy/runtime preflight passed')

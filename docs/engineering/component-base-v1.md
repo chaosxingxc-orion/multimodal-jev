@@ -166,3 +166,12 @@ PYTHONPATH=src:. /usr/bin/python -B -m pytest -q \
    旧改写债务保留并计入测量报告。
 5. 组件契约（注册表字段、指标字段元组、宽度键名）变化时，先改本文件与测试，
    再考虑进入 `v0.0.rcN`。
+
+
+## Stage2 难例训练数据组件补充
+
+注册 release/stage2_difficulty_release_v2 → TrainingDataset；新增数据组件不改变KINDS。
+固定入口 tools.reports.prepare_stage2_dataset，prepare/audit/bind动作，
+配置 configs/portable/operations/stage2-dataset.json。使用context_execution的线程/进程池，
+实现与训练consumer均为普通组合接口，不做源码改写。准入仅为CPU数据功能，非NPU训练。
+详见[数据发布协议](stage2-dataset-release-v2.md)。

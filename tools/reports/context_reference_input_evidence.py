@@ -10,25 +10,47 @@ import torch
 
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.context_candidate_task import compile_candidates
+from multimodal_jev.context_decision_contract import PREFIX_LAYOUT
 from multimodal_jev.context_reference_dataset import digest
 from multimodal_jev.slurp_training import content_hash
 from multimodal_jev.span_request_identity import tensor_identity
 from tools.jev.context_cache_receipts import parse_stream
 
 
-def bind(proof,stream,*,rows,task,release_sha256,processor_sha256):
+def input_rows(proof, stream, *, prompt_layout=None):
+    manifest = proof['manifest']
+    if manifest.get('prompt_layout') != prompt_layout:
+        raise ValueError('input evidence uses another prompt layout')
+    if proof.get('receipt_format') == 'stable-prefix-jsonl-v1':
+        import hashlib
+        if (prompt_layout != PREFIX_LAYOUT
+                or hashlib.sha256(stream.encode()).hexdigest() != manifest['inputs_sha256']
+                or proof['terminal'] != dict(exit_code=0, result=manifest)):
+            raise ValueError('authenticated stable-prefix encoder output required')
+        values = [json.loads(line) for line in stream.splitlines()]
+        if len(values) != manifest['recordings']:
+            raise ValueError('incomplete stable-prefix input receipts')
+        return values, []
+    if prompt_layout is not None:
+        raise ValueError('stable-prefix evidence must bind the encoder receipt bytes')
+    entries, diagnostics = parse_stream(stream)
+    if entries[-1]['value'] != manifest or entries[0]['value'].get('recordings') != manifest['recordings']:
+        raise ValueError('TRAIN input terminal or manifest differs')
+    return [r['value'] for r in entries[1:-1]], diagnostics
+
+
+def bind(proof,stream,*,rows,task,release_sha256,processor_sha256,prompt_layout=None):
     manifest=proof['manifest'];state=proof['state']
-    entries,diagnostics=parse_stream(stream)
+    values,diagnostics=input_rows(proof,stream,prompt_layout=prompt_layout)
     if (state['Status']!='exited' or state['ExitCode']!=0 or state['OOMKilled']
             or manifest['schema']!='context-full-learning-cache-v1'
-            or manifest['recordings']!=40513 or len(rows)!=40513
+            or not rows or manifest['recordings']!=len(rows)
             or manifest['release_sha256']!=release_sha256
             or manifest['processor_sha256']!=processor_sha256
-            or manifest['request_version']!='jev-context-exclusive_event-v1'
-            or entries[-1]['value']!=manifest or entries[0]['value']['recordings']!=40513):
+            or manifest['request_version']!='jev-context-exclusive_event-v1'):
         raise ValueError('complete successful independent TRAIN input evidence required')
-    receipts={r['value']['id']:r['value'] for r in entries[1:-1]}
-    if len(receipts)!=len(rows) or set(receipts)!={r['id'] for r in rows}:
+    receipts={r['id']:r for r in values}
+    if len(values)!=len(rows) or len(receipts)!=len(rows) or set(receipts)!={r['id'] for r in rows}:
         raise ValueError('complete unique TRAIN sample identity required')
     candidates=[dict(id=v['id'],definition=v['description']) for v in task['schema']['candidates']]
     if len(candidates)!=60 or len({v['id'] for v in candidates})!=60:
@@ -97,7 +119,8 @@ def load(c,*,rows,task,release_sha256,processor_sha256):
     if proof['independent_receipts_sha256']!=c['input_receipts_sha256']:
         raise ValueError('input proof does not authenticate the supplied stream')
     return bind(proof,Path(c['input_receipts']).read_text(),rows=rows,task=task,
-                release_sha256=release_sha256,processor_sha256=processor_sha256)
+                release_sha256=release_sha256,processor_sha256=processor_sha256,
+                **({'prompt_layout':c['prompt_layout']} if c.get('prompt_layout') is not None else {}))
 
 
 def run(c,provenance):

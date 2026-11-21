@@ -54,7 +54,7 @@ def test_cpu_collection_overlaps_next_npu_launch(tmp_path,monkeypatch):
         # No NPU ownership during costly CPU admission, including its second pass.
         assert not q.busy
         validations.append(c['tag'])
-        return model,{'pins':{}},{}
+        return model,{'pins':{},'encoded_audio_cache':'/data/cache'},{}
     def remote(argv,**kwargs):
         command=argv[-1]
         if argv[0]=='scp':return SimpleNamespace(returncode=0,stdout='',stderr='')

@@ -1,0 +1,20 @@
+{
+  "schema": "stage1-cue-pairs-v1",
+  "clean": "${JEV_BOUNDARY_CLEAN}",
+  "native": "${JEV_BOUNDARY_NATIVE}",
+  "probe": "${JEV_BOUNDARY_OUTPUT}",
+  "probe_manifest_sha256": "ce9585166408798ea97a1a2f011689beba0b93369b5e4bb89c7905e6c9fe5c41",
+  "output": "${JEV_STAGE1_CUE_PAIRS_OUTPUT}",
+  "min_shared_words": 3,
+  "max_changed_words": 3,
+  "families": [
+    {"audio_volume_up":["up","raise","increase"],"audio_volume_down":["down","lower","decrease"]},
+    {"play_music":["music","song","songs"],"play_audiobook":["audiobook","audiobooks"]}
+  ],
+  "preserve_edge_insertions": ["please"],
+  "objective": {
+    "native": {"kind":"candidate_infonce_probability_margin_v1","probability_coefficient":0.0,"temperature":1.0,
+      "probability_margin":{"margin":0.1,"decision_threshold":0.5,"gap_weight":1.0,"anchor_weight":0.25}},
+    "flip_weight":1.0, "preserve_weight":1.0
+  }
+}

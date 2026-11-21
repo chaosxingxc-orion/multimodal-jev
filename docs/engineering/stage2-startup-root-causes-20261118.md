@@ -212,3 +212,90 @@ v92已产出 `prefix-result.json`，完整独立审核状态为
 只有正式容器、两个rank的三次更新及两个推理服务的激活回执齐全才发布报告。
 microbatch loss先逐rank求和，再对DP ranks取均值；不把已归一化microbatch再次取均值。
 该监听不是模型调用，也不替换900秒普通状态检查。宿主2项聚合及缺失证据负例通过。
+
+### v92剩余审核时延（正式启动期间只读定位）
+
+formal-deployment提交12:00:49 UTC，正式设备锁创建12:13:26 UTC，第一轮派发前
+审核约757秒。`context_composed_pipeline._launch`先validate，随后
+`context_stage2_release_components.locked_check`在锁内再次调用同一完整validate。
+formal admission逐次审核prefix、recovery、tail；recovery内部的inputs和package审核
+又分别重审prefix。完整训练产物审核仍加载groups、journal、checkpoint并逐张量比较。
+
+现场主进程累计约81分钟，CPU time59分10秒；独立来源审核进程CPU time6分39秒，
+采样时主进程R、工作进程pipe_read。主进程rchar132,627,870,535 bytes，但
+read_bytes18,317,312 bytes。这些是进程生命周期累计计数，不是单节点profile；
+支持主要瓶颈为重复CPU工作而非实际磁盘读盘，不能由此声称各函数的精确耗时。
+配置cpu_workers目前只在部分来源检查生效，完整阶段审核没有统一并行化和复用。
+
+下一候选应将纯阶段审核变成显式依赖图与完整内容身份收据；锁内重验输入/源码/收据
+身份和资源，不再重算未变化的数值证明。需覆盖篡改、缺文件、替换审核器等负例，
+不能仅凭PASS字符串或mtime复用，也不能在当前冻结派发链中原位替换。
+
+## 9. v0.0.93：复用已完成数值验收，消除启动时递归重审
+
+用户要求先优化过重前置。v92 正式训练容器尚未创建时，按 PID/start_ticks 核验后停止
+controller 与前三组 loss 观察器；未中断训练。prefix、恢复、尾批三项完整独立审核均已通过，
+原配置、收集物和审核报告保留。停止记录：
+`/srv/multimodal-jev-xingchao/operations/context-stage2-composed-v0.0.92/dispatch-supersession.json`。
+
+根因是阶段图展开成递归树：正式 validate 调用 prefix/recovery/tail，recovery 再调用 prefix；
+拿锁后又执行完整 validate。v92 正式阶段第一遍准入约 12 分 37 秒，其后仍在锁内重复。
+此前约 133 GB 的逻辑读取、仅约 18 MB 的实际磁盘读取说明主要是重复解析、hash 和张量审核。
+
+新入口继续使用 `run_composed_stage2`，可选 `completed_stages` 声明三项已完成验收。
+`context_completed_stage_receipts` 校验固定报告、配置、原 package、transport、全部 collection 文件、
+archive 和容器终态身份；保持恢复的 masters/Adam/BF16/采样/reference/objective 全部精确通过条件。
+后继准备从验收过的 prefix 生成正式包；只执行新包重建和配置检查。锁内仅复核内容身份与资源，
+不递归重放数值。正式训练新输出仍必须完成独立审核，不能复用验收结果冒充正式结果。
+原审核源码快照独立绑定；新控制器源码及 CPU 证据另行绑定，禁止修改既有冻结包。
+
+真实三项证据完整性检查一次耗时 **1.373 秒**（本机页缓存条件）；这不是总启动耗时，
+不含固定镜像测试、打包传输、模型加载或训练。修改、增加、删除文件及符号链接拒绝测试，
+私有图不污染共享模块测试与前三组 loss 观察器测试，本地合计 14 passed。
+固定镜像复验、正式启动和前三组 loss 仍需现场证据，不能由此声明 Stage2 已启动。
+
+
+v93 固定镜像 14/14 通过，容器 `f8405f2a4e4f79fb465a3a404efa3e7adc48da90330aba7aa76359207fd4cbb4`
+exit0/nonOOM；报告：
+`/srv/multimodal-jev-xingchao/operations/context-stage2-release-cpu-v0.0.93-check/report.json`。
+控制器源码 FILES SHA256：`e2adad67dbf4d39f28b24faa72526ccd28b387fb66d4927be3f65dab4140a376`。
+
+正式控制器 12:33:04 UTC 启动（PID2700682/start_ticks358192022），正式容器
+`3bc579b763e17288013cb78746283bea6cd3d16f4bfdc7073061bea021f5c7c3`
+于 **12:33:43 UTC** 启动；现场 inspect 为 running/nonOOM，4/5训练、6/7推理。
+控制器启动到容器启动 **38.78 秒**，含本地验证、收据检查、打包、传输及远程预检，
+不含容器内模型加载、rollout 和第一次训练。不是 1.373 秒的内容检查时间本身。
+真实正式配置为 formal_source、start0/stop634、engineering_prefix=false，参考及初始化均固定
+Stage1 endpoint `926e4d1316cefea8e39272b5153cbc7fb96880eb67b0da42896cd07ddc620095`。
+全局128、DP2、micro8、两个service32，沿用默认可编辑排序/存在性目标，未新增效率短跑。
+
+启动命令（路径仅为本机绑定示例，合作团队通过自己的宏文件替换）：
+```bash
+# 在该版本冻结 source 目录执行，PYTHONPATH 指向该 source、src 及已验证 Python 依赖。
+python -B -m tools.reports.run_composed_stage2 \
+  --config configs/portable/operations/composed-stage2.json \
+  --local /srv/multimodal-jev-xingchao/operations/composed-stage2-v0.0.93-macros.json \
+  --action detach
+```
+运行包已有启动记录，不能重复执行同一路径。首次 loss 事件观察器 PID2700913，
+报告目录 `/srv/multimodal-jev-xingchao/operations/context-stage2-first-losses-v0.0.93`。
+本机 /home 低于10%空闲水位，新宏与热状态均放 /srv，未降低存储安全门槛。
+
+
+### v93 正式前三次更新验收已完成
+
+事件报告：`/srv/multimodal-jev-xingchao/operations/context-stage2-first-losses-v0.0.93/report.json`；
+终态 `formal_first_losses_committed`，exit0。该事件现场 inspect 正式容器仍 running/nonOOM。
+每步128真实query，两个训练rank提交相同连续行为/后继策略，两个推理实例均完成
+112个native adapter tensor及head/marker的切换确认。loss为各rank微批贡献求和后做DP均值，
+并核对每rank `actor/pg_loss`，不是只取末微批。
+
+| 正式更新 | 总loss | 辅助概率/排序loss | 未加权KL |
+| --- | --- | --- | --- |
+| 1 | 0.017481149203376845 | 0.01748114946531132 | 0.0 |
+| 2 | 0.17187042068690062 | 0.09241694211959839 | 7.945347905158997 |
+| 3 | 0.07302275788970292 | 0.05027869762852788 | 2.274406187236309 |
+
+KL权重0.01；三个step的GRPO标量项约为−2.62e−10、5.61e−10、8.59e−11，
+不由接近零的中心化标量推出策略梯度为零。这些只是启动和数值有限性证据，
+不构成任务收益、跨数据集迁移或完整训练验收。正式634步训练继续，常规监控900秒。

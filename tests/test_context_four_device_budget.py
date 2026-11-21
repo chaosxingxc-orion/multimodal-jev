@@ -53,5 +53,22 @@ def test_dp4_formal_endpoint_curve_and_actual_tail_indices():
 def test_formal_launch_refuses_historical_eight_card_package(tmp_path):
     from tools.reports.context_infonce_formal import launch
     (tmp_path/'config.json').write_text(json.dumps({'batch_config':{'training_devices':8,'inference_instances':0}}))
-    with pytest.raises(ValueError,match='four training devices'):
+    with pytest.raises(ValueError,match='explicit Stage1 budget design'):
         launch(dict(package=str(tmp_path),formal_training_dispatch_allowed=True),{})
+
+
+def test_rank64_full_device_formal_contract_rejects_stale_launch():
+    from test_context_stage_lora import contract
+    from tools.reports.context_infonce_formal import check_formal_budget
+    from multimodal_jev.context_stage_lora import from_policy
+    d=json.loads((ROOT/'configs/experiments/context-two-stage-margin-r64-dp8-v1.json').read_text())
+    s=d['stage1']; c=stage1_config()
+    c.update(s, physical_devices=list(range(8)),source_contract=contract(s['lora']))
+    check_formal_budget(c,d)
+    result=formal_config(c,'/old','/new',d)
+    assert from_policy(result['source_contract'])['rank']==64
+    assert result['reference_endpoint']==160 and result['global_batch']==512
+    with pytest.raises(ValueError,match='budget'):
+        check_formal_budget(stage1_config(),d)
+    with pytest.raises(ValueError,match='Stage1 LoRA differs'):
+        formal_config(dict(c,source_contract=stage1_config()['source_contract']),'/old','/new',d)

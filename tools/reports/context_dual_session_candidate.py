@@ -65,7 +65,8 @@ def probability_record(record):
 
 class DualContextGroups(OnlineContextBatches):
     """Reuse cursor/acknowledgement; replace joint-action assembly with dual groups."""
-    def __init__(self,*,candidate_ids,arm='joint',algorithm=ALGORITHMS[0],**kwargs):
+    def __init__(self,*,candidate_ids,arm='joint',algorithm=ALGORITHMS[0],actor_options=None,**kwargs):
+        self.actor_options=copy.deepcopy(actor_options)
         if (algorithm not in ALGORITHMS or arm not in ARMS or not candidate_ids
                 or len(set(candidate_ids))!=len(candidate_ids)
                 or any(type(v)!=str or not v for v in candidate_ids)):
@@ -122,8 +123,9 @@ class DualContextGroups(OnlineContextBatches):
                     reference_record=copy.deepcopy(reference),credit_binding_sha256=credit['binding_sha256'],
                     reference_memory_hit=hit))
             self.phase='awaiting_update'
-            return prepared,dict(algorithm=self.algorithm,arm=self.arm,ranking_coefficient=.1,
-                probability_coefficient=.3,kl_coefficient=.01,reference_policy_id=self.reference_policy_id),receipts
+            options=self.actor_options or dict(algorithm=self.algorithm,arm=self.arm,ranking_coefficient=.1,
+                probability_coefficient=.3,kl_coefficient=.01,reference_policy_id=self.reference_policy_id)
+            return prepared,dict(options),receipts
         except BaseException:
             self.phase='failed';raise
 
@@ -131,17 +133,26 @@ class DualContextGroups(OnlineContextBatches):
 class DualContextRolloutSession(ContextRolloutSession):
     """Existing activation/ack/failure state machine plus batched reference fill."""
     def __init__(self,engine,reference_cache,*,runtime_identity,candidate_ids,arm='joint',
-                 algorithm=ALGORITHMS[0],**kwargs):
+                 algorithm=ALGORITHMS[0],actor_options=None,**kwargs):
         if (not isinstance(reference_cache,RuntimeReferenceCache)
                 or reference_cache.runtime_identity!=runtime_identity
                 or getattr(engine,'runtime_identity',None)!=runtime_identity):
             raise ValueError('authenticated matching engine/cache runtime required')
         super().__init__(engine,reference_cache,algorithm='rloo_v1',**kwargs)
         self.runtime_identity=copy.deepcopy(runtime_identity)
+        sampling={}
+        if actor_options is not None:
+            from tools.reports.context_dual_actor_candidate import options_check
+            options_check(actor_options)
+            if (actor_options['algorithm']!=algorithm or actor_options['arm']!=arm
+                    or actor_options['reference_policy_id']!=self.reference['policy_id']):
+                raise ValueError('rollout options differ from the bound actor')
+            sampling=dict(group_size=actor_options['group_size'],base_seed=actor_options['sampling_seed'],
+                          actor_options=actor_options)
         self.groups=DualContextGroups(reference_engine=CachedReferenceEngine(reference_cache),
             reference_policy_id=self.reference['policy_id'],audio_token_id=self.audio_token_id,
             candidate_ids=candidate_ids,arm=arm,algorithm=algorithm,
-            start_update=kwargs.get('start_update',0),total_updates=kwargs.get('total_updates',634))
+            **sampling,start_update=kwargs.get('start_update',0),total_updates=kwargs.get('total_updates',634))
 
     def prepare(self,items,*,update):
         with self._lock:

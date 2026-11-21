@@ -1,0 +1,12 @@
+{
+  "repository":"${PROJECT_ROOT}","package":"${TPO_PACKAGE}","targets":"${TPO_TARGET_OUTPUT}",
+  "parent_config":"${TPO_PARENT_CONFIG}","deployment":"${TPO_DEPLOYMENT}","io_workers":8,
+  "source_patterns":["src/multimodal_jev/*.py","tools/reports/*.py","tools/jev/*.py"],
+  "next_macro_reference":{
+    "design":"configs/experiments/tpo-reference-refresh-197-design.json",
+    "native_reference":"${TPO_REFERENCE}",
+    "control_root":"${TPO_CONTROL_ROOT}",
+    "control_receipt":"${TPO_CONTROL_RECEIPT}",
+    "cpu_threads":2
+  }
+}

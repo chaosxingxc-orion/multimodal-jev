@@ -15,10 +15,33 @@ def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 pinned=Path(config['source'])
 for p in (pinned/'src/multimodal_jev').glob('*.py'):
  dest=pkg/p.relative_to(pinned);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,dest)
-for name in sorted(set(config['tests'] + config.get('support_files', []))):
+support=set(config['tests'] + config.get('support_files', []))
+for pattern in config.get('support_patterns',[]):
+ if Path(pattern).is_absolute() or '..' in Path(pattern).parts or not pattern.endswith('.py'):
+  raise ValueError('relative Python source pattern required')
+ support.update(str(p.relative_to(pinned)) for p in pinned.glob(pattern) if p.is_file())
+for name in sorted(support):
  if Path(name).is_absolute() or '..' in Path(name).parts:
   raise ValueError('package support paths must be relative source files')
  p=pinned/name;dest=pkg/name;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(p,dest)
+# A runtime may intentionally inherit older modules. Test precisely those bytes
+# instead of silently importing worktree versions alongside the new extension.
+if 'forward_sources' in config:
+ from multimodal_jev.source_snapshot import regular
+ spec=config['forward_sources'];manifest=regular(Path(spec['package']),'RUNTIME-SOURCES.json')
+ if sha(manifest)!=spec['sha256']:raise ValueError('forward source manifest changed')
+ for name,h in json.loads(manifest.read_bytes()).items():
+  if not name.endswith('.py'):raise ValueError('only forward Python source may be imported')
+  src=regular(manifest.parent/'source',name)
+  dest=pkg/name;dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(src,dest)
+  if sha(dest)!=h:raise ValueError('fixed-image forward source mismatch: '+name)
+for item in config.get('fixtures',[]):
+ if set(item)!={'name','path','sha256'} or not __import__('re').fullmatch('[a-z0-9-]+\.pt',item['name']):
+  raise ValueError('explicit named replay fixture required')
+ src=Path(item['path']);dest=pkg/'fixtures'/item['name']
+ if dest.exists() or src.is_symlink() or not src.is_file():raise ValueError('invalid replay fixture')
+ dest.parent.mkdir(exist_ok=True);shutil.copyfile(src,dest)
+ if sha(dest)!=item['sha256']:raise ValueError('collected replay fixture differs')
 (pkg/'tests/__init__.py').write_text('')
 runner="""from pathlib import Path
 import json,time,subprocess,sys,hashlib

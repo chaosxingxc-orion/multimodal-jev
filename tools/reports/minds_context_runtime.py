@@ -246,9 +246,12 @@ def run(config, out, phase):
         from multimodal_jev.context_runtime_profile import install_actor
         device = torch.device('npu', 0)
         _, base = load_runtime(config['model'], device, 'bfloat16')
-        adapted = initialize_adapter(base, dict(lora_rank=4, lora_alpha=8, lora_execution_dtype='bfloat16')).eval()
-        head = ContextDecisionHead(1024, 8, 1024, .1).to(device=device, dtype=torch.bfloat16).eval()
-        model = ContextDecisionModel(adapted.get_base_model().model, head, 151706).eval()
+        from multimodal_jev.context_stage_lora import from_policy
+        policy=bundle['contract']; lora=from_policy(policy)
+        adapted=initialize_adapter(base,dict(lora_rank=lora['rank'],lora_alpha=lora['alpha'],
+            lora_execution_dtype=lora['execution_dtype'])).eval()
+        head = ContextDecisionHead(**{k:policy['branch'][k] for k in ('hidden_size','num_heads','ffn_size','residual_scale')}).to(device=device, dtype=torch.bfloat16).eval()
+        model = ContextDecisionModel(adapted.get_base_model().model, head, policy['token']['id']).eval()
         load_policy(config['snapshot'], model, expected_policy_id=config['policy_id'],
             expected_contract=config['contract'], expected_base_id=config['base_id'])
         handle, runtime = install_actor(adapted, model, PROFILE)

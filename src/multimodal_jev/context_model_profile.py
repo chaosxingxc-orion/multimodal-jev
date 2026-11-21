@@ -1,10 +1,8 @@
-"""Derive Jev model geometry from an HF config; no weights, devices or model calls.
+"""Derive Jev model geometry from an HF config without loading weights.
 
-Qwen3-ASR 0.6B and 1.7B share the text structure (28 full-attention layers, q/v
-attention projections), so the LoRA target set and the decision-head dimensions
-follow from `config.json` alone. Hardcoding either size would silently bind the
-base to one checkpoint. Nothing here mutates a model: this module only reads,
-validates and fingerprints declared geometry.
+Qwen3-ASR and Qwen2.5-Omni use the same execution schema.  Their thinker text
+configuration and LoRA module prefix are derived from the checkpoint instead of
+being hardcoded in a runner.
 """
 from dataclasses import asdict, dataclass
 import hashlib
@@ -49,6 +47,7 @@ class ModelProfile:
     audio_output_dim: int
     config_sha256: str
     model_type: str = 'qwen3_asr'
+    target_prefix: str = 'language_model'
 
     def __post_init__(self):
         for name in GEOMETRY:
@@ -63,7 +62,7 @@ class ModelProfile:
 
     def lora_targets(self):
         """Every text layer's q/v projection, in the frozen lexicographic order."""
-        return sorted(f'language_model.layers.{i}.self_attn.{p}_proj'
+        return sorted(f'{self.target_prefix}.layers.{i}.self_attn.{p}_proj'
                       for i in range(self.num_hidden_layers) for p in ('q', 'v'))
 
     def decision_head(self):
@@ -79,6 +78,8 @@ class ModelProfile:
                        config_sha256=self.config_sha256,
                        implementation_sha256=file_hash(Path(__file__)),
                        **self.geometry())
+        if self.model_type == 'qwen2_5_omni':
+            payload['target_prefix'] = self.target_prefix
         payload['geometry_sha256'] = _canonical(self.geometry())
         return payload
 
@@ -94,15 +95,24 @@ def from_hf(path):
     config = json.loads(config_path.read_text())
     if type(config) is not dict:
         raise ValueError('object config required')
-    text = config.get('text_config')
-    audio = config.get('audio_config')
+    model_type = config.get('model_type')
+    if model_type == 'qwen2_5_omni':
+        thinker = config.get('thinker_config')
+        text = thinker.get('text_config') if isinstance(thinker, dict) else None
+        audio = thinker.get('audio_config') if isinstance(thinker, dict) else None
+        target_prefix = 'thinker.model'
+    else:
+        text = config.get('text_config')
+        audio = config.get('audio_config')
+        target_prefix = 'language_model'
     if type(text) is not dict or type(audio) is not dict:
         raise ValueError('text and audio config sections required')
-    model_type = config.get('model_type')
     if type(model_type) is not str or not model_type:
         raise ValueError('explicit model type required')
     layers = _positive(text.get('num_hidden_layers'), 'num_hidden_layers')
     layer_types = text.get('layer_types')
+    if model_type == 'qwen2_5_omni' and layer_types is None and text.get('use_sliding_window') is False:
+        layer_types = ['full_attention'] * layers
     # Uniform full-attention layers are what make one q/v naming scheme valid
     # for every layer; anything else needs a per-layer target derivation.
     if (type(layer_types) is not list or len(layer_types) != layers or
@@ -115,19 +125,20 @@ def from_hf(path):
     hidden_size = _positive(text.get('hidden_size'), 'hidden_size')
     if hidden_size % heads:
         raise ValueError('hidden size must be divisible by attention head count')
+    head_dim = text.get('head_dim', hidden_size // heads if model_type == 'qwen2_5_omni' else None)
     return ModelProfile(
         hidden_size=hidden_size,
         num_hidden_layers=layers,
         num_attention_heads=heads,
         num_key_value_heads=kv_heads,
-        head_dim=_positive(text.get('head_dim'), 'head_dim'),
+        head_dim=_positive(head_dim, 'head_dim'),
         intermediate_size=_positive(text.get('intermediate_size'), 'intermediate_size'),
         vocab_size=_positive(text.get('vocab_size'), 'vocab_size'),
         audio_d_model=_positive(audio.get('d_model'), 'audio d_model'),
         audio_encoder_layers=_positive(audio.get('encoder_layers'), 'audio encoder_layers'),
         audio_output_dim=_positive(audio.get('output_dim'), 'audio output_dim'),
         config_sha256=file_hash(config_path),
-        model_type=model_type)
+        model_type=model_type, target_prefix=target_prefix)
 
 
 def build_head(profile):

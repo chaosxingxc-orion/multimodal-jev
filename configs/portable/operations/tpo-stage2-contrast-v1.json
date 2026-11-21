@@ -1,0 +1,26 @@
+{
+  "view": "${TPO_STAGE2_VIEW}",
+  "reference": "${TPO_REFERENCE}",
+  "release": "${TPO_CLEAN_RELEASE}",
+  "metadata": "${TPO_METADATA}",
+  "output": "${TPO_TARGET_OUTPUT}",
+  "view_sha256": "b6b1ae962b541e4ea14f78f81c98880f5606b215dc61670a7af8f30f74292afe",
+  "metadata_sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e",
+  "objective": {
+    "temperature": 1.0,
+    "projection": 1.0,
+    "existence": 0.3,
+    "hard_negative": 0.3,
+    "margin": 1.0,
+    "probability_gap": 0.1,
+    "consistency": 0.1,
+    "contrast": 0.3
+  },
+  "schedule": {
+    "seed": 317,
+    "epochs": 2,
+    "global_batch": 384,
+    "microbatch": 8,
+    "confusion_fraction": 0.25
+  }
+}

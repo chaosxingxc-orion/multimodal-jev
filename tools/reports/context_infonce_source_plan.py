@@ -21,10 +21,13 @@ def evaluation_protocol(training):
         raise ValueError('full formal InfoNCE source required')
     if training['selection_rule']!='highest_set_f1_then_lowest_binary_nll_then_earliest_step':
         raise ValueError('preregistered source selection rule required')
+    layout_bound='stage1_layout' in training
+    primary='top1_macro_f1' if layout_bound else 'query_macro_set_f1'
+    alternate='query_macro_set_f1' if layout_bound else 'top1_macro_f1'
     return dict(release_sha256=training['release_sha256'],selection_recordings=9226,
         task_stage=dict(updates=training['stop_update']),
-        evaluation=dict(checkpoints=[0,*steps],primary='query_macro_set_f1',
-            secondary=['top1_event_accuracy','top1_macro_f1','candidate_binary_nll','candidate_brier',
+        evaluation=dict(checkpoints=[0,*steps],primary=primary,
+            secondary=['top1_event_accuracy',alternate,'candidate_binary_nll','candidate_brier',
                        'set_precision','set_recall','exact_set','mean_selected_count'],set_threshold=.5))
 
 
@@ -54,7 +57,22 @@ def build(config,provenance):
             raise ValueError('policy differs from committed checkpoint')
         points.append(dict(point(step,manifest.parent,commit['joint_policy']['policy_id']),
             commit=dict(path=str(commit_path),sha256=file_hash(commit_path))))
-    return dict(schema='jev-infonce-source-evaluation-plan-v1',
+    layout={}
+    if 'stage1_layout' in c:
+        layout['stage1_layout']=expected_contract(c)['stage1_layout']
+    if 'design' in ops:
+        from multimodal_jev.stage_experiment_contract import source_curve
+        design_path=Path(ops['design'])
+        if file_hash(design_path)!=json.loads((package/'PREPARED.json').read_bytes())['design_sha256']:
+            raise ValueError('formal source design changed')
+        design=json.loads(design_path.read_bytes())
+        curve=source_curve(design)
+        if (design['stage1']['batch_config']!=c['batch_config'] or curve['steps']!=protocol['evaluation']['checkpoints']
+                or curve['world_size']!=result['world_size'] or curve['real_exposures']!=result['real_exposures']):
+            raise ValueError('audited run differs from configured source curve')
+        protocol['selection_recordings']=curve['selection_recordings']
+        layout['source_curve']=curve
+    return dict(schema='jev-infonce-source-evaluation-plan-v1',**layout,
         status='audited_source_policies_bound_evaluation_pending',algorithm='candidate_infonce',
         experiment=protocol,checkpoints=points,initial_policy_id=c['source_policy_id'],
         source_operations=ops,source_audit=result,training_config_sha256=file_hash(package/'config.json'),

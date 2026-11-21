@@ -1,0 +1,34 @@
+{
+  "schema": "jev-stage2-paired-dataset-preparation-v1",
+  "clean": "${PAIRED_CLEAN_TRAIN}",
+  "native": "${PAIRED_NATIVE_METADATA}",
+  "cue_rules": "${PAIRED_CUE_RULES}",
+  "reference_audit": "${PAIRED_REFERENCE_AUDIT}",
+  "reference_collection": "${PAIRED_REFERENCE_COLLECTION}",
+  "checkpoint": "${PAIRED_STAGE1_CHECKPOINT}",
+  "stage1_expected": "${PAIRED_STAGE1_EXPECTED}",
+  "stage2_config": "${PAIRED_STAGE2_INPUT_CONFIG}",
+  "output": "${PAIRED_STAGE2_VIEW}",
+  "receipt": "${PAIRED_STAGE2_RECEIPT}",
+  "stage2_output": "${PAIRED_STAGE2_BOUND_CONFIG}",
+  "replay": {
+    "seed": 317,
+    "easy_fraction": 0.25,
+    "replay_class_priority": 16,
+    "min_unique_recordings": 5001,
+    "probability_examples_per_type": 384
+  },
+  "batch_config": {
+    "training_devices": 6,
+    "tensor_parallel": 1,
+    "pipeline_parallel": 1,
+    "per_dp_replica_batch": 64,
+    "microbatch": 8,
+    "inference_instances": 2,
+    "inference_batch_queries": 32,
+    "epochs": 2,
+    "efficiency_steps": 100
+  },
+  "evaluation": {"interval_updates": 64},
+  "execution": {"io_workers": 4, "cpu_workers": 4, "min_parallel": 8192, "chunk": 512, "window": 8}
+}

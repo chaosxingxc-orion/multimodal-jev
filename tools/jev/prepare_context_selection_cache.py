@@ -48,11 +48,13 @@ def run(c,out):
         return processor
     cache=EncodedAudioCache(c['shared_cache']);require_training_storage(c['shared_cache'])
     prepare=CachedContextPreparer(factory,cache,processor_sha256=processor_sha,
-        decision_token_id=151706,audio_token_id=c['audio_token_id'],max_tokens=4096)
+        decision_token_id=151706,audio_token_id=c['audio_token_id'],max_tokens=4096,
+        prompt_layout=c.get('prompt_layout'))
     def one(row):
         request=compile_candidates(row['audio'],candidates,task['thinking']['requirements'],semantics='exclusive_event')
         prior=ledger[row['id']]
-        if (prior['audio_sha256']!=row['audio_sha256'] or prior['audio']!=row['audio'] or
+        if (prior.get('prompt_layout')!=c.get('prompt_layout') or
+                prior['audio_sha256']!=row['audio_sha256'] or prior['audio']!=row['audio'] or
                 prior['request_sha256']!=content_hash(request.model_input())):
             raise ValueError('input differs from independent preflight')
         value=prepare((request,row['audio_sha256']))
@@ -78,7 +80,7 @@ def run(c,out):
         import os
         os.fsync(stream.fileno())
     report=dict(schema='context-selection-cache-v1',role='selection',recordings=len(rows),release_sha256=c['release_sha256'],
-        processor_sha256=processor_sha,request_version='jev-context-exclusive_event-v1',
+        processor_sha256=processor_sha,prompt_layout=c.get('prompt_layout'),request_version='jev-context-exclusive_event-v1',
         inputs_sha256=file_hash(out/'inputs.jsonl'),cache_root=str(cache.root),
         seconds=time.monotonic()-started,existing_hits=hits,
         scope='Full selection input-only CPU cache; tokens/positions/audio receipt checked against prior preflight. No predictions, optimization or NPU speedup evidence.')

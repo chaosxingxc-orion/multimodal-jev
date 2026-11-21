@@ -1,0 +1,23 @@
+{
+  "schema": "jev-evidence-calendar-train-v1",
+  "clean": "${JEV_BOUNDARY_CLEAN}",
+  "native": "${JEV_BOUNDARY_NATIVE}",
+  "output": "${JEV_EVIDENCE_OUTPUT}",
+  "calendar": {
+    "native_intent": "calendar_query",
+    "day_offsets": {"today": 0, "tomorrow": 1},
+    "patterns": [
+      "(?:please )?(?:do i have|have i got|is there|are there) (?:a |any )?(?:meeting|meetings)(?: (?:on (?:my|the) calendar|scheduled))? (?P<day>today|tomorrow)(?: please)?[?.!]?",
+      "(?:please )?(?:am i|will i be) (?:meeting (?:anyone|anybody)|in (?:a |any )?meetings?) (?P<day>today|tomorrow)(?: please)?[?.!]?"
+    ],
+    "context": {
+      "convention": "Task convention: today is day 0 and tomorrow is day 1.",
+      "meeting_by_day": {
+        "0": "The supplied schedule has meetings on day 0 only. These two days are fully specified.",
+        "1": "The supplied schedule has meetings on day 1 only. These two days are fully specified."
+      },
+      "missing": "The supplied schedule does not specify which of those days has meetings.",
+      "unrelated_missing": "The title and room are not specified."
+    }
+  }
+}

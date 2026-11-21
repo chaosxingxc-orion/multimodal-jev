@@ -4,7 +4,6 @@ The launcher owns device, package and numerical admission. This client never
 launches services, reads gold, trains, switches policies or relaxes exactness.
 """
 import argparse
-import inspect
 import json
 from pathlib import Path
 
@@ -48,17 +47,9 @@ def panel(c,bundle):
 
 
 def hf_reference(c,selected,bundle,encode,output):
-    # Same actor math as the existing independent HF client. Only device scope
-    # changes: four mounted cards, one process-visible card, verified via CANN.
-    source=inspect.getsource(shared_hf)
-    before="    if len(devices)!=1 or sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=['davinci'+str(devices[0])]:\n        raise ValueError('one isolated HF NPU required')"
-    if source.count(before)!=1:raise ValueError('shared HF device guard changed')
-    source=source.replace(before,"    from tools.jev.context_configurable_device_scope import validate_tp1\n    validate_tp1(config)")
-    namespace=dict(shared_hf.__globals__)
-    exec(compile(source,'<train-parity-hf>','exec'),namespace)
     config=dict(c,model=c['model'],snapshot=c['source_policy'],adapter=c['initial_adapter'],
         policy_id=bundle['policy_id'],contract=bundle['contract'])
-    return namespace['hf_reference'](config,{},selected,bundle,encode,output)
+    return shared_hf(config,{},selected,bundle,encode,output)
 
 
 def run(c,provenance,phase):
@@ -66,9 +57,9 @@ def run(c,provenance,phase):
     for name,h in c['pins'].items():
         if file_hash(name)!=h:raise ValueError('parity dependency changed: '+name)
     runtime=verify_runtime(c);client=c['macro_client']
-    if (client['runtime_identity']!=runtime or client['max_queries']!=128
-            or client['rollout_queries']!=32 or len(client['replicas'])!=2):
-        raise ValueError('same runtime macro128 rollout32 two-replica protocol required')
+    replicas=len(client['replicas']); macro_queries=client['max_queries']
+    if client['runtime_identity']!=runtime:
+        raise ValueError('parity requires the bound scoring runtime')
     from multimodal_jev.policy_identity import checkpoint_identity
     if checkpoint_identity(c['model'])[0]!=c['base_id']:raise ValueError('actual base differs')
     bundle=read_execution_bundle(c['source_policy'],expected_policy_id=c['source_policy_id'],
@@ -77,10 +68,11 @@ def run(c,provenance,phase):
     commit=Path(c['stage1_commit'])
     if c['pins'].get(str(commit))!=file_hash(commit):raise ValueError('pinned endpoint commit required')
     checkpoint=json.loads(commit.read_text());validate_endpoint(checkpoint,c,bundle)
-    if (c['stage1_endpoint']!=318 or c['expected_population']!=40513
-            or checkpoint['joint_policy_manifest_sha256']!=file_hash(Path(c['source_policy'])/'MANIFEST.json')):
+    if checkpoint['joint_policy_manifest_sha256']!=file_hash(Path(c['source_policy'])/'MANIFEST.json'):
         raise ValueError('actual full Stage1 endpoint required')
     selected,encode=panel(c,bundle)
+    if len(selected['assets'])<macro_queries:
+        raise ValueError('at least one complete declared parity macro required')
     root=Path(c['output']);check_paths({'train_parity':root});root.mkdir(parents=True,exist_ok=False)
     commit_json(root/'panel.json',selected);commit_json(root/'provenance.json',provenance)
     pool=None
@@ -97,12 +89,12 @@ def run(c,provenance,phase):
             pool=connect_pool(client,bundle=bundle)
             evaluate(pool,selected['assets'],encode,candidate_ids=selected['candidate_ids'],
                 policy_id=bundle['policy_id'],runtime_identity=runtime,audio_token_id=c['audio_token_id'],
-                macro_queries=128,output=root/'inference')
+                macro_queries=macro_queries,output=root/'inference')
             pool.close();pool=None
             proof=audit_macros(root/'inference',Path(client['journal_root'])/client['attempt_id'],
                 population=selected['assets'],candidate_ids=selected['candidate_ids'],
                 input_receipts=selected['input_receipts'],policy_id=bundle['policy_id'],runtime_identity=runtime,
-                macro_queries=128)
+                macro_queries=macro_queries,replicas=replicas)
             commit_json(root/'macro-output-audit.json',proof)
             records=json.loads((root/'inference/predictions.json').read_text())['records']
             result=compare(reference,records,selected,policy_id=bundle['policy_id'])

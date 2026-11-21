@@ -31,18 +31,29 @@ def binding(c, plan):
     if file_hash(design_path) != c['design_sha256']:
         raise ValueError('two-stage design changed')
     design = read(design_path); stage = design['stage2']
-    expected_batch = dict(training_devices=2,tensor_parallel=1,pipeline_parallel=1,
-        per_dp_replica_batch=64,microbatch=8,inference_instances=2,
-        inference_batch_queries=32,source_queries=40513,epochs=2,efficiency_steps=100)
-    if (design['total_device_budget'] != 4 or stage['batch_config'] != expected_batch
-            or stage['global_batch'] != 128 or stage['macro_queries'] != 128
-            or stage['rollout_queries'] != 32 or stage['optimizer_reset'] is not True
-            or design['stage1']['reference_endpoint'] != 318
-            or design['reference']['updates_during_stage2'] is not False
-            or design['reference']['mode'] != 'complete_train_readonly_result_cache'):
-        raise ValueError('four-device two-stage full TRAIN reference contract required')
-    objective = {k:stage[k] for k in BASELINE_OBJECTIVE}
-    validate_objective(dict(stage2_objective=objective,algorithm=stage['algorithm'],dual_arm=stage['arm']))
+    from multimodal_jev.stage_experiment_contract import reference_batch, source_curve
+    curve=source_curve(design); batch=reference_batch(design)
+    endpoint_step=curve['steps'][-1]
+    if (plan['reference_endpoint']['step']!=endpoint_step or plan['source_audit']['world_size']!=curve['world_size']
+            or plan['experiment']['evaluation']['checkpoints']!=curve['steps']
+            or stage['optimizer_reset'] is not True or design['reference']['updates_during_stage2'] is not False
+            or design['reference']['mode']!='complete_train_readonly_result_cache'):
+        raise ValueError('full authenticated source and frozen reference required')
+    extra={}
+    if 'objective_config' in stage:
+        from multimodal_jev.source_snapshot import regular
+        root=Path(__file__).resolve().parents[2]
+        ref=stage['objective_config']; config=regular(root,ref['path'])
+        if file_hash(config)!=ref['sha256']:
+            raise ValueError('objective design changed')
+        payload=read(config)
+        if file_hash(regular(root,payload['objective_source']))!=payload['objective_sha256']:
+            raise ValueError('objective implementation changed')
+        extra['objective_config']=ref
+        objective={key:stage[key] for key in ('algorithm','arm','group_size','clip_ratio','advantage_std_floor','learning_rate')}
+    else:
+        objective = {k:stage[k] for k in BASELINE_OBJECTIVE}
+        validate_objective(dict(stage2_objective=objective,algorithm=stage['algorithm'],dual_arm=stage['arm']))
     endpoint = plan['checkpoints'][-1]
     training_path = Path(plan['source_operations']['package'])/'config.json'
     if file_hash(training_path) != plan['training_config_sha256']:
@@ -56,10 +67,14 @@ def binding(c, plan):
     if file_hash(commit_path) != endpoint['commit']['sha256']:
         raise ValueError('Stage1 endpoint commit changed')
     commit = read(commit_path)
-    if (commit['updates'] != 318 or commit['contract'] != expected_contract(training)
+    if (commit['updates'] != endpoint_step or commit['contract'] != expected_contract(training)
             or commit['joint_policy']['policy_id'] != endpoint['policy_id']
             or commit['joint_policy_manifest_sha256'] != endpoint['manifest_sha256']):
         raise ValueError('actual committed full InfoNCE endpoint required')
+    layout={}
+    if 'stage1_layout' in training or 'expected_stage1_layout' in c:
+        from multimodal_jev.stage2_dataset_release import require_endpoint_layout
+        layout['stage1_layout']=require_endpoint_layout(commit['contract'],c.get('expected_stage1_layout'))
     snapshot = Path(endpoint['snapshot'])
     if file_hash(snapshot/'MANIFEST.json') != endpoint['manifest_sha256']:
         raise ValueError('endpoint snapshot changed')
@@ -69,21 +84,21 @@ def binding(c, plan):
     if transition != plan['stage_lora_transition']:
         raise ValueError('stage LoRA transition differs from preregistered training')
     admit_stage2(transition,bundle['contract'])
-    result = dict(schema='jev-infonce-stage2-source-v1',source_step=318,
+    result = dict(schema='jev-infonce-stage2-source-v1',source_step=endpoint_step,
         source_policy_id=bundle['policy_id'],reference_policy_id=bundle['policy_id'],
         base_id=plan['base_id'],source_contract=bundle['contract'],
         source_manifest_sha256=endpoint['manifest_sha256'],
         source_commit_sha256=endpoint['commit']['sha256'],
         source_plan_sha256=c['source_plan_sha256'],design_sha256=c['design_sha256'],
         release_sha256=training['release_sha256'],stage_lora_transition=transition,
-        stage2_objective=objective,batch_config=stage['batch_config'],
+        stage2_objective=objective,batch_config=batch,
         reset_optimizer_for_task_stage=True,reference_mode='complete_train_readonly_result_cache',
-        selection_best_used=False,training_dispatch_allowed=False)
+        selection_best_used=False,training_dispatch_allowed=False,**layout,**extra)
     return result, bundle, snapshot
 
 
-def prepare(c, provenance):
-    plan = reconstruct_plan(c)
+def prepare(c, provenance, *, reconstruct=None):
+    plan = (reconstruct or reconstruct_plan)(c)
     bound, bundle, snapshot = binding(c,plan)
     output = Path(c['output'])
     for source in (snapshot,Path(plan['source_operations']['package']),Path(c['source_plan']).parent):
@@ -103,10 +118,10 @@ def prepare(c, provenance):
         files={str(p.relative_to(output)):file_hash(p) for p in output.rglob('*') if p.is_file()})
     commit_json(output/'PACKAGE.json',manifest)
     return dict(status=manifest['status'],manifest_sha256=file_hash(output/'PACKAGE.json'),
-                source_policy_id=bundle['policy_id'],source_step=318,training_dispatch_allowed=False)
+                source_policy_id=bundle['policy_id'],source_step=bound['source_step'],training_dispatch_allowed=False)
 
 
-def audit(c, provenance):
+def audit(c, provenance, *, reconstruct=None):
     root=Path(c['output']); manifest=root/'PACKAGE.json'
     if root.is_symlink() or file_hash(manifest)!=c['manifest_sha256']:
         raise ValueError('source package manifest differs')
@@ -116,7 +131,7 @@ def audit(c, provenance):
             or m['status']!='infonce_stage2_source_prepared_only'
             or m['training_dispatch_allowed'] is not False or m['numerical_admission'] is not False):
         raise ValueError('complete immutable source-only package required')
-    plan=reconstruct_plan(c); expected,_,_=binding(c,plan)
+    plan=(reconstruct or reconstruct_plan)(c); expected,_,_=binding(c,plan)
     if (read(root/'binding.json')!=expected or m['source_policy_id']!=expected['source_policy_id']
             or file_hash(root/'source-plan.json')!=c['source_plan_sha256']
             or file_hash(root/'design.json')!=c['design_sha256']
@@ -131,7 +146,7 @@ def audit(c, provenance):
     if any(name not in allowed and not name.startswith(('policy/','adapter/')) for name in actual):
         raise ValueError('source package contains unexpected assets')
     return dict(status='infonce_stage2_source_independently_audited',
-        manifest_sha256=c['manifest_sha256'],source_policy_id=bundle['policy_id'],source_step=318,
+        manifest_sha256=c['manifest_sha256'],source_policy_id=bundle['policy_id'],source_step=expected['source_step'],
         optimizer_state_copied=False,base_weights_copied=False,
         training_dispatch_allowed=False,npu_executed=False,provenance=provenance)
 

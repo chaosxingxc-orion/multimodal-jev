@@ -26,3 +26,11 @@ def test_infonce_curve_uses_full_preregistered_source_population_and_refuses_pre
 def test_curve_requires_fixed_selection_rule():
     c=config();c.update(release_sha256='r',selection_rule='best_training_reward')
     with pytest.raises(ValueError,match='selection rule'):evaluation_protocol(c)
+
+
+def test_new_layout_protocol_ranks_by_event_not_thresholded_set():
+    c=config()
+    c.update(release_sha256='r',stage1_layout={'design':{'sha256':'a'*64},'plan':{'sha256':'b'*64}})
+    e=evaluation_protocol(c)['evaluation']
+    assert e['primary']=='top1_macro_f1' and 'query_macro_set_f1' in e['secondary']
+    assert e['primary'] not in e['secondary'] and e['checkpoints']==c['evaluation_steps']

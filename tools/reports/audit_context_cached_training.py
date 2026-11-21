@@ -29,7 +29,11 @@ def read(p):return json.loads(Path(p).read_text())
 def expected_contract(c,mounted):
     contract=shared.expected_contract(c,mounted)
     contract['stage_lora_transition']=admit_stage2(c['stage_lora_transition'],c['source_contract'])
-    contract['stage2_objective']=validate_objective(c)
+    if 'objective_config' in c:
+        from multimodal_jev.stage2_view_runtime import editable_objective
+        contract['stage2_objective']=editable_objective(c)
+    else:
+        contract['stage2_objective']=validate_objective(c)
     contract['reference_dataset']=dict(manifest_sha256=c['reference_dataset']['manifest_sha256'],
         identity=c['reference_dataset']['identity'],mode='readonly_no_online_fill')
     if c.get('experiment_kind')=='cached_reference_tail_admission':
@@ -43,8 +47,8 @@ def tail_auditor(namespace):
     replacements=[
         ("if experiment_window(c) != 'engineering_prefix' or start != 0:",
          "if tail_contract(c)['diagnostic_updates'] != 2 or start != 0:"),
-        ('    check_schedule(batches, plan)',
-         '    check_schedule(batches, plan)\n    batches=select_tail(batches,c,population.keys())'),
+        ('        check_schedule(batches, plan)',
+         '        check_schedule(batches, plan)\n        batches=select_tail(batches,c,population.keys())'),
         ("if padded and (engineering\n                or index % plan['updates_per_epoch'] != plan['updates_per_epoch'] - 1):",
          "if padded and index != 0:"),
     ]
@@ -131,10 +135,25 @@ def audit_outputs(package,collection,*,reference_root):
 
 
 def audit(c,provenance):
+    return audit_collected(c,provenance,package_check=audit_package,build_command=command,
+                          check_outputs=audit_outputs)
+
+
+def reference_dataset_path(specification, config):
+    """Bind the local audit copy to the reference mounted on the training host."""
+    root = Path(specification['reference_job']['collection']) / 'reference-build' / 'dataset'
+    manifest = root / 'MANIFEST.json'
+    if (root.is_symlink() or manifest.is_symlink() or not manifest.is_file()
+            or file_hash(manifest) != config['reference_dataset']['manifest_sha256']):
+        raise ValueError(f'local reference audit manifest is missing or differs: {manifest}')
+    return root
+
+
+def audit_collected(c,provenance,*,package_check,build_command,check_outputs):
     specification=c['training_package'];package=Path(specification['output'])
-    preparation=audit_package(specification,provenance)
+    preparation=package_check(specification,provenance)
     manifest=read(package/'PREPARED.json');config=read(package/'config.json')
-    argv=command(c['deployment'],manifest,config)
+    argv=build_command(c['deployment'],manifest,config)
     handle=read(c['launch']);observed=read(c['inspect']);transport=read(c['transport'])
     storage=audit_container(argv,config,handle,observed)
     if (handle['manifest_sha256']!=specification['manifest_sha256']
@@ -155,8 +174,8 @@ def audit(c,provenance):
         raise ValueError('complete unchanged cached training collection required')
     for name in manifest['layout']['configs']+list(manifest['layout']['services'].values()):
         if actual.get(name)!=file_hash(package/name):raise ValueError('executed training config differs: '+name)
-    reference=Path(specification['reference_job']['collection'])/'reference-build/dataset'
-    result=audit_outputs(package,collection,reference_root=reference)
+    reference=reference_dataset_path(specification, config)
+    result=check_outputs(package,collection,reference_root=reference)
     return dict(result,package_audit=preparation,storage_audit=storage,
         container_id=handle['container_id'],image=observed['Image'],
         manifest_sha256=specification['manifest_sha256'],transport_sha256=file_hash(c['transport']),

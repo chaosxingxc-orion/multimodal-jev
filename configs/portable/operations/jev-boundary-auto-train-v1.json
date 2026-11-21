@@ -1,0 +1,17 @@
+{
+  "schema": "jev-boundary-panel-auto-train-v1",
+  "clean": "${JEV_BOUNDARY_CLEAN}",
+  "native": "${JEV_BOUNDARY_NATIVE}",
+  "output": "${JEV_BOUNDARY_OUTPUT}",
+  "seed": 317,
+  "calendar_each": 48,
+  "pair_limit_per_frame": 8,
+  "background": 96,
+  "examples": {"min_words": 4, "max_words": 9},
+  "boundaries": {
+    "calendar_query": "Read or ask about an existing calendar entry. A date or meeting name alone does not request a new entry.",
+    "calendar_set": "Request adding a calendar entry or setting a reminder. Merely asking about the existing schedule does not create an entry."
+  },
+  "direction_pairs": [["up","down"],["increase","decrease"],["raise","lower"],["louder","quieter"]],
+  "arms": ["original","boundary","fewshot","reversed_boundary"]
+}

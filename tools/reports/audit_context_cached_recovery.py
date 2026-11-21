@@ -10,11 +10,11 @@ from tools.reports.context_infonce_recovery import compare as compare_state
 from tools.jev.context_replay_audit import require_exact
 
 
-def compare(continuous,replayed):
+def compare(continuous,replayed,*,world_size=2):
     """Call only after both independent output audits; no fresh-NPU claim here."""
     import torch
     continuous,replayed=Path(continuous),Path(replayed)
-    result=compare_state(continuous,replayed,world_size=2)
+    result=compare_state(continuous,replayed,world_size=world_size)
     require_exact(torch.load(continuous/'groups-0001.pt',map_location='cpu',weights_only=True),
                   torch.load(replayed/'groups-0001.pt',map_location='cpu',weights_only=True),'sampled_groups')
     prior=cached.read(continuous/'checkpoint-0001-committed.json')['joint_policy']['policy_id']
@@ -32,7 +32,7 @@ def replay_auditor(namespace,prior):
     edits=[
         ("if experiment_window(c) != 'engineering_prefix' or start != 0:",
          "if experiment_window(c) != 'engineering_prefix' or start != 1:"),
-        ("or ready['policy_id'] != c['source_policy_id']",
+        ("or ready['policy_id'] != (initial['policy_id'] if view else c['source_policy_id'])",
          "or ready['policy_id'] != replay_prior['policy_id']"),
         ("current = c['source_policy_id']; prior = initial['tensors']; reference_seen = {}",
          "current = replay_prior['policy_id']; prior = replay_prior['tensors']; reference_seen = {}"),

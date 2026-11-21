@@ -11,7 +11,6 @@ import re
 import subprocess
 import sys
 import time
-from types import FunctionType, SimpleNamespace
 
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
@@ -135,8 +134,7 @@ def run(c,provenance):
                     operations_root=stage['operations_root'],tag=stage['tag'],stage2_training_dispatch_allowed=True)
                 commit_json(root/(kind+'-deployment.json'),ops)
                 monitor_root=root/kind;monitor_root.mkdir()
-                runner=FunctionType(monitored_training.__code__,dict(monitored_training.__globals__,formal=operations))
-                proof=runner(ops,provenance,monitor_root)
+                proof=monitored_training(ops,provenance,monitor_root,run_stage=operations.run)
                 commit_json(root/(kind+'-result.json'),proof)
                 evidence[kind]=read(Path(ops['operations_root'])/'finalization/audit-config.json')
         result=dict(exit_code=0,status='stage2_objective_formal_collected_and_audited',updates=634,

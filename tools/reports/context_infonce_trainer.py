@@ -10,13 +10,15 @@ from pathlib import Path
 from multimodal_jev.context_topology_batch_plan import derive
 from multimodal_jev.context_warmup import learning_rate
 
-SOURCE_SHA = '247fa78a7d479b1cade062622812320d0c6f64550bcf37474a4fd72ee70a5a73'
+SOURCE_SHA = '5b93be44316bf17a298906f4903c542fb21614562e2de4c4605fbe1ea42e5a3a'
 
 
 def topology(c, world, mounted):
     plan = derive(c['batch_config'])
     devices = c['physical_devices']
     objective = c['instruction_objective']
+    from multimodal_jev.context_infonce import validate_objective
+    validate_objective(objective)
     if (type(world) is not int or not 1 <= world <= 8 or plan['dp_replicas'] != world
             or c['batch_config']['tensor_parallel'] != 1
             or c['batch_config']['pipeline_parallel'] != 1
@@ -27,8 +29,6 @@ def topology(c, world, mounted):
             or c['global_batch'] != plan['global_batch']
             or c['microbatch'] != c['batch_config']['microbatch']
             or c['stage'] != 'instruction'
-            or set(objective) != {'kind', 'temperature', 'probability_coefficient'}
-            or objective['kind'] != 'candidate_infonce'
             or objective['probability_coefficient'] != 0.):
         raise ValueError('declared-DP supervised InfoNCE with no inference service required')
     import math
@@ -36,17 +36,32 @@ def topology(c, world, mounted):
     if type(t) not in (int, float) or not math.isfinite(t) or t <= 0:
         raise ValueError('positive InfoNCE temperature required')
     learning_rate(c['lr_schedule'], 0, plan['total_updates'])
-    return dict(world_size=world, local_batch=64, total_updates=plan['total_updates'],
+    return dict(world_size=world, local_batch=plan['local_effective_batch'], total_updates=plan['total_updates'],
                 batch_config=c['batch_config'])
 
 
 def generate(source_root):
     path = Path(source_root) / 'tools/jev/train_context_instruction_npu.py'
     raw = path.read_bytes()
-    if hashlib.sha256(raw).hexdigest() != SOURCE_SHA:
+    if hashlib.sha256(raw).hexdigest() not in {SOURCE_SHA, 'e6e217b0df4a8ea4b74fa31399634a276aa1f085cdfcf371b8a74ba452c51894', '247fa78a7d479b1cade062622812320d0c6f64550bcf37474a4fd72ee70a5a73'}:
         raise ValueError('pinned instruction trainer changed')
     source = raw.decode()
     edits = [
+        ('from multimodal_jev.local_audio_mirror import LocalAudioMirror',
+         'from multimodal_jev.local_audio_mirror import ReadOnlyAudioMirror'),
+        ("                        if r['local']!=str(mirror_root/'audio'/(r['sha256']+'.audio')):",
+         "                        if Path(r['local']).name!=r['sha256']+'.audio' or not Path(r['local']).is_absolute():"),
+        ("audio_mirror=LocalAudioMirror(mirror_root/'audio',read_only=True)",
+         "audio_mirror=ReadOnlyAudioMirror(mirror_root/'audio')"),
+        ('        head=ContextDecisionHead(1024,8,1024,.1).to(device=device,dtype=torch.bfloat16).eval()',
+         "        from multimodal_jev.context_model_profile import from_hf,build_head\n"
+         "        model_profile=from_hf(c['model'])\n"
+         "        if any(bundle['contract']['branch'].get(k)!=v for k,v in model_profile.decision_head().items()):\n"
+         "            raise ValueError('initial decision head differs from actual model geometry')\n"
+         "        head=build_head(model_profile).to(device=device,dtype=torch.bfloat16).eval()"),
+        ("        progress('load')", "        if c.get('prompt_layout') is not None:contract['prompt_layout']=c['prompt_layout']\n        progress('load')"),
+        ("max_tokens=4096,audio_mirror=audio_mirror)",
+         "max_tokens=4096,audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))"),
         ('from multimodal_jev.encoded_audio_cache import EncodedAudioCache',
          'from multimodal_jev.readonly_encoded_audio_cache import ReadOnlyEncodedAudioCache as EncodedAudioCache'),
         ("                require_training_storage(c['encoded_audio_cache'])",
@@ -54,7 +69,7 @@ def generate(source_root):
          "                require_training_storage(root)"),
         ('    from multimodal_jev.context_native_actor import MODE,build_actor,make_batch',
          '    from tools.reports.context_infonce_actor import load as load_actor\n'
-         "    actor_module=load_actor(c['source_root'],temperature=c['instruction_objective']['temperature'])\n"
+         "    actor_module=load_actor(c['source_root'],temperature=c['instruction_objective']['temperature'],probability_margin=c['instruction_objective'].get('probability_margin'))\n"
          '    MODE,build_actor,make_batch=actor_module.MODE,actor_module.build_actor,actor_module.make_batch'),
         ('    from multimodal_jev.slurp_official_training import load',
          '    from multimodal_jev.slurp_portable_release import load'),

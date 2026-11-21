@@ -97,13 +97,13 @@ def auditor_namespace(c):
     return namespace
 
 
-def check_runtime(receipt,handle,observed):
+def check_runtime(receipt,handle,observed,*,expected_exit=0):
     argv=receipt['argv']
     def values(flag):return [argv[i+1] for i,v in enumerate(argv) if v==flag]
     hc=observed['HostConfig'];cfg=observed['Config'];state=observed['State']
     if (handle['argv']!=argv or observed['Id']!=handle['container_id']
             or observed['Image']!=receipt['image'] or state['Status']!='exited'
-            or state['ExitCode']!=0 or state['OOMKilled'] or hc['Privileged']
+            or state['ExitCode']!=expected_exit or state['OOMKilled'] or hc['Privileged']
             or hc['NetworkMode']!='none' or sorted(hc['Binds'])!=sorted(values('-v'))
             or cfg['Entrypoint']!=values('--entrypoint')
             or cfg['Cmd']!=argv[argv.index(receipt['image'])+1:]):

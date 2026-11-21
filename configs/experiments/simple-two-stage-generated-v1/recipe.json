@@ -1,0 +1,36 @@
+{
+  "schema": "jev-simple-recipe-v1",
+  "base": {
+    "path": "configs/experiments/context-two-stage-margin-r64-dp8-v1.json",
+    "sha256": "d5848e130683e511751af39c4ac1e3181d6f9c9150110b278dcddfa45c6c33f6"
+  },
+  "objective": {
+    "path": "configs/experiments/stage2-without-set-credit-v1.json",
+    "sha256": "ad24d0425f09e8aab6325cb900bdf43fd6be507b9f799e5bee918bd6b5f87964"
+  },
+  "dataset_template": {
+    "path": "configs/portable/operations/stage2-dataset-dp6.json",
+    "sha256": "d246b9ea90261533f19ad3942eef72689fe71f711e4f90c19b92f756c5be19ff"
+  },
+  "manifest_template": {
+    "path": "configs/experiments/next-simple-jev-r64-dp8-v1.json",
+    "sha256": "6614900b4af811a698d016e8f36dd565e3eabde3b511ffbf2c748974fb4dd93a"
+  },
+  "total_devices": 8,
+  "rollout_instances": 2,
+  "replica_batch": 64,
+  "microbatch": 8,
+  "epochs": 2,
+  "rollout_batch": 32,
+  "stage1_lora": {
+    "rank": 64,
+    "alpha": 128
+  },
+  "stage2_lora": {
+    "rank": 64,
+    "alpha": 128
+  },
+  "reuse_stage1_adapter": true,
+  "warmup_fraction": 0.05,
+  "selection_interval": 16
+}

@@ -22,7 +22,7 @@ def tensor(actual,expected,name):
         raise ValueError('dual audit tensor differs: '+name)
 
 
-def audit(groups,receipts,targets,*,candidates,algorithm,arm,update,policy_id,reference_policy_id):
+def audit(groups,receipts,targets,*,candidates,algorithm,arm,update,policy_id,reference_policy_id,actor_options=None):
     if algorithm not in ALGORITHMS or arm not in ('joint','ranking_only','existence_only'):
         raise ValueError('registered dual objective required')
     ids=[g['request_id'] for g in groups];rids=[r['request_id'] for r in receipts]
@@ -34,6 +34,10 @@ def audit(groups,receipts,targets,*,candidates,algorithm,arm,update,policy_id,re
     statistics={name:[] for name in ('ranking','existence')}
     options=dict(algorithm=algorithm,arm=arm,ranking_coefficient=.1,probability_coefficient=.3,
                  kl_coefficient=.01,reference_policy_id=reference_policy_id)
+    size,base_seed=16,317
+    if actor_options is not None:
+        options=actor_options
+        size,base_seed=options['group_size'],options['sampling_seed']
     for g in groups:
         uid=g['request_id'];t=targets[uid];entry=entries[uid];y=torch.tensor(t['labels'],dtype=torch.bool)
         if y.shape!=(len(candidates),):raise ValueError('complete target panel required')
@@ -61,7 +65,7 @@ def audit(groups,receipts,targets,*,candidates,algorithm,arm,update,policy_id,re
         if arithmetic not in ('dual-credit-cpu-pair-fp32-v1','dual-credit-cpu-pair-fp64-v2'):
             raise ValueError('unregistered credit arithmetic')
         pair_dtype=torch.float64 if arithmetic.endswith('fp64-v2') else torch.float32
-        binding=dict(identity,algorithm=algorithm,group_size=16,seed=317,
+        binding=dict(identity,algorithm=algorithm,group_size=size,seed=base_seed,
             candidates=list(candidates),labels=t['labels'],logits=record['logits'],probability=record['prob'],
             arithmetic=arithmetic)
         if (g['dual_identity']!=identity or credit['binding']!=binding or
@@ -91,12 +95,12 @@ def audit(groups,receipts,targets,*,candidates,algorithm,arm,update,policy_id,re
             if not ((probability>0)&(probability<1)).all():raise ValueError('saturated component probability')
             actions=[]
             for key,q in zip(keys,probability):
-                seed=int(digest([317,update,uid,name,key])[:16],16)%(2**63)
-                actions.append((torch.rand(16,generator=torch.Generator().manual_seed(seed),dtype=probability.dtype)<q).long())
-            actions=torch.stack(actions) if rows else torch.empty((0,16),dtype=torch.long)
+                seed=int(digest([base_seed,update,uid,name,key])[:16],16)%(2**63)
+                actions.append((torch.rand(size,generator=torch.Generator().manual_seed(seed),dtype=probability.dtype)<q).long())
+            actions=torch.stack(actions) if rows else torch.empty((0,size),dtype=torch.long)
             reward=(actions==target[:,None]).float()
             if algorithm==ALGORITHMS[0]:
-                adv=torch.stack([reward[:,i]-torch.cat((reward[:,:i],reward[:,i+1:]),1).mean(1) for i in range(16)],1)
+                adv=torch.stack([reward[:,i]-torch.cat((reward[:,:i],reward[:,i+1:]),1).mean(1) for i in range(size)],1)
             else:
                 centered=reward-reward.mean(1,keepdim=True)
                 adv=centered/(centered.square().mean(1,keepdim=True).sqrt().clamp_min(.25))

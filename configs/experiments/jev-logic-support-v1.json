@@ -1,0 +1,15 @@
+{
+  "schema": "jev-logic-support-v1",
+  "predicates": {
+    "A": {"native_field": "scenario", "equals": "calendar"},
+    "B": {"native_field": "action", "equals": "query"}
+  },
+  "expressions": {
+    "Q1": ["IS", "A"],
+    "Q2": ["IS", "B"],
+    "Q3": ["OR", "A", "B"],
+    "Q4": ["NOT", ["OR", "A", "B"]]
+  },
+  "train_view_receipt": "${JEV_LOGIC_TRAIN_VIEW_RECEIPT}",
+  "train_view_receipt_sha256": "${JEV_LOGIC_TRAIN_VIEW_RECEIPT_SHA256}"
+}

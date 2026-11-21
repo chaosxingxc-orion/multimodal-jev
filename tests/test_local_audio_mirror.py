@@ -59,3 +59,19 @@ def test_read_only_mirror_never_publishes_and_rejects_shared_mount(tmp_path,monk
     monkeypatch.setattr(module,'mount_for',lambda *a:dict(filesystem='ceph'))
     with pytest.raises(ValueError,match='existing local'):
         module.LocalAudioMirror(mirror.root,read_only=True)
+
+
+def test_reference_reader_requires_read_only_ceph_and_verifies_bytes(tmp_path, monkeypatch):
+    from tools.reports.build_context_reference_dataset import audio_mirror
+    mirror, source, digest = fixture(tmp_path, monkeypatch)
+    local = mirror.publish(source, digest)
+    mount = dict(filesystem='ceph', options='ro,relatime')
+    monkeypatch.setattr(module, 'mount_for', lambda *a: mount)
+    reader = audio_mirror({'audio_mirror_root': str(mirror.root)})
+    assert reader.resolve(digest) == local
+    local.write_bytes(b'corrupt')
+    with pytest.raises(ValueError, match='changed'):
+        reader.resolve(digest)
+    mount['options'] = 'rw,relatime'
+    with pytest.raises(ValueError, match='read-only Ceph'):
+        audio_mirror({'audio_mirror_root': str(mirror.root)})

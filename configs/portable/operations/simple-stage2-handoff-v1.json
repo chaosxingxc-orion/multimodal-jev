@@ -1,0 +1,191 @@
+{
+  "schema": "jev-simple-stage2-handoff-v1",
+  "inputs": {
+    "recipe": "${SIMPLE_RECIPE}",
+    "pipeline_local": "${STAGE1_PIPELINE_LOCAL}",
+    "finalization_config": "${FINALIZATION_CONFIG}",
+    "finalizer_driver": "${FINALIZER_DRIVER}",
+    "runtime_package": "${RUNTIME_PACKAGE}",
+    "reference_schedule": "${REFERENCE_SCHEDULE}",
+    "scoring_devices": "${STAGE2_OFFLINE_SCORING_DEVICES}",
+    "parity_local": "${PARITY_LOCAL}",
+    "image_local": "${IMAGE_LOCAL}",
+    "run_root": "${STAGE2_RUN_ROOT}",
+    "attempt": "${STAGE2_ATTEMPT}"
+  },
+  "templates": {
+    "pipeline": "configs/portable/operations/context-stage1-start-pipeline.json",
+    "panel": "configs/portable/operations/context-train-parity-inputs.json",
+    "suite": "configs/portable/operations/simple-stage2-image-tests.json",
+    "bootstrap": "tools/reports/context_objective_bootstrap.py"
+  },
+  "dataset_macros": {
+    "AUDITED_STAGE1_REFERENCE_JOB": null,
+    "STAGE1_DATASET_ENDPOINT": null,
+    "STAGE2_DATASET_OUTPUT": "${RUN_ROOT}/difficulty-view",
+    "STAGE2_DATASET_SHA256": null,
+    "STAGE2_DATASET_RECEIPTS": {
+      "prepare": "${RUN_ROOT}/view-prepare.json",
+      "bind": "${RUN_ROOT}/view-bind.json"
+    },
+    "STAGE2_INPUT_CONFIG": null,
+    "STAGE2_BOUND_CONFIG": "${RUN_ROOT}/stage2-bound.json"
+  },
+  "request": {
+    "output": "${RUN_ROOT}/stage2-successor",
+    "predecessor": "${PREDECESSOR}",
+    "source": {
+      "output": "${RUN_ROOT}/stage2-source",
+      "design": "${DESIGN_PATH}",
+      "design_sha256": "${DESIGN_SHA}",
+      "expected_stage1_layout": "${LAYOUT}"
+    },
+    "runtime": {
+      "runtime": "${RUNTIME}",
+      "training_devices": "${TRAINING_DEVICES}",
+      "inference_devices": "${INFERENCE_DEVICES}",
+      "schedule": "${SCHEDULE}",
+      "schedule_sha256": "${SCHEDULE_SHA256}",
+      "parent_schedule": "${PARENT_SCHEDULE}",
+      "parent_schedule_sha256": "${PARENT_SCHEDULE_SHA256}",
+      "parent_release_sha256": "${PARENT_RELEASE_SHA256}",
+      "attempt_id": "${ATTEMPT}",
+      "output": "${RUN_ROOT}/endpoint-runtime",
+      "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-endpoint-runtime",
+      "attention_execution": {
+        "kind": "bounded_prefill_v1",
+        "max_requests": 8,
+        "acoustic_batch_chunks": 32
+      },
+      "shared_inputs": "${SHARED_INPUTS}",
+      "model_binding": {
+        "io_workers": 4
+      },
+      "serving": "${SERVING}",
+      "lora_arithmetic": "actor_order_bf16_qv_v1"
+    },
+    "reference": {
+      "package_preparation": {
+        "cpu_workers": 2
+      },
+      "parity_operations": {
+        "tag": "${ATTEMPT}-parity",
+        "operations_root": "${RUN_ROOT}/parity-ops",
+        "finite_inference_dispatch_allowed": true,
+        "use_composed_lifecycle": true
+      },
+      "reference_operations": {
+        "tag": "${ATTEMPT}-reference",
+        "operations_root": "${RUN_ROOT}/reference-ops",
+        "reference_dispatch_allowed": true,
+        "single_admission_launch": true,
+        "admission_execution": {
+          "io_workers": 4
+        }
+      },
+      "parity": {
+        "output": "${RUN_ROOT}/parity-package",
+        "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-parity-package",
+        "scoring_devices": "${SCORING_DEVICES}",
+        "inputs": "${PANEL}",
+        "engine_shutdown_timeout_seconds": 120,
+        "shutdown_timeout_seconds": 150
+      },
+      "reference": {
+        "output": "${RUN_ROOT}/reference-package",
+        "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-reference-package",
+        "scoring_devices": "${SCORING_DEVICES}",
+        "input_evidence": "${INPUT_EVIDENCE}",
+        "engine_shutdown_timeout_seconds": 120,
+        "shutdown_timeout_seconds": 150,
+        "input_prefetch": {
+          "io_workers": 4,
+          "ahead": "${SCORING_PREFETCH_AHEAD}"
+        }
+      },
+      "output": "${RUN_ROOT}/reference-chain",
+      "chain_lock": "${RUN_ROOT}/reference-chain.lock",
+      "deployment": "${DEPLOYMENT}"
+    },
+    "cached_parent": {
+      "output": "${RUN_ROOT}/cached-parent",
+      "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-cached-parent"
+    },
+    "view_pipeline": {
+      "output": "${RUN_ROOT}/stage2-windows",
+      "objective_parent": {
+        "output": "${RUN_ROOT}/objective-parent",
+        "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-objective-parent",
+        "extension_source": "${EXTENSION_SOURCE}",
+        "extension_cpu_report": "${EXTENSION_CPU_REPORT}",
+        "extension_expected_tests": "${EXTENSION_EXPECTED_TESTS}",
+        "options": {},
+        "bootstrap": "${BOOTSTRAP}"
+      },
+      "dataset": "${DATASET}",
+      "window_package": {
+        "schema": "jev-stage2-view-package-v1",
+        "objective_design": "${OBJECTIVE_DESIGN}",
+        "assets": null,
+        "topology": "${TOPOLOGY}"
+      },
+      "deployment": "${DEPLOYMENT}",
+      "window_operations": {
+        "schema": "jev-stage2-view-window-v1",
+        "dispatch": true,
+        "monitor_interval_seconds": "${MONITOR_SECONDS}",
+        "image_cpu": "${EXTENSION_CPU_REPORT}",
+        "objective_loss_atol": 0.0
+      },
+      "windows": {
+        "prefix": {
+          "package": "${RUN_ROOT}/packages/prefix",
+          "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-prefix",
+          "operations_root": "${RUN_ROOT}/operations/prefix",
+          "tag": "${ATTEMPT}-prefix"
+        },
+        "recovery": {
+          "package": "${RUN_ROOT}/packages/recovery",
+          "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-recovery",
+          "operations_root": "${RUN_ROOT}/operations/recovery",
+          "tag": "${ATTEMPT}-recovery"
+        },
+        "tail": {
+          "package": "${RUN_ROOT}/packages/tail",
+          "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-tail",
+          "operations_root": "${RUN_ROOT}/operations/tail",
+          "tag": "${ATTEMPT}-tail"
+        },
+        "formal": {
+          "package": "${RUN_ROOT}/packages/formal",
+          "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-formal",
+          "operations_root": "${RUN_ROOT}/operations/formal",
+          "tag": "${ATTEMPT}-formal"
+        }
+      },
+      "trace_replay": {
+        "host": "${HOST}",
+        "driver_root": "${DRIVER_ROOT}",
+        "lease": "${LEASE}",
+        "device": "${REPLAY_DEVICE}",
+        "image": "${IMAGE}",
+        "source": "${EXTENSION_SOURCE}",
+        "output": "${RUN_ROOT}/trace-replay",
+        "remote_root": "${REMOTE_PARENT}/${ATTEMPT}-trace-replay",
+        "tag": "${ATTEMPT}-trace"
+      }
+    },
+    "lease": {
+      "deadline_unix": "${DEADLINE}",
+      "stop_grace_seconds": 45,
+      "reserve_seconds": 300,
+      "minimum_seconds": {
+        "parity_and_reference": 4200,
+        "prefix": 900,
+        "recovery": 750,
+        "tail": 850
+      },
+      "formal_step_multiplier": 1.12
+    }
+  }
+}

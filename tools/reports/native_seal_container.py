@@ -60,7 +60,22 @@ def main():
     c, provenance = load_config(a.config, a.local)
     source = c['source']
     verify(source['root'], manifest_sha256=source['sha256'], io_workers=c['io_workers'])
-    if c['phase'] in ('encode', 'verify'):
+    if c['phase'] == 'model_provider_probe':
+        from tools.reports.probe_audio_model_provider import run
+        result = run(c['probe'])
+    elif c['phase'] == 'tpo_score':
+        from tools.reports.evaluate_tpo_endpoints import collect
+        result = collect(c)
+    elif c['phase'] == 'tpo_eval':
+        from tools.reports.evaluate_tpo_endpoints import run
+        result = run(c)
+    elif c['phase'] == 'joint_tpo':
+        from tools.reports.joint_tpo_window import run
+        result = run(c)
+    elif c['phase'] == 'tpo_train':
+        from tools.reports.tpo_training_window import run
+        result = run(c)
+    elif c['phase'] in ('encode', 'verify'):
         cache = c['cache']
         result = cache_run(cache, provenance, verify=c['phase']=='verify')
         if c['phase']=='verify':

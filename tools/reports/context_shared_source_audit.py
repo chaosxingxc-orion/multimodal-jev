@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 import time
 from types import FunctionType,SimpleNamespace
 
@@ -91,8 +92,8 @@ class SourceAuditEngine:
         from tools.reports import context_infonce_stage2_source as source
         from tools.reports import prepare_context_stage2_runtime as runtime
         from tools.reports import prepare_context_replica_selection as selection
-        source_audit=FunctionType(source.audit.__code__,dict(source.audit.__globals__,reconstruct_plan=self.reconstruct))
-        runtime_audit=FunctionType(runtime.audit.__code__,dict(runtime.audit.__globals__,audit_source=source_audit))
+        source_audit=partial(source.audit,reconstruct=self.reconstruct)
+        runtime_audit=partial(runtime.audit,source_auditor=source_audit)
         inputs=FunctionType(selection.inputs.__code__,dict(selection.inputs.__globals__,reconstruct_plan=self.reconstruct,audit_parent=runtime_audit))
         prepare=FunctionType(selection.prepare.__code__,dict(selection.prepare.__globals__,inputs=inputs))
         audit=FunctionType(selection.audit.__code__,dict(selection.audit.__globals__,prepare=prepare))

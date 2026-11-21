@@ -1,0 +1,47 @@
+{
+  "host": "${CPU_TEST_HOST}",
+  "remote_root": "${CPU_TEST_REMOTE_ROOT}",
+  "source": "${PROJECT_ROOT}",
+  "output": "${CPU_TEST_OUTPUT}",
+  "driver_root": "${ASCEND_DRIVER_ROOT}",
+  "image": "${TRAIN_IMAGE}",
+  "report": "${CPU_TEST_REPORT}",
+  "tag": "${CPU_TEST_TAG}",
+  "tests": [
+    "tests/test_objective_plugin.py",
+    "tests/test_objective_plugin_native.py",
+    "tests/test_objective_plugin_recovery.py",
+    "tests/test_objective_trace.py",
+    "tests/test_stage2_view_package.py",
+    "tests/test_configured_grpo_native.py",
+    "tests/test_configured_stage2_protocol.py"
+  ],
+  "expected_tests": 60,
+  "scope": "Frozen forward runtime plus objective, recovery and DP view acceptance on CPU with native verl.",
+  "support_files": [
+    "configs/experiments/stage2-view-execution-v0.0.183.json",
+    "extensions/stage2_objective.py",
+    "extensions/stage2_probability_margin_objective.py",
+    "tests/test_stage2_dataset_release.py",
+    "tests/test_stage2_training_view.py",
+    "tests/test_context_reference_dataset.py",
+    "configs/experiments/stage2-probability-margin-candidate-v0.0.126.json",
+    "configs/experiments/stage2-view-execution-v0.0.126.json",
+    "configs/experiments/context-two-stage-v0.0.11.json",
+    "configs/experiments/simple-two-stage-recipe.json",
+    "configs/experiments/context-two-stage-margin-r64-dp8-v1.json",
+    "configs/experiments/next-simple-jev-r64-dp8-v1.json",
+    "configs/experiments/context-reference-serving-v1.json",
+    "configs/experiments/stage2-without-set-credit-v1.json",
+    "configs/portable/operations/stage2-dataset-dp6.json"
+  ],
+  "resources": {
+    "cpus": 2,
+    "memory_gib": 8
+  },
+  "forward_sources": "${CPU_FORWARD_SOURCE}",
+  "support_patterns": [
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ]
+}

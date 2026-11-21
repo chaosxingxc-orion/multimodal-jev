@@ -10,7 +10,7 @@ from tools.reports import prepare_context_reference_job as module
 
 
 def training(root='/data/bound'):
-    return dict(source_root=root+'/source',source_policy=root+'/initial/policy',source_policy_id='policy',
+    return dict(physical_devices=[4,5],reference_source=dict(endpoint=318,population=40513,max_tokens=4096),source_root=root+'/source',source_policy=root+'/initial/policy',source_policy_id='policy',
         source_contract={'token':{'id':99}},base_id='base',release='/shared/release',release_sha256='release',
         audio_token_id=98,encoded_audio_cache='/data/cache/input',audio_mirror_root='/data/mirror/run',
         dual_runtime_identity={'processor_sha256':'processor'},dual_runtime_manifest=root+'/RUNTIME-SOURCES.json',
@@ -29,10 +29,12 @@ def setup(tmp_path,monkeypatch):
     c=training();write(parent/'config.json',c)
     script=parent/'source/example.py';script.parent.mkdir();script.write_text('pass\n')
     write(parent/'RUNTIME-SOURCES.json',{'example.py':module.file_hash(script)})
-    write(parent/'initial/endpoint-commit.json',{'updates':318})
+    design=json.loads((Path.cwd()/'configs/experiments/context-two-stage-v0.0.11.json').read_bytes())
+    write(parent/'initial/endpoint-commit.json',dict(updates=318,joint_policy={'policy_id':'policy'},contract={'batch_config':design['stage1']['batch_config']}))
     (parent/'run.py').write_text('raise SystemExit("pending")')
     for n in ('a','b'):write(parent/f'service-{n}.json',dict(source_policy=c['source_policy'],pins={},
-        socket_path='/data/bound/service-'+n+'/socket',policy={'policy_id':'policy'}))
+        socket_path='/data/bound/service-'+n+'/socket',exchange='/data/bound/service-'+n+'/exchange',
+        policy={'policy_id':'policy'}))
     m=dict(remote_root='/data/bound',training_devices=[4,5],inference_services=[dict(name='a',device=6),dict(name='b',device=7)],
         layout=dict(configs=['config.json','run.py','RUNTIME-SOURCES.json','PREPARED.json'],
             services={'a':'service-a.json','b':'service-b.json'},directories=[]))
@@ -84,6 +86,27 @@ def test_real_package_layout_pins_and_parent_are_preserved(tmp_path,monkeypatch)
     proof=module.audit(dict(c,manifest_sha256=result['manifest_sha256']),{})
     assert proof['recordings']==40513 and proof['actor_updates']==0
     assert not proof['reference_dispatch_allowed'] and not proof['npu_executed']
+
+
+def test_eight_card_reference_binds_all_scoring_devices(tmp_path,monkeypatch):
+    c=setup(tmp_path,monkeypatch)
+    c['scoring_devices']=list(range(8))
+    p=module.prepare(c,{})
+    root=Path(c['output'])
+    manifest=json.loads((root/'PREPARED.json').read_text())
+    client=json.loads((root/'reference-build-config.json').read_text())['macro_client']
+    assert not manifest['training_devices']
+    assert [x['device'] for x in manifest['inference_services']]==list(range(8))
+    assert client['max_queries']==256 and client['rollout_queries']==32
+    assert len({r['socket'] for r in client['replicas']})==8
+    from tools.reports.context_cached_storage_operations import reference_command
+    argv=reference_command(dict(tag='reference-job-test',shared_root='/shared',
+        driver_root='/usr/local/Ascend/driver'),manifest,json.loads((root/'config.json').read_text()))
+    assert all(f'/dev/davinci{i}:/dev/davinci{i}' in argv for i in range(8))
+    audit=dict(c,manifest_sha256=p['manifest_sha256'])
+    module.audit(audit,{})
+    with pytest.raises(ValueError,match='service scope'):
+        module.audit(dict(audit,scoring_devices=list(reversed(range(8)))),{})
 
 
 def test_generated_runner_starts_two_services_and_only_cpu_builder(tmp_path,monkeypatch):
@@ -163,7 +186,7 @@ def test_results_audit_requires_exact_terminal_and_transport_before_replay(tmp_p
     collection=tmp_path/'collected';collection.mkdir()
     for name in m['layout']['configs']+list(m['layout']['services'].values()):
         shutil.copyfile(root/name,collection/name)
-    write(collection/'supervision/terminal.json',dict(passed=True,actor_exit_code=0,forced_cleanup=False,
+    write(collection/'supervision/terminal.json',dict(passed=True,actor_started=True,actor_exit_code=0,forced_cleanup=False,
         services=[dict(name=n,exit_code=0) for n in ('a','b')]))
     from tools.reports.context_cached_storage_operations import reference_command,mounts
     c['deployment']=dict(tag='reference-job-test',shared_root='/shared',driver_root='/usr/local/Ascend/driver')

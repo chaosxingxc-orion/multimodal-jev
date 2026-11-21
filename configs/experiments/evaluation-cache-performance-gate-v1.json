@@ -1,0 +1,37 @@
+{
+  "schema": "jev-evaluation-performance-gate-v1",
+  "status": "required_not_yet_passed",
+  "formal_evaluation_dispatch_allowed": false,
+  "devices": "${EVALUATION_DEVICES}",
+  "required_speedup": 10.0,
+  "full_test_budget_seconds": 300,
+  "same_workload_required": true,
+  "timing": {
+    "report_separately": ["campaign_preparation", "input_load", "engine_start", "policy_switch", "hf_parity", "input_bind", "inference", "output_write", "collection", "cpu_audit"],
+    "end_to_end_gate": "same complete campaign jobs, checkpoints, populations and outputs; wall time from first preparation to final audit; initial load charged once",
+    "persistent_service_warm_run": "reuse engines and immutable inputs across campaign jobs; do not require per-job cold restarts",
+    "repeated_request_microbenchmark": "diagnostic_only"
+  },
+  "cache": {
+    "enable_prefix_caching": true,
+    "skip_reading_prefix_cache": false,
+    "paged_kv": "required_actual_reads_and_writes",
+    "head_history": "required_for_all_reused_prefix_tokens",
+    "identity": ["policy", "runtime", "token_prefix", "audio_content", "processor"],
+    "on_missing_head_history": "reject_before_formal_admission",
+    "telemetry": ["cached_tokens", "scheduled_tokens", "kv_usage", "evictions", "history_bytes", "audio_cache_hits"]
+  },
+  "numerical_acceptance": {
+    "existing_thresholds_preserved": true,
+    "cases": ["cold", "warm", "changed_audio", "changed_definition", "changed_policy", "batch_reorder", "eviction"],
+    "metrics": ["logit_max_abs", "probability_max_abs", "threshold_flips", "top1_changes"],
+    "must_compare_frozen_runtime": true
+  },
+  "resource_measurement": {
+    "finite_probe_seconds": 120,
+    "sample_interval_seconds": 5,
+    "devices_only_from_config": true,
+    "daily_status_interval_seconds": 900,
+    "model_invocation_for_monitoring": false
+  }
+}

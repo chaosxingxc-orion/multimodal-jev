@@ -45,13 +45,34 @@ def run(c,provenance):
     commit_json(root/'config.json',c);commit_json(root/'provenance.json',provenance)
     try:
         ops,_=load_config(c['operations_config'],c['operations_local'])
-        driver=Path(ops['operations_root'])/'driver'
-        record=json.loads((driver/'started.json').read_text());commit_json(root/'waiting.json',record)
-        wait_exact(record,driver/'terminal.json')
-        terminal=json.loads((driver/'terminal.json').read_text())
+        if 'pipeline' in c:
+            from multimodal_jev.baseline import file_hash
+            dep=c['pipeline'];parent=Path(dep['root'])
+            proof=Path(str(parent)+'-driver')/'started.json'
+            if file_hash(proof)!=dep['driver_sha256']:
+                raise ValueError('Stage1 pipeline driver identity changed')
+            record=json.loads(proof.read_bytes());terminal_path=parent/'terminal.json'
+        else:
+            driver=Path(ops['operations_root'])/'driver'
+            record=json.loads((driver/'started.json').read_text());terminal_path=driver/'terminal.json'
+        commit_json(root/'waiting.json',record)
+        wait_exact(record,terminal_path)
+        terminal=json.loads(terminal_path.read_text())
         if terminal['exit_code']!=0:raise ValueError('training driver failed; preserve exact attempt')
+        if 'pipeline' in c:
+            launch=json.loads((Path(ops['operations_root'])/(ops['tag']+'-launch.json')).read_bytes())
+            if (file_hash(parent/'formal-audit.json')!=terminal['audit_sha256']
+                    or terminal['status']!='formal_infonce_artifacts_audited'
+                    or terminal['result']['container_id']!=launch['container_id']
+                    or launch['manifest_sha256']!=ops['manifest_sha256']):
+                raise ValueError('exact pipeline and formal audit required')
         # build performs independent training audit before exposing any policy.
         plan=build(c,provenance)
+        if 'pipeline' in c:
+            from multimodal_jev.stage2_dataset_release import require_endpoint_layout
+            require_endpoint_layout(plan,c['pipeline']['expected_stage1_layout'])
+            if plan['source_audit']!=json.loads((parent/'formal-audit.json').read_bytes()):
+                raise ValueError('independent formal audit changed')
         commit_json(root/'training-audit.json',plan['source_audit'])
         commit_json(root/'source-evaluation-plan.json',plan)
         result=dict(status='formal_infonce_audited_curve_bound',points=len(plan['checkpoints']),

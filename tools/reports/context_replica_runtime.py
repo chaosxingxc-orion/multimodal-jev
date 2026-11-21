@@ -5,6 +5,7 @@ runtime source validation, policy activation and numerical profile are reused.
 No launcher or NPU capacity admission is supplied by this component.
 """
 import copy
+import math
 
 from multimodal_jev.context_logits_wire import validate_logits_record
 from multimodal_jev.span_rollout_rpc import send, receive
@@ -13,6 +14,22 @@ from tools.reports.context_replica_bulk_rpc import BulkContextEngineClient, MAX_
 
 
 HELLO = 'replica-macro-runtime-hello-v1'
+
+
+def shutdown_timeout(value):
+    if type(value) not in (int, float) or not math.isfinite(value) or value <= 0:
+        raise ValueError('finite positive shutdown deadline required')
+    return value
+
+
+def configure_shutdown(owner_class, seconds):
+    timeout = shutdown_timeout(seconds)
+
+    def factory(root):
+        class ConfiguredOwner(owner_class(root)):
+            engine_shutdown_timeout_seconds = timeout
+        return ConfiguredOwner
+    return factory
 
 
 def hello(runtime_identity, bundle):
@@ -61,13 +78,19 @@ def service_namespace(config):
             namespace['owner_class'] = lambda root: owner_class(root, scope_module=module)
     elif module is not None:
         raise ValueError('device scope module requires an explicit process device scope')
+    actor_order = config.get('lora_arithmetic')
+    if actor_order is not None and (actor_order != 'actor_order_bf16_qv_v1' or 'attention_execution' not in config):
+        raise ValueError('explicit actor BF16 Q/V arithmetic requires bounded prefill')
     if 'attention_execution' in config:
         if config['attention_execution'] != dict(kind='bounded_prefill_v1', max_requests=8,
                                                 acoustic_batch_chunks=32):
             raise ValueError('explicit bounded attention8/acoustic32 execution required')
         from tools.reports.context_bounded_rollout_candidate import owner_class as bounded_owner
         namespace['owner_class'] = lambda root: bounded_owner(root,
-            shared_scope=scope is not None and module is None, scope_module=module)
+            shared_scope=scope is not None and module is None, scope_module=module, actor_order=actor_order is not None)
+    if 'engine_shutdown_timeout_seconds' in config:
+        namespace['owner_class'] = configure_shutdown(
+            namespace['owner_class'], config['engine_shutdown_timeout_seconds'])
     def bound(connection, engine, exchange):
         send(connection, hello(identity, engine.bundle))
         return serve_connection(connection, engine, exchange)

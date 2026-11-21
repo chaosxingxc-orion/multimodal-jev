@@ -1,0 +1,50 @@
+{
+  "schema": "jev-tpo-paired-reference-design-v1",
+  "status": "design_only",
+  "training_dispatch_allowed": false,
+  "parent_view_sha256": "47f35c34ca2a25977a41a8445993d1ff5358d3353307cae4cbe0970df71fd5d9",
+  "schedule_file_sha256": "2c9904b9f19675da8095ef1f29eccac671e1679f2b560189beb8dba0514ca40d",
+  "seed": 317,
+  "endpoint_update": 34,
+  "arms": {
+    "A": "fixed_initial_reference",
+    "B": "actor_after_previous_successful_optimizer_step_detached"
+  },
+  "scope": "KL_prior_only",
+  "freeze": [
+    "reward_advantages",
+    "training_population",
+    "candidate_proposals_and_order",
+    "partners",
+    "initial_actor_optimizer_scheduler_rng_and_batch_order"
+  ],
+  "primary": {
+    "dataset": "SIB_FLEURS_eng_topic7",
+    "metric": "choice_top1_macro_f1",
+    "paired_cluster": "original_sentence",
+    "direction": "higher"
+  },
+  "guardrails": {
+    "SLURP_clean_TEST60_choice_macro_f1_max_drop": 0.005,
+    "SIB_FLEURS_eng_topic7_choice_categorical_brier_max_increase": 0.005
+  },
+  "uncertainty": {
+    "method": "paired_percentile_cluster_bootstrap",
+    "draws": 2000,
+    "confidence": 0.95,
+    "seed": 317
+  },
+  "secondary": [
+    "MMSU_polysemy_choice_accuracy",
+    "MINDS_native14_choice_top1_macro_f1",
+    "choice_nll_brier_false_none_by_dataset",
+    "noul_binary_nll_brier_by_dataset",
+    "end_to_end_wall_seconds",
+    "npu_card_minutes"
+  ],
+  "reference_interval_optimizer_updates": 1,
+  "reference_cache_scope": "one_next_macro_batch",
+  "initial_policy": "same_197_initial_policy_for_both_arms",
+  "reference_prepare": "complete_macro_before_first_training_microbatch",
+  "refresh_after_final_step": false
+}

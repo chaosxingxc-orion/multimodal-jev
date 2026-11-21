@@ -1,0 +1,26 @@
+{
+  "schema": "jev-stage2-view-preparation-v1",
+  "reference_job": "${AUDITED_STAGE1_REFERENCE_JOB}",
+  "output": "${STAGE2_TRAINING_VIEW_OUTPUT}",
+  "manifest_sha256": "${STAGE2_TRAINING_VIEW_SHA256}",
+  "audit_output": "${STAGE2_TRAINING_VIEW_AUDIT}",
+  "sampling": {
+    "seed": 317,
+    "decision_threshold": 0.5,
+    "probability_margin": 0.1,
+    "easy_fraction": 0.2,
+    "min_easy_per_class": 16
+  },
+  "batch_config": {
+    "training_devices": 2,
+    "tensor_parallel": 1,
+    "pipeline_parallel": 1,
+    "per_dp_replica_batch": 64,
+    "microbatch": 8,
+    "inference_instances": 2,
+    "inference_batch_queries": 32,
+    "source_queries": 40513,
+    "epochs": 2,
+    "efficiency_steps": 100
+  }
+}

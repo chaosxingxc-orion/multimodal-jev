@@ -1,0 +1,18 @@
+{
+  "schema": "jev-evidence-calendar-v1",
+  "clean": "${JEV_BOUNDARY_CLEAN}",
+  "native": "${JEV_BOUNDARY_NATIVE}",
+  "output": "${JEV_EVIDENCE_OUTPUT}",
+  "wordings": {
+    "do i have a meeting today": "today",
+    "what meetings are on my calendar today": "today",
+    "who am i meeting at work tomorrow": "tomorrow",
+    "how many meetings do i have tomorrow": "tomorrow"
+  },
+  "contexts": {
+    "forward": "Task convention: today is day 0 and tomorrow is day 1. The supplied schedule has meetings on day 0 only. These two days are fully specified.",
+    "reverse": "Task convention: today is day 0 and tomorrow is day 1. The supplied schedule has meetings on day 1 only. These two days are fully specified.",
+    "missing": "Task convention: today is day 0 and tomorrow is day 1. The supplied schedule does not specify which of those days has meetings.",
+    "irrelevant": "Task convention: today is day 0 and tomorrow is day 1. The supplied schedule has meetings on day 0 only. The title and room are not specified."
+  }
+}

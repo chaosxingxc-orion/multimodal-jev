@@ -21,12 +21,14 @@ def continuous_advantages(rewards, algorithm):
         return rewards-(rewards.sum(-1, keepdim=True)-rewards)/(rewards.shape[1]-1)
     if algorithm != original.ALGORITHMS[1]:
         raise ValueError('registered baseline algorithm required')
-    return (rewards-rewards.mean(-1, keepdim=True))/rewards.std(-1, unbiased=False, keepdim=True).clamp_min(.25)
+    active=original.grpo_settings() if hasattr(original,'grpo_settings') else None
+    floor=.25 if active is None else active['advantage_std_floor']
+    return (rewards-rewards.mean(-1, keepdim=True))/rewards.std(-1, unbiased=False, keepdim=True).clamp_min(floor)
 
 
 class ObjectivePlugin:
     def __init__(self, config):
-        if set(config) != {'path','sha256','options'} or not isinstance(config['options'],dict):
+        if set(config)-{'numerics'} != {'path','sha256','options'} or not isinstance(config['options'],dict):
             raise ValueError('explicit objective file, hash and options required')
         path=Path(config['path'])
         if not path.is_file() or path.is_symlink():raise ValueError('regular objective file required')
@@ -35,6 +37,9 @@ class ObjectivePlugin:
             raise ValueError('objective file changed; publish a new experiment hash')
         self.options=json.loads(json.dumps(config['options'],allow_nan=False))
         self.identity=dict(api='jev-stage2-objective-v1',sha256=config['sha256'],options=self.options)
+        if 'numerics' in config:
+            from .grpo_numerics import validate
+            self.identity['numerics']=validate(json.loads(json.dumps(config['numerics'],allow_nan=False)))
         scope={'__name__':'jev_custom_stage2_objective','__file__':str(path)}
         exec(compile(raw,str(path),'exec'),scope)
         if (scope.get('API_VERSION')!=self.identity['api']
@@ -88,9 +93,16 @@ class ObjectivePlugin:
             reference_probability=reference_probability,real_requests=real_requests,
             global_real_requests=global_real_requests,world_size=world_size,arm=arm,
             options=json.loads(json.dumps(self.options)),baseline_loss=baseline_loss)
-        rewards=self.reward_hook(ctx)
-        if trace_observer is not None:reward_trace=pack(rewards)
-        loss,metrics=self.loss_hook(ctx,rewards)
+        # Older sealed runtimes have no numerical extension; preserve their exact API.
+        from contextlib import nullcontext
+        scope=nullcontext()
+        if 'numerics' in self.identity:
+            from .grpo_numerics import use
+            scope=use(self.identity['numerics'])
+        with scope:
+            rewards=self.reward_hook(ctx)
+            if trace_observer is not None:reward_trace=pack(rewards)
+            loss,metrics=self.loss_hook(ctx,rewards)
         if trace_observer is not None:
             if (pack(rewards)!=reward_trace or before!=inputs(logits,records,identities,
                     reference_probability,real_requests,global_real_requests=global_real_requests,

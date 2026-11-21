@@ -32,6 +32,10 @@ def expected_contract(c):
                   world_size=plan['dp_replicas'],batch_config=c['batch_config'],
                   parent_schedule_sha256=c['parent_schedule_sha256'],
                   schedule_release_sha256=c['schedule_release_sha256'])
+    if c.get('prompt_layout') is not None:result['prompt_layout']=c['prompt_layout']
+    if 'stage1_layout' in c:
+        from multimodal_jev.stage1_training_layout import checkpoint_layout
+        result['stage1_layout']=checkpoint_layout(c)
     if c.get('experiment_kind')=='infonce_tail_admission':
         from tools.reports.context_infonce_tail import contract
         result['tail_admission']=contract(c)
@@ -50,7 +54,7 @@ def restore_shard(state, c, *, rank, step):
     return dict(recovery=recovery,scope=scope,optimizer_audit=audit_adam_shards(named,opt,step))
 
 
-def check_batch(batch, planned, population, task, *, policy, width, world):
+def check_batch(batch, planned, population, task, *, policy, width, world, slot_request=None):
     from multimodal_jev.context_candidate_task import compile_candidates,bind_candidate_targets
     groups = batch['rank_indices']
     if (batch['policy_id']!=policy or len(batch['records'])!=width
@@ -60,7 +64,8 @@ def check_batch(batch, planned, population, task, *, policy, width, world):
     candidates=[dict(id=c['id'],definition=c['description']) for c in task['schema']['candidates']]
     for i,(slot,record) in enumerate(zip(planned['slots'],batch['records'],strict=True)):
         source=population[slot['id']]
-        request=compile_candidates(source['audio'],candidates,task['thinking']['requirements'],semantics='exclusive_event')
+        request=(compile_candidates(source['audio'],candidates,task['thinking']['requirements'],semantics='exclusive_event')
+                 if slot_request is None else slot_request(source['audio'],source['id'],planned['epoch']))
         target=bind_candidate_targets(request,semantics='exclusive_event',exclusive_event=source['intent'])
         uid=f'{source["id"]}::epoch{planned["epoch"]}-batch{planned["index"]}-slot{i}'
         if (record['id']!=slot['id'] or record['request_id']!=uid
@@ -142,7 +147,9 @@ def audit_outputs(package, collection, *, initial_policy):
     package,collection=Path(package),Path(collection)
     c=read(package/'config.json');run=collection/'run';plan=derive(c['batch_config'])
     world=plan['dp_replicas'];start=c['start_update'];stop=c['stop_update']
-    if (c['stage']!='instruction' or c['instruction_objective']['kind']!='candidate_infonce'
+    from multimodal_jev.context_infonce import validate_objective
+    validate_objective(c['instruction_objective'])
+    if (c['stage']!='instruction'
             or c['instruction_objective']['probability_coefficient']!=0.
             or not 1<=world<=8 or c['batch_config']['inference_instances']!=0):
         raise ValueError('pure InfoNCE declared DP required')
@@ -151,6 +158,10 @@ def audit_outputs(package, collection, *, initial_policy):
         raise ValueError('supervised trainer did not exit normally')
     rows,task,_=load(c['release'],c['release_sha256'],'learning',purpose='optimize')
     population={r['id']:r for r in rows}
+    slot_request=None
+    if 'stage1_layout' in c:
+        from multimodal_jev.stage1_training_layout import Stage1TrainingLayout
+        slot_request=Stage1TrainingLayout.open(dict(c,source_root=str(package/'source')),list(population),task)
     batches,_=load_schedule(package/'source/schedule',c['schedule_sha256'],
         release_sha256=c['release_sha256'],population=population,batch_config=c['batch_config'],
         parent_root=package/'source/parent-schedule',parent_manifest_sha256=c['parent_schedule_sha256'],
@@ -167,7 +178,7 @@ def audit_outputs(package, collection, *, initial_policy):
     for index in range(start,stop):
         step=index+1;planned=batches[index]
         real=check_batch(read(run/f'batch-{index:04d}.json'),planned,population,task,
-            policy=c['source_policy_id']+':instruction-update'+str(index),width=plan['global_batch'],world=world)
+            policy=c['source_policy_id']+':instruction-update'+str(index),width=plan['global_batch'],world=world,slot_request=slot_request)
         records=[read(run/f'rank-{rank}/update-{step:04d}.json') for rank in range(world)]
         scopes=[read(run/f'rank-{rank}/checkpoint-scope.json') for rank in range(world)]
         times=[check_update(record,c,step=step,real=real,checkpoint=step in checkpoints,scope=scope)

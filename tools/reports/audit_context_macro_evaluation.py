@@ -20,7 +20,7 @@ from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_runtime_storage import check_paths
 
 
-def audit(output,journal,*,population,candidate_ids,input_receipts,policy_id,runtime_identity,macro_queries):
+def audit(output,journal,*,population,candidate_ids,input_receipts,policy_id,runtime_identity,macro_queries,replicas=2):
     output=Path(output);journal=Path(journal)
     def read(root,name):
         path=root/name
@@ -31,7 +31,8 @@ def audit(output,journal,*,population,candidate_ids,input_receipts,policy_id,run
     if (not population or len({r['id'] for r in population})!=len(population)
             or len(input_receipts)!=len(population) or not candidate_ids
             or len(set(candidate_ids))!=len(candidate_ids)
-            or type(macro_queries) is not int or not 1<=macro_queries<=128):
+            or type(replicas) is not int or not 1<=replicas<=8
+            or type(macro_queries) is not int or macro_queries<1):
         raise ValueError('independently bound complete population and candidate panel required')
     if read(output,'terminal.json')!={'exit_code':0}:
         raise ValueError('successful full evaluation required')
@@ -72,7 +73,7 @@ def audit(output,journal,*,population,candidate_ids,input_receipts,policy_id,run
         ordered=[None]*n;hashes={};assigned=[]
         for j,job in enumerate(manifest['jobs']):
             rollout_id=f'rollout-{j:04d}'
-            if (job['rollout_id']!=rollout_id or type(job['replica_id']) is not int or job['replica_id'] not in (0,1)
+            if (job['rollout_id']!=rollout_id or type(job['replica_id']) is not int or not 0<=job['replica_id']<replicas
                     or not job['indices'] or any(type(i) is not int or not 0<=i<n for i in job['indices'])
                     or type(job['estimated_cost']) is not int or job['estimated_cost']<=0):
                 raise ValueError('bounded whole-rollout ownership required')

@@ -27,6 +27,11 @@ STATUSES = ('admitted', 'design_only')
 # topology: batch-size derivation, the existing seam every controller already uses.
 # controller: the orchestration entry point a pipeline may delegate to.
 COMPONENTS = (
+    dict(kind='release', name='stage2_difficulty_release_v2',
+         module='multimodal_jev.stage2_dataset_release', attribute='TrainingDataset',
+         status='admitted', requires=(),
+         summary='CPU validated TRAIN difficulty dataset, deterministic audit and batch consumer; '
+                 'resolution does not authorize NPU training.'),
     dict(kind='release', name='slurp_portable_release_v2',
          module='multimodal_jev.slurp_portable_release', attribute='load',
          status='admitted', requires=(),

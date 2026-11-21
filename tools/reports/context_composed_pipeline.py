@@ -127,9 +127,15 @@ def command(c, m, config, *, producer=False):
     """The Docker create argv for one stage; identical to the frozen builder."""
     devices = sorted([*m['training_devices'], *[s['device'] for s in m['inference_services']]])
     remote = m['remote_root']
+    if 'view_binding' in config:
+        resources = config['view_execution']['container']
+    else:
+        resources = dict(cpus=24, memory_gib=128, shm_gib=8, log_max_size_mib=20, log_max_files=2)
     argv = ['docker', 'create', '--pull=never', '--network=none', '--name', c['tag'],
-            '--cpus=24', '--memory=128g', '--shm-size=8g', '--log-driver=json-file',
-            '--log-opt', 'max-size=20m', '--log-opt', 'max-file=2']
+            '--cpus='+str(resources['cpus']), '--memory='+str(resources['memory_gib'])+'g',
+            '--shm-size='+str(resources['shm_gib'])+'g', '--log-driver=json-file',
+            '--log-opt', 'max-size='+str(resources['log_max_size_mib'])+'m',
+            '--log-opt', 'max-file='+str(resources['log_max_files'])]
     for device in devices:
         argv += ['--device', f'/dev/davinci{device}:/dev/davinci{device}']
     for name in ('davinci_manager', 'devmm_svm', 'hisi_hdc'):
@@ -152,8 +158,11 @@ def command(c, m, config, *, producer=False):
         if (producer or resume != remote + '/resume' or config.get('start_update') != 1
                 or config.get('stop_update') != 2):
             raise ValueError('packaged first-step recovery input required')
-        for name in ('checkpoint-0001-committed.json', 'rank-0/checkpoint-0001.pt',
-                     'rank-1/checkpoint-0001.pt', 'policy-0001/MANIFEST.json'):
+        checkpoint_files = [
+            'checkpoint-0001-committed.json', 'policy-0001/MANIFEST.json',
+            *(f'rank-{rank}/checkpoint-0001.pt' for rank in range(len(m['training_devices']))),
+        ]
+        for name in checkpoint_files:
             if resume + '/' + name not in config['pins']:
                 raise ValueError('recovery asset pin missing: ' + name)
         index = argv.index('--entrypoint')
@@ -208,7 +217,7 @@ def run_stage(c, provenance, *, validate, queue, priority, producer, authorizati
 
 def _launch(c, provenance, *, validate, queue, priority, producer, effects):
     m, config, _ = validate(c)
-    argv = command(c, m, config, producer=producer)
+    argv = getattr(effects, "stage_command", command)(c, m, config, producer=producer)
     if c.get('finite_training_dispatch_allowed') is not True:
         raise ValueError('finite training dispatch not enabled')
     base = Path(c['operations_root'])
@@ -266,6 +275,16 @@ def _launch(c, provenance, *, validate, queue, priority, producer, effects):
         script += ('m=json.loads((r/"PREPARED.json").read_text())\n'
                    'assert all(hashlib.sha256((r/n).read_bytes()).hexdigest()==h for n,h in m["files"].items())\n')
         checked(['python3', '-c', script])
+        lease_waiter = None
+        if 'lease_deadline_unix' in c:
+            from functools import partial
+            import time
+            from tools.reports.context_infonce_formal import lease_wait
+            deadline, grace = c['lease_deadline_unix'], c['lease_stop_grace_seconds']
+            if (type(deadline) not in (int, float) or type(grace) is not int
+                    or grace < 1 or deadline <= time.time() + grace + 30):
+                raise ValueError('allocation expired before container creation')
+            lease_waiter = partial(lease_wait, deadline=deadline, stop_grace=grace)
         cid = checked(argv).strip()
         if not re.fullmatch('[0-9a-f]{64}', cid):
             raise ValueError('invalid container handle')
@@ -283,7 +302,7 @@ def _launch(c, provenance, *, validate, queue, priority, producer, effects):
         except effects.subprocess.TimeoutExpired:
             effects.write(base / (c['tag'] + '-start-response.json'),
                           dict(observation_timeout=True))
-        code = effects.wait_exact(remote, cid)
+        code = (lease_waiter or effects.wait_exact)(remote, cid)
         effects.write(base / (c['tag'] + '-wait.json'),
                       dict(container_id=cid, exit_code=code))
         inspected = json.loads(checked(['docker', 'inspect', cid]))[0]
@@ -573,7 +592,7 @@ def run(c, provenance, *, effects=EFFECTS, dispatch=False):
                          'publish a versioned successor after the differential is accepted')
     from tools.reports import collect_context_replica_infonce_curve as curve_module
     from tools.reports import context_async_pipeline as frozen
-    from tools.reports.context_infonce_selection import STEPS
+    from tools.reports.context_infonce_selection import configured_steps
     from tools.reports.context_shared_source_audit import SourceAuditEngine
     engine = SourceAuditEngine(cpu_workers=c['cpu_workers'], io_workers=c['io_workers'])
     old = validate(c)
@@ -591,7 +610,7 @@ def run(c, provenance, *, effects=EFFECTS, dispatch=False):
         template = old['selection']['point_template']
         with ThreadPoolExecutor(max_workers=2,
                                 thread_name_prefix='composed-branches') as branches:
-            selection = branches.submit(selection_curve, c, template, STEPS, provenance, queue,
+            selection = branches.submit(selection_curve, c, template, configured_steps(template), provenance, queue,
                                         preparation=preparation, point=point, curve=collector,
                                         operation=operation, grpo=False)
             efficiency = branches.submit(finite_and_efficiency, c, old, provenance, queue,

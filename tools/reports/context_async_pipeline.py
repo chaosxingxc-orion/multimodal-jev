@@ -381,8 +381,7 @@ def formal_training(c,bound,source_curve,provenance,queue):
         formal_training_dispatch_allowed=True)
     commit_json(root/'deployment.json',ops)
     proxy=SimpleNamespace(run=lambda o,p:operation(formal,o,p,queue,20,authorization='formal_training_dispatch_allowed'))
-    fn=FunctionType(monitored_training.__code__,dict(monitored_training.__globals__,formal=proxy))
-    result=fn(ops,provenance,root)
+    result=monitored_training(ops,provenance,root,run_stage=proxy.run)
     path=Path(ops['operations_root'])/'finalization/audit-config.json'
     finalization=dict(training_audit_config=str(path),training_audit_config_sha256=file_hash(path))
     return finalization,ops,result
@@ -444,9 +443,9 @@ def run(c,provenance):
     try:
         retire(c,old)
         template=old['selection']['point_template']
-        from tools.reports.context_infonce_selection import STEPS
+        from tools.reports.context_infonce_selection import configured_steps
         with ThreadPoolExecutor(max_workers=2,thread_name_prefix='independent-branches') as branches:
-            selection=branches.submit(selection_curve,c,template,STEPS,provenance,queue)
+            selection=branches.submit(selection_curve,c,template,configured_steps(template),provenance,queue)
             efficiency=branches.submit(finite_and_efficiency,c,old,provenance,queue)
             results={}
             try:

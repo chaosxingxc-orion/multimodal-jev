@@ -19,8 +19,7 @@ from multimodal_jev.local_runtime_storage import check_paths
 from multimodal_jev.readonly_encoded_audio_cache import ReadOnlyEncodedAudioCache
 from multimodal_jev.slurp_portable_release import load as load_source
 from multimodal_jev.slurp_training import content_hash
-from tools.jev.context_cache_receipts import parse_stream
-from tools.reports.context_reference_input_evidence import load as load_evidence
+from tools.reports.context_reference_input_evidence import load as load_evidence, input_rows
 from tools.reports.context_selection_audited_cache import encoder as shared_encoder
 
 
@@ -29,15 +28,21 @@ RULE=dict(schema='jev-train-parity-selection-v1',minimum_queries=256,
     ordering='sample_id',fill='sha256_json_sample_id',labels_used=False)
 
 
-def select(evidence):
-    """At least 256 inputs, retaining all 16 extrema on both length axes."""
-    if len(evidence)<RULE['minimum_queries']:raise ValueError('complete source population required')
+def panel_rule(minimum_queries):
+    if type(minimum_queries) is not int or minimum_queries < RULE['minimum_queries']:
+        raise ValueError('configured parity panel cannot reduce the existing numerical admission')
+    return dict(RULE,minimum_queries=minimum_queries)
+
+
+def select(evidence, *, minimum_queries=RULE['minimum_queries'], max_tokens=4096):
+    rule=panel_rule(minimum_queries)
+    if len(evidence)<rule['minimum_queries']:raise ValueError('complete source population required')
     lengths={}
     for sample,row in evidence.items():
         shapes=[row['tensors'][axis]['shape'] for axis in RULE['axes']]
         text,audio=shapes
         if (not isinstance(sample,str) or not sample or len(text)!=2 or text[0]!=1
-                or type(text[-1])is not int or not 0<text[-1]<=4096
+                or type(text[-1])is not int or not 0<text[-1]<=max_tokens
                 or len(audio)!=3 or audio[0]!=1 or audio[1]!=128
                 or type(audio[-1])is not int or audio[-1]<=0):
             raise ValueError('bounded source text and acoustic lengths required')
@@ -45,13 +50,13 @@ def select(evidence):
     selected=set();extremes={}
     for i,axis in enumerate(RULE['axes']):
         ordered=sorted(lengths,key=lambda k:(lengths[k][i],k))
-        extremes[axis]=dict(shortest=ordered[:16],longest=ordered[-16:])
+        extremes[axis]=dict(shortest=ordered[:rule['extremes_per_axis']],longest=ordered[-rule['extremes_per_axis']:])
         selected.update(extremes[axis]['shortest']);selected.update(extremes[axis]['longest'])
     for sample in sorted(lengths,key=lambda k:(content_hash(k),k)):
-        if len(selected)>=256:break
+        if len(selected)>=minimum_queries:break
         selected.add(sample)
     ids=sorted(selected)
-    return dict(rule=copy.deepcopy(RULE),ids=ids,extremes=extremes,
+    return dict(rule=rule,ids=ids,extremes=extremes,
         population_sha256=digest(evidence),population=len(evidence),
         lengths={sample:list(lengths[sample]) for sample in ids})
 
@@ -60,10 +65,11 @@ def reconstruct(c):
     rows,task,_=load_source(c['release'],c['release_sha256'],'learning',purpose='optimize')
     evidence,proof=load_evidence(c,rows=rows,task=task,release_sha256=c['release_sha256'],
         processor_sha256=c['processor_sha256'])
-    if len(rows)!=40513:raise ValueError('full clean TRAIN source required')
-    selected=select(evidence);by_id={row['id']:row for row in rows}
-    stream,_=parse_stream(Path(c['input_receipts']).read_text())
-    receipts={r['value']['id']:r['value'] for r in stream[1:-1]}
+    if len(rows)!=len(evidence):raise ValueError('full clean TRAIN source required')
+    selected=select(evidence,**c.get('panel_config',{}));by_id={row['id']:row for row in rows}
+    evidence_proof=json.loads(Path(c['input_proof']).read_text())
+    stream,_=input_rows(evidence_proof,Path(c['input_receipts']).read_text(),prompt_layout=c.get('prompt_layout'))
+    receipts={r['id']:r for r in stream}
     candidates=[dict(id=v['id'],definition=v['description']) for v in task['schema']['candidates']]
     inputs=[]
     for sample in selected['ids']:
@@ -73,7 +79,8 @@ def reconstruct(c):
             receipt={k:receipt[k] for k in ('id','audio_sha256','request_sha256','cache_key','cache_sha256','tensors')}))
     return dict(panel=selected,inputs=inputs,candidate_ids=[v['id'] for v in candidates],
         source=dict(release_sha256=c['release_sha256'],processor_sha256=c['processor_sha256'],
-            input_proof_sha256=c['input_proof_sha256'],input_receipts_sha256=c['input_receipts_sha256']),
+            input_proof_sha256=c['input_proof_sha256'],input_receipts_sha256=c['input_receipts_sha256'],
+            **({'prompt_layout':c['prompt_layout']} if c.get('prompt_layout') is not None else {})),
         input_proof=proof)
 
 
@@ -104,8 +111,8 @@ def load(c):
         raise ValueError('complete immutable input-only panel required')
     values=json.loads((root/'inputs.json').read_text())
     if (values['source']!=m['source'] or len(values['inputs'])!=m['recordings']
-            or m['recordings']!=RULE['minimum_queries']
-            or values['panel']['rule']!=RULE or values['panel']['population']!=40513
+            or m['recordings']!=panel_rule(values['panel']['rule']['minimum_queries'])['minimum_queries']
+            or values['panel']['rule']!=panel_rule(m['recordings']) or values['panel']['population']<m['recordings']
             or [r['id'] for r in values['inputs']]!=values['panel']['ids']
             or values['panel']['ids']!=sorted(set(values['panel']['ids']))
             or len(values['candidate_ids'])!=60 or len(set(values['candidate_ids']))!=60):
@@ -123,7 +130,7 @@ def audit(c,provenance):
     actual=load(c);expected=reconstruct(c)
     if actual!=expected:raise ValueError('panel differs from full TRAIN independent reconstruction')
     return dict(status='train_parity_inputs_independently_audited',manifest_sha256=c['manifest_sha256'],
-        recordings=len(actual['inputs']),population=40513,panel_sha256=digest(actual['panel']),
+        recordings=len(actual['inputs']),population=actual['panel']['population'],panel_sha256=digest(actual['panel']),
         labels_used=False,cache_bytes_verified=False,numerical_admission=False,provenance=provenance)
 
 
@@ -146,7 +153,8 @@ def encoder(c,*,processor_sha256,decision_token_id,audio_token_id):
     readonly_encoder=FunctionType(shared_encoder.__code__,
         dict(shared_encoder.__globals__,EncodedAudioCache=ReadOnlyEncodedAudioCache),'train_readonly_encoder')
     encode=readonly_encoder(c['cache_root'],requests,values['candidate_ids'],receipts,
-        processor_sha256=processor_sha256,decision_token_id=decision_token_id,audio_token_id=audio_token_id)
+        processor_sha256=processor_sha256,decision_token_id=decision_token_id,audio_token_id=audio_token_id,
+        prompt_layout=values['source'].get('prompt_layout'))
     return assets,encode
 
 

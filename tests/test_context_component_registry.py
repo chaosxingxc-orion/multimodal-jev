@@ -82,7 +82,7 @@ def test_catalog_reports_a_digest_for_every_written_module():
 
 def test_component_kinds_are_the_registered_literal_set():
     assert components.KINDS == ('release', 'objective', 'evaluator', 'topology', 'controller')
-    assert components.names('release') == ('slurp_portable_release_v2', 'release_handle_v1')
+    assert components.names('release') == ('stage2_difficulty_release_v2', 'slurp_portable_release_v2', 'release_handle_v1')
     assert components.names('evaluator') == ('context_event_metrics_v1',
                                              'context_evaluation_contract_v1')
     assert components.names('topology') == ('context_topology_batch_plan_v1',)

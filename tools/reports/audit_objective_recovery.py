@@ -36,9 +36,9 @@ def audit_outputs(package,collection,*,reference_root,loss_atol):
     return dict(result,status='objective_recovery_outputs_audited',objective_trace_audit=proof)
 
 
-def compare(continuous,replayed):
-    result=cached.compare(continuous,replayed)
-    for rank in range(2):
+def compare(continuous,replayed,*,world_size=2):
+    result=cached.compare(continuous,replayed,world_size=world_size)
+    for rank in range(world_size):
         name=f'rank-{rank}/objective-traces/objective-0001.json'
         require_exact(cached.cached.read(Path(continuous)/name),cached.cached.read(Path(replayed)/name),
                       'actual_objective/'+name)
