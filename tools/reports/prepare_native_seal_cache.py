@@ -1,5 +1,6 @@
 """Encode or independently verify the label-free inputs of a native evaluation seal."""
 import argparse
+from itertools import chain
 import json
 from pathlib import Path
 
@@ -88,6 +89,8 @@ def run(c, provenance, *, verify=False):
     namespace = cache_namespace(c)
     torch.set_num_threads(1)
     jobs = plan(c)
+    if not jobs:
+        raise ValueError('a nonempty evaluation population is required')
     source = Path(c['processor']['policy'])
     identity = processor_cache_identity(source)
     if identity != c['processor']['sha256']:
@@ -131,7 +134,10 @@ def run(c, provenance, *, verify=False):
                     tensors={k: tensor_identity(v) for k, v in
                              dict(value.inputs, positions=value.positions).items()})
 
-    with OrderedPrefetch(encode, jobs, workers=c['io_workers'], ahead=c['prefetch']) as work:
+    # Load the lazy processor implementation on the main thread before workers
+    # create their own instances. Include the first recording in the same roster.
+    first = () if verify else (encode(jobs[0]),)
+    with OrderedPrefetch(encode, jobs[len(first):], workers=c['io_workers'], ahead=c['prefetch']) as work:
         if verify:
             with receipts.open() as stream:
                 for new, old in zip(work, stream, strict=True):
@@ -140,7 +146,7 @@ def run(c, provenance, *, verify=False):
             return dict(status='full_stable_prefix_cache_verified', recordings=len(jobs),
                         manifest_sha256=file_hash(manifest), model_calls=0, npu_executed=False)
         with receipts.open('x') as stream:
-            for index, row in enumerate(work, 1):
+            for index, row in enumerate(chain(first, work), 1):
                 stream.write(json.dumps(row, separators=(',', ':'))+'\n')
                 if index % c['progress_interval'] == 0:
                     stream.flush()

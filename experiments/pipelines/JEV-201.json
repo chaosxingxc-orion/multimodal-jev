@@ -235,11 +235,11 @@
       },
       {"id": "paired-diagnostics", "pending": "待接入全量 Noul/Choice 正误四格、变长 Choice 误拒/误接及配对区间审核。"},
       {
-        "id": "semantic-transfer",
+        "id": "semantic-transfer-v2",
         "python": "${TPO_EVAL_PYTHON}",
         "checks": [
-          {"path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops/terminal.json", "cite": "tpo-joint-top1/eval-201-semantic-v1-ops/terminal.json", "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]},
-          {"path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops/score-collected.json", "cite": "tpo-joint-top1/eval-201-semantic-v1-ops/score-collected.json", "equals": [[["schema"], "jev-audited-tpo-evaluation-v1"], [["seals", "SIB_FLEURS_eng_topic7"], "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"], [["seals", "MMSU_polysemy"], "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"]], "report": {"SIB Noul 配对 macro-F1 差 95% 区间": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "noul", "macro_f1_delta_ci95"], "SIB Choice 配对 macro-F1 差 95% 区间": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "choice", "macro_f1_delta_ci95"]}}
+          {"path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-ops/terminal.json", "cite": "tpo-joint-top1/eval-201-semantic-v2-ops/terminal.json", "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]},
+          {"path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-ops/score-collected.json", "cite": "tpo-joint-top1/eval-201-semantic-v2-ops/score-collected.json", "equals": [[["schema"], "jev-audited-tpo-evaluation-v1"], [["seals", "SIB_FLEURS_eng_topic7"], "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"], [["seals", "MMSU_polysemy"], "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"]], "report": {"SIB Noul 配对 macro-F1 差 95% 区间": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "noul", "macro_f1_delta_ci95"], "SIB Choice 配对 macro-F1 差 95% 区间": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "choice", "macro_f1_delta_ci95"]}}
         ],
         "inputs": [
           {"path": "${DATASETS_ROOT}/sib-fleurs-jev/eng-topic-v1/MANIFEST.json", "cite": "sib-fleurs-jev/eng-topic-v1/MANIFEST.json", "sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12", "equals": [[["datasets", "SIB_FLEURS_eng_topic7", "recordings"], 320], [["datasets", "SIB_FLEURS_eng_topic7", "candidates"], 7], [["target_tuning_allowed"], false]]},
@@ -254,9 +254,9 @@
         ],
         "run": [
           ["tools.reports.prepare_tpo_evaluation", "experiments/pipelines/JEV-201-semantic.json", "${EXPERIMENT_LOCAL_CONFIG}"],
-          ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-package/operations-local.json"]
+          ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-package/operations-local.json"]
         ],
-        "dispatch_guards": ["${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-package"],
+        "dispatch_guards": ["${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-ops", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-package"],
         "config": "experiments/pipelines/JEV-201-semantic.json"
       }
     ]

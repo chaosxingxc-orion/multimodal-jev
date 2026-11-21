@@ -1,14 +1,14 @@
 {
   "repository": ".",
   "expected_host": "${EXPERIMENT_TARGET_HOST}",
-  "package": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-package",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-package",
   "parent_config": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
   "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201",
   "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/package-201/operations-local.json",
   "deployment": {
-    "operations": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops",
-    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v1",
-    "tag": "jev-eval-201-semantic-v1"
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2",
+    "tag": "jev-eval-201-semantic-v2"
   },
   "source_patterns": [
     "src/multimodal_jev/*.py",
