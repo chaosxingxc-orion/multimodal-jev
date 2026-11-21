@@ -4,6 +4,8 @@
 运行版本的统一索引。一次实验按读取台账行、构建或复用数据、训练、评测、更新台账交付。
 [五步规约](experiment-package.md) · [记录模板](TEMPLATE.md) · [完整报告](reports/README.md)
 
+[Stage2 错例复盘与 TPO / GRPO 路线判断](reports/stage2-bad-cases-and-route.md)：逐录音区分意图排错、正确候选被拒及缺席误接，并说明下一次单因素对照验证什么。
+
 > 早期结论快照：2026-11-17 UTC。历史运行记录归档到 [`archive/`](archive/)，
 > 原始文件在 `archive/raw/`；后续状态按证据时间记录在台账中。
 
