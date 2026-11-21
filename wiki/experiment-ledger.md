@@ -1,8 +1,7 @@
 # Jev 实验台账
 
-截至 **2026-11-21 10:17 UTC** 的 181 现场核验：201 正式训练完成 **34/34 步**并通过
-独立审核，尚未发现末点评测运行或评分收据。204 已通过 **2 步有限验收**，正在生成全量
-固定参考；**212 步正式训练尚未启动**。
+2026-11-21，JEV-204 应用户要求暂停，181 的正式容器在保留 **4/212 步更新收据**后退出。
+JEV-201 已审核 **34/34 步**训练，随后用释放的八卡启动末点评测。
 
 ## 编号和状态
 
@@ -26,8 +25,8 @@
 
 | 实验 ID | 优先级 | 状态 | 协议 | 下一步 |
 | --- | ---: | --- | --- | --- |
-| JEV-201 | 10 | in_progress | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 复用封存评测集，完成末点评测和报告 |
-| JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 正式训练容器已启动，收集并审核 212 步曲线后接续评测 |
+| JEV-201 | 10 | in_progress | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 181 上补评第 34 步的 SLURP TEST 与 MINDS，完成后独立评分 |
+| JEV-204 | 20 | stopped | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 暂停训练。保留固定参考、前四步收据及第 4 步推理权重，续训另行登记 |
 
 状态使用 `planned`、`in_progress`、`blocked`、`complete`、`failed` 或 `stopped`；
 `planned` 专用于协议、依赖与预算已登记、可准备且尚未开工的行。领取时保存对应台账提交、行和冻结协议。
@@ -43,8 +42,8 @@
 | JEV-196 | 交替训练 Noul、封闭 Choice 与 5 项开放 Choice；34 步 | 训练及留出评测已审 | Noul 81.04% / 72.08%；5 项开放面板的整体正确率恰等于 gold 缺席率，不能用零误接证明会选标签 |
 | JEV-197 | 变长 Choice 统一支持 NONE，固定 reference；34 步 | 训练及完整原生面板评测已审 | Noul 81.32% / 71.94%；完整 Choice 的误拒为 99.87% / 100%，因此保留为 Noul 对照 |
 | JEV-198 | 相对 197 逐步用上一次提交的 actor 刷新先验，保持冻结奖励位移和 34 步预算 | **34/34，训练和 SLURP TEST、MINDS 评测均已审** | Choice 误拒下降；Noul 和 Choice 候选内排序退化。保留为动态参考的反例和 201 的 Choice 对照。[详细报告](reports/JEV-198.md) |
-| JEV-201 | 从 0.6B Stage1 step 160 接续、6,248 条 TRAIN × 2 轮、34 步；用配对 Noul/Choice、动态竞争者与固定长期锚共同训练 | **34/34，独立训练审核通过**；199/200 未进入正式训练；无末点评测收据 | 作为联合方案对照。依冻结协议评第 34 步，Noul 对 197、Choice 对 198；分开报告 SLURP 与 MINDS。[报告](reports/JEV-201.md) |
-| JEV-204 | 取消独立 Stage1；从 Qwen3-ASR-0.6B 加新初始化的任务参数起步，一套目标跑全量 clean TRAIN，40,513 条 × 2 轮，212 步 | 两步有限验收通过，全量固定参考已收集。正式训练容器于 2026-11-21 12:03 UTC 启动 | 201 是设备与执行顺序依赖，不提供初始化权重。正式曲线和留出评测等待审核收据。[报告](reports/JEV-204.md) |
+| JEV-201 | 从 0.6B Stage1 step 160 接续、6,248 条 TRAIN × 2 轮、34 步；用配对 Noul/Choice、动态竞争者与固定长期锚共同训练 | **34/34，独立训练审核通过**；199/200 未进入正式训练。11 月 21 日 12:12 UTC 启动原生末点评测 | 依冻结协议评第 34 步，Noul 对 197、Choice 对 198。SLURP 与 MINDS 结果等待独立评分。[报告](reports/JEV-201.md) |
+| JEV-204 | 取消独立 Stage1；从 Qwen3-ASR-0.6B 加新初始化的任务参数起步，一套目标跑全量 clean TRAIN，40,513 条 × 2 轮，212 步 | 两步有限验收通过，全量固定参考已收集。正式训练于 2026-11-21 12:11:57 UTC 停止，留有 **4/212 步**收据 | 保留固定参考与第 4 步推理权重。缺少第 4 步优化器状态，未形成正式训练终点。[报告](reports/JEV-204.md) |
 
 未逐号回填更早的工程包。旧实验以[归档](archive/)和既有研究文档为准；FSC 数字留在
 历史收据里，当前主参考为 SLURP 与 MINDS。仅比较相同封存人口、候选和指标；
@@ -62,7 +61,7 @@ SLURP 和 MINDS 的 Noul macro-F1 均下降；完整 Choice 的误拒下降，�
 | `tpo-joint-top1/v0.0.199` | 固定参考失败，无正式训练、无对应评测 | `ops-199/anchor.log` 记录 `KeyError: 'contract'`；终态非零 |
 | `tpo-joint-top1/v0.0.200` | 固定参考失败，无正式训练、无对应评测 | `ops-200/anchor.log` 记录字符串参数没有 `read_bytes`；终态非零 |
 | `tpo-joint-top1/v0.0.201` | 固定参考、两步有限验收与正式训练均已审核通过 | `ops-201/{anchor-collected,finite-collected,tpo-collected,terminal}.json`；按实际容器与更新收据核对 |
-| `tpo-single-stage-full/v0.0.202` / `203` / `204` | 202 已有旧包；203 的看护加载配置失败；204 两步有限验收已审，开始全量固定参考计算 | `package-202/`、`custody-203/driver.log` 与 `custody-204/predecessor-released.json`；`ops-204/{finite-collected,anchor-launch}.json` |
+| `tpo-single-stage-full/v0.0.202` / `203` / `204` | 202 已有旧包；203 的看护加载配置失败；204 参考已审，正式训练保留四步收据后停止 | `package-202/`、`custody-203/driver.log`；`ops-204/{finite-collected,anchor-collected,tpo-inspect,tpo-wait}.json` |
 
 ## 后续实验怎样调整
 
