@@ -27,8 +27,8 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 
 | 实验 ID | 优先级 | 状态 | 协议 | 下一步 |
 | --- | ---: | --- | --- | --- |
-| JEV-205 | 40 | in_progress | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 训练 34/34 已核验，留出评测尚未启动。[执行报告](reports/JEV-205.md) |
-| JEV-206 | 41 | in_progress | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 训练 34/34 已核验，源 TRAIN 校准和留出评测尚未启动。[执行报告](reports/JEV-206.md) |
+| JEV-205 | 40 | in_progress | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 181 已启动八路留出评测，待收集和评分。[执行报告](reports/JEV-205.md) |
+| JEV-206 | 41 | in_progress | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 已排队接续 205；先做源 TRAIN 校准，再跑留出评测。[执行报告](reports/JEV-206.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | stopped | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 暂停训练。保留固定参考、前四步收据及第 4 步推理权重，续训另行登记 |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
@@ -49,8 +49,8 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-198 | 相对 197 逐步用上一次提交的 actor 刷新先验，保持冻结奖励位移和 34 步预算 | **34/34，训练和 SLURP TEST、MINDS 评测均已审** | Choice 误拒下降；Noul 和 Choice 候选内排序退化。保留为动态参考的反例和 201 的 Choice 对照。[详细报告](reports/JEV-198.md) |
 | JEV-201 | 从 0.6B Stage1 step 160 接续、6,248 条 TRAIN × 2 轮、34 步；用配对 Noul/Choice、动态竞争者与固定长期锚共同训练 | **34/34，末点评测及变长 Choice 已审**。199/200 未进入正式训练 | SLURP 和 MINDS 的 Noul macro-F1 为 80.33% / 69.74%。变长 Choice 虽改善候选排序，但因误拒增加，整体准确率下降 13.12 / 17.15 点。SIB-FLEURS 为 73.46%，提升区间跨零；MMSU 准确率 47.96%。[报告](reports/JEV-201.md) |
 | JEV-204 | 取消独立 Stage1；从 Qwen3-ASR-0.6B 加新初始化的任务参数起步，一套目标跑全量 clean TRAIN，40,513 条 × 2 轮，212 步 | 两步有限验收通过，全量固定参考已收集。正式训练于 2026-11-21 12:11:57 UTC 停止，留有 **4/212 步**收据 | 保留固定参考与第 4 步推理权重。缺少第 4 步优化器状态，未形成正式训练终点。[报告](reports/JEV-204.md) |
-| JEV-205 | 从 194 的 Stage1 起点接续，复用其训练人口、批次与固定参考，只修正固定排序目标 | 两步有限验收与正式 **34/34 步**末点均已核验 | 待评源域 selection、SLURP TEST、MINDS 和登记的补充面板。[报告](reports/JEV-205.md) |
-| JEV-206 | 与 201 同起点、同训练录音、34 步设计；只输出逐类 sigmoid，以音频↔标签双向对比和 Brier 效用构造 TPO 目标，harness 在源 TRAIN 校准阈值 | 181 已通过两步有限验收；[正式 34/34 步与末点已审核](reports/JEV-206.md)。待绑定校准和留出评测；校准人口 21,244 条，覆盖 59/60 类 | 待对比 SLURP 与 MINDS 的排序、概率质量及冻结阈值的覆盖与误拒。[预登记协议](../experiments/tpo-choice-coverage-206.md) |
+| JEV-205 | 从 194 的 Stage1 起点接续，复用其训练人口、批次与固定参考，只修正固定排序目标 | 两步有限验收与正式 **34/34 步**末点均已核验；181 已启动八路评测 | selection、SLURP TEST、MINDS、SIB-FLEURS、MMSU 均复用封存缓存；待独立评分。[报告](reports/JEV-205.md) |
+| JEV-206 | 与 201 同起点、同训练录音、34 步设计；只输出逐类 sigmoid，以音频↔标签双向对比和 Brier 效用构造 TPO 目标，harness 在源 TRAIN 校准阈值 | 181 已通过两步有限验收；[正式 34/34 步与末点已审核](reports/JEV-206.md)。已排队，21,244 条校准录音覆盖 59/60 类 | 待对比 SLURP 与 MINDS 的排序、概率质量及冻结阈值的覆盖与误拒。[预登记协议](../experiments/tpo-choice-coverage-206.md) |
 
 未逐号回填更早的工程包。旧实验以[归档](archive/)和既有研究文档为准；FSC 数字留在
 历史收据里，当前主参考为 SLURP 与 MINDS。仅比较相同封存人口、候选和指标；
