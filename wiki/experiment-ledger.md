@@ -27,6 +27,7 @@ JEV-201 已审核 **34/34 步**训练，随后用释放的八卡启动末点评�
 | --- | ---: | --- | --- | --- |
 | JEV-201 | 10 | in_progress | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 181 上补评第 34 步的 SLURP TEST 与 MINDS，完成后独立评分 |
 | JEV-204 | 20 | stopped | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 暂停训练。保留固定参考、前四步收据及第 4 步推理权重，续训另行登记 |
+| JEV-R64-S2 | 25 | planned | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 复用 step 0 审核，只补 181 上的 step 68 |
 
 状态使用 `planned`、`in_progress`、`blocked`、`complete`、`failed` 或 `stopped`；
 `planned` 专用于协议、依赖与预算已登记、可准备且尚未开工的行。领取时保存对应台账提交、行和冻结协议。

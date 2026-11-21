@@ -155,6 +155,7 @@ def prepare(config):
             raise ValueError('formal checkpoint audit required')
         common['checkpoints'] = {arm: proof['checkpoints'][f'policy-{arm}'] for arm in checkpoint_steps}
     jobs=[];mounts={str(remote_parent),prior['remote_root']};sets={};pieces={}
+    encode_jobs, verify_jobs, semantic = [], [], {}
     if 'choice_baseline' in common:mounts.add(common['choice_baseline']['root'])
     datasets=config['datasets']
     if 'formal_datasets' in config:
@@ -163,10 +164,25 @@ def prepare(config):
             raise ValueError('unique formal dataset IDs required')
         datasets={key:datasets[key] for key in selected}
     for dataset,source in datasets.items():
-        cache=evaluation_cache(source,dataset,parent,initial if full else None)
+        if 'encode' in source:
+            if full or not config.get('full_ontology_only') or not config.get('publish_seals'):
+                raise ValueError('semantic evaluation requires a pinned Stage1 parent and full panels')
+            encode = source['encode']
+            cache = dict(encode['cache'], dataset=dataset, output='/jev-work/'+source['name']+'-cache',
+                         processor=dict(policy=parent['source_policy'], sha256=encode['processor_sha256']))
+            require_same_provider(parent, cache)
+            semantic[dataset] = encode['scoring']
+            for phase, group in (('encode', encode_jobs), ('verify', verify_jobs)):
+                name = source['name']+'-'+phase
+                commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',
+                                                          dict(common, phase=phase, cache=cache)))
+                group.append(dict(name=name, devices=[], **config['cache_container']))
+            mounts.add(cache['seal']['root'])
+        else:
+            cache=evaluation_cache(source,dataset,parent,initial if full else None)
+            mounts.add(cache['output'])
         if 'seal_sha256' in source and cache['seal']['sha256'] != source['seal_sha256']:
             raise ValueError('comparison and evaluated population must share the registered seal')
-        mounts.add(cache['output'])
         if 'cache_config' in source or 'scored_cache' in source:
             mounts.add(cache['seal']['root'])
         c=dict(cache=cache,cache_verification=cache['output']+'/VERIFIED.json',audio_token_id=cache['encoding']['audio_token_id'] if full else parent['audio_token_id'])
@@ -181,6 +197,8 @@ def prepare(config):
             jobs.append(dict(name=name,devices=[device],**config['eval_container']))
     scoring=dict(common,phase='tpo_score',output='/jev-work/metrics.json',endpoints=sets,shards=pieces,
                  steps=dict(stage1=config['stage1_step'],direct=steps,tpo=steps,**checkpoint_steps))
+    if semantic:
+        scoring['semantic_scoring'] = semantic
     if config.get('publish_seals'):
         scoring['publish_seals'] = True
     commit_json(entry/'score.json',macros('NATIVE_SEAL_CONTAINER_CONFIG',scoring))
@@ -195,9 +213,11 @@ def prepare(config):
                            required_status='formal_training_collected_and_audited')
     else:
         predecessor = dict(driver=read(ops.with_suffix('.started.json')), terminal=str(ops/'terminal.json'))
+    groups = [*([encode_jobs, verify_jobs] if encode_jobs else []), jobs,
+              [dict(name='score', devices=[], collect='metrics.json', **config['eval_container'])]]
     ctl.update(config['deployment'],archive=str(archive),read_only_mounts=[p+':'+p for p in sorted(mounts)],
         device_group_lease=True,wait_for_lease=True,predecessor=predecessor,
-        chains=[[jobs,[dict(name='score',devices=[],collect='metrics.json',**config['eval_container'])]]])
+        chains=[groups])
     if config.get('publish_seals'):
         ctl['entry_archive_sha256'] = file_hash(archive)
         ctl['entry_pins'] = {f'{job["name"]}.json': file_hash(entry/f'{job["name"]}.json') for job in jobs}

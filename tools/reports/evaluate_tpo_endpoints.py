@@ -89,6 +89,20 @@ def run(spec):
     return dict(dataset=c['cache']['dataset'],shard=index,recordings=len(rows))
 
 
+def collect_predictions(shards, filename, assets):
+    records, policies = {}, set()
+    for part in shards:
+        publication = read(Path(part)/filename)
+        policies.add(publication['policy_id'])
+        for row in publication['records']:
+            if row['id'] in records:
+                raise ValueError('overlapping evaluation shards')
+            records[row['id']] = row
+    if len(policies) != 1 or set(records) != {asset['id'] for asset in assets}:
+        raise ValueError('incomplete endpoint populations')
+    return records, policies.pop()
+
+
 def collect(spec):
     # score() checks the complete ordered test population and independent sealed gold.
     from tools.reports.prepare_native_seal_cache import plan
@@ -97,6 +111,17 @@ def collect(spec):
         jobs=plan(c['cache'])
         assets=[dict(id=r['id'],audio_sha256=r['audio_sha256']) for _,r,_ in jobs]
         candidates=[q.id for q in jobs[0][2].questions]
+        semantic_protocol = spec.get('semantic_scoring', {}).get(dataset)
+        if semantic_protocol is not None:
+            from tools.reports.score_semantic_tpo import score as score_semantic
+            noul, choice, policies = {}, {}, {}
+            for arm in spec['arms']:
+                noul[arm], policies[arm] = collect_predictions(spec['shards'][dataset], arm+'.json', assets)
+                choice[arm], choice_policy = collect_predictions(spec['shards'][dataset], arm+'-choices.json', assets)
+                if policies[arm] != choice_policy:
+                    raise ValueError('Noul/Choice policy mismatch')
+            result[dataset] = score_semantic(c['cache'], jobs, noul, choice, policies, semantic_protocol)
+            continue
         result[dataset]={}
         prior = ['prior'] if 'choice_baseline' in spec else []
         for arm in [*spec.get('arms',['stage1','direct','tpo']),*(

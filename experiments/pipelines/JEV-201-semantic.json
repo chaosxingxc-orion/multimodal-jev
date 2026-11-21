@@ -1,0 +1,103 @@
+{
+  "repository": ".",
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-package",
+  "parent_config": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+  "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201",
+  "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/package-201/operations-local.json",
+  "deployment": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v1",
+    "tag": "jev-eval-201-semantic-v1"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "io_workers": 8,
+  "batch": 8,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "datasets": {
+    "SIB_FLEURS_eng_topic7": {
+      "name": "sib",
+      "devices": "${TPO_EVAL_SLURP_DEVICES}",
+      "seal_sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12",
+      "encode": {
+        "processor_sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe",
+        "cache": {
+          "seal": {
+            "root": "${DATASETS_ROOT}/sib-fleurs-jev/eng-topic-v1",
+            "sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"
+          },
+          "encoding": {
+            "decision_token_id": 151706,
+            "audio_token_id": 151676,
+            "max_tokens": 4096
+          },
+          "io_workers": 8,
+          "prefetch": 16,
+          "progress_interval": 32
+        },
+        "scoring": {
+          "shared_label_space": true,
+          "pair": [
+            "stage1",
+            "tpo"
+          ],
+          "interval": {
+            "method": "paired_cluster_percentile_bootstrap",
+            "confidence": 0.95,
+            "samples": 2000,
+            "seed": 317
+          }
+        }
+      }
+    },
+    "MMSU_polysemy": {
+      "name": "mmsu",
+      "devices": "${TPO_EVAL_MINDS_DEVICES}",
+      "seal_sha256": "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68",
+      "encode": {
+        "processor_sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe",
+        "cache": {
+          "seal": {
+            "root": "${DATASETS_ROOT}/mmsu-jev/polysemy-v1",
+            "sha256": "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"
+          },
+          "encoding": {
+            "decision_token_id": 151706,
+            "audio_token_id": 151676,
+            "max_tokens": 4096
+          },
+          "io_workers": 8,
+          "prefetch": 16,
+          "progress_interval": 32
+        },
+        "scoring": {
+          "shared_label_space": false,
+          "pair": [
+            "stage1",
+            "tpo"
+          ]
+        }
+      }
+    }
+  },
+  "arms": [
+    "stage1",
+    "tpo"
+  ],
+  "full_ontology_only": true,
+  "publish_seals": true,
+  "cache_container": {
+    "cpus": 16,
+    "memory": "24g",
+    "shm": "2g"
+  }
+}

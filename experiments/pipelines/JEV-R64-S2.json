@@ -1,0 +1,261 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/r64-stage2-selection.md",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "stages": {
+    "data": [
+      {
+        "id": "sealed-selection",
+        "checks": [
+          {
+            "path": "${EXPERIMENT_OPERATIONS_ROOT}/stage2-selection-host181-v0.0.156/campaign/entry/selection/MANIFEST.json",
+            "sha256": "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a",
+            "cite": "stage2-selection-host181-v0.0.156/campaign/entry/selection/MANIFEST.json"
+          }
+        ]
+      }
+    ],
+    "train": [
+      {
+        "id": "audited-stage2",
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/stage2-windows/formal/audit.json",
+            "sha256": "e89e60f06a101f425ccfc593053a55bc53d4b28f2b1a94710d652f49208f1168",
+            "cite": "next-simple-r64-dp8-v1/stage2-windows/formal/audit.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "stage2_view_formal_outputs_audited"
+              ],
+              [
+                [
+                  "formal_contract",
+                  "updates"
+                ],
+                68
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "selection-step68",
+        "python": "${TPO_EVAL_PYTHON}",
+        "checks": [
+          {
+            "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v1/run/terminal.json",
+            "cite": "jev-stage2-r64-selection-181-v1/run/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v1/run/audit-parity-68-collected.json",
+            "cite": "jev-stage2-r64-selection-181-v1/run/audit-parity-68-collected.json",
+            "equals": [
+              [
+                [
+                  "exact"
+                ],
+                true
+              ],
+              [
+                [
+                  "queries"
+                ],
+                256
+              ],
+              [
+                [
+                  "policy_id"
+                ],
+                "9b1507151124d1477ad94e4605410fa99ed3d15792f3fa06cd8c311196835b6f"
+              ],
+              [
+                [
+                  "seal_sha256"
+                ],
+                "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+              ]
+            ]
+          },
+          {
+            "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v1/run/audit-full-68-collected.json",
+            "cite": "jev-stage2-r64-selection-181-v1/run/audit-full-68-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "complete_macro_evaluation_outputs_audited"
+              ],
+              [
+                [
+                  "dataset"
+                ],
+                "SLURP_clean_SELECTION60"
+              ],
+              [
+                [
+                  "seal_sha256"
+                ],
+                "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+              ],
+              [
+                [
+                  "step"
+                ],
+                68
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                9226
+              ],
+              [
+                [
+                  "policy_id"
+                ],
+                "9b1507151124d1477ad94e4605410fa99ed3d15792f3fa06cd8c311196835b6f"
+              ],
+              [
+                [
+                  "target_tuning_allowed"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-197-selection/run/audit-full-0-collected.json",
+            "cite": "jev-stage2-r64-host69-197-selection/run/audit-full-0-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "complete_macro_evaluation_outputs_audited"
+              ],
+              [
+                [
+                  "dataset"
+                ],
+                "SLURP_clean_SELECTION60"
+              ],
+              [
+                [
+                  "seal_sha256"
+                ],
+                "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+              ],
+              [
+                [
+                  "step"
+                ],
+                0
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                9226
+              ],
+              [
+                [
+                  "policy_id"
+                ],
+                "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b"
+              ],
+              [
+                [
+                  "target_tuning_allowed"
+                ],
+                false
+              ]
+            ],
+            "sha256": "eefbf482de1a5377662509c862963e9103adf0bcdb99d16dd4faa7744fab142b"
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP selection / Noul",
+            "scope": "SLURP selection（源域诊断）",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Step 68",
+                "proof": 2,
+                "path": [
+                  "metrics"
+                ],
+                "policy_field": [
+                  "policy_id"
+                ],
+                "policy": "9b1507151124d1477ad94e4605410fa99ed3d15792f3fa06cd8c311196835b6f",
+                "metrics": {
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Top-1 accuracy": "top1_event_accuracy",
+                  "平均原始 Top-1 概率": "mean_top1_probability"
+                }
+              },
+              {
+                "label": "Step 0",
+                "proof": 3,
+                "path": [
+                  "metrics"
+                ],
+                "policy_field": [
+                  "policy_id"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Top-1 accuracy": "top1_event_accuracy",
+                  "平均原始 Top-1 概率": "mean_top1_probability"
+                }
+              }
+            ]
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_stage2_view_selection",
+            "--config",
+            "experiments/pipelines/JEV-R64-S2-selection.json",
+            "--local",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v1/operations-local.json"
+          ]
+        ],
+        "dispatch_guards": [
+          "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v1"
+        ],
+        "config": "experiments/pipelines/JEV-R64-S2-selection.json"
+      }
+    ]
+  }
+}

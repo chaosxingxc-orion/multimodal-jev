@@ -169,7 +169,9 @@ def evaluate_panel(panel, proofs):
         policy = arm["policy"]
         if isinstance(policy, dict):
             policy = lookup(proofs[policy["proof"]]["value"], policy["path"])
-        if not isinstance(policy, str) or not policy or value["policy_id"] != policy:
+        observed_policy = (lookup(proofs[arm["proof"]]["value"], arm["policy_field"])
+                           if "policy_field" in arm else value["policy_id"])
+        if not isinstance(policy, str) or not policy or observed_policy != policy:
             raise ValueError(f"{panel['id']}: policy identity differs")
         metrics = {}
         for label, key in arm["metrics"].items():

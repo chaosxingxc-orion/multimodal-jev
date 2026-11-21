@@ -234,8 +234,31 @@
         "config": "experiments/pipelines/JEV-201-native.json"
       },
       {"id": "paired-diagnostics", "pending": "待接入全量 Noul/Choice 正误四格、变长 Choice 误拒/误接及配对区间审核。"},
-      {"id": "sib-fleurs", "pending": "待绑定 SIB-FLEURS 英语话题封存评测和按句配对审核。"},
-      {"id": "mmsu-polysemy", "pending": "待绑定独立 MMSU 词义评测人口和评分审核。"}
+      {
+        "id": "semantic-transfer",
+        "python": "${TPO_EVAL_PYTHON}",
+        "checks": [
+          {"path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops/terminal.json", "cite": "tpo-joint-top1/eval-201-semantic-v1-ops/terminal.json", "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]},
+          {"path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops/score-collected.json", "cite": "tpo-joint-top1/eval-201-semantic-v1-ops/score-collected.json", "equals": [[["schema"], "jev-audited-tpo-evaluation-v1"], [["seals", "SIB_FLEURS_eng_topic7"], "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"], [["seals", "MMSU_polysemy"], "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"]], "report": {"SIB Noul 配对 macro-F1 差 95% 区间": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "noul", "macro_f1_delta_ci95"], "SIB Choice 配对 macro-F1 差 95% 区间": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "choice", "macro_f1_delta_ci95"]}}
+        ],
+        "inputs": [
+          {"path": "${DATASETS_ROOT}/sib-fleurs-jev/eng-topic-v1/MANIFEST.json", "cite": "sib-fleurs-jev/eng-topic-v1/MANIFEST.json", "sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12", "equals": [[["datasets", "SIB_FLEURS_eng_topic7", "recordings"], 320], [["datasets", "SIB_FLEURS_eng_topic7", "candidates"], 7], [["target_tuning_allowed"], false]]},
+          {"path": "${DATASETS_ROOT}/mmsu-jev/polysemy-v1/MANIFEST.json", "cite": "mmsu-jev/polysemy-v1/MANIFEST.json", "sha256": "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68", "equals": [[["datasets", "MMSU_polysemy", "recordings"], 98], [["datasets", "MMSU_polysemy", "candidates"], 4], [["target_tuning_allowed"], false]]},
+          {"path": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json", "cite": "full-train-stratified-v1/packages-192/formal/config.json", "equals": [[["source_policy_id"], "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b"]]}
+        ],
+        "panels": [
+          {"id": "SIB_FLEURS_eng_topic7 / Noul", "scope": "SIB-FLEURS 英语话题（跨任务）", "population": 320, "primary": "Top-1 macro-F1", "arms": [{"label": "Step 34", "proof": 1, "path": ["datasets", "SIB_FLEURS_eng_topic7", "tpo"], "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912", "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "平均原始 Top-1 概率": "mean_top1_probability"}}, {"label": "Stage1 step 160", "proof": 1, "path": ["datasets", "SIB_FLEURS_eng_topic7", "stage1"], "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b", "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "平均原始 Top-1 概率": "mean_top1_probability"}}]},
+          {"id": "SIB_FLEURS_eng_topic7 / Choice", "scope": "SIB-FLEURS 英语话题（跨任务）", "population": 320, "primary": "Top-1 macro-F1", "arms": [{"label": "Step 34", "proof": 1, "path": ["datasets", "SIB_FLEURS_eng_topic7", "choices", "tpo"], "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912", "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "平均候选内 Top-1 概率": "mean_top1_probability", "误拒率": "false_none_rate"}}, {"label": "Stage1 step 160", "proof": 1, "path": ["datasets", "SIB_FLEURS_eng_topic7", "choices", "stage1"], "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b", "metrics": {"Top-1 macro-F1": "top1_macro_f1", "Top-1 accuracy": "top1_accuracy", "平均候选内 Top-1 概率": "mean_top1_probability", "误拒率": "false_none_rate"}}]},
+          {"id": "MMSU_polysemy / Noul", "scope": "MMSU 多义词（跨任务）", "population": 98, "primary": "Top-1 accuracy", "arms": [{"label": "Step 34", "proof": 1, "path": ["datasets", "MMSU_polysemy", "tpo"], "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912", "metrics": {"Top-1 accuracy": "top1_accuracy", "平均原始 Top-1 概率": "mean_top1_probability"}}, {"label": "Stage1 step 160", "proof": 1, "path": ["datasets", "MMSU_polysemy", "stage1"], "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b", "metrics": {"Top-1 accuracy": "top1_accuracy", "平均原始 Top-1 概率": "mean_top1_probability"}}]},
+          {"id": "MMSU_polysemy / Choice", "scope": "MMSU 多义词（跨任务）", "population": 98, "primary": "Top-1 accuracy", "arms": [{"label": "Step 34", "proof": 1, "path": ["datasets", "MMSU_polysemy", "choices", "tpo"], "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912", "metrics": {"Top-1 accuracy": "top1_accuracy", "平均候选内 Top-1 概率": "mean_top1_probability", "误拒率": "false_none_rate"}}, {"label": "Stage1 step 160", "proof": 1, "path": ["datasets", "MMSU_polysemy", "choices", "stage1"], "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b", "metrics": {"Top-1 accuracy": "top1_accuracy", "平均候选内 Top-1 概率": "mean_top1_probability", "误拒率": "false_none_rate"}}]}
+        ],
+        "run": [
+          ["tools.reports.prepare_tpo_evaluation", "experiments/pipelines/JEV-201-semantic.json", "${EXPERIMENT_LOCAL_CONFIG}"],
+          ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-package/operations-local.json"]
+        ],
+        "dispatch_guards": ["${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-ops", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v1-package"],
+        "config": "experiments/pipelines/JEV-201-semantic.json"
+      }
     ]
   }
 }

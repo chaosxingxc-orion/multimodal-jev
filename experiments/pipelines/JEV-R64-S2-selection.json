@@ -1,0 +1,118 @@
+{
+  "output": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v1",
+  "io_workers": 8,
+  "seal": {
+    "root": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-191/selection-seal",
+    "sha256": "99b7c547d5fe939b9117011330c0ae0a23e3f98d9f69b425f8702f2b148b53cd"
+  },
+  "runtime_archive": {
+    "path": "${EXPERIMENT_OPERATIONS_ROOT}/stage1-endpoints-host181-v0.0.136/slurp/score/entry.tar",
+    "sha256": "b0921ca813cf37e0c7c6496b991167e9bbdc1edba64cf8a10bd195fa522e50a0"
+  },
+  "runtime_source_sha256": "cc7e0ae8ae9d40979f00306b31f948ac4ce9fa774b2e8409a7583b3fa0a919b3",
+  "runtime_identity": {
+    "image_sha256": "52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+    "source_manifest_sha256": "cc7e0ae8ae9d40979f00306b31f948ac4ce9fa774b2e8409a7583b3fa0a919b3",
+    "processor_sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe",
+    "profile": "context-segmented-dual-logits-candidate-v1",
+    "output_protocol": "context-prob-logits-fp32-v1"
+  },
+  "service_template": {
+    "path": "${EXPERIMENT_OPERATIONS_ROOT}/stage1-endpoints-host181-v0.0.136/slurp/score/entry/parity-318-service-0.json",
+    "sha256": "ef16d053ed0566c13bd4db0359c7b015fce55d1222f61ed74b566627e6924001"
+  },
+  "cache": {
+    "encoding": {
+      "decision_token_id": 151706,
+      "audio_token_id": 151676,
+      "max_tokens": 4096
+    },
+    "io_workers": 24,
+    "prefetch": 48,
+    "progress_interval": 256
+  },
+  "client": {
+    "timeout_seconds": 1800,
+    "rollout_queries": 32,
+    "max_queries": 128
+  },
+  "operations": {
+    "host": "${EXPERIMENT_TARGET_HOST}",
+    "image": "${EXPERIMENT_TARGET_IMAGE}",
+    "entrypoint": "/opt/multimodal-jev/runtime-entrypoint.sh",
+    "shared_root": "${SHARED_ROOT}",
+    "driver_root": "${EXPERIMENT_TARGET_DRIVER_ROOT}",
+    "transfer_timeout": 180,
+    "dependency_timeout": 14400,
+    "dependency_check_seconds": 5,
+    "tag": "jev-stage2-r64-selection-181-v1",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-r64-selection-181-v1",
+    "lease": "${EXPERIMENT_TARGET_LEASE}",
+    "device_group_lease": true,
+    "wait_for_lease": true
+  },
+  "resources": {
+    "encode": {
+      "cpus": 24,
+      "memory": "48g",
+      "shm": "4g"
+    },
+    "verify": {
+      "cpus": 24,
+      "memory": "48g",
+      "shm": "4g"
+    },
+    "hf": {
+      "cpus": 16,
+      "memory": "48g",
+      "shm": "4g"
+    },
+    "parity": {
+      "cpus": 96,
+      "memory": "288g",
+      "shm": "36g"
+    },
+    "audit-parity": {
+      "cpus": 16,
+      "memory": "48g",
+      "shm": "4g"
+    },
+    "full": {
+      "cpus": 96,
+      "memory": "288g",
+      "shm": "36g"
+    },
+    "audit-full": {
+      "cpus": 32,
+      "memory": "96g",
+      "shm": "12g"
+    }
+  },
+  "devices": "${FULL_TPO_OFFLINE_REFERENCE_DEVICES}",
+  "panel_size": 256,
+  "torch_threads": 2,
+  "training_request": {
+    "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-193/training-forward-local.json",
+    "sha256": "19814dc964016e1dfccf98be566f7bf340bd466cbf810796a70326eb4bec613c"
+  },
+  "selection_steps": [
+    68
+  ],
+  "selection_cache": {
+    "seal": {
+      "root": "${EXPERIMENT_OPERATIONS_ROOT}/stage2-selection-host181-v0.0.156/campaign/entry/selection",
+      "sha256": "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+    },
+    "cache_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-selection-156"
+  },
+  "selection_hf_reference": {
+    "panel": {
+      "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-197-selection/finite-evidence/hf-68/panel.json",
+      "sha256": "e62029c87b3e97469ac72e4b1cf6c70040d91a485dfdfea3dd92160eb70513bb"
+    },
+    "reference": {
+      "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-197-selection/finite-evidence/hf-68/reference.json",
+      "sha256": "1c0c40b8a568ad594a29fded2e08f328d514acaa209a8f4bd83bd5da89fed5da"
+    }
+  }
+}

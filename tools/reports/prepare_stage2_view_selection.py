@@ -243,10 +243,10 @@ def prepare(c, provenance):
     seal = pinned(seal_root/'MANIFEST.json', c['seal']['sha256'])
     if set(seal['datasets']) != {DATASET}:
         raise ValueError('source selection seal required')
-    for rel, digest in seal['files'].items():
+    for rel, expected_digest in seal['files'].items():
         path = seal_root/rel
         if (not path.resolve().is_relative_to(seal_root.resolve())
-                or path.is_symlink() or file_hash(path) != digest):
+                or path.is_symlink() or file_hash(path) != expected_digest):
             raise ValueError('selection seal changed: '+rel)
     plan = pinned(seal_root/'source-plan.json', seal['files']['source-plan.json'])
     if plan['schema'] != 'jev-stage2-view-selection-source-v1':
@@ -337,6 +337,24 @@ def prepare(c, provenance):
     full = dict(cache, output=cache_mount+'/full-cache')
     stages, other = [], []
     hf_shards = c.get('hf_shards')
+    reused_hf = c.get('selection_hf_reference')
+    if reused_hf is not None:
+        if heldout or hf_shards is not None or not selection_cache or len(plan['checkpoints']) != 1:
+            raise ValueError('existing HF reference requires a single registered selection point and its cache')
+        point = plan['checkpoints'][0]
+        panel_record = pinned(reused_hf['panel']['path'], reused_hf['panel']['sha256'])
+        reference = pinned(reused_hf['reference']['path'], reused_hf['reference']['sha256'])
+        if (panel_record['dataset'] != DATASET or panel_record['labels_used'] is not False
+                or reference['schema'] != 'jev-target-width-hf-reference-v1'
+                or reference['policy_id'] != point['policy_id']
+                or reference['panel_sha256'] != digest(panel_record)
+                or len(reference['records']) != len(panel_record['assets'])
+                or len(reference['records']) != c['panel_size']):
+            raise ValueError('existing HF reference differs from the registered point or panel')
+        path = entry/'hf-reference.json'
+        shutil.copyfile(reused_hf['reference']['path'], path)
+        reused_hf = dict(path='/jev-entry/'+path.name, sha256=reused_hf['reference']['sha256'])
+        pinned(path, reused_hf['sha256'])
     if hf_shards is not None:
         if not heldout or set(hf_shards) != {'reference_panel', 'reference'}:
             raise ValueError('direct HF requires both pinned held-out reference files')
@@ -363,9 +381,10 @@ def prepare(c, provenance):
     if not existing_cache:
         stages = [[role('panel-encode','encode',cache=panel)], [role('panel-verify','verify',cache=panel)]]
         other = [[role('full-encode','encode',cache=full)], [role('full-verify','verify',cache=full)]]
-    for offset in range(0, len(plan['checkpoints']) if hf_shards is None else 0, len(devices)):
+    hf_points = plan['checkpoints'] if hf_shards is None and reused_hf is None else ()
+    for offset in range(0, len(hf_points), len(devices)):
         group = []
-        for idx, point in enumerate(plan['checkpoints'][offset:offset+len(devices)]):
+        for idx, point in enumerate(hf_points[offset:offset+len(devices)]):
             step = point['step']
             cfg = dict(source_plan=source, point=point, contract=plan['source_contract'], base_id=plan['base_id'],
                        model=service_template['policy']['model'], snapshot=f'/jev-entry/policy-{step}',
@@ -405,8 +424,13 @@ def prepare(c, provenance):
                    audio_token_id=cache['encoding']['audio_token_id'], torch_threads=c['torch_threads'],
                    cache=cache_cfg, cache_verification=cache_cfg['output']+'/VERIFIED.json',
                    macro_client=client, macro_queries=client['max_queries'], output=out)
-        evidence = (dict(hf_reference=f'/jev-work/hf-{step}/reference.json') if phase == 'parity'
-                    else dict(parity_receipt=f'/jev-work/audit-parity-{step}/comparison.json'))
+        if phase == 'parity' and reused_hf is not None:
+            cfg['hf_reference'] = reused_hf
+            evidence = {}
+        elif phase == 'parity':
+            evidence = dict(hf_reference=f'/jev-work/hf-{step}/reference.json')
+        else:
+            evidence = dict(parity_receipt=f'/jev-work/audit-parity-{step}/comparison.json')
         produce = role(name,phase,devices,endpoint=cfg,evidence=evidence,services=services,
                        supervision=out+'-supervision')
         audit = role('audit-'+name,'audit-'+phase,collect='audit-'+name+(
