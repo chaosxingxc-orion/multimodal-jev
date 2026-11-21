@@ -276,6 +276,10 @@ def prepare(c, provenance):
             raise ValueError('evaluation steps must be an ordered subset of the audited roster')
         plan = dict(plan, checkpoints=[point for point in plan['checkpoints'] if point['step'] in selected_steps])
     old = c['runtime_archive']
+    reuse_runtime = c.get('reuse_frozen_selection_runtime', False)
+    if type(reuse_runtime) is not bool or (reuse_runtime and (
+            heldout or not selection_cache or 'training_request' in c)):
+        raise ValueError('runtime reuse requires its frozen source selection cache')
     if file_hash(old['path']) != old['sha256']:
         raise ValueError('native runtime archive changed')
     with TemporaryDirectory(dir=root) as temp:
@@ -292,8 +296,11 @@ def prepare(c, provenance):
         if 'training_request' in c:
             forward_options, forward_design = bind_forward(snapshot,c['training_request'],
                 image=c['operations']['image'],base_id=plan['base_id'])
-        shutil.copyfile(run_native_seal_endpoint.__file__, snapshot/'tools/reports/run_native_seal_endpoint.py')
+        if not reuse_runtime:
+            shutil.copyfile(run_native_seal_endpoint.__file__, snapshot/'tools/reports/run_native_seal_endpoint.py')
         identity = freeze(snapshot, entry/'source', patterns=['**/*'], io_workers=workers)
+        if reuse_runtime and identity['manifest_sha256'] != c['runtime_source_sha256']:
+            raise ValueError('source differs from the previously frozen selection runtime')
     files = read(entry/'source/FILES.json')
     runtime_file = entry/'RUNTIME-SOURCES.json'
     commit_json(runtime_file, {k:v for k,v in files.items() if k.endswith('.py')})

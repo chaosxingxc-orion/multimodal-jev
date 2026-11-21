@@ -26,6 +26,8 @@ Stage2 在 MINDS 少判对 452 条；平均最高概率更高的同时，分类�
 
 SLURP selection step 0 完成 9,226 条的全量审核和原始预测复算：Top-1 macro-F1 83.05%，准确率 85.53%，平均 Top-1 原始概率 76.66%。step 68 已通过有限对照；按用户释放指令停止全量推理，最终进度文件记录 896 / 9,226 条，无全量成绩。
 
+在 181 上接续 step 68。首版尝试将新版评测入口装入旧快照，有限对照因缺少该入口依赖的模型接口而失败。第二版完整复用先前通过对照的运行时快照，并在 181 上复用同一缓存封存清单和 256 条 HF 参考，重新核验有限对照后再跑全量。
+
 续跑的最后一个推理容器于 2026-11-20 16:46:28 UTC 退出。随后现场核验本轮无运行容器、NPU 0–7 无运行进程、69 的共享锁可取。
 
 本地操作根目录为 `/srv/multimodal-jev-xingchao/operations`，证据相对路径：
@@ -47,3 +49,18 @@ python3 -m tools.reports.summarize_audited_top1 \
 ```
 
 MINDS 的独立 HF 分片复算还需加 `--hf-policy-id`，值为上文对应检查点的冻结策略 ID。输出中的 `top1_metrics_independently_recomputed` 应为 `true`。两个数据集的末点应分别得到 0.8043405512 和 0.6605126048 的 Top-1 macro-F1。
+
+<!-- experiment-package:begin -->
+## 实验入口执行记录
+
+队列状态 **in_progress**。领取提交 `15012e18537789ce649724f0f704dcf7593026b4`，台账行 SHA-256 `77571a9c14cbe94d4d4b6bd6c56d536290656711a0a25f16c9aaf51dacc56990`，协议 SHA-256 `0d44407cef85c7e020b844e55654da73da55fa02f8fd538ab006f59c29e26ca8`。
+本次配置 SHA-256 `2ba12eaec0f76daabec81f59db84cf0ae0748e02738de1b9a9ef5b19f7570123`。
+
+| 阶段 | 步骤 | 状态 | 执行方式 | 证据或待办 |
+| --- | --- | --- | --- | --- |
+| data | sealed-selection | audited | reused | `stage2-selection-host181-v0.0.156/campaign/entry/selection/MANIFEST.json` SHA-256 `4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a` |
+| train | audited-stage2 | audited | reused | `next-simple-r64-dp8-v1/stage2-windows/formal/audit.json` SHA-256 `e89e60f06a101f425ccfc593053a55bc53d4b28f2b1a94710d652f49208f1168` |
+| evaluate | selection-step68 | failed | — | See selection-step68.log |
+
+尚有预登记项目待审核，研究结论待完整证据。
+<!-- experiment-package:end -->

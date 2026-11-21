@@ -1,15 +1,15 @@
 {
-  "output": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v1",
+  "output": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-selection-181-v2",
   "io_workers": 8,
   "seal": {
     "root": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-191/selection-seal",
     "sha256": "99b7c547d5fe939b9117011330c0ae0a23e3f98d9f69b425f8702f2b148b53cd"
   },
   "runtime_archive": {
-    "path": "${EXPERIMENT_OPERATIONS_ROOT}/stage1-endpoints-host181-v0.0.136/slurp/score/entry.tar",
-    "sha256": "b0921ca813cf37e0c7c6496b991167e9bbdc1edba64cf8a10bd195fa522e50a0"
+    "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-197-selection/entry.tar",
+    "sha256": "6f37d816e6a642240c7aeb06d7197b7bf56dc4243ed3f854a7f1371e0eed1a31"
   },
-  "runtime_source_sha256": "cc7e0ae8ae9d40979f00306b31f948ac4ce9fa774b2e8409a7583b3fa0a919b3",
+  "runtime_source_sha256": "ba890c74eb787b5647972031860b75840b530c9568f2af66247bec1aaa0c04a7",
   "runtime_identity": {
     "image_sha256": "52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
     "source_manifest_sha256": "cc7e0ae8ae9d40979f00306b31f948ac4ce9fa774b2e8409a7583b3fa0a919b3",
@@ -45,8 +45,8 @@
     "transfer_timeout": 180,
     "dependency_timeout": 14400,
     "dependency_check_seconds": 5,
-    "tag": "jev-stage2-r64-selection-181-v1",
-    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-r64-selection-181-v1",
+    "tag": "jev-stage2-r64-selection-181-v2",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-stage2-r64-selection-181-v2",
     "lease": "${EXPERIMENT_TARGET_LEASE}",
     "device_group_lease": true,
     "wait_for_lease": true
@@ -91,10 +91,6 @@
   "devices": "${FULL_TPO_OFFLINE_REFERENCE_DEVICES}",
   "panel_size": 256,
   "torch_threads": 2,
-  "training_request": {
-    "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-193/training-forward-local.json",
-    "sha256": "19814dc964016e1dfccf98be566f7bf340bd466cbf810796a70326eb4bec613c"
-  },
   "selection_steps": [
     68
   ],
@@ -114,5 +110,6 @@
       "path": "${EXPERIMENT_OPERATIONS_ROOT}/jev-stage2-r64-host69-197-selection/finite-evidence/hf-68/reference.json",
       "sha256": "1c0c40b8a568ad594a29fded2e08f328d514acaa209a8f4bd83bd5da89fed5da"
     }
-  }
+  },
+  "reuse_frozen_selection_runtime": true
 }
