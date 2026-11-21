@@ -259,12 +259,12 @@
         "config": "experiments/pipelines/JEV-201-semantic.json"
       },
       {
-        "id": "wolbanking-transfer-v1",
+        "id": "wolbanking-transfer-v2",
         "python": "${TPO_EVAL_PYTHON}",
         "checks": [
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-ops/terminal.json",
-            "cite": "tpo-joint-top1/eval-201-wolbanking-v1-ops/terminal.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v2-ops/terminal.json",
+            "cite": "tpo-joint-top1/eval-201-wolbanking-v2-ops/terminal.json",
             "equals": [
               [
                 [
@@ -281,8 +281,8 @@
             ]
           },
           {
-            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-ops/score-collected.json",
-            "cite": "tpo-joint-top1/eval-201-wolbanking-v1-ops/score-collected.json",
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v2-ops/score-collected.json",
+            "cite": "tpo-joint-top1/eval-201-wolbanking-v2-ops/score-collected.json",
             "equals": [
               [
                 [
@@ -480,7 +480,7 @@
         "run": [
           [
             "tools.reports.prepare_tpo_evaluation",
-            "experiments/pipelines/JEV-201-wolbanking.json",
+            "experiments/pipelines/JEV-201-wolbanking-v2.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -488,14 +488,14 @@
             "--config",
             "configs/portable/operations/native-seal-operations.json",
             "--local",
-            "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-package/operations-local.json"
+            "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v2-package/operations-local.json"
           ]
         ],
         "dispatch_guards": [
-          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-ops",
-          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-package"
+          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v2-ops",
+          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v2-package"
         ],
-        "config": "experiments/pipelines/JEV-201-wolbanking.json"
+        "config": "experiments/pipelines/JEV-201-wolbanking-v2.json"
       },
       {
         "id": "native-pairs-v1",

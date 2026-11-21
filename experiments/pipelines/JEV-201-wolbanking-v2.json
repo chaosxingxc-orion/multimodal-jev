@@ -1,0 +1,75 @@
+{
+  "repository": ".",
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "package": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v2-package",
+  "parent_config": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+  "training_ops": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/ops-201",
+  "training_operations_local": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/package-201/operations-local.json",
+  "deployment": {
+    "operations": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v2-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-wolbanking-v2",
+    "tag": "jev-eval-201-wolbanking-v2"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "io_workers": 8,
+  "batch": 1,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "datasets": {
+    "WolBanking77_audio_test10": {
+      "name": "wolbanking",
+      "devices": "${FULL_TPO_OFFLINE_REFERENCE_DEVICES}",
+      "seal_sha256": "71f7ba98a584279bf5e484a325da606b3a6c5be4ab2b7ceccdad084ce0c3486d",
+      "encode": {
+        "processor_sha256": "41f8edc45719bb2d02b385f57520b862f605df05d38fea60788eed8115ee96fe",
+        "cache": {
+          "seal": {
+            "root": "${DATASETS_ROOT}/wolbanking77-jev/audio-test10-v1",
+            "sha256": "71f7ba98a584279bf5e484a325da606b3a6c5be4ab2b7ceccdad084ce0c3486d"
+          },
+          "encoding": {
+            "decision_token_id": 151706,
+            "audio_token_id": 151676,
+            "max_tokens": 4096
+          },
+          "io_workers": 8,
+          "prefetch": 16,
+          "progress_interval": 32
+        },
+        "scoring": {
+          "shared_label_space": true,
+          "pair": [
+            "stage1",
+            "tpo"
+          ],
+          "interval": {
+            "method": "paired_cluster_percentile_bootstrap",
+            "confidence": 0.95,
+            "samples": 2000,
+            "seed": 317
+          }
+        }
+      },
+      "reuse_verified_cache": {
+        "operations": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-package/operations-local.json",
+        "operations_sha256": "0b5742069afc64477966d870450aee300712005140d5e8019079870f9eb1626f",
+        "manifest_sha256": "89c4b8c406aeb01ac080c5194339b0d7c27814b7bdb8df9e44092258a143ff3a",
+        "verification_sha256": "0d9a90a20848e62267bbd7d98e87c6e4ded38a2391409f4332bfa8fb4dbbeaa1"
+      }
+    }
+  },
+  "arms": [
+    "stage1",
+    "tpo"
+  ],
+  "full_ontology_only": true,
+  "publish_seals": true
+}

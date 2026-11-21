@@ -187,11 +187,23 @@ def prepare(config):
                          processor=dict(policy=parent['source_policy'], sha256=encode['processor_sha256']))
             require_same_provider(parent, cache)
             semantic[dataset] = encode['scoring']
-            for phase, group in (('encode', encode_jobs), ('verify', verify_jobs)):
-                name = source['name']+'-'+phase
-                commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',
-                                                          dict(common, phase=phase, cache=cache)))
-                group.append(dict(name=name, devices=[], **config['cache_container']))
+            if 'reuse_verified_cache' in source:
+                reuse = source['reuse_verified_cache']
+                if file_hash(reuse['operations']) != reuse['operations_sha256']:
+                    raise ValueError('previous semantic cache deployment changed')
+                predecessor = read(reuse['operations'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+                if predecessor['host'] != prior['host']:
+                    raise ValueError('verified cache must be on the registered host')
+                cache['output'] = predecessor['remote_root'] + '/' + source['name'] + '-cache'
+                cache['cache_identity'] = dict(manifest_sha256=reuse['manifest_sha256'],
+                                               verification_sha256=reuse['verification_sha256'])
+                mounts.add(cache['output'])
+            else:
+                for phase, group in (('encode', encode_jobs), ('verify', verify_jobs)):
+                    name = source['name']+'-'+phase
+                    commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',
+                                                              dict(common, phase=phase, cache=cache)))
+                    group.append(dict(name=name, devices=[], **config['cache_container']))
             mounts.add(cache['seal']['root'])
         else:
             cache=evaluation_cache(source,dataset,parent,initial if full else None)
