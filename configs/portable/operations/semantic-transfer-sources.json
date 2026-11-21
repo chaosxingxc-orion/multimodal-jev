@@ -21,6 +21,32 @@
         "question": "Which topic best describes what the speaker is talking about?"
       }
     },
+    "wolbanking": {
+      "id": "karim155/WolBanking77",
+      "revision": "b530b0a641ad4c6fe2881eb3b13a22e77bb39ceb",
+      "checkout": "WolBanking77",
+      "directory": "wolbanking77",
+      "eval": {
+        "format": "wolbanking_audio_test",
+        "dataset": "WolBanking77_audio_test10",
+        "release": "wolbanking77-jev/audio-test10-v1",
+        "split": "official_audio_test",
+        "population": [641, 641, 16],
+        "classes": 10,
+        "question": "Which intent matches the request in this Wolof banking audio?",
+        "decision_question": "Does the spoken request express this intent?",
+        "files": {
+          "test": {
+            "path": "WolBanking77/audio/test.parquet",
+            "sha256": "4da733a89418fbc5d895683a6f95a24bb6921210bd6d28938f7bfe550697cb36"
+          },
+          "ontology": {
+            "path": "WolBanking77/audio/questions.csv",
+            "sha256": "50e86cb1d5eb8eba3a96dec582db141dc40d694e5e1c3df0f93a7432f04d273d"
+          }
+        }
+      }
+    },
     "mmsu": {
       "id": "ddwang2000/MMSU",
       "revision": "548e2283105825bf908a7db5c09c00dbcf42bd4c",

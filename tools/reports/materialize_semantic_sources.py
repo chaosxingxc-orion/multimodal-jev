@@ -28,6 +28,11 @@ def run(c, name):
     if git('rev-parse','HEAD').decode().strip()!=repo['revision']:
         raise ValueError('unexpected checkout')
     paths=git('ls-tree','-r','--name-only','-z','HEAD').decode().rstrip('\0').split('\0')
+    selected = {item['path']: item['sha256'] for item in repo.get('eval', {}).get('files', {}).values()}
+    if selected:
+        if not set(selected) <= set(paths):
+            raise ValueError('evaluation source missing from the pinned revision')
+        paths = sorted(selected)
     def one(rel):
         src=checkout/rel
         # The clone has pointer files or small ordinary files. Verify its tree first.
@@ -40,6 +45,8 @@ def run(c, name):
             expected=oid.removeprefix('oid sha256:');size=int(length.removeprefix('size '))
         else:
             size=len(blob);expected=hashlib.sha256(blob).hexdigest()
+        if selected and selected[rel] != expected:
+            raise ValueError('evaluation source digest differs from the pinned revision')
         target=dest/rel
         if target.is_file():
             if target.stat().st_size!=size or sha(target)!=expected:raise ValueError('existing source mismatch: '+rel)

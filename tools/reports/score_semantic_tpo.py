@@ -18,7 +18,7 @@ def score(spec, jobs, noul, choice, policies, protocol):
     if (manifest['schema'] != 'jev-semantic-evaluation-seal-v1'
             or manifest['target_tuning_allowed'] is not False
             or len(jobs) != data['recordings'] or len(ids) != data['candidates']
-            or len({t['group'] for t in targets}) != data['utterance_groups']
+            or len({t['group'] for t in targets}) != data.get('group_count', data.get('utterance_groups'))
             or set(noul) != set(choice) or set(noul) != set(policies)
             or set(policies) != set(protocol['pair']) or len(set(policies.values())) != len(policies)):
         raise ValueError('complete frozen semantic panels and paired endpoints required')

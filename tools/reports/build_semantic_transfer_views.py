@@ -1,6 +1,7 @@
 """Create portable, inference/gold-separated semantic Jev evaluation releases."""
 import argparse
 from collections import Counter
+import csv
 from dataclasses import asdict
 import hashlib
 import io
@@ -35,7 +36,73 @@ def source_files(c,name,pattern):
         yield root/rel
 
 
+def prepare_banking(c, spec, root):
+    """Bind speaker and intent from the same published Audio TEST record."""
+    import pyarrow.parquet as pq
+    import soundfile as sf
+
+    view = spec['eval']
+    dataset = view['dataset']
+    source_root = Path(c['datasets']) / spec['directory']
+    files = {kind: source_root / entry['path'] for kind, entry in view['files'].items()}
+    digests = {kind: file_hash(path) for kind, path in files.items()}
+    if any(digests[kind] != entry['sha256'] for kind, entry in view['files'].items()):
+        raise ValueError('pinned audio source or ontology changed')
+    with files['ontology'].open(encoding='utf-8-sig', newline='') as stream:
+        classes = sorted({row['intent'] for row in csv.DictReader(stream)})
+    if len(classes) != view['classes'] or any(not name.strip() for name in classes):
+        raise ValueError('invalid published audio ontology')
+    panel = dict(version='jev-semantic-answer-v1', requirements=[view['question']],
+                 questions=[asdict(ApplicabilityQuestion(
+                     label, label.replace('_', ' ').lower(), view['decision_question']))
+                            for label in classes])
+    ph = hashlib.sha256(json.dumps(panel, sort_keys=True).encode()).hexdigest()
+    rows, gold, ids, hashes, rates = [], [], set(), set(), Counter()
+    path = files['test']
+    sample = pq.ParquetFile(path)
+    audio_dir = root / 'audio'
+    audio_dir.mkdir()
+    for batch in sample.iter_batches(batch_size=16, columns=['audio', 'intent', 'user_id']):
+        for row in batch.to_pylist():
+            audio = row['audio']
+            uid, label, speaker = audio['path'], row['intent'], row['user_id']
+            raw = audio['bytes']
+            digest = hashlib.sha256(raw).hexdigest()
+            if (not uid or uid in ids or digest in hashes or label not in classes
+                    or type(speaker) is not int):
+                raise ValueError('duplicate recording or invalid official intent/speaker')
+            info = sf.info(io.BytesIO(raw))
+            if (info.format != 'WAV' or info.samplerate != 16000
+                    or info.channels != 1 or info.frames <= 0):
+                raise ValueError('unexpected audio format')
+            ids.add(uid)
+            hashes.add(digest)
+            rates[info.samplerate] += 1
+            rel = 'audio/' + digest + '.wav'
+            (root / rel).write_bytes(raw)
+            rows.append(dict(id=uid, audio=rel, audio_sha256=digest, panel=ph))
+            gold.append(dict(id=uid, audio_sha256=digest, gold=label, group=str(speaker)))
+    groups = len({item['group'] for item in gold})
+    if (sample.metadata.num_rows, len(rows), groups) != tuple(view['population']) or set(
+            item['gold'] for item in gold) != set(classes):
+        raise ValueError('recording population, speaker roster or class coverage changed')
+    dump(root / 'inference' / dataset / 'panels.json', {ph: panel})
+    dump(root / 'inference' / dataset / 'rows.json', rows)
+    dump(root / 'scoring' / dataset / 'targets.json', gold)
+    dump(root / 'MANIFEST.json', dict(
+        schema='jev-semantic-evaluation-seal-v1', prompt_layout=PREFIX_LAYOUT,
+        threshold=.5, target_tuning_allowed=False,
+        datasets={dataset: dict(split=view['split'], recordings=len(rows), candidates=len(classes),
+                                group_count=groups, group_unit='speaker')},
+        source=dict(repo=spec['id'], revision=spec['revision'], shards={
+            entry['path']: digests[kind] for kind, entry in view['files'].items()},
+                    source_rows=sample.metadata.num_rows, source_rates=dict(rates)),
+        files={str(p.relative_to(root)): file_hash(p) for p in sorted(root.rglob('*.json'))}))
+
+
 def prepare(c,name,root):
+    if c['sources'][name]['eval'].get('format') == 'wolbanking_audio_test':
+        return prepare_banking(c, c['sources'][name], root)
     import numpy as np
     import pyarrow.parquet as pq
     import soundfile as sf
@@ -112,7 +179,7 @@ def audit(root,dataset):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('config');p.add_argument('local');p.add_argument('name',choices=['sib','mmsu'])
+    p=argparse.ArgumentParser();p.add_argument('config');p.add_argument('local');p.add_argument('name')
     a=p.parse_args();c=load_config(a.config,a.local)[0];view=c['sources'][a.name]['eval']
     dest=Path(c['datasets'])/view['release'];ds=view['dataset']
     if not dest.exists():

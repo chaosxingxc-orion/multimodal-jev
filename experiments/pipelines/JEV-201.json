@@ -258,6 +258,245 @@
         ],
         "dispatch_guards": ["${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-ops", "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-semantic-v2-package"],
         "config": "experiments/pipelines/JEV-201-semantic.json"
+      },
+      {
+        "id": "wolbanking-transfer-v1",
+        "python": "${TPO_EVAL_PYTHON}",
+        "checks": [
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-ops/terminal.json",
+            "cite": "tpo-joint-top1/eval-201-wolbanking-v1-ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-ops/score-collected.json",
+            "cite": "tpo-joint-top1/eval-201-wolbanking-v1-ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-tpo-evaluation-v1"
+              ],
+              [
+                [
+                  "seals",
+                  "WolBanking77_audio_test10"
+                ],
+                "71f7ba98a584279bf5e484a325da606b3a6c5be4ab2b7ceccdad084ce0c3486d"
+              ],
+              [
+                [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "paired",
+                  "noul",
+                  "cluster_count"
+                ],
+                16
+              ],
+              [
+                [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "paired",
+                  "choice",
+                  "cluster_count"
+                ],
+                16
+              ]
+            ],
+            "report": {
+              "Noul 按说话人配对 macro-F1 差 95% 区间": [
+                "datasets",
+                "WolBanking77_audio_test10",
+                "paired",
+                "noul",
+                "macro_f1_delta_ci95"
+              ],
+              "Choice 按说话人配对 macro-F1 差 95% 区间": [
+                "datasets",
+                "WolBanking77_audio_test10",
+                "paired",
+                "choice",
+                "macro_f1_delta_ci95"
+              ]
+            }
+          }
+        ],
+        "inputs": [
+          {
+            "path": "${DATASETS_ROOT}/wolbanking77-jev/audio-test10-v1/MANIFEST.json",
+            "cite": "wolbanking77-jev/audio-test10-v1/MANIFEST.json",
+            "sha256": "71f7ba98a584279bf5e484a325da606b3a6c5be4ab2b7ceccdad084ce0c3486d",
+            "equals": [
+              [
+                [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "recordings"
+                ],
+                641
+              ],
+              [
+                [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "candidates"
+                ],
+                10
+              ],
+              [
+                [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "group_count"
+                ],
+                16
+              ],
+              [
+                [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "group_unit"
+                ],
+                "speaker"
+              ],
+              [
+                [
+                  "target_tuning_allowed"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${TPO_EVIDENCE_ROOT}/full-train-stratified-v1/packages-192/formal/config.json",
+            "cite": "full-train-stratified-v1/packages-192/formal/config.json",
+            "equals": [
+              [
+                [
+                  "source_policy_id"
+                ],
+                "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b"
+              ]
+            ]
+          }
+        ],
+        "panels": [
+          {
+            "id": "WolBanking77_audio_test10 / Noul",
+            "scope": "SIB-FLEURS 英语话题（跨任务）",
+            "population": 641,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Step 34",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "tpo"
+                ],
+                "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+                "metrics": {
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Top-1 accuracy": "top1_accuracy",
+                  "平均原始 Top-1 概率": "mean_top1_probability"
+                }
+              },
+              {
+                "label": "Stage1 step 160",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Top-1 accuracy": "top1_accuracy",
+                  "平均原始 Top-1 概率": "mean_top1_probability"
+                }
+              }
+            ]
+          },
+          {
+            "id": "WolBanking77_audio_test10 / Choice",
+            "scope": "SIB-FLEURS 英语话题（跨任务）",
+            "population": 641,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Step 34",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "choices",
+                  "tpo"
+                ],
+                "policy": "0583dbd897257bf73b596842db55a80f4f33cfa58c3e9d4025e0317e522b4912",
+                "metrics": {
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Top-1 accuracy": "top1_accuracy",
+                  "平均候选内 Top-1 概率": "mean_top1_probability",
+                  "误拒率": "false_none_rate"
+                }
+              },
+              {
+                "label": "Stage1 step 160",
+                "proof": 1,
+                "path": [
+                  "datasets",
+                  "WolBanking77_audio_test10",
+                  "choices",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Top-1 accuracy": "top1_accuracy",
+                  "平均候选内 Top-1 概率": "mean_top1_probability",
+                  "误拒率": "false_none_rate"
+                }
+              }
+            ]
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_tpo_evaluation",
+            "experiments/pipelines/JEV-201-wolbanking.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-package/operations-local.json"
+          ]
+        ],
+        "dispatch_guards": [
+          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-ops",
+          "${TPO_EVIDENCE_ROOT}/tpo-joint-top1/eval-201-wolbanking-v1-package"
+        ],
+        "config": "experiments/pipelines/JEV-201-wolbanking.json"
       }
     ]
   }
