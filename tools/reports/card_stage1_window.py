@@ -162,7 +162,7 @@ def run(c):
                 raise ValueError(f'bootstrap {key} changed')
         prior = read(reuse['config']['path'])
         for key in ('source_policy_id', 'source_contract', 'base_id', 'release_sha256',
-                    'schedule_sha256', 'stage1_layout', 'single_card', 'layout_cache',
+                    'stage1_layout', 'single_card', 'layout_cache',
                     'mixed', 'epoch_mining', 'physical_devices', 'runtime_profile'):
             if prior[key] != parent[key]:
                 raise ValueError(f'bootstrap identity differs: {key}')

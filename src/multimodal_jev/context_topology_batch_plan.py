@@ -18,10 +18,11 @@ def derive(config):
     model_parallel = c['tensor_parallel'] * c['pipeline_parallel']
     if c['training_devices'] % model_parallel:
         raise ValueError('training devices must contain complete TP/PP replicas')
-    if (c['per_dp_replica_batch'] not in ((64,128) if c['inference_instances']==0 else (64,)) or c['microbatch'] not in ((2, 4, 8, 16, 32, 64) if c['inference_instances']==0 else (8, 16, 32))
+    if (c['per_dp_replica_batch'] not in ((64,96,128) if c['inference_instances']==0 else (64,)) or c['microbatch'] not in ((2, 4, 8, 16, 24, 32, 64) if c['inference_instances']==0 else (8, 16, 32))
+            or c['per_dp_replica_batch'] % c['microbatch']
             or c['inference_batch_queries'] not in (32, 48)
             or c['efficiency_steps'] > 100):
-        raise ValueError('local effective64 (Stage1 also128), micro8/16/32 (Stage1 also2/4/64), inference32/48, at most100 steps required')
+        raise ValueError('divisible local batch required: effective64 (Stage1 also96/128), micro8/16/32 (Stage1 also2/4/24/64), inference32/48, at most100 steps required')
     dp = c['training_devices'] // model_parallel
     global_batch = c['per_dp_replica_batch'] * dp
     per_epoch = math.ceil(c['source_queries'] / global_batch)

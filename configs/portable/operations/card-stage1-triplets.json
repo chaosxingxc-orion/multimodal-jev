@@ -39,7 +39,7 @@
     "checkpoint_interval": 80,
     "master_addr": "127.0.0.1",
     "master_port": 29500,
-    "execution_microbatch": 32,
+    "execution_microbatch": 24,
     "prepared_mixed": {
       "root": "/jev-acoustic-prepare",
       "receipt_sha256": "2036a28f133cb359353236adaf053ce2ceb2efcb1f90f52eac9d2f1191f32585"
@@ -74,13 +74,9 @@
       "zipf_exponent": 1.0,
       "bootstrap_per_class": 4
     },
-    "effective_anchors_per_rank": 128,
+    "effective_anchors_per_rank": 96,
     "capacity_widths": [
-      32,
-      16,
-      8,
-      4,
-      2
+      24
     ],
     "bootstrap_input": {
       "config": {

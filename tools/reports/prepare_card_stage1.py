@@ -82,7 +82,8 @@ def run(c):
         pop = {r['id']:r for r in real+extension[0]}
         batch_config = dict(d['batch_config'])
         if 'effective_anchors_per_rank' in c['window']:
-            batch_config['per_dp_replica_batch'] = c['window']['effective_anchors_per_rank']
+            batch_config.update(per_dp_replica_batch=c['window']['effective_anchors_per_rank'],
+                                microbatch=c['window']['execution_microbatch'])
         _, schedule_proof = schedule(pop,batch_config,c['seed'])
         commit_json(entry/'mixed-schedule.json',schedule_proof)
         parent.update(mixed=dict(real_release_sha256=parent['release_sha256'],seed=c['seed'],
