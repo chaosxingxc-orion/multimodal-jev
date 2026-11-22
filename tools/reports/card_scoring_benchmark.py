@@ -1,6 +1,7 @@
 """Benchmark single-card source TRAIN scoring using independent NPU replicas."""
 import argparse
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import chain, islice
 import json
 import os
@@ -57,6 +58,8 @@ def make_panel(c, output):
             raise ValueError('benchmark only admits source TRAIN')
         by_class[row['intent']].append(row)
     randomizer = random.Random(c['seed'])
+    if len({row['id'] for row in chain(real, synth)}) != len(real)+len(synth):
+        raise ValueError('duplicate TRAIN recording')
     sample = [row for label in labels
               for row in randomizer.sample(by_class[label], c['panel_per_class'])]
     sample_ids = {row['id'] for row in sample}
@@ -71,6 +74,11 @@ def make_panel(c, output):
                  source_cards_sha256=c['cards']['sha256'], source_training_sha256=c['training']['sha256'],
                  cache_proof_sha256=c['acoustics']['sha256'])
     commit_json(output, panel)
+    if c.get('formal'):
+        full = sorted(chain(real, synth), key=lambda row: row['id'])
+        commit_json(output.with_name('full.json'), dict(panel, rows=[
+            dict(id=row['id'], intent=row['intent'], synthetic=row['id'] in synth_ids,
+                 binding=acoustic_binding(row, spec)) for row in full]))
     return panel
 
 
@@ -135,6 +143,23 @@ def length_order(compiled, window):
         yield from block
 
 
+def scoring_lineage(c, ordinal):
+    formal = c['formal']
+    return content_key('full-train-scoring-v1', formal['policy_id'], formal['image'],
+                       formal['recordings_per_block'], c['full']['sha256'], c['source']['sha256'],
+                       c['policy_sha256'], c['cards']['sha256'], c['training']['sha256'],
+                       c['devices'], ordinal, c['widths'], c['streaming'], c['io_workers'],
+                       c['prefetch_audio'], c['torch_threads'], c['max_model_len'])
+
+
+def read_block(path, lineage):
+    block = json.loads(path.read_bytes())
+    if (block['lineage'] != lineage or
+            content_key(block['payload']) != block['sha256']):
+        raise ValueError(f'scoring block identity differs: {path.name}')
+    return block['payload']
+
+
 def worker(c, output, ordinal):
     import torch
     from contextlib import nullcontext
@@ -147,8 +172,12 @@ def worker(c, output, ordinal):
     panel, catalog = load_panel(c)
     train = pinned(c['training'])
     pid = panel['source_policy_id']
+    initial_policy = pid
+    formal = c.get('formal')
+    if formal:
+        pid = formal['policy_id']
     devices = c['devices']
-    if (train['source_policy_id'] != pid or panel['source_training_sha256'] != c['training']['sha256']
+    if (train['source_policy_id'] != initial_policy or panel['source_training_sha256'] != c['training']['sha256']
             or file_hash(Path(c['policy'])/'MANIFEST.json') != c['policy_sha256']
             or checkpoint_identity(train['model'])[0] != train['base_id']):
         raise ValueError('baseline weights or training configuration changed')
@@ -174,18 +203,19 @@ def worker(c, output, ordinal):
             compiled = list(queue)
         ordered = list(length_order(compiled, len(rows)))
     startup_seconds = time.monotonic()-start
-    row_order = {row['id']: index for index, row in enumerate(rows)}
 
-    def measure(width, legacy, *, settings=None):
+    def measure(width, legacy, *, settings=None, selected=None):
+        selected = rows if selected is None else selected
+        row_order = {r['id']: i for i, r in enumerate(selected)}
         if streaming:
             workers, ahead = (settings or (c['io_workers'], c['prefetch_audio']))
-            stream = OrderedPrefetch(encode, rows, workers=workers, ahead=ahead)
+            stream = OrderedPrefetch(encode, selected, workers=workers, ahead=ahead)
         else:
             stream = nullcontext(compiled if legacy else ordered)
         with torch.inference_mode(), stream as queue:
             tick = time.monotonic()
             torch.npu.reset_peak_memory_stats()
-            prob = [[None]*len(cards) for _ in rows]
+            prob = [[None]*len(cards) for _ in selected]
             calls = Counter()
             records = length_order(queue, streaming['length_window']) if streaming and not legacy else queue
             groups = iter(batches((per_audio for _, per_audio in records), width,
@@ -210,11 +240,54 @@ def worker(c, output, ordinal):
                 calls[len(group)] += 1
             result = dict(seconds=time.monotonic()-tick, peak_bytes=torch.npu.max_memory_allocated(),
                           batch_sizes=dict(calls), records=[dict(id=r['id'], prob=p)
-                                                           for r, p in zip(rows, prob, strict=True)])
+                                                           for r, p in zip(selected, prob, strict=True)])
             if streaming:
                 result['input_timing'] = dict(workers=workers, ahead=ahead, first_batch=first_batch,
                                               input_wait=input_wait, forward=forward)
             return result
+
+    if formal:
+        from tools.reports.audit_card_scoring_benchmark import predictions
+        full = pinned(c['full'])
+        if (len(full['rows']) != panel['population'] or full['labels'] != panel['labels']
+                or full['cache_proof_sha256'] != panel['cache_proof_sha256']):
+            raise ValueError('formal TRAIN roster differs')
+        width, = c['widths']
+        legacy_width = train['epoch_mining']['forward_rows']
+        baseline, candidate = measure(legacy_width, True), measure(width, False)
+        ids = [r['id'] for r in rows]
+        r, _ = predictions(baseline, ids, panel['labels'], legacy_width)
+        p, sizes = predictions(candidate, ids, panel['labels'], width)
+        if r != p or not sizes.get(width):
+            raise ValueError('endpoint scoring admission requires a full batch and exact probabilities')
+        commit_json(output/'baseline.json', baseline)
+        commit_json(output/f'batch-{width}.json', candidate)
+        shard = full['rows'][ordinal::len(devices)]
+        size = formal['recordings_per_block']
+        lineage = scoring_lineage(c, ordinal)
+        resumed = Path(formal['resume_from'])/f'worker-{ordinal}' if formal.get('resume_from') else None
+        if resumed is not None and resumed.exists() and (
+                json.loads((resumed/'lineage.json').read_bytes()) != {'sha256': lineage}):
+            raise ValueError('resume requires identical frozen inputs and runtime')
+        commit_json(output/'lineage.json', dict(sha256=lineage))
+        blocks = []
+        tick = time.monotonic()
+        for i, offset in enumerate(range(0, len(shard), size)):
+            batch = shard[offset:offset+size]
+            name = f'block-{i:06d}.json'
+            saved = resumed/name if resumed else None
+            reused = saved is not None and saved.is_file()
+            if reused:
+                block = read_block(saved, lineage)
+            else:
+                block = measure(width, False, selected=batch)
+            predictions(block, [r['id'] for r in batch], panel['labels'], width)
+            commit_json(output/name, dict(lineage=lineage, sha256=content_key(block), payload=block))
+            blocks.append(dict(name=name, sha256=file_hash(output/name), reused=reused))
+        commit_json(output/'result.json', dict(device=devices[ordinal], rows=len(shard),
+                    cache_and_model_seconds=startup_seconds, scoring_seconds=time.monotonic()-tick,
+                    blocks=blocks, lineage=lineage))
+        return
 
     for width in c['widths']:
         arms = tuple(streaming['arms'].items()) if streaming else (('', None),)
@@ -235,32 +308,58 @@ def worker(c, output, ordinal):
                                           cache_and_model_seconds=startup_seconds))
 
 
+def host_memory():
+    # cgroup counters for host RAM, independent of accelerator memory.
+    root = Path('/sys/fs/cgroup')
+    result = {}
+    for name in ('memory.max', 'memory.current', 'memory.peak', 'memory.swap.current',
+                 'memory.events', 'memory.stat', 'memory.pressure'):
+        path = root/name
+        if path.is_file():
+            result[name] = path.read_text().strip()
+    return result
+
+
 def run(c):
     output = Path(c['output'])
+    start = time.monotonic()
     output.mkdir()
+    memory_before = host_memory() if 'formal' in c else None
     workers = []
-    for index, _ in enumerate(c['devices']):
-        path = output/f'worker-{index}'
-        env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES=str(index), OMP_NUM_THREADS=str(c['torch_threads']))
-        scratch = Path(env['TMPDIR'])/path.name
-        scratch.mkdir()
-        for name in ('TMPDIR','HF_HOME','XDG_CACHE_HOME','ASCEND_WORK_PATH','ASCEND_CACHE_PATH'):
-            env[name] = str(scratch)
-        args = [sys.executable, '-B', '-m', __spec__.name, 'worker', c['worker_config'], str(path), str(index)]
-        workers.append(subprocess.Popen(args, env=env))
-    try:
-        deadline = time.monotonic()+c['worker_timeout_seconds']
-        codes = [p.wait(timeout=max(0, deadline-time.monotonic())) for p in workers]
-    finally:
-        for p in workers:
-            if p.poll() is None:
+    with ThreadPoolExecutor(max_workers=len(c['devices'])) as pool:
+        try:
+            for index, _ in enumerate(c['devices']):
+                path = output/f'worker-{index}'
+                env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES=str(index),
+                           OMP_NUM_THREADS=str(c['torch_threads']))
+                scratch = Path(env['TMPDIR'])/path.name
+                scratch.mkdir()
+                for name in ('TMPDIR', 'HF_HOME', 'XDG_CACHE_HOME', 'ASCEND_WORK_PATH', 'ASCEND_CACHE_PATH'):
+                    env[name] = str(scratch)
+                args = [sys.executable, '-B', '-m', __spec__.name, 'worker',
+                        c['worker_config'], str(path), str(index)]
+                workers.append(subprocess.Popen(args, env=env))
+            exits = {pool.submit(p.wait): ordinal for ordinal, p in enumerate(workers)}
+            for done in as_completed(exits, timeout=c['worker_timeout_seconds']):
+                if code := done.result():
+                    raise RuntimeError(f'scoring worker {exits[done]} exited {code}')
+        finally:
+            active = [p for p in workers if p.poll() is None]
+            for p in active:
                 p.terminate()
-                p.wait()
-    if any(codes):
-        raise RuntimeError(f'scoring worker exits: {codes}')
+            for p in active:
+                try:
+                    p.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    p.kill()
+                    p.wait()
     receipt = dict(devices=c['devices'], panel_sha256=c['panel']['sha256'],
                    workers=[json.loads((output/f'worker-{i}'/'result.json').read_bytes())
                             for i in range(len(workers))])
+    if 'formal' in c:
+        receipt.update(full_sha256=c['full']['sha256'], policy_id=c['formal']['policy_id'],
+                       policy_sha256=c['policy_sha256'], worker_wall_seconds=time.monotonic()-start,
+                       host_memory=dict(before=memory_before, after=host_memory()))
     commit_json(output/'receipt.json', receipt)
     return receipt
 

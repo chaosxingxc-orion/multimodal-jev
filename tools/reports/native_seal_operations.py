@@ -20,6 +20,23 @@ from multimodal_jev.local_runtime_storage import check_paths
 from multimodal_jev.baseline import file_hash
 
 
+RESOURCE_POLICY = Path(__file__).resolve().parents[2]/'configs/portable/operations/experiment-container-resources.json'
+
+
+def container_memory(requested, minimum_gib):
+    match = re.fullmatch(r'([1-9][0-9]*)([bkmg]?)', requested)
+    if not match or type(minimum_gib) is not int or minimum_gib < 1:
+        raise ValueError('explicit positive container memory configuration required')
+    units = {'': 1, 'b': 1, 'k': 2**10, 'm': 2**20, 'g': 2**30}
+    return max(int(match[1])*units[match[2]], minimum_gib*2**30)
+
+
+def verify_memory(observed, argv):
+    expected = int(argv[argv.index('--memory')+1])
+    if observed['HostConfig']['Memory'] != expected:
+        raise ValueError('actual Docker memory limit differs from the deployment')
+
+
 def run_group(group, launch, failed):
     """A failed lane blocks only its own dependent phases."""
     ready = [job for job in group if job.get('lane') not in failed]
@@ -73,6 +90,10 @@ def wait_for_devices(predecessors, checked, remote, record):
 
 
 def run(c, on_started=None):
+    memory_policy = json.loads(RESOURCE_POLICY.read_bytes())
+    minimum_memory = memory_policy['minimum_memory_gib']
+    limits = {job['name']: container_memory(job['memory'], minimum_memory)
+              for chain in c['chains'] for group in chain for job in group}
     root = Path(c['operations'])
     check_paths({'evaluation operations': root})
     root.mkdir(parents=True, exist_ok=False)
@@ -161,7 +182,7 @@ def run(c, on_started=None):
                     raise ValueError('remote frozen entry changed')
                 commit_json(root/(role+'-admission.json'),dict(entry_pins=c['entry_pins'],idle_devices=required_idle))
         argv = ['docker','create','--pull=never','--network=none','--name',c['tag']+'-'+role,
-                '--cpus',str(job['cpus']),'--memory',job['memory'],'--shm-size',job['shm'],
+                '--cpus',str(job['cpus']),'--memory',str(limits[role]),'--shm-size',job['shm'],
                 '--log-driver=json-file','--log-opt','max-size=100m','--log-opt','max-file=3']
         if devices:
             for name in [*(f'davinci{i}' for i in devices), 'davinci_manager','devmm_svm','hisi_hdc']:
@@ -193,7 +214,9 @@ def run(c, on_started=None):
             raise ValueError('exact container ID missing')
         h = dict(container_id=cid, argv=argv, host=host, remote_root=remote_root)
         commit_json(root/(role+'-launch.json'), h)
-        inspect_runtime(json.loads(checked(['docker','inspect',cid]))[0], h)
+        created, = json.loads(checked(['docker','inspect',cid]))
+        inspect_runtime(created, h)
+        verify_memory(created, argv)
         checked(['docker','start',cid])
         if on_started is not None:
             on_started(role)
@@ -204,6 +227,7 @@ def run(c, on_started=None):
         (root/(role+'.log')).write_text(logs.stdout+logs.stderr)
         commit_json(root/(role+'-wait.json'), dict(exit_code=code))
         inspect_runtime(observation, h, terminal=True)
+        verify_memory(observation, argv)
         if 'collect' in job:
             source = remote_root+'/'+job['collect']
             raw = checked(['cat',source])

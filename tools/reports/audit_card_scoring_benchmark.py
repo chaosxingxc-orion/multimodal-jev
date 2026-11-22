@@ -7,6 +7,7 @@ from pathlib import Path
 import statistics
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.context_execution import map_cpu, map_io
 from multimodal_jev.local_checkpoint import commit_json
 
 
@@ -99,10 +100,109 @@ def measure_width(members, width, panel, reference, atol, name='', settings=None
     return summary
 
 
+def validate_block(task):
+    from tools.reports.card_scoring_benchmark import read_block
+
+    path, lineage, ids, labels, width, settings = task
+    payload = read_block(path, lineage)
+    predictions(payload, ids, labels, width)
+    validate_timing(payload, settings)
+
+
+def validate_timing(result, settings):
+    timing = result['input_timing']
+    if ((timing['workers'], timing['ahead']) != tuple(settings)
+            or not 0 < timing['first_batch'] <= result['seconds']
+            or not 0 < timing['input_wait'] <= result['seconds']
+            or not 0 < timing['forward'] <= result['seconds']
+            or timing['input_wait']+timing['forward'] > result['seconds']):
+        raise ValueError('scoring input concurrency or timing differs')
+
+
+def audit_formal(root, entry, c, panel, receipt, cid):
+    from tools.reports.card_scoring_benchmark import scoring_lineage
+
+    formal = c['formal']
+    full = read(entry/'full.json')
+    identities = dict(full_sha256=c['full']['sha256'], policy_id=formal['policy_id'],
+                      policy_sha256=c['policy_sha256'])
+    if (any(receipt[k] != v for k, v in identities.items())
+            or file_hash(entry/'full.json') != c['full']['sha256']
+            or file_hash(entry/'training.json') != c['training']['sha256']
+            or full['labels'] != panel['labels'] or full['population'] != panel['population']
+            or full['source_training_sha256'] != c['training']['sha256']):
+        raise ValueError('scoring input or endpoint identity differs')
+
+    labels = panel['labels']
+    roster = [row['id'] for row in full['rows']]
+    if len(roster) != panel['population'] or len(set(roster)) != len(roster):
+        raise ValueError('full TRAIN roster differs')
+    width, = c['widths']
+    baseline_width = read(entry/'training.json')['epoch_mining']['forward_rows']
+    replicas = len(c['devices'])
+    size = formal['recordings_per_block']
+
+    def inspect_worker(ordinal):
+        worker = receipt['workers'][ordinal]
+        directory = root/f'worker-{ordinal}'
+        ids = roster[ordinal::replicas]
+        lineage = scoring_lineage(c, ordinal)
+        if (worker['device'] != c['devices'][ordinal] or worker['rows'] != len(ids)
+                or worker['lineage'] != lineage or read(directory/'lineage.json') != {'sha256': lineage}
+                or read(directory/'result.json') != worker):
+            raise ValueError('worker identity or full TRAIN roster differs')
+        panel_ids = [row['id'] for row in panel['rows'][ordinal::replicas]]
+        baseline = read(directory/'baseline.json')
+        candidate = read(directory/f'batch-{width}.json')
+        settings = (c['io_workers'], c['prefetch_audio'])
+        validate_timing(baseline, settings)
+        validate_timing(candidate, settings)
+        ref, _ = predictions(baseline, panel_ids, labels, baseline_width)
+        observed, counts = predictions(candidate, panel_ids, labels, width)
+        if ref != observed or not counts.get(width):
+            raise ValueError('endpoint panel probabilities differ or candidate had no full batch')
+        offsets = range(0, len(ids), size)
+        names = [f'block-{index:06d}.json' for index in range(len(offsets))]
+        if ([block['name'] for block in worker['blocks']] != names
+                or sorted(p.name for p in directory.glob('block-*.json')) != names):
+            raise ValueError('missing, extra or out of order scoring blocks')
+
+        tasks, reused_records = [], 0
+        for offset, block in zip(offsets, worker['blocks'], strict=True):
+            path = directory/block['name']
+            if file_hash(path) != block['sha256'] or type(block['reused']) is not bool:
+                raise ValueError('scoring block changed after commit')
+            tasks.append((path, lineage, ids[offset:offset+size], labels, width, settings))
+            if block['reused']:
+                reused_records += min(size, len(ids)-offset)
+        seconds = worker['scoring_seconds']
+        if not 0 < seconds <= receipt['worker_wall_seconds'] < math.inf:
+            raise ValueError('invalid independent scoring wall intervals')
+        return tasks, dict(reused_records=reused_records, seconds=seconds,
+                           result_sha256=file_hash(directory/'result.json'))
+
+    results, _ = map_io(inspect_worker, range(replicas), workers=c['io_workers'])
+    map_cpu(validate_block, (task for tasks, _ in results for task in tasks),
+            workers=c['cpu_workers'], min_parallel=c['audit_min_parallel_blocks'])
+    workers = [worker for _, worker in results]
+    recordings = len(roster)
+    reused = sum(worker['reused_records'] for worker in workers)
+    pairs = recordings*len(labels)
+    seconds = max(worker['seconds'] for worker in workers)
+    return dict(passed=True, container_id=cid, **identities, recordings=recordings, pairs=pairs,
+                labels=labels, replicas=replicas, batch_rows=width, io_workers=c['io_workers'],
+                prefetch_audio=c['prefetch_audio'], updates=formal['updates'],
+                panel_pairs=len(panel['rows'])*len(labels), scoring_seconds=seconds,
+                worker_wall_seconds=receipt['worker_wall_seconds'], reused_recordings=reused,
+                new_pairs_per_second=(recordings-reused)*len(labels)/seconds,
+                workers=workers, container_exited=True)
+
+
 def audit(root, entry, operations):
     c = read(entry/'score.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
     panel = read(entry/'panel.json')
-    cid = read(operations/'score-launch.json')['container_id']
+    launch = read(operations/'score-launch.json')
+    cid = launch['container_id']
     capture = read(operations/'score-inspect.json')
     receipt = read(root/'receipt.json')
     if (capture['Id'] != cid or capture['State']['Status'] != 'exited' or
@@ -113,6 +213,21 @@ def audit(root, entry, operations):
             file_hash(entry/'panel.json') != c['panel']['sha256'] or
             receipt['panel_sha256'] != c['panel']['sha256']):
         raise ValueError('no complete device release or panel identity')
+    if 'formal' in c:
+        from tools.reports.context_macro_probe_operations import inspect_runtime
+
+        from tools.reports.native_seal_operations import verify_memory
+
+        inspect_runtime(capture, launch, terminal=True)
+        verify_memory(capture, launch['argv'])
+        admission = read(operations/'score-admission.json')
+        if (c['devices'] != admission['idle_devices']
+                or admission['entry_pins']['score.json'] != file_hash(entry/'score.json')
+                or c['source']['sha256'] != admission['entry_pins']['source/FILES.json']
+                or c['cards']['sha256'] != file_hash(entry/'cards.json')):
+            raise ValueError('scoring admission or frozen configuration changed')
+        return dict(audit_formal(root, entry, c, panel, receipt, cid),
+                    memory_limit_bytes=capture['HostConfig']['Memory'])
     labels = panel['labels']
     count = len(c['devices'])
     members, reference, old_seconds = [], {}, []

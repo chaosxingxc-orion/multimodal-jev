@@ -1,0 +1,42 @@
+{
+  "output": "${CARD_SCORE_FORMAL_PACKAGE}",
+  "deployment": "${CARD_SCORE_FORMAL_DEPLOYMENT}",
+  "inputs": "${CARD_SCORE_FORMAL_INPUTS}",
+  "seed": 317,
+  "panel_per_class": 2,
+  "long_audio_count": 8,
+  "card_arm": "rules",
+  "widths": [
+    128
+  ],
+  "max_model_len": 4096,
+  "io_workers": 8,
+  "prefetch_audio": 16,
+  "streaming": {
+    "length_window": 8
+  },
+  "torch_threads": 2,
+  "worker_timeout_seconds": 36000,
+  "probability_atol": 2e-06,
+  "resources": {
+    "cpus": 96,
+    "memory": "1024g",
+    "shm": "8g"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ],
+  "formal": {
+    "epoch_handoff": "${CARD_EPOCH_HANDOFF}",
+    "synthetic_cache": "${CARD_SCORE_SYNTHETIC_CACHE}",
+    "resume_from": "${CARD_SCORE_RESUME_FROM}"
+  },
+  "replicas": 8,
+  "recordings_per_block": 256,
+  "cpu_workers": 8,
+  "audit_min_parallel_blocks": 16
+}

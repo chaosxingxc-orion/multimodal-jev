@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "card-audio-triplets-v3",
+  "revision": "epoch1-scoring-v1",
   "stages": {
     "data": [
       {
@@ -26,23 +26,7 @@
     ],
     "train": [
       {
-        "id": "dispatch-mixed-card-stage1",
-        "config": "configs/portable/operations/card-stage1-triplets.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-triplets.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ],
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${CARD_PACKAGE}/operations-local.json"
-          ]
-        ],
+        "id": "stage1-epoch1-handoff",
         "checks": [
           {
             "path": "${CARD_ROOT}/ops/prepare-collected.json",
@@ -87,31 +71,185 @@
             ]
           },
           {
-            "path": "${CARD_ROOT}/ops/formal-collected.json",
+            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
             "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
               [
                 [
                   "updates"
                 ],
-                286
+                143
               ],
               [
                 [
-                  "engineering_prefix"
+                  "container_exited"
                 ],
-                false
+                true
               ]
-            ]
+            ],
+            "report": {
+              "container_id": [
+                "container_id"
+              ],
+              "policy_id": [
+                "policy_id"
+              ],
+              "updates": [
+                "updates"
+              ]
+            }
           }
         ]
       },
       {
         "id": "evaluate-expanded-endpoint",
-        "pending": "新末点提交后绑定其 policy ID，执行原生评测面板和完整官方 TEST 的联合意图准确率。"
+        "pending": "第 143 步检查点的源域及迁移评测独立登记；当前优先执行 TRAIN 打分交接。"
       },
       {
         "id": "score-full-train",
-        "pending": "混合 Stage1 端点及打分候选冻结后在 181 八实例生成固定参考。"
+        "config": "configs/portable/operations/card-scoring-full-train.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_card_scoring_benchmark",
+            "configs/portable/operations/card-scoring-full-train.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                143
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ]
+            ],
+            "report": {
+              "container_id": [
+                "container_id"
+              ],
+              "policy_id": [
+                "policy_id"
+              ],
+              "updates": [
+                "updates"
+              ]
+            }
+          }
+        ],
+        "dispatch_guards": [
+          "${CARD_SCORE_FORMAL_PACKAGE}/entry.tar"
+        ],
+        "checks": [
+          {
+            "path": "${CARD_SCORE_FORMAL_PACKAGE}/audit.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                143
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                109610
+              ],
+              [
+                [
+                  "pairs"
+                ],
+                7453480
+              ],
+              [
+                [
+                  "replicas"
+                ],
+                8
+              ],
+              [
+                [
+                  "batch_rows"
+                ],
+                128
+              ],
+              [
+                [
+                  "io_workers"
+                ],
+                8
+              ],
+              [
+                [
+                  "prefetch_audio"
+                ],
+                16
+              ],
+              [
+                [
+                  "panel_pairs"
+                ],
+                9792
+              ],
+              [
+                [
+                  "memory_limit_bytes"
+                ],
+                1099511627776
+              ]
+            ],
+            "report": {
+              "policy_id": [
+                "policy_id"
+              ],
+              "recordings": [
+                "recordings"
+              ],
+              "pairs": [
+                "pairs"
+              ],
+              "wall_seconds": [
+                "wall_seconds"
+              ],
+              "reused_recordings": [
+                "reused_recordings"
+              ]
+            }
+          }
+        ]
       },
       {
         "id": "build-fused-stage2-view",
