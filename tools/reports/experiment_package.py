@@ -522,7 +522,7 @@ def publish_wiki(experiment):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("plan", "status", "run", "resume", "publish"), nargs="?", default="plan")
+    parser.add_argument("action", choices=("plan", "status", "run", "resume", "publish", "capacity"), nargs="?", default="plan")
     parser.add_argument("--experiment", help="Experiment ID in the committed queue")
     parser.add_argument("--local", type=Path, default=LOCAL)
     parser.add_argument("--publish", action="store_true", help="Sync the generated Wiki changes to origin/main")
@@ -531,6 +531,10 @@ def main():
     if args.publish and args.action not in {"run", "resume"}:
         parser.error("--publish is available with run or resume")
     try:
+        if args.action == "capacity":
+            from tools.reports.card_capacity_sweep import capacity
+            print(json.dumps(capacity(args.experiment, args.local), indent=2))
+            return 0
         result = execute(args.action, args.experiment, args.local, publish=args.publish,
                          wait_for_ledger=args.wait_for_ledger)
     except (KeyError, OSError, TypeError, ValueError, subprocess.CalledProcessError) as exc:
