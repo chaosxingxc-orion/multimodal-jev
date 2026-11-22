@@ -81,6 +81,12 @@ def collect(package, count, timeout):
     def remote(*args):
         return subprocess.check_output(['ssh', '-o', 'BatchMode=yes', host, shlex.join(args)])
 
+    # The launcher records the container ID before Docker starts and before
+    # formal/config.json exists. Observe its first commits before reading it.
+    planned_devices = read(entry/'training.json')['physical_devices']
+    world = len(planned_devices)
+    prefix = dict(root=str(base/'formal'), world=world, updates=count, timeout=timeout)
+    observed = json.loads(remote('python3', '-c', REMOTE.replace('CONFIG', repr(prefix), 1)))
     cfg_raw = remote('cat', str(base/'formal/config.json'))
     config = json.loads(cfg_raw)
     prepare = read(ops/'prepare-collected.json')
@@ -99,13 +105,11 @@ def collect(package, count, timeout):
     if (finite['engineering_prefix'] is not True or finite['updates'] != 2
             or config['engineering_prefix'] is not False or config['training_dispatch_allowed'] is not True
             or config['start_update'] != 0 or config['stop_update'] != expected_stop
+            or config['physical_devices'] != planned_devices
             or config['source_policy_id'] != prepare['policy_id']
             or config['stage1_layout']['plan']['sha256'] != file_hash(entry/'card-plan.json')
             or config['layout_cache']['sha256'] != prepare['cache_sha256']):
         raise ValueError('formal config or finite receipt differs')
-    world = len(config['physical_devices'])
-    prefix = dict(root=str(base/'formal'), world=world, updates=count, timeout=timeout)
-    observed = json.loads(remote('python3', '-c', REMOTE.replace('CONFIG', repr(prefix), 1)))
     obj, = json.loads(remote('docker', 'inspect', h['container_id']))
     mapped = {d['PathOnHost'] for d in obj['HostConfig']['Devices'] if d['PathOnHost'].removeprefix('/dev/davinci').isdigit()}
     if (mapped != {f'/dev/davinci{i}' for i in config['physical_devices']}
