@@ -1,0 +1,224 @@
+{
+  "schema": "slurp-intent-cards-v1",
+  "examples_per_class": 2,
+  "cue_limit": 3,
+  "min_cue_texts": 3,
+  "seed": 317,
+  "pins": {
+    "clean_manifest": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "annotations": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e",
+    "truth": "4b5960e5610d64ffb8303bdb64daaac3226d0392b6424652a11991b9ca3ddec0",
+    "roster": "6bc3e69b9f87439284a26692c12a31d32fea62d969bf0508cb0aebe6618c31f1"
+  },
+  "activation": {
+    "alarm_query": "Check an existing alarm.",
+    "alarm_remove": "Cancel an alarm.",
+    "alarm_set": "Schedule an alarm.",
+    "audio_volume_down": "Reduce sound level.",
+    "audio_volume_mute": "Silence the sound.",
+    "audio_volume_other": "Change volume without a clear increase, decrease or mute request.",
+    "audio_volume_up": "Increase sound level.",
+    "calendar_query": "Ask about a calendar entry or schedule.",
+    "calendar_remove": "Delete a calendar entry.",
+    "calendar_set": "Create or schedule a calendar entry.",
+    "cooking_query": "Ask for cooking advice or information.",
+    "cooking_recipe": "Ask for a recipe or preparation instructions.",
+    "datetime_convert": "Convert between times or time zones.",
+    "datetime_query": "Ask for a time, date or day.",
+    "email_addcontact": "Add a person to the address book.",
+    "email_query": "Check messages or the inbox.",
+    "email_querycontact": "Look up contact information.",
+    "email_sendemail": "Compose or send an email.",
+    "general_greet": "Exchange a greeting.",
+    "general_joke": "Ask for a joke.",
+    "general_quirky": "Make a conversational or playful request to the assistant.",
+    "iot_cleaning": "Operate a cleaning device.",
+    "iot_coffee": "Operate a coffee maker.",
+    "iot_hue_lightchange": "Change the colour or setting of a light.",
+    "iot_hue_lightdim": "Reduce lighting brightness.",
+    "iot_hue_lightoff": "Switch a light off.",
+    "iot_hue_lighton": "Switch a light on.",
+    "iot_hue_lightup": "Increase lighting brightness.",
+    "iot_wemo_off": "Switch a connected appliance or plug off.",
+    "iot_wemo_on": "Switch a connected appliance or plug on.",
+    "lists_createoradd": "Create a list or add an item.",
+    "lists_query": "Read or check a list.",
+    "lists_remove": "Remove a list or list item.",
+    "music_dislikeness": "Express dislike of music.",
+    "music_likeness": "Express liking for music.",
+    "music_query": "Ask about a song, artist or music being played.",
+    "music_settings": "Adjust how music plays, such as playback mode.",
+    "news_query": "Ask for news or updates.",
+    "play_audiobook": "Play or control a spoken book.",
+    "play_game": "Start or play a game.",
+    "play_music": "Request music playback.",
+    "play_podcasts": "Play a podcast or episode.",
+    "play_radio": "Tune in to a radio station or broadcast.",
+    "qa_currency": "Ask about currencies, exchange rates or conversion.",
+    "qa_definition": "Ask what a word or expression means.",
+    "qa_factoid": "Ask for a factual answer.",
+    "qa_maths": "Request a mathematical calculation.",
+    "qa_stock": "Ask about shares, stock prices or markets.",
+    "recommendation_events": "Seek ideas for events or activities.",
+    "recommendation_locations": "Seek recommendations for places.",
+    "recommendation_movies": "Seek movie recommendations.",
+    "social_post": "Publish a post or message on social media.",
+    "social_query": "Ask about content or activity on social media.",
+    "takeaway_order": "Place an order for prepared food.",
+    "takeaway_query": "Ask about takeaway availability, an order or delivery.",
+    "transport_query": "Ask about travel options, routes or schedules.",
+    "transport_taxi": "Request a taxi or ride.",
+    "transport_ticket": "Request a transport ticket or information about ticketing.",
+    "transport_traffic": "Ask about road traffic.",
+    "weather_query": "Ask about weather conditions or forecasts."
+  },
+  "semantic_rules": [
+    {
+      "labels": [
+        "audio_volume_up",
+        "audio_volume_down",
+        "audio_volume_mute",
+        "audio_volume_other"
+      ],
+      "rule": "For volume, quieter maps to down, louder to up, silence to mute. “Change the volume” gives no direction."
+    },
+    {
+      "labels": [
+        "alarm_set",
+        "alarm_query",
+        "alarm_remove"
+      ],
+      "rule": "For alarms, asking which are already set is alarm_query. Asking to create one is alarm_set. Asking to cancel one is alarm_remove."
+    },
+    {
+      "labels": [
+        "calendar_set",
+        "calendar_query",
+        "calendar_remove",
+        "recommendation_events"
+      ],
+      "rule": "Distinguish changing your schedule, checking existing entries and seeking suggestions for things to do."
+    },
+    {
+      "labels": [
+        "iot_hue_lighton",
+        "iot_hue_lightoff",
+        "iot_hue_lightdim",
+        "iot_hue_lightup",
+        "iot_hue_lightchange"
+      ],
+      "rule": "For lights, distinguish power, brightness direction and colour by the change requested."
+    },
+    {
+      "labels": [
+        "iot_wemo_on",
+        "iot_wemo_off",
+        "iot_cleaning",
+        "iot_coffee"
+      ],
+      "rule": "Use the controlled object: a plug, a cleaner and a coffee maker can all be switched on."
+    },
+    {
+      "labels": [
+        "email_addcontact",
+        "email_querycontact",
+        "email_query",
+        "email_sendemail"
+      ],
+      "rule": "A named person can be a contact lookup, a contact being saved, a sender filter or a recipient; use the requested operation."
+    },
+    {
+      "labels": [
+        "play_audiobook",
+        "play_music",
+        "play_podcasts",
+        "play_radio",
+        "music_query",
+        "music_settings"
+      ],
+      "rule": "Use the requested medium; identifying what is playing and changing a playback setting differ from requesting content."
+    },
+    {
+      "labels": [
+        "music_likeness",
+        "music_dislikeness"
+      ],
+      "rule": "Distinguish approval from disapproval of the music; mention alone establishes neither."
+    },
+    {
+      "labels": [
+        "lists_createoradd",
+        "lists_remove",
+        "lists_query"
+      ],
+      "rule": "Distinguish adding, removing and reading list contents even when the same item is named."
+    },
+    {
+      "labels": [
+        "datetime_convert",
+        "datetime_query"
+      ],
+      "rule": "A request to convert between time frames differs from asking the time at one location."
+    },
+    {
+      "labels": [
+        "qa_currency",
+        "qa_stock"
+      ],
+      "rule": "Distinguish an exchange rate between currencies from a financial instrument’s price."
+    },
+    {
+      "labels": [
+        "social_query",
+        "social_post"
+      ],
+      "rule": "Reading social content differs from publishing it; the same platform can be named in both."
+    },
+    {
+      "labels": [
+        "takeaway_order",
+        "takeaway_query"
+      ],
+      "rule": "Distinguish placing a food order from asking about availability or an existing delivery."
+    },
+    {
+      "labels": [
+        "transport_query",
+        "transport_ticket",
+        "transport_traffic",
+        "transport_taxi"
+      ],
+      "rule": "Distinguish directions, obtaining a ticket, traffic conditions and requesting a ride."
+    },
+    {
+      "labels": [
+        "general_greet",
+        "general_joke"
+      ],
+      "rule": "Distinguish greeting the assistant from asking it to tell a joke."
+    },
+    {
+      "labels": [
+        "recommendation_locations",
+        "recommendation_movies"
+      ],
+      "rule": "Use what is being recommended: a place or a movie; a city may occur in either request."
+    },
+    {
+      "labels": [
+        "qa_definition",
+        "qa_maths",
+        "qa_factoid"
+      ],
+      "rule": "Distinguish asking for a meaning, a calculation and a factual answer by the operation requested."
+    }
+  ],
+  "unresolved_rules": {
+    "cooking_query": "No specific two-sided rule admitted in this draft.",
+    "cooking_recipe": "No specific two-sided rule admitted in this draft.",
+    "general_quirky": "No specific two-sided rule admitted in this draft.",
+    "news_query": "No specific two-sided rule admitted in this draft.",
+    "play_game": "No specific two-sided rule admitted in this draft.",
+    "weather_query": "No specific two-sided rule admitted in this draft."
+  }
+}
