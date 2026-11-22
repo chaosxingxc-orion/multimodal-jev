@@ -64,7 +64,10 @@ def main():
         from tools.reports.card_stage1_window import run
         print(json.dumps(run(c)))
         return
-    if c['phase'] == 'model_provider_probe':
+    if c['phase'] == 'card_scoring_benchmark':
+        from tools.reports.card_scoring_benchmark import run
+        result = run(c)
+    elif c['phase'] == 'model_provider_probe':
         from tools.reports.probe_audio_model_provider import run
         result = run(c['probe'])
     elif c['phase'] in {'tpo_eval_block_plan', 'tpo_eval_block_worker', 'tpo_eval_block_parity'}:

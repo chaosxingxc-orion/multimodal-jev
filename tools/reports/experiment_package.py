@@ -524,15 +524,21 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("plan", "status", "run", "resume", "publish", "capacity"), nargs="?", default="plan")
     parser.add_argument("--experiment", help="Experiment ID in the committed queue")
+    parser.add_argument("--scoring", action="store_true", help="Use the registered scoring capacity window")
     parser.add_argument("--local", type=Path, default=LOCAL)
     parser.add_argument("--publish", action="store_true", help="Sync the generated Wiki changes to origin/main")
     parser.add_argument("--wait-for-ledger", action="store_true", help="Wait for the current experiment to release the ledger")
     args = parser.parse_args()
     if args.publish and args.action not in {"run", "resume"}:
         parser.error("--publish is available with run or resume")
+    if args.scoring and args.action != "capacity":
+        parser.error("--scoring is available with capacity")
     try:
         if args.action == "capacity":
-            from tools.reports.card_capacity_sweep import capacity
+            if args.scoring:
+                from tools.reports.prepare_card_scoring_benchmark import capacity
+            else:
+                from tools.reports.card_capacity_sweep import capacity
             print(json.dumps(capacity(args.experiment, args.local), indent=2))
             return 0
         result = execute(args.action, args.experiment, args.local, publish=args.publish,
