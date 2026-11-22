@@ -1,0 +1,63 @@
+{
+  "output": "${EVAL_CARD_OUT}",
+  "deployment": "${EVAL_CARD_DEPLOYMENT}",
+  "snapshot": "${EVAL_CARD_SNAPSHOT}",
+  "manifest": "${EVAL_CARD_MANIFEST}",
+  "evaluation_base": "${EVAL_CARD_BASE}",
+  "stage1_package": "${CARD_PACKAGE}",
+  "release": "${CARD_RELEASE}",
+  "annotations": [
+    {
+      "path": "${CARD_ANNOTATIONS}",
+      "sha256": "4a05a3de6c7f028aff298c4a90196e6a3fecd1938d96fb1c125d6fd10d5e301e"
+    },
+    {
+      "path": "${EVAL_CARD_TEST_ANNOTATIONS}",
+      "sha256": "fe3449af69b42fda7163345482556066c35a80f7e552a6d67e212a0e2f0783cc"
+    }
+  ],
+  "test_roster": {
+    "path": "${EVAL_CARD_TEST_ROWS}",
+    "sha256": "03271077ccd378c8ccd20092873b20d3db73960476e8286ffcdcaea5391564ff"
+  },
+  "bank_sha": "e26434ee16460316eb8ccc723ff3e398a6110c3f2a59b52373754b6e4725875c",
+  "native_sha": "17f2399b66478a943a09f307cbb74cda30549ed8164c240153bce9900048a8f7",
+  "manifest_sha": "81068bf333bcaee6a8f85ec628e296b60adc09bafd28f98d9bccd0da3398d3af",
+  "policy_id": "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3",
+  "plan_sha": "88b815e3985b3634ff2ca61b6981ec882fa6c7c6dc600365f2a1a8f6fbd3d7f5",
+  "calibration_config_sha": "250d1a1d9cea79d8f81476c876e17fcec40e9fc10f0c2d316c19c92c6c07ee8a",
+  "template": "configs/portable/operations/intent-card-template-v1.json",
+  "devices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "batch": 8,
+  "card_datasets": [
+    "SLURP_clean_TEST60",
+    "SLURP_clean_SELECTION60"
+  ],
+  "io_workers": 8,
+  "cache_container": {
+    "cpus": 8,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ]
+}

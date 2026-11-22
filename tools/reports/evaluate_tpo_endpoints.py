@@ -111,7 +111,7 @@ def run(spec):
     c=endpoint_config(spec, parent, spec['endpoint'])
     if 'calibration' in spec:
         from tools.reports.calibrate_tpo_probabilities import cached_source
-        assets, _, encode = cached_source(spec['calibration'], parent)
+        assets, candidates, encode = cached_source(spec['calibration'], parent)
     else:
         assets, _, encode = load(c)
     index=spec['shard']
@@ -119,6 +119,9 @@ def run(spec):
     processor=processor_cache_identity(c['snapshot'])
     rows=[] if 'calibration' in spec else [(asset, encode(asset)[0]) for asset in assets]
     provider, model, device, tokenizer_processor, collate, handle = start_model(c, out)
+    if 'card_view' in spec:
+        from multimodal_jev.card_evaluation_view import wrap
+        encode = wrap(spec['card_view'], tokenizer_processor, candidates, encode)
     sources=policy_sources(spec, c)
     if 'choice' in spec:
         from tools.reports.evaluate_choice_tasks import evaluate

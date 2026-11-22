@@ -165,7 +165,10 @@ def worker(spec):
                     assets, _, encode = cached_source(view, parent)
                     requests = None
                 elif compiler is None:
-                    assets, _, encode = load(c, **verify)
+                    assets, candidates, encode = load(c, **verify)
+                    if 'card_view' in c:
+                        from multimodal_jev.card_evaluation_view import wrap
+                        encode = wrap(c['card_view'], processor, candidates, encode)
                     requests = None
                 else:
                     assets, _, encode, requests = load(c, include_requests=True, **verify)

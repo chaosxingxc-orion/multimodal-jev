@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "card-stage2-fused-v1",
+  "revision": "card-stage1-eval-v1",
   "stages": {
     "data": [
       {
@@ -97,6 +97,132 @@
               ]
             ],
             "sha256": "3eafd817ddbf2cd03dad40a0c26bea627a10cf40573e2a04f64848101f84fa95"
+          }
+        ]
+      },
+      {
+        "id": "evaluate-stage1-before-stage2",
+        "config": "configs/portable/operations/card-stage1-endpoint-evaluation.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_card_evaluation",
+            "configs/portable/operations/card-stage1-endpoint-evaluation.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${EVAL_CARD_OUT}/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${EVAL_CARD_OPS}/score-collected.json",
+            "equals": [
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                12991
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                9226
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                8168
+              ],
+              [
+                [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                320
+              ],
+              [
+                [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                98
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1",
+                  "policy_id"
+                ],
+                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1",
+                  "policy_id"
+                ],
+                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
+              ],
+              [
+                [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1",
+                  "policy_id"
+                ],
+                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
+              ],
+              [
+                [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1",
+                  "policy_id"
+                ],
+                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1",
+                  "policy_id"
+                ],
+                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
+              ]
+            ]
           }
         ]
       },
