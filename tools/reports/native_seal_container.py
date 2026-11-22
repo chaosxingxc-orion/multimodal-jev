@@ -60,6 +60,10 @@ def main():
     c, provenance = load_config(a.config, a.local)
     source = c['source']
     verify(source['root'], manifest_sha256=source['sha256'], io_workers=c['io_workers'])
+    if c['phase'] == 'card_stage1':
+        from tools.reports.card_stage1_window import run
+        print(json.dumps(run(c)))
+        return
     if c['phase'] == 'model_provider_probe':
         from tools.reports.probe_audio_model_provider import run
         result = run(c['probe'])

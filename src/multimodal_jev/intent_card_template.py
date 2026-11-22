@@ -2,7 +2,7 @@
 from .context_candidate_task import compile_candidates
 
 
-def compile_intent_card_request(audio, task, bank, template, arm):
+def compile_intent_card_request(audio, task, bank, template, arm, *, example_indices=None):
     options = template["arms"][arm]
     candidates = task["schema"]["candidates"]
     cards = {card["id"]: card for card in bank["cards"]}
@@ -14,8 +14,9 @@ def compile_intent_card_request(audio, task, bank, template, arm):
         text = row["description"]
         if options["definitions"]:
             text = template["boundary"].format(meaning=card["activation"])
-        if options["examples"]:
-            example = card["examples"][template["example_index"]]["text"]
+        index = template["example_index"] if example_indices is None else example_indices[row["id"]]
+        if options["examples"] and index is not None:
+            example = card["examples"][index]["text"]
             text += template["example"].format(text=example)
         definitions.append(dict(id=row["id"], definition=text))
     rules = list(task["thinking"]["requirements"])

@@ -2,22 +2,117 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "preregistration-v1",
+  "revision": "card-stage1-v1",
   "stages": {
     "data": [
       {
-        "id": "freeze-cards-and-support",
-        "pending": "待完成源 TRAIN 的三轮卡片复核、支持例隔离与前缀冻结。"
-      },
-      {
-        "id": "prepare-stage1-inputs",
-        "pending": "待绑定完整 clean TRAIN、新模板及长度审核收据。"
+        "id": "freeze-card-training-inputs",
+        "config": "configs/portable/operations/card-stage1.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_card_stage1",
+            "configs/portable/operations/card-stage1.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_PACKAGE}/entry/card-review.json",
+            "equals": [
+              [
+                [
+                  "population"
+                ],
+                40513
+              ],
+              [
+                [
+                  "exposures"
+                ],
+                81026
+              ],
+              [
+                [
+                  "permutation_roundtrip"
+                ],
+                true
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PACKAGE}/operations-local.json",
+            "equals": [
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_OPERATIONS_CONFIG",
+                  "idle_devices"
+                ],
+                [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7
+                ]
+              ]
+            ]
+          }
+        ]
       }
     ],
     "train": [
       {
         "id": "train-card-stage1",
-        "pending": "待绑定 0.6B r128 配置、有限验收与 Stage1 末点审核。"
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_PACKAGE}/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_ROOT}/ops/prepare-collected.json",
+            "equals": [
+              [
+                [
+                  "population"
+                ],
+                40513
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_ROOT}/ops/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "updates"
+                ],
+                2
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_ROOT}/ops/formal-collected.json",
+            "equals": [
+              [
+                [
+                  "updates"
+                ],
+                160
+              ]
+            ]
+          }
+        ]
       },
       {
         "id": "score-full-train",

@@ -18,7 +18,8 @@ def split_text(ids, audio_id):
 
 class LayoutTextView:
     def __init__(self, spec, requests):
-        if spec['schema'] != 'jev-stage1-layout-text-v1' or set(spec['templates']) != {'native', 'both'}:
+        card_views = spec['schema'] == 'jev-card-text-cache-v1'
+        if not (card_views or (spec['schema'] == 'jev-stage1-layout-text-v1' and set(spec['templates']) == {'native','both'})) or set(requests) != set(spec['templates']):
             raise ValueError('two verified text templates required')
         self.spec = spec
         self.panels = {}
@@ -31,7 +32,7 @@ class LayoutTextView:
             self.panels[arm] = panel
             t = spec['templates'][arm]
             self.templates[arm] = tuple(torch.tensor(t[k], dtype=torch.long) for k in ('prefix','suffix'))
-        if set(self.panels) != {'native','both'} or self.panels['native']==self.panels['both']:
+        if 'native' not in self.panels or (not card_views and self.panels['native']==self.panels['both']):
             raise ValueError('distinct complete task views required')
 
     def read(self, base, identity):

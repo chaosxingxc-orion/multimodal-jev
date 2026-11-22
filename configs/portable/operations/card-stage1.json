@@ -1,0 +1,53 @@
+{
+  "output": "${CARD_PACKAGE}",
+  "deployment": "${CARD_DEPLOYMENT}",
+  "bank": "${CARD_BANK}",
+  "truth": "${CARD_TRUTH}",
+  "roster": "${CARD_ROSTER}",
+  "calibration": "${CARD_CALIBRATION}",
+  "annotations": "${CARD_ANNOTATIONS}",
+  "release": "${CARD_RELEASE}",
+  "parent": "${CARD_PARENT}",
+  "batches": "${CARD_BATCHES}",
+  "native_cache": "${CARD_NATIVE_CACHE}",
+  "init": "${CARD_INIT}",
+  "design": "configs/experiments/context-two-stage-margin-r64-dp8-v1.json",
+  "template": "configs/portable/operations/intent-card-template-v1.json",
+  "review": "experiments/knowledge-card-transfer-draft.json",
+  "seed": 317,
+  "design_sha256": "d5848e130683e511751af39c4ac1e3181d6f9c9150110b278dcddfa45c6c33f6",
+  "init_sha256": "3bcfe2bc4db3bd1c35d660493d6bb91427f1ab0c44bdf8ca86157f82f3d47f7f",
+  "parent_sha256": "06d895ccc5764d74c7c0f16334953e040a3d5501f4a83818685626d9027d11c1",
+  "bank_sha256": "82f786741cf85a8dd160db4b671bf8a7ddd8c3dff012e8a0dc730d76001e7197",
+  "calibration_sha256": "11f979070100b1983e55abc1664c4a10c91fdd4cc70b040257f22dd482d906a9",
+  "native_cache_sha256": "17f2399b66478a943a09f307cbb74cda30549ed8164c240153bce9900048a8f7",
+  "lora": {
+    "rank": 128,
+    "alpha": 256
+  },
+  "model_description": "Qwen3-ASR-0.6B q/v LoRA r128 + shared probability head",
+  "io_workers": 8,
+  "window": {
+    "finite_updates": 2,
+    "parity_passes": 4,
+    "parity_probability_atol": 2e-06,
+    "evaluation_steps": [
+      0,
+      80,
+      160
+    ],
+    "checkpoint_interval": 80
+  },
+  "resources": {
+    "cpus": 32,
+    "memory": "128g",
+    "shm": "8g"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ]
+}
