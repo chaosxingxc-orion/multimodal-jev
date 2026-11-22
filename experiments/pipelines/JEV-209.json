@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "epoch1-scoring-v1",
+  "revision": "triplets-1tib-relaunch-v1",
   "stages": {
     "data": [
       {
@@ -26,7 +26,23 @@
     ],
     "train": [
       {
-        "id": "stage1-epoch1-handoff",
+        "id": "dispatch-mixed-card-stage1",
+        "config": "configs/portable/operations/card-stage1-triplets.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_card_stage1",
+            "configs/portable/operations/card-stage1-triplets.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_PACKAGE}/operations-local.json"
+          ]
+        ],
         "checks": [
           {
             "path": "${CARD_ROOT}/ops/prepare-collected.json",
@@ -71,185 +87,35 @@
             ]
           },
           {
-            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
+            "path": "${CARD_ROOT}/ops/formal-collected.json",
             "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
               [
                 [
                   "updates"
                 ],
-                143
+                286
               ],
               [
                 [
-                  "container_exited"
+                  "engineering_prefix"
                 ],
-                true
+                false
               ]
-            ],
-            "report": {
-              "container_id": [
-                "container_id"
-              ],
-              "policy_id": [
-                "policy_id"
-              ],
-              "updates": [
-                "updates"
-              ]
-            }
+            ]
           }
+        ],
+        "dispatch_guards": [
+          "${CARD_PACKAGE}/entry.tar",
+          "${CARD_ROOT}/ops/formal-launch.json"
         ]
       },
       {
         "id": "evaluate-expanded-endpoint",
-        "pending": "第 143 步检查点的源域及迁移评测独立登记；当前优先执行 TRAIN 打分交接。"
+        "pending": "新训练端点提交后按新策略身份绑定源域和迁移评测。"
       },
       {
         "id": "score-full-train",
-        "config": "configs/portable/operations/card-scoring-full-train.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-full-train.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "updates"
-                ],
-                143
-              ],
-              [
-                [
-                  "container_exited"
-                ],
-                true
-              ]
-            ],
-            "report": {
-              "container_id": [
-                "container_id"
-              ],
-              "policy_id": [
-                "policy_id"
-              ],
-              "updates": [
-                "updates"
-              ]
-            }
-          }
-        ],
-        "dispatch_guards": [
-          "${CARD_SCORE_FORMAL_PACKAGE}/entry.tar"
-        ],
-        "checks": [
-          {
-            "path": "${CARD_SCORE_FORMAL_PACKAGE}/audit.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "container_exited"
-                ],
-                true
-              ],
-              [
-                [
-                  "updates"
-                ],
-                143
-              ],
-              [
-                [
-                  "recordings"
-                ],
-                109610
-              ],
-              [
-                [
-                  "pairs"
-                ],
-                7453480
-              ],
-              [
-                [
-                  "replicas"
-                ],
-                8
-              ],
-              [
-                [
-                  "batch_rows"
-                ],
-                128
-              ],
-              [
-                [
-                  "io_workers"
-                ],
-                8
-              ],
-              [
-                [
-                  "prefetch_audio"
-                ],
-                16
-              ],
-              [
-                [
-                  "panel_pairs"
-                ],
-                9792
-              ],
-              [
-                [
-                  "memory_limit_bytes"
-                ],
-                1099511627776
-              ]
-            ],
-            "report": {
-              "policy_id": [
-                "policy_id"
-              ],
-              "recordings": [
-                "recordings"
-              ],
-              "pairs": [
-                "pairs"
-              ],
-              "wall_seconds": [
-                "wall_seconds"
-              ],
-              "reused_recordings": [
-                "reused_recordings"
-              ]
-            }
-          }
-        ]
+        "pending": "待新训练端点审核后绑定同轮端点和冻结打分配置。"
       },
       {
         "id": "build-fused-stage2-view",

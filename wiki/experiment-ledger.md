@@ -34,7 +34,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-206 | 41 | complete | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 五组评测已审核；排序较 201 改善，MINDS 阈值迁移未证实。[执行报告](reports/JEV-206.md) |
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
 | JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md)、[尺寸与知识卡复核](reports/JEV-208-card-review.md) |
-| JEV-209 | 44 | stopped | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 181 正式训练第 103 步停止，无 checkpoint。1 TiB 容器每卡 224 行通过数值和容量检查，吞吐比 128 行低 65%。[执行报告](reports/JEV-209.md) |
+| JEV-209 | 44 | planned | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 在 181 用 1 TiB 容器重派八卡 Stage1，复用混合 TRAIN 与特征；独立复核新运行的前三个全局 loss。[执行报告](reports/JEV-209.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
