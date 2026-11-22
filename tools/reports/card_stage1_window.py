@@ -155,6 +155,18 @@ def run(c):
         parent['batch_config']['microbatch']=parent['microbatch']=micro
     widths = c.get('capacity_widths',[parent['microbatch']]) if finite else [
         read(work/'finite/receipt.json').get('microbatch',parent['microbatch'])]
+    if 'bootstrap_input' in c:
+        reuse = c['bootstrap_input']
+        for key in ('config', 'report'):
+            if file_hash(reuse[key]['path']) != reuse[key]['sha256']:
+                raise ValueError(f'bootstrap {key} changed')
+        prior = read(reuse['config']['path'])
+        for key in ('source_policy_id', 'source_contract', 'base_id', 'release_sha256',
+                    'schedule_sha256', 'stage1_layout', 'single_card', 'layout_cache',
+                    'mixed', 'epoch_mining', 'physical_devices', 'runtime_profile'):
+            if prior[key] != parent[key]:
+                raise ValueError(f'bootstrap identity differs: {key}')
+        parent['bootstrap_input'] = reuse['report']
     for width in widths:
         parent['microbatch'] = parent['batch_config']['microbatch'] = width
         commit_json(root/'config.json',parent)
@@ -175,7 +187,9 @@ def run(c):
         print(tail[-5000:],flush=True)
         if not re.search(r'(NPU out of memory|NPUOutOfMemoryError)',tail,re.I) or width == widths[-1]:
             raise RuntimeError(f'finite width {width} failed, see {log}')
-        (root/'run').rename(root/f'oom-{width}')
+        failed = root/f'oom-{width}'
+        (root/'run').rename(failed)
+        (root/'config.json').rename(failed/'config.json')
     result = read(root/'run/result.json')
     if result['passed'] is not True or result['stop_update']!=parent['stop_update'] or result['engineering_prefix']!=finite:
         raise ValueError('stage1 terminal differs')

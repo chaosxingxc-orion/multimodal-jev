@@ -281,7 +281,15 @@ def run(c,root):
                         else:
                             from multimodal_jev.intent_triplet_training import mine_epoch
                             progress('bootstrap_train_confusion',update=index)
-                            report = mine_epoch(wrapped,stream,c,0,device,c['source_policy_id'],bootstrap=True)
+                            cached = c.get('bootstrap_input')
+                            if cached is None:
+                                report = mine_epoch(wrapped,stream,c,0,device,c['source_policy_id'],bootstrap=True)
+                            else:
+                                if file_hash(cached['path']) != cached['sha256']:
+                                    raise ValueError('bootstrap report changed')
+                                report = json.loads(Path(cached['path']).read_bytes())
+                                if report['policy_id'] != c['source_policy_id'] or report['labels'] != spec['labels']:
+                                    raise ValueError('bootstrap policy or labels changed')
                             if rank == 0:
                                 atomic_json(root/'confusion-init.json',dict(report,policy_id=c['source_policy_id']))
                             previous = report['distribution']
