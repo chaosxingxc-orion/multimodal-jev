@@ -8,6 +8,7 @@
 
 | 入口 | 内容 |
 | --- | --- |
+| [JEV-209 预登记](stage1-cards-tpo-209.md) | 0.6B r128 知识卡 Stage1 与 206、208 两条 Stage2 路线 |
 | [JEV-208 预登记](tpo-probability-gap-208.md) | 扩大可信错例覆盖，在 TPO 中加入当前最强错类的概率间隔 |
 | [JEV-207 预登记](tpo-actor-pair-margin-207.md) | 验证新构造的源域音频对 + actor 排序项；按新视图推导预算 |
 | [简单语音任务基础配置](simple-speech-baselines.md) | 实验范围、数据用途、评测口径、资源限制及两阶段对照设置 |

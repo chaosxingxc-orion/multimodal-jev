@@ -1,0 +1,50 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/stage1-cards-tpo-209.md",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "revision": "preregistration-v1",
+  "stages": {
+    "data": [
+      {
+        "id": "freeze-cards-and-support",
+        "pending": "待完成源 TRAIN 的三轮卡片复核、支持例隔离与前缀冻结。"
+      },
+      {
+        "id": "prepare-stage1-inputs",
+        "pending": "待绑定完整 clean TRAIN、新模板及长度审核收据。"
+      }
+    ],
+    "train": [
+      {
+        "id": "train-card-stage1",
+        "pending": "待绑定 0.6B r128 配置、有限验收与 Stage1 末点审核。"
+      },
+      {
+        "id": "score-full-train",
+        "pending": "依赖新 Stage1 末点，待绑定八实例全 TRAIN 参考评分及收据。"
+      },
+      {
+        "id": "build-stage2-views",
+        "pending": "依赖新参考评分，待冻结两臂的录音、批序、投影和实际预算。"
+      },
+      {
+        "id": "train-route-206",
+        "pending": "待绑定分层难例加回放的 TPO 训练及审核。"
+      },
+      {
+        "id": "train-route-208",
+        "pending": "待绑定全准入视图的 TPO 与最强错类间隔训练及审核。"
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "audit-curves-and-card-effects",
+        "pending": "待绑定源域曲线、卡片配对诊断与源 TRAIN 阈值校准。"
+      },
+      {
+        "id": "evaluate-three-endpoints",
+        "pending": "待绑定三个新端点的五面板样本块评测、与历史端点的配对分析及回填收据。"
+      }
+    ]
+  }
+}
