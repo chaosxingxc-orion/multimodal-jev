@@ -6,22 +6,21 @@
   "panel_per_class": 2,
   "long_audio_count": 8,
   "card_arm": "rules",
-  "widths": [128],
+  "widths": [128, 256],
   "max_model_len": 4096,
-  "io_workers": 4,
-  "prefetch_audio": 8,
+  "io_workers": 8,
+  "prefetch_audio": 16,
+  "capture_host_memory": true,
   "streaming": {
     "length_window": 8,
     "arms": {
-      "io4": [4, 8],
-      "io8": [8, 16],
-      "io4-repeat": [4, 8]
+      "io8": [8, 16]
     }
   },
   "torch_threads": 2,
   "worker_timeout_seconds": 1200,
   "probability_atol": 0.000002,
-  "resources": {"cpus": 96, "memory": "128g", "shm": "8g"},
+  "resources": {"cpus": 96, "memory": "1024g", "shm": "8g"},
   "source_patterns": [
     "src/multimodal_jev/*.py",
     "tools/reports/*.py",

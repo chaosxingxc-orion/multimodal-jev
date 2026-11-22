@@ -86,6 +86,15 @@ def package(c):
                 raise ValueError('absolute stopped scoring output required')
             mounts.append(f'{resume}:/jev-score-resume')
         deploy['read_only_mounts'] = [*deploy.get('read_only_mounts', []), *mounts]
+    elif inputs.get('synthetic_cache'):
+        synthetic_cache = Path(inputs['synthetic_cache'])
+        if not synthetic_cache.is_absolute() or ':' in str(synthetic_cache):
+            raise ValueError('absolute synthetic cache on target host required')
+        cache_root = '/jev-benchmark-synthetic-cache'
+        deploy['read_only_mounts'] = [*deploy.get('read_only_mounts', []),
+                                     f'{synthetic_cache}:{cache_root}']
+        shutil.copytree(policy, entry/'policy')
+        policy_root, policy_sha = '/jev-entry/policy', inputs['policy_sha256']
     else:
         from multimodal_jev.encoded_audio_cache import key_for
         keys = sorted({key_for(row['binding'])+'.pt' for row in panel['rows'] if row['synthetic']})
@@ -110,6 +119,8 @@ def package(c):
                              'worker_timeout_seconds','max_model_len','probability_atol')}
     if 'streaming' in c:
         spec['streaming'] = c['streaming']
+    if c.get('capture_host_memory'):
+        spec['capture_host_memory'] = True
     spec.update(phase='card_scoring_benchmark', devices=devices, output='/jev-work/score',
                 worker_config='/jev-entry/score.json', policy=policy_root,
                 policy_sha256=policy_sha, synthetic_cache=cache_root,

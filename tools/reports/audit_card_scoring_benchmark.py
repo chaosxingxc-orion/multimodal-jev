@@ -213,7 +213,7 @@ def audit(root, entry, operations):
             file_hash(entry/'panel.json') != c['panel']['sha256'] or
             receipt['panel_sha256'] != c['panel']['sha256']):
         raise ValueError('no complete device release or panel identity')
-    if 'formal' in c:
+    if 'formal' in c or c.get('capture_host_memory'):
         from tools.reports.context_macro_probe_operations import inspect_runtime
 
         from tools.reports.native_seal_operations import verify_memory
@@ -226,8 +226,9 @@ def audit(root, entry, operations):
                 or c['source']['sha256'] != admission['entry_pins']['source/FILES.json']
                 or c['cards']['sha256'] != file_hash(entry/'cards.json')):
             raise ValueError('scoring admission or frozen configuration changed')
-        return dict(audit_formal(root, entry, c, panel, receipt, cid),
-                    memory_limit_bytes=capture['HostConfig']['Memory'])
+        if 'formal' in c:
+            return dict(audit_formal(root, entry, c, panel, receipt, cid),
+                        memory_limit_bytes=capture['HostConfig']['Memory'])
     labels = panel['labels']
     count = len(c['devices'])
     members, reference, old_seconds = [], {}, []
@@ -254,10 +255,17 @@ def audit(root, entry, operations):
                 result['oom_devices'] = [c['devices'][i] for i in result.pop('oom_ordinals')]
             key = f'{width}-{name}' if name else str(width)
             results[key] = result
-    return dict(container_id=cid, policy_id=panel['source_policy_id'], panel_sha256=c['panel']['sha256'],
+    result = dict(container_id=cid, policy_id=panel['source_policy_id'], panel_sha256=c['panel']['sha256'],
                 cards_sha256=c['cards']['sha256'], probability_atol=c['probability_atol'],
                 width_results=results, recordings=total, pairs=pairs,
                 baseline_seconds=max(old_seconds), baseline_pairs_per_second=pairs/max(old_seconds))
+    if c.get('capture_host_memory'):
+        memory = receipt['host_memory']
+        limit = capture['HostConfig']['Memory']
+        if any(int(m['memory.max']) != limit for m in memory.values()):
+            raise ValueError('cgroup memory limit differs from Docker')
+        result.update(memory_limit_bytes=limit, host_memory=memory)
+    return result
 
 
 def main():

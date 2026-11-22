@@ -324,7 +324,8 @@ def run(c):
     output = Path(c['output'])
     start = time.monotonic()
     output.mkdir()
-    memory_before = host_memory() if 'formal' in c else None
+    capture_memory = 'formal' in c or c.get('capture_host_memory', False)
+    memory_before = host_memory() if capture_memory else None
     workers = []
     with ThreadPoolExecutor(max_workers=len(c['devices'])) as pool:
         try:
@@ -356,10 +357,11 @@ def run(c):
     receipt = dict(devices=c['devices'], panel_sha256=c['panel']['sha256'],
                    workers=[json.loads((output/f'worker-{i}'/'result.json').read_bytes())
                             for i in range(len(workers))])
+    if capture_memory:
+        receipt['host_memory'] = dict(before=memory_before, after=host_memory())
     if 'formal' in c:
         receipt.update(full_sha256=c['full']['sha256'], policy_id=c['formal']['policy_id'],
-                       policy_sha256=c['policy_sha256'], worker_wall_seconds=time.monotonic()-start,
-                       host_memory=dict(before=memory_before, after=host_memory()))
+                       policy_sha256=c['policy_sha256'], worker_wall_seconds=time.monotonic()-start)
     commit_json(output/'receipt.json', receipt)
     return receipt
 
