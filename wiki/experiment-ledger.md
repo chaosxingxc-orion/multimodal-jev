@@ -34,7 +34,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-206 | 41 | complete | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 五组评测已审核；排序较 201 改善，MINDS 阈值迁移未证实。[执行报告](reports/JEV-206.md) |
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
 | JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md)、[尺寸与知识卡复核](reports/JEV-208-card-review.md) |
-| JEV-209 | 44 | in_progress | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 真人 Stage1 已审 160 步。混合语音 109,610 条、68 类。68 对展开版在第一个正式更新后停止。修订为单卡与单录音样本，以当前、同标签另一条、异标签采样构成三元组；抽样已在 CPU 核对，新版尚未正式训练。[执行报告](reports/JEV-209.md) |
+| JEV-209 | 44 | in_progress | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 混合 TRAIN 109,610 条。181 八卡三元组 Stage1 按单卡 24 × 4 启动，前三步正式 loss 已审核，两轮共 286 步。等待端点评测。[执行报告](reports/JEV-209.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
