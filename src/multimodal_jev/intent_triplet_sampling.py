@@ -1,9 +1,11 @@
 """Choose three independent TRAIN records by intent; card rendering is downstream."""
 from collections import defaultdict
 import random
+import math
+from itertools import accumulate
 
 
-def sample_epoch(records, *, seed, epoch):
+def sample_epoch(records, *, seed, epoch, distribution=None):
     by_label = defaultdict(list)
     by_id = {}
     for row in records:
@@ -18,6 +20,17 @@ def sample_epoch(records, *, seed, epoch):
     labels = sorted(by_label)
     if len(labels) < 2:
         raise ValueError('an independently labeled negative is required')
+    draws = {}
+    if distribution is not None:
+        if set(distribution) != set(labels):
+            raise ValueError('incomplete anchor classes')
+        for label in labels:
+            others = [key for key in labels if key != label]
+            weights = distribution[label]
+            if (set(weights) != set(others) or any(not math.isfinite(x) or x <= 0 for x in weights.values())
+                    or not math.isclose(sum(weights.values()),1.,abs_tol=1e-9)):
+                raise ValueError('normalized full-support distribution over other classes required')
+            draws[label] = others, list(accumulate(weights[key] for key in others))
     label_positions = {label: index for index, label in enumerate(labels)}
     for ids in by_label.values():
         ids.sort()
@@ -32,7 +45,11 @@ def sample_epoch(records, *, seed, epoch):
         members = by_label[label]
         pos = rng.randrange(len(members)-1)
         positive = members[pos + (pos >= positions[anchor])]
-        other = rng.randrange(len(labels)-1)
-        neg_label = labels[other + (other >= label_positions[label])]
+        if draws:
+            classes, cumulative = draws[label]
+            neg_label = rng.choices(classes,cum_weights=cumulative,k=1)[0]
+        else:
+            other = rng.randrange(len(labels)-1)
+            neg_label = labels[other + (other >= label_positions[label])]
         negative = rng.choice(by_label[neg_label])
         yield anchor, positive, negative

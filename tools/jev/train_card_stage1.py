@@ -29,6 +29,7 @@ def run(c,root):
     from multimodal_jev.context_policy_snapshot import load_policy
     from multimodal_jev.context_policy_artifacts import read_execution_bundle
     from tools.reports.context_infonce_actor import load as load_actor
+    triplet = c['instruction_objective']['kind'] == 'intent_triplet_infonce_v1'
     actor_module=load_actor(c['source_root'],temperature=c['instruction_objective']['temperature'],probability_margin=c['instruction_objective'].get('probability_margin'))
     if 'single_card' in c:
         from multimodal_jev.single_card_forward import IndependentForward
@@ -38,7 +39,8 @@ def run(c,root):
         pl=c['stage1_layout']['plan']
         if file_hash(pl['path'])!=spec['plan'] or pl['sha256']!=spec['plan']:
             raise ValueError('changed card exposure plan')
-        actor_module.forward_context_audio_batch=IndependentForward(spec,json.loads(Path(pl['path']).read_bytes())['assignments'])
+        if not triplet:
+            actor_module.forward_context_audio_batch=IndependentForward(spec,json.loads(Path(pl['path']).read_bytes())['assignments'])
     MODE,build_actor,make_batch=actor_module.MODE,actor_module.build_actor,actor_module.make_batch
     from multimodal_jev.slurp_portable_release import load
     from multimodal_jev.context_candidate_task import compile_candidates,bind_candidate_targets
@@ -84,6 +86,7 @@ def run(c,root):
             raise ValueError('engineering prefix is at most two updates')
         contract={k:c[k] for k in ('base_id','source_policy_id','source_contract','runtime_profile',
             'release_sha256','schedule_sha256','global_batch','microbatch','stage')}
+        if triplet:contract['epoch_mining']=c['epoch_mining']
         if 'single_card' in c:contract['single_card_sha256']=c['single_card']['sha256']
         if 'stage1_layout' in c:
             from multimodal_jev.stage1_training_layout import Stage1TrainingLayout, checkpoint_layout
@@ -161,7 +164,7 @@ def run(c,root):
             audio_infer_window=base.config.audio_config.n_window_infer)
         progress('prepare_full_schedule')
         signal=[None];stream=None
-        if rank==0:
+        if rank==0 or triplet:
             try:
                 if c.get('mixed'):
                     from multimodal_jev.stage1_mixed_schedule import schedule
@@ -224,12 +227,22 @@ def run(c,root):
                 preparer=CachedContextPreparer(factory,cache,
                     processor_sha256=processor_identity,decision_token_id=model.decision_token_id,
                     audio_token_id=base.config.audio_token_id,max_tokens=c.get('mixed',{}).get('input_limit',4096),audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))
-                stream=CachedContextBatches(batches,population,task,preparer,
-                    slot_request=layout_reader,
-                    start_update=start_update,stop_update=stop_update,global_batch=c['global_batch'])
+                if triplet:
+                    from multimodal_jev.intent_triplet_training import TripletStream
+                    stream = TripletStream(batches,population,preparer,layout_reader,spec,c,rank,world,collation)
+                else:
+                    stream=CachedContextBatches(batches,population,task,preparer,
+                        slot_request=layout_reader,
+                        start_update=start_update,stop_update=stop_update,global_batch=c['global_batch'])
                 signal[0]=dict(error=None,schedule=manifest)
             except Exception as exc:signal[0]=dict(error=repr(exc))
-        dist.broadcast_object_list(signal,src=0)
+        if triplet:
+            errors = [None]*world
+            dist.all_gather_object(errors,signal[0]['error'])
+            if any(errors):
+                raise ValueError(str(errors))
+        else:
+            dist.broadcast_object_list(signal,src=0)
         if signal[0]['error']:raise ValueError(signal[0]['error'])
         named=[(n,p) for n,p in wrapped.named_parameters() if p.requires_grad]
         from multimodal_jev.context_lora_checkpoint_scope import validate_trainable_scope
@@ -256,36 +269,74 @@ def run(c,root):
             for index in range(start_update,stop_update):
                 step_begin=time.monotonic();progress('prepare_batch',update=index)
                 cfg.jev_policy_id=c['source_policy_id']+':instruction-update'+str(index)
-                signal=[None];parts=None
-                if rank==0:
-                    try:
-                        items,metadata=stream.consume(index,cfg.jev_policy_id)
-                        lengths=[(p['inputs']['input_ids'].shape[-1],p['inputs']['input_features'].shape[-1]) for p in items]
-                        planned=rank_indices(batches[index],lengths,c['batch_config'])
-                        ids=[i for group in planned for i in group]
-                        parts=list(make_batch([items[i] for i in ids],**options).split(layout['local_batch']))
-                        atomic_json(root/f'batch-{index:04d}.json',dict(policy_id=cfg.jev_policy_id,
-                            rank_indices=planned,records=metadata))
-                        signal[0]=dict(error=None,timing=stream.last_timing)
-                    except Exception as exc:signal[0]=dict(error=repr(exc))
-                dist.broadcast_object_list(signal,src=0)
-                if signal[0]['error']:raise ValueError(signal[0]['error'])
-                incoming=[None];dist.scatter_object_list(incoming,parts,src=0);batch=incoming[0]
-                preparation=time.monotonic()-step_begin
-                actor=build_actor(cfg,wrapped,opt,collation=collation)
-                current_lr=set_learning_rate(opt,c['lr_schedule'],index,layout['total_updates'])
-                progress('native_update',update=index,learning_rate=current_lr)
-                torch.npu.reset_peak_memory_stats();torch.npu.synchronize();started=time.monotonic()
-                if c.get('parity_passes') and index == start_update:
-                    from multimodal_jev.card_training_parity import observe
-                    parity = observe(actor_module, wrapped, batch, cfg.jev_policy_id,
-                        collation, device, c['parity_passes'], c['microbatch'], c['parity_probability_atol'])
+                if triplet:
+                    if index == start_update or batches[index]['epoch'] != batches[index-1]['epoch']:
+                        previous = None
+                        if batches[index]['epoch']:
+                            report = json.loads((root/f'confusion-epoch-{batches[index]["epoch"]}.json').read_bytes())
+                            checkpoint = root/f'checkpoint-{index:04d}-committed.json'
+                            if report['checkpoint_sha256'] != file_hash(checkpoint):
+                                raise ValueError('hard negative map belongs to a different checkpoint')
+                            previous = report['distribution']
+                        else:
+                            from multimodal_jev.intent_triplet_training import mine_epoch
+                            progress('bootstrap_train_confusion',update=index)
+                            report = mine_epoch(wrapped,stream,c,0,device,c['source_policy_id'],bootstrap=True)
+                            if rank == 0:
+                                atomic_json(root/'confusion-init.json',dict(report,policy_id=c['source_policy_id']))
+                            previous = report['distribution']
+                        stream.begin_epoch(index,previous)
+                    from multimodal_jev.intent_triplet_training import update
+                    actual, groups, real_queries = next(stream.queue)
+                    if actual != index:
+                        raise ValueError('triplet prefetch order differs')
+                    preparation = time.monotonic()-step_begin
+                    current_lr = set_learning_rate(opt,c['lr_schedule'],index,layout['total_updates'])
+                    progress('native_update',update=index,learning_rate=current_lr)
+                    torch.npu.reset_peak_memory_stats()
+                    started = time.monotonic()
+                    passes = c['parity_passes'] if index == start_update else 0
+                    metrics,parity = update(wrapped,opt,groups,real_queries,c,collation,cfg.jev_policy_id,device,world,passes)
+                    torch.npu.synchronize()
+                    seconds = time.monotonic()-started
+                    if passes:
+                        if parity['inference_passes'] != passes:
+                            raise ValueError('incomplete inference parity')
+                        atomic_json(out/'inference-parity.json',parity)
+                    timing = dict(wait_seconds=preparation,local_groups=len(groups))
+                else:
+                    signal=[None];parts=None
+                    if rank==0:
+                        try:
+                            items,metadata=stream.consume(index,cfg.jev_policy_id)
+                            lengths=[(p['inputs']['input_ids'].shape[-1],p['inputs']['input_features'].shape[-1]) for p in items]
+                            planned=rank_indices(batches[index],lengths,c['batch_config'])
+                            ids=[i for group in planned for i in group]
+                            parts=list(make_batch([items[i] for i in ids],**options).split(layout['local_batch']))
+                            atomic_json(root/f'batch-{index:04d}.json',dict(policy_id=cfg.jev_policy_id,
+                                rank_indices=planned,records=metadata))
+                            signal[0]=dict(error=None,timing=stream.last_timing)
+                        except Exception as exc:signal[0]=dict(error=repr(exc))
+                    dist.broadcast_object_list(signal,src=0)
+                    if signal[0]['error']:raise ValueError(signal[0]['error'])
+                    incoming=[None];dist.scatter_object_list(incoming,parts,src=0);batch=incoming[0]
+                    preparation=time.monotonic()-step_begin
                     actor=build_actor(cfg,wrapped,opt,collation=collation)
-                metrics=actor.update_policy(batch);torch.npu.synchronize();seconds=time.monotonic()-started
-                if c.get('parity_passes') and index == start_update:
-                    if parity['compared'] != c['parity_passes']*c['microbatch']:
-                        raise ValueError('incomplete train/inference parity comparison')
-                    atomic_json(out/'inference-parity.json', parity)
+                    current_lr=set_learning_rate(opt,c['lr_schedule'],index,layout['total_updates'])
+                    progress('native_update',update=index,learning_rate=current_lr)
+                    torch.npu.reset_peak_memory_stats();torch.npu.synchronize();started=time.monotonic()
+                    if c.get('parity_passes') and index == start_update:
+                        from multimodal_jev.card_training_parity import observe
+                        parity = observe(actor_module, wrapped, batch, cfg.jev_policy_id,
+                            collation, device, c['parity_passes'], c['microbatch'], c['parity_probability_atol'])
+                        actor=build_actor(cfg,wrapped,opt,collation=collation)
+                    metrics=actor.update_policy(batch);torch.npu.synchronize();seconds=time.monotonic()-started
+                    if c.get('parity_passes') and index == start_update:
+                        if parity['compared'] != c['parity_passes']*c['microbatch']:
+                            raise ValueError('incomplete train/inference parity comparison')
+                        atomic_json(out/'inference-parity.json', parity)
+                    timing = signal[0]['timing']
+                    real_queries = actor.last_admission['global_real_requests']
                 audit=audit_adam_shards(named,opt,index+1)
                 save_now=(index+1)%c['checkpoint_interval']==0 or index+1==stop_update
                 if save_now:
@@ -314,10 +365,20 @@ def run(c,root):
                             execution_sha256=file_hash(root/f'execution-{index+1:04d}.pt')))
                     dist.barrier()
                 record=dict(update=index+1,learning_rate=current_lr,preparation_seconds=preparation,actor_seconds=seconds,
-                    total_seconds=time.monotonic()-step_begin,input_service=signal[0]['timing'],metrics=metrics,
-                    real_queries=actor.last_admission['global_real_requests'],
+                    total_seconds=time.monotonic()-step_begin,input_service=timing,metrics=metrics,
+                    real_queries=real_queries,
                     peak_allocated=torch.npu.max_memory_allocated(),checkpoint=save_now,optimizer_audit=audit)
                 records.append(record);atomic_json(out/f'update-{index+1:04d}.json',record)
+                if (triplet and not c['engineering_prefix'] and
+                        (index+1 == len(batches) or batches[index+1]['epoch'] != batches[index]['epoch'])):
+                    from multimodal_jev.intent_triplet_training import mine_epoch
+                    epoch = batches[index]['epoch']
+                    progress('mine_full_train',epoch=epoch+1,update=index+1)
+                    report = mine_epoch(wrapped,stream,c,epoch,device,cfg.jev_policy_id+':post-update')
+                    if rank == 0:
+                        report.update(checkpoint_sha256=file_hash(root/f'checkpoint-{index+1:04d}-committed.json'))
+                        atomic_json(root/f'confusion-epoch-{epoch+1}.json',report)
+                    dist.barrier()
             atomic_json(out/'result.json',dict(passed=True,start_update=start_update,stop_update=stop_update,
                 executions=executions,scope='Native context instruction loop; task RL and efficacy separate'))
             dist.barrier()

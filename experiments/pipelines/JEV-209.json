@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "single-card-contrast-stage1-v1",
+  "revision": "card-audio-triplets-v1",
   "stages": {
     "data": [
       {
@@ -27,12 +27,12 @@
     "train": [
       {
         "id": "dispatch-mixed-card-stage1",
-        "config": "configs/portable/operations/card-stage1-mixed.json",
+        "config": "configs/portable/operations/card-stage1-triplets.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-mixed.json",
+            "configs/portable/operations/card-stage1-triplets.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -93,7 +93,7 @@
                 [
                   "updates"
                 ],
-                430
+                216
               ],
               [
                 [

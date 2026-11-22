@@ -91,7 +91,7 @@ def validate_margin(c):
 def validate_objective(c):
     if c.get('kind') == 'candidate_infonce':
         expected = {'kind','temperature','probability_coefficient'}
-    elif c.get('kind') == 'candidate_infonce_probability_margin_v1':
+    elif c.get('kind') in ('candidate_infonce_probability_margin_v1', 'intent_triplet_infonce_v1'):
         expected = {'kind','temperature','probability_coefficient','probability_margin'}
         validate_margin(c.get('probability_margin'))
     else:

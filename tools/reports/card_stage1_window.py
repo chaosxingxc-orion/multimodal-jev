@@ -81,7 +81,19 @@ def run(c):
             proof=dict(proof,reused_receipt=c['prepared_mixed']['receipt_sha256'])
             if 'single_card' in c:
                 from multimodal_jev.single_card_forward import prepare as prepare_single
-                proof['single_card']=prepare_single(entry,root/'single.json',init/'policy',c['sample'],c['single_card'])
+                reuse_single = c.get('reuse_single')
+                if reuse_single:
+                    import shutil
+                    path = Path(reuse_single['root'])/'single.json'
+                    if file_hash(path) != reuse_single['sha256']:
+                        raise ValueError('published card token identities differ')
+                    spec = read(path)
+                    if spec['plan'] != file_hash(entry/'card-plan.json') or spec['config'] != c['single_card']:
+                        raise ValueError('published card assignment or template differs')
+                    shutil.copyfile(path,root/'single.json')
+                    proof['single_card'] = dict(classes=len(spec['labels']),unique_prompts=len(spec['catalog']),questions_per_sequence=1)
+                else:
+                    proof['single_card']=prepare_single(entry,root/'single.json',init/'policy',c['sample'],c['single_card'])
                 proof['single_sha256']=file_hash(root/'single.json')
             commit_json(root/'receipt.json',proof)
         elif c.get('mixed'):
@@ -124,16 +136,46 @@ def run(c):
         parent['mixed'].update(entry=str(entry),cache=str(acoustic/'synthetic-cache'))
     if 'single_card' in c:
         parent['single_card']=dict(path=str(work/'prepare/single.json'),sha256=proof['single_sha256'])
+    if 'triplet_objective' in c:
+        parent['instruction_objective'] = c['triplet_objective']
+        parent['triplet_prefetch'] = c['triplet_prefetch']
+        parent['epoch_mining'] = c['epoch_mining']
+        parent['batch_config']['per_dp_replica_batch'] = c['effective_anchors_per_rank']
+        from multimodal_jev.context_topology_batch_plan import derive
+        plan = derive(parent['batch_config'])
+        budget = plan['total_updates']
+        parent.update(global_batch=plan['global_batch'],reference_endpoint=budget,
+                      stop_update=c['finite_updates'] if finite else budget,
+                      checkpoint_interval=c['finite_updates'] if finite else plan['updates_per_epoch'],
+                      evaluation_steps=list(range(0,budget+1,plan['updates_per_epoch'])))
     if 'execution_microbatch' in c:
         micro=c['execution_microbatch']
         if type(micro)!=int or micro<1 or parent['batch_config']['per_dp_replica_batch']%micro:
             raise ValueError('microbatch must divide the effective replica batch')
         parent['batch_config']['microbatch']=parent['microbatch']=micro
-    commit_json(root/'config.json',parent)
-    subprocess.run([sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
-        '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),'--max-restarts=0',
-        '--nproc-per-node='+str(len(parent['physical_devices'])),str(entry/'source/tools/jev/train_card_stage1.py'),
-        '--config',str(root/'config.json'),'--output',str(root/'run')],check=True)
+    widths = c.get('capacity_widths',[parent['microbatch']]) if finite else [
+        read(work/'finite/receipt.json').get('microbatch',parent['microbatch'])]
+    for width in widths:
+        parent['microbatch'] = parent['batch_config']['microbatch'] = width
+        commit_json(root/'config.json',parent)
+        command = [sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
+            '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),'--max-restarts=0',
+            '--nproc-per-node='+str(len(parent['physical_devices'])),str(entry/'source/tools/jev/train_card_stage1.py'),
+            '--config',str(root/'config.json'),'--output',str(root/'run')]
+        if not finite or 'capacity_widths' not in c:
+            subprocess.run(command,check=True)
+            break
+        import re
+        log = root/f'micro-{width}.log'
+        with log.open('x') as output:
+            code = subprocess.run(command,stdout=output,stderr=subprocess.STDOUT).returncode
+        if code == 0:
+            break
+        tail = log.read_text(errors='replace')
+        print(tail[-5000:],flush=True)
+        if not re.search(r'(NPU out of memory|NPUOutOfMemoryError)',tail,re.I) or width == widths[-1]:
+            raise RuntimeError(f'finite width {width} failed, see {log}')
+        (root/'run').rename(root/f'oom-{width}')
     result = read(root/'run/result.json')
     if result['passed'] is not True or result['stop_update']!=parent['stop_update'] or result['engineering_prefix']!=finite:
         raise ValueError('stage1 terminal differs')
@@ -145,6 +187,6 @@ def run(c):
             record=read(rank_root/f'update-{step:04d}.json')
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
-    receipt=dict(updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
     commit_json(root/'receipt.json',receipt)
     return receipt

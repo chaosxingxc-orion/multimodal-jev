@@ -17,7 +17,7 @@ class ContextDecisionModel(nn.Module):
         self.decision_head = decision_head
         self.decision_token_id = decision_token_id
 
-    def score_logits(self, inputs, positions):
+    def score_logits(self, inputs, positions, *, return_marker=False):
         if any(k in inputs for k in ('labels', 'past_key_values', 'use_cache', 'inputs_embeds',
                                      'return_dict', 'output_hidden_states')):
             raise ValueError('label-free uncached explicit token inputs required')
@@ -41,10 +41,17 @@ class ContextDecisionModel(nn.Module):
         hidden = self.backbone(**inputs, use_cache=False, return_dict=True).last_hidden_state
         # Enter the head's Module.__call__ as well: its own FSDP unit must
         # gather/cast all attention, normalization and FFN parameters together.
-        return self.decision_head(hidden, positions, mask.bool(), return_logits=True)
+        logits = self.decision_head(hidden, positions, mask.bool(), return_logits=True)
+        if return_marker:
+            return logits, hidden.gather(1, positions.unsqueeze(-1).expand(-1, -1, hidden.size(-1)))
+        return logits
 
-    def forward(self, inputs, positions, *, return_logits=False):
+    def forward(self, inputs, positions, *, return_logits=False, return_marker=False):
         if type(return_logits) is not bool:
             raise ValueError('explicit Boolean logits mode required')
+        if return_marker:
+            if not return_logits:
+                raise ValueError("marker training requires the membership logits")
+            return self.score_logits(inputs, positions, return_marker=True)
         logits = self.score_logits(inputs, positions)
         return logits if return_logits else logits.sigmoid()
