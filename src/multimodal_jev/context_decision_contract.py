@@ -69,6 +69,11 @@ def render_prefix_context_request(request):
     Candidate order/definitions are preserved. No labels, sample IDs, audio
     paths or prior answers are injected into the reusable prefix.
     """
+    if request.version=='jev-single-card-v1':
+        if len(request.questions)!=1 or request.history:
+            raise ValueError('single card and audio required')
+        q=request.questions[0]
+        return ('\n'.join((*request.requirements,q.id+': '+q.definition,q.question)),'',DECISION_TOKEN)
     system, _ = render_context_request(request)
     stable = json.dumps(dict(layout=PREFIX_LAYOUT, version=request.version,
         requirements=request.requirements, questions=[asdict(q) for q in request.questions]),

@@ -78,7 +78,12 @@ def run(c):
                 view['full_verified']!=training['batch_config']['source_queries'] or
                 not (acoustic/'synthetic-cache').is_dir()):
                 raise ValueError('mixed layout, release or population changed')
-            commit_json(root/'receipt.json',dict(proof,reused_receipt=c['prepared_mixed']['receipt_sha256']))
+            proof=dict(proof,reused_receipt=c['prepared_mixed']['receipt_sha256'])
+            if 'single_card' in c:
+                from multimodal_jev.single_card_forward import prepare as prepare_single
+                proof['single_card']=prepare_single(entry,root/'single.json',init/'policy',c['sample'],c['single_card'])
+                proof['single_sha256']=file_hash(root/'single.json')
+            commit_json(root/'receipt.json',proof)
         elif c.get('mixed'):
             from multimodal_jev.stage1_mixed_cache import build
             build(c,entry,root,init/'policy')
@@ -117,6 +122,8 @@ def run(c):
         parity_probability_atol=c['parity_probability_atol'])
     if c.get('mixed'):
         parent['mixed'].update(entry=str(entry),cache=str(acoustic/'synthetic-cache'))
+    if 'single_card' in c:
+        parent['single_card']=dict(path=str(work/'prepare/single.json'),sha256=proof['single_sha256'])
     if 'execution_microbatch' in c:
         micro=c['execution_microbatch']
         if type(micro)!=int or micro<1 or parent['batch_config']['per_dp_replica_batch']%micro:

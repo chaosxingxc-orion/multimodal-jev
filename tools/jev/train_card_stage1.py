@@ -30,6 +30,15 @@ def run(c,root):
     from multimodal_jev.context_policy_artifacts import read_execution_bundle
     from tools.reports.context_infonce_actor import load as load_actor
     actor_module=load_actor(c['source_root'],temperature=c['instruction_objective']['temperature'],probability_margin=c['instruction_objective'].get('probability_margin'))
+    if 'single_card' in c:
+        from multimodal_jev.single_card_forward import IndependentForward
+        card=c['single_card']
+        if file_hash(card['path'])!=card['sha256']:raise ValueError('single-card prompts changed')
+        spec=json.loads(Path(card['path']).read_bytes())
+        pl=c['stage1_layout']['plan']
+        if file_hash(pl['path'])!=spec['plan'] or pl['sha256']!=spec['plan']:
+            raise ValueError('changed card exposure plan')
+        actor_module.forward_context_audio_batch=IndependentForward(spec,json.loads(Path(pl['path']).read_bytes())['assignments'])
     MODE,build_actor,make_batch=actor_module.MODE,actor_module.build_actor,actor_module.make_batch
     from multimodal_jev.slurp_portable_release import load
     from multimodal_jev.context_candidate_task import compile_candidates,bind_candidate_targets
@@ -75,6 +84,7 @@ def run(c,root):
             raise ValueError('engineering prefix is at most two updates')
         contract={k:c[k] for k in ('base_id','source_policy_id','source_contract','runtime_profile',
             'release_sha256','schedule_sha256','global_batch','microbatch','stage')}
+        if 'single_card' in c:contract['single_card_sha256']=c['single_card']['sha256']
         if 'stage1_layout' in c:
             from multimodal_jev.stage1_training_layout import Stage1TrainingLayout, checkpoint_layout
             contract['stage1_layout']=checkpoint_layout(c)
