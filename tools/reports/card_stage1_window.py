@@ -62,8 +62,24 @@ def run(c):
     root.mkdir()
     reuse = c.get('prepared_input')
     init = Path(reuse['root']) if reuse else work/'prepare'
+    acoustic = Path(c['prepared_mixed']['root']) if 'prepared_mixed' in c else work/'prepare'
     if role == 'prepare':
-        if c.get('mixed'):
+        if 'prepared_mixed' in c:
+            receipt = acoustic/'receipt.json'
+            if file_hash(receipt)!=c['prepared_mixed']['receipt_sha256']:
+                raise ValueError('mixed preparation receipt changed')
+            proof=read(receipt)
+            if file_hash(acoustic/'card-cache.json')!=proof['cache_sha256']:
+                raise ValueError('mixed cache changed')
+            view=read(acoustic/'card-cache.json')
+            training=read(entry/'training.json')
+            if (view['layout_plan_sha256']!=file_hash(entry/'card-plan.json') or
+                view['source_identity']!=training['release_sha256'] or
+                view['full_verified']!=training['batch_config']['source_queries'] or
+                not (acoustic/'synthetic-cache').is_dir()):
+                raise ValueError('mixed layout, release or population changed')
+            commit_json(root/'receipt.json',dict(proof,reused_receipt=c['prepared_mixed']['receipt_sha256']))
+        elif c.get('mixed'):
             from multimodal_jev.stage1_mixed_cache import build
             build(c,entry,root,init/'policy')
         elif reuse:
@@ -94,13 +110,18 @@ def run(c):
         source_contract=manifest['contract'],stage_lora_transition=bind_design(design,manifest['contract']),
         stage1_layout={k:dict(path=str(entry/name),sha256=file_hash(entry/name))
                        for k,name in [('design','design.json'),('plan','card-plan.json')]},
-        layout_cache=dict(path=str((work/'prepare' if c.get('mixed') else init)/'card-cache.json'),sha256=proof['cache_sha256']),
+        layout_cache=dict(path=str((acoustic if c.get('mixed') else init)/'card-cache.json'),sha256=proof['cache_sha256']),
         stop_update=c['finite_updates'] if finite else budget,engineering_prefix=finite,training_dispatch_allowed=not finite,
         checkpoint_interval=c['finite_updates'] if finite else c['checkpoint_interval'],evaluation_steps=c['evaluation_steps'],
         reference_endpoint=budget,selection_rule='predeclared_final_endpoint',parity_passes=c['parity_passes'] if finite else 0,
         parity_probability_atol=c['parity_probability_atol'])
     if c.get('mixed'):
-        parent['mixed'].update(entry=str(entry),cache=str(work/'prepare/synthetic-cache'))
+        parent['mixed'].update(entry=str(entry),cache=str(acoustic/'synthetic-cache'))
+    if 'execution_microbatch' in c:
+        micro=c['execution_microbatch']
+        if type(micro)!=int or micro<1 or parent['batch_config']['per_dp_replica_batch']%micro:
+            raise ValueError('microbatch must divide the effective replica batch')
+        parent['batch_config']['microbatch']=parent['microbatch']=micro
     commit_json(root/'config.json',parent)
     subprocess.run([sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
         '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),'--max-restarts=0',
