@@ -1,0 +1,443 @@
+{
+  "score_sha256": "e9ccf36b9edb96ac30a467b353a4fa30d9af26c7a0c25c3e9ab8fa99adf3b3e6",
+  "score_config_sha256": "2321a7032c4ec37c5ca08e4a4f7f2b54416987d87a6f8ac30d833cc549e88d29",
+  "target_manifest_sha256": "3b8df38222fdb4b029f728bd70c878373ae8fad0ec9e190012a6b1878f3569e5",
+  "panels": {
+    "SLURP_clean_TEST60": {
+      "wrong": 1881,
+      "confusions": [
+        [
+          [
+            "general_quirky",
+            "qa_factoid"
+          ],
+          48
+        ],
+        [
+          [
+            "general_quirky",
+            "news_query"
+          ],
+          35
+        ],
+        [
+          [
+            "calendar_query",
+            "calendar_set"
+          ],
+          32
+        ],
+        [
+          [
+            "play_audiobook",
+            "play_music"
+          ],
+          32
+        ],
+        [
+          [
+            "qa_definition",
+            "general_quirky"
+          ],
+          31
+        ]
+      ],
+      "ranks": {
+        "n": 1881,
+        "tie_first": 1,
+        "second": 867,
+        "third_to_fifth": 628,
+        "below_fifth": 385
+      },
+      "recording_evidence": {
+        "wrong_with_cross_gold_audio_hash": 0,
+        "siblings": {
+          "siblings_all_wrong": 892,
+          "sibling_correct": 937,
+          "no_peer": 52
+        },
+        "quality": {
+          "shared_text_different_gold": 0,
+          "source_recording_correct_zero_wer": 1200
+        },
+        "annotations_sha256": "fe3449af69b42fda7163345482556066c35a80f7e552a6d67e212a0e2f0783cc"
+      },
+      "reference_bounds_on_206_wrong": {
+        "guaranteed_strict_first": 1123,
+        "conditional": 302,
+        "cannot_be_strict_first": 456
+      },
+      "endpoint_as_reference_hypothetical": {
+        "guaranteed_strict_first": 1267,
+        "conditional": 269,
+        "cannot_be_strict_first": 345
+      },
+      "baseline": {
+        "ranks": {
+          "n": 283,
+          "tie_first": 1,
+          "second": 234,
+          "third_to_fifth": 46,
+          "below_fifth": 2
+        },
+        "fixed": 505,
+        "regressed": 283,
+        "still_wrong": 1598,
+        "top_confusions": [
+          [
+            [
+              "qa_definition",
+              "general_quirky"
+            ],
+            12
+          ],
+          [
+            [
+              "qa_factoid",
+              "general_quirky"
+            ],
+            10
+          ],
+          [
+            [
+              "qa_factoid",
+              "recommendation_movies"
+            ],
+            9
+          ],
+          [
+            [
+              "calendar_set",
+              "alarm_set"
+            ],
+            8
+          ],
+          [
+            [
+              "datetime_convert",
+              "datetime_query"
+            ],
+            7
+          ]
+        ],
+        "gold_down": 171,
+        "strongest_wrong_up": 267,
+        "both": 155,
+        "tied": 1
+      },
+      "stage1": {
+        "ranks": {
+          "n": 218,
+          "tie_first": 1,
+          "second": 183,
+          "third_to_fifth": 32,
+          "below_fifth": 2
+        },
+        "fixed": 346,
+        "regressed": 218,
+        "still_wrong": 1663,
+        "top_confusions": [
+          [
+            [
+              "audio_volume_up",
+              "audio_volume_mute"
+            ],
+            14
+          ],
+          [
+            [
+              "general_quirky",
+              "qa_factoid"
+            ],
+            13
+          ],
+          [
+            [
+              "play_audiobook",
+              "play_music"
+            ],
+            12
+          ],
+          [
+            [
+              "recommendation_events",
+              "calendar_query"
+            ],
+            8
+          ],
+          [
+            [
+              "calendar_set",
+              "alarm_set"
+            ],
+            7
+          ]
+        ],
+        "gold_down": 187,
+        "strongest_wrong_up": 171,
+        "both": 140,
+        "tied": 1
+      },
+      "at_206_coverage": {
+        "accepted": 12777,
+        "descriptive_error": {
+          "stage1": 0.14565234405572514,
+          "tpo": 0.13594740549424747,
+          "baseline": 0.15253971980903186
+        }
+      }
+    },
+    "MINDS_native14": {
+      "wrong": 2282,
+      "confusions": [
+        [
+          [
+            "freeze",
+            "card_issues"
+          ],
+          349
+        ],
+        [
+          [
+            "abroad",
+            "card_issues"
+          ],
+          191
+        ],
+        [
+          [
+            "pay_bill",
+            "direct_debit"
+          ],
+          128
+        ],
+        [
+          [
+            "direct_debit",
+            "latest_transactions"
+          ],
+          99
+        ],
+        [
+          [
+            "high_value_payment",
+            "cash_deposit"
+          ],
+          91
+        ]
+      ],
+      "ranks": {
+        "n": 2282,
+        "tie_first": 5,
+        "second": 771,
+        "third_to_fifth": 858,
+        "below_fifth": 648
+      },
+      "recording_evidence": {
+        "wrong_with_cross_gold_audio_hash": 0,
+        "missing_native_text_wrong": 0,
+        "same_locale_text_cross_gold_wrong": 1
+      },
+      "reference_bounds_on_206_wrong": {
+        "guaranteed_strict_first": 1373,
+        "conditional": 438,
+        "cannot_be_strict_first": 471
+      },
+      "endpoint_as_reference_hypothetical": {
+        "guaranteed_strict_first": 1294,
+        "conditional": 393,
+        "cannot_be_strict_first": 595
+      },
+      "baseline": {
+        "ranks": {
+          "n": 272,
+          "tie_first": 3,
+          "second": 204,
+          "third_to_fifth": 64,
+          "below_fifth": 1
+        },
+        "fixed": 474,
+        "regressed": 272,
+        "still_wrong": 2010,
+        "top_confusions": [
+          [
+            [
+              "abroad",
+              "card_issues"
+            ],
+            43
+          ],
+          [
+            [
+              "pay_bill",
+              "direct_debit"
+            ],
+            36
+          ],
+          [
+            [
+              "high_value_payment",
+              "cash_deposit"
+            ],
+            28
+          ],
+          [
+            [
+              "app_error",
+              "balance"
+            ],
+            16
+          ],
+          [
+            [
+              "high_value_payment",
+              "direct_debit"
+            ],
+            12
+          ]
+        ],
+        "gold_down": 182,
+        "strongest_wrong_up": 233,
+        "both": 143,
+        "tied": 3
+      },
+      "stage1": {
+        "ranks": {
+          "n": 252,
+          "tie_first": 4,
+          "second": 195,
+          "third_to_fifth": 51,
+          "below_fifth": 2
+        },
+        "fixed": 257,
+        "regressed": 252,
+        "still_wrong": 2030,
+        "top_confusions": [
+          [
+            [
+              "abroad",
+              "card_issues"
+            ],
+            43
+          ],
+          [
+            [
+              "pay_bill",
+              "direct_debit"
+            ],
+            41
+          ],
+          [
+            [
+              "abroad",
+              "balance"
+            ],
+            12
+          ],
+          [
+            [
+              "pay_bill",
+              "cash_deposit"
+            ],
+            11
+          ],
+          [
+            [
+              "high_value_payment",
+              "cash_deposit"
+            ],
+            10
+          ]
+        ],
+        "gold_down": 156,
+        "strongest_wrong_up": 240,
+        "both": 144,
+        "tied": 4
+      },
+      "at_206_coverage": {
+        "accepted": 5823,
+        "descriptive_error": {
+          "stage1": 0.16639680086357056,
+          "tpo": 0.16108535119354284,
+          "baseline": 0.1757685042074532
+        }
+      }
+    }
+  },
+  "train": {
+    "bounds": {
+      "guaranteed_strict_first": 2852,
+      "conditional": 490,
+      "cannot_be_strict_first": 561
+    },
+    "signal_at_initial_actor": {
+      "both_correct_targets": {
+        "n": 3279,
+        "both_directions_each_epoch": 3279,
+        "median_gold_push": 0.005994850725371497,
+        "median_competitor_push": 0.0041147605646899565,
+        "median_pair_push": 0.010006184983399904,
+        "rank": {
+          "n": 3279,
+          "tie_first": 0,
+          "second": 2012,
+          "third_to_fifth": 985,
+          "below_fifth": 282
+        },
+        "groups": 1737
+      },
+      "one_correct_target": {
+        "n": 31,
+        "both_directions_each_epoch": 31,
+        "median_gold_push": 0.001828060067100279,
+        "median_competitor_push": 0.003974128276781027,
+        "median_pair_push": 0.006556115480688274,
+        "rank": {
+          "n": 31,
+          "tie_first": 0,
+          "second": 5,
+          "third_to_fifth": 11,
+          "below_fifth": 15
+        },
+        "groups": 29
+      },
+      "neither_correct_target": {
+        "n": 593,
+        "both_directions_each_epoch": 593,
+        "median_gold_push": 0.0009098226071685363,
+        "median_competitor_push": 0.004902133092185192,
+        "median_pair_push": 0.00661969106462412,
+        "rank": {
+          "n": 593,
+          "tie_first": 0,
+          "second": 65,
+          "third_to_fifth": 175,
+          "below_fifth": 353
+        },
+        "groups": 367
+      }
+    },
+    "recordings": 6248,
+    "strict_wrong": 3903,
+    "tied": 15,
+    "fixed_by_epoch": [
+      3298,
+      3291
+    ],
+    "never_strictly_fixed": 593,
+    "correct_lost": [
+      0,
+      0
+    ],
+    "median_ref_gold_never_fixed": 0.00912563782185316,
+    "audit": {
+      "members": 749760,
+      "boundary_clipped": 0,
+      "column_positive_skipped": 0,
+      "column_positive_total": 12496,
+      "audio_to_label_clipped": 378850,
+      "label_to_audio_clipped": 482468,
+      "brier_clipped": 12026
+    }
+  }
+}
