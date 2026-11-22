@@ -33,7 +33,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-205 | 40 | complete | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 五组评测已审核；源域 selection 未达标，保留 194。[执行报告](reports/JEV-205.md) |
 | JEV-206 | 41 | complete | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 五组评测已审核；排序较 201 改善，MINDS 阈值迁移未证实。[执行报告](reports/JEV-206.md) |
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
-| JEV-208 | 43 | in_progress | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md) |
+| JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
