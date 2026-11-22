@@ -63,7 +63,10 @@ def run(c):
     reuse = c.get('prepared_input')
     init = Path(reuse['root']) if reuse else work/'prepare'
     if role == 'prepare':
-        if reuse:
+        if c.get('mixed'):
+            from multimodal_jev.stage1_mixed_cache import build
+            build(c,entry,root,init/'policy')
+        elif reuse:
             from multimodal_jev.context_policy_artifacts import read_execution_bundle
             if (file_hash(init/'receipt.json') != reuse['receipt_sha256']
                     or any(file_hash(entry/k) != digest for k,digest in reuse['input_pins'].items())):
@@ -91,11 +94,13 @@ def run(c):
         source_contract=manifest['contract'],stage_lora_transition=bind_design(design,manifest['contract']),
         stage1_layout={k:dict(path=str(entry/name),sha256=file_hash(entry/name))
                        for k,name in [('design','design.json'),('plan','card-plan.json')]},
-        layout_cache=dict(path=str(init/'card-cache.json'),sha256=proof['cache_sha256']),
+        layout_cache=dict(path=str((work/'prepare' if c.get('mixed') else init)/'card-cache.json'),sha256=proof['cache_sha256']),
         stop_update=c['finite_updates'] if finite else budget,engineering_prefix=finite,training_dispatch_allowed=not finite,
         checkpoint_interval=c['finite_updates'] if finite else c['checkpoint_interval'],evaluation_steps=c['evaluation_steps'],
         reference_endpoint=budget,selection_rule='predeclared_final_endpoint',parity_passes=c['parity_passes'] if finite else 0,
         parity_probability_atol=c['parity_probability_atol'])
+    if c.get('mixed'):
+        parent['mixed'].update(entry=str(entry),cache=str(work/'prepare/synthetic-cache'))
     commit_json(root/'config.json',parent)
     subprocess.run([sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
         '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),'--max-restarts=0',

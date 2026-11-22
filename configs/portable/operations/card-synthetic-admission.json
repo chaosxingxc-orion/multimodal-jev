@@ -1,0 +1,81 @@
+{
+  "audio": "${MIXED_AUDIO}",
+  "manifest": "${CARD_RELEASE}/MANIFEST.json",
+  "synthetic": "${MIXED_METADATA}",
+  "io_workers": 24,
+  "output": "${MIXED_ROOT}/full-train",
+  "pins": {
+    "real": "38e4273d9328e4f02db081315e46f97a17628b974be7ba175254882e95421482",
+    "synthetic": "ab7c9ef54d3794f8eb86382af90e54ff66ff762b6198565e3642b4e485830b68"
+  },
+  "annotation_errors": [
+    {
+      "slurp_id": 4818,
+      "pair": [
+        "qa",
+        "query"
+      ],
+      "intent": "qa_factoid",
+      "recordings": 5,
+      "status": "annotation_error"
+    }
+  ],
+  "extra_cards": {
+    "general_affirm": {
+      "pair": [
+        "general",
+        "affirm"
+      ],
+      "activation": "Express agreement or assent."
+    },
+    "general_confirm": {
+      "pair": [
+        "general",
+        "confirm"
+      ],
+      "activation": "Ask for confirmation or verification."
+    },
+    "general_negate": {
+      "pair": [
+        "general",
+        "negate"
+      ],
+      "activation": "Reject, disagree, or correct a statement."
+    },
+    "general_praise": {
+      "pair": [
+        "general",
+        "praise"
+      ],
+      "activation": "Praise or thank the assistant."
+    },
+    "general_dontcare": {
+      "pair": [
+        "general",
+        "dontcare"
+      ],
+      "activation": "Express no preference among options."
+    },
+    "general_explain": {
+      "pair": [
+        "general",
+        "explain"
+      ],
+      "activation": "Ask for clarification or more detail."
+    },
+    "general_repeat": {
+      "pair": [
+        "general",
+        "repeat"
+      ],
+      "activation": "Ask to hear or do the same thing again."
+    },
+    "general_commandstop": {
+      "pair": [
+        "general",
+        "commandstop"
+      ],
+      "activation": "Ask the assistant to stop its current activity."
+    }
+  }
+}

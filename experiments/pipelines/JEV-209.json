@@ -2,65 +2,47 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "card-stage1-eval-v1",
+  "revision": "mixed-acoustic-stage1-v1",
   "stages": {
     "data": [
       {
-        "id": "freeze-card-training-inputs",
+        "id": "admit-mixed-recordings",
+        "config": "configs/portable/operations/card-synthetic-admission.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.admit_stage1_synthetic",
+            "configs/portable/operations/card-synthetic-admission.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
         "checks": [
           {
-            "path": "${CARD_PACKAGE}/entry/card-review.json",
-            "equals": [
-              [
-                [
-                  "population"
-                ],
-                40513
-              ],
-              [
-                [
-                  "exposures"
-                ],
-                81026
-              ],
-              [
-                [
-                  "permutation_roundtrip"
-                ],
-                true
-              ]
-            ],
-            "sha256": "a0770bbae48fa316f725a8464998d80ba40bf0739a4001d2303120cf1fcda386"
-          },
-          {
-            "path": "${CARD_PACKAGE}/operations-local.json",
-            "equals": [
-              [
-                [
-                  "macros",
-                  "NATIVE_SEAL_OPERATIONS_CONFIG",
-                  "idle_devices"
-                ],
-                [
-                  0,
-                  1,
-                  2,
-                  3,
-                  4,
-                  5,
-                  6,
-                  7
-                ]
-              ]
-            ],
-            "sha256": "e6f79cffa64d8918ee8948c8189973c532fe263c58d667c48cbecd41b5155f7e"
+            "path": "${MIXED_ROOT}/full-train/admission.json",
+            "sha256": "11fc1867b19aa7b332fbe04aea61a0eb28e3a018cdc37cf8b3c9475fd3690661"
           }
         ]
       }
     ],
     "train": [
       {
-        "id": "train-card-stage1",
+        "id": "dispatch-mixed-card-stage1",
+        "config": "configs/portable/operations/card-stage1-mixed.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_card_stage1",
+            "configs/portable/operations/card-stage1-mixed.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_PACKAGE}/operations-local.json"
+          ]
+        ],
         "checks": [
           {
             "path": "${CARD_ROOT}/ops/prepare-collected.json",
@@ -69,10 +51,15 @@
                 [
                   "population"
                 ],
-                40513
+                109610
+              ],
+              [
+                [
+                  "synthetic"
+                ],
+                69097
               ]
-            ],
-            "sha256": "64e0f27b6cd3aa8f1203b389e3ea51f5fb81d756e6c3e7939669049a48383b1a"
+            ]
           },
           {
             "path": "${CARD_ROOT}/ops/finite-collected.json",
@@ -83,8 +70,7 @@
                 ],
                 2
               ]
-            ],
-            "sha256": "8765efabda3bddc33d1c20148f253086adcd20480c0ede1ac34bef7e52e9db07"
+            ]
           },
           {
             "path": "${CARD_ROOT}/ops/formal-collected.json",
@@ -93,142 +79,25 @@
                 [
                   "updates"
                 ],
-                160
-              ]
-            ],
-            "sha256": "3eafd817ddbf2cd03dad40a0c26bea627a10cf40573e2a04f64848101f84fa95"
-          }
-        ]
-      },
-      {
-        "id": "evaluate-stage1-before-stage2",
-        "config": "configs/portable/operations/card-stage1-endpoint-evaluation.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.prepare_card_evaluation",
-            "configs/portable/operations/card-stage1-endpoint-evaluation.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ],
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${EVAL_CARD_OUT}/operations-local.json"
-          ]
-        ],
-        "checks": [
-          {
-            "path": "${EVAL_CARD_OPS}/score-collected.json",
-            "equals": [
-              [
-                [
-                  "datasets",
-                  "SLURP_clean_TEST60",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                12991
+                430
               ],
               [
                 [
-                  "datasets",
-                  "SLURP_clean_SELECTION60",
-                  "arms",
-                  "stage1",
-                  "queries"
+                  "engineering_prefix"
                 ],
-                9226
-              ],
-              [
-                [
-                  "datasets",
-                  "MINDS_native14",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                8168
-              ],
-              [
-                [
-                  "datasets",
-                  "SIB_FLEURS_eng_topic7",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                320
-              ],
-              [
-                [
-                  "datasets",
-                  "MMSU_polysemy",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                98
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_clean_TEST60",
-                  "arms",
-                  "stage1",
-                  "policy_id"
-                ],
-                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
-              ],
-              [
-                [
-                  "datasets",
-                  "MINDS_native14",
-                  "arms",
-                  "stage1",
-                  "policy_id"
-                ],
-                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
-              ],
-              [
-                [
-                  "datasets",
-                  "SIB_FLEURS_eng_topic7",
-                  "arms",
-                  "stage1",
-                  "policy_id"
-                ],
-                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
-              ],
-              [
-                [
-                  "datasets",
-                  "MMSU_polysemy",
-                  "arms",
-                  "stage1",
-                  "policy_id"
-                ],
-                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_clean_SELECTION60",
-                  "arms",
-                  "stage1",
-                  "policy_id"
-                ],
-                "090f33ca1671dc7bcdea549eba7330ee8b4a3f1b8b7329aabacb8e978d687fd3"
+                false
               ]
             ]
           }
         ]
       },
       {
+        "id": "evaluate-expanded-endpoint",
+        "pending": "新末点提交后绑定其 policy ID，执行原生评测面板和完整官方 TEST 的联合意图准确率。"
+      },
+      {
         "id": "score-full-train",
-        "pending": "待绑定已审 Stage1 step 160 的八实例全 TRAIN 固定参考评分与完整收据。"
+        "pending": "混合 Stage1 端点及打分候选冻结后在 181 八实例生成固定参考。"
       },
       {
         "id": "build-fused-stage2-view",

@@ -17,7 +17,7 @@ def normalize(text):
     return ' '.join(text.casefold().split())
 
 
-def compile_plan(c, output, design_sha):
+def compile_plan(c, output, design_sha, *, extension=None):
     bank = json.loads(read(Path(c['bank']), c['bank_sha256']))
     pins = bank['pins']
     release = Path(c['release'])
@@ -35,12 +35,28 @@ def compile_plan(c, output, design_sha):
             r['audio_sha256'] in blocked[1] for r in roster):
         raise ValueError('card development pool overlaps calibration')
     pool = {r['id']:r for r in roster}
+    support_roster = list(roster)
+    release_sha = pins['clean_manifest']
+    if extension:
+        extra_rows, definitions, release_sha = extension
+        extra_ids = set(definitions)
+        for label, spec in definitions.items():
+            task['candidate_pairs'][label] = spec['pair']
+            task['schema']['candidates'].append(dict(id=label,description=spec['activation']))
+            bank['cards'].append(dict(id=label, activation=spec['activation'], examples=[], contrast_with=None))
+        for row in extra_rows:
+            texts[row['id']] = normalize(row['annotation_text'])
+            if row['intent'] in extra_ids:
+                support_roster.append(row)
+                pool[row['id']] = row
+        rows.extend(extra_rows)
+        commit_json(output/'mixed-task.json',task)
     labels = [x['id'] for x in bank['cards']]
     # Draw from distinct, short official TRAIN annotations, including rare classes.
     admitted = {r['id']:r for r in rows}
     inventory = defaultdict(dict)
     text_labels = defaultdict(set)
-    for item in roster:
+    for item in support_roster:
         uid = item['id']
         row = admitted[uid]
         if any(row[k] != item[k] for k in ('source_group','intent','audio_sha256')):
@@ -138,7 +154,7 @@ def compile_plan(c, output, design_sha):
                                                 example_indices=alt).model_input()
     if reversed_panel['questions'][::-1] != alternate['questions'] or alternate['questions']==panels['rules']['questions']:
         raise ValueError('replacement or permutation failed')
-    plan = dict(schema='jev-stage1-card-plan-v1',release_sha256=pins['clean_manifest'], design_sha256=design_sha,
+    plan = dict(schema='jev-stage1-card-plan-v1',release_sha256=release_sha, design_sha256=design_sha,
                 panels=panels,assignments=assignments)
     commit_json(output/'card-plan.json',plan)
     commit_json(output/'roles.json',roles)

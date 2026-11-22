@@ -153,12 +153,28 @@ def run(c,root):
         signal=[None];stream=None
         if rank==0:
             try:
-                rows,task,_=load(c['release'],c['release_sha256'],'learning',purpose='optimize')
-                population={r['id']:r for r in rows}
-                batches,manifest=load_schedule(c['schedule'],c['schedule_sha256'],
-                    release_sha256=c['release_sha256'],population=population,batch_config=c['batch_config'],
-                    parent_root=c['parent_schedule'],parent_manifest_sha256=c['parent_schedule_sha256'],
-                    parent_release_sha256=c['schedule_release_sha256'])
+                if c.get('mixed'):
+                    from multimodal_jev.stage1_mixed_schedule import schedule
+                    entry = Path(c['mixed']['entry'])
+                    proof = json.loads((entry/'admission.json').read_bytes())
+                    if (file_hash(entry/'admission.json')!=c['release_sha256'] or
+                        file_hash(entry/'synthetic.json')!=proof['roster_sha256'] or
+                        file_hash(entry/'mixed-schedule.json')!=c['schedule_sha256']):
+                        raise ValueError('mixed release or schedule changed')
+                    rows,_,_=load(c['release'],c['mixed']['real_release_sha256'],'learning',purpose='optimize')
+                    extra = json.loads((entry/'synthetic.json').read_bytes())
+                    population = {r['id']:r for r in rows+extra}
+                    task = json.loads((entry/'mixed-task.json').read_bytes())
+                    batches,manifest = schedule(population,c['batch_config'],c['mixed']['seed'])
+                    if manifest!=json.loads((entry/'mixed-schedule.json').read_bytes()):
+                        raise ValueError('mixed schedule not reproducible')
+                else:
+                    rows,task,_=load(c['release'],c['release_sha256'],'learning',purpose='optimize')
+                    population={r['id']:r for r in rows}
+                    batches,manifest=load_schedule(c['schedule'],c['schedule_sha256'],
+                        release_sha256=c['release_sha256'],population=population,batch_config=c['batch_config'],
+                        parent_root=c['parent_schedule'],parent_manifest_sha256=c['parent_schedule_sha256'],
+                        parent_release_sha256=c['schedule_release_sha256'])
                 if len(population)!=c['batch_config']['source_queries'] or len(batches)!=layout['total_updates']:raise ValueError('full learning population required')
                 factory=lambda:Qwen3ASRProcessor.from_pretrained(bundle['processor'],local_files_only=True)
                 processor_identity=processor_cache_identity(c['source_policy'])
@@ -186,6 +202,9 @@ def run(c,root):
                             raise ValueError('mirror physical path differs')
                     audio_mirror=ReadOnlyAudioMirror(mirror_root/'audio')
                 cache=EncodedAudioCache(c['encoded_audio_cache'])
+                if c.get('mixed'):
+                    from multimodal_jev.stage1_mixed_cache import RoutedCache
+                    cache=RoutedCache(cache,EncodedAudioCache(c['mixed']['cache']),{r['audio'] for r in extra})
                 layout_reader=None
                 if 'stage1_layout' in c:
                     from multimodal_jev.stage1_layout_cache import ViewCache,read_view
@@ -194,7 +213,7 @@ def run(c,root):
                     cache=ViewCache(cache,read_view(source_pin(c,c['layout_cache']),layout_reader,c))
                 preparer=CachedContextPreparer(factory,cache,
                     processor_sha256=processor_identity,decision_token_id=model.decision_token_id,
-                    audio_token_id=base.config.audio_token_id,max_tokens=4096,audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))
+                    audio_token_id=base.config.audio_token_id,max_tokens=c.get('mixed',{}).get('input_limit',4096),audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))
                 stream=CachedContextBatches(batches,population,task,preparer,
                     slot_request=layout_reader,
                     start_update=start_update,stop_update=stop_update,global_batch=c['global_batch'])

@@ -32,6 +32,9 @@ class LayoutTextView:
             self.panels[arm] = panel
             t = spec['templates'][arm]
             self.templates[arm] = tuple(torch.tensor(t[k], dtype=torch.long) for k in ('prefix','suffix'))
+        acoustic = spec.get('acoustic_template',spec['templates']['native'])
+        self.acoustic_panel = acoustic['panel']
+        self.acoustic_tokens = tuple(torch.tensor(acoustic[k],dtype=torch.long) for k in ('prefix','suffix'))
         if 'native' not in self.panels or (not card_views and self.panels['native']==self.panels['both']):
             raise ValueError('distinct complete task views required')
 
@@ -45,12 +48,13 @@ class LayoutTextView:
         arm = next((k for k,v in self.panels.items() if v == request), None)
         if arm is None:
             raise ValueError('unknown candidate layout in cached request')
-        native = dict(identity, request=dict(self.panels['native'],audio=audio))
+        native = dict(identity, request=dict(self.acoustic_panel,audio=audio),
+                      context_encoding=self.spec.get('acoustic_encoding',encoding))
         inputs, pos, receipt = base.read(native)
         if (set(inputs) != {'input_ids','attention_mask','input_features','input_features_mask'}
                 or not torch.all(inputs['attention_mask']==1)):
             raise ValueError('one unpadded complete request required')
-        prefix,suffix = self.templates['native']
+        prefix,suffix = self.acoustic_tokens
         ids = inputs['input_ids'][0]
         n = len(ids)-len(prefix)-len(suffix)
         if (n<=0 or not len(suffix) or not torch.equal(ids[:len(prefix)],prefix)
@@ -58,12 +62,12 @@ class LayoutTextView:
                 or not torch.all(ids[len(prefix):len(prefix)+n]==encoding['audio_token_id'])
                 or not torch.equal(pos,(ids==encoding['decision_token_id']).nonzero().T)):
             raise ValueError('native cache does not reproduce authenticated processor template')
-        if arm=='native':
+        if arm=='native' and request==self.acoustic_panel:
             return inputs,pos,receipt
         before,after=self.templates[arm]
         ids=torch.cat((before,ids[len(prefix):len(prefix)+n],after))[None,:]
         positions=(ids[0]==encoding['decision_token_id']).nonzero().T.contiguous()
-        if (ids.shape[1]>encoding['max_tokens'] or positions.shape!=pos.shape
+        if (ids.shape[1]>encoding['max_tokens'] or positions.shape!=(1,len(request['questions']))
                 or int(positions.min())<len(before)+n):
             raise ValueError('permuted marker count, order or token budget differs')
         return dict(inputs,input_ids=ids,attention_mask=torch.ones_like(ids)),positions,receipt
