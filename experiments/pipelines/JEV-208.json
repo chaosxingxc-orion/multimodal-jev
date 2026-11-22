@@ -1238,8 +1238,63 @@
             ]
           }
         ]
+      },
+      {
+        "id": "source-checkpoint-curve",
+        "config": "configs/portable/operations/tpo-source-curve-208.json",
+        "python": "${JEV_208_PYTHON}",
+        "dispatch_guards": [
+          "${JEV_208_ROOT}/curve-v1/package",
+          "${JEV_208_ROOT}/curve-v1/ops"
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_tpo_curve",
+            "configs/portable/operations/tpo-source-curve-208.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${JEV_208_ROOT}/curve-v1/package/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${JEV_208_ROOT}/curve-v1/ops/score-collected.json",
+            "cite": "208-source-curve-v1/score-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "audited_curve"
+              ]
+            ]
+          },
+          {
+            "path": "${JEV_208_ROOT}/curve-v1/ops/terminal.json",
+            "cite": "208-source-curve-v1/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          }
+        ]
       }
     ]
   },
-  "revision": "probability-gap-v1"
+  "revision": "source-curve-v1"
 }

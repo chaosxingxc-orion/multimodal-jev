@@ -71,6 +71,9 @@ def main():
             'tpo_eval_block_parity': tpo_evaluation_blocks.parity,
         }[c['phase']]
         result = handler(c)
+    elif c['phase'] == 'tpo_curve_score':
+        from tools.reports.score_tpo_curve import run
+        result = run(c)
     elif c['phase'] == 'tpo_score':
         from tools.reports.evaluate_tpo_endpoints import collect
         result = collect(c)

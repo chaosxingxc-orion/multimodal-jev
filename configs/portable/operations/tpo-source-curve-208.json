@@ -1,0 +1,30 @@
+{
+  "output": "${JEV_208_ROOT}/curve-v1/package",
+  "prior_package": "${JEV_208_ROOT}/evaluation-v1-package",
+  "operations_sha": "50a501c9cab73e5c4b21f0179a37dc77767d5882e09018cadfe71286ed50bd45",
+  "targets": "${JEV_208_ROOT}/targets",
+  "reference": "${JEV_206_REFERENCE}",
+  "cpu_threads": 8,
+  "devices": "${FULL_TPO_OFFLINE_REFERENCE_DEVICES}",
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "train_panel": "SLURP_source_TRAIN",
+  "selection_panel": "SLURP_clean_SELECTION60",
+  "checkpoint": {
+    "step-51": {
+      "manifest_sha256": "5c53e5da2dea59008cfee119ec7fe922509d5e8f641e49651b85aca29928e58b",
+      "policy_id": "ecb184c2edd9f3987983c63580b49ef73e1edc6a2b90f52ad3eb774d5c86e287"
+    }
+  },
+  "namespace": "208-source-curve-v1",
+  "score_sha": "9d1ea5c0a24d98f212f87b6a4799ae739692cc177fafbf347dce1679499bdc6d",
+  "prior_plan_receipt_sha": "0188c6b1d6dec4e7b5fdfb7535543481186ed4d3757895fe53330a8f99a0a27a",
+  "deployment": {
+    "operations": "${JEV_208_ROOT}/curve-v1/ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-208-source-curve-v1",
+    "tag": "jev-208-source-curve-v1"
+  }
+}

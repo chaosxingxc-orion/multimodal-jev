@@ -63,7 +63,17 @@ def build(spec):
                 raise ValueError('inconsistent evaluation policy')
             if arm not in arm_order:
                 arm_order.append(arm)
-        rows, inputs[dataset] = roster(c['cache'])
+        if 'train_view' in endpoint:
+            from tools.reports.calibrate_tpo_probabilities import source_panel
+            from tools.reports.run_native_seal_endpoint import bound
+            view = endpoint['train_view']
+            _, assets, ids, _ = source_panel(view, parent)
+            sizes = bound(view['lengths'])
+            rows = [dict(id=a['id'], width=len(ids), **sizes[a['id']]) for a in assets]
+            inputs[dataset] = dict(roster=view['roster']['sha256'], lengths=view['lengths']['sha256'],
+                                   source=parent['release_sha256'], parent=spec['parent_sha'])
+        else:
+            rows, inputs[dataset] = roster(c['cache'])
         all_blocks.extend(blocks.make_blocks(dataset, rows, sources, batch=spec['batch'],
             batches_per_block=spec['queue']['batches_per_block'],
             partitions=spec['queue']['partitions'][dataset], choice=choice))
@@ -146,7 +156,15 @@ def worker(spec):
             if dataset not in loaded:
                 c = endpoint_config(spec, parent, spec['endpoints'][dataset])
                 verify = dict(expected_cache=plan['inputs'][dataset])
-                if compiler is None:
+                if 'train_view' in c:
+                    from tools.reports.calibrate_tpo_probabilities import cached_source
+                    view = c['train_view']
+                    if (view['roster']['sha256'] != plan['inputs'][dataset]['roster']
+                            or spec['parent_sha'] != plan['inputs'][dataset]['parent']):
+                        raise ValueError('TRAIN population or input contract differs')
+                    assets, _, encode = cached_source(view, parent)
+                    requests = None
+                elif compiler is None:
                     assets, _, encode = load(c, **verify)
                     requests = None
                 else:
