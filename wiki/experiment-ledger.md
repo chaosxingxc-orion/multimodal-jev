@@ -33,7 +33,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-205 | 40 | complete | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 五组评测已审核；源域 selection 未达标，保留 194。[执行报告](reports/JEV-205.md) |
 | JEV-206 | 41 | complete | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 五组评测已审核；排序较 201 改善，MINDS 阈值迁移未证实。[执行报告](reports/JEV-206.md) |
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
-| JEV-208 | 43 | planned | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 待核验训练人口、接入目标和三点评测。[报告](reports/JEV-208.md) |
+| JEV-208 | 43 | in_progress | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | claim claimed。[执行报告](reports/JEV-208.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
@@ -57,7 +57,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-205 | 从 194 的 Stage1 起点接续，复用其训练人口、批次与固定参考，只修正固定排序目标 | **34/34 步**与五组评测均审核通过 | SLURP selection macro-F1 −0.59 个百分点，未达标；TEST +0.16、MINDS −0.15，未证实迁移收益。[报告](reports/JEV-205.md) |
 | JEV-206 | 与 201 同起点、同训练录音、34 步；只输出逐类 sigmoid，用音频↔标签双向对比和 Brier 效用构造 TPO 目标 | **34/34 步**与五组评测已审；源 TRAIN 校准 21,244 条、59/60 类 | SLURP TEST / MINDS 为 81.58% / 71.89%，比 201 高 1.25 / 2.16 点；较共同 Stage1 的配对区间跨零。候选级 Brier 改善，MINDS 冻结阈值的覆盖与接受错误仍有取舍。[报告](reports/JEV-206.md) |
 | JEV-207 | 从共同 Stage1 起点验证新训练集 + actor 排序项；按新视图定步数，206 为历史对照 | 2,750 条、62 对；16 步训练及五个面板已审核，八卡评测用时 22 分 54 秒 | 选模 macro-F1 80.10%（−3.08 点），未晋级。SLURP TEST 79.11%（−2.47 点），MINDS 73.46%（+1.56 点），SIB-FLEURS 持平，MMSU 少答对 11 题。[报告](reports/JEV-207.md) |
-| JEV-208 | 从共同 Stage1 接续，覆盖全部准入 TRAIN 录音，以 TPO 和当前最强错类的概率间隔训练两轮 | 设计已登记，预计最多 102 步，训练与评测未派发 | 206 为主对照，以源域净修复、macro-F1 和正负 Brier 决定晋级，五个面板逐集报告。[报告](reports/JEV-208.md) |
+| JEV-208 | 从共同 Stage1 接续，覆盖全部准入 TRAIN 录音，以 TPO 和当前最强错类的概率间隔训练两轮 | 已封存 19,269 条，181 六卡通过有限验收，已核验正式训练第 1–3 步，预算 102 步 | 206 为主对照，以源域净修复、macro-F1 和正负 Brier 决定晋级，五个面板逐集报告。[报告](reports/JEV-208.md) |
 
 未逐号回填更早的工程包。旧实验以[归档](archive/)和既有研究文档为准；FSC 数字留在
 历史收据里，当前主参考为 SLURP 与 MINDS。仅比较相同封存人口、候选和指标；
