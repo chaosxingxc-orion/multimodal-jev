@@ -60,11 +60,26 @@ def run(c):
     entry, work = Path(c['entry']),Path(c['work'])
     root = work/role
     root.mkdir()
+    reuse = c.get('prepared_input')
+    init = Path(reuse['root']) if reuse else work/'prepare'
     if role == 'prepare':
-        prepare(c,root)
+        if reuse:
+            from multimodal_jev.context_policy_artifacts import read_execution_bundle
+            if (file_hash(init/'receipt.json') != reuse['receipt_sha256']
+                    or any(file_hash(entry/k) != digest for k,digest in reuse['input_pins'].items())):
+                raise ValueError('prepared inputs differ from the frozen release')
+            proof = read(init/'receipt.json')
+            if (file_hash(init/'card-cache.json') != proof['cache_sha256']
+                    or read(init/'card-cache.json')['layout_plan_sha256'] != file_hash(entry/'card-plan.json')):
+                raise ValueError('prepared cache differs')
+            read_execution_bundle(init/'policy',expected_policy_id=proof['policy_id'],
+                expected_contract=read(init/'policy/MANIFEST.json')['contract'],
+                expected_base_id=read(entry/'training.json')['base_id'])
+            commit_json(root/'receipt.json',dict(proof,reused_receipt=reuse['receipt_sha256']))
+        else:
+            prepare(c,root)
         return read(root/'receipt.json')
-    init = work/'prepare'
-    proof = read(init/'receipt.json')
+    proof = read(work/'prepare/receipt.json')
     parent = read(entry/'training.json')
     manifest = read(init/'policy/MANIFEST.json')
     design = read(entry/'design.json')
@@ -82,7 +97,8 @@ def run(c):
         reference_endpoint=budget,selection_rule='predeclared_final_endpoint',parity_passes=c['parity_passes'] if finite else 0,
         parity_probability_atol=c['parity_probability_atol'])
     commit_json(root/'config.json',parent)
-    subprocess.run([sys.executable,'-m','torch.distributed.run','--standalone',
+    subprocess.run([sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
+        '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),'--max-restarts=0',
         '--nproc-per-node='+str(len(parent['physical_devices'])),str(entry/'source/tools/jev/train_card_stage1.py'),
         '--config',str(root/'config.json'),'--output',str(root/'run')],check=True)
     result = read(root/'run/result.json')

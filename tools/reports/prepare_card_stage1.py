@@ -63,7 +63,7 @@ def run(c):
         spec=dict(phase='card_stage1', role=role, entry='/jev-entry',work='/jev-work',source=dict(
             root='/jev-entry/source',sha256=frozen['manifest_sha256']),sample=dict(
             path=str(Path(parent['audio_mirror_root'])/'audio'/(sample['audio_sha256']+'.audio')),sha256=sample['audio_sha256']),
-            io_workers=c['io_workers'],**c['window'])
+            io_workers=c['io_workers'],prepared_input=deploy.get('prepared_input'),**c['window'])
         commit_json(entry/(role+'.json'),dict(schema='jev-local-macros-v1',macros=dict(NATIVE_SEAL_CONTAINER_CONFIG=spec)))
         groups.append([dict(name=role,devices=[] if role=='prepare' else devices,
             collect=role+'/receipt.json',**c['resources'])])
