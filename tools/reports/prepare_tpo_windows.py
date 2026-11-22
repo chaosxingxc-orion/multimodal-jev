@@ -30,10 +30,19 @@ def prepare(c):
                 m['view_sha256']!=parent['training_dataset']['manifest_sha256']):
             raise ValueError('incompatible target dataset')
         if 'actor_pair_margin' in m:
-            if (m.get('reviewed_new_view') is not True or m['review']['complete_pairs'] < 1
-                    or m['review']['existing_recordings_new_to_view'] < 1
-                    or m['updates'] < 3 or not any(m['actor_pair_margin']['batch_eligible'])):
-                raise ValueError('reviewed new pair population required before freezing actor margin training')
+            if m.get('text_screened_new_view') is True:
+                evidence = m['text_screen']
+                if (evidence['schema'] != 'jev-source-reference-text-screen-v1'
+                        or evidence['reference_covered'] != m['recordings']
+                        or not {'pairs.json', 'text-screen.json'} <= m['files'].keys()):
+                    raise ValueError('frozen text evidence required before packaging')
+            elif m.get('reviewed_new_view') is True:
+                evidence = m['review']
+            else:
+                raise ValueError('missing evidence for the new pair population')
+            if (evidence['complete_pairs'] < 1 or evidence['existing_recordings_new_to_view'] < 1
+                    or m['updates'] < 3 or not all(m['actor_pair_margin']['eligible_by_epoch'])):
+                raise ValueError('new pair population required before freezing actor margin training')
             for name, sha in m['files'].items():
                 verified(data/name, sha)
         remote_parent=Path(parent['source_policy']).parents[1]

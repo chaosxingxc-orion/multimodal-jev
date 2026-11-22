@@ -5,117 +5,7 @@
   "stages": {
     "data": [
       {
-        "id": "construct-source-train-audio-pairs",
-        "config": "configs/portable/operations/tpo-actor-pair-207.json",
-        "python": "${JEV_207_PYTHON}",
-        "run": [
-          [
-            "tools.reports.build_tpo_actor_pairs",
-            "prepare",
-            "configs/portable/operations/tpo-actor-pair-207.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "checks": [
-          {
-            "path": "${JEV_207_ROOT}/review-packet-expanded-v1/MANIFEST.json",
-            "cite": "tpo-actor-pair-207/review-packet-expanded-v1/MANIFEST.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-source-audio-pair-review-v1"
-              ]
-            ],
-            "report": {
-              "待盲听录音": [
-                "review_recordings"
-              ],
-              "候选语义对": [
-                "candidate_pairs"
-              ],
-              "参考覆盖": [
-                "reference_covered"
-              ],
-              "单录音错序候选": [
-                "hard_single_candidates"
-              ],
-              "候选训练上限": [
-                "candidate_max_recordings"
-              ]
-            },
-            "sha256": "f6ad9eede08186f3f491a6b7daa705ac088cad99e8666901f9376706c235c72b"
-          }
-        ]
-      },
-      {
-        "id": "seal-independent-audio-reviews",
-        "config": "configs/portable/operations/tpo-actor-pair-207.json",
-        "python": "${JEV_207_PYTHON}",
-        "run": [
-          [
-            "tools.reports.build_tpo_actor_pairs",
-            "seal-reviews",
-            "configs/portable/operations/tpo-actor-pair-207.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "checks": [
-          {
-            "path": "${JEV_207_ROOT}/reviews/receipt.json",
-            "cite": "tpo-actor-pair-207/reviews/receipt.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-source-audio-pair-submission-v1"
-              ]
-            ]
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${JEV_207_ROOT}/reviews/listening-a.json",
-            "cite": "tpo-actor-pair-207/reviews/listening-a.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-source-audio-pair-submission-v1"
-              ]
-            ]
-          },
-          {
-            "path": "${JEV_207_ROOT}/reviews/listening-b.json",
-            "cite": "tpo-actor-pair-207/reviews/listening-b.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-source-audio-pair-submission-v1"
-              ]
-            ]
-          },
-          {
-            "path": "${JEV_207_ROOT}/reviews/relation.json",
-            "cite": "tpo-actor-pair-207/reviews/relation.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-source-audio-pair-submission-v1"
-              ]
-            ]
-          }
-        ]
-      },
-      {
-        "id": "compile-reviewed-pair-targets",
+        "id": "screen-source-train-text-and-build-targets",
         "config": "configs/portable/operations/tpo-actor-pair-207.json",
         "python": "${JEV_207_PYTHON}",
         "run": [
@@ -129,7 +19,7 @@
         "checks": [
           {
             "path": "${JEV_207_ROOT}/targets/MANIFEST.json",
-            "cite": "tpo-actor-pair-207/targets/MANIFEST.json",
+            "cite": "tpo-actor-pair-207-text/targets/MANIFEST.json",
             "equals": [
               [
                 [
@@ -139,9 +29,16 @@
               ],
               [
                 [
-                  "reviewed_new_view"
+                  "text_screened_new_view"
                 ],
                 true
+              ],
+              [
+                [
+                  "text_screen",
+                  "schema"
+                ],
+                "jev-source-reference-text-screen-v1"
               ]
             ],
             "report": {
@@ -154,25 +51,19 @@
               "曝光": [
                 "real_exposures"
               ],
-              "已审语义对": [
-                "review",
+              "完整语义对": [
+                "text_screen",
                 "complete_pairs"
+              ],
+              "首次进入视图": [
+                "text_screen",
+                "existing_recordings_new_to_view"
+              ],
+              "每轮排序曝光": [
+                "actor_pair_margin",
+                "eligible_by_epoch"
               ]
             }
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${JEV_207_ROOT}/reviews/receipt.json",
-            "cite": "tpo-actor-pair-207/reviews/receipt.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-source-audio-pair-submission-v1"
-              ]
-            ]
           }
         ]
       },
@@ -190,7 +81,7 @@
         "inputs": [
           {
             "path": "${JEV_207_ROOT}/targets/MANIFEST.json",
-            "cite": "tpo-actor-pair-207/targets/MANIFEST.json",
+            "cite": "tpo-actor-pair-207-text/targets/MANIFEST.json",
             "equals": [
               [
                 [
@@ -200,9 +91,16 @@
               ],
               [
                 [
-                  "reviewed_new_view"
+                  "text_screened_new_view"
                 ],
                 true
+              ],
+              [
+                [
+                  "text_screen",
+                  "schema"
+                ],
+                "jev-source-reference-text-screen-v1"
               ]
             ],
             "report": {
@@ -215,9 +113,17 @@
               "曝光": [
                 "real_exposures"
               ],
-              "已审语义对": [
-                "review",
+              "完整语义对": [
+                "text_screen",
                 "complete_pairs"
+              ],
+              "首次进入视图": [
+                "text_screen",
+                "existing_recordings_new_to_view"
+              ],
+              "每轮排序曝光": [
+                "actor_pair_margin",
+                "eligible_by_epoch"
               ]
             }
           }
@@ -228,7 +134,7 @@
         "checks": [
           {
             "path": "${JEV_207_ROOT}/package/operations-local.json",
-            "cite": "tpo-actor-pair-207/package/operations-local.json",
+            "cite": "tpo-actor-pair-207-text/package/operations-local.json",
             "equals": [
               [
                 [
@@ -262,7 +168,7 @@
         "checks": [
           {
             "path": "${JEV_207_ROOT}/ops/finite-collected.json",
-            "cite": "tpo-actor-pair-207/ops/finite-collected.json",
+            "cite": "tpo-actor-pair-207-text/ops/finite-collected.json",
             "equals": [
               [
                 [
@@ -286,7 +192,7 @@
           },
           {
             "path": "${JEV_207_ROOT}/ops/first-three.json",
-            "cite": "tpo-actor-pair-207/ops/first-three.json",
+            "cite": "tpo-actor-pair-207-text/ops/first-three.json",
             "equals": [
               [
                 [
@@ -336,7 +242,7 @@
           },
           {
             "path": "${JEV_207_ROOT}/ops/tpo-collected.json",
-            "cite": "tpo-actor-pair-207/ops/tpo-collected.json",
+            "cite": "tpo-actor-pair-207-text/ops/tpo-collected.json",
             "equals": [
               [
                 [
@@ -354,7 +260,7 @@
           },
           {
             "path": "${JEV_207_ROOT}/ops/terminal.json",
-            "cite": "tpo-actor-pair-207/ops/terminal.json",
+            "cite": "tpo-actor-pair-207-text/ops/terminal.json",
             "equals": [
               [
                 [
@@ -379,5 +285,6 @@
         "pending": "待新端点、TRAIN 校准与五个预登记面板的审核绑定"
       }
     ]
-  }
+  },
+  "revision": "reference-text-v1"
 }

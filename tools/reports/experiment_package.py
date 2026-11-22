@@ -82,6 +82,8 @@ def validate(spec, selection):
     if (spec["schema"] != "jev-experiment-package-v1"
             or spec["protocol"] != selection["plan"]):
         raise ValueError("Pipeline schema or ledger protocol differs")
+    if "revision" in spec and not re.fullmatch(r"[a-z0-9][a-z0-9-]*", spec["revision"]):
+        raise ValueError("Invalid revision for the experiment state directory")
     if set(spec["stages"]) != set(PHASES):
         raise ValueError("Register the data, train and evaluate stages")
     ids = set()
@@ -440,7 +442,10 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False):
     root = Path(workspace)
     if not root.is_absolute():
         raise ValueError("The local state root must be absolute")
-    state = root / selection["experiment_id"]
+    state_name = selection["experiment_id"]
+    if "revision" in spec:
+        state_name += "." + spec["revision"]
+    state = root / state_name
     if action in {"status", "plan"}:
         results = workflow(spec, macros, state, selection)
         return dict(selection, status="read_only", steps=results if action == "status" else [

@@ -1,9 +1,12 @@
+import json
+
 import pytest
 import torch
 
 from multimodal_jev.context_tpo_pair_margin import compile_pairs, loss, verify_update
 from multimodal_jev.context_tpo_rewards import projection
-from tools.reports.build_tpo_actor_pairs import admit
+from multimodal_jev.baseline import file_hash
+from tools.reports.build_tpo_actor_pairs import cue_changes, source_text
 
 
 def test_frozen_switch_uses_strict_reference_and_any_projected_rival():
@@ -45,18 +48,38 @@ def test_tail_batch_receipt_requires_correct_denominator_and_counts():
         verify_update(row, [384, 3], [0, 0], [10, 2])
 
 
-def test_review_admission_drops_disagreement_and_requires_new_complete_pair():
-    bindings = dict(
-        pairs=[dict(pair_id='one', sides=[['l', 'l2'], ['r']])],
-        hard=['hard'], replay=[], review_ids={uid: uid for uid in ('l', 'l2', 'r', 'hard')})
-    eligible = {uid: dict(intent='a' if uid != 'r' else 'b') for uid in bindings['review_ids']}
-    first = {uid: dict(status='unique', label=row['intent']) for uid, row in eligible.items()}
-    second = dict(first, l2=dict(status='ambiguous', label=None))
-    relation = {'one': dict(status='confirmed', evidence='One condition changed.')}
-    selected, approved, pairs, rejected = admit(bindings, (first, second, relation), eligible, ['a', 'b'], {'r'})
-    assert set(selected) == approved == {'l', 'r', 'hard'}
-    assert selected['hard']['kind'] == 'hard_single'
-    assert pairs[0]['sides'] == [['l'], ['r']]
-    assert rejected == {'missing_or_nonunique_recording': 1}
-    with pytest.raises(ValueError, match='absent from 206'):
-        admit(bindings, (first, second, relation), eligible, ['a', 'b'], {'l2'})
+def test_reference_text_screen_requires_independent_cue_and_recording_binding(tmp_path):
+    labels = {"down": "quieter", "up": "louder"}
+    cases = [
+        ("match", "down", "play it quieter", "correct"),
+        ("wrong", "up", "play it quieter", "correct"),
+        ("multi", "up", "play it louder and then quieter", "correct"),
+        ("negated", "down", "do not play it quieter", "correct"),
+        ("unclear", "down", "music please", "correct"),
+        ("bad_recording", "up", "play it louder", "incorrect"),
+    ]
+    metadata = tmp_path / "train.jsonl"
+    metadata.write_text("".join(json.dumps(dict(intent=label, sentence=sentence, recordings=[
+        dict(file=uid + ".flac", wer=0.25, status=status)])) + "\n" for uid, label, sentence, status in cases))
+    eligible = {uid: dict(intent=label, audio=uid + ".flac", source_group=uid)
+                for uid, label, *_ in cases}
+    eligible["missing"] = dict(intent="up", audio="missing.flac", source_group="missing")
+    config = dict(metadata=metadata, metadata_sha256=file_hash(metadata),
+                  text_screen=dict(intent_cues={k: [v] for k, v in labels.items()}, exclude=r"\bnot\b",
+                                   recording_status="correct"))
+    text, rejects, decisions = source_text(config, eligible)
+    assert set(text) == {"match"}
+    assert text["match"]["cue_spans"] == [(2, 3)]
+    assert decisions["wrong"] == "intent_cue_disagrees_with_label"
+    assert decisions["multi"] == "conflicting_intent_cues"
+    assert decisions["missing"] == "missing_recording_binding"
+    assert sum(rejects.values()) + len(text) == len(eligible)
+
+
+def test_pair_requires_changed_tokens_to_overlap_intent_evidence_on_both_sides():
+    play_faster = {"words": ("play", "it", "faster"), "cue_spans": [(2, 3)]}
+    play_slower = {"words": ("play", "it", "slower"), "cue_spans": [(2, 3)]}
+    assert cue_changes(play_faster, play_slower, (("play", "it"), ()))
+    tomorrow = {"words": ("play", "it", "faster", "tomorrow"), "cue_spans": [(2, 3)]}
+    today = {"words": ("play", "it", "faster", "today"), "cue_spans": [(2, 3)]}
+    assert not cue_changes(tomorrow, today, (("play", "it", "faster"), ()))

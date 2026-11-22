@@ -32,7 +32,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | --- | ---: | --- | --- | --- |
 | JEV-205 | 40 | complete | [194 固定目标的排序修正](../experiments/tpo-ranking-repair-205.md) | 五组评测已审核；源域 selection 未达标，保留 194。[执行报告](reports/JEV-205.md) |
 | JEV-206 | 41 | complete | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 五组评测已审核；排序较 201 改善，MINDS 阈值迁移未证实。[执行报告](reports/JEV-206.md) |
-| JEV-207 | 42 | in_progress | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | seal-independent-audio-reviews awaiting_evidence。[执行报告](reports/JEV-207.md) |
+| JEV-207 | 42 | in_progress | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 文本证据建集修订已登记。[执行报告](reports/JEV-207.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
@@ -55,7 +55,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-204 | 取消独立 Stage1；从 Qwen3-ASR-0.6B 加新初始化的任务参数起步，一套目标跑全量 clean TRAIN，40,513 条 × 2 轮，212 步 | 首次运行在第 4 步停止；正式重启 **212/212 步**和 SLURP / MINDS 的 step 0、106、212 已审 | 逐类概率末点 macro-F1 为 74.75% / 73.40%。相对 201，源域 −5.58 点、MINDS +3.66 点；第二轮 MINDS 排序退化，全候选 Choice 误拒增加。不替换现有对照。[报告](reports/JEV-204.md) |
 | JEV-205 | 从 194 的 Stage1 起点接续，复用其训练人口、批次与固定参考，只修正固定排序目标 | **34/34 步**与五组评测均审核通过 | SLURP selection macro-F1 −0.59 个百分点，未达标；TEST +0.16、MINDS −0.15，未证实迁移收益。[报告](reports/JEV-205.md) |
 | JEV-206 | 与 201 同起点、同训练录音、34 步；只输出逐类 sigmoid，用音频↔标签双向对比和 Brier 效用构造 TPO 目标 | **34/34 步**与五组评测已审；源 TRAIN 校准 21,244 条、59/60 类 | SLURP TEST / MINDS 为 81.58% / 71.89%，比 201 高 1.25 / 2.16 点；较共同 Stage1 的配对区间跨零。候选级 Brier 改善，MINDS 冻结阈值的覆盖与接受错误仍有取舍。[报告](reports/JEV-206.md) |
-| JEV-207 | 从共同 Stage1 起点验证新训练集 + actor 排序项；按新视图定步数，206 为历史对照 | 295 对、4,951 条候选已封存，待审核 | 待核验排序项的额外梯度、实际名次修复，以及共同评测面板上的净修复与概率质量。[报告](reports/JEV-207.md) |
+| JEV-207 | 从共同 Stage1 起点验证新训练集 + actor 排序项；按新视图定步数，206 为历史对照 | 文本筛选试算 2,750 条、62 对，按两轮 16 步准备封包 | 待核验排序项的额外梯度、实际名次修复，以及共同评测面板上的净修复与概率质量。[报告](reports/JEV-207.md) |
 
 未逐号回填更早的工程包。旧实验以[归档](archive/)和既有研究文档为准；FSC 数字留在
 历史收据里，当前主参考为 SLURP 与 MINDS。仅比较相同封存人口、候选和指标；

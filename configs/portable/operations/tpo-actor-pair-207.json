@@ -7,10 +7,270 @@
   "release": "${JEV_206_RELEASE}",
   "metadata": "${SLURP_CLEAN_TRAIN_METADATA}",
   "metadata_sha256": "1ad58f688d54deace851e484116d4b51b15ffcf9d099f95a453a6c5879bfaab1",
-  "packet": "${JEV_207_ROOT}/review-packet-expanded-v1",
-  "submissions": "${JEV_207_ROOT}/reviews/receipt.json",
   "output": "${JEV_207_ROOT}/targets",
-  "review": {
+  "schedule": {
+    "seed": 317,
+    "epochs": 2,
+    "global_batch": 384,
+    "microbatch": 8,
+    "confusion_fraction": 0.0
+  },
+  "loss": {
+    "logit_margin": 0.25,
+    "weight": 0.016666666666666666
+  },
+  "cpu_threads": 8,
+  "io_workers": 8,
+  "text_screen": {
+    "recording_status": "correct",
+    "exclude": "\\b(?:not|don t|doesn t|didn t|won t|can t|cannot|never|instead of|rather than)\\b",
+    "intent_cues": {
+      "alarm_query": [
+        "(?:when|what time|how many|list|show|check|tell me about|do i have).{0,30}\\balarms?",
+        "alarms?.{0,20}\\b(?:set for|scheduled for)"
+      ],
+      "alarm_remove": [
+        "(?:cancel|delete|remove|disable|clear|turn off).{0,24}\\balarms?"
+      ],
+      "alarm_set": [
+        "(?:set|create|schedule|add).{0,24}\\balarms?",
+        "wake me (?:up )?(?:at|in|on|tomorrow)"
+      ],
+      "audio_volume_down": [
+        "(?:turn|bring|take).{0,22}\\bdown.{0,18}\\b(?:volume|sound|audio)",
+        "(?:turn|take|bring|lower|reduce|decrease|drop).{0,18}\\b(?:volume|sound|audio).{0,10}\\bdown",
+        "(?:lower|reduce|decrease).{0,16}\\b(?:volume|sound|audio)",
+        "(?:a bit|little|make it|play it|be) quieter"
+      ],
+      "audio_volume_mute": [
+        "mute(?: the)? (?:sound|audio|volume|speaker|music|it)",
+        "(?:turn|switch) (?:off the (?:sound|volume|audio)|the (?:sound|volume|audio) off)",
+        "(?:sound|volume|audio) (?:off|to zero)",
+        "^mute$"
+      ],
+      "audio_volume_up": [
+        "(?:turn|bring|take).{0,22}\\bup.{0,18}\\b(?:volume|sound|audio)",
+        "(?:turn|take|bring|raise|increase|boost).{0,18}\\b(?:volume|sound|audio).{0,10}\\bup",
+        "(?:raise|increase|boost).{0,16}\\b(?:volume|sound|audio)",
+        "(?:a bit|little|make it|play it|be) louder"
+      ],
+      "calendar_query": [
+        "(?:show|read|what|tell|when|check|list|any).{0,45}\\b(?:calendar|appointment|appointments|schedule|agenda|meetings?)",
+        "(?:when|at what time|what time).{0,24}\\b(?:meeting|appointment|event)",
+        "what (?:do|have) i have (?:on|planned for|going on)",
+        "(?:anything|what|any plans).{0,18}\\b(?:on|in) (?:my|the) (?:schedule|calendar|diary)",
+        "(?:show|what|tell|when|check|list|any).{0,35}\\b(?:my diary|my appointments|my events)"
+      ],
+      "calendar_remove": [
+        "(?:delete|remove|cancel|erase|clear|get rid of).{0,36}\\b(?:appointments?|meetings?|calendar|events?)",
+        "(?:delete|remove|cancel|erase|clear).{0,24}\\bfrom (?:my|the) (?:calendar|schedule|diary)"
+      ],
+      "calendar_set": [
+        "(?:set|schedule|create|add|save|put|book|note down).{0,32}\\b(?:appointments?|meetings?|calendar|events?)",
+        "(?:schedule|set up|book|arrange|organize).{0,20}\\b(?:a meeting|an appointment|a call|a reminder)",
+        "(?:set|add|create|save|put).{0,26}\\bon (?:my|the) calendar"
+      ],
+      "cooking_query": [
+        "(?:temperature|how long|how much|how many).{0,40}\\b(?:bake|cook|roast|boil|fry|oven|grill)"
+      ],
+      "cooking_recipe": [
+        "recipes?",
+        "how (?:do|can|should) i (?:cook|bake|roast|prepare|fry|grill|boil)"
+      ],
+      "datetime_convert": [
+        "(?:convert|difference|time zone).{0,40}\\b(?:time|hours?|clock|utc|gmt|pacific|eastern)",
+        "if it s.{0,24}\\bwhat time"
+      ],
+      "datetime_query": [
+        "what (?:is|s) (?:the )?(?:current )?(?:time|date|day)(?: now| today| in| right now|$)",
+        "what time is it",
+        "(?:tell me|show me).{0,15}\\b(?:current|local) time",
+        "what day is (?:it|today|tomorrow)"
+      ],
+      "email_addcontact": [
+        "(?:add|create|save|new|store).{0,25}\\b(?:contact|address book)"
+      ],
+      "email_query": [
+        "(?:read|show|open|check|list|any|how many|have i got|do i have).{0,32}\\b(?:e mails?|emails?|inbox)",
+        "(?:unread|incoming|new) (?:e mails?|emails?)"
+      ],
+      "email_querycontact": [
+        "(?:what|find|look up|tell|show|give).{0,35}\\b(?:phone number|contact details|email address|e mail address)"
+      ],
+      "email_sendemail": [
+        "(?:write|send|compose|draft|reply to|forward).{0,32}\\b(?:e mail|email)"
+      ],
+      "general_greet": [
+        "^(?:good morning|good afternoon|good evening|hello|hi|hey|how are you)(?: olly| alexa| assistant)?$"
+      ],
+      "general_joke": [
+        "(?:tell|say|give|hear).{0,18}\\b(?:joke|something funny)",
+        "make me laugh"
+      ],
+      "iot_cleaning": [
+        "(?:start|stop|turn on|turn off|run|activate).{0,26}\\b(?:robot vacuum|vacuum|roomba)",
+        "vacuum the (?:room|floor|house)"
+      ],
+      "iot_coffee": [
+        "(?:make|brew|prepare|start|turn on).{0,22}\\b(?:coffee|espresso)"
+      ],
+      "iot_hue_lightchange": [
+        "(?:lights?|bulbs?).{0,20}\\b(?:red|green|blue|purple|orange|pink|yellow|color|colour)",
+        "(?:change|set|make).{0,17}\\b(?:color|colour).{0,15}\\b(?:light|lights|bulbs?)"
+      ],
+      "iot_hue_lightdim": [
+        "(?:dim|lower|reduce|decrease).{0,22}\\b(?:light|lights|lighting|brightness)",
+        "(?:turn|bring).{0,20}\\b(?:lights?|brightness) down",
+        "turn down.{0,18}\\b(?:light|lights|lighting)"
+      ],
+      "iot_hue_lightoff": [
+        "(?:turn|switch|shut) off.{0,18}\\b(?:lights?|lamps?)",
+        "(?:turn|switch|shut).{0,20}\\b(?:lights?|lamps?) off",
+        "lights off"
+      ],
+      "iot_hue_lighton": [
+        "(?:turn|switch) on.{0,18}\\b(?:lights?|lamps?)",
+        "(?:turn|switch).{0,20}\\b(?:lights?|lamps?) on",
+        "lights on"
+      ],
+      "iot_hue_lightup": [
+        "(?:brighten|raise|increase).{0,22}\\b(?:lights?|lighting|brightness)",
+        "turn up.{0,18}\\b(?:light|lights|lighting|brightness)",
+        "(?:turn|bring).{0,20}\\b(?:lights?|brightness) up",
+        "(?:lights?|lighting).{0,18}\\bbrighter"
+      ],
+      "iot_wemo_off": [
+        "(?:turn|switch|shut) off.{0,24}\\b(?:plug|socket|fan|heater|television|tv|geyser)",
+        "(?:plug|socket|fan|heater|television|tv|geyser) off"
+      ],
+      "iot_wemo_on": [
+        "(?:turn|switch) on.{0,24}\\b(?:plug|socket|fan|heater|television|tv|geyser)",
+        "(?:plug|socket|fan|heater|television|tv|geyser) on"
+      ],
+      "lists_createoradd": [
+        "(?:create|new|start|add|put|make).{0,34}\\b(?:list|checklist)"
+      ],
+      "lists_query": [
+        "(?:list|show|what|read|tell|check).{0,30}\\b(?:on my|on the|on that|shopping|grocery|to do) list",
+        "(?:show|read|check|open).{0,24}\\b(?:list|checklist)"
+      ],
+      "lists_remove": [
+        "(?:remove|delete|clear|cross off|take off|erase).{0,32}\\b(?:list|checklist)"
+      ],
+      "music_dislikeness": [
+        "(?:hate|dislike|can t stand).{0,15}\\b(?:music|songs?|tracks?|album)"
+      ],
+      "music_likeness": [
+        "(?:i like|i love|my favorite|my favourite).{0,18}\\b(?:music|songs?|tracks?|album|rock|jazz)"
+      ],
+      "music_query": [
+        "what (?:is|s) (?:the |this |that )?(?:song|track|album)(?: playing| called|$)",
+        "(?:who|which artist).{0,22}\\b(?:sing|sings|performs|played|song)",
+        "(?:name|title) of (?:this|that|the) (?:song|track|album)"
+      ],
+      "music_settings": [
+        "(?:skip|shuffle|repeat|pause|resume) (?:this |that |the |my )?(?:songs?|music|tracks?|playlist)",
+        "(?:next|previous) (?:song|track)",
+        "(?:skip|shuffle) (?:to|my)"
+      ],
+      "news_query": [
+        "^(?:news|headlines)$",
+        "(?:show|tell|read|give|find|play|what|latest|today s|current|recent|any).{0,30}\\b(?:news|headlines|current events|news update)"
+      ],
+      "play_audiobook": [
+        "(?:play|start|continue|read|listen to|resume|put on).{0,32}\\b(?:audiobook|audio book)",
+        "(?:read|listen to|play|continue|resume).{0,28}\\b(?:chapter|audio novel)",
+        "(?:read|play).{0,18}\\b(?:book|novel).{0,15}\\b(?:aloud|to me|by)"
+      ],
+      "play_game": [
+        "(?:play|start|open|launch|load).{0,24}\\b(?:games?|chess|solitaire|sudoku|trivia|poker)"
+      ],
+      "play_music": [
+        "(?:play|start|listen to|put on).{0,34}\\b(?:music|songs?|playlist|tracks?|album|jazz|rock)",
+        "(?:play|start|listen to|put on).{0,30}\\b(?:classical|hip hop|heavy metal|country music|reggae|blues|pop music|symphony|sonata)",
+        "(?:play|put on).{0,24}\\b(?:single|record|recording) by"
+      ],
+      "play_podcasts": [
+        "(?:play|start|continue|listen to|resume|put on).{0,30}\\bpodcasts?",
+        "(?:play|start|listen to|resume).{0,18}\\b(?:pod|podcast episode)",
+        "(?:play|start|listen to).{0,23}\\bepisode.{0,15}\\bof the podcast"
+      ],
+      "play_radio": [
+        "(?:play|start|turn on|tune|listen to|put on).{0,32}\\b(?:radio|fm station|am station)",
+        "(?:tune|switch|change).{0,20}\\b(?:fm|station|am band)",
+        "(?:play|listen to|put on).{0,22}\\b(?:radio station|bbc radio|npr|radio one|radio two)"
+      ],
+      "qa_currency": [
+        "(?:exchange rate|currency conversion)",
+        "(?:dollars?|euros?|pounds?|yen|rupees?).{0,24}\\b(?:dollars?|euros?|pounds?|yen|rupees?)"
+      ],
+      "qa_definition": [
+        "(?:what does|what do).{0,30}\\bmean",
+        "(?:definition|meaning) of",
+        "^define",
+        "(?:what is|what s) (?:an? )?(?:noun|adjective|verb|adverb|pronoun|homonym|synonym|antonym|onomatopoeia|metaphor|simile|euphemism|abbreviation|acronym)"
+      ],
+      "qa_maths": [
+        "(?:what is|how much is|calculate|solve|what s).{0,35}\\b(?:plus|minus|times|divided by|multiplied by|square root)"
+      ],
+      "qa_stock": [
+        "(?:stock price|share price|stock market|stock value|stock quote|shares trading)"
+      ],
+      "recommendation_events": [
+        "(?:recommend|suggest|show|find|what).{0,32}\\b(?:concerts|local events|shows|festivals).{0,20}\\b(?:near|around|today|tonight|this week)",
+        "(?:any|which|what).{0,18}\\b(?:concerts|festivals)"
+      ],
+      "recommendation_locations": [
+        "(?:recommend|suggest|nearby|nearest|best|closest).{0,26}\\b(?:restaurants?|cafes?|coffee shops?|pubs?|bars?|hotels?|shops?|stores?)"
+      ],
+      "recommendation_movies": [
+        "(?:recommend|suggest|what|which|any|find).{0,35}\\b(?:movies?|films?).{0,22}\\b(?:watch|see|play|cinema|theater|good)",
+        "(?:recommend|suggest).{0,20}\\b(?:movies?|films?)"
+      ],
+      "social_post": [
+        "(?:post|tweet|publish|share|update).{0,28}\\b(?:facebook|twitter|instagram|profile|social media)",
+        "send (?:a )?tweet"
+      ],
+      "social_query": [
+        "(?:check|read|show|what|latest|trending).{0,32}\\b(?:facebook|twitter|instagram|social media|timeline|tweets?)"
+      ],
+      "takeaway_order": [
+        "(?:order|get|deliver).{0,28}\\b(?:takeaway|takeout|pizza|food delivery|doordash|deliveroo|ubereats)"
+      ],
+      "takeaway_query": [
+        "(?:what|which|who|find|show|any).{0,25}\\b(?:takeaway|takeout|food delivery)"
+      ],
+      "transport_query": [
+        "(?:when|what time|timetable|schedule).{0,35}\\b(?:trains?|buses|bus|flights?)",
+        "(?:directions to|how (?:do|can) i get to|route to|how to get to|bus stop|train station)",
+        "(?:nearest|closest|where).{0,22}\\b(?:bus stop|train station|subway station)",
+        "(?:due|arrive|departure|leaves).{0,22}\\b(?:bus|train|flight)",
+        "(?:next|last|first).{0,15}\\b(?:bus|train).{0,20}\\b(?:due|arrive|leave|depart)"
+      ],
+      "transport_taxi": [
+        "(?:call|book|order|get|send|hail|need).{0,25}\\b(?:taxi|cab|uber|lyft)"
+      ],
+      "transport_ticket": [
+        "(?:buy|book|purchase|reserve|get).{0,30}\\b(?:bus|train|rail|flight|plane|travel) tickets?",
+        "(?:buy|book|purchase|reserve).{0,22}\\btickets?.{0,24}\\b(?:train|bus|flight)",
+        "(?:i need|i want).{0,22}\\b(?:train|bus|flight|rail) tickets?",
+        "(?:buy|book|purchase|reserve|get).{0,24}\\b(?:bus|train|rail|flight|plane) (?:fare|seat)"
+      ],
+      "transport_traffic": [
+        "(?:traffic|congestion|road conditions|traffic jam)"
+      ],
+      "weather_query": [
+        "(?:weather|forecast|temperature outside|humidity|rain today|rain tomorrow|chance of rain|will it (?:rain|snow))"
+      ],
+      "qa_factoid": [
+        "who (?:was|is) the (?:president|prime minister|founder|author|first person|queen|king|inventor)",
+        "who (?:wrote|invented|founded|discovered|directed|composed)",
+        "what (?:is|s) the (?:capital|population|height|area|distance|birth date|language) of",
+        "when (?:was|were|did).{0,35}\\b(?:born|died|created|built|invented|founded|released|published|discovered)"
+      ]
+    }
+  },
+  "selection": {
     "max_changed_words": 4,
     "min_shared_words": 2,
     "max_pairs_per_boundary": 24,
@@ -152,19 +412,7 @@
     "max_hard_per_group": 4,
     "min_train_recordings": 3072,
     "min_complete_pairs": 100,
-    "min_eligible_exposures_per_epoch": 384
-  },
-  "schedule": {
-    "seed": 317,
-    "epochs": 2,
-    "global_batch": 384,
-    "microbatch": 8,
-    "confusion_fraction": 0.0
-  },
-  "loss": {
-    "logit_margin": 0.25,
-    "weight": 0.016666666666666666
-  },
-  "cpu_threads": 8,
-  "io_workers": 8
+    "min_eligible_exposures_per_epoch": 384,
+    "max_fresh_coverage_recordings": 3200
+  }
 }

@@ -1,13 +1,11 @@
-"""Freeze source TRAIN review candidates and compile targets after independent review."""
+"""Compile source TRAIN audio targets from frozen reference-text evidence."""
 import argparse
 from collections import Counter, defaultdict
-from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from itertools import zip_longest
 import json
 import math
 from pathlib import Path
 import re
-import shutil
 from tempfile import TemporaryDirectory
 import unicodedata
 
@@ -23,8 +21,7 @@ from multimodal_jev.tpo_view import schedule
 from tools.reports.build_tpo_bidirectional_targets import compile_schedule
 from tools.reports.build_tpo_view import read, verified
 
-PACKET = "jev-source-audio-pair-review-v1"
-REVIEW = "jev-source-audio-pair-submission-v1"
+TEXT_SCREEN = "jev-source-reference-text-screen-v1"
 
 
 def pinned(root, manifest, name):
@@ -77,25 +74,82 @@ def inputs(config):
 
 
 def source_text(config, eligible):
-    # Source metadata is used for matching only. Humans receive isolated audio.
-    by_name = {Path(row["audio"]).name: uid for uid, row in eligible.items()}
-    text = defaultdict(set)
+    """Bind released reference sentences to eligible recordings, before applying any text rule."""
+    by_name = defaultdict(list)
+    for uid, row in eligible.items():
+        by_name[Path(row["audio"]).name].append(uid)
+    evidence = defaultdict(list)
     with verified(Path(config["metadata"]), config["metadata_sha256"]).open() as stream:
         for line in stream:
             row = json.loads(line)
             words = tuple(re.findall(r"\w+", unicodedata.normalize("NFKC", row["sentence"]).casefold()))
             for recording in row["recordings"]:
-                uid = by_name.get(recording["file"])
-                if uid is not None and row["intent"] == eligible[uid]["intent"]:
-                    text[eligible[uid]["source_group"]].add(words)
-    return {group: next(iter(options)) for group, options in text.items()
-            if len(options) == 1 and next(iter(options))}
+                for uid in by_name.get(recording["file"], ()):
+                    evidence[uid].append((row["intent"], words, recording))
+    group_options = defaultdict(set)
+    for uid, bindings in evidence.items():
+        group_options[eligible[uid]["source_group"]].update((label, words) for label, words, _ in bindings)
+
+    rules = config["text_screen"]
+    patterns = {label: re.compile(r"\b(?:" + "|".join(expressions) + r")\b")
+                for label, expressions in rules["intent_cues"].items()}
+    if not patterns or not set(patterns) <= {row["intent"] for row in eligible.values()}:
+        raise ValueError("Text evidence rules must refer to the released intent panel")
+    exclude = re.compile(rules["exclude"])
+    text, rejected, results = {}, Counter(), {}
+    for uid, row in eligible.items():
+        bindings = evidence[uid]
+        if not bindings:
+            reason = "missing_recording_binding"
+        elif len(bindings) != 1 or len(by_name[Path(row["audio"]).name]) != 1 or len(
+                group_options[row["source_group"]]) != 1 or bindings[0][0] != row["intent"]:
+            reason = "conflicting_recording_or_group"
+        else:
+            _, words, recording = bindings[0]
+            wer = recording.get("wer")
+            if (recording.get("status") != rules["recording_status"]
+                    or type(wer) not in (int, float) or not math.isfinite(wer)
+                    or wer < 0):
+                reason = "recording_quality_unconfirmed"
+            else:
+                sentence = " ".join(words)
+                if not words or exclude.search(sentence):
+                    reason = "negation_or_unresolved_text"
+                else:
+                    matches = {label: list(pattern.finditer(sentence)) for label, pattern in patterns.items()}
+                    found = {label: spans for label, spans in matches.items() if spans}
+                    if set(found) == {row["intent"]}:
+                        spans = [(sentence.count(" ", 0, m.start()), sentence.count(" ", 0, m.end()) + 1)
+                                 for m in found[row["intent"]]]
+                        text[uid] = dict(words=words, cue_spans=spans, metadata_wer=wer)
+                        reason = "accepted"
+                    else:
+                        reason = ("no_intent_cue" if not found else "conflicting_intent_cues"
+                                  if len(found) > 1 else "intent_cue_disagrees_with_label")
+        results[uid] = reason
+        if reason != "accepted":
+            rejected[reason] += 1
+    return text, rejected, results
+
+
+def cue_changes(left, right, template):
+    """Require each side's changed segment to carry evidence for its own intent."""
+    prefix, suffix = template
+    start = len(prefix)
+    ends = [len(row["words"]) - len(suffix) for row in (left, right)]
+    left_change, right_change = [row["words"][start:end] for row, end in zip((left, right), ends)]
+    if not left_change or not right_change or (left_change[0] == right_change[0]
+                                               or left_change[-1] == right_change[-1]):
+        return False
+    return all(any(a < end and b > start for a, b in row["cue_spans"])
+               for row, end in zip((left, right), ends))
 
 
 def templates(words, limit, min_shared):
     for start in range(len(words) + 1):
         for size in range(min(limit, len(words) - start, len(words) - min_shared) + 1):
-            yield (words[:start], words[start + size:]), size
+            if size:
+                yield (words[:start], words[start + size:]), size
 
 
 def rank_sources(config, eligible, old_rows, records, keys, identity):
@@ -105,6 +159,7 @@ def rank_sources(config, eligible, old_rows, records, keys, identity):
     data = torch.tensor([records[keys[uid]]["prob"] for uid in eligible])
     gold = torch.tensor([label_index[row["intent"]] for row in eligible.values()])
     gold_prob = data.gather(1, gold[:, None])
+    gold_ranks = (1 + (data > gold_prob).sum(dim=1)).tolist()
     data.scatter_(1, gold[:, None], -1.)
     score, rival = data.max(1)
     gaps = (gold_prob.flatten() - score).tolist()
@@ -123,21 +178,22 @@ def rank_sources(config, eligible, old_rows, records, keys, identity):
             stable.add(uid)
         if gap < 0 and (margins <= 0).all():
             persistent.add(uid)
-    return ranked, fresh, stable, persistent
+    return ranked, fresh, stable, persistent, dict(zip(eligible, gold_ranks, strict=True))
 
 
 def select_candidates(config, eligible, text, ranked, fresh, stable, persistent, labels):
-    rules = config["review"]
+    rules = config["selection"]
     cap = rules["max_recordings_per_group"]
     seed = config["schedule"]["seed"]
     groups = defaultdict(list)
-    for uid, row in eligible.items():
-        groups[row["source_group"]].append(uid)
-    by_label = defaultdict(list)
+    for uid in text:
+        groups[eligible[uid]["source_group"]].append(uid)
+    by_label, group_text = defaultdict(list), {}
     for group, uids in groups.items():
         intents = {eligible[uid]["intent"] for uid in uids}
-        if len(intents) == 1 and group in text:
+        if len(intents) == 1:
             by_label[next(iter(intents))].append(group)
+            group_text[group] = text[uids[0]]
     used_groups, used_audio = set(), set()
     pairs, audit = [], {}
     boundaries = list(rules["boundaries"])
@@ -148,14 +204,14 @@ def select_candidates(config, eligible, text, ranked, fresh, stable, persistent,
         if len(boundaries) >= rules.get("max_boundaries", len(boundaries)):
             break
         if (a, b) not in seen_edges:
-            boundaries.append((a, b, f"Check that the utterances differ only at the {a} / {b} intent boundary."))
+            boundaries.append((a, b, f"Text cues distinguish {a} from {b}"))
             seen_edges.add((a, b))
 
     def side(group, rival):
         selected, takes, hashes = [], set(), set()
         for uid in sorted(groups[group], key=lambda uid: (
                 uid not in fresh, uid not in persistent,
-                not (ranked[uid][1] == rival and ranked[uid][2] < 0), digest([seed, uid]))):
+                not (ranked[uid][1] == rival and ranked[uid][2] < 0), text[uid]["metadata_wer"], digest([seed, uid]))):
             # Same acquisition with two channels is one take.
             take = Path(eligible[uid]["audio"]).stem.removesuffix("-headset")
             sha = eligible[uid]["audio_sha256"]
@@ -172,19 +228,21 @@ def select_candidates(config, eligible, text, ranked, fresh, stable, persistent,
         index = defaultdict(list)
         for group in by_label[left]:
             if group not in used_groups:
-                for template, change in templates(text[group], rules["max_changed_words"], rules["min_shared_words"]):
+                for template, change in templates(group_text[group]["words"], rules["max_changed_words"], rules["min_shared_words"]):
                     index[template].append((group, change))
         matches = {}
         for group in by_label[right]:
             if group in used_groups:
                 continue
-            for template, change in templates(text[group], rules["max_changed_words"], rules["min_shared_words"]):
+            for template, change in templates(group_text[group]["words"], rules["max_changed_words"], rules["min_shared_words"]):
                 for other, other_change in index.get(template, ()):
-                    if text[group] == text[other]:
+                    a_text, b_text = group_text[other], group_text[group]
+                    if a_text["words"] == b_text["words"] or not cue_changes(a_text, b_text, template):
                         continue
                     key = (other, group)
                     cost = (max(change, other_change), -sum(map(len, template)))
-                    matches[key] = min(cost, matches.get(key, cost))
+                    evidence = (cost, template)
+                    matches[key] = min(evidence, matches.get(key, evidence))
         taken = 0
         for a, b in sorted(matches, key=lambda pair: (
                 not any(uid in persistent for group in pair for uid in groups[group]),
@@ -196,15 +254,18 @@ def select_candidates(config, eligible, text, ranked, fresh, stable, persistent,
             if not a_ids or not b_ids or a_sha & b_sha or not ({a_ids[0], b_ids[0]} & fresh):
                 continue
             pair_id = digest([seed, a, b])
-            pairs.append(dict(pair_id=pair_id, sides=[a_ids, b_ids], boundary=[left, right], condition=condition))
+            _, (prefix, suffix) = matches[a, b]
+            changed = [[len(prefix), len(entry["words"]) - len(suffix)]
+                       for entry in (group_text[a], group_text[b])]
+            pairs.append(dict(pair_id=pair_id, sides=[a_ids, b_ids], boundary=[left, right],
+                              condition=condition, changed_spans=changed))
             used_audio.update(a_sha | b_sha)
             used_groups.update((a, b))
             taken += 1
             if taken == rules["max_pairs_per_boundary"]:
                 break
         audit[f"{left}:{right}"] = dict(near_matches=len(matches), nominated=taken)
-    # Each independent hard recording needs the same blinded admission as a
-    # pair member. Reserve groups first so neither it nor replay duplicates a pair.
+    # Keep pairs, hard singles and fresh coverage disjoint by source group.
     hard = []
     for group in sorted(groups, key=lambda g: digest([seed, "hard-group", g])):
         if group in used_groups:
@@ -224,8 +285,44 @@ def select_candidates(config, eligible, text, ranked, fresh, stable, persistent,
             if len(takes) == rules.get("max_hard_per_group", cap):
                 break
     paired_recordings = sum(len(side) for pair in pairs for side in pair["sides"])
+    # Use one recording per source before taking another recording of that source.
+    fresh_groups = defaultdict(list)
+    for group, uids in groups.items():
+        if group in used_groups:
+            continue
+        admitted, takes = [], set()
+        for uid in sorted((uid for uid in uids if uid in fresh),
+                          key=lambda uid: (text[uid]["metadata_wer"], digest([seed, uid]))):
+            take = Path(eligible[uid]["audio"]).stem.removesuffix("-headset")
+            if take not in takes:
+                takes.add(take)
+                admitted.append(uid)
+                if len(admitted) == cap:
+                    break
+        if admitted:
+            fresh_groups[eligible[admitted[0]]["intent"]].append(admitted)
+    coverage = []
+    pools = [sorted(fresh_groups[label], key=lambda ids: digest([seed, ids[0]]))
+             for label in sorted(fresh_groups)]
+    for take in range(cap):
+        for level in zip_longest(*pools):
+            for uids in level:
+                if uids is None or take >= len(uids):
+                    continue
+                if len(coverage) >= rules["max_fresh_coverage_recordings"]:
+                    break
+                uid = uids[take]
+                row = eligible[uid]
+                if row["audio_sha256"] not in used_audio:
+                    coverage.append(uid)
+                    used_groups.add(row["source_group"])
+                    used_audio.add(row["audio_sha256"])
+            if len(coverage) >= rules["max_fresh_coverage_recordings"]:
+                break
+        if len(coverage) >= rules["max_fresh_coverage_recordings"]:
+            break
     fraction = rules["replay_max_fraction"]
-    replay_limit = math.floor((paired_recordings + len(hard)) * fraction / (1 - fraction))
+    replay_limit = math.floor((paired_recordings + len(hard) + len(coverage)) * fraction / (1 - fraction))
     replay = []
     if replay_limit:
         for uid in sorted(stable, key=lambda uid: digest([seed, "replay", uid])):
@@ -238,214 +335,26 @@ def select_candidates(config, eligible, text, ranked, fresh, stable, persistent,
                     break
     if not pairs or not replay:
         raise ValueError("source TRAIN has no complete candidate pairs or disjoint replay")
-    return pairs, hard, replay, audit
-
-
-def packet_config(config):
-    return digest({name: config[name] for name in
-                   ("previous_sha256", "parent_sha256", "metadata_sha256", "review", "schedule", "loss")})
-
-
-def load_packet(config):
-    root = Path(config["packet"])
-    manifest = read(root / "MANIFEST.json")
-    if manifest["schema"] != PACKET or manifest["design_sha256"] != packet_config(config):
-        raise ValueError("review packet is not bound to the frozen design")
-    pins = [(root / directory / name, sha)
-            for directory in ("private", "listening", "relation")
-            for name, sha in manifest["files"][directory].items()]
-    with ThreadPoolExecutor(max_workers=config["io_workers"]) as pool:
-        for _ in pool.map(lambda item: verified(*item), pins):
-            pass
-    return manifest
-
-
-def prepare(config):
-    output = Path(config["packet"])
-    if output.exists():
-        return load_packet(config)
-    check_paths({"review packet": output})
-    old, old_rows, _, eligible, identity, keys, refs, task = inputs(config)
-    ranked, fresh, stable, persistent = rank_sources(config, eligible, old_rows, refs, keys, identity)
-    pairs, hard, replay, audit = select_candidates(
-        config, eligible, source_text(config, eligible), ranked, fresh, stable, persistent, old["candidate_ids"])
-    pair_members = {uid for pair in pairs for side in pair["sides"] for uid in side}
-    review_ids = {uid: digest([config["schedule"]["seed"], "blind-listening", eligible[uid]["audio_sha256"]])
-                  for uid in sorted(pair_members | set(hard))}
-    assets = {rid: eligible[uid] for uid, rid in review_ids.items()}
-    output.parent.mkdir(parents=True, exist_ok=True)
-    with TemporaryDirectory(prefix=".review-", dir=output.parent) as staging:
-        root = Path(staging) / "packet"
-        for directory in ("private", "listening/audio", "relation"):
-            (root / directory).mkdir(parents=True, mode=0o700 if directory == "private" else 0o755)
-
-        def copy_asset(item):
-            review_id, source = item
-            dest = root / "listening/audio" / f"{review_id}.flac"
-            shutil.copyfile(source["audio"], dest)
-            if file_hash(dest) != source["audio_sha256"]:
-                raise ValueError("source audio content changed")
-            return f"audio/{dest.name}", source["audio_sha256"]
-
-        with ThreadPoolExecutor(max_workers=config["io_workers"]) as pool:
-            audio_pins = dict(pool.map(copy_asset, sorted(assets.items())))
-        roster = [{"review_id": rid, "audio": f"audio/{rid}.flac"} for rid in sorted(assets)]
-        commit_json(root / "listening/candidates.json", task["schema"]["candidates"])
-        commit_json(root / "listening/roster.json", roster)
-        relations = [{"pair_id": pair["pair_id"], "audio": [
-            f"../listening/audio/{review_ids[side[0]]}.flac" for side in pair["sides"]],
-            "condition": pair["condition"]} for pair in pairs]
-        commit_json(root / "relation/roster.json", relations)
-        commit_json(root / "private/bindings.json", dict(pairs=pairs, hard=hard, replay=replay, review_ids=review_ids))
-        manifest = dict(schema=PACKET, design_sha256=packet_config(config),
-                        review_state="awaiting_human_reviews", eligible_train=len(eligible),
-                        possible_new_recordings=len(fresh), candidate_pairs=len(pairs),
-                        review_recordings=len(assets), pair_group_recordings=len(pair_members),
-                        hard_single_candidates=len(hard), fresh_pair_recordings=len(pair_members & fresh),
-                        unique_source_groups=len({eligible[u]["source_group"] for u in pair_members | set(hard) | set(replay)}),
-                        candidate_max_recordings=len(assets) + len(replay), replay_candidates=len(replay),
-                        reference_covered=len(assets) + len(replay), boundary_counts=audit,
-                        files={name: {str(p.relative_to(root / name)): file_hash(p)
-                                      for p in sorted((root / name).glob("*.json"))}
-                               for name in ("private", "listening", "relation")})
-        manifest["files"]["listening"].update(audio_pins)
-        commit_json(root / "MANIFEST.json", manifest)
-        for directory, entries in (("listening", {x["review_id"]: dict(status="unreviewed", label=None) for x in roster}),
-                                   ("relation", {x["pair_id"]: dict(status="unreviewed", evidence="") for x in relations})):
-            template = dict(schema=REVIEW, reviewer_id="", started_at="", finished_at="",
-                            packet_sha256=file_hash(root / "MANIFEST.json"), answers=entries)
-            if directory == "listening":
-                template.update(blind_attested=None, audio_only=None)
-            commit_json(root / directory / "submission-template.json", template)
-        root.rename(output)
-        sync_directory(output.parent)
-    return manifest
-
-
-def load_submissions(config, packet_manifest):
-    receipt_path = Path(config["submissions"])
-    receipt = read(receipt_path)
-    packet_sha = file_hash(Path(config["packet"]) / "MANIFEST.json")
-    if (receipt.get("schema") != REVIEW or receipt.get("packet_sha256") != packet_sha
-            or set(receipt["files"]) != {"listening-a.json", "listening-b.json", "relation.json"}
-            or packet_manifest["review_state"] != "awaiting_human_reviews"):
-        raise ValueError("frozen packet and three pinned review submissions required")
-    return read_submissions(receipt_path, receipt)
-
-
-def read_submissions(receipt_path, receipt):
-    packet_sha = receipt["packet_sha256"]
-    # Read the exact bytes that were pinned by the review coordinator.
-    responses = {name: read(verified(receipt_path.parent / name, sha))
-                 for name, sha in receipt["files"].items()}
-    for response in responses.values():
-        if (response.get("schema") != REVIEW or response.get("packet_sha256") != packet_sha
-                or not isinstance(response.get("reviewer_id"), str) or not response["reviewer_id"].strip()
-                or not isinstance(response.get("answers"), dict)):
-            raise ValueError("review identity or packet binding missing")
-        started, finished = (datetime.fromisoformat(response[k]) for k in ("started_at", "finished_at"))
-        if started.tzinfo is None or finished.tzinfo is None or started >= finished:
-            raise ValueError("explicit review period required")
-    first, second, relation = (responses[key] for key in ("listening-a.json", "listening-b.json", "relation.json"))
-    if first["reviewer_id"].strip().casefold() == second["reviewer_id"].strip().casefold() or any(
-            r.get("blind_attested") is not True or r.get("audio_only") is not True for r in (first, second)):
-        raise ValueError("two distinct independent audio-only review attestations required")
-    if any(relation["reviewer_id"].strip().casefold() == r["reviewer_id"].strip().casefold()
-           and datetime.fromisoformat(relation["started_at"]) < datetime.fromisoformat(r["finished_at"])
-           for r in (first, second)):
-        raise ValueError("pair-aware review must follow the reviewer's blind pass")
-    return first["answers"], second["answers"], relation["answers"]
-
-
-def seal_submissions(config):
-    packet = load_packet(config)
-    path = Path(config["submissions"])
-    if path.exists():
-        load_submissions(config, packet)
-        return read(path)
-    names = ("listening-a.json", "listening-b.json", "relation.json")
-    receipt = dict(schema=REVIEW, packet_sha256=file_hash(Path(config["packet"]) / "MANIFEST.json"),
-                   files={name: file_hash(path.parent / name) for name in names})
-    answers = read_submissions(path, receipt)
-    old, old_rows, _, eligible, *_ = inputs(config)
-    bindings = read(Path(config["packet"]) / "private/bindings.json")
-    previous = {row["audio_sha256"] for row in old_rows.values()}
-    fresh = {uid for uid, row in eligible.items() if uid not in old_rows and row["audio_sha256"] not in previous}
-    admit(bindings, answers, eligible, old["candidate_ids"], fresh)
-    commit_json(path, receipt)
-    return receipt
-
-
-def admit(bindings, answers, eligible, labels, fresh):
-    first, second, relation = answers
-    review_ids = bindings["review_ids"]
-    if set(first) != set(second) or set(first) != set(review_ids.values()) or set(relation) != {
-            pair["pair_id"] for pair in bindings["pairs"]}:
-        raise ValueError("review coordinates differ from the frozen roster")
-    for review in (first, second):
-        for item in review.values():
-            if ((item["status"] == "unique" and item["label"] not in labels)
-                    or (item["status"] in ("ambiguous", "unintelligible") and item["label"] is not None)
-                    or item["status"] not in ("unique", "ambiguous", "unintelligible", "unreviewed")
-                    or (item["status"] == "unreviewed" and item["label"] is not None)):
-                raise ValueError("listening review needs an explicit allowed result")
-    rejected = Counter()
-    selected, approved, admitted_pairs = {}, set(), []
-
-    def accepted(uid):
-        rid = review_ids[uid]
-        a, b = first[rid], second[rid]
-        if a["status"] != "unique" or b["status"] != "unique":
-            rejected["missing_or_nonunique_recording"] += 1
-            return False
-        if a["label"] != b["label"] or a["label"] != eligible[uid]["intent"]:
-            rejected["label_disagreement"] += 1
-            return False
-        return True
-
-    for pair in bindings["pairs"]:
-        pair_id = pair["pair_id"]
-        assessment = relation[pair_id]
-        if assessment["status"] not in ("confirmed", "rejected", "unreviewed") or (
-                assessment["status"] != "unreviewed" and not assessment["evidence"].strip()):
-            raise ValueError("pair review needs a decision and evidence")
-        sides = [[uid for uid in side if accepted(uid)] for side in pair["sides"]]
-        if assessment["status"] != "confirmed" or any(
-                not side or side[0] != original[0] for side, original in zip(sides, pair["sides"], strict=True)):
-            rejected["pair_unconfirmed_or_missing_side"] += 1
-            continue
-        for side in sides:
-            for i, uid in enumerate(side):
-                selected[uid] = dict(pair_id=pair_id, kind="pair" if i == 0 else "rerecording")
-                approved.add(uid)
-        admitted_pairs.append(dict(pair, sides=sides))
-    for uid in bindings["hard"]:
-        if accepted(uid):
-            selected[uid] = dict(pair_id=None, kind="hard_single")
-            approved.add(uid)
-    if not any(set(pair["sides"][0][:1] + pair["sides"][1][:1]) & fresh for pair in admitted_pairs):
-        raise ValueError("no complete reviewed pair with a primary recording absent from 206")
-    return selected, approved, admitted_pairs, rejected
-
-
-def replay_for(config, bindings, admitted_count):
-    fraction = config["review"]["replay_max_fraction"]
-    return bindings["replay"][:math.floor(admitted_count * fraction / (1 - fraction))]
+    return pairs, hard, coverage, replay, audit
 
 
 def build(config):
-    packet = load_packet(config)
-    reviews = load_submissions(config, packet)
     old, old_rows, calibration, eligible, identity, keys, refs, _ = inputs(config)
-    bindings = read(Path(config["packet"]) / "private/bindings.json")
-    ranked, fresh, stable, _ = rank_sources(config, eligible, old_rows, refs, keys, identity)
-    selected, approved, pairs, rejected = admit(bindings, reviews, eligible, old["candidate_ids"], fresh)
-    replay = replay_for(config, bindings, len(selected))
-    if not replay or not set(replay) <= stable:
-        raise ValueError("stable historical replay required")
+    ranked, fresh, stable, persistent, gold_ranks = rank_sources(config, eligible, old_rows, refs, keys, identity)
+    text, rejected, screen_results = source_text(config, eligible)
+    pairs, hard, coverage, replay, boundary_counts = select_candidates(
+        config, eligible, text, ranked, fresh, stable, persistent, old["candidate_ids"])
+    selected = {}
+    for pair in pairs:
+        for side in pair["sides"]:
+            for index, uid in enumerate(side):
+                selected[uid] = dict(pair_id=pair["pair_id"], kind="pair" if index == 0 else "rerecording")
+    selected.update({uid: dict(pair_id=None, kind="hard_single") for uid in hard})
+    selected.update({uid: dict(pair_id=None, kind="new_coverage") for uid in coverage})
+    approved = set(selected)
     selected.update({uid: dict(pair_id=None, kind="replay") for uid in replay})
     groups = Counter(eligible[uid]["source_group"] for uid in selected)
-    if (max(groups.values()) > config["review"]["max_recordings_per_group"]
+    if (max(groups.values()) > config["selection"]["max_recordings_per_group"]
             or len({eligible[uid]["audio_sha256"] for uid in selected}) != len(selected)):
         raise ValueError("duplicate recording or excessive source group")
     validate_spec(config["loss"])
@@ -469,7 +378,7 @@ def build(config):
     batches = [dict(b, mode="joint") for b in schedule(rows, **design)]
     steps = design["epochs"] * math.ceil(len(rows) / design["global_batch"])
     if len(batches) != steps or steps < 3:
-        raise ValueError(f"reviewed view must support three formal updates under the registered schedule: N={len(rows)}")
+        raise ValueError(f"text-screened view must support three formal updates under the registered schedule: N={len(rows)}")
     rewards = old["bidirectional_contrast"]["reward"]
     targets, batches, real, audit, ordering = compile_schedule(
         dict(schedule=design, reward=rewards, updates=steps), rows, batches, order, probs)
@@ -479,33 +388,54 @@ def build(config):
     counts = [sum(bool(active[b["epoch"], rows[s["id"]]["index"]]) for s in b["slots"] if not s["padding"])
               for b in batches]
     if not active.any(dim=1).all():
-        raise ValueError("reviewed view has an epoch without eligible sorting corrections")
+        raise ValueError("text-screened view has an epoch without eligible sorting corrections")
     manifest = {name: old[name] for name in (
         "schema", "source_policy", "view_sha256", "reference_sha256", "release_sha256", "candidate_ids", "calibration")}
+    current_hard = {uid for uid in eligible if ranked[uid][2] < 0}
     manifest.update(schedule=design, recordings=len(rows), updates=steps, real_exposures=sum(real),
-                    batch_real=real, reviewed_new_view=True,
+                    batch_real=real, text_screened_new_view=True,
                     bidirectional_contrast=dict(reward=rewards, batch_order_sha256=ordering, audit=audit),
                     actor_pair_margin=dict(loss=config["loss"], epochs=[b["epoch"] for b in batches],
                                            batch_eligible=counts, eligible_by_epoch=active.sum(dim=1).tolist()),
-                    review=dict(packet_sha256=file_hash(Path(config["packet"]) / "MANIFEST.json"),
-                                receipt_sha256=file_hash(Path(config["submissions"])),
+                    text_screen=dict(schema=TEXT_SCREEN, metadata_sha256=config["metadata_sha256"],
+                                rules_sha256=digest(config["text_screen"]), eligible_train=len(eligible),
+                                accepted_before_sampling=len(text),
+                                accepted_strict_misranked=sum(ranked[uid][2] < 0 for uid in text),
+                                strict_misranked=len(current_hard),
+                                misranked_by_result=dict(Counter(screen_results[uid] for uid in sorted(current_hard))),
+                                misranked_gold_rank=dict(Counter(gold_ranks[uid] for uid in sorted(current_hard))),
+                                admitted_misranked_gold_rank=dict(Counter(gold_ranks[uid] for uid in sorted(approved)
+                                                                         if uid in current_hard)),
+                                boundary_counts=boundary_counts, reference_covered=len(rows),
+                                selected_distinct_groups=len(groups),
+                                selected_with_nonzero_metadata_wer=sum(text[uid]["metadata_wer"] > 0
+                                                                       for uid in approved),
+                                selected_intents=len({row["gold"] for row in rows.values()}),
                                 existing_recordings_new_to_view=len(set(rows) & fresh), newly_recorded=0,
                                 new_source_groups=len({eligible[uid]["source_group"] for uid in fresh & set(rows)} -
                                                       {eligible[uid]["source_group"] for uid in old_rows}),
                                 complete_pairs=len(pairs), rerecordings=sum(
                                     row["kind"] == "rerecording" for row in rows.values()),
                                 hard_singles=sum(row["kind"] == "hard_single" for row in rows.values()),
-                                replay=len(replay), rejected=dict(rejected)),
-                    scale_targets=dict(recordings=config["review"]["min_train_recordings"],
-                                       complete_pairs=config["review"]["min_complete_pairs"],
-                                       eligible_per_epoch=config["review"]["min_eligible_exposures_per_epoch"]))
+                                new_coverage=len(coverage), replay=len(replay), rejected=dict(rejected)),
+                    scale_targets=dict(recordings=config["selection"]["min_train_recordings"],
+                                       complete_pairs=config["selection"]["min_complete_pairs"],
+                                       eligible_per_epoch=config["selection"]["min_eligible_exposures_per_epoch"]))
     destination = Path(config["output"])
     check_paths({"207 targets": destination})
     destination.parent.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(prefix=".pair-targets-", dir=destination.parent) as staging:
         stage = Path(staging) / "targets"
         stage.mkdir()
-        for name, value in (("rows", rows), ("batches", batches), ("calibration", calibration), ("pairs", pairs)):
+        screen = {}
+        for uid, result in screen_results.items():
+            evidence = dict(result=result)
+            if uid in approved:
+                evidence.update(text_sha256=digest(text[uid]["words"]), cue_spans=text[uid]["cue_spans"],
+                                metadata_wer=text[uid]["metadata_wer"], gold_rank=gold_ranks[uid])
+            screen[uid] = evidence
+        for name, value in (("rows", rows), ("batches", batches), ("calibration", calibration),
+                            ("pairs", pairs), ("text-screen", screen)):
             commit_json(stage / f"{name}.json", value)
         commit_file(stage / "targets.pt", lambda f: torch.save(targets, f))
         commit_file(stage / "actor-pairs.pt", lambda f: torch.save(dict(rival=rival, enabled=active), f))
@@ -523,12 +453,11 @@ def build(config):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("prepare", "seal-reviews", "build"))
+    parser.add_argument("action", choices=("build",))
     parser.add_argument("config")
     parser.add_argument("local")
     args = parser.parse_args()
     configuration, _ = load_config(args.config, args.local)
     torch.set_num_threads(configuration["cpu_threads"])
-    operations = {"prepare": prepare, "seal-reviews": seal_submissions, "build": build}
-    result = operations[args.action](configuration)
+    result = build(configuration)
     print(json.dumps({key: value for key, value in result.items() if key not in ("files", "batch_real")}))
