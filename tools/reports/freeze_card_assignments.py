@@ -1,6 +1,8 @@
 """Freeze TRAIN-only support decisions, template variants and two epoch exposures."""
 import hashlib
 import json
+import random
+from collections import defaultdict
 from collections import Counter
 from pathlib import Path
 
@@ -34,20 +36,57 @@ def compile_plan(c, output, design_sha):
         raise ValueError('card development pool overlaps calibration')
     pool = {r['id']:r for r in roster}
     labels = [x['id'] for x in bank['cards']]
+    # Draw from distinct, short official TRAIN annotations, including rare classes.
+    admitted = {r['id']:r for r in rows}
+    inventory = defaultdict(dict)
+    text_labels = defaultdict(set)
+    for item in roster:
+        uid = item['id']
+        row = admitted[uid]
+        if any(row[k] != item[k] for k in ('source_group','intent','audio_sha256')):
+            raise ValueError('support roster changed')
+        text = texts[uid]
+        text_labels[text].add(row['intent'])
+        inventory[row['intent']].setdefault(text, uid)
     supports = []
     support_keys = set()
     def keys(group, audio, text):
         return {('group',group),('audio',audio),('text',text)}
     for card in bank['cards']:
+        label = card['id']
+        options = sorted((text,uid) for text,uid in inventory[label].items()
+                         if text_labels[text]=={label} and len(text.split())<=c['max_support_words'])
+        rng = random.Random(f"{c['seed']}|pool|{label}")
+        rng.shuffle(options)
+        chosen = []
+        groups = set()
+        for text,uid in options:
+            r = pool[uid]
+            if r['source_group'] in groups: continue
+            groups.add(r['source_group'])
+            chosen.append(dict(id=uid,text=text,group=r['source_group'],audio_sha256=r['audio_sha256']))
+            if len(chosen)==c['max_supports_per_class']: break
+        if not chosen:
+            chosen = card['examples']
+        card['examples'] = chosen
         values = []
-        for sample in card['examples']:
+        for sample in chosen:
             row = pool[sample['id']]
-            if (row['intent'] != card['id'] or row['source_group'] != sample['group'] or
+            if (row['intent'] != label or row['source_group'] != sample['group'] or
                     row['audio_sha256'] != sample['audio_sha256'] or texts[sample['id']] != normalize(sample['text'])):
                 raise ValueError('support differs from independent TRAIN annotation')
             values.append(keys(row['source_group'],row['audio_sha256'],texts[row['id']]))
             support_keys.update(values[-1])
         supports.append(values)
+    commit_json(output/'sampled-bank.json',bank)
+    rankings = []
+    for draw in range(c['support_panels']):
+        panel_ranks = []
+        for label,values in zip(labels,supports,strict=True):
+            order = list(range(len(values)))
+            random.Random(f"{c['seed']}|panel|{draw}|{label}").shuffle(order)
+            panel_ranks.append(order)
+        rankings.append(panel_ranks)
     # Invert support membership so conflict decisions do not need gold or a label search.
     conflicts = {}
     for i, values in enumerate(supports):
@@ -68,7 +107,8 @@ def compile_plan(c, output, design_sha):
             raise ValueError('unadmitted Stage1 row')
         terms = keys(row['source_group'],row['audio_sha256'],texts[uid])
         excluded = set().union(*(conflicts.get(k,()) for k in terms))
-        indices = tuple(next((j for j in range(len(v)) if (i,j) not in excluded),None) for i,v in enumerate(supports))
+        draw = random.Random(f"{c['seed']}|examples|{uid}").randrange(len(rankings))
+        indices = tuple(next((j for j in order if (i,j) not in excluded),None) for i,order in enumerate(rankings[draw]))
         if indices not in variants:
             name = 'examples-'+str(len(variants))
             panels[name] = panel('definitions_rules_example', dict(zip(labels,indices,strict=True)))
@@ -77,7 +117,7 @@ def compile_plan(c, output, design_sha):
         if hashlib.sha256(f"{c['seed']}:{row['source_group']}".encode()).digest()[0] % 2:
             pair.reverse()
         assignments[uid] = pair
-        review['alternate'] += sum(x is not None and x>0 for x in indices)
+        review['alternate'] += sum(x is not None and x!=order[0] for x,order in zip(indices,rankings[draw]))
         review['omitted'] += indices.count(None)
         if terms & support_keys:
             roles[uid] = 'support-or-related'
@@ -91,7 +131,7 @@ def compile_plan(c, output, design_sha):
     words = {w:{label:len({texts[r['id']] for r in roster if r['intent']==label and w in texts[r['id']].split()})
                 for label in classes} for w,classes in draft['word_checks'].items()}
     # Round three: switch all examples and reverse the complete panel, restoring ID order.
-    alt = dict.fromkeys(labels,1)
+    alt = {label:len(v)-1 for label,v in zip(labels,supports,strict=True)}
     alternate = panel('definitions_rules_example',alt)
     reversed_task = dict(task,schema=dict(task['schema'],candidates=list(reversed(task['schema']['candidates']))))
     reversed_panel = compile_intent_card_request('audio',reversed_task,bank,template,'definitions_rules_example',
@@ -104,4 +144,4 @@ def compile_plan(c, output, design_sha):
     commit_json(output/'roles.json',roles)
     commit_json(output/'card-review.json',dict(population=len(rows),exposures=2*len(rows),panels=len(panels),
         supports=sum(map(len,supports)),conflicts=review,roles=Counter(roles.values()),pair_review=report,
-        words=words,permutation_roundtrip=True,bank=c['bank_sha256'],plan=file_hash(output/'card-plan.json')))
+        words=words,supports_by_class=dict(zip(labels,map(len,supports))),seed=c['seed'],sampled_panels=len(rankings),permutation_roundtrip=True,bank=c['bank_sha256'],plan=file_hash(output/'card-plan.json')))
