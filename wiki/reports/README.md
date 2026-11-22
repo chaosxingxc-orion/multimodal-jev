@@ -4,11 +4,12 @@
 
 | 实验 | 报告 | 状态 |
 | --- | --- | --- |
+| 近期汇总 | [0.6B 训练、迁移与评测工程](recent-experiments-2026-11-22.md) | 含 204、205、206 已审核成绩及后续待办 |
 | JEV-194 | [关闭与启用投影的配对评测](JEV-194.md) | 全量留出评测已审 |
 | JEV-R64-S2 | [双信用 GRPO 末点评测](JEV-R64-S2.md) | SLURP TEST 和 MINDS 已审 |
 | 零训练对照 | [SLURP selection](slurp-simple-base-selection-v1.md) | 已复算 |
 | JEV-198 | [固定与动态 reference 的配对评测](JEV-198.md) | SLURP 和 MINDS 完整面板已审，跨任务证据待补 |
 | JEV-201 | [新版联合 TPO](JEV-201.md) | SLURP TEST、MINDS、SIB-FLEURS 与 MMSU 末点评测已审 |
-| JEV-204 | [全量单阶段联合 TPO](JEV-204.md) | 正式训练暂停，保留四步更新收据和全量固定参考 |
-| JEV-205 | [固定目标排序修正](JEV-205.md) | 34/34 步已核验，评测未启动 |
-| JEV-206 | [逐类概率与双向对比奖励](JEV-206.md) | 34/34 步已核验，校准与评测未启动 |
+| JEV-204 | [全量单阶段联合 TPO](JEV-204.md) | 正式重启 212/212 步及三点原生评测已审；补充诊断待完成 |
+| JEV-205 | [固定目标排序修正](JEV-205.md) | 34/34 步与五组评测已审；源域 selection 未达标 |
+| JEV-206 | [逐类概率与双向对比奖励](JEV-206.md) | 34/34 步、源 TRAIN 校准及五组评测已审 |
