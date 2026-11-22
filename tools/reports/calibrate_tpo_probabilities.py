@@ -119,8 +119,9 @@ def collect(spec, parent):
     roster, assets, ids, _ = source_panel(spec["calibration"], parent)
     gold = [ids.index(row["intent"]) for row in roster]
     results = {}
+    reused = spec.get("reused_calibration_predictions", {})
     for arm, expected in spec["calibration"]["policy_ids"].items():
-        shards = spec["reused_calibration_predictions"][arm] if "reused_calibration_predictions" in spec else spec["shards"]
+        shards = reused[arm] if arm in reused else spec["shards"]
         records, policy = collect_predictions(shards, arm + ".json", assets)
         if policy != expected:
             raise ValueError("calibration policy differs")

@@ -272,35 +272,35 @@ def prepare(config):
                                              sha256=calibration['roster']['sha256']))
         parent_args = dict(parent=str(parent_file), parent_sha=binding['parent_sha'], calibration=rule)
         mounts.add(parent['encoded_audio_cache'])
+        prior_predictions = config.get('reused_calibration_predictions', {})
+        if (set(prior_predictions) - set(calibration['policy_ids']) or any(
+                not parts or len({p['path'] for p in parts}) != len(parts)
+                for parts in prior_predictions.values())):
+            raise ValueError('each reused calibration arm requires distinct pinned shards')
+        paths = [Path(p['path']) for parts in prior_predictions.values() for p in parts]
+        if any(not path.is_absolute() for path in paths):
+            raise ValueError('reused calibration predictions require absolute paths')
+        mounts.update(str(path.parent) for path in paths)
+        remaining = [arm for arm in common['arms'] if arm not in prior_predictions]
         calibration_jobs, shards = [], []
-        for i, device in enumerate(calibration['devices']):
-            name = f'calibration-{i}'
-            output = '/jev-work/'+name
-            opts = dict(common, **parent_args, phase='tpo_eval',
-                        endpoint=dict(cache=dict(processor={}), audio_token_id=parent['audio_token_id']),
-                        devices=[device], shard=i, shards=len(calibration['devices']), output=output,
-                        trained=prior['remote_root'], batch=config['batch'], binding=binding,
-                        updates=steps, prefetch=calibration['prefetch'])
-            commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
-            calibration_jobs.append(dict(name=name, devices=[device], **config['eval_container']))
-            shards.append(output)
+        if remaining:
+            for i, device in enumerate(calibration['devices']):
+                name = f'calibration-{i}'
+                output = '/jev-work/'+name
+                opts = dict(common, **parent_args, phase='tpo_eval', arms=remaining,
+                            endpoint=dict(cache=dict(processor={}), audio_token_id=parent['audio_token_id']),
+                            devices=[device], shard=i, shards=len(calibration['devices']), output=output,
+                            trained=prior['remote_root'], batch=config['batch'], binding=binding,
+                            updates=steps, prefetch=calibration['prefetch'])
+                commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
+                calibration_jobs.append(dict(name=name, devices=[device], **config['eval_container']))
+                shards.append(output)
         threshold_file = '/jev-work/thresholds.json'
         fit = dict(common, **parent_args, phase='tpo_score', calibration_fit=True,
-                   shards=shards, output=threshold_file)
-        prior_predictions = config.get('reused_calibration_predictions')
-        if prior_predictions is not None:
-            if (set(prior_predictions) != set(calibration['policy_ids']) or any(
-                    len(parts) != len(calibration['devices']) or len({p['path'] for p in parts}) != len(parts)
-                    for parts in prior_predictions.values())):
-                raise ValueError('complete pinned predictions for the registered calibration shards required')
-            paths = [Path(p['path']) for parts in prior_predictions.values() for p in parts]
-            if any(not path.is_absolute() for path in paths):
-                raise ValueError('reused calibration predictions require absolute paths')
-            mounts.update(str(path.parent) for path in paths)
-            fit.pop('shards')
-            fit['reused_calibration_predictions'] = prior_predictions
+                   shards=shards, output=threshold_file,
+                   reused_calibration_predictions=prior_predictions)
         commit_json(entry/'calibration-fit.json', macros('NATIVE_SEAL_CONTAINER_CONFIG',fit))
-        calibration_groups = [calibration_jobs] if prior_predictions is None else []
+        calibration_groups = [calibration_jobs] if calibration_jobs else []
         calibration_groups.append([dict(name='calibration-fit', devices=[],
                                         collect='thresholds.json', **config['cache_container'])])
     cache_store_used = False

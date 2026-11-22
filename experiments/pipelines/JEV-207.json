@@ -281,8 +281,944 @@
     ],
     "evaluate": [
       {
-        "id": "paired-probability-panels",
-        "pending": "待新端点、TRAIN 校准与五个预登记面板的审核绑定"
+        "id": "probability-eval-sample-blocks",
+        "config": "configs/portable/operations/tpo-probability-evaluation-207.json",
+        "python": "${JEV_207_PYTHON}",
+        "dispatch_guards": [
+          "${JEV_207_ROOT}/evaluation-v1-package",
+          "${JEV_207_ROOT}/evaluation-v1-ops"
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_tpo_evaluation",
+            "configs/portable/operations/tpo-probability-evaluation-207.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${JEV_207_ROOT}/evaluation-v1-package/operations-local.json"
+          ]
+        ],
+        "inputs": [
+          {
+            "path": "${JEV_207_ROOT}/ops/tpo-collected.json",
+            "cite": "tpo-actor-pair-207-text/ops/tpo-collected.json",
+            "sha256": "e0c076d2f3f4699beaf70e8f49218aa401d933dcf0d19f7f3b64a3dff7951894",
+            "equals": [
+              [
+                [
+                  "updates"
+                ],
+                16
+              ],
+              [
+                [
+                  "endpoint"
+                ],
+                "3c0ca44469f341d73355f1bcfc03f220b6773a89a36d47e4026a5068ee6320c7"
+              ]
+            ]
+          }
+        ],
+        "checks": [
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/score-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-probability-panels-v1"
+              ],
+              [
+                [
+                  "seals",
+                  "SLURP_clean_TEST60"
+                ],
+                "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+              ],
+              [
+                [
+                  "seals",
+                  "MINDS_native14"
+                ],
+                "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea"
+              ],
+              [
+                [
+                  "seals",
+                  "SIB_FLEURS_eng_topic7"
+                ],
+                "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12"
+              ],
+              [
+                [
+                  "seals",
+                  "MMSU_polysemy"
+                ],
+                "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68"
+              ],
+              [
+                [
+                  "seals",
+                  "SLURP_clean_SELECTION60"
+                ],
+                "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a"
+              ]
+            ],
+            "report": {
+              "SLURP_clean_TEST60 对 baseline 95% 区间": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "SLURP_clean_TEST60 对 baseline 修复": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "baseline",
+                "fixed"
+              ],
+              "SLURP_clean_TEST60 对 baseline 新增错例": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "baseline",
+                "regressed"
+              ],
+              "SLURP_clean_TEST60 对 stage1 95% 区间": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "SLURP_clean_TEST60 对 stage1 修复": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "stage1",
+                "fixed"
+              ],
+              "SLURP_clean_TEST60 对 stage1 新增错例": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "paired",
+                "stage1",
+                "regressed"
+              ],
+              "MINDS_native14 对 baseline 95% 区间": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "MINDS_native14 对 baseline 修复": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "baseline",
+                "fixed"
+              ],
+              "MINDS_native14 对 baseline 新增错例": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "baseline",
+                "regressed"
+              ],
+              "MINDS_native14 对 stage1 95% 区间": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "MINDS_native14 对 stage1 修复": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "stage1",
+                "fixed"
+              ],
+              "MINDS_native14 对 stage1 新增错例": [
+                "datasets",
+                "MINDS_native14",
+                "paired",
+                "stage1",
+                "regressed"
+              ],
+              "SIB_FLEURS_eng_topic7 对 baseline 95% 区间": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "SIB_FLEURS_eng_topic7 对 baseline 修复": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "baseline",
+                "fixed"
+              ],
+              "SIB_FLEURS_eng_topic7 对 baseline 新增错例": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "baseline",
+                "regressed"
+              ],
+              "SIB_FLEURS_eng_topic7 对 stage1 95% 区间": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "SIB_FLEURS_eng_topic7 对 stage1 修复": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "stage1",
+                "fixed"
+              ],
+              "SIB_FLEURS_eng_topic7 对 stage1 新增错例": [
+                "datasets",
+                "SIB_FLEURS_eng_topic7",
+                "paired",
+                "stage1",
+                "regressed"
+              ],
+              "MMSU_polysemy 对 baseline 95% 区间": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "MMSU_polysemy 对 baseline 修复": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "baseline",
+                "fixed"
+              ],
+              "MMSU_polysemy 对 baseline 新增错例": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "baseline",
+                "regressed"
+              ],
+              "MMSU_polysemy 对 stage1 95% 区间": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "MMSU_polysemy 对 stage1 修复": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "stage1",
+                "fixed"
+              ],
+              "MMSU_polysemy 对 stage1 新增错例": [
+                "datasets",
+                "MMSU_polysemy",
+                "paired",
+                "stage1",
+                "regressed"
+              ],
+              "SLURP_clean_SELECTION60 对 baseline 95% 区间": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "baseline",
+                "interval"
+              ],
+              "SLURP_clean_SELECTION60 对 baseline 修复": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "baseline",
+                "fixed"
+              ],
+              "SLURP_clean_SELECTION60 对 baseline 新增错例": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "baseline",
+                "regressed"
+              ],
+              "SLURP_clean_SELECTION60 对 stage1 95% 区间": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "stage1",
+                "interval"
+              ],
+              "SLURP_clean_SELECTION60 对 stage1 修复": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "stage1",
+                "fixed"
+              ],
+              "SLURP_clean_SELECTION60 对 stage1 新增错例": [
+                "datasets",
+                "SLURP_clean_SELECTION60",
+                "paired",
+                "stage1",
+                "regressed"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/calibration-fit-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/calibration-fit-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-source-train-harness-thresholds-v1"
+              ],
+              [
+                [
+                  "roster_sha256"
+                ],
+                "11f979070100b1983e55abc1664c4a10c91fdd4cc70b040257f22dd482d906a9"
+              ],
+              [
+                [
+                  "arms",
+                  "stage1",
+                  "policy_id"
+                ],
+                "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b"
+              ],
+              [
+                [
+                  "arms",
+                  "baseline",
+                  "policy_id"
+                ],
+                "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071"
+              ],
+              [
+                [
+                  "arms",
+                  "tpo",
+                  "policy_id"
+                ],
+                "3c0ca44469f341d73355f1bcfc03f220b6773a89a36d47e4026a5068ee6320c7"
+              ],
+              [
+                [
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                21244
+              ],
+              [
+                [
+                  "arms",
+                  "baseline",
+                  "queries"
+                ],
+                21244
+              ],
+              [
+                [
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                21244
+              ],
+              [
+                [
+                  "arms",
+                  "stage1",
+                  "supported_classes"
+                ],
+                59
+              ],
+              [
+                [
+                  "arms",
+                  "baseline",
+                  "supported_classes"
+                ],
+                59
+              ],
+              [
+                [
+                  "arms",
+                  "tpo",
+                  "supported_classes"
+                ],
+                59
+              ]
+            ],
+            "report": {
+              "stage1 阈值": [
+                "arms",
+                "stage1",
+                "threshold"
+              ],
+              "baseline 阈值": [
+                "arms",
+                "baseline",
+                "threshold"
+              ],
+              "tpo 阈值": [
+                "arms",
+                "tpo",
+                "threshold"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-plan-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-plan-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "evaluation_blocks_prepared"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                false
+              ]
+            ],
+            "report": {
+              "样本块": [
+                "blocks"
+              ],
+              "计划耗时（秒）": [
+                "seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-0-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-0-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_0_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-1-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-1-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_1_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-2-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-2-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_2_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-3-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-3-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_3_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-4-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-4-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_4_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-5-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-5-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_5_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-6-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-6-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_6_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/block-worker-7-collected.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/block-worker-7-collected.json",
+            "equals": [
+              [
+                [
+                  "devices"
+                ],
+                "${JEV_207_WORKER_7_DEVICE}"
+              ]
+            ],
+            "report": {
+              "用时（秒）": [
+                "seconds"
+              ],
+              "模型加载（秒）": [
+                "model_load_seconds"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/evaluation-v1-ops/terminal.json",
+            "cite": "tpo-actor-pair-207-text/evaluation-v1-ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ],
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ]
+            ]
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60",
+            "scope": "源域测试",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-207",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "3c0ca44469f341d73355f1bcfc03f220b6773a89a36d47e4026a5068ee6320c7",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "JEV-206",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14",
+            "scope": "同任务跨数据集迁移",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-207",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "3c0ca44469f341d73355f1bcfc03f220b6773a89a36d47e4026a5068ee6320c7",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "JEV-206",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SIB_FLEURS_eng_topic7",
+            "scope": "跨任务话题分类",
+            "population": 320,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-207",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "3c0ca44469f341d73355f1bcfc03f220b6773a89a36d47e4026a5068ee6320c7",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "JEV-206",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MMSU_polysemy",
+            "scope": "跨任务多义词",
+            "population": 98,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "JEV-207",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "3c0ca44469f341d73355f1bcfc03f220b6773a89a36d47e4026a5068ee6320c7",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "JEV-206",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_clean_SELECTION60",
+            "scope": "源域 selection",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "JEV-207",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": "3c0ca44469f341d73355f1bcfc03f220b6773a89a36d47e4026a5068ee6320c7",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "JEV-206",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "baseline"
+                ],
+                "policy": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              },
+              {
+                "label": "共同 step 0",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均 Top-1 概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1",
+                  "Brier": "candidate_brier",
+                  "正类 Brier": "positive_brier",
+                  "负类 Brier": "negative_brier"
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
   },
