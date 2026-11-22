@@ -24,12 +24,20 @@ def summarize(rows, step, config):
     sums = {}
     gradu = []
     rates = set()
+    triplet = config['instruction_objective']['kind'] == 'intent_triplet_infonce_v1'
     for row in rows:
         metrics = row['metrics']
         owned = [v for v in row['optimizer_audit'].values() if v['numel'] > 0]
         if (row['update'] != step or row['real_queries'] != n or not owned
                 or any(v['state'] != 'initialized' or v['step'] != step for v in owned)):
             raise ValueError('rank optimizer update missing')
+        if triplet:
+            if metrics != rows[0]['metrics']:
+                raise ValueError('distributed triplet metrics differ across ranks')
+            if not math.isfinite(metrics['actor/grad_norm']) or metrics['actor/grad_norm'] <= 0:
+                raise ValueError('invalid triplet gradient norm')
+            rates.add(row['learning_rate'])
+            continue
         if not math.isclose(sum(metrics['jev/context_loss']), metrics['actor/pg_loss'], abs_tol=1e-6):
             raise ValueError('microbatch loss differs from rank loss')
         rates.add(row['learning_rate'])
@@ -37,6 +45,18 @@ def summarize(rows, step, config):
         for key in ('infonce_numerator', 'probability_margin_numerator', 'threshold_anchor_numerator', 'local_real_queries'):
             sums[key] = sums.get(key, 0.) + sum(metrics['jev/'+key])
     margin = config['instruction_objective']['probability_margin']
+    if triplet:
+        metrics = rows[0]['metrics']
+        rebuilt = (metrics['jev/infonce'] + margin['gap_weight'] * metrics['jev/gap']
+                   + margin['anchor_weight'] * metrics['jev/anchor'])
+        loss = metrics['actor/pg_loss']
+        if (not math.isfinite(loss) or not math.isclose(loss, rebuilt, abs_tol=1e-6)
+                or len(rates) != 1 or not 0 < min(rates) < math.inf):
+            raise ValueError('global triplet components or learning rate differ')
+        return dict(step=step, real_queries=n, ranks=world, loss=loss, recomputed_loss=rebuilt,
+                    learning_rate=rates.pop(), grad_norm=metrics['actor/grad_norm'],
+                    max_rank_seconds=max(row['total_seconds'] for row in rows),
+                    max_peak_allocated=max(row['peak_allocated'] for row in rows))
     objective = (sums['infonce_numerator'] + margin['gap_weight'] * sums['probability_margin_numerator']
                  + margin['anchor_weight'] * sums['threshold_anchor_numerator']) / n
     actor_loss = sum(r['metrics']['actor/pg_loss'] for r in rows) / world
@@ -66,9 +86,18 @@ def collect(package, count, timeout):
     prepare = read(ops/'prepare-collected.json')
     finite = read(ops/'finite-collected.json')
     design = read(entry/'design.json')
+    expected_stop = design['stage1']['total_updates']
+    if 'triplet_objective' in (window := read(entry/'formal.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']):
+        from multimodal_jev.context_topology_batch_plan import derive
+        batch = dict(design['stage1']['batch_config'], per_dp_replica_batch=window['effective_anchors_per_rank'])
+        plan = derive(batch)
+        expected_stop = plan['total_updates']
+        if (config['global_batch'] != plan['global_batch'] or config['microbatch'] != finite['microbatch']
+                or config['instruction_objective'] != window['triplet_objective']):
+            raise ValueError('triplet objective or admitted batch differs')
     if (finite['engineering_prefix'] is not True or finite['updates'] != 2
             or config['engineering_prefix'] is not False or config['training_dispatch_allowed'] is not True
-            or config['start_update'] != 0 or config['stop_update'] != design['stage1']['total_updates']
+            or config['start_update'] != 0 or config['stop_update'] != expected_stop
             or config['source_policy_id'] != prepare['policy_id']
             or config['stage1_layout']['plan']['sha256'] != file_hash(entry/'card-plan.json')
             or config['layout_cache']['sha256'] != prepare['cache_sha256']):
