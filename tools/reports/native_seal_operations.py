@@ -72,7 +72,7 @@ def wait_for_devices(predecessors, checked, remote, record):
             pass
 
 
-def run(c):
+def run(c, on_started=None):
     root = Path(c['operations'])
     check_paths({'evaluation operations': root})
     root.mkdir(parents=True, exist_ok=False)
@@ -195,6 +195,8 @@ def run(c):
         commit_json(root/(role+'-launch.json'), h)
         inspect_runtime(json.loads(checked(['docker','inspect',cid]))[0], h)
         checked(['docker','start',cid])
+        if on_started is not None:
+            on_started(role)
         code = wait_exact(remote, cid)
         observation = json.loads(checked(['docker','inspect',cid]))[0]
         commit_json(root/(role+'-inspect.json'), observation)
@@ -266,8 +268,31 @@ def main():
     p.add_argument('--config', required=True)
     p.add_argument('--local', required=True)
     p.add_argument('--detach', action='store_true')
+    p.add_argument('--observe-tpo-package', type=Path)
     a = p.parse_args()
     c, _ = load_config(a.config, a.local)
+    if a.observe_tpo_package is not None:
+        if a.detach:
+            p.error('run the TPO observer inside the persistent experiment driver')
+        from tools.reports.collect_tpo_first_updates import collect
+        package = a.observe_tpo_package
+        if (a.local != str(package/'operations-local.json') or
+                not (package/'entry/tpo.json').is_file()):
+            p.error('the observer requires the dispatched TPO package')
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            milestone = None
+
+            def started(role):
+                nonlocal milestone
+                if role == 'tpo':
+                    milestone = pool.submit(collect, package)
+
+            exit_code = run(c, on_started=started)
+            if exit_code == 0:
+                if milestone is None:
+                    raise ValueError('formal TPO stage was not started')
+                milestone.result()
+            return exit_code
     if a.detach:
         root = Path(c['operations'])
         argv = [sys.executable,'-B','-m',__spec__.name,'--config',a.config,'--local',a.local]

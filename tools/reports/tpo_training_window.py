@@ -1,4 +1,5 @@
 """One finite or formal torchrun window on the existing isolated job runner."""
+from collections import Counter
 import json
 import os
 from pathlib import Path
@@ -47,6 +48,10 @@ def run(c):
             parity=read(root/f'rank-{rank}'/'initial-parity.json')
             if len(parity)!=4 or not all(r['passed'] and r['rows']==m['schedule']['microbatch'] for r in parity):
                 raise ValueError('initial producer/actor probability mismatch')
+    pair_spec = m.get('actor_pair_margin')
+    pair_by_epoch = {}
+    if pair_spec is not None:
+        from multimodal_jev.context_tpo_pair_margin import verify_update
     for step in range(1,steps+1):
         metric=read(root/f'update-{step:04d}.json')
         if 'next_macro_sha' in t:
@@ -54,7 +59,10 @@ def run(c):
             if (ref['policy_update']!=step-1 or ref['macro_slots']!=m['schedule']['global_batch']
                     or ref['seconds_max']<=0 or metric['metrics']['jev/tpo_loss']<=0):
                 raise ValueError('incomplete next-macro update')
-        if m['schema']=='jev-tpo-reward-view-v1':
+        if pair_spec is not None:
+            verify_update(metric, m['batch_real'], pair_spec['epochs'], pair_spec['batch_eligible'])
+            pair_by_epoch.setdefault(str(metric['epoch']), Counter()).update(metric['pair_margin'])
+        elif m['schema']=='jev-tpo-reward-view-v1':
             projection=metric['metrics'].get('jev/reward_projection_kl')
             if (projection is None or not projection>0 or projection!=metric['metrics']['jev/tpo_loss']
                     or any('jev/'+key in metric['metrics'] for key in ('hard_negative','margin','contrast','existence','consistency'))):
@@ -63,5 +71,7 @@ def run(c):
             raise ValueError('failed optimizer update')
     receipt=dict(binding=bound,passed=True,window=t['window'],arm=t['arm'],updates=steps,
                  endpoint=result['policy'],manifest_sha256=file_hash(root/'policy/MANIFEST.json'))
+    if pair_spec is not None:
+        receipt['pair_margin_by_epoch'] = pair_by_epoch
     commit_json(root/'receipt.json',receipt)
     return receipt

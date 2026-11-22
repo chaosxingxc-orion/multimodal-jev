@@ -128,7 +128,7 @@ def tpo_watch(c):
                 updates=[json.loads((root/f'update-{i:04d}.json').read_bytes()) for i in range(1,4)]
                 return dict(status=state['State']['Status'],updates=updates,observed_unix=time.time(),
                             state=state['State'])
-            if waiter is None and root.is_dir():
+            if waiter is None and (root.is_dir() or state['State']['Running']):
                 waiter=subprocess.Popen(['docker','wait',c['container_id']],stdout=subprocess.DEVNULL)
                 pidfd=os.pidfd_open(waiter.pid)
                 watch.poll.register(pidfd,select.POLLIN)

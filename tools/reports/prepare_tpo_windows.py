@@ -29,6 +29,13 @@ def prepare(c):
         if (m['source_policy']!=parent['source_policy_id'] or
                 m['view_sha256']!=parent['training_dataset']['manifest_sha256']):
             raise ValueError('incompatible target dataset')
+        if 'actor_pair_margin' in m:
+            if (m.get('reviewed_new_view') is not True or m['review']['complete_pairs'] < 1
+                    or m['review']['existing_recordings_new_to_view'] < 1
+                    or m['updates'] < 3 or not any(m['actor_pair_margin']['batch_eligible'])):
+                raise ValueError('reviewed new pair population required before freezing actor margin training')
+            for name, sha in m['files'].items():
+                verified(data/name, sha)
         remote_parent=Path(parent['source_policy']).parents[1]
         remote_ref=parent['reference_dataset']['root']
     entry=pkg/'entry'
@@ -130,6 +137,6 @@ if __name__=='__main__':
     config = load_config(a.config,a.local)[0]
     # Under run_experiment.py this is the committed checkout, even when the
     # operator also has a mutable working checkout on the same machine.
-    if config.get('full_joint') or config.get('joint'):
+    if config.get('full_joint') or config.get('joint') or config.get('freeze_committed_repository'):
         config['repository'] = str(Path(__file__).resolve().parents[2])
     prepare(config)

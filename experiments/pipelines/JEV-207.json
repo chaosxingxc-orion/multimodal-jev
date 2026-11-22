@@ -3,8 +3,381 @@
   "protocol": "experiments/tpo-actor-pair-margin-207.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "stages": {
-    "data": [{"id": "construct-source-train-audio-pairs", "pending": "待冻结源 TRAIN 配额并构造含 206 未用录音的双侧最小语义对、同义复录与回放；需盲审、隔离、清单计数、固定参考覆盖及新批序目标收据"}],
-    "train": [{"id": "actor-pair-margin", "pending": "待新增排序项实现、CPU 零权重数值等价检查及额外梯度统计、有限验收与冻结包"}],
-    "evaluate": [{"id": "paired-probability-panels", "pending": "待新端点、TRAIN 校准与五个预登记面板的审核绑定"}]
+    "data": [
+      {
+        "id": "construct-source-train-audio-pairs",
+        "config": "configs/portable/operations/tpo-actor-pair-207.json",
+        "python": "${JEV_207_PYTHON}",
+        "run": [
+          [
+            "tools.reports.build_tpo_actor_pairs",
+            "prepare",
+            "configs/portable/operations/tpo-actor-pair-207.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${JEV_207_ROOT}/review-packet-expanded-v1/MANIFEST.json",
+            "cite": "tpo-actor-pair-207/review-packet-expanded-v1/MANIFEST.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-source-audio-pair-review-v1"
+              ]
+            ],
+            "report": {
+              "待盲听录音": [
+                "review_recordings"
+              ],
+              "候选语义对": [
+                "candidate_pairs"
+              ],
+              "参考覆盖": [
+                "reference_covered"
+              ],
+              "单录音错序候选": [
+                "hard_single_candidates"
+              ],
+              "候选训练上限": [
+                "candidate_max_recordings"
+              ]
+            },
+            "sha256": "f6ad9eede08186f3f491a6b7daa705ac088cad99e8666901f9376706c235c72b"
+          }
+        ]
+      },
+      {
+        "id": "seal-independent-audio-reviews",
+        "config": "configs/portable/operations/tpo-actor-pair-207.json",
+        "python": "${JEV_207_PYTHON}",
+        "run": [
+          [
+            "tools.reports.build_tpo_actor_pairs",
+            "seal-reviews",
+            "configs/portable/operations/tpo-actor-pair-207.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${JEV_207_ROOT}/reviews/receipt.json",
+            "cite": "tpo-actor-pair-207/reviews/receipt.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-source-audio-pair-submission-v1"
+              ]
+            ]
+          }
+        ],
+        "inputs": [
+          {
+            "path": "${JEV_207_ROOT}/reviews/listening-a.json",
+            "cite": "tpo-actor-pair-207/reviews/listening-a.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-source-audio-pair-submission-v1"
+              ]
+            ]
+          },
+          {
+            "path": "${JEV_207_ROOT}/reviews/listening-b.json",
+            "cite": "tpo-actor-pair-207/reviews/listening-b.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-source-audio-pair-submission-v1"
+              ]
+            ]
+          },
+          {
+            "path": "${JEV_207_ROOT}/reviews/relation.json",
+            "cite": "tpo-actor-pair-207/reviews/relation.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-source-audio-pair-submission-v1"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "compile-reviewed-pair-targets",
+        "config": "configs/portable/operations/tpo-actor-pair-207.json",
+        "python": "${JEV_207_PYTHON}",
+        "run": [
+          [
+            "tools.reports.build_tpo_actor_pairs",
+            "build",
+            "configs/portable/operations/tpo-actor-pair-207.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${JEV_207_ROOT}/targets/MANIFEST.json",
+            "cite": "tpo-actor-pair-207/targets/MANIFEST.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-tpo-reward-view-v1"
+              ],
+              [
+                [
+                  "reviewed_new_view"
+                ],
+                true
+              ]
+            ],
+            "report": {
+              "录音": [
+                "recordings"
+              ],
+              "更新": [
+                "updates"
+              ],
+              "曝光": [
+                "real_exposures"
+              ],
+              "已审语义对": [
+                "review",
+                "complete_pairs"
+              ]
+            }
+          }
+        ],
+        "inputs": [
+          {
+            "path": "${JEV_207_ROOT}/reviews/receipt.json",
+            "cite": "tpo-actor-pair-207/reviews/receipt.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-source-audio-pair-submission-v1"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "frozen-pair-margin-package",
+        "config": "configs/portable/operations/tpo-actor-pair-207-package.json",
+        "python": "${JEV_207_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_tpo_windows",
+            "configs/portable/operations/tpo-actor-pair-207-package.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "inputs": [
+          {
+            "path": "${JEV_207_ROOT}/targets/MANIFEST.json",
+            "cite": "tpo-actor-pair-207/targets/MANIFEST.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-tpo-reward-view-v1"
+              ],
+              [
+                [
+                  "reviewed_new_view"
+                ],
+                true
+              ]
+            ],
+            "report": {
+              "录音": [
+                "recordings"
+              ],
+              "更新": [
+                "updates"
+              ],
+              "曝光": [
+                "real_exposures"
+              ],
+              "已审语义对": [
+                "review",
+                "complete_pairs"
+              ]
+            }
+          }
+        ],
+        "dispatch_guards": [
+          "${JEV_207_ROOT}/package"
+        ],
+        "checks": [
+          {
+            "path": "${JEV_207_ROOT}/package/operations-local.json",
+            "cite": "tpo-actor-pair-207/package/operations-local.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-local-macros-v1"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "train": [
+      {
+        "id": "actor-pair-margin",
+        "python": "${JEV_207_PYTHON}",
+        "dispatch_guards": [
+          "${JEV_207_ROOT}/ops"
+        ],
+        "run": [
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${JEV_207_ROOT}/package/operations-local.json",
+            "--observe-tpo-package",
+            "${JEV_207_ROOT}/package"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${JEV_207_ROOT}/ops/finite-collected.json",
+            "cite": "tpo-actor-pair-207/ops/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "finite"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                2
+              ]
+            ]
+          },
+          {
+            "path": "${JEV_207_ROOT}/ops/first-three.json",
+            "cite": "tpo-actor-pair-207/ops/first-three.json",
+            "equals": [
+              [
+                [
+                  "updates",
+                  0,
+                  "step"
+                ],
+                1
+              ],
+              [
+                [
+                  "updates",
+                  1,
+                  "step"
+                ],
+                2
+              ],
+              [
+                [
+                  "updates",
+                  2,
+                  "step"
+                ],
+                3
+              ]
+            ],
+            "report": {
+              "step 1 loss": [
+                "updates",
+                0,
+                "metrics",
+                "jev/tpo_loss"
+              ],
+              "step 2 loss": [
+                "updates",
+                1,
+                "metrics",
+                "jev/tpo_loss"
+              ],
+              "step 3 loss": [
+                "updates",
+                2,
+                "metrics",
+                "jev/tpo_loss"
+              ]
+            }
+          },
+          {
+            "path": "${JEV_207_ROOT}/ops/tpo-collected.json",
+            "cite": "tpo-actor-pair-207/ops/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "formal"
+              ]
+            ]
+          },
+          {
+            "path": "${JEV_207_ROOT}/ops/terminal.json",
+            "cite": "tpo-actor-pair-207/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "paired-probability-panels",
+        "pending": "待新端点、TRAIN 校准与五个预登记面板的审核绑定"
+      }
+    ]
   }
 }

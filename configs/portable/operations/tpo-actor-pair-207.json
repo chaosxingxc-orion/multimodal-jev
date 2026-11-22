@@ -1,0 +1,170 @@
+{
+  "previous": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/targets",
+  "previous_sha256": "3b8df38222fdb4b029f728bd70c878373ae8fad0ec9e190012a6b1878f3569e5",
+  "parent_config": "${TPO_PARENT_CONFIG}",
+  "parent_sha256": "3420390e4243f141478a2f22b56bf05bec61339e748bb6be8eece3186acd15bb",
+  "reference": "${JEV_206_REFERENCE}",
+  "release": "${JEV_206_RELEASE}",
+  "metadata": "${SLURP_CLEAN_TRAIN_METADATA}",
+  "metadata_sha256": "1ad58f688d54deace851e484116d4b51b15ffcf9d099f95a453a6c5879bfaab1",
+  "packet": "${JEV_207_ROOT}/review-packet-expanded-v1",
+  "submissions": "${JEV_207_ROOT}/reviews/receipt.json",
+  "output": "${JEV_207_ROOT}/targets",
+  "review": {
+    "max_changed_words": 4,
+    "min_shared_words": 2,
+    "max_pairs_per_boundary": 24,
+    "max_recordings_per_group": 4,
+    "replay_max_fraction": 0.3,
+    "boundaries": [
+      [
+        "calendar_query",
+        "calendar_set",
+        "read or create a calendar entry"
+      ],
+      [
+        "calendar_remove",
+        "calendar_set",
+        "remove or create a calendar entry"
+      ],
+      [
+        "calendar_query",
+        "calendar_remove",
+        "read or remove a calendar entry"
+      ],
+      [
+        "audio_volume_down",
+        "audio_volume_up",
+        "decrease or increase volume"
+      ],
+      [
+        "audio_volume_down",
+        "audio_volume_mute",
+        "reduce volume or silence playback"
+      ],
+      [
+        "audio_volume_mute",
+        "audio_volume_up",
+        "silence playback or increase volume"
+      ],
+      [
+        "play_radio",
+        "play_music",
+        "play a radio station or music"
+      ],
+      [
+        "play_audiobook",
+        "play_music",
+        "play spoken books or music"
+      ],
+      [
+        "play_podcasts",
+        "play_music",
+        "play a podcast or music"
+      ],
+      [
+        "music_settings",
+        "play_music",
+        "change playback settings or start music"
+      ],
+      [
+        "play_game",
+        "play_music",
+        "launch a game or play music"
+      ],
+      [
+        "music_query",
+        "play_music",
+        "ask about music or play it"
+      ],
+      [
+        "transport_ticket",
+        "transport_query",
+        "buy a ticket or obtain transport information"
+      ],
+      [
+        "transport_traffic",
+        "transport_query",
+        "ask about traffic or public transport information"
+      ],
+      [
+        "takeaway_order",
+        "takeaway_query",
+        "place an order or ask about takeaway"
+      ],
+      [
+        "iot_hue_lightchange",
+        "iot_hue_lightup",
+        "change light colour or increase brightness"
+      ],
+      [
+        "iot_hue_lightoff",
+        "iot_hue_lightup",
+        "switch lights off or increase brightness"
+      ],
+      [
+        "lists_createoradd",
+        "lists_query",
+        "add or read a list entry"
+      ],
+      [
+        "lists_createoradd",
+        "lists_remove",
+        "add or remove a list entry"
+      ],
+      [
+        "email_query",
+        "email_sendemail",
+        "read or send an email"
+      ],
+      [
+        "email_query",
+        "email_querycontact",
+        "read email or look up contact details"
+      ],
+      [
+        "alarm_query",
+        "alarm_set",
+        "read or set an alarm"
+      ],
+      [
+        "alarm_set",
+        "calendar_set",
+        "set an alarm or create a calendar entry"
+      ],
+      [
+        "datetime_convert",
+        "datetime_query",
+        "convert a time or ask for current date or time"
+      ],
+      [
+        "qa_definition",
+        "qa_factoid",
+        "ask for a word definition or for a factual answer"
+      ],
+      [
+        "news_query",
+        "weather_query",
+        "retrieve news or a weather forecast"
+      ]
+    ],
+    "max_boundaries": 100,
+    "max_hard_per_group": 4,
+    "min_train_recordings": 3072,
+    "min_complete_pairs": 100,
+    "min_eligible_exposures_per_epoch": 384
+  },
+  "schedule": {
+    "seed": 317,
+    "epochs": 2,
+    "global_batch": 384,
+    "microbatch": 8,
+    "confusion_fraction": 0.0
+  },
+  "loss": {
+    "logit_margin": 0.25,
+    "weight": 0.016666666666666666
+  },
+  "cpu_threads": 8,
+  "io_workers": 8
+}

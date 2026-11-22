@@ -38,6 +38,7 @@ def main(args):
     from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
     from multimodal_jev.context_tpo_actor import MODE, EXTENSION, pack
     from multimodal_jev.context_native_actor import build_actor
+    from multimodal_jev.context_tpo_pair_margin import validate_spec, verify_update
     from multimodal_jev.context_stage_lora import admit_stage2
     from multimodal_jev.context_fsdp_export import canonical_execution
     from multimodal_jev.context_checkpoint_policy import export_checkpoint_policy
@@ -70,6 +71,11 @@ def main(args):
         validate_trainable_scope([(n,p) for n,p in wrapped.named_parameters() if p.requires_grad])
         choice = m['schema']=='jev-tpo-choices-v1'
         reward_only = choice or m['schema']=='jev-tpo-reward-view-v1'
+        pair_spec = m.get('actor_pair_margin')
+        if pair_spec is not None:
+            if m['schema'] != 'jev-tpo-reward-view-v1' or not m.get('bidirectional_contrast'):
+                raise ValueError('actor pair margin requires a bidirectional reward view')
+            validate_spec(pair_spec['loss'])
         if reward_only and args.arm!='tpo':
             raise ValueError('reward-only view requires a TPO projection')
         opts = {} if reward_only else m['objective'].copy()
@@ -82,7 +88,8 @@ def main(args):
             ppo_micro_batch_size_per_gpu=c['microbatch'],ppo_epochs=1,use_kl_loss=False,calculate_entropy=False,
             entropy_coeff=0.,loss_agg_mode='token-mean',use_rollout_log_probs=True,policy_loss={'loss_mode':MODE},
             global_batch_info={},grad_clip=e['grad_clip'],jev_policy_id=c['source_policy_id'],
-            jev_context_parity=c['behavior_bounds'],jev_context_objective=opts,jev_reward_projection=reward_only,jev_choice=m.get('choice')))
+            jev_context_parity=c['behavior_bounds'],jev_context_objective=opts,jev_reward_projection=reward_only,
+            jev_choice=m.get('choice'),jev_actor_pair_margin=pair_spec['loss'] if pair_spec is not None else None))
         actor=build_actor(cfg,wrapped,opt,objective=EXTENSION,collation=dict(decision_token_id=model.decision_token_id,
             pad_token_id=processor.tokenizer.pad_token_id,audio_token_id=base.config.audio_token_id,
             audio_chunk_size=base.config.audio_config.n_window*2,audio_infer_window=base.config.audio_config.n_window_infer))
@@ -103,6 +110,17 @@ def main(args):
         batches=read(data/'batches.json')
         end = 2 if args.window == 'finite' else len(batches)
         denominators = [sum(not s['padding'] for s in b['slots']) for b in batches]
+        epochs = [b['epoch'] for b in batches]
+        if pair_spec is not None:
+            pair_inputs = torch.load(data/'actor-pairs.pt', map_location='cpu', weights_only=True)
+            rivals, enabled = pair_inputs['rival'], pair_inputs['enabled']
+            if (rivals.shape != (len(rows),) or rivals.dtype != torch.long
+                    or enabled.shape != (schedule['epochs'], len(rows)) or enabled.dtype != torch.bool
+                    or not ((rivals >= 0) & (rivals < len(m['candidate_ids']))).all()
+                    or any(int(rivals[row['index']]) == row['gold'] for row in rows.values())):
+                raise ValueError('invalid frozen actor pair coordinates')
+            if denominators != m['batch_real'] or epochs != pair_spec['epochs']:
+                raise ValueError('frozen actor pair schedule changed')
         batches = [dict(b,slots=b['slots'][rank*local_size:(rank+1)*local_size]) for b in batches]
         prep=CachedContextPreparer(no_online_processor,ReadOnlyEncodedAudioCache(c['encoded_audio_cache']),
             processor_sha256=processor_cache_identity(c['source_policy']),decision_token_id=model.decision_token_id,
@@ -161,6 +179,9 @@ def main(args):
                     x.update(request_id=f"{rank}:{x['request_id']}",stage='tpo', gold=row['gold'],
                              paired=slot['paired'],confusion=slot['confusion'],group=row['group'],audio_sha256=row['audio_sha256'],
                              global_real=denominators[step],log_target=(targets[batches[step]['epoch'],row['index']] if reward_only else targets[row['index']]))
+                    if pair_spec is not None:
+                        x.update(pair_rival=int(rivals[row['index']]),
+                                 pair_enabled=bool(enabled[epochs[step], row['index']]))
                 if choice:
                     mode=batches[step]['mode']
                     for x,meta,slot in zip(items,metadata,batches[step]['slots'],strict=True):
@@ -241,7 +262,9 @@ def main(args):
                 gathered=[None]*world
                 dist.all_gather_object(gathered,metrics)
                 if rank==0:
-                    names=['actor/pg_loss','actor/grad_norm']+[k for k in metrics if k.startswith('jev/')]
+                    count_prefix = 'jev/pair_count/'
+                    names = ['actor/pg_loss', 'actor/grad_norm'] + [
+                        k for k in metrics if k.startswith('jev/') and not k.startswith(count_prefix)]
                     reduced={k:sum(float(torch.as_tensor(r[k]).mean()) for r in gathered)/world for k in names}
                     if not all(math.isfinite(v) for v in reduced.values()):
                         raise ValueError('nonfinite reduced metrics')
@@ -254,8 +277,16 @@ def main(args):
                                     raise ValueError('first update differs from fixed control: '+k)
                         extra['reference']=dict(mode='next_macro',policy_update=step,macro_slots=local_size*world,
                             seconds_max=max(r['jev/reference_seconds'][0] for r in gathered),config_sha256=args.next_macro_sha)
-                    commit_json(root/f'update-{step+1:04d}.json',dict(step=step+1,seconds=time.monotonic()-now,
-                        real=denominators[step],task=batches[step].get('mode','noul'),metrics=reduced,**extra))
+                    update = dict(step=step+1,seconds=time.monotonic()-now,
+                        real=denominators[step],task=batches[step].get('mode','noul'),metrics=reduced,**extra)
+                    if pair_spec is not None:
+                        update['epoch'] = epochs[step]
+                        update['pair_margin'] = {
+                            key.removeprefix(count_prefix): int(sum(sum(r[key]) for r in gathered))
+                            for key in metrics if key.startswith(count_prefix)
+                        }
+                        verify_update(update, m['batch_real'], epochs, pair_spec['batch_eligible'])
+                    commit_json(root/f'update-{step+1:04d}.json', update)
         if args.window=='reference':
             commit_file(ref_file,lambda f:torch.save(reference_rows,f))
             dist.barrier()

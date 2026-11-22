@@ -108,7 +108,16 @@ def collect(package, controller_terminal=None):
                 previous=row['reference']['next_policy']
                 continue
             if fixed_view:
-                check_fixed_update(row, i, fixed_view['batch_real'])
+                pair_spec = fixed_view.get('actor_pair_margin')
+                if pair_spec is None:
+                    check_fixed_update(row, i, fixed_view['batch_real'])
+                else:
+                    from multimodal_jev.context_tpo_pair_margin import verify_update
+                    if (receipt['updates'] != 2 or row['step'] != i or 'reference' in row
+                            or not all(math.isfinite(x) and x > 0 for x in
+                                       (row['metrics']['actor/grad_norm'], row['seconds']))):
+                        raise ValueError('invalid formal actor pair update')
+                    verify_update(row, fixed_view['batch_real'], pair_spec['epochs'], pair_spec['batch_eligible'])
                 continue
             ref = row['reference']
             metrics = row['metrics']

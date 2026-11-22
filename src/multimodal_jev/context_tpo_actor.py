@@ -86,6 +86,7 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
     mode=items[0].get('choice_mode','noul')
     if any(x.get('choice_mode','noul')!=mode for x in items):raise ValueError('incompatible task batch')
     joint = config.get('jev_joint_tpo')
+    pair_counts = {}
     if joint:
         from .context_joint_tpo import view_loss
         value = view_loss(logits, targets, mode, joint)
@@ -100,6 +101,18 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
         from .context_tpo_rewards import projection
         value = projection(logits, targets)
         terms = dict(reward_projection_kl=value)
+        spec = config.get('jev_actor_pair_margin')
+        if spec is not None:
+            from .context_tpo_pair_margin import loss as pair_margin_loss
+            ranking, pair_counts = pair_margin_loss(
+                logits, targets,
+                torch.tensor([x['gold'] for x in items], device=device),
+                torch.tensor([x['pair_rival'] for x in items], device=device),
+                torch.tensor([x['pair_enabled'] for x in items], device=device),
+                weights > 0, spec,
+            )
+            terms['pair_margin'] = ranking
+            value = value + ranking
     else:
         value, terms = objectives(logits, targets,
             torch.tensor([x['gold'] for x in items],device=device), torch.tensor(partners,device=device),
@@ -108,8 +121,10 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
     # veRL divides each microbatch loss by accumulation; FSDP averages ranks.
     factor = (dist.get_world_size() * (config.ppo_mini_batch_size // len(items)) / items[0]['global_real'])
     total = (value * weights).sum() * factor
-    return total, {f'jev/{k}': float(((v * weights).sum() * factor).detach())
-                   for k, v in dict(terms, tpo_loss=value).items()}
+    metrics = {f'jev/{k}': float(((v * weights).sum() * factor).detach())
+               for k, v in dict(terms, tpo_loss=value).items()}
+    metrics.update({f'jev/pair_count/{k}': int(v) for k, v in pair_counts.items()})
+    return total, metrics
 
 
 EXTENSION = MODE, registered_loss, admit
