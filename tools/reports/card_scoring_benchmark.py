@@ -145,7 +145,8 @@ def length_order(compiled, window):
 
 def scoring_lineage(c, ordinal):
     formal = c['formal']
-    return content_key('full-train-scoring-v1', formal['policy_id'], formal['image'],
+    return content_key('full-train-scoring-v2', formal['policy_id'], formal['image'],
+                       formal['checkpoint_sha256'],
                        formal['recordings_per_block'], c['full']['sha256'], c['source']['sha256'],
                        c['policy_sha256'], c['cards']['sha256'], c['training']['sha256'],
                        c['devices'], ordinal, c['widths'], c['streaming'], c['io_workers'],
@@ -158,6 +159,31 @@ def read_block(path, lineage):
             content_key(block['payload']) != block['sha256']):
         raise ValueError(f'scoring block identity differs: {path.name}')
     return block['payload']
+
+
+def wait_for_admission(c, output, workers, deadline):
+    from tools.reports.audit_card_scoring_benchmark import audit_admission
+
+    ready = [output/f'worker-{i}'/'panel-ready.json' for i in range(len(workers))]
+    while not all(p.is_file() for p in ready):
+        for i, process in enumerate(workers):
+            if (code := process.poll()) is not None:
+                raise RuntimeError(f'scoring worker {i} exited {code} before admission')
+        if time.monotonic() >= deadline:
+            raise TimeoutError('scoring replicas did not finish admission within the configured deadline')
+        time.sleep(c['formal']['coordination_seconds'])
+    admission = audit_admission(output, c, load_panel(c)[0],
+                                pinned(c['training'])['epoch_mining']['forward_rows'])
+    if resume := c['formal'].get('resume_from'):
+        previous = Path(resume)
+        if any(previous.glob('worker-*/block-*.json')):
+            observed = audit_admission(previous, c, load_panel(c)[0],
+                                       admission['baseline_rows'])
+            if (json.loads((previous/'admission.json').read_bytes()) != observed
+                    or observed['checkpoint_sha256'] != admission['checkpoint_sha256']):
+                raise ValueError('resume requires the original all-replica admission')
+    commit_json(output/'admission.json', admission)
+    print(json.dumps(dict(event='admitted', **admission)), flush=True)
 
 
 def worker(c, output, ordinal):
@@ -247,7 +273,7 @@ def worker(c, output, ordinal):
             return result
 
     if formal:
-        from tools.reports.audit_card_scoring_benchmark import predictions
+        from tools.reports.audit_card_scoring_benchmark import predictions, read, validate_block, validate_timing
         full = pinned(c['full'])
         if (len(full['rows']) != panel['population'] or full['labels'] != panel['labels']
                 or full['cache_proof_sha256'] != panel['cache_proof_sha256']):
@@ -255,35 +281,54 @@ def worker(c, output, ordinal):
         width, = c['widths']
         legacy_width = train['epoch_mining']['forward_rows']
         baseline, candidate = measure(legacy_width, True), measure(width, False)
-        ids = [r['id'] for r in rows]
-        r, _ = predictions(baseline, ids, panel['labels'], legacy_width)
-        p, sizes = predictions(candidate, ids, panel['labels'], width)
-        if r != p or not sizes.get(width):
-            raise ValueError('endpoint scoring admission requires a full batch and exact probabilities')
         commit_json(output/'baseline.json', baseline)
         commit_json(output/f'batch-{width}.json', candidate)
         shard = full['rows'][ordinal::len(devices)]
         size = formal['recordings_per_block']
         lineage = scoring_lineage(c, ordinal)
         resumed = Path(formal['resume_from'])/f'worker-{ordinal}' if formal.get('resume_from') else None
-        if resumed is not None and resumed.exists() and (
-                json.loads((resumed/'lineage.json').read_bytes()) != {'sha256': lineage}):
-            raise ValueError('resume requires identical frozen inputs and runtime')
+        offsets = range(0, len(shard), size)
+        names = [f'block-{i:06d}.json' for i in range(len(offsets))]
+        settings = (c['io_workers'], c['prefetch_audio'])
+        saved_names = set()
+        if resumed is not None:
+            saved_names = {p.name for p in resumed.glob('block-*.json')}
+            if saved_names and (read(resumed/'lineage.json') != {'sha256': lineage}
+                                or not saved_names <= set(names)):
+                raise ValueError('resume requires the same frozen shard, inputs and runtime')
+            for offset, name in zip(offsets, names, strict=True):
+                if name in saved_names:
+                    validate_block((resumed/name, lineage, [r['id'] for r in shard[offset:offset+size]],
+                                    panel['labels'], width, settings))
         commit_json(output/'lineage.json', dict(sha256=lineage))
+        marker = dict(lineage=lineage, baseline_sha256=file_hash(output/'baseline.json'),
+                      candidate_sha256=file_hash(output/f'batch-{width}.json'))
+        commit_json(output/'panel-ready.json', marker)
+        gate = output.parent/'admission.json'
+        deadline = start + c['worker_timeout_seconds']
+        while not gate.is_file():
+            if time.monotonic() >= deadline:
+                raise TimeoutError('all-replica scoring admission did not open')
+            time.sleep(formal['coordination_seconds'])
+        if read(gate)['workers'][ordinal] != marker:
+            raise ValueError('scoring gate belongs to a different panel')
         blocks = []
         tick = time.monotonic()
-        for i, offset in enumerate(range(0, len(shard), size)):
+        for offset, name in zip(offsets, names, strict=True):
             batch = shard[offset:offset+size]
-            name = f'block-{i:06d}.json'
-            saved = resumed/name if resumed else None
-            reused = saved is not None and saved.is_file()
+            reused = name in saved_names
             if reused:
-                block = read_block(saved, lineage)
+                block = read_block(resumed/name, lineage)
             else:
                 block = measure(width, False, selected=batch)
             predictions(block, [r['id'] for r in batch], panel['labels'], width)
-            commit_json(output/name, dict(lineage=lineage, sha256=content_key(block), payload=block))
-            blocks.append(dict(name=name, sha256=file_hash(output/name), reused=reused))
+            validate_timing(block, settings)
+            path = output/name
+            commit_json(path, dict(lineage=lineage, sha256=content_key(block), payload=block))
+            blocks.append(dict(name=name, sha256=file_hash(path), reused=reused))
+            print(json.dumps(dict(event='block_committed', ordinal=ordinal, name=name,
+                                  sha256=blocks[-1]['sha256'], recordings=len(batch),
+                                  pairs=len(batch)*len(cards), reused=reused)), flush=True)
         commit_json(output/'result.json', dict(device=devices[ordinal], rows=len(shard),
                     cache_and_model_seconds=startup_seconds, scoring_seconds=time.monotonic()-tick,
                     blocks=blocks, lineage=lineage))
@@ -323,6 +368,7 @@ def host_memory():
 def run(c):
     output = Path(c['output'])
     start = time.monotonic()
+    deadline = start+c['worker_timeout_seconds']
     output.mkdir()
     capture_memory = 'formal' in c or c.get('capture_host_memory', False)
     memory_before = host_memory() if capture_memory else None
@@ -340,8 +386,10 @@ def run(c):
                 args = [sys.executable, '-B', '-m', __spec__.name, 'worker',
                         c['worker_config'], str(path), str(index)]
                 workers.append(subprocess.Popen(args, env=env))
+            if 'formal' in c:
+                wait_for_admission(c, output, workers, deadline)
             exits = {pool.submit(p.wait): ordinal for ordinal, p in enumerate(workers)}
-            for done in as_completed(exits, timeout=c['worker_timeout_seconds']):
+            for done in as_completed(exits, timeout=max(0, deadline-time.monotonic())):
                 if code := done.result():
                     raise RuntimeError(f'scoring worker {exits[done]} exited {code}')
         finally:
@@ -361,7 +409,8 @@ def run(c):
         receipt['host_memory'] = dict(before=memory_before, after=host_memory())
     if 'formal' in c:
         receipt.update(full_sha256=c['full']['sha256'], policy_id=c['formal']['policy_id'],
-                       policy_sha256=c['policy_sha256'], worker_wall_seconds=time.monotonic()-start)
+                       policy_sha256=c['policy_sha256'], worker_wall_seconds=time.monotonic()-start,
+                       admission_sha256=file_hash(output/'admission.json'))
     commit_json(output/'receipt.json', receipt)
     return receipt
 

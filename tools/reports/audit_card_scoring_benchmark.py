@@ -107,6 +107,7 @@ def validate_block(task):
     payload = read_block(path, lineage)
     predictions(payload, ids, labels, width)
     validate_timing(payload, settings)
+    return [row['prob'] for row in payload['records']]
 
 
 def validate_timing(result, settings):
@@ -117,6 +118,81 @@ def validate_timing(result, settings):
             or not 0 < timing['forward'] <= result['seconds']
             or timing['input_wait']+timing['forward'] > result['seconds']):
         raise ValueError('scoring input concurrency or timing differs')
+
+
+def audit_admission(root, c, panel, baseline_width):
+    from tools.reports.card_scoring_benchmark import scoring_lineage
+
+    width, = c['widths']
+    replicas = len(c['devices'])
+    settings = (c['io_workers'], c['prefetch_audio'])
+
+    def inspect_panel(ordinal):
+        directory = root/f'worker-{ordinal}'
+        ids = [row['id'] for row in panel['rows'][ordinal::replicas]]
+        ref_path, candidate_path = directory/'baseline.json', directory/f'batch-{width}.json'
+        marker = dict(lineage=scoring_lineage(c, ordinal), baseline_sha256=file_hash(ref_path),
+                      candidate_sha256=file_hash(candidate_path))
+        if (read(directory/'panel-ready.json') != marker or
+                read(directory/'lineage.json') != {'sha256': marker['lineage']}):
+            raise ValueError('scoring panel bytes or lineage differ')
+        baseline, candidate = read(ref_path), read(candidate_path)
+        validate_timing(baseline, settings)
+        validate_timing(candidate, settings)
+        ref, _ = predictions(baseline, ids, panel['labels'], baseline_width)
+        observed, counts = predictions(candidate, ids, panel['labels'], width)
+        if ref != observed or not counts.get(width):
+            raise ValueError(f'device {c["devices"][ordinal]}: endpoint probabilities differ or no full batch')
+        return marker
+
+    workers, _ = map_io(inspect_panel, range(replicas), workers=c['io_workers'])
+    return dict(passed=True, comparison='independent-replica-batch-width', devices=c['devices'],
+                policy_id=c['formal']['policy_id'], checkpoint_sha256=c['formal']['checkpoint_sha256'],
+                baseline_rows=baseline_width, batch_rows=width,
+                pairs=len(panel['rows'])*len(panel['labels']), workers=workers)
+
+
+def progress(root, entry):
+    """Count only durable, verified blocks, including a partially finished run."""
+    c = read(entry/'score.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+    from tools.reports.card_scoring_benchmark import scoring_lineage
+
+    for name in ('full', 'panel', 'training'):
+        if c[name]['sha256'] != file_hash(entry/(name+'.json')):
+            raise ValueError(f'frozen scoring {name} differs')
+    full, panel = read(entry/'full.json'), read(entry/'panel.json')
+    path = root/'admission.json'
+    counts = dict(admitted=False, blocks=0, recordings=0, pairs=0,
+                  total_recordings=full['population'], total_pairs=full['population']*len(full['labels']))
+    if not path.is_file():
+        return counts
+    gate = audit_admission(root, c, panel, read(entry/'training.json')['epoch_mining']['forward_rows'])
+    if read(path) != gate:
+        raise ValueError('stored scoring admission differs')
+    width, = c['widths']
+    settings = (c['io_workers'], c['prefetch_audio'])
+    size = c['formal']['recordings_per_block']
+    replicas = len(c['devices'])
+    tasks, workers = [], []
+    for ordinal, device in enumerate(c['devices']):
+        ids = [row['id'] for row in full['rows'][ordinal::replicas]]
+        expected = {f'block-{i:06d}.json': ids[offset:offset+size]
+                    for i, offset in enumerate(range(0, len(ids), size))}
+        directory = root/f'worker-{ordinal}'
+        lineage = scoring_lineage(c, ordinal)
+        paths = sorted(directory.glob('block-*.json'))
+        rows = 0
+        for block in paths:
+            if block.name not in expected:
+                raise ValueError(f'unexpected scoring block: {block.name}')
+            batch = expected[block.name]
+            tasks.append((block, lineage, batch, full['labels'], width, settings))
+            rows += len(batch)
+        workers.append(dict(device=device, blocks=len(paths), recordings=rows, total_recordings=len(ids)))
+    map_cpu(validate_block, tasks, workers=c['cpu_workers'], min_parallel=c['audit_min_parallel_blocks'])
+    rows = sum(worker['recordings'] for worker in workers)
+    return dict(counts, admitted=True, admission_sha256=file_hash(path), blocks=len(tasks),
+                recordings=rows, pairs=rows*len(full['labels']), workers=workers)
 
 
 def audit_formal(root, entry, c, panel, receipt, cid):
@@ -139,6 +215,10 @@ def audit_formal(root, entry, c, panel, receipt, cid):
         raise ValueError('full TRAIN roster differs')
     width, = c['widths']
     baseline_width = read(entry/'training.json')['epoch_mining']['forward_rows']
+    gate = root/'admission.json'
+    if (receipt['admission_sha256'] != file_hash(gate)
+            or read(gate) != audit_admission(root, c, panel, baseline_width)):
+        raise ValueError('all-replica admission differs from its committed panel')
     replicas = len(c['devices'])
     size = formal['recordings_per_block']
 
@@ -151,16 +231,7 @@ def audit_formal(root, entry, c, panel, receipt, cid):
                 or worker['lineage'] != lineage or read(directory/'lineage.json') != {'sha256': lineage}
                 or read(directory/'result.json') != worker):
             raise ValueError('worker identity or full TRAIN roster differs')
-        panel_ids = [row['id'] for row in panel['rows'][ordinal::replicas]]
-        baseline = read(directory/'baseline.json')
-        candidate = read(directory/f'batch-{width}.json')
         settings = (c['io_workers'], c['prefetch_audio'])
-        validate_timing(baseline, settings)
-        validate_timing(candidate, settings)
-        ref, _ = predictions(baseline, panel_ids, labels, baseline_width)
-        observed, counts = predictions(candidate, panel_ids, labels, width)
-        if ref != observed or not counts.get(width):
-            raise ValueError('endpoint panel probabilities differ or candidate had no full batch')
         offsets = range(0, len(ids), size)
         names = [f'block-{index:06d}.json' for index in range(len(offsets))]
         if ([block['name'] for block in worker['blocks']] != names
@@ -182,20 +253,41 @@ def audit_formal(root, entry, c, panel, receipt, cid):
                            result_sha256=file_hash(directory/'result.json'))
 
     results, _ = map_io(inspect_worker, range(replicas), workers=c['io_workers'])
-    map_cpu(validate_block, (task for tasks, _ in results for task in tasks),
-            workers=c['cpu_workers'], min_parallel=c['audit_min_parallel_blocks'])
+    tasks = [task for group, _ in results for task in group]
+    observations, _ = map_cpu(validate_block, tasks, workers=c['cpu_workers'],
+                             min_parallel=c['audit_min_parallel_blocks'])
+    gold = {row['id']: row['intent'] for row in full['rows']}
+    label_index = {label: i for i, label in enumerate(labels)}
+    totals = [[0.] * len(labels) for _ in labels]
+    counts = [0] * len(labels)
+    for task, values in zip(tasks, observations, strict=True):
+        for uid, probs in zip(task[2], values, strict=True):
+            i = label_index[gold[uid]]
+            counts[i] += 1
+            for j, value in enumerate(probs):
+                totals[i][j] += value
+    if counts != [Counter(gold.values())[label] for label in labels]:
+        raise ValueError('class denominator differs from the frozen TRAIN roster')
+    import torch
+    from multimodal_jev.intent_triplet_training import confusion_distribution
+    mining = read(entry/'training.json')['epoch_mining']
+    distribution = confusion_distribution(labels, torch.tensor(totals, dtype=torch.float64),
+                                           torch.tensor(counts), mining['zipf_exponent'])
     workers = [worker for _, worker in results]
     recordings = len(roster)
     reused = sum(worker['reused_records'] for worker in workers)
     pairs = recordings*len(labels)
     seconds = max(worker['seconds'] for worker in workers)
     return dict(passed=True, container_id=cid, **identities, recordings=recordings, pairs=pairs,
+                checkpoint_sha256=formal['checkpoint_sha256'], admission_sha256=receipt['admission_sha256'],
                 labels=labels, replicas=replicas, batch_rows=width, io_workers=c['io_workers'],
                 prefetch_audio=c['prefetch_audio'], updates=formal['updates'],
                 panel_pairs=len(panel['rows'])*len(labels), scoring_seconds=seconds,
                 worker_wall_seconds=receipt['worker_wall_seconds'], reused_recordings=reused,
                 new_pairs_per_second=(recordings-reused)*len(labels)/seconds,
-                workers=workers, container_exited=True)
+                workers=workers, container_exited=True,
+                confusion=dict(labels=labels, counts=counts, probability_sums=totals,
+                               distribution=distribution, pairs=pairs))
 
 
 def audit(root, entry, operations):
@@ -270,9 +362,17 @@ def audit(root, entry, operations):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ('raw', 'entry', 'operations', 'output'):
+    parser.add_argument('--progress', action='store_true', help='Audit durable blocks without a terminal receipt')
+    for name in ('raw', 'entry'):
         parser.add_argument(name, type=Path)
+    for name in ('operations', 'output'):
+        parser.add_argument(name, type=Path, nargs='?')
     args = parser.parse_args()
+    if args.progress:
+        print(json.dumps(progress(args.raw, args.entry)))
+        return
+    if args.operations is None or args.output is None:
+        parser.error('operations and output are required for terminal audit')
     report = audit(args.raw, args.entry, args.operations)
     commit_json(args.output, report)
     print(json.dumps(report, indent=2))

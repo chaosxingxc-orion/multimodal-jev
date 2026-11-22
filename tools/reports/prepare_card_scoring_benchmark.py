@@ -38,11 +38,13 @@ def formal_policy(c, train, deploy):
     target = Path(proof['policy'])
     if not target.is_absolute() or ':' in str(target) or target.name != f'policy-{updates:04d}':
         raise ValueError('invalid stopped epoch policy path')
-    manifest = subprocess.check_output(['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
-        deploy['host'], shlex.join(['sha256sum', str(target/'MANIFEST.json')])], timeout=30)
-    if manifest.split()[0].decode() != proof['manifest_sha256']:
-        raise ValueError('committed Stage1 manifest differs')
-    return target, proof['manifest_sha256'], proof['policy_id']
+    expected = {str(target/'MANIFEST.json'): proof['manifest_sha256'],
+                str(target.parent/f'checkpoint-{updates:04d}-committed.json'): proof['checkpoint_sha256']}
+    observed = subprocess.check_output(['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
+        deploy['host'], shlex.join(['sha256sum', '--', *expected])], text=True, timeout=30)
+    if {path: digest for digest, path in (line.split(maxsplit=1) for line in observed.splitlines())} != expected:
+        raise ValueError('committed Stage1 checkpoint or manifest differs')
+    return target, proof['manifest_sha256'], proof['policy_id'], proof['checkpoint_sha256']
 
 
 def package(c):
@@ -64,11 +66,11 @@ def package(c):
                 or any(type(n) is not int or n < 1 for n in (
                     c['widths'][0], c['recordings_per_block'], c['streaming']['length_window'],
                     c['io_workers'], c['cpu_workers'], c['audit_min_parallel_blocks'],
-                    c['torch_threads'], c['worker_timeout_seconds']))
+                    c['torch_threads'], c['worker_timeout_seconds'], c['coordination_seconds']))
                 or type(c['prefetch_audio']) is not int or c['prefetch_audio'] < c['io_workers']):
             raise ValueError('one positive batch width and a bounded streaming deployment required')
         train = pinned(inputs['training'])
-        target, policy_sha, policy_id = formal_policy(c, train, deploy)
+        target, policy_sha, policy_id, checkpoint_sha = formal_policy(c, train, deploy)
         synthetic_cache = Path(formal['synthetic_cache'])
         if not synthetic_cache.is_absolute() or ':' in str(synthetic_cache):
             raise ValueError('absolute synthetic cache on target host required')
@@ -81,9 +83,20 @@ def package(c):
         cache_root = '/jev-acoustic-prepare/synthetic-cache'
         mounts = [f'{target}:{policy_root}', f'{synthetic_cache}:{cache_root}']
         if formal.get('resume_from'):
-            resume = Path(formal['resume_from'])
-            if not resume.is_absolute() or ':' in str(resume):
-                raise ValueError('absolute stopped scoring output required')
+            from tools.reports.context_macro_probe_operations import inspect_runtime
+
+            origin = pinned(formal['resume_from'])
+            state, = json.loads(subprocess.check_output([
+                'ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', deploy['host'],
+                shlex.join(['docker', 'inspect', origin['container_id']])], timeout=30))
+            if (origin['host'] != deploy['host'] or state['Image'] != deploy['image']
+                    or state['State']['Running'] or state['State']['Status'] != 'exited'
+                    or state['State']['Pid'] != 0 or state['State']['OOMKilled']):
+                raise ValueError('resume requires inspected stopped scoring container on the target host')
+            inspect_runtime(state, origin)
+            resume = Path(origin['remote_root'])/'score'
+            if not resume.is_absolute() or not resume.is_relative_to(Path(deploy['remote_root']).parent):
+                raise ValueError('isolated stopped scoring output required')
             mounts.append(f'{resume}:/jev-score-resume')
         deploy['read_only_mounts'] = [*deploy.get('read_only_mounts', []), *mounts]
     elif inputs.get('synthetic_cache'):
@@ -130,6 +143,7 @@ def package(c):
         entries += ('full',)
         spec.update(cpu_workers=c['cpu_workers'], audit_min_parallel_blocks=c['audit_min_parallel_blocks'])
         spec['formal'] = dict(policy_id=policy_id, updates=train['checkpoint_interval'], image=deploy['image'],
+                              checkpoint_sha256=checkpoint_sha, coordination_seconds=c['coordination_seconds'],
                               recordings_per_block=c['recordings_per_block'])
         if formal.get('resume_from'):
             spec['formal']['resume_from'] = '/jev-score-resume'
@@ -169,6 +183,11 @@ def execute(config):
             raise ValueError('scoring result transport failed')
     report = audit(collected/'score', root/'entry', Path(deployment['operations']))
     if config.get('formal'):
+        confusion = dict(report.pop('confusion'), epoch=0, checkpoint_sha256=report['checkpoint_sha256'],
+                         policy_id=report['policy_id'], full_sha256=report['full_sha256'])
+        confusion_path = root/'confusion-epoch-1.json'
+        commit_json(confusion_path, confusion)
+        report['confusion_sha256'] = file_hash(confusion_path)
         report.update(wall_seconds=time.monotonic()-start, predictions_root=str(collected/'score'))
     commit_json(root/'audit.json', report)
     return report

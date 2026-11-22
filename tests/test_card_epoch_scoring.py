@@ -64,11 +64,16 @@ def test_full_train_audit_checks_coverage_and_content(tmp_path):
     cfg = dict(devices=[0], widths=[2], streaming={'length_window': 8},
                torch_threads=2, max_model_len=100, io_workers=2, prefetch_audio=4,
                cpu_workers=2, audit_min_parallel_blocks=2,
-               formal=dict(policy_id='policy', image='image', recordings_per_block=1, updates=143),
+               formal=dict(policy_id='policy', image='image', recordings_per_block=1, updates=143,
+                           checkpoint_sha256='checkpoint'),
                policy_sha256='manifest', cards={'sha256': 'cards'}, source={'sha256': 'source'})
-    cfg['training'] = dict(sha256=write(entry/'training.json', {'epoch_mining': {'forward_rows': 1}}))
+    cfg['training'] = dict(sha256=write(entry/'training.json', {
+        'epoch_mining': {'forward_rows': 1, 'zipf_exponent': 1.3}}))
     cfg['full'] = dict(sha256=write(entry/'full.json', dict(panel,
-        rows=[{'id': 'a'}, {'id': 'b'}], source_training_sha256=cfg['training']['sha256'])))
+        rows=[{'id': 'a', 'intent': 'x'}, {'id': 'b', 'intent': 'y'}],
+        source_training_sha256=cfg['training']['sha256'])))
+    cfg['panel'] = dict(sha256=write(entry/'panel.json', panel))
+    write(entry/'score.json', {'macros': {'NATIVE_SEAL_CONTAINER_CONFIG': cfg}})
     directory = root/'worker-0'
     directory.mkdir()
     token = scoring_lineage(cfg, 0)
@@ -80,6 +85,12 @@ def test_full_train_audit_checks_coverage_and_content(tmp_path):
                                                         input_wait=.2, forward=1))
     write(directory/'baseline.json', payload('a', {'1': 2}))
     write(directory/'batch-2.json', payload('a', {'2': 1}))
+    assert not audit.progress(root, entry)['admitted']
+    with pytest.raises(FileNotFoundError):
+        audit.audit_admission(root, cfg, panel, 1)
+    write(directory/'panel-ready.json', dict(lineage=token,
+        baseline_sha256=file_hash(directory/'baseline.json'), candidate_sha256=file_hash(directory/'batch-2.json')))
+    gate = write(root/'admission.json', audit.audit_admission(root, cfg, panel, 1))
     blocks = []
     for rank, uid in enumerate(('a', 'b')):
         name = f'block-{rank:06d}.json'
@@ -89,9 +100,25 @@ def test_full_train_audit_checks_coverage_and_content(tmp_path):
     worker = dict(blocks=blocks, device=0, rows=2, lineage=token, scoring_seconds=4)
     write(directory/'result.json', worker)
     receipt = dict(policy_id='policy', policy_sha256='manifest', full_sha256=cfg['full']['sha256'],
-                   workers=[worker], worker_wall_seconds=5)
+                   workers=[worker], worker_wall_seconds=5, admission_sha256=gate)
     result = audit.audit_formal(root, entry, cfg, panel, receipt, 'container')
     assert (result['pairs'], result['reused_recordings'], result['panel_pairs']) == (4, 1, 2)
+    assert result['confusion']['counts'] == [1, 1]
+    assert result['confusion']['distribution'] == {'x': {'y': 1.}, 'y': {'x': 1.}}
+    assert audit.progress(root, entry)['recordings'] == 2
+    saved = directory/blocks[0]['name']
+    data = saved.read_bytes()
+    saved.unlink()
+    assert audit.progress(root, entry)['recordings'] == 1
+    with pytest.raises(ValueError, match='missing, extra or out of order'):
+        audit.audit_formal(root, entry, cfg, panel, receipt, 'container')
+    saved.write_bytes(data)
+    tampered = json.loads(data)
+    tampered['payload']['records'][0]['prob'][0] = .3
+    write(saved, tampered)
+    with pytest.raises(ValueError, match='identity differs'):
+        audit.progress(root, entry)
+    saved.write_bytes(data)
 
     changed = payload('a', {'2': 1})
     blocks[1]['sha256'] = write(directory/blocks[1]['name'], dict(

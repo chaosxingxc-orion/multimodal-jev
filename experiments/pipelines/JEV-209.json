@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "triplets-1tib-relaunch-v1",
+  "revision": "epoch1-resumable-scoring-v1",
   "stages": {
     "data": [
       {
@@ -26,96 +26,130 @@
     ],
     "train": [
       {
-        "id": "dispatch-mixed-card-stage1",
-        "config": "configs/portable/operations/card-stage1-triplets.json",
+        "id": "admit-stopped-epoch1",
+        "checks": [
+          {
+            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                143
+              ]
+            ],
+            "report": {
+              "updates": [
+                "updates"
+              ],
+              "checkpoint_sha256": [
+                "checkpoint_sha256"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "score-full-train",
+        "config": "configs/portable/operations/card-scoring-full-train.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
-            "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-triplets.json",
+            "tools.reports.prepare_card_scoring_benchmark",
+            "configs/portable/operations/card-scoring-full-train.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
-          ],
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${CARD_PACKAGE}/operations-local.json"
           ]
         ],
-        "checks": [
+        "inputs": [
           {
-            "path": "${CARD_ROOT}/ops/prepare-collected.json",
+            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
             "equals": [
               [
                 [
-                  "population"
+                  "passed"
                 ],
-                109610
+                true
               ],
-              [
-                [
-                  "synthetic"
-                ],
-                69097
-              ],
-              [
-                [
-                  "single_card",
-                  "classes"
-                ],
-                68
-              ],
-              [
-                [
-                  "single_card",
-                  "questions_per_sequence"
-                ],
-                1
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_ROOT}/ops/finite-collected.json",
-            "equals": [
               [
                 [
                   "updates"
                 ],
-                2
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_ROOT}/ops/formal-collected.json",
-            "equals": [
-              [
-                [
-                  "updates"
-                ],
-                286
-              ],
-              [
-                [
-                  "engineering_prefix"
-                ],
-                false
+                143
               ]
             ]
           }
         ],
         "dispatch_guards": [
-          "${CARD_PACKAGE}/entry.tar",
-          "${CARD_ROOT}/ops/formal-launch.json"
+          "${CARD_SCORE_FORMAL_PACKAGE}/entry.tar"
+        ],
+        "checks": [
+          {
+            "path": "${CARD_SCORE_FORMAL_PACKAGE}/audit.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                143
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                109610
+              ],
+              [
+                [
+                  "pairs"
+                ],
+                7453480
+              ]
+            ],
+            "report": {
+              "recordings": [
+                "recordings"
+              ],
+              "pairs": [
+                "pairs"
+              ],
+              "checkpoint_sha256": [
+                "checkpoint_sha256"
+              ]
+            }
+          }
         ]
+      },
+      {
+        "id": "resume-stage1-epoch2",
+        "pending": "待完整混淆表与第 143 步优化器状态通过恢复验收。"
       },
       {
         "id": "evaluate-expanded-endpoint",
         "pending": "新训练端点提交后按新策略身份绑定源域和迁移评测。"
-      },
-      {
-        "id": "score-full-train",
-        "pending": "待新训练端点审核后绑定同轮端点和冻结打分配置。"
       },
       {
         "id": "build-fused-stage2-view",
