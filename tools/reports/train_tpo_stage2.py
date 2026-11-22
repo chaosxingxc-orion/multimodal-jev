@@ -89,7 +89,7 @@ def main(args):
             entropy_coeff=0.,loss_agg_mode='token-mean',use_rollout_log_probs=True,policy_loss={'loss_mode':MODE},
             global_batch_info={},grad_clip=e['grad_clip'],jev_policy_id=c['source_policy_id'],
             jev_context_parity=c['behavior_bounds'],jev_context_objective=opts,jev_reward_projection=reward_only,
-            jev_choice=m.get('choice'),jev_actor_pair_margin=pair_spec['loss'] if pair_spec is not None else None))
+            jev_choice=m.get('choice'),jev_probability_gap=m.get('probability_gap'),jev_actor_pair_margin=pair_spec['loss'] if pair_spec is not None else None))
         actor=build_actor(cfg,wrapped,opt,objective=EXTENSION,collation=dict(decision_token_id=model.decision_token_id,
             pad_token_id=processor.tokenizer.pad_token_id,audio_token_id=base.config.audio_token_id,
             audio_chunk_size=base.config.audio_config.n_window*2,audio_infer_window=base.config.audio_config.n_window_infer))
@@ -179,6 +179,8 @@ def main(args):
                     x.update(request_id=f"{rank}:{x['request_id']}",stage='tpo', gold=row['gold'],
                              paired=slot['paired'],confusion=slot['confusion'],group=row['group'],audio_sha256=row['audio_sha256'],
                              global_real=denominators[step],log_target=(targets[batches[step]['epoch'],row['index']] if reward_only else targets[row['index']]))
+                    if 'probability_gap' in m:
+                        x['reference_rival'] = row['competitor']
                     if pair_spec is not None:
                         x.update(pair_rival=int(rivals[row['index']]),
                                  pair_enabled=bool(enabled[epochs[step], row['index']]))
@@ -264,7 +266,7 @@ def main(args):
                 if rank==0:
                     count_prefix = 'jev/pair_count/'
                     names = ['actor/pg_loss', 'actor/grad_norm'] + [
-                        k for k in metrics if k.startswith('jev/') and not k.startswith(count_prefix)]
+                        k for k in metrics if k.startswith('jev/') and not k.startswith((count_prefix, 'jev/gap_count/'))]
                     reduced={k:sum(float(torch.as_tensor(r[k]).mean()) for r in gathered)/world for k in names}
                     if not all(math.isfinite(v) for v in reduced.values()):
                         raise ValueError('nonfinite reduced metrics')
@@ -286,7 +288,22 @@ def main(args):
                             for key in metrics if key.startswith(count_prefix)
                         }
                         verify_update(update, m['batch_real'], epochs, pair_spec['batch_eligible'])
+                    if 'probability_gap' in m:
+                        from multimodal_jev.context_tpo_probability_gap import verify_gap_update
+                        update['epoch'] = epochs[step]
+                        update['gap_counts'] = {k.split('/')[-1]: int(sum(sum(r[k]) for r in gathered))
+                                                for k in metrics if k.startswith('jev/gap_count/')}
+                        verify_gap_update(update, step+1, m['batch_real'])
                     commit_json(root/f'update-{step+1:04d}.json', update)
+                if args.window == 'formal' and step+1 in m.get('intermediate_steps', []):
+                    with FSDP.summon_full_params(wrapped,writeback=False,rank0_only=False):
+                        if rank == 0:
+                            state = canonical_execution({n:p.detach().cpu().to(torch.bfloat16).clone()
+                                for n,p in model.named_parameters() if p.requires_grad})
+                            export_checkpoint_policy(c['source_policy'], root/f'policy-step-{step+1}', state,
+                                policy_id=c['source_policy_id'], contract=c['source_contract'], base_id=c['base_id'])
+                            del state
+                    dist.barrier()
         if args.window=='reference':
             commit_file(ref_file,lambda f:torch.save(reference_rows,f))
             dist.barrier()

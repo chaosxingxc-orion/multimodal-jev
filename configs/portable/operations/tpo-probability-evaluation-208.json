@@ -1,0 +1,489 @@
+{
+  "repository": ".",
+  "package": "${JEV_208_ROOT}/evaluation-v1-package",
+  "parent_config": "${TPO_PARENT_CONFIG}",
+  "deployment": {
+    "operations": "${JEV_208_ROOT}/evaluation-v1-ops",
+    "remote_root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-208-v1",
+    "tag": "jev-eval-208-v1"
+  },
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "training_ops": "${JEV_208_ROOT}/ops",
+  "training_operations_local": "${JEV_208_ROOT}/package/operations-local.json",
+  "batch": 8,
+  "stage1_step": 160,
+  "eval_container": {
+    "cpus": 6,
+    "memory": "32g",
+    "shm": "2g"
+  },
+  "arms": [
+    "stage1",
+    "baseline",
+    "tpo"
+  ],
+  "evaluation_cache_reuse": {
+    "catalog": "configs/portable/operations/native-evaluation-cache-catalog-v1.json",
+    "catalog_host": "${TPO_EVALUATION_CACHE_CATALOG_HOST}",
+    "catalog_root": "${EXPERIMENT_TARGET_HOT_ROOT}",
+    "catalog_seal_root": "${SHARED_ROOT}",
+    "store": "${TPO_EVALUATION_CACHE_STORE}",
+    "build": {
+      "prefetch": 16,
+      "progress_interval": 128
+    }
+  },
+  "cache_container": {
+    "cpus": 8,
+    "memory": "16g",
+    "shm": "2g"
+  },
+  "expected_host": "${EXPERIMENT_TARGET_HOST}",
+  "audited_endpoints": {
+    "baseline": {
+      "root": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-tpo-bidirectional-v0.0.206/tpo",
+      "receipt_sha256": "78b818061aca8b8d5bf6a8f39c9f42b4b52656bdc77353e93aa4480b8de1d457",
+      "updates": 34,
+      "policy_id": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071"
+    }
+  },
+  "datasets": {
+    "SLURP_clean_TEST60": {
+      "name": "slurp",
+      "logical_partitions": 2,
+      "seal_sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-package/entry/score.json",
+        "sha256": "2321a7032c4ec37c5ca08e4a4f7f2b54416987d87a6f8ac30d833cc549e88d29"
+      },
+      "reused_predictions": {
+        "baseline": {
+          "policy_id": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+          "manifest_sha256": "f4963444d79c97bebb33b8345191a1b817f6fe79a2c611c744a658d92d048dd7",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/slurp-0/tpo.json",
+              "sha256": "badaca991e69c0cae3d90b6510f951c7741073e5d5b011b915362fe5e8d2f943"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/slurp-1/tpo.json",
+              "sha256": "52a18e49bffa6b44c14b99adc4e89a7946987385f081adcae956e7b2e3ca825d"
+            }
+          ]
+        },
+        "stage1": {
+          "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+          "manifest_sha256": "f4963444d79c97bebb33b8345191a1b817f6fe79a2c611c744a658d92d048dd7",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/slurp-0/stage1.json",
+              "sha256": "e580e78dcea0350845ec0376efdae7c11523e67c8671959c62f11a6d52311912"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/slurp-1/stage1.json",
+              "sha256": "6f1bf9ccf412f87125a4858d9224ad6ea85009dedec194858252a952e17c67ba"
+            }
+          ]
+        }
+      }
+    },
+    "MINDS_native14": {
+      "name": "minds",
+      "logical_partitions": 2,
+      "seal_sha256": "31f5b64b70f48227932828fa0c775f264973479cbeb66eacbfbe10313970adea",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-package/entry/score.json",
+        "sha256": "2321a7032c4ec37c5ca08e4a4f7f2b54416987d87a6f8ac30d833cc549e88d29"
+      },
+      "reused_predictions": {
+        "baseline": {
+          "policy_id": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+          "manifest_sha256": "3c50faa807c1fdce1e05261bf1d48d8c3070ce216e8ba899ff6cf3f33c2d23ad",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/minds-0/tpo.json",
+              "sha256": "95b36663ee5053c0f2a44bfdd558a9ec8823b8fe801a1031f0e241767a3e2fa4"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/minds-1/tpo.json",
+              "sha256": "e103ad836ef2df02f28d8f2f48e6182c1746d9a3885cc539cf404d7de58c6a7b"
+            }
+          ]
+        },
+        "stage1": {
+          "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+          "manifest_sha256": "3c50faa807c1fdce1e05261bf1d48d8c3070ce216e8ba899ff6cf3f33c2d23ad",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/minds-0/stage1.json",
+              "sha256": "9b1311d3bf56850a7e392ec4e386245424d71bfa7f94c64b004339f849dac325"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/minds-1/stage1.json",
+              "sha256": "36d18debd9e1fd22d3a15bcde7a66a338a734e9e087c1f3bce4df75f547ab3dc"
+            }
+          ]
+        }
+      }
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "name": "sib",
+      "logical_partitions": 1,
+      "seal_sha256": "df78d494e7f9e0ee69104b37d06e7b518c258feecfb313f74122d5a9831b4b12",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-package/entry/score.json",
+        "sha256": "2321a7032c4ec37c5ca08e4a4f7f2b54416987d87a6f8ac30d833cc549e88d29"
+      },
+      "reused_predictions": {
+        "stage1": {
+          "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+          "manifest_sha256": "9a79bb4c9fbff44d47bbdbb9c878ae322ef19fbb4395cfb3656a0b7a7d5884a1",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-0/stage1.json",
+              "sha256": "0b76ae7ac613b3777aaf7e621dbc7da7c897ae1b68369a9c21456a428f0f14db"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-1/stage1.json",
+              "sha256": "0bbd18a678cbb3f2433af170159f9c6b3efbf91c5e180fd7bfe86beea7c5aac4"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-2/stage1.json",
+              "sha256": "00c3b31e374a3430b741c3e22ef617b5af092d3abc8d716b8d9a423ae1c9eddb"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/sib-3/stage1.json",
+              "sha256": "2d01f2375439d8cdaa2e8f4aeaf543e009a8a9d06f79a37d469d3877a5f757e5"
+            }
+          ]
+        },
+        "baseline": {
+          "policy_id": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+          "manifest_sha256": "9a79bb4c9fbff44d47bbdbb9c878ae322ef19fbb4395cfb3656a0b7a7d5884a1",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/sib-0/tpo.json",
+              "sha256": "d9a5776ee9cf6a8d72718774ae45860a95294be329122fec956c4e60e2cfc77c"
+            }
+          ]
+        }
+      }
+    },
+    "MMSU_polysemy": {
+      "name": "mmsu",
+      "logical_partitions": 1,
+      "seal_sha256": "6c79c4f116bb3ce7bd0ce8e145553a4a52ded737c5e13f037efdd2c8af52dc68",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-package/entry/score.json",
+        "sha256": "2321a7032c4ec37c5ca08e4a4f7f2b54416987d87a6f8ac30d833cc549e88d29"
+      },
+      "reused_predictions": {
+        "stage1": {
+          "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+          "manifest_sha256": "623cbd810b8a6a3d660fc8c1dd8be6eeffeec578b7e9d66bf4a6b970d5f7eb15",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-0/stage1.json",
+              "sha256": "1b6df2c8b3e9cf1be21b73add45d7e9b98a2930253bd98da0983e86acee4468a"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-1/stage1.json",
+              "sha256": "bede802199942cb89db051bdd007991241a8c36f87ad1e05258a0461a0cbe311"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-2/stage1.json",
+              "sha256": "1dfe498396b9648e2bc21c4467d750afc971f43c8d0bc42bb5a8bfd4740d0472"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-201-semantic-v2/mmsu-3/stage1.json",
+              "sha256": "3ed4fe8f7988c21a3824dec8aa6f6b3eba9debf073a980c97140b2793b949730"
+            }
+          ]
+        },
+        "baseline": {
+          "policy_id": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+          "manifest_sha256": "623cbd810b8a6a3d660fc8c1dd8be6eeffeec578b7e9d66bf4a6b970d5f7eb15",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/mmsu-0/tpo.json",
+              "sha256": "9f787e2fd6b8dd149b400ae3b3f33ebc6f15b553361d585753a6636c109a0a07"
+            }
+          ]
+        }
+      }
+    },
+    "SLURP_clean_SELECTION60": {
+      "name": "selection",
+      "logical_partitions": 2,
+      "seal_sha256": "4995beb4588e7e98143223623632dc8bb1dc3db3c84dadd31bdcb4ec6fe5d26a",
+      "scored_cache": {
+        "path": "${TPO_EVIDENCE_ROOT}/tpo-bidirectional-206/eval-v2-package/entry/score.json",
+        "sha256": "2321a7032c4ec37c5ca08e4a4f7f2b54416987d87a6f8ac30d833cc549e88d29"
+      },
+      "reused_predictions": {
+        "stage1": {
+          "policy_id": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+          "manifest_sha256": "627ee48f16d1528dd70a4865c59374e4c7aa3b0f04aaf40aaf716e0acbcc6dce",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/selection-0/stage1.json",
+              "sha256": "04ec6bc154467bfc5ee05c985ff574f0c0893bf6cc4c7e6a47434ccab208e9cc"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/selection-1/stage1.json",
+              "sha256": "649a07b20b82c3cfff8a759a564abec92cd616a90a3a989c269519509043c990"
+            }
+          ]
+        },
+        "baseline": {
+          "policy_id": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071",
+          "manifest_sha256": "627ee48f16d1528dd70a4865c59374e4c7aa3b0f04aaf40aaf716e0acbcc6dce",
+          "shards": [
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/selection-0/tpo.json",
+              "sha256": "ca732ff6c8271ed49c1e6f78607546fa69fe3e6fda97328cbabe84af7c1db58c"
+            },
+            {
+              "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v2/selection-1/tpo.json",
+              "sha256": "df3fc4f18c74f6a5e775785eff35394a53cd850709b10f60e65f8cfab3bc8c57"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "probability_panels": {
+    "SLURP_clean_TEST60": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MINDS_native14": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SIB_FLEURS_eng_topic7": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "MMSU_polysemy": {
+      "primary": "top1_accuracy",
+      "cluster": "id",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    },
+    "SLURP_clean_SELECTION60": {
+      "primary": "top1_macro_f1",
+      "cluster": "group",
+      "comparisons": [
+        "baseline",
+        "stage1"
+      ],
+      "interval": {
+        "method": "paired_cluster_percentile_bootstrap",
+        "confidence": 0.95,
+        "samples": 2000,
+        "seed": 317
+      },
+      "confidence_bins": [
+        0,
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+        1
+      ]
+    }
+  },
+  "calibration": {
+    "roster": {
+      "path": "${JEV_208_ROOT}/targets/calibration.json",
+      "sha256": "11f979070100b1983e55abc1664c4a10c91fdd4cc70b040257f22dd482d906a9"
+    },
+    "recordings": 21244,
+    "absent_classes": [
+      "cooking_query"
+    ],
+    "devices": "${FULL_TPO_OFFLINE_REFERENCE_DEVICES}",
+    "prefetch": 32,
+    "policy_ids": {
+      "stage1": "0d62139bbc2dc5ee064b9f7e18af944bb31aba105844bd4f247a731a024ff03b",
+      "baseline": "d8207ce61f32d27a090ccb601033914e329efd5f55572cd96ab5ad3c56f28071"
+    }
+  },
+  "reused_calibration_predictions": {
+    "stage1": [
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-0/stage1.json",
+        "sha256": "a210d8068789621423c5fe437ebe6ed87e397e94a03c00405942705795a22450"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-1/stage1.json",
+        "sha256": "e2ef391d0854bbdab690948c5c81e972b783d3891bf352d61f6f59e78dedfd81"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-2/stage1.json",
+        "sha256": "48ff417406067b58a5179b32cf5e3814b795e2cb8cbc5b214a6ebcee1e44ab59"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-3/stage1.json",
+        "sha256": "aaec543d9b4fa38b1b5a13441bb7560492ad1662cc61c50d15dff26e342f0bf2"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-4/stage1.json",
+        "sha256": "b1328dc744d45696d672eddbf03f68148024fc9e0319d996b1b6f78fce5c09ae"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-5/stage1.json",
+        "sha256": "5eda04be19595982509564d77e4f30d4471c715571d3475f0c6b374fdbebb6a4"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-6/stage1.json",
+        "sha256": "1a7c21bb9005b58d407cf7c33e714909a629baeb9cbedf57357c0f0b610749a7"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-7/stage1.json",
+        "sha256": "39df076e769c5b654d929146aa77e45b7096538515041336a2c7a8ab872124fd"
+      }
+    ],
+    "baseline": [
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-0/tpo.json",
+        "sha256": "87cafab9fac652aec1bd8aef912d08d42e4e0d5e532f67f69fe67744f1fc3a8e"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-1/tpo.json",
+        "sha256": "deb3fd77b22d89fb496e32658d32c14f854525eb50e3e7003d1b9ec563cc409b"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-2/tpo.json",
+        "sha256": "14a1046c7b8f0fef0ce573557aa5473c6cd6deb0c62ccde74001cd0dbf88a4a1"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-3/tpo.json",
+        "sha256": "b825920843073ca8b219cd56c825e0e18394ba2f6c376db298d05f10c0a8ee20"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-4/tpo.json",
+        "sha256": "7b53143d47a1b4a0d13a59f80bace92d2a646724757ce914cc0b9c666819efc3"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-5/tpo.json",
+        "sha256": "1fd3db70f7c1e95118f6988dec4c63077a4aefa7f51705195412645164c6a8d4"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-6/tpo.json",
+        "sha256": "de99fe3b4d154aa13414ddf40e9eea8af342f6e98393dd709c04bcdf1954d07f"
+      },
+      {
+        "path": "${EXPERIMENT_TARGET_HOT_ROOT}/jev-eval-206-v1/calibration-7/tpo.json",
+        "sha256": "031a381586a267aa3a27990375b9601e899101710cacc503af6aa45dd82500be"
+      }
+    ]
+  },
+  "sample_blocks": {
+    "devices": "${FULL_TPO_OFFLINE_REFERENCE_DEVICES}",
+    "batches_per_block": 4,
+    "prefetch": 16
+  },
+  "bind_collected_formal": true
+}

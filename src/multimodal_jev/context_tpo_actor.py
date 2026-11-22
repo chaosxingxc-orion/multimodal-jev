@@ -87,6 +87,7 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
     if any(x.get('choice_mode','noul')!=mode for x in items):raise ValueError('incompatible task batch')
     joint = config.get('jev_joint_tpo')
     pair_counts = {}
+    gap_counts = {}
     if joint:
         from .context_joint_tpo import view_loss
         value = view_loss(logits, targets, mode, joint)
@@ -101,6 +102,14 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
         from .context_tpo_rewards import projection
         value = projection(logits, targets)
         terms = dict(reward_projection_kl=value)
+        gap_spec = config.get('jev_probability_gap')
+        if gap_spec is not None:
+            from .context_tpo_probability_gap import probability_gap
+            penalty, gap_counts, diagnostics = probability_gap(
+                logits, targets, torch.tensor([x['gold'] for x in items], device=device),
+                torch.tensor([x['reference_rival'] for x in items], device=device), weights > 0, gap_spec)
+            terms.update(diagnostics, probability_gap=penalty)
+            value = value + penalty
         spec = config.get('jev_actor_pair_margin')
         if spec is not None:
             from .context_tpo_pair_margin import loss as pair_margin_loss
@@ -124,6 +133,7 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
     metrics = {f'jev/{k}': float(((v * weights).sum() * factor).detach())
                for k, v in dict(terms, tpo_loss=value).items()}
     metrics.update({f'jev/pair_count/{k}': int(v) for k, v in pair_counts.items()})
+    metrics.update({f'jev/gap_count/{k}': int(v) for k, v in gap_counts.items()})
     return total, metrics
 
 

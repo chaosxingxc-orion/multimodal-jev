@@ -161,6 +161,18 @@ def prepare(config):
         if file_hash(targets_path) != binding['target_sha']:
             raise ValueError('frozen training target manifest changed')
         steps = read(targets_path)['updates']
+    if config.get('bind_collected_formal'):
+        receipt, terminal = ops/'tpo-collected.json', ops/'terminal.json'
+        proof = read(receipt)
+        if (proof['binding'] != binding or proof['updates'] != steps or proof['passed'] is not True
+                or proof['window'] != 'formal' or proof['arm'] != 'tpo'
+                or read(terminal) != {'exit_code': 0, 'status': 'declared_stages_finished'}):
+            raise ValueError('formal endpoint must match the collected training window')
+        config = dict(config, collected_predecessor=dict(receipt_sha256=file_hash(receipt),
+                                                         terminal_sha256=file_hash(terminal)))
+        calibration = config['calibration']
+        config['calibration'] = dict(calibration, policy_ids=dict(calibration['policy_ids'], tpo=proof['endpoint']))
+
     remote_parent = Path(prior['remote_root'])/'entry' if full else Path(parent['source_policy']).parents[1]
     parent_file = remote_parent/('parent.json' if full else 'config.json')
     if 'model_provider' in config:

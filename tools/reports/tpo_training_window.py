@@ -62,6 +62,9 @@ def run(c):
         if pair_spec is not None:
             verify_update(metric, m['batch_real'], pair_spec['epochs'], pair_spec['batch_eligible'])
             pair_by_epoch.setdefault(str(metric['epoch']), Counter()).update(metric['pair_margin'])
+        elif 'probability_gap' in m:
+            from multimodal_jev.context_tpo_probability_gap import verify_gap_update
+            verify_gap_update(metric, step, m['batch_real'])
         elif m['schema']=='jev-tpo-reward-view-v1':
             projection=metric['metrics'].get('jev/reward_projection_kl')
             if (projection is None or not projection>0 or projection!=metric['metrics']['jev/tpo_loss']

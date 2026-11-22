@@ -109,7 +109,12 @@ def collect(package, controller_terminal=None):
                 continue
             if fixed_view:
                 pair_spec = fixed_view.get('actor_pair_margin')
-                if pair_spec is None:
+                if 'probability_gap' in fixed_view:
+                    from multimodal_jev.context_tpo_probability_gap import verify_gap_update
+                    if receipt['updates'] != 2 or 'reference' in row or not row['seconds'] > 0:
+                        raise ValueError('invalid formal probability gap window')
+                    verify_gap_update(row, i, fixed_view['batch_real'])
+                elif pair_spec is None:
                     check_fixed_update(row, i, fixed_view['batch_real'])
                 else:
                     from multimodal_jev.context_tpo_pair_margin import verify_update
