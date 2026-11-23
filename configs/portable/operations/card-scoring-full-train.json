@@ -17,6 +17,9 @@
   },
   "torch_threads": 2,
   "worker_timeout_seconds": 54000,
+  "fsdp_timeout_seconds": 900,
+  "fsdp_master_addr": "127.0.0.1",
+  "fsdp_master_port": 29500,
   "coordination_seconds": 2,
   "probability_atol": 2e-06,
   "resources": {
@@ -37,7 +40,7 @@
     "resume_from": "${CARD_SCORE_RESUME_FROM}"
   },
   "replicas": 8,
-  "recordings_per_block": 256,
+  "recordings_per_block": 64,
   "cpu_workers": 8,
   "audit_min_parallel_blocks": 16
 }

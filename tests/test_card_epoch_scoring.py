@@ -134,3 +134,52 @@ def test_container_uses_configured_floor_and_checks_docker():
     assert container_memory('1536g', 1024) == 1536*2**30
     with pytest.raises(ValueError, match='actual Docker'):
         verify_memory({'HostConfig': {'Memory': 128*2**30}}, ['--memory', str(floor)])
+
+
+def test_compact_roster_and_fsdp_gate_fail_closed(tmp_path):
+    from tools.reports.card_scoring_benchmark import acoustic_binding, restore_binding
+
+    part = dict(id='a', audio='/recording.wav', audio_sha256='audio', intent='x', synthetic=False)
+    spec = dict(acoustic_template={'panel': {'questions': ['task']}},
+                processor_sha256='processor', acoustic_encoding={'version': 'x'})
+    binding = acoustic_binding(part, spec)
+    common = {k: v for k, v in binding.items() if k != 'audio_sha256'}
+    common['request'] = {'questions': ['task']}
+    assert restore_binding(part, common) == binding
+    second = dict(part, id='b', intent='y')
+    panel = dict(labels=['x', 'y'], population=2,
+                 rows=[dict(id=row['id'], intent=row['intent'], synthetic=False, binding=binding)
+                       for row in (part, second)])
+    config = dict(devices=[0], widths=[2], streaming={'length_window': 8},
+                  torch_threads=2, max_model_len=100, io_workers=2, prefetch_audio=4,
+                  probability_atol=2e-6, policy_sha256='manifest', cards={'sha256': 'cards'},
+                  training={'sha256': 'train'}, source={'sha256': 'source'},
+                  formal=dict(policy_id='policy', image='image', recordings_per_block=2,
+                              checkpoint_sha256='checkpoint'))
+    rows = [part, second]
+    config['full'] = dict(sha256=write(tmp_path/'full.json', dict(panel, rows=rows, acoustic_common=common)))
+    config['full_shards'] = [dict(sha256=write(tmp_path/'full-0.json', dict(rows=rows, acoustic_common=common)))]
+    assert audit.audit_roster(tmp_path, config, panel)['rows'] == rows
+    bad = dict(rows=rows[::-1], acoustic_common=common)
+    write(tmp_path/'full-0.json', bad)
+    with pytest.raises(ValueError, match='shard 0'):
+        audit.audit_roster(tmp_path, config, panel)
+
+    out, fsdp = tmp_path/'worker-0', tmp_path/'fsdp-0'
+    out.mkdir()
+    fsdp.mkdir()
+    lineage = scoring_lineage(config, 0)
+    write(out/'lineage.json', dict(sha256=lineage))
+    predictions = dict(seconds=2., peak_bytes=1, records=[
+        dict(id='a', prob=[.75, .25]), dict(id='b', prob=[.25, .75])])
+    timing = dict(workers=2, ahead=4, first_batch=.1, input_wait=.2, forward=1.)
+    baseline = write(out/'baseline.json', dict(predictions, batch_sizes={'1': 4}, input_timing=timing))
+    candidate = write(out/'batch-2.json', dict(predictions, batch_sizes={'2': 2}, input_timing=timing))
+    write(out/'panel-ready.json', dict(lineage=lineage, baseline_sha256=baseline, candidate_sha256=candidate))
+    reference = dict(predictions, batch_sizes={'1': 4}, policy_id='policy', rank=0)
+    write(fsdp/'reference.json', reference)
+    assert audit.audit_admission(tmp_path, config, panel, 1)['fsdp']['max_probability_abs'] == 0
+    reference['records'][0]['prob'][0] = .6
+    write(fsdp/'reference.json', reference)
+    with pytest.raises(ValueError, match='FSDP reference parity failed'):
+        audit.audit_admission(tmp_path, config, panel, 1)

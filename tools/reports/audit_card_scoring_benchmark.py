@@ -143,13 +143,64 @@ def audit_admission(root, c, panel, baseline_width):
         observed, counts = predictions(candidate, ids, panel['labels'], width)
         if ref != observed or not counts.get(width):
             raise ValueError(f'device {c["devices"][ordinal]}: endpoint probabilities differ or no full batch')
-        return marker
+        shard = None
+        if 'full_shards' in c:
+            fsdp_path = root/f'fsdp-{ordinal}'/'reference.json'
+            result = read(fsdp_path)
+            if result['policy_id'] != c['formal']['policy_id'] or result['rank'] != ordinal:
+                raise ValueError('FSDP reference policy or rank differs')
+            reference, _ = predictions(result, ids, panel['labels'], baseline_width)
+            shard = dict(reference=reference, observed=observed, sha256=file_hash(fsdp_path))
+        return marker, shard
 
-    workers, _ = map_io(inspect_panel, range(replicas), workers=c['io_workers'])
-    return dict(passed=True, comparison='independent-replica-batch-width', devices=c['devices'],
+    results, _ = map_io(inspect_panel, range(replicas), workers=c['io_workers'])
+    workers, fsdp = zip(*results, strict=True)
+    gate = dict(passed=True, comparison='independent-replica-batch-width', devices=c['devices'],
                 policy_id=c['formal']['policy_id'], checkpoint_sha256=c['formal']['checkpoint_sha256'],
                 baseline_rows=baseline_width, batch_rows=width,
-                pairs=len(panel['rows'])*len(panel['labels']), workers=workers)
+                pairs=len(panel['rows'])*len(panel['labels']), workers=list(workers))
+    if 'full_shards' in c:
+        reference, observed = {}, {}
+        for shard in fsdp:
+            reference.update(shard['reference'])
+            observed.update(shard['observed'])
+        parity = compare(panel, reference, observed, c['probability_atol'])
+        if any(parity[key] for key in ('probabilities_over_atol', 'top1_disagreements',
+                                       'class_rank_disagreements')):
+            raise ValueError(f'FSDP reference parity failed: {parity}')
+        gate.update(comparison='fsdp-and-independent-replica-batch-width',
+                    fsdp=dict(atol=c['probability_atol'], worker_sha256=[row['sha256'] for row in fsdp],
+                              **parity))
+    return gate
+
+
+def audit_roster(entry, c, panel):
+    full = read(entry/'full.json')
+    if (file_hash(entry/'full.json') != c['full']['sha256']
+            or {k: full.get(k) for k in panel if k != 'rows'} != {k: v for k, v in panel.items() if k != 'rows'}
+            or len(full['rows']) != panel['population']):
+        raise ValueError('sealed full TRAIN roster differs')
+    if 'full_shards' in c:
+        from tools.reports.card_scoring_benchmark import restore_binding
+
+        rows = full['rows']
+        ids = [row['id'] for row in rows]
+        common = full['acoustic_common']
+        by_id = dict(zip(ids, rows, strict=True))
+        if ids != sorted(set(ids)) or len(c['full_shards']) != len(c['devices']) or any(
+                row['intent'] != by_id[row['id']]['intent'] or
+                row['synthetic'] != by_id[row['id']]['synthetic'] or
+                row['binding'] != restore_binding(by_id[row['id']], common) for row in panel['rows']):
+            raise ValueError('compact roster differs from panel identities')
+
+        def check(ordinal):
+            path = entry/f'full-{ordinal}.json'
+            if (file_hash(path) != c['full_shards'][ordinal]['sha256'] or
+                    read(path) != dict(acoustic_common=common, rows=rows[ordinal::len(c['devices'])])):
+                raise ValueError(f'frozen TRAIN shard {ordinal} differs from the full roster')
+
+        map_io(check, range(len(c['devices'])), workers=c['io_workers'])
+    return full
 
 
 def progress(root, entry):
@@ -160,7 +211,8 @@ def progress(root, entry):
     for name in ('full', 'panel', 'training'):
         if c[name]['sha256'] != file_hash(entry/(name+'.json')):
             raise ValueError(f'frozen scoring {name} differs')
-    full, panel = read(entry/'full.json'), read(entry/'panel.json')
+    panel = read(entry/'panel.json')
+    full = audit_roster(entry, c, panel)
     path = root/'admission.json'
     counts = dict(admitted=False, blocks=0, recordings=0, pairs=0,
                   total_recordings=full['population'], total_pairs=full['population']*len(full['labels']))
@@ -199,7 +251,7 @@ def audit_formal(root, entry, c, panel, receipt, cid):
     from tools.reports.card_scoring_benchmark import scoring_lineage
 
     formal = c['formal']
-    full = read(entry/'full.json')
+    full = audit_roster(entry, c, panel)
     identities = dict(full_sha256=c['full']['sha256'], policy_id=formal['policy_id'],
                       policy_sha256=c['policy_sha256'])
     if (any(receipt[k] != v for k, v in identities.items())

@@ -80,7 +80,7 @@ def load_actor_stack(c, device, out, execution, transition):
     return base,processor,model,wrapped,opt,executions,runtime_handle
 
 
-def wrap_actor(model, device, execution):
+def wrap_actor(model, device, execution, *, build_optimizer=True):
     """Build the shared BF16 FSDP actor around a provider's decision model."""
     import torch
     from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, MixedPrecision, ShardingStrategy
@@ -107,8 +107,10 @@ def wrap_actor(model, device, execution):
     for n,m in model.named_modules():
         if type(m) is torch.nn.Linear and ('lora_A.' in n or 'lora_B.' in n):
             m.register_forward_pre_hook(capture_dtype(n))
-    parameters=[p for p in wrapped.parameters() if p.requires_grad]
-    opt = torch.optim.AdamW(parameters, **execution['optimizer'], foreach=False, fused=False)
+    opt = None
+    if build_optimizer:
+        parameters=[p for p in wrapped.parameters() if p.requires_grad]
+        opt = torch.optim.AdamW(parameters, **execution['optimizer'], foreach=False, fused=False)
     return wrapped, opt, executions
 
 

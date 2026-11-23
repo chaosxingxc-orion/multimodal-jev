@@ -30,6 +30,11 @@ def acoustic_binding(row, spec):
                 preprocessing=None, context_encoding=spec['acoustic_encoding'])
 
 
+def restore_binding(row, common):
+    return dict(common, audio_sha256=row['audio_sha256'],
+                request=dict(common['request'], audio=row['audio']))
+
+
 def make_panel(c, output):
     train, spec = pinned(c['training']), pinned(c['acoustics'])
     synth = pinned(c['synthetic'])
@@ -76,9 +81,14 @@ def make_panel(c, output):
     commit_json(output, panel)
     if c.get('formal'):
         full = sorted(chain(real, synth), key=lambda row: row['id'])
-        commit_json(output.with_name('full.json'), dict(panel, rows=[
-            dict(id=row['id'], intent=row['intent'], synthetic=row['id'] in synth_ids,
-                 binding=acoustic_binding(row, spec)) for row in full]))
+        compact = [dict(id=row['id'], intent=row['intent'], synthetic=row['id'] in synth_ids,
+                        audio=row['audio'], audio_sha256=row['audio_sha256']) for row in full]
+        common = acoustic_binding(dict(audio=None, audio_sha256=None), spec)
+        del common['audio_sha256'], common['request']['audio']
+        commit_json(output.with_name('full.json'), dict(panel, rows=compact, acoustic_common=common))
+        for ordinal in range(c['replicas']):
+            commit_json(output.with_name(f'full-{ordinal}.json'),
+                        dict(acoustic_common=common, rows=compact[ordinal::c['replicas']]))
     return panel
 
 
@@ -145,12 +155,13 @@ def length_order(compiled, window):
 
 def scoring_lineage(c, ordinal):
     formal = c['formal']
+    layout = ('fsdp-probability-parity', c['full_shards'][ordinal]['sha256']) if 'full_shards' in c else ()
     return content_key('full-train-scoring-v2', formal['policy_id'], formal['image'],
                        formal['checkpoint_sha256'],
                        formal['recordings_per_block'], c['full']['sha256'], c['source']['sha256'],
                        c['policy_sha256'], c['cards']['sha256'], c['training']['sha256'],
                        c['devices'], ordinal, c['widths'], c['streaming'], c['io_workers'],
-                       c['prefetch_audio'], c['torch_threads'], c['max_model_len'])
+                       c['prefetch_audio'], c['torch_threads'], c['max_model_len'], *layout)
 
 
 def read_block(path, lineage):
@@ -274,16 +285,16 @@ def worker(c, output, ordinal):
 
     if formal:
         from tools.reports.audit_card_scoring_benchmark import predictions, read, validate_block, validate_timing
-        full = pinned(c['full'])
-        if (len(full['rows']) != panel['population'] or full['labels'] != panel['labels']
-                or full['cache_proof_sha256'] != panel['cache_proof_sha256']):
-            raise ValueError('formal TRAIN roster differs')
         width, = c['widths']
         legacy_width = train['epoch_mining']['forward_rows']
         baseline, candidate = measure(legacy_width, True), measure(width, False)
         commit_json(output/'baseline.json', baseline)
         commit_json(output/f'batch-{width}.json', candidate)
-        shard = full['rows'][ordinal::len(devices)]
+        part = pinned(c['full_shards'][ordinal])
+        shard = [dict(id=row['id'], intent=row['intent'], synthetic=row['synthetic'],
+                      binding=restore_binding(row, part['acoustic_common'])) for row in part['rows']]
+        if len(shard) != len(range(ordinal, panel['population'], len(devices))):
+            raise ValueError('formal TRAIN shard size differs')
         size = formal['recordings_per_block']
         lineage = scoring_lineage(c, ordinal)
         resumed = Path(formal['resume_from'])/f'worker-{ordinal}' if formal.get('resume_from') else None
@@ -372,6 +383,16 @@ def run(c):
     output.mkdir()
     capture_memory = 'formal' in c or c.get('capture_host_memory', False)
     memory_before = host_memory() if capture_memory else None
+    if 'formal' in c:
+        from tools.reports.audit_card_scoring_benchmark import audit_roster
+
+        audit_roster(Path(c['full']['path']).parent, c, load_panel(c)[0])
+        args = [sys.executable, '-B', '-m', 'torch.distributed.run', '--nnodes=1', '--node-rank=0',
+                '--master-addr', c['formal']['fsdp_master_addr'],
+                '--master-port', str(c['formal']['fsdp_master_port']),
+                '--nproc-per-node', str(len(c['devices'])), '--max-restarts', '0',
+                '-m', __spec__.name, 'reference', c['worker_config'], str(output)]
+        subprocess.run(args, check=True, timeout=max(1, deadline-time.monotonic()))
     workers = []
     with ThreadPoolExecutor(max_workers=len(c['devices'])) as pool:
         try:
@@ -417,13 +438,18 @@ def run(c):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('worker',))
+    parser.add_argument('action', choices=('worker', 'reference'))
     parser.add_argument('config', type=Path)
     parser.add_argument('output', type=Path)
-    parser.add_argument('ordinal', type=int)
+    parser.add_argument('ordinal', type=int, nargs='?')
     args = parser.parse_args()
     raw = json.loads(args.config.read_bytes())
-    worker(raw['macros']['NATIVE_SEAL_CONTAINER_CONFIG'], args.output, args.ordinal)
+    config = raw['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+    if args.action == 'reference':
+        from tools.reports.card_scoring_fsdp_reference import reference
+        reference(config, args.output)
+    else:
+        worker(config, args.output, args.ordinal)
 
 
 if __name__ == '__main__':

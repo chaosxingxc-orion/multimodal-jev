@@ -1,5 +1,6 @@
 """Freeze the scoring benchmark and dispatch it through the native operations runner."""
 import argparse
+import ipaddress
 import json
 from pathlib import Path
 import shlex
@@ -66,8 +67,11 @@ def package(c):
                 or any(type(n) is not int or n < 1 for n in (
                     c['widths'][0], c['recordings_per_block'], c['streaming']['length_window'],
                     c['io_workers'], c['cpu_workers'], c['audit_min_parallel_blocks'],
-                    c['torch_threads'], c['worker_timeout_seconds'], c['coordination_seconds']))
-                or type(c['prefetch_audio']) is not int or c['prefetch_audio'] < c['io_workers']):
+                    c['torch_threads'], c['worker_timeout_seconds'], c['coordination_seconds'],
+                    c['fsdp_timeout_seconds']))
+                or type(c['prefetch_audio']) is not int or c['prefetch_audio'] < c['io_workers']
+                or not ipaddress.IPv4Address(c['fsdp_master_addr']).is_loopback
+                or type(c['fsdp_master_port']) is not int or not 0 < c['fsdp_master_port'] < 65536):
             raise ValueError('one positive batch width and a bounded streaming deployment required')
         train = pinned(inputs['training'])
         target, policy_sha, policy_id, checkpoint_sha = formal_policy(c, train, deploy)
@@ -140,15 +144,20 @@ def package(c):
                 source=dict(root='/jev-entry/source', sha256=snapshot['manifest_sha256']))
     entries = ('panel', 'training', 'cards')
     if formal:
-        entries += ('full',)
-        spec.update(cpu_workers=c['cpu_workers'], audit_min_parallel_blocks=c['audit_min_parallel_blocks'])
+        entries += ('full', *(f'full-{i}' for i in range(len(devices))))
+        spec.update(cpu_workers=c['cpu_workers'], audit_min_parallel_blocks=c['audit_min_parallel_blocks'],
+                    seed=c['seed'])
         spec['formal'] = dict(policy_id=policy_id, updates=train['checkpoint_interval'], image=deploy['image'],
                               checkpoint_sha256=checkpoint_sha, coordination_seconds=c['coordination_seconds'],
-                              recordings_per_block=c['recordings_per_block'])
+                              recordings_per_block=c['recordings_per_block'],
+                              fsdp_timeout_seconds=c['fsdp_timeout_seconds'],
+                              fsdp_master_addr=c['fsdp_master_addr'], fsdp_master_port=c['fsdp_master_port'])
         if formal.get('resume_from'):
             spec['formal']['resume_from'] = '/jev-score-resume'
     for name in entries:
         spec[name] = dict(path=f'/jev-entry/{name}.json', sha256=file_hash(entry/(name+'.json')))
+    if formal:
+        spec['full_shards'] = [spec.pop(f'full-{i}') for i in range(len(devices))]
     commit_json(entry/'score.json', dict(schema='jev-local-macros-v1',
                                         macros=dict(NATIVE_SEAL_CONTAINER_CONFIG=spec)))
     archive = root/'entry.tar'
