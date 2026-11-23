@@ -5,6 +5,7 @@
 | 实验 | 报告 | 状态 |
 | --- | --- | --- |
 | 近期汇总 | [0.6B 训练、迁移与评测工程](recent-experiments-2026-11-22.md) | 含 204、205、206 已审核成绩及后续待办 |
+| 方法复盘 | [知识卡、概率基线与强化学习](knowledge-cards-probability-and-rl.md) | Stage1 和 Stage2 优化机制、已审证据与跨数据集校准方案 |
 | JEV-194 | [关闭与启用投影的配对评测](JEV-194.md) | 全量留出评测已审 |
 | JEV-R64-S2 | [双信用 GRPO 末点评测](JEV-R64-S2.md) | SLURP TEST 和 MINDS 已审 |
 | 零训练对照 | [SLURP selection](slurp-simple-base-selection-v1.md) | 已复算 |
