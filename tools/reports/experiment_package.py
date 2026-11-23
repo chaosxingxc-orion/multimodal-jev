@@ -522,7 +522,7 @@ def publish_wiki(experiment):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("plan", "status", "run", "resume", "publish", "capacity", "score-shard"), nargs="?", default="plan")
+    parser.add_argument("action", choices=("plan", "status", "run", "resume", "publish", "capacity", "score-shard", "score-merge"), nargs="?", default="plan")
     parser.add_argument("--experiment", help="Experiment ID in the committed queue")
     parser.add_argument("--scoring", action="store_true", help="Use the registered scoring capacity window")
     parser.add_argument("--local", type=Path, default=LOCAL)
@@ -534,14 +534,15 @@ def main():
     if args.scoring and args.action != "capacity":
         parser.error("--scoring is available with capacity")
     try:
-        if args.action == "score-shard":
-            from tools.reports.card_scoring_shards import execute as score_shard
+        if args.action in {"score-shard", "score-merge"}:
+            from tools.reports.card_scoring_shards import execute as score_shard, merge as score_merge
             selected = plan(args.experiment, states=ACTIVE)
             pipeline = json.loads(committed(selected["commit"], REGISTRY/(selected["experiment_id"]+".json")))
-            template = Path(pipeline["scoring_shard"])
+            template = Path(pipeline["scoring_" + args.action.split("-", 1)[1]])
             if template.read_bytes() != committed(selected["commit"], template):
-                raise ValueError("Scoring shard template differs from the committed ledger")
-            print(json.dumps(score_shard(template, args.local), indent=2))
+                raise ValueError("Scoring template differs from the committed ledger")
+            handler = score_shard if args.action == "score-shard" else score_merge
+            print(json.dumps(handler(template, args.local), indent=2))
             return 0
         if args.action == "capacity":
             if args.scoring:

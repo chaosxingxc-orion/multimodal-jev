@@ -5,12 +5,13 @@ import shlex
 import shutil
 import subprocess
 import tarfile
+import time
 
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.source_snapshot import freeze, verify
-from tools.reports.card_scoring_benchmark import pinned, scoring_offsets
+from tools.reports.card_scoring_benchmark import pinned, scoring_lineage, scoring_offsets
 from tools.reports.native_seal_operations import run
 
 
@@ -107,5 +108,183 @@ def execute(template, local):
                    for worker in workers)):
         raise ValueError('scoring lane did not commit exactly its assignment')
     report.update(passed=True, container_exited=True, container_id=cid, block_range=config['block_range'])
+    commit_json(root/'audit.json', report)
+    return report
+
+
+def check_partition(source, lane_configs, population, head):
+    if type(head) is not int or head < 1 or not lane_configs:
+        raise ValueError('positive head size and at least one tail lane required')
+    replicas, size = len(source['devices']), source['formal']['recordings_per_block']
+    for ordinal in range(replicas):
+        rows = len(range(ordinal, population, replicas))
+        offsets = list(range(0, rows, size))
+        assigned = [offset for spec in lane_configs for offset in scoring_offsets(spec, rows)]
+        if head >= len(offsets) or assigned != offsets[head:]:
+            raise ValueError('tail ownership must cover the parent exactly once in block order')
+
+
+def merge(template, local):
+    """Wait for both bounded lanes, then collect and audit the union."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    from multimodal_jev.context_execution import map_cpu
+    from tools.reports.audit_card_scoring_benchmark import compare, predictions, progress, read, validate_block
+    from tools.reports.context_macro_probe_operations import inspect_runtime
+    from tools.reports.native_seal_operations import verify_memory
+
+    c, _ = load_config(template, local)
+    root = Path(c['output'])
+    root.mkdir(parents=True)
+    parent = c['parent']
+    entry = Path(parent['entry'])
+    source = pinned(dict(path=entry/'score.json', sha256=parent['sha256']))['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+    full = pinned(dict(path=entry/'full.json', sha256=source['full']['sha256']))
+    panel = pinned(dict(path=entry/'panel.json', sha256=source['panel']['sha256']))
+    training = pinned(dict(path=entry/'training.json', sha256=source['training']['sha256']))
+    replicas = len(source['devices'])
+    size = source['formal']['recordings_per_block']
+    width, = source['widths']
+    lanes = c['lanes']
+    lane_configs = [read(Path(lane['package'])/'entry/score.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+                    for lane in lanes]
+    if any(any(spec[k] != source[k] for k in ('full', 'full_shards', 'panel', 'training', 'cards',
+             'policy_sha256', 'widths', 'devices', 'io_workers', 'prefetch_audio', 'streaming'))
+           or any(spec['formal'][k] != source['formal'][k] for k in ('checkpoint_sha256', 'policy_id',
+                  'image', 'recordings_per_block', 'updates'))
+           for spec in lane_configs):
+        raise ValueError('cannot merge differing frozen policies or scoring populations')
+    head = c['head_blocks']
+    check_partition(source, lane_configs, len(full['rows']), head)
+    handle = pinned(dict(path=parent['launch'], sha256=parent['launch_sha256']))
+    host, remote_root, cid = (handle[k] for k in ('host', 'remote_root', 'container_id'))
+    ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', host]
+
+    def remote(*args):
+        return subprocess.check_output([*ssh, shlex.join(args)], text=True, timeout=45)
+
+    def parent_state():
+        state, = json.loads(remote('docker', 'inspect', cid))
+        inspect_runtime(state, handle)
+        verify_memory(state, handle['argv'])
+        return state['State']
+
+    def wait_lane(lane, spec):
+        path = Path(lane['package'])
+        ops = Path(lane['operations'])
+        while not (path/'audit.json').is_file():
+            if (ops/'terminal.json').is_file() and read(ops/'terminal.json')['exit_code'] != 0:
+                raise ValueError(f'scoring lane failed: {ops}')
+            if time.monotonic() >= deadline:
+                raise TimeoutError(f'no audited lane result: {path}')
+            time.sleep(c['status_interval_seconds'])
+        proof = read(path/'audit.json')
+        if (proof['passed'] is not True or proof['container_exited'] is not True
+                or proof['block_range'] != spec['formal']['block_range']
+                or proof['container_id'] != read(ops/'score-launch.json')['container_id']
+                or read(ops/'score-admission.json')['entry_pins']['score.json'] != file_hash(path/'entry/score.json')):
+            raise ValueError('lane receipt differs')
+        raw = path/'collected/score'
+        observed = progress(raw, path/'entry')
+        if any(proof[k] != value for k, value in observed.items()):
+            raise ValueError('lane receipt differs from collected evidence')
+        return raw, observed
+
+    deadline = time.monotonic()+c['timeout_seconds']
+    if c['status_interval_seconds'] < 900 or c['timeout_seconds'] <= 0:
+        raise ValueError('positive timeout and repository observation cadence required')
+    with ThreadPoolExecutor(max_workers=len(lanes)) as pool:
+        results = [p.result() for p in [pool.submit(wait_lane, lane, spec)
+                   for lane, spec in zip(lanes, lane_configs, strict=True)]]
+    names = [(f'score/worker-{i}/block-{j:06d}.json')
+             for i in range(replicas) for j in range(head)]
+    while True:
+        state = parent_state()
+        existing = set(remote('find', remote_root+'/score', '-maxdepth', '2', '-name',
+                              'block-*.json', '-printf', '%P\\n').splitlines())
+        if all(name.removeprefix('score/') in existing for name in names):
+            break
+        if not state['Running'] or time.monotonic() >= deadline:
+            raise ValueError('parent did not reach the frozen head boundary')
+        time.sleep(c['status_interval_seconds'])
+
+    for i in range(replicas):
+        names += [f'score/fsdp-{i}/reference.json', *(f'score/worker-{i}/{name}' for name in (
+            'lineage.json', 'panel-ready.json', 'baseline.json', f'batch-{width}.json'))]
+    collect(host, remote_root, root/'parent', ['score/admission.json', *names])
+    first = root/'parent/score'
+    scoring = [(source, first, range(head)), *((spec, raw, None) for spec, (raw, _) in
+               zip(lane_configs, results, strict=True))]
+    admitted = progress(first, entry)
+    if not admitted['admitted'] or admitted['blocks'] != replicas*head:
+        raise ValueError('parent prefix is incomplete')
+
+    def panel_probs(raw):
+        output = {}
+        for i in range(replicas):
+            expected = [row['id'] for row in panel['rows'][i::replicas]]
+            part, _ = predictions(read(raw/f'worker-{i}/batch-{width}.json'), expected, full['labels'], width)
+            output.update(part)
+        return output
+
+    reference = panel_probs(first)
+    parity = [compare(panel, reference, panel_probs(raw), source['probability_atol']) for raw, _ in results]
+    if any(r[k] for r in parity for k in ('probabilities_over_atol', 'top1_disagreements', 'class_rank_disagreements')):
+        raise ValueError(f'cross-host score parity failed: {parity}')
+    lookup = {}
+    for spec, raw, prefix in scoring:
+        for i in range(replicas):
+            ids = [row['id'] for row in full['rows'][i::replicas]]
+            offsets = [j*size for j in prefix] if prefix is not None else scoring_offsets(spec, len(ids))
+            for offset in offsets:
+                block = raw/f'worker-{i}'/f'block-{offset//size:06d}.json'
+                key = (i, offset)
+                if key in lookup:
+                    raise ValueError('duplicate scoring block assignment')
+                lookup[key] = (block, scoring_lineage(spec, i), ids[offset:offset+size], full['labels'], width,
+                               (spec['io_workers'], spec['prefetch_audio']))
+    tasks = [lookup[i, offset] for i in range(replicas)
+             for offset in range(0, len(full['rows'][i::replicas]), size)]
+    values, _ = map_cpu(validate_block, tasks, workers=source['cpu_workers'],
+                        min_parallel=source['audit_min_parallel_blocks'])
+    labels = full['labels']
+    index = {label: i for i, label in enumerate(labels)}
+    gold = {row['id']: index[row['intent']] for row in full['rows']}
+    counts = [0]*len(labels)
+    totals = [[0.]*len(labels) for _ in labels]
+    seen = set()
+    for task, probs in zip(tasks, values, strict=True):
+        for uid, row in zip(task[2], probs, strict=True):
+            if uid in seen:
+                raise ValueError('duplicate TRAIN recording')
+            seen.add(uid)
+            i = gold[uid]
+            counts[i] += 1
+            for j, p in enumerate(row):
+                totals[i][j] += p
+    if seen != gold.keys():
+        raise ValueError('missing TRAIN recordings')
+    import torch
+    from multimodal_jev.intent_triplet_training import confusion_distribution
+    distribution = confusion_distribution(labels, torch.tensor(totals, dtype=torch.float64),
+                                           torch.tensor(counts), training['epoch_mining']['zipf_exponent'])
+    formal = source['formal']
+    pairs = len(seen)*len(labels)
+    path = root/'confusion-epoch-1.json'
+    commit_json(path, dict(labels=labels, counts=counts, probability_sums=totals,
+                           distribution=distribution, pairs=pairs, epoch=0,
+                           checkpoint_sha256=formal['checkpoint_sha256'],
+                           policy_id=formal['policy_id'], full_sha256=source['full']['sha256']))
+    state = parent_state()
+    if state['Running']:
+        commit_json(root/'parent-stop-intent.json', dict(container_id=cid, reason='all TRAIN scores audited'))
+        remote('docker', 'stop', '--time', str(c['stop_grace_seconds']), cid)
+        state = parent_state()
+    if state['Status'] != 'exited' or state['Pid'] != 0 or state['OOMKilled']:
+        raise ValueError('parent container release not observed')
+    report = dict(passed=True, container_exited=True, updates=formal['updates'],
+                  recordings=len(seen), pairs=pairs, checkpoint_sha256=formal['checkpoint_sha256'],
+                  confusion_sha256=file_hash(path), parent_container=cid, parent_exit=state['ExitCode'],
+                  lanes=[proof for _, proof in results], cross_host_parity=parity)
     commit_json(root/'audit.json', report)
     return report

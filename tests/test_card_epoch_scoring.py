@@ -10,6 +10,20 @@ from tools.reports.card_scoring_benchmark import scoring_lineage
 from tools.reports.native_seal_operations import container_memory, verify_memory
 
 
+def test_parallel_tail_rejects_gaps_and_overlap_for_uneven_shards():
+    from tools.reports.card_scoring_shards import check_partition
+
+    source = dict(devices=[0, 1], formal=dict(recordings_per_block=2))
+
+    def lane(lower, upper):
+        return dict(formal=dict(recordings_per_block=2, block_range=[lower, upper]))
+
+    check_partition(source, [lane(1, 2), lane(2, None)], 11, 1)
+    for wrong in ([lane(1, 2), lane(1, None)], [lane(2, None)], [lane(1, 2)]):
+        with pytest.raises(ValueError, match='exactly once'):
+            check_partition(source, wrong, 11, 1)
+
+
 def write(path, value):
     path.write_text(json.dumps(value))
     return file_hash(path)
