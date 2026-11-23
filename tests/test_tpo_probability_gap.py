@@ -21,3 +21,16 @@ def test_no_replacement_padded_tail():
     orders = [[s["id"] for b in batches if b["epoch"]==e for s in b["slots"] if s["weight"]] for e in (0,1)]
     assert orders[0] != orders[1] and all(sorted(order)==ids for order in orders)
     assert all(len(b["slots"])==3 for b in batches)
+
+
+def test_strict_projection_gate_uses_all_wrong_classes():
+    logits = torch.tensor([[0., 1., 2.]] * 4, requires_grad=True)
+    projection = torch.tensor([[1., 0., 0.], [1., 1., 0.], [1., 2., 0.], [1., 0., 0.]])
+    gold = torch.zeros(4, dtype=torch.long)
+    real = torch.tensor([True, True, True, False])
+    penalty, counts, _ = probability_gap(logits, projection, gold, gold+1, real,
+                                         dict(margin=.1, weight=1/3, gate='strict_target_top1'))
+    (penalty*real).sum().backward()
+    assert [counts[k].item() for k in ('projected_correct', 'projected_tied', 'projected_wrong', 'active')] == [1, 1, 1, 1]
+    assert logits.grad[0, 0] < 0 and logits.grad[0, 2] > 0
+    assert torch.count_nonzero(logits.grad[1:]) == 0

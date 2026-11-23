@@ -1,0 +1,15 @@
+{
+  "repository": "${PROJECT_ROOT}",
+  "package": "${CARD_TPO_ROOT}/package",
+  "targets": "${CARD_TPO_ROOT}/targets",
+  "parent_config": "${CARD_TPO_PARENT}",
+  "deployment": "${CARD_TPO_DEPLOYMENT}",
+  "card_input": {
+    "inference_devices": [6, 7],
+    "inference_cpus": 12,
+    "policy_sha256": "2516faaed78c2a25d6b2f72ac521aca550d91e9465d010ec38edc7e654b6b9b4"
+  },
+  "io_workers": 8,
+  "source_patterns": ["src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py"],
+  "freeze_committed_repository": true
+}

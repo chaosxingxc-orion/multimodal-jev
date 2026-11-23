@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "stage1-endpoint-score-v1",
+  "revision": "card-tpo-v1",
   "stages": {
     "data": [
       {
@@ -298,11 +298,247 @@
       },
       {
         "id": "build-fused-stage2-view",
-        "pending": "待参考打分后冻结一份分层难例与正确回放视图、单轮批序、按真实批计算的投影目标及预算。"
+        "config": "configs/portable/operations/card-tpo-targets.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.build_card_tpo_targets",
+            "configs/portable/operations/card-tpo-targets.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-tpo-reward-view-v1"
+              ],
+              [
+                [
+                  "schedule",
+                  "global_batch"
+                ],
+                384
+              ],
+              [
+                [
+                  "schedule",
+                  "epochs"
+                ],
+                1
+              ],
+              [
+                [
+                  "probability_gap",
+                  "gate"
+                ],
+                "strict_target_top1"
+              ]
+            ],
+            "report": {
+              "recordings": [
+                "recordings"
+              ],
+              "updates": [
+                "updates"
+              ],
+              "strata": [
+                "strata"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "freeze-fused-stage2",
+        "config": "configs/portable/operations/card-tpo-package.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_tpo_windows",
+            "configs/portable/operations/card-tpo-package.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_TPO_ROOT}/package/operations-local.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-local-macros-v1"
+              ],
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_OPERATIONS_CONFIG",
+                  "device_group_lease"
+                ],
+                true
+              ]
+            ]
+          }
+        ]
       },
       {
         "id": "train-fused-tpo",
-        "pending": "待绑定六卡单轮融合 TPO 的有限验收、正式训练与末点审核。"
+        "python": "${CARD_PYTHON}",
+        "dispatch_guards": [
+          "${CARD_TPO_ROOT}/ops"
+        ],
+        "run": [
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_TPO_ROOT}/package/operations-local.json",
+            "--observe-tpo-package",
+            "${CARD_TPO_ROOT}/package"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_TPO_ROOT}/ops/infer-0-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "physical_device"
+                ],
+                6
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/infer-1-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "physical_device"
+                ],
+                7
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "finite"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                2
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/first-three.json",
+            "equals": [
+              [
+                [
+                  "updates",
+                  0,
+                  "step"
+                ],
+                1
+              ],
+              [
+                [
+                  "updates",
+                  1,
+                  "step"
+                ],
+                2
+              ],
+              [
+                [
+                  "updates",
+                  2,
+                  "step"
+                ],
+                3
+              ]
+            ],
+            "report": {
+              "step 1 loss": [
+                "updates",
+                0,
+                "metrics",
+                "jev/tpo_loss"
+              ],
+              "step 2 loss": [
+                "updates",
+                1,
+                "metrics",
+                "jev/tpo_loss"
+              ],
+              "step 3 loss": [
+                "updates",
+                2,
+                "metrics",
+                "jev/tpo_loss"
+              ]
+            }
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "formal"
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ]
+            ]
+          }
+        ]
       }
     ],
     "evaluate": [

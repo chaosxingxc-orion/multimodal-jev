@@ -38,6 +38,7 @@ def main(args):
     from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
     from multimodal_jev.context_tpo_actor import MODE, EXTENSION, pack
     from multimodal_jev.context_native_actor import build_actor
+    from multimodal_jev.context_audio_collate import forward_context_audio_batch
     from multimodal_jev.context_tpo_pair_margin import validate_spec, verify_update
     from multimodal_jev.context_stage_lora import admit_stage2
     from multimodal_jev.context_fsdp_export import canonical_execution
@@ -90,23 +91,30 @@ def main(args):
             global_batch_info={},grad_clip=e['grad_clip'],jev_policy_id=c['source_policy_id'],
             jev_context_parity=c['behavior_bounds'],jev_context_objective=opts,jev_reward_projection=reward_only,
             jev_choice=m.get('choice'),jev_probability_gap=m.get('probability_gap'),jev_actor_pair_margin=pair_spec['loss'] if pair_spec is not None else None))
-        actor=build_actor(cfg,wrapped,opt,objective=EXTENSION,collation=dict(decision_token_id=model.decision_token_id,
-            pad_token_id=processor.tokenizer.pad_token_id,audio_token_id=base.config.audio_token_id,
-            audio_chunk_size=base.config.audio_config.n_window*2,audio_infer_window=base.config.audio_config.n_window_infer))
         rows = read(data/'rows.json')
         targets = torch.load(data/'targets.pt',map_location='cpu',weights_only=True)
-        release = Path(c['release'])
-        if file_hash(release/'MANIFEST.json') != m['release_sha256']:
-            raise ValueError('clean release changed')
-        release_files = read(release/'MANIFEST.json')['files']
-        for name in ('learning.jsonl','tasks.json'):
-            if file_hash(release/name) != release_files[name]:
-                raise ValueError('source training inputs changed')
-        task=read(release/'tasks.json')['intent']
-        if [i['id'] for i in task['schema']['candidates']] != m['candidate_ids']:
-            raise ValueError('candidate order changed')
-        with (release/'learning.jsonl').open() as f:
-            population={v['id']:v for line in f if (v:=json.loads(line))['id'] in rows}
+        card_binding = m.get('card_input')
+        if card_binding:
+            if (args.window == 'reference' or not reward_only or choice or
+                    file_hash(Path(c['source_policy'])/'MANIFEST.json') != m['source_policy_sha256'] or
+                    targets.shape != (schedule['epochs'], len(rows), len(m['candidate_ids']))):
+                raise ValueError('card TPO policy, window or projected target differs')
+            cards = read(data/'cards.json')
+            if cards['labels'] != m['candidate_ids'] or m['files']['cards.json'] != card_binding['cards_sha256']:
+                raise ValueError('card TPO candidate identity differs')
+        else:
+            release = Path(c['release'])
+            if file_hash(release/'MANIFEST.json') != m['release_sha256']:
+                raise ValueError('clean release changed')
+            release_files = read(release/'MANIFEST.json')['files']
+            for name in ('learning.jsonl','tasks.json'):
+                if file_hash(release/name) != release_files[name]:
+                    raise ValueError('source training inputs changed')
+            task=read(release/'tasks.json')['intent']
+            if [i['id'] for i in task['schema']['candidates']] != m['candidate_ids']:
+                raise ValueError('candidate order changed')
+            with (release/'learning.jsonl').open() as f:
+                population={v['id']:v for line in f if (v:=json.loads(line))['id'] in rows}
         batches=read(data/'batches.json')
         end = 2 if args.window == 'finite' else len(batches)
         denominators = [sum(not s['padding'] for s in b['slots']) for b in batches]
@@ -122,17 +130,25 @@ def main(args):
             if denominators != m['batch_real'] or epochs != pair_spec['epochs']:
                 raise ValueError('frozen actor pair schedule changed')
         batches = [dict(b,slots=b['slots'][rank*local_size:(rank+1)*local_size]) for b in batches]
-        prep=CachedContextPreparer(no_online_processor,ReadOnlyEncodedAudioCache(c['encoded_audio_cache']),
-            processor_sha256=processor_cache_identity(c['source_policy']),decision_token_id=model.decision_token_id,
-            audio_token_id=base.config.audio_token_id,max_tokens=e['max_input_tokens'],prompt_layout=c['prompt_layout'])
-        ref_records = None
-        if args.window == 'finite' and not choice:
-            ref_root = Path(c['reference_dataset']['root'])
-            if file_hash(ref_root/'MANIFEST.json') != m['reference_sha256']:
-                raise ValueError('parity reference differs')
-            if file_hash(ref_root/'records.json') != read(ref_root/'MANIFEST.json')['files']['records.json']:
-                raise ValueError('parity records changed')
-            ref_records=read(ref_root/'records.json')
+        ref_records, card_probs = None, None
+        if card_binding:
+            if denominators != m['batch_real'] or len(batches) != m['updates']:
+                raise ValueError('card TPO schedule budget differs')
+            if args.window == 'finite':
+                card_probs = torch.load(data/'reference.pt', map_location='cpu', weights_only=True)
+                if card_probs.shape != targets.shape[1:]:
+                    raise ValueError('card TPO fixed reference geometry differs')
+        else:
+            prep=CachedContextPreparer(no_online_processor,ReadOnlyEncodedAudioCache(c['encoded_audio_cache']),
+                processor_sha256=processor_cache_identity(c['source_policy']),decision_token_id=model.decision_token_id,
+                audio_token_id=base.config.audio_token_id,max_tokens=e['max_input_tokens'],prompt_layout=c['prompt_layout'])
+            if args.window == 'finite' and not choice:
+                ref_root = Path(c['reference_dataset']['root'])
+                if file_hash(ref_root/'MANIFEST.json') != m['reference_sha256']:
+                    raise ValueError('parity reference differs')
+                if file_hash(ref_root/'records.json') != read(ref_root/'MANIFEST.json')['files']['records.json']:
+                    raise ValueError('parity records changed')
+                ref_records=read(ref_root/'records.json')
         collate=dict(decision_token_id=model.decision_token_id,pad_token_id=processor.tokenizer.pad_token_id,
             audio_token_id=base.config.audio_token_id,audio_chunk_size=base.config.audio_config.n_window*2,
             audio_infer_window=base.config.audio_config.n_window_infer)
@@ -148,7 +164,6 @@ def main(args):
             shifts=torch.load(entry/'reward-shift.pt',map_location='cpu',weights_only=True)
         if choice:
             from multimodal_jev.context_choice_inputs import ChoiceInputs,identity as choice_identity
-            from multimodal_jev.context_audio_collate import forward_context_audio_batch
             from multimodal_jev.local_checkpoint import commit_file
             compiler=ChoiceInputs(processor,collate,e['max_input_tokens'])
             reference=Path('/jev-control/reference') if dynamic else root.parent/'reference'
@@ -163,7 +178,17 @@ def main(args):
                         or file_hash(ref_file)!=seal['rank_files'][rank]):
                     raise ValueError('Choice reference binding differs')
                 reference_rows=torch.load(ref_file,map_location='cpu',weights_only=True)
-        with CachedContextBatches(batches,population,task,prep,start_update=0,stop_update=end,global_batch=local_size) as stream:
+        if card_binding:
+            from tools.reports.card_tpo_batches import CardTPOBatches
+            batch_source = CardTPOBatches(batches, rows, cards, card_binding,
+                                         c['card_caches'], e['prefetch'], collate, end)
+            forward = batch_source.forward
+        else:
+            batch_source = CachedContextBatches(batches,population,task,prep,start_update=0,
+                                                stop_update=end,global_batch=local_size)
+            forward = forward_context_audio_batch
+        with batch_source as stream:
+            actor=build_actor(cfg,wrapped,opt,objective=EXTENSION,collation=collate,forward=forward)
             for step in range(end):
                 now=time.monotonic()
                 policy=f"{c['source_policy_id']}:{args.arm}:{step}"
@@ -171,11 +196,12 @@ def main(args):
                 items,metadata=stream.consume(step,policy)
                 for x,meta,slot in zip(items,metadata,batches[step]['slots'],strict=True):
                     row=rows[meta['id']]
-                    identity=dict(policy_id=c['source_policy_id'],positions=x['positions'][0].tolist(),
+                    if not card_binding:
+                        identity=dict(policy_id=c['source_policy_id'],positions=x['positions'][0].tolist(),
                                   inputs={k:tensor_identity(v) for k,v in x['inputs'].items()})
-                    if (digest(identity)!=row['request_key'] or int(x['labels'].long().argmax())!=row['gold'] or
-                            row['audio_sha256']!=population[meta['id']]['audio_sha256']):
-                        raise ValueError('audio, reference binding or gold differs')
+                        if (digest(identity)!=row['request_key'] or int(x['labels'].long().argmax())!=row['gold'] or
+                                row['audio_sha256']!=population[meta['id']]['audio_sha256']):
+                            raise ValueError('audio, reference binding or gold differs')
                     x.update(request_id=f"{rank}:{x['request_id']}",stage='tpo', gold=row['gold'],
                              paired=slot['paired'],confusion=slot['confusion'],group=row['group'],audio_sha256=row['audio_sha256'],
                              global_real=denominators[step],log_target=(targets[batches[step]['epoch'],row['index']] if reward_only else targets[row['index']]))
@@ -230,31 +256,35 @@ def main(args):
                         if not dynamic and args.window!='reference':
                             for x,k in zip(items,keys,strict=True):x['log_target']=reference_rows[k]
                     if args.window=='reference':continue
-                if ref_records is not None and step == 0:
-                    from multimodal_jev.context_audio_collate import forward_context_audio_batch
-                    collate=dict(decision_token_id=model.decision_token_id,pad_token_id=processor.tokenizer.pad_token_id,
-                        audio_token_id=base.config.audio_token_id,audio_chunk_size=base.config.audio_config.n_window*2,
-                        audio_infer_window=base.config.audio_config.n_window_infer)
+                if (ref_records is not None or card_probs is not None) and step == 0:
                     reports=[]
                     with torch.no_grad():
                         for group in range(4):
                             start=group*c['microbatch']
                             sample=items[start:start+c['microbatch']]
                             inputs=[{k:x[k] for k in ('request_id','policy_id','inputs','positions')} for x in sample]
-                            z=forward_context_audio_batch(wrapped,inputs,device=torch.device('npu',local),
-                                dtype=torch.bfloat16,policy_id=policy,**collate)
-                            prob=torch.tensor([ref_records[rows[v['id']]['request_key']]['prob']
-                                for v in metadata[start:start+len(sample)]])
-                            actual=z.float().sigmoid().cpu()
+                            z=forward(wrapped,inputs,device=torch.device('npu',local),
+                                      dtype=torch.bfloat16,policy_id=policy,**collate)
+                            ids = [rows[v['id']] for v in metadata[start:start+len(sample)]]
+                            if card_binding:
+                                prob=card_probs[[v['index'] for v in ids]]
+                                actual=z.sigmoid().float().cpu()
+                            else:
+                                prob=torch.tensor([ref_records[v['request_key']]['prob'] for v in ids])
+                                actual=z.float().sigmoid().cpu()
                             error=float((actual-prob).abs().max())
                             flips=int(((actual>=.5)!=(prob>=.5)).sum())
                             reports.append(dict(rows=len(prob),max_abs=error,threshold_flips=flips,
                                 passed=error<=c['behavior_bounds']['probability_max_abs'] and flips==0))
                     commit_json(out/'initial-parity.json',reports)
-                    if not all(r['passed'] for r in reports):
+                    parity_passed = all(r['passed'] for r in reports)
+                    if card_binding:
+                        reports_by_rank = [None]*world
+                        dist.all_gather_object(reports_by_rank, parity_passed)
+                        parity_passed = all(reports_by_rank)
+                    if not parity_passed:
                         raise ValueError('Stage1 producer vs actor discrepancy; see initial-parity.json')
-                    del ref_records
-                    ref_records=None
+                    ref_records = card_probs = None
                 metrics=actor.update_policy(pack(items))
                 torch.npu.synchronize()
                 norms=metrics['actor/grad_norm']

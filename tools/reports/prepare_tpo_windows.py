@@ -22,6 +22,7 @@ def prepare(c):
     full=c.get('full_joint')
     joint=c.get('joint')
     allocation = window_device_plan(c) if full or joint else None
+    cards = c.get('card_input')
     parent=json.loads((verified(orig,full['runtime_sha256']) if full else orig).read_bytes())
     if not full:
         data=Path(c['targets'])
@@ -45,8 +46,15 @@ def prepare(c):
                 raise ValueError('new pair population required before freezing actor margin training')
             for name, sha in m['files'].items():
                 verified(data/name, sha)
-        remote_parent=Path(parent['source_policy']).parents[1]
-        remote_ref=parent['reference_dataset']['root']
+        if cards:
+            if (full or joint or c.get('next_macro_reference') or not m.get('card_input')
+                    or m['reference_sha256'] != parent['reference_dataset']['manifest_sha256']
+                    or m['source_policy_sha256'] != cards['policy_sha256']
+                    or m['schedule']['global_batch'] != len(parent['physical_devices'])*parent['batch_config']['per_dp_replica_batch']):
+                raise ValueError('invalid fixed card TPO deployment')
+        else:
+            remote_parent=Path(parent['source_policy']).parents[1]
+            remote_ref=parent['reference_dataset']['root']
     entry=pkg/'entry'
     entry.mkdir(parents=True,exist_ok=False)
     if full:
@@ -107,6 +115,28 @@ def prepare(c):
         return
     shutil.copytree(data,entry/'targets')
     windows = [('finite','tpo','finite'),('tpo','tpo','formal')]
+    parity = []
+    if cards:
+        shutil.copyfile(orig, entry/'parent.json')
+        parent_in = '/jev-entry/parent.json'
+        inference = cards['inference_devices']
+        if len(inference) != 2 or len(set(devices+inference)) != len(devices)+len(inference):
+            raise ValueError('two independent inference cards are required')
+        probes = []
+        for index, device in enumerate(inference):
+            name = f'infer-{index}'
+            receipt = f'{name}/receipt.json'
+            opts = dict(phase='card_tpo_parity', source=dict(root='/jev-entry/source',sha256=frozen['manifest_sha256']),
+                io_workers=c['io_workers'], training=dict(physical_device=device, probe_start=index*4,
+                parent=parent_in, parent_sha=file_hash(orig), targets='/jev-entry/targets',
+                target_sha=file_hash(data/'MANIFEST.json'), output=f'/jev-work/{name}'))
+            commit_json(entry/(name+'.json'),macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
+            parity.append(dict(path='/jev-work/'+receipt, physical_device=device))
+            probes.append(dict(name=name,devices=[device],cpus=cards['inference_cpus'],memory=f"{geometry['memory_gib']}g",
+                               shm=f"{geometry['shm_gib']}g",collect=receipt))
+        groups.append(probes)
+    else:
+        parent_in = str(remote_parent/'config.json')
     dynamic=c.get('next_macro_reference')
     if dynamic:
         from tools.reports.tpo_next_macro_reference import prepare as prepare_next
@@ -117,9 +147,11 @@ def prepare(c):
         windows.append(('direct','direct','formal'))
     for name,arm,window in windows:
         opts=dict(phase='tpo_train',source=dict(root='/jev-entry/source',sha256=frozen['manifest_sha256']),
-                  io_workers=c['io_workers'],training=dict(world_size=world,parent=str(remote_parent/'config.json'),
+                  io_workers=c['io_workers'],training=dict(world_size=world,parent=parent_in,
                   targets='/jev-entry/targets',output='/jev-work/'+name,parent_sha=file_hash(orig),
                   target_sha=file_hash(data/'MANIFEST.json'),arm=arm,window=window,finite_receipt='/jev-work/finite/receipt.json'))
+        if cards:
+            opts['training']['card_inference_parity'] = parity
         if dynamic:
             opts['training']['next_macro_sha']=file_hash(entry/'next-macro.json')
         commit_json(entry/(name+'.json'),macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
@@ -127,15 +159,19 @@ def prepare(c):
                     shm=f"{geometry['shm_gib']}g",collect=name+'/receipt.json')])
     archive=pkg/'entry.tar'
     with tarfile.open(archive,'x') as t:t.add(entry,arcname='entry')
-    ctl.update(archive=str(archive),chains=[groups],read_only_mounts=[
-        str(remote_parent)+':'+str(remote_parent),remote_ref+':'+remote_ref],
-        device_group_lease=True,wait_for_lease=True)
+    mounts = ctl['read_only_mounts'] if cards else [str(remote_parent)+':'+str(remote_parent),remote_ref+':'+remote_ref]
+    ctl.update(archive=str(archive),chains=[groups],read_only_mounts=mounts,
+               device_group_lease=True,wait_for_lease=True)
     if 'ranking_repair' in m or 'bidirectional_contrast' in m:
         ctl['entry_archive_sha256'] = file_hash(archive)
         names = ['source/FILES.json', 'finite.json', 'tpo.json', 'targets/MANIFEST.json',
                  *(f'targets/{name}' for name in m['files'])]
+        if cards:
+            names += ['parent.json', *(j['name']+'.json' for j in groups[0])]
+            ctl.pop('idle_devices', None)
+        else:
+            ctl['idle_devices'] = devices
         ctl['entry_pins'] = {name: file_hash(entry/name) for name in names}
-        ctl['idle_devices'] = devices
     if dynamic:
         ctl['read_only_mounts'].append(dynamic['control_root']+':/jev-control')
     commit_json(pkg/'operations-local.json',macros('NATIVE_SEAL_OPERATIONS_CONFIG',ctl))

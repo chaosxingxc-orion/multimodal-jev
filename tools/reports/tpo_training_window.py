@@ -19,6 +19,12 @@ def run(c):
     bound={k:t[k] for k in ('target_sha','parent_sha','world_size')}
     bound['source']=c['source']['sha256']
     if 'next_macro_sha' in t: bound['next_macro_sha']=t['next_macro_sha']
+    for check in t.get('card_inference_parity', []):
+        proof = read(Path(check['path']))
+        if (proof['physical_device'] != check['physical_device'] or proof['passed'] is not True
+                or any(proof[k] != bound[k] for k in ('target_sha','parent_sha','source'))
+                or len(proof['passes']) != 4 or not all(r['passed'] for r in proof['passes'])):
+            raise ValueError('inference receipt does not bind this card TPO window')
     if t['window']=='formal':
         receipt=read(Path(t['finite_receipt']))
         if receipt['passed'] is not True or receipt['binding']!=bound:

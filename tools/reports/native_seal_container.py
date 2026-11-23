@@ -90,6 +90,9 @@ def main():
     elif c['phase'] == 'joint_tpo':
         from tools.reports.joint_tpo_window import run
         result = run(c)
+    elif c['phase'] == 'card_tpo_parity':
+        from tools.reports.card_tpo_batches import check_inference
+        result = check_inference(c)
     elif c['phase'] == 'tpo_train':
         from tools.reports.tpo_training_window import run
         result = run(c)
