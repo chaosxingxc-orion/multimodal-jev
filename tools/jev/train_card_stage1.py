@@ -273,8 +273,15 @@ def run(c,root):
                     if index == start_update or batches[index]['epoch'] != batches[index-1]['epoch']:
                         previous = None
                         if batches[index]['epoch']:
-                            report = json.loads((root/f'confusion-epoch-{batches[index]["epoch"]}.json').read_bytes())
-                            checkpoint = root/f'checkpoint-{index:04d}-committed.json'
+                            resumed = index == start_update and bool(start_update)
+                            witness = c.get('resume_confusion') if resumed else None
+                            report_path = (Path(witness['path']) if witness else
+                                           root/f'confusion-epoch-{batches[index]["epoch"]}.json')
+                            if witness and file_hash(report_path) != witness['sha256']:
+                                raise ValueError('resumed epoch confusion changed')
+                            report = json.loads(report_path.read_bytes())
+                            checkpoint_root = Path(c['resume_root']) if resumed else root
+                            checkpoint = checkpoint_root/f'checkpoint-{index:04d}-committed.json'
                             if report['checkpoint_sha256'] != file_hash(checkpoint):
                                 raise ValueError('hard negative map belongs to a different checkpoint')
                             previous = report['distribution']
@@ -377,7 +384,7 @@ def run(c,root):
                     real_queries=real_queries,
                     peak_allocated=torch.npu.max_memory_allocated(),checkpoint=save_now,optimizer_audit=audit)
                 records.append(record);atomic_json(out/f'update-{index+1:04d}.json',record)
-                if (triplet and not c['engineering_prefix'] and
+                if (triplet and not c['engineering_prefix'] and c.get('mine_after_window', True) and
                         (index+1 == len(batches) or batches[index+1]['epoch'] != batches[index]['epoch'])):
                     from multimodal_jev.intent_triplet_training import mine_epoch
                     epoch = batches[index]['epoch']

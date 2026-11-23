@@ -56,6 +56,8 @@ def prepare(c, root):
 
 
 def run(c):
+    if 'resume' in c:
+        return run_resume(c)
     role = c['role']
     entry, work = Path(c['entry']),Path(c['work'])
     root = work/role
@@ -202,5 +204,73 @@ def run(c):
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    commit_json(root/'receipt.json',receipt)
+    return receipt
+
+
+def run_resume(c):
+    """Restore identical optimizer shards in isolated finite and formal runs."""
+    from tools.reports.collect_card_first_updates import summarize
+
+    role = c['role']
+    finite = role == 'finite'
+    if role not in ('finite', 'formal'):
+        raise ValueError('unknown resume window')
+    entry, work = Path(c['entry']), Path(c['work'])
+    root = work/role
+    root.mkdir()
+    resume = c['resume']
+    parent_path = entry/'parent-training.json'
+    if file_hash(parent_path) != resume['parent_config_sha256']:
+        raise ValueError('parent training config changed')
+    parent = read(parent_path)
+    start = resume['start_update']
+    checkpoint = Path(resume['checkpoint_root'])/f'checkpoint-{start:04d}-committed.json'
+    confusion = entry/'confusion.json'
+    if (file_hash(checkpoint) != resume['checkpoint_sha256']
+            or file_hash(confusion) != resume['confusion_sha256']
+            or read(confusion)['checkpoint_sha256'] != resume['checkpoint_sha256']):
+        raise ValueError('resume checkpoint or merged confusion identity differs')
+    stop = start+c['finite_updates'] if finite else parent['stop_update']
+    binding = dict(checkpoint_sha256=resume['checkpoint_sha256'], confusion_sha256=resume['confusion_sha256'],
+                   start_update=start)
+    if not finite:
+        proof = read(work/'finite/receipt.json')
+        if (any(proof[k] != v for k,v in binding.items()) or proof['engineering_prefix'] is not True
+                or proof['stop_update'] != start+c['finite_updates']
+                or proof['parity_passes'] != c['parity_passes']):
+            raise ValueError('finite resume did not admit this checkpoint and confusion table')
+    card = dict(parent['single_card'],path=str(Path(resume['prepared_root'])/'single.json'))
+    parent.update(start_update=start, stop_update=stop, resume_root=str(checkpoint.parent),
+                  resume_confusion=dict(path=str(confusion),sha256=resume['confusion_sha256']),
+                  single_card=card, engineering_prefix=finite, training_dispatch_allowed=not finite,
+                  parity_passes=c['parity_passes'] if finite else 0, mine_after_window=False,
+                  pins=dict(parent['pins'],**{str(checkpoint):resume['checkpoint_sha256']}))
+    commit_json(root/'config.json',parent)
+    world = len(parent['physical_devices'])
+    subprocess.run([sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
+                    '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),
+                    '--max-restarts=0','--nproc-per-node='+str(world),
+                    str(entry/'source/tools/jev/train_card_stage1.py'),
+                    '--config',str(root/'config.json'),'--output',str(root/'run')],check=True)
+    result = read(root/'run/result.json')
+    if (result['passed'] is not True or result['start_update'] != start
+            or result['stop_update'] != stop or result['engineering_prefix'] is not finite):
+        raise ValueError('resume terminal differs')
+    ranks = [root/'run'/f'rank-{i}' for i in range(world)]
+    restored = dict(exact_masters=True, exact_adam=True, completed_updates=start)
+    if any(read(rank/'restored.json') != restored for rank in ranks):
+        raise ValueError('all-rank optimizer restoration is required')
+    if finite:
+        for rank in ranks:
+            parity = read(rank/'inference-parity.json')
+            if (parity['inference_passes'] != c['parity_passes']
+                    or parity['compared'] != c['parity_passes']*parent['microbatch']
+                    or not 0 <= parity['max_abs'] <= parent['parity_probability_atol']):
+                raise ValueError('resume inference parity incomplete')
+        for step in range(start+1,stop+1):
+            summarize([read(r/f'update-{step:04d}.json') for r in ranks],step,parent)
+    receipt = dict(binding, passed=True, stop_update=stop, engineering_prefix=finite,
+                   parity_passes=parent['parity_passes'], ranks=world, config_sha256=file_hash(root/'config.json'))
     commit_json(root/'receipt.json',receipt)
     return receipt

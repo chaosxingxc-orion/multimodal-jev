@@ -19,7 +19,8 @@ try:
   for p in [root,root/'run',*[root/'run'/f'rank-{r}' for r in range(c['world'])]]:
    if p.is_dir() and str(p) not in watched:
     if libc.inotify_add_watch(fd,str(p).encode(),0x100|0x80|0x8)>=0:watched.add(str(p))
-  names=[root/'run'/f'rank-{r}'/f'update-{s:04d}.json' for s in range(1,c['updates']+1) for r in range(c['world'])]
+  start=c.get('start_update',0)
+  names=[root/'run'/f'rank-{r}'/f'update-{s:04d}.json' for s in range(start+1,start+c['updates']+1) for r in range(c['world'])]
   if all(p.is_file() for p in names):
    records=[json.loads(p.read_text()) for p in names]
    if any(not all(math.isfinite(float(x)) for v in rec['metrics'].values() for x in (v if isinstance(v,list) else [v]) if isinstance(x,(int,float))) for rec in records):raise ValueError('nonfinite metrics')

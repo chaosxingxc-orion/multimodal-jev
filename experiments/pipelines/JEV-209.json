@@ -2,20 +2,11 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "epoch1-resumable-scoring-v3",
+  "revision": "stage1-epoch2-resume-v1",
   "stages": {
     "data": [
       {
         "id": "admit-mixed-recordings",
-        "config": "configs/portable/operations/card-synthetic-admission.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.admit_stage1_synthetic",
-            "configs/portable/operations/card-synthetic-admission.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
         "checks": [
           {
             "path": "${MIXED_ROOT}/full-train/admission.json",
@@ -63,40 +54,9 @@
       },
       {
         "id": "score-full-train",
-        "config": "configs/portable/operations/card-scoring-full-train.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-full-train.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "updates"
-                ],
-                143
-              ]
-            ]
-          }
-        ],
-        "dispatch_guards": [
-          "${CARD_SCORE_FORMAL_PACKAGE}/entry.tar"
-        ],
         "checks": [
           {
-            "path": "${CARD_SCORE_FORMAL_PACKAGE}/audit.json",
+            "path": "${CARD_MERGED_SCORE}/audit.json",
             "equals": [
               [
                 [
@@ -139,13 +99,84 @@
               "checkpoint_sha256": [
                 "checkpoint_sha256"
               ]
-            }
+            },
+            "cite": "jev-card-score-209-epoch1-v0.0.4/merged/audit.json"
           }
         ]
       },
       {
         "id": "resume-stage1-epoch2",
-        "pending": "待完整混淆表与第 143 步优化器状态通过恢复验收。"
+        "config": "configs/portable/operations/card-stage1-epoch-resume.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.resume_card_stage1",
+            "configs/portable/operations/card-stage1-epoch-resume.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "dispatch_guards": [
+          "${CARD_RESUME_PACKAGE}/entry.tar"
+        ],
+        "checks": [
+          {
+            "path": "${CARD_RESUME_OPERATIONS}/first-updates.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "start_update"
+                ],
+                143
+              ],
+              [
+                [
+                  "total_updates"
+                ],
+                286
+              ]
+            ],
+            "report": {
+              "start_update": [
+                "start_update"
+              ],
+              "total_updates": [
+                "total_updates"
+              ],
+              "ranks": [
+                "ranks"
+              ]
+            }
+          },
+          {
+            "path": "${CARD_RESUME_OPERATIONS}/formal-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "stop_update"
+                ],
+                286
+              ],
+              [
+                [
+                  "engineering_prefix"
+                ],
+                false
+              ]
+            ]
+          }
+        ]
       },
       {
         "id": "evaluate-expanded-endpoint",
