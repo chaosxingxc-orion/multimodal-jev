@@ -113,19 +113,19 @@ def execute(template, local):
 
 
 def check_partition(source, lane_configs, population, head):
-    if type(head) is not int or head < 1 or not lane_configs:
-        raise ValueError('positive head size and at least one tail lane required')
+    if type(head) is not int or head < 0 or not lane_configs:
+        raise ValueError('nonnegative head size and at least one scoring lane required')
     replicas, size = len(source['devices']), source['formal']['recordings_per_block']
     for ordinal in range(replicas):
         rows = len(range(ordinal, population, replicas))
         offsets = list(range(0, rows, size))
         assigned = [offset for spec in lane_configs for offset in scoring_offsets(spec, rows)]
         if head >= len(offsets) or assigned != offsets[head:]:
-            raise ValueError('tail ownership must cover the parent exactly once in block order')
+            raise ValueError('scoring lanes must cover the assigned population exactly once in block order')
 
 
 def merge(template, local):
-    """Wait for both bounded lanes, then collect and audit the union."""
+    """Audit the union of completed scoring lanes and any parent prefix."""
     from concurrent.futures import ThreadPoolExecutor
 
     from multimodal_jev.context_execution import map_cpu
@@ -156,18 +156,6 @@ def merge(template, local):
         raise ValueError('cannot merge differing frozen policies or scoring populations')
     head = c['head_blocks']
     check_partition(source, lane_configs, len(full['rows']), head)
-    handle = pinned(dict(path=parent['launch'], sha256=parent['launch_sha256']))
-    host, remote_root, cid = (handle[k] for k in ('host', 'remote_root', 'container_id'))
-    ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', host]
-
-    def remote(*args):
-        return subprocess.check_output([*ssh, shlex.join(args)], text=True, timeout=45)
-
-    def parent_state():
-        state, = json.loads(remote('docker', 'inspect', cid))
-        inspect_runtime(state, handle)
-        verify_memory(state, handle['argv'])
-        return state['State']
 
     def wait_lane(lane, spec):
         path = Path(lane['package'])
@@ -196,28 +184,48 @@ def merge(template, local):
     with ThreadPoolExecutor(max_workers=len(lanes)) as pool:
         results = [p.result() for p in [pool.submit(wait_lane, lane, spec)
                    for lane, spec in zip(lanes, lane_configs, strict=True)]]
-    names = [(f'score/worker-{i}/block-{j:06d}.json')
-             for i in range(replicas) for j in range(head)]
-    while True:
-        state = parent_state()
-        existing = set(remote('find', remote_root+'/score', '-maxdepth', '2', '-name',
-                              'block-*.json', '-printf', '%P\\n').splitlines())
-        if all(name.removeprefix('score/') in existing for name in names):
-            break
-        if not state['Running'] or time.monotonic() >= deadline:
-            raise ValueError('parent did not reach the frozen head boundary')
-        time.sleep(c['status_interval_seconds'])
+    scoring = [(spec, raw, None) for spec, (raw, _) in
+               zip(lane_configs, results, strict=True)]
+    observed_parent = {}
+    if head:
+        handle = pinned(dict(path=parent['launch'], sha256=parent['launch_sha256']))
+        host, remote_root, cid = (handle[k] for k in ('host', 'remote_root', 'container_id'))
+        ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', host]
 
-    for i in range(replicas):
-        names += [f'score/fsdp-{i}/reference.json', *(f'score/worker-{i}/{name}' for name in (
-            'lineage.json', 'panel-ready.json', 'baseline.json', f'batch-{width}.json'))]
-    collect(host, remote_root, root/'parent', ['score/admission.json', *names])
-    first = root/'parent/score'
-    scoring = [(source, first, range(head)), *((spec, raw, None) for spec, (raw, _) in
-               zip(lane_configs, results, strict=True))]
-    admitted = progress(first, entry)
-    if not admitted['admitted'] or admitted['blocks'] != replicas*head:
-        raise ValueError('parent prefix is incomplete')
+        def remote(*args):
+            return subprocess.check_output([*ssh, shlex.join(args)], text=True, timeout=45)
+
+        def parent_state():
+            state, = json.loads(remote('docker', 'inspect', cid))
+            inspect_runtime(state, handle)
+            verify_memory(state, handle['argv'])
+            return state['State']
+
+        names = [(f'score/worker-{i}/block-{j:06d}.json')
+                 for i in range(replicas) for j in range(head)]
+        while True:
+            state = parent_state()
+            existing = set(remote('find', remote_root+'/score', '-maxdepth', '2', '-name',
+                                  'block-*.json', '-printf', '%P\\n').splitlines())
+            if all(name.removeprefix('score/') in existing for name in names):
+                break
+            if not state['Running'] or time.monotonic() >= deadline:
+                raise ValueError('parent did not reach the frozen head boundary')
+            time.sleep(c['status_interval_seconds'])
+
+        for i in range(replicas):
+            names += [f'score/fsdp-{i}/reference.json', *(f'score/worker-{i}/{name}' for name in (
+                'lineage.json', 'panel-ready.json', 'baseline.json', f'batch-{width}.json'))]
+        collect(host, remote_root, root/'parent', ['score/admission.json', *names])
+        first = root/'parent/score'
+        admitted = progress(first, entry)
+        if not admitted['admitted'] or admitted['blocks'] != replicas*head:
+            raise ValueError('parent prefix is incomplete')
+
+        scoring.insert(0, (source, first, range(head)))
+        reference_raw, comparisons = first, results
+    else:
+        reference_raw, comparisons = results[0][0], results[1:]
 
     def panel_probs(raw):
         output = {}
@@ -227,8 +235,9 @@ def merge(template, local):
             output.update(part)
         return output
 
-    reference = panel_probs(first)
-    parity = [compare(panel, reference, panel_probs(raw), source['probability_atol']) for raw, _ in results]
+    reference = panel_probs(reference_raw)
+    parity = [compare(panel, reference, panel_probs(raw), source['probability_atol'])
+              for raw, _ in comparisons]
     if any(r[k] for r in parity for k in ('probabilities_over_atol', 'top1_disagreements', 'class_rank_disagreements')):
         raise ValueError(f'cross-host score parity failed: {parity}')
     lookup = {}
@@ -270,21 +279,23 @@ def merge(template, local):
                                            torch.tensor(counts), training['epoch_mining']['zipf_exponent'])
     formal = source['formal']
     pairs = len(seen)*len(labels)
-    path = root/'confusion-epoch-1.json'
+    path = root/(f"confusion-step-{formal['updates']:04d}.json" if not head else 'confusion-epoch-1.json')
     commit_json(path, dict(labels=labels, counts=counts, probability_sums=totals,
-                           distribution=distribution, pairs=pairs, epoch=0,
+                           distribution=distribution, pairs=pairs, **({'epoch': 0} if head else {}),
                            checkpoint_sha256=formal['checkpoint_sha256'],
                            policy_id=formal['policy_id'], full_sha256=source['full']['sha256']))
-    state = parent_state()
-    if state['Running']:
-        commit_json(root/'parent-stop-intent.json', dict(container_id=cid, reason='all TRAIN scores audited'))
-        remote('docker', 'stop', '--time', str(c['stop_grace_seconds']), cid)
+    if head:
         state = parent_state()
-    if state['Status'] != 'exited' or state['Pid'] != 0 or state['OOMKilled']:
-        raise ValueError('parent container release not observed')
+        if state['Running']:
+            commit_json(root/'parent-stop-intent.json', dict(container_id=cid, reason='all TRAIN scores audited'))
+            remote('docker', 'stop', '--time', str(c['stop_grace_seconds']), cid)
+            state = parent_state()
+        if state['Status'] != 'exited' or state['Pid'] != 0 or state['OOMKilled']:
+            raise ValueError('parent container release not observed')
+        observed_parent = dict(parent_container=cid, parent_exit=state['ExitCode'])
     report = dict(passed=True, container_exited=True, updates=formal['updates'],
                   recordings=len(seen), pairs=pairs, checkpoint_sha256=formal['checkpoint_sha256'],
-                  confusion_sha256=file_hash(path), parent_container=cid, parent_exit=state['ExitCode'],
+                  confusion_sha256=file_hash(path), **observed_parent,
                   lanes=[proof for _, proof in results], cross_host_parity=parity)
     commit_json(root/'audit.json', report)
     return report

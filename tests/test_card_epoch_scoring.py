@@ -24,6 +24,20 @@ def test_parallel_tail_rejects_gaps_and_overlap_for_uneven_shards():
             check_partition(source, wrong, 11, 1)
 
 
+def test_parallel_lanes_can_cover_entire_population():
+    from tools.reports.card_scoring_shards import check_partition
+
+    source = dict(devices=[0, 1], formal=dict(recordings_per_block=2))
+
+    def lane(lower, upper):
+        return dict(formal=dict(recordings_per_block=2, block_range=[lower, upper]))
+
+    check_partition(source, [lane(0, 1), lane(1, None)], 11, 0)
+    for wrong in ([lane(0, 2), lane(1, None)], [lane(1, None)], [lane(0, 1)]):
+        with pytest.raises(ValueError, match='exactly once'):
+            check_partition(source, wrong, 11, 0)
+
+
 def write(path, value):
     path.write_text(json.dumps(value))
     return file_hash(path)

@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "stage1-epoch2-resume-v3",
+  "revision": "stage1-endpoint-score-v1",
   "stages": {
     "data": [
       {
@@ -175,6 +175,120 @@
                 false
               ]
             ]
+          }
+        ]
+      },
+      {
+        "id": "audit-stage1-endpoint",
+        "checks": [
+          {
+            "path": "${CARD_ENDPOINT_AUDIT}",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                286
+              ],
+              [
+                [
+                  "ranks"
+                ],
+                8
+              ],
+              [
+                [
+                  "checkpoint_sha256"
+                ],
+                "6f8ed31a52fcdaf2cf45199e296ba4421987d9b50b259f3a5fec5b20b044e71f"
+              ]
+            ],
+            "report": {
+              "updates": [
+                "updates"
+              ],
+              "ranks": [
+                "ranks"
+              ],
+              "checkpoint_sha256": [
+                "checkpoint_sha256"
+              ],
+              "policy_id": [
+                "policy_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "score-stage1-endpoint-train",
+        "checks": [
+          {
+            "path": "${CARD_ENDPOINT_MERGED_AUDIT}",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                286
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                109610
+              ],
+              [
+                [
+                  "pairs"
+                ],
+                7453480
+              ],
+              [
+                [
+                  "checkpoint_sha256"
+                ],
+                "6f8ed31a52fcdaf2cf45199e296ba4421987d9b50b259f3a5fec5b20b044e71f"
+              ]
+            ],
+            "report": {
+              "updates": [
+                "updates"
+              ],
+              "recordings": [
+                "recordings"
+              ],
+              "pairs": [
+                "pairs"
+              ],
+              "cross_host_parity": [
+                "cross_host_parity"
+              ]
+            }
           }
         ]
       },
