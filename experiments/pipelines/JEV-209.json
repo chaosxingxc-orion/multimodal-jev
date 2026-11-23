@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-209.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "card-tpo-v2",
+  "revision": "card-endpoint-eval-v1",
   "stages": {
     "data": [
       {
@@ -293,10 +293,6 @@
         ]
       },
       {
-        "id": "evaluate-expanded-endpoint",
-        "pending": "新训练端点提交后按新策略身份绑定源域和迁移评测。"
-      },
-      {
         "id": "build-fused-stage2-view",
         "config": "configs/portable/operations/card-tpo-targets.json",
         "python": "${CARD_PYTHON}",
@@ -389,20 +385,6 @@
       {
         "id": "train-fused-tpo",
         "python": "${CARD_PYTHON}",
-        "dispatch_guards": [
-          "${CARD_TPO_ROOT}/ops"
-        ],
-        "run": [
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${CARD_TPO_ROOT}/package/operations-local.json",
-            "--observe-tpo-package",
-            "${CARD_TPO_ROOT}/package"
-          ]
-        ],
         "checks": [
           {
             "path": "${CARD_TPO_ROOT}/ops/infer-0-collected.json",
@@ -524,6 +506,18 @@
                   "window"
                 ],
                 "formal"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                70
+              ],
+              [
+                [
+                  "arm"
+                ],
+                "tpo"
               ]
             ]
           },
@@ -543,12 +537,506 @@
     ],
     "evaluate": [
       {
-        "id": "audit-curves-and-card-effects",
-        "pending": "待绑定源域曲线、卡片配对诊断与源 TRAIN 阈值校准。"
-      },
-      {
         "id": "evaluate-stage1-and-fused-stage2",
-        "pending": "待绑定新 Stage1 与融合 Stage2 的五面板配对评测、历史 206 与 208 对照及台账回填。"
+        "config": "configs/portable/operations/card-paired-endpoint-evaluation.json",
+        "python": "${CARD_PYTHON}",
+        "dispatch_guards": [
+          "${CARD_PAIR_ROOT}/ops"
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_paired_card_evaluation",
+            "configs/portable/operations/card-paired-endpoint-evaluation.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_PAIR_ROOT}/package/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-probability-panels-v1"
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                12991
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                12991
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                9226
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                9226
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                8168
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                8168
+              ],
+              [
+                [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                320
+              ],
+              [
+                [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                320
+              ],
+              [
+                [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                98
+              ],
+              [
+                [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                98
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                13078
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                13078
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                70
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_ENDPOINT_AUDIT}",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                286
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60",
+            "scope": "SLURP clean TEST",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 step 70",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_clean_SELECTION60",
+            "scope": "SLURP clean selection",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 step 70",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14",
+            "scope": "MINDS native14",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 step 70",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SIB_FLEURS_eng_topic7",
+            "scope": "SIB-FLEURS 英语话题",
+            "population": 320,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 step 70",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MMSU_polysemy",
+            "scope": "MMSU 多义词",
+            "population": 98,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "Stage2 step 70",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_official_TEST60",
+            "scope": "SLURP 完整官方 TEST（历史口径诊断）",
+            "population": 13078,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "Stage2 step 70",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy"
+                }
+              }
+            ]
+          }
+        ]
       }
     ]
   },

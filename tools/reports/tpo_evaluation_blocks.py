@@ -156,7 +156,14 @@ def worker(spec):
             if dataset not in loaded:
                 c = endpoint_config(spec, parent, spec['endpoints'][dataset])
                 verify = dict(expected_cache=plan['inputs'][dataset])
-                if 'train_view' in c:
+                single = None
+                if 'single_card' in spec:
+                    from tools.reports.evaluate_single_cards import SingleCardScorer
+                    assets, candidates, encode, requests = load(c, include_requests=True, **verify)
+                    source_cards = c.get('use_source_cards', False)
+                    single = SingleCardScorer(spec['single_card'], processor, candidates, collate,
+                                              requests=None if source_cards else requests)
+                elif 'train_view' in c:
                     from tools.reports.calibrate_tpo_probabilities import cached_source
                     view = c['train_view']
                     if (view['roster']['sha256'] != plan['inputs'][dataset]['roster']
@@ -177,8 +184,8 @@ def worker(spec):
                     sources = with_baseline(spec, sources)
                 if any(plan['policies'].get(a) != pid for a, (_, pid) in sources.items()):
                     raise ValueError('worker policies differ from block plan')
-                loaded[dataset] = (c, {asset['id']: asset for asset in assets}, encode, sources, requests)
-            c, assets, encode, sources, requests = loaded[dataset]
+                loaded[dataset] = (c, {asset['id']: asset for asset in assets}, encode, sources, requests, single)
+            c, assets, encode, sources, requests, single = loaded[dataset]
             path, pid = sources[arm]
             if pid != current:
                 if processor_cache_identity(path) != initial_processor:
@@ -200,8 +207,11 @@ def worker(spec):
                         if first_batch_unix is None:
                             first_batch_unix = time.time()
                         yield item
-                products = {'prob': probabilities(model, device, provider, collate, pid, remember(),
-                                                  spec['batch'], check_singleton=block['offset'] == 0)}
+                items = remember()
+                products = {'prob': (single.score(model, device, provider, pid, items,
+                                                   check_batch=block['offset'] == 0)
+                                     if single else probabilities(model, device, provider, collate, pid, items,
+                                                                  spec['batch'], check_singleton=block['offset'] == 0))}
             if compiler is not None:
                 def forward(batch, policy):
                     return provider.forward(model, batch, device=device, dtype=torch.bfloat16,

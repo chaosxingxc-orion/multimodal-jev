@@ -1,0 +1,83 @@
+{
+  "output": "${CARD_PAIR_ROOT}/package",
+  "deployment": "${CARD_PAIR_DEPLOYMENT}",
+  "stage1_snapshot": "${CARD_PAIR_STAGE1_SNAPSHOT}",
+  "stage1_audit": {
+    "path": "${CARD_ENDPOINT_AUDIT}",
+    "sha256": "e0f54dedd1e5e725613f8f604d781588e0801a4b97398e219c013dbcd2048aa1"
+  },
+  "stage1_manifest": {
+    "path": "${CARD_PAIR_STAGE1_MANIFEST}",
+    "sha256": "2516faaed78c2a25d6b2f72ac521aca550d91e9465d010ec38edc7e654b6b9b4"
+  },
+  "training_config": {
+    "path": "${CARD_TPO_ROOT}/package/entry/tpo.json",
+    "sha256": "a59d97e3237feca7bc8ebc6ac113171ce34b7c1d9a6b0d562c41cebd9ed55215"
+  },
+  "training_deployment": {
+    "path": "${CARD_TPO_ROOT}/package/operations-local.json",
+    "sha256": "9cf9a3de86413d5eb813725cbe15a27509051761b90feda6726b63281933dfaa"
+  },
+  "eval_plan": {
+    "path": "${CARD_PAIR_PRIOR}/entry/block-plan.json",
+    "sha256": "26da38f5b75ee629f4641e46a52a04f29aae0a2e2e5651be32ac0728c4db3bd0"
+  },
+  "eval_score": {
+    "path": "${CARD_PAIR_PRIOR}/entry/score.json",
+    "sha256": "476d315658fe601af2e201607ca8bda9ce6cde366c455c7c7ca034510592b5f1"
+  },
+  "eval_calibration": {
+    "path": "${CARD_PAIR_PRIOR}/entry/calibration-0.json",
+    "sha256": "729e2074afa2dcf70bdf164c5ac35ffa3e6056cc6861f952cebc34aeb45c4094"
+  },
+  "old_parent": {
+    "path": "${CARD_PAIR_PRIOR}/entry/parent.json",
+    "sha256": "6dca4fb5f8c63d7f62b7d3128ab32253fe4c4149637f9e406de2314e21dc01b7"
+  },
+  "old_cards_view": {
+    "path": "${CARD_PAIR_PRIOR}/entry/cards.json",
+    "sha256": "c514f0890f48f0213f066195426e87a6820ee144fac9f1b51130c70991485d0d"
+  },
+  "calibration_roster": {
+    "path": "${CARD_PAIR_PRIOR}/entry/calibration-roster.json",
+    "sha256": "11f979070100b1983e55abc1664c4a10c91fdd4cc70b040257f22dd482d906a9"
+  },
+  "cards": {
+    "path": "${CARD_PAIR_FROZEN_CARDS}",
+    "sha256": "3c11f1e042ba00f556582643d919b6005e9ec633e257188e5514c7373efa1a32"
+  },
+  "stage1_updates": 286,
+  "stage2_updates": 70,
+  "training_labels": 68,
+  "source_card_datasets": ["SLURP_clean_TEST60", "SLURP_clean_SELECTION60"],
+  "official_test": {
+    "clean_dataset": "SLURP_clean_TEST60",
+    "dataset": "SLURP_official_TEST_extra60",
+    "report_dataset": "SLURP_official_TEST60",
+    "population": 13078,
+    "requests": {
+      "path": "${CARD_PAIR_OFFICIAL}/test.requests.jsonl",
+      "sha256": "69f871d49407a6dbd10cb5cb24ad712497880796c92d41a83424ac878ff78fe4"
+    },
+    "targets": {
+      "path": "${CARD_PAIR_OFFICIAL}/test.targets.jsonl",
+      "sha256": "a88ddd796d3e4943e7964c5926b6333f12bc3f0bb238621a3bfa061e031d119a"
+    }
+  },
+  "batch": 8,
+  "pair_batch": 128,
+  "token_cache_entries": 1024,
+  "io_workers": 8,
+  "progress_interval": 16,
+  "sample_blocks": {
+    "devices": [0, 1, 2, 3, 4, 5, 6, 7],
+    "batches_per_block": 4,
+    "prefetch": 16
+  },
+  "cache_container": {"cpus": 8, "memory": "1024g", "shm": "2g"},
+  "eval_container": {"cpus": 6, "memory": "1024g", "shm": "2g"},
+  "source_patterns": [
+    "src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py",
+    "tools/__init__.py", "tools/reports/__init__.py"
+  ]
+}

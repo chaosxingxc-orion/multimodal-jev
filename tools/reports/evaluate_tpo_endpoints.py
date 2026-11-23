@@ -23,6 +23,10 @@ def read_parent(spec):
 def endpoint_config(spec, parent, endpoint):
     c = dict(endpoint, base_id=parent['base_id'], model=parent['model'], contract=parent['source_contract'],
              snapshot=parent['source_policy'], physical_devices=spec['devices'], policy_id=parent['source_policy_id'])
+    if 'single_card' in spec:
+        c['max_model_len'] = parent['view_execution']['max_input_tokens']
+        c['process_device_scope'] = dict(kind='same_container_runtime_visibility_v1',
+                                         mounted_physical=spec['devices'], visible_ordinal='0')
     require_same_provider(parent, c['cache'])
     if 'model_provider' in c:
         require_same_provider(parent, c)
@@ -113,12 +117,19 @@ def run(spec):
         from tools.reports.calibrate_tpo_probabilities import cached_source
         assets, candidates, encode = cached_source(spec['calibration'], parent)
     else:
-        assets, _, encode = load(c)
+        loaded = load(c, include_requests='single_card' in spec)
+        assets, candidates, encode = loaded[:3]
     index=spec['shard']
     assets=assets[index::spec['shards']]
     processor=processor_cache_identity(c['snapshot'])
     rows=[] if 'calibration' in spec else [(asset, encode(asset)[0]) for asset in assets]
     provider, model, device, tokenizer_processor, collate, handle = start_model(c, out)
+    single = None
+    if 'single_card' in spec:
+        from tools.reports.evaluate_single_cards import SingleCardScorer
+        requests = loaded[3] if 'calibration' not in spec else None
+        single = SingleCardScorer(spec['single_card'], tokenizer_processor, candidates, collate,
+                                  requests=requests)
     if 'card_view' in spec:
         from multimodal_jev.card_evaluation_view import wrap
         encode = wrap(spec['card_view'], tokenizer_processor, candidates, encode)
@@ -140,11 +151,13 @@ def run(spec):
                                workers=spec['io_workers'], ahead=spec['prefetch']) if newly_encoded else nullcontext(rows)
         def remembered(queue):
             for item in queue:
-                if newly_encoded:
+                if newly_encoded and not single:
                     rows.append(item)
                 yield item
         with stream as queue:
-            result=probabilities(model,device,provider,collate,pid,remembered(queue),spec['batch'])
+            items = remembered(queue)
+            result = (single.score(model, device, provider, pid, items) if single else
+                      probabilities(model, device, provider, collate, pid, items, spec['batch']))
         commit_json(out/(arm+'.json'),result)
     dataset = 'source_train_calibration' if 'calibration' in spec else c['cache']['dataset']
     return dict(dataset=dataset,shard=index,recordings=len(assets))
@@ -273,6 +286,20 @@ def collect(spec):
                         panel_results[str(k)]=dict(**metric['by_length'][str(k)],by_proposal=metric['by_proposal'])
                     choices[arm]['paired_lengths']=panel_results
             result[dataset]['choices']=choices
+    official = spec.get('official_combination')
+    if official:
+        clean, extra = (result[official[key]]['arms'] for key in ('clean', 'extra'))
+        combined = {}
+        for arm in spec['arms']:
+            a, b = clean[arm], extra[arm]
+            n = a['queries'] + b['queries']
+            if n != official['population'] or a['policy_id'] != b['policy_id']:
+                raise ValueError('complete official population and matching endpoint required')
+            combined[arm] = dict(policy_id=a['policy_id'], queries=n,
+                                 top1_accuracy=(round(a['top1_accuracy']*a['queries'])+
+                                                round(b['top1_accuracy']*b['queries']))/n)
+        result[official['dataset']] = dict(arms=combined, diagnostic_only=True,
+                                           subsets=[official['clean'], official['extra']])
     if 'probability_panels' in spec:
         result = dict(schema='jev-audited-probability-panels-v1', datasets=result,
                       seals={ds: c['cache']['seal']['sha256'] for ds,c in spec['endpoints'].items()})
