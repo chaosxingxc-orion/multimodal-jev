@@ -136,6 +136,47 @@ def test_container_uses_configured_floor_and_checks_docker():
         verify_memory({'HostConfig': {'Memory': 128*2**30}}, ['--memory', str(floor)])
 
 
+def test_scoring_checkpoint_round_trip_preserves_legacy_blocks(tmp_path, monkeypatch):
+    from multimodal_jev import local_checkpoint
+    from tools.reports.card_scoring_benchmark import commit_scoring_block, read_block
+
+    monkeypatch.setattr(local_checkpoint, 'check_paths', lambda paths: None)
+    # The on-device histogram has integer keys, including partial batches.
+    payload = dict(batch_sizes={128: 33, 120: 1, 8: 1}, records=[dict(id='a', prob=[.75])])
+    legacy = tmp_path/'legacy.json'
+    write(legacy, dict(lineage='before', sha256=content_key(payload), payload=payload))
+    stored = json.loads(legacy.read_bytes())['payload']
+    assert content_key(stored) != content_key(payload)
+    assert read_block(legacy, 'before') == stored
+    current = tmp_path/'current.json'
+    commit_scoring_block(current, 'after', payload)
+    assert read_block(current, 'after') == stored
+    with pytest.raises(ValueError, match='identity differs'):
+        read_block(current, 'before')
+    for path in (legacy, current):
+        broken = json.loads(path.read_bytes())
+        broken['payload']['records'][0]['prob'][0] = .5
+        write(path, broken)
+        with pytest.raises(ValueError, match='identity differs'):
+            read_block(path, broken['lineage'])
+
+
+def test_scoring_resume_rejects_changed_inputs_and_runtime():
+    from tools.reports.prepare_card_scoring_benchmark import validate_resume_config
+
+    old = dict(source=dict(root='/jev-entry/source', sha256='old'),
+               formal=dict(checkpoint_sha256='step'), widths=[128], panel=dict(sha256='panel'))
+    new = dict(old, source=dict(old['source'], sha256='new'),
+               formal=dict(old['formal'], resume_from='/old', resume_config={'sha256': 'prior'}))
+    old_files = {'tools/reports/card_scoring_benchmark.py': 'old', 'model.py': 'same'}
+    new_files = dict(old_files, **{'tools/reports/card_scoring_benchmark.py': 'new'})
+    validate_resume_config(new, old, new_files, old_files)
+    with pytest.raises(ValueError, match='identical scoring inputs'):
+        validate_resume_config(dict(new, widths=[224]), old, new_files, old_files)
+    with pytest.raises(ValueError, match='identical scoring inputs'):
+        validate_resume_config(new, old, dict(new_files, **{'model.py': 'changed'}), old_files)
+
+
 def test_compact_roster_and_fsdp_gate_fail_closed(tmp_path):
     from tools.reports.card_scoring_benchmark import acoustic_binding, restore_binding
 

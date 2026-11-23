@@ -20,6 +20,27 @@ from tools.reports.card_scoring_benchmark import make_panel, pinned
 from tools.reports.native_seal_operations import run
 
 
+def validate_resume_config(current, prior, current_files, prior_files):
+    """Allow reuse across the checkpoint serialization repair only."""
+    def scoring_inputs(config):
+        formal = dict(config['formal'])
+        for name in ('resume_from', 'resume_config'):
+            formal.pop(name, None)
+        return {k: v for k, v in dict(config, formal=formal).items() if k != 'source'}
+
+    checkpoint_repair_files = {
+        'tools/reports/card_scoring_benchmark.py',
+        'tools/reports/prepare_card_scoring_benchmark.py',
+    }
+    changed = {name for name in current_files.keys() | prior_files.keys()
+               if current_files.get(name) != prior_files.get(name)}
+    if (scoring_inputs(current) != scoring_inputs(prior)
+            or current['source']['root'] != prior['source']['root']
+            or current_files.keys() != prior_files.keys()
+            or changed - checkpoint_repair_files):
+        raise ValueError('resume requires identical scoring inputs and numerical runtime')
+
+
 def formal_policy(c, train, deploy):
     local = Path(c['formal']['epoch_handoff'])
     proof = json.loads((local/'receipt.json').read_bytes())
@@ -86,6 +107,7 @@ def package(c):
         policy_root = '/jev-endpoint'
         cache_root = '/jev-acoustic-prepare/synthetic-cache'
         mounts = [f'{target}:{policy_root}', f'{synthetic_cache}:{cache_root}']
+        prior = None
         if formal.get('resume_from'):
             from tools.reports.context_macro_probe_operations import inspect_runtime
 
@@ -98,9 +120,34 @@ def package(c):
                     or state['State']['Pid'] != 0 or state['State']['OOMKilled']):
                 raise ValueError('resume requires inspected stopped scoring container on the target host')
             inspect_runtime(state, origin)
-            resume = Path(origin['remote_root'])/'score'
+            origin_root = Path(origin['remote_root'])
+            resume = origin_root/'score'
+            if (not origin_root.is_absolute() or '..' in origin_root.parts or ':' in str(origin_root)
+                    or origin_root == Path(deploy['remote_root'])):
+                raise ValueError('fresh destination required for scoring resume')
             if not resume.is_absolute() or not resume.is_relative_to(Path(deploy['remote_root']).parent):
                 raise ValueError('isolated stopped scoring output required')
+            runtime_binds = [
+                *deploy.get('read_only_mounts', []), *mounts,
+                f'{deploy["shared_root"]}:{deploy["shared_root"]}',
+                f'{deploy["driver_root"]}:/usr/local/Ascend/driver',
+            ]
+            if any(f'{bind}:ro' not in state['HostConfig']['Binds'] for bind in runtime_binds):
+                raise ValueError('resume requires identical read-only model and data bindings')
+            prior_config_pin = formal['resume_from']['config_sha256']
+            ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', deploy['host']]
+
+            def copy_prior(remote_path, name, sha256):
+                local = entry/name
+                with local.open('xb') as stream:
+                    subprocess.run([*ssh, shlex.join(['cat', '--', str(remote_path)])],
+                                   stdout=stream, check=True, timeout=30)
+                return pinned(dict(path=local, sha256=sha256))
+
+            prior = copy_prior(origin_root/'entry/score.json', 'resume-score.json',
+                               prior_config_pin)['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+            prior_files = copy_prior(origin_root/'entry/source/FILES.json', 'resume-files.json',
+                                     prior['source']['sha256'])
             mounts.append(f'{resume}:/jev-score-resume')
         deploy['read_only_mounts'] = [*deploy.get('read_only_mounts', []), *mounts]
     elif inputs.get('synthetic_cache'):
@@ -154,10 +201,14 @@ def package(c):
                               fsdp_master_addr=c['fsdp_master_addr'], fsdp_master_port=c['fsdp_master_port'])
         if formal.get('resume_from'):
             spec['formal']['resume_from'] = '/jev-score-resume'
+            spec['formal']['resume_config'] = dict(path='/jev-entry/resume-score.json', sha256=prior_config_pin)
     for name in entries:
         spec[name] = dict(path=f'/jev-entry/{name}.json', sha256=file_hash(entry/(name+'.json')))
     if formal:
         spec['full_shards'] = [spec.pop(f'full-{i}') for i in range(len(devices))]
+        if prior is not None:
+            validate_resume_config(spec, prior, pinned(
+                dict(path=entry/'source/FILES.json', sha256=spec['source']['sha256'])), prior_files)
     commit_json(entry/'score.json', dict(schema='jev-local-macros-v1',
                                         macros=dict(NATIVE_SEAL_CONTAINER_CONFIG=spec)))
     archive = root/'entry.tar'
@@ -167,6 +218,8 @@ def package(c):
             *(name+'.json' for name in entries)]
     if not formal:
         pins.append('policy/MANIFEST.json')
+    elif prior is not None:
+        pins.append('resume-score.json')
     deploy.update(archive=str(archive), entry_archive_sha256=file_hash(archive),
                   entry_pins=dict(map_io(lambda p: (p, file_hash(entry/p)), pins, workers=c['io_workers'])[0]),
                   chains=[[[dict(name='score', devices=devices, collect='score/receipt.json', **c['resources'])]]],

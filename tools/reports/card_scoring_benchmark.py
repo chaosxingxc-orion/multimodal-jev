@@ -166,10 +166,34 @@ def scoring_lineage(c, ordinal):
 
 def read_block(path, lineage):
     block = json.loads(path.read_bytes())
-    if (block['lineage'] != lineage or
-            content_key(block['payload']) != block['sha256']):
+    keys = {'lineage', 'sha256', 'payload'}
+    if (set(block) not in (keys, keys | {'schema'}) or block['lineage'] != lineage
+            or ('schema' in block and block['schema'] != 'jev-card-scoring-block-v2')):
         raise ValueError(f'scoring block identity differs: {path.name}')
-    return block['payload']
+    payload = block['payload']
+    digest = content_key(payload)
+    if 'schema' not in block and digest != block['sha256']:
+        # The old writer sorted integer keys before JSON converted them to
+        # strings. Reproduce that exact digest; never skip the check.
+        sizes = payload['batch_sizes']
+        if any(not k.isascii() or not k.isdecimal() or str(int(k)) != k for k in sizes):
+            raise ValueError(f'noncanonical scoring batch size: {path.name}')
+        digest = content_key(dict(payload, batch_sizes={int(k): n for k, n in sizes.items()}))
+    if digest != block['sha256']:
+        raise ValueError(f'scoring block identity differs: {path.name}')
+    return payload
+
+
+def commit_scoring_block(path, lineage, payload):
+    payload = dict(payload, batch_sizes={str(k): v for k, v in payload['batch_sizes'].items()})
+    commit_json(path, dict(schema='jev-card-scoring-block-v2', lineage=lineage,
+                           sha256=content_key(payload), payload=payload))
+
+
+def resume_config(c):
+    if not c['formal'].get('resume_from'):
+        return None
+    return pinned(c['formal']['resume_config'])['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
 
 
 def wait_for_admission(c, output, workers, deadline):
@@ -188,7 +212,7 @@ def wait_for_admission(c, output, workers, deadline):
     if resume := c['formal'].get('resume_from'):
         previous = Path(resume)
         if any(previous.glob('worker-*/block-*.json')):
-            observed = audit_admission(previous, c, load_panel(c)[0],
+            observed = audit_admission(previous, resume_config(c), load_panel(c)[0],
                                        admission['baseline_rows'])
             if (json.loads((previous/'admission.json').read_bytes()) != observed
                     or observed['checkpoint_sha256'] != admission['checkpoint_sha256']):
@@ -298,18 +322,19 @@ def worker(c, output, ordinal):
         size = formal['recordings_per_block']
         lineage = scoring_lineage(c, ordinal)
         resumed = Path(formal['resume_from'])/f'worker-{ordinal}' if formal.get('resume_from') else None
+        prior_lineage = scoring_lineage(resume_config(c), ordinal) if resumed is not None else None
         offsets = range(0, len(shard), size)
         names = [f'block-{i:06d}.json' for i in range(len(offsets))]
         settings = (c['io_workers'], c['prefetch_audio'])
         saved_names = set()
         if resumed is not None:
             saved_names = {p.name for p in resumed.glob('block-*.json')}
-            if saved_names and (read(resumed/'lineage.json') != {'sha256': lineage}
+            if saved_names and (read(resumed/'lineage.json') != {'sha256': prior_lineage}
                                 or not saved_names <= set(names)):
                 raise ValueError('resume requires the same frozen shard, inputs and runtime')
             for offset, name in zip(offsets, names, strict=True):
                 if name in saved_names:
-                    validate_block((resumed/name, lineage, [r['id'] for r in shard[offset:offset+size]],
+                    validate_block((resumed/name, prior_lineage, [r['id'] for r in shard[offset:offset+size]],
                                     panel['labels'], width, settings))
         commit_json(output/'lineage.json', dict(sha256=lineage))
         marker = dict(lineage=lineage, baseline_sha256=file_hash(output/'baseline.json'),
@@ -329,13 +354,13 @@ def worker(c, output, ordinal):
             batch = shard[offset:offset+size]
             reused = name in saved_names
             if reused:
-                block = read_block(resumed/name, lineage)
+                block = read_block(resumed/name, prior_lineage)
             else:
                 block = measure(width, False, selected=batch)
             predictions(block, [r['id'] for r in batch], panel['labels'], width)
             validate_timing(block, settings)
             path = output/name
-            commit_json(path, dict(lineage=lineage, sha256=content_key(block), payload=block))
+            commit_scoring_block(path, lineage, block)
             blocks.append(dict(name=name, sha256=file_hash(path), reused=reused))
             print(json.dumps(dict(event='block_committed', ordinal=ordinal, name=name,
                                   sha256=blocks[-1]['sha256'], recordings=len(batch),
