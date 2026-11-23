@@ -92,8 +92,7 @@ def check_inference(config):
     c = dict(model=parent['model'], base_id=parent['base_id'], contract=parent['source_contract'],
              snapshot=parent['source_policy'], policy_id=m['source_policy'], physical_devices=[device_id],
              max_model_len=parent['view_execution']['max_input_tokens'],
-             process_device_scope=dict(kind='same_container_runtime_visibility_v1',
-                                       mounted_physical=[device_id], visible_ordinal='0'))
+             process_device_scope=t['process_device_scope'])
     provider, model, device, _, collate, _ = start_model(c, root)
     rows = read(data/'rows.json')
     micro = m['schedule']['microbatch']

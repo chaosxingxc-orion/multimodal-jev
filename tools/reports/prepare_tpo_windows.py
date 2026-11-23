@@ -126,14 +126,18 @@ def prepare(c):
         for index, device in enumerate(inference):
             name = f'infer-{index}'
             receipt = f'{name}/receipt.json'
+            scope = dict(kind='same_container_runtime_visibility_v1', mounted_physical=[device],
+                         visible_ordinal='0')
             opts = dict(phase='card_tpo_parity', source=dict(root='/jev-entry/source',sha256=frozen['manifest_sha256']),
                 io_workers=c['io_workers'], training=dict(physical_device=device, probe_start=index*4,
+                process_device_scope=scope,
                 parent=parent_in, parent_sha=file_hash(orig), targets='/jev-entry/targets',
                 target_sha=file_hash(data/'MANIFEST.json'), output=f'/jev-work/{name}'))
             commit_json(entry/(name+'.json'),macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
             parity.append(dict(path='/jev-work/'+receipt, physical_device=device))
             probes.append(dict(name=name,devices=[device],cpus=cards['inference_cpus'],memory=f"{geometry['memory_gib']}g",
-                               shm=f"{geometry['shm_gib']}g",collect=receipt))
+                               shm=f"{geometry['shm_gib']}g",collect=receipt,
+                               visible_ordinal=scope['visible_ordinal']))
         groups.append(probes)
     else:
         parent_in = str(remote_parent/'config.json')

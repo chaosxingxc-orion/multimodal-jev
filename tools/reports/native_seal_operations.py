@@ -201,6 +201,10 @@ def run(c, on_started=None):
         env = dict(PYTHONPATH='/jev-entry/source/src:/jev-entry/source:/jev-entry/source/tools/jev',
                    PYTHONDONTWRITEBYTECODE='1',OMP_NUM_THREADS='2',HCCL_DETERMINISTIC='true',
                    HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',VLLM_WORKER_MULTIPROC_METHOD='spawn')
+        if 'visible_ordinal' in job:
+            if len(devices) != 1 or job['visible_ordinal'] != '0':
+                raise ValueError('isolated single-device visibility requires container ordinal 0')
+            env['ASCEND_RT_VISIBLE_DEVICES'] = job['visible_ordinal']
         for key in ('TMPDIR','HF_HOME','XDG_CACHE_HOME','TRITON_CACHE_DIR','TORCHINDUCTOR_CACHE_DIR',
                     'ASCEND_WORK_PATH','ASCEND_CACHE_PATH','VLLM_RPC_BASE_PATH'):
             env[key] = '/jev-tmp'
