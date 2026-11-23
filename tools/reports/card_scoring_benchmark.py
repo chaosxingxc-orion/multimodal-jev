@@ -161,7 +161,22 @@ def scoring_lineage(c, ordinal):
                        formal['recordings_per_block'], c['full']['sha256'], c['source']['sha256'],
                        c['policy_sha256'], c['cards']['sha256'], c['training']['sha256'],
                        c['devices'], ordinal, c['widths'], c['streaming'], c['io_workers'],
-                       c['prefetch_audio'], c['torch_threads'], c['max_model_len'], *layout)
+                       c['prefetch_audio'], c['torch_threads'], c['max_model_len'], *layout,
+                       *([formal['block_range']] if 'block_range' in formal else []))
+
+
+def scoring_offsets(c, rows):
+    formal = c['formal']
+    offsets = range(0, rows, formal['recordings_per_block'])
+    if 'block_range' in formal:
+        lower, upper = formal['block_range']
+        if type(lower) is not int or lower < 0 or (upper is not None
+                and (type(upper) is not int or upper <= lower)):
+            raise ValueError('invalid frozen block range')
+        offsets = offsets[lower:upper]
+        if not offsets:
+            raise ValueError('empty frozen block assignment')
+    return offsets
 
 
 def read_block(path, lineage):
@@ -323,8 +338,8 @@ def worker(c, output, ordinal):
         lineage = scoring_lineage(c, ordinal)
         resumed = Path(formal['resume_from'])/f'worker-{ordinal}' if formal.get('resume_from') else None
         prior_lineage = scoring_lineage(resume_config(c), ordinal) if resumed is not None else None
-        offsets = range(0, len(shard), size)
-        names = [f'block-{i:06d}.json' for i in range(len(offsets))]
+        offsets = scoring_offsets(c, len(shard))
+        names = [f'block-{offset//size:06d}.json' for offset in offsets]
         settings = (c['io_workers'], c['prefetch_audio'])
         saved_names = set()
         if resumed is not None:
@@ -365,7 +380,8 @@ def worker(c, output, ordinal):
             print(json.dumps(dict(event='block_committed', ordinal=ordinal, name=name,
                                   sha256=blocks[-1]['sha256'], recordings=len(batch),
                                   pairs=len(batch)*len(cards), reused=reused)), flush=True)
-        commit_json(output/'result.json', dict(device=devices[ordinal], rows=len(shard),
+        commit_json(output/'result.json', dict(device=devices[ordinal],
+                    rows=sum(min(size, len(shard)-offset) for offset in offsets),
                     cache_and_model_seconds=startup_seconds, scoring_seconds=time.monotonic()-tick,
                     blocks=blocks, lineage=lineage))
         return

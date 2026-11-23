@@ -206,7 +206,7 @@ def audit_roster(entry, c, panel):
 def progress(root, entry):
     """Count only durable, verified blocks, including a partially finished run."""
     c = read(entry/'score.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
-    from tools.reports.card_scoring_benchmark import scoring_lineage
+    from tools.reports.card_scoring_benchmark import scoring_lineage, scoring_offsets
 
     for name in ('full', 'panel', 'training'):
         if c[name]['sha256'] != file_hash(entry/(name+'.json')):
@@ -228,8 +228,8 @@ def progress(root, entry):
     tasks, workers = [], []
     for ordinal, device in enumerate(c['devices']):
         ids = [row['id'] for row in full['rows'][ordinal::replicas]]
-        expected = {f'block-{i:06d}.json': ids[offset:offset+size]
-                    for i, offset in enumerate(range(0, len(ids), size))}
+        expected = {f'block-{offset//size:06d}.json': ids[offset:offset+size]
+                    for offset in scoring_offsets(c, len(ids))}
         directory = root/f'worker-{ordinal}'
         lineage = scoring_lineage(c, ordinal)
         paths = sorted(directory.glob('block-*.json'))
