@@ -32,7 +32,7 @@ def prepare(c):
     upstream = parent/'package/entry'
     old_ops = read(parent/'package/operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
     launch = read(parent/'ops/formal-launch.json')
-    resume = read(c['handoff'])
+    resume = read(Path(c['handoff']))
     merged = Path(c['scoring'])
     audit = read(merged/'audit.json')
     confusion_path = merged/'confusion-epoch-1.json'
