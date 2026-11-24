@@ -83,6 +83,7 @@ def package(c):
         root_inputs = Path(c['formal']['epoch_handoff'])
         proof = json.loads((root_inputs/'receipt.json').read_bytes())
         inputs = pinned(dict(path=inputs,sha256=proof['inputs_sha256']))
+        c = dict(c, inputs=inputs)
     policy = Path(inputs['policy'])
     names = ('training', 'cards', 'acoustics', 'synthetic', 'real_lengths')
     formal = c.get('formal')
