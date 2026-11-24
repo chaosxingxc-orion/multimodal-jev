@@ -161,7 +161,13 @@ def run(c):
     if 'triplet_objective' in c:
         parent['instruction_objective'] = c['triplet_objective']
         parent['triplet_prefetch'] = c['triplet_prefetch']
-        parent['epoch_mining'] = c['epoch_mining']
+        if 'class_logit_ema' in c:
+            parent['class_logit_ema'] = c['class_logit_ema']
+            parent['class_scoring'] = c['class_scoring']
+            parent.pop('epoch_mining', None)
+            parent.pop('bootstrap_input', None)
+        else:
+            parent['epoch_mining'] = c['epoch_mining']
         parent['batch_config']['per_dp_replica_batch'] = c['effective_anchors_per_rank']
         from multimodal_jev.context_topology_batch_plan import derive
         plan = derive(parent['batch_config'])
@@ -226,17 +232,27 @@ def run(c):
     result = read(root/'run/result.json')
     if result['passed'] is not True or result['stop_update']!=parent['stop_update'] or result['engineering_prefix']!=finite:
         raise ValueError('stage1 terminal differs')
+    max_observed_lag = 0
     for rank in range(len(parent['physical_devices'])):
         rank_root=root/'run'/f'rank-{rank}'
         if finite and read(rank_root/'inference-parity.json')['compared']!=c['parity_passes']*parent['microbatch']:
             raise ValueError('finite inference parity incomplete')
         for step in range(1,parent['stop_update']+1):
             record=read(rank_root/f'update-{step:04d}.json')
+            if 'class_logit_ema' in parent:
+                lag = step-1-record['metrics']['sampler_source_update']
+                if lag != record['metrics']['sampler_lag'] or not 0 <= lag <= parent['class_logit_ema']['max_staleness_updates']:
+                    raise ValueError('sampler source step differs')
+                max_observed_lag = max(max_observed_lag, lag)
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
     if 'negative_cards_per_anchor' in parent['instruction_objective']:
         receipt['negative_cards_per_anchor'] = parent['instruction_objective']['negative_cards_per_anchor']
+    if 'class_logit_ema' in parent:
+        receipt['sampler'] = dict(kind='class-logit-ema-v1',config=parent['class_logit_ema'],
+            maximum_observed_lag_updates=max_observed_lag,
+            expected_updates=parent['stop_update'])
     if 'finite_pressure' in parent:
         receipt['finite_pressure'] = parent['finite_pressure']
     commit_json(root/'receipt.json',receipt)
@@ -261,14 +277,21 @@ def run_resume(c):
     parent = read(parent_path)
     start = resume['start_update']
     checkpoint = Path(resume['checkpoint_root'])/f'checkpoint-{start:04d}-committed.json'
-    confusion = entry/'confusion.json'
-    if (file_hash(checkpoint) != resume['checkpoint_sha256']
-            or file_hash(confusion) != resume['confusion_sha256']
-            or read(confusion)['checkpoint_sha256'] != resume['checkpoint_sha256']):
-        raise ValueError('resume checkpoint or merged confusion identity differs')
+    if file_hash(checkpoint) != resume['checkpoint_sha256']:
+        raise ValueError('resume checkpoint identity differs')
     stop = start+c['finite_updates'] if finite else parent['reference_endpoint']
-    binding = dict(checkpoint_sha256=resume['checkpoint_sha256'], confusion_sha256=resume['confusion_sha256'],
-                   start_update=start)
+    binding = dict(checkpoint_sha256=resume['checkpoint_sha256'], start_update=start)
+    if 'class_logit_ema' in parent:
+        if read(checkpoint).get('sampler_state') != resume['sampler_state']:
+            raise ValueError('committed online sampler differs')
+        binding['sampler_state'] = resume['sampler_state']
+    else:
+        confusion = entry/'confusion.json'
+        if (file_hash(confusion) != resume['confusion_sha256']
+                or read(confusion)['checkpoint_sha256'] != resume['checkpoint_sha256']):
+            raise ValueError('merged confusion identity differs')
+        binding['confusion_sha256'] = resume['confusion_sha256']
+        parent['resume_confusion'] = dict(path=str(confusion),sha256=resume['confusion_sha256'])
     if not finite:
         proof = read(work/'finite/receipt.json')
         if (any(proof[k] != v for k,v in binding.items()) or proof['engineering_prefix'] is not True
@@ -281,7 +304,6 @@ def run_resume(c):
         parent['source_policy'] = str(prepared/'policy')
         parent['layout_cache'] = dict(parent['layout_cache'],path=str(prepared/'card-cache.json'))
     parent.update(start_update=start, stop_update=stop, resume_root=str(checkpoint.parent),
-                  resume_confusion=dict(path=str(confusion),sha256=resume['confusion_sha256']),
                   single_card=card, engineering_prefix=finite, training_dispatch_allowed=not finite,
                   parity_passes=c['parity_passes'] if finite else 0, mine_after_window=False,
                   pins=dict(parent['pins'],**{str(checkpoint):resume['checkpoint_sha256']}))
@@ -300,6 +322,8 @@ def run_resume(c):
     restored = dict(exact_masters=True, exact_adam=True, completed_updates=start)
     if any(read(rank/'restored.json') != restored for rank in ranks):
         raise ValueError('all-rank optimizer restoration is required')
+    if 'class_logit_ema' in parent and any(read(r/'sampler-restored.json') != binding['sampler_state'] for r in ranks):
+        raise ValueError('all-rank sampler restoration is required')
     if finite:
         for rank in ranks:
             parity = read(rank/'inference-parity.json')

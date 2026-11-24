@@ -9,13 +9,13 @@ import torch
 from .context_optimizer_audit import audit_adam_shards
 
 
-def capture(named_parameters,optimizer,*,rank,world_size,completed_updates,contract):
+def capture(named_parameters,optimizer,*,rank,world_size,completed_updates,contract,auxiliary=None):
     named=list(named_parameters)
     audit_adam_shards(named,optimizer,completed_updates)
     return dict(schema='context-training-shard-v1',rank=rank,world_size=world_size,
         completed_updates=completed_updates,contract=copy.deepcopy(contract),
         names=[n for n,p in named],parameters={n:p.detach().cpu().clone() for n,p in named},
-        optimizer=copy.deepcopy(optimizer.state_dict()))
+        optimizer=copy.deepcopy(optimizer.state_dict()),**({'auxiliary':copy.deepcopy(auxiliary)} if auxiliary is not None else {}))
 
 
 def validate(named_parameters,optimizer,state,*,rank,world_size,completed_updates,contract):

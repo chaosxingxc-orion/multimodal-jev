@@ -61,14 +61,15 @@ class TripletStream:
                          input_features=acoustic['input_features'],input_features_mask=acoustic['input_features_mask']),
                     positions=positions,request_id=uid)
 
-    def prepare(self, index):
+    def prepare(self, index, distribution=None):
         batch = self.batches[index]
         epoch = batch['epoch']
         slots = batch['slots'][self.rank::self.world]
         groups = []
         for ordinal, slot in enumerate(slots):
             a = slot['id']
-            p,n = self.partners[a]
+            p,n = (self.partners[a] if distribution is None else
+                   self.sampler.draw(a, epoch, index, distribution))
             if self.negative_cards is not None:
                 n, wrong_labels = n
             recording_ids = (a,p,n)
@@ -92,7 +93,10 @@ class TripletStream:
                 column = self.label_index[label]
                 arm = self.layout.assignments[card][epoch]
                 rows.append(self.render(acoustic,self.spec['arms'][arm][column],f'{index}/{self.rank}/{ordinal}/{j}'))
-            groups.append((rows,slot['weight'],recording_ids))
+            group = (rows, slot['weight'], recording_ids)
+            if distribution is not None:
+                group += ((self.population[a]['intent'], *wrong_labels),)
+            groups.append(group)
         return index,groups,batch['real_queries']
 
     def close(self):
@@ -100,16 +104,54 @@ class TripletStream:
             self.queue.close()
 
 
-def update(model, optimizer, groups, global_count, config, collation, policy, device, world, parity_passes):
+class OnlineTripletStream(TripletStream):
+    def __init__(self, *args):
+        super().__init__(*args)
+        from .intent_triplet_sampling import AnchorSampler
+        self.sampler = AnchorSampler(self.population, self.spec['labels'], self.negative_cards,
+                                     self.config['mixed']['seed'])
+        self.max_lag = self.config['class_logit_ema']['max_staleness_updates']
+        if self.config['triplet_prefetch']['ahead'] > self.max_lag:
+            raise ValueError('prefetch depth exceeds configured sampler lag')
+
+    def begin_epoch(self, first, ema):
+        if self.queue is not None:
+            self.queue.close()
+        if ema.updates != first:
+            raise ValueError('sampler and optimizer update differ')
+        self.publish(ema)
+        epoch = self.batches[first]['epoch']
+        stop = next((i for i in range(first+1,self.config['stop_update'])
+                     if self.batches[i]['epoch'] != epoch), self.config['stop_update'])
+        items = ((i, *self.snapshot) for i in range(first, stop))
+        self.queue = OrderedPrefetch(self.prepare_snapshot, items, **self.config['triplet_prefetch'])
+
+    def publish(self, ema):
+        self.snapshot = ema.updates, ema.distribution()
+
+    def prepare_snapshot(self, item):
+        index, version, distribution = item
+        if not 0 <= index - version <= self.max_lag:
+            raise ValueError('invalid sampler snapshot version')
+        return (*self.prepare(index, distribution), version)
+
+
+def update(model, optimizer, groups, global_count, config, collation, policy, device, world, parity_passes, class_ema=None):
     import torch.distributed as dist
     micro = config['microbatch']
     objective = config['instruction_objective']
-    stats = torch.zeros(5,device=device)
+    size = len(class_ema.labels) if class_ema is not None else 0
+    fields = (1 + objective['negative_cards_per_anchor']) if class_ema is not None else 0
+    reduction = torch.zeros(5 + world * len(groups) * fields * 2, device=device, dtype=torch.float32)
+    if class_ema is not None:
+        from .class_logit_ema import pack_observations, global_tables
+        slots = reduction[5:].view(world, len(groups), fields, 2)[dist.get_rank()]
+    stats = reduction[:5]
     parity = dict(inference_passes=0,compared=0,max_abs=0.)
     optimizer.zero_grad(set_to_none=True)
     for start in range(0,len(groups),micro):
         chunk = groups[start:start+micro]
-        rows = [dict(row,policy_id=policy) for group,_,_ in chunk for row in group]
+        rows = [dict(row,policy_id=policy) for group,*_ in chunk for row in group]
         inputs,positions = collate_context_audio(rows,policy_id=policy,**collation)
         inputs = {k:v.to(device=device,dtype=torch.bfloat16 if v.is_floating_point() else v.dtype) for k,v in inputs.items()}
         positions = positions.to(device)
@@ -119,6 +161,8 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
             with torch.no_grad():
                 references = [model(inputs,positions).detach() for _ in range(probes)]
         raw, markers = model(inputs,positions,return_logits=True,return_marker=True)
+        if class_ema is not None:
+            pack_observations(slots[start:start+len(chunk)], raw, chunk, class_ema.label_index)
         if probe:
             error = max((raw.sigmoid()-reference).abs().max().item() for reference in references)
             if not 0 <= error <= config['parity_probability_atol']:
@@ -129,12 +173,19 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         width = 3 + (k if k is not None else 1)
         terms = components(markers.reshape(len(chunk),width,-1),raw.reshape(len(chunk),width),
                            objective['temperature'],objective['probability_margin'],k)
-        weight = terms.new_tensor([w for _,w,_ in chunk])
+        weight = terms.new_tensor([group[1] for group in chunk])
         sums = (terms*weight[:,None]).sum(0)
         (sums[0]*world/global_count).backward()
         stats[:4] += sums.detach()
         stats[4] += weight.sum()
-    dist.all_reduce(stats)
+    dist.all_reduce(reduction)
+    if class_ema is not None:
+        reduction = reduction.cpu()
+        stats = reduction[:5]
+        sums, counts = global_tables(reduction[5:], size)
+        if int(counts.diag().sum()) != global_count or int(counts.sum()) != global_count * fields:
+            raise ValueError('anchor observation denominator differs from real TRAIN batch')
+        class_ema.update(sums, counts)
     if stats[4].item()!=global_count or not torch.isfinite(stats).all():
         raise ValueError('global count or objective invalid')
     norm = model.clip_grad_norm_(1.)

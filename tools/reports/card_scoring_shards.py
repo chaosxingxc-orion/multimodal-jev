@@ -7,6 +7,7 @@ import subprocess
 import tarfile
 import time
 
+from multimodal_jev.card_scoring_settings import scoring_settings
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
@@ -276,7 +277,7 @@ def merge(template, local):
     import torch
     from multimodal_jev.intent_triplet_training import confusion_distribution
     distribution = confusion_distribution(labels, torch.tensor(totals, dtype=torch.float64),
-                                           torch.tensor(counts), training['epoch_mining']['zipf_exponent'])
+                                           torch.tensor(counts), scoring_settings(training)['zipf_exponent'])
     formal = source['formal']
     pairs = len(seen)*len(labels)
     path = root/(f"confusion-step-{formal['updates']:04d}.json" if not head else 'confusion-epoch-1.json')

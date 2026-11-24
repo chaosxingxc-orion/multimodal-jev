@@ -33,23 +33,34 @@ def prepare(c):
     old_ops = read(parent/'package/operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
     launch = read(parent/'ops/formal-launch.json')
     resume = read(Path(c['handoff']))
-    merged = Path(c['scoring'])
-    audit = read(merged/'audit.json')
-    confusion_path = merged/'confusion-epoch-1.json'
-    confusion = read(confusion_path)
     start = resume['updates']
     checkpoint_digest = resume['checkpoint_sha256']
     old_root = Path(launch['remote_root'])
     deployment = dict(old_ops, **c['deployment'])
     host = deployment['host']
+    online = c.get('sampler') == 'class-logit-ema-v1'
+    if online:
+        sampler = resume['sampler_state']
+        if sampler['kind'] != c['sampler'] or sampler['updates'] != start or 'scoring' in c:
+            raise ValueError('online sampler handoff differs')
+        evidence = dict(sampler_state=sampler)
+    else:
+        merged = Path(c['scoring'])
+        audit = read(merged/'audit.json')
+        confusion_path = merged/'confusion-epoch-1.json'
+        confusion = read(confusion_path)
+        if (audit['passed'] is not True or audit['container_exited'] is not True
+                or audit['updates'] != start
+                or not audit['checkpoint_sha256'] == checkpoint_digest == confusion['checkpoint_sha256']
+                or file_hash(confusion_path) != audit['confusion_sha256']
+                or sum(confusion['counts']) != audit['recordings']
+                or audit['pairs'] != audit['recordings']*len(confusion['labels'])
+                or confusion['pairs'] != audit['pairs'] or confusion['policy_id'] != resume['policy_id']
+                or set(confusion['labels']) != confusion['distribution'].keys()
+                or any(count <= 0 for count in confusion['counts'])):
+            raise ValueError('merged confusion and epoch checkpoint must agree')
+        evidence = dict(confusion_sha256=audit['confusion_sha256'])
     if (resume['passed'] is not True or resume['container_exited'] is not True
-            or audit['passed'] is not True or audit['container_exited'] is not True
-            or audit['updates'] != start
-            or not audit['checkpoint_sha256'] == checkpoint_digest == confusion['checkpoint_sha256']
-            or file_hash(confusion_path) != audit['confusion_sha256']
-            or sum(confusion['counts']) != audit['recordings']
-            or audit['pairs'] != audit['recordings']*len(confusion['labels'])
-            or confusion['pairs'] != audit['pairs'] or confusion['policy_id'] != resume['policy_id']
             or resume['container_id'] != launch['container_id']
             or file_hash(parent/'ops/formal-launch.json') != resume['launch_sha256']
             or not host == resume['host'] == launch['host']
@@ -64,9 +75,9 @@ def prepare(c):
             or train['instruction_objective']['kind'] != 'intent_triplet_infonce_v1'
             or train['reference_endpoint'] != 2*start
             or train['stop_update'] not in (start, train['reference_endpoint'])
-            or train['batch_config']['source_queries'] != audit['recordings']
-            or set(confusion['labels']) != confusion['distribution'].keys()
-            or any(count <= 0 for count in confusion['counts'])):
+            or online != ('class_logit_ema' in train)
+            or (online and train['class_logit_ema'] != sampler['config'])
+            or (not online and train['batch_config']['source_queries'] != audit['recordings'])):
         raise ValueError('merged source population or frozen training contract differs')
     deployment['read_only_mounts'] = [*old_ops['read_only_mounts'],
                                      f'{old_root}/formal/run:/jev-resume',
@@ -90,13 +101,14 @@ def prepare(c):
             raise ValueError(f'parent package input differs: {name}')
         shutil.copyfile(upstream/name,entry/name)
     (entry/'parent-training.json').write_bytes(raw)
-    shutil.copyfile(confusion_path,entry/'confusion.json')
+    if not online:
+        shutil.copyfile(confusion_path,entry/'confusion.json')
     repo = Path(__file__).resolve().parents[2]
     with TemporaryDirectory(dir=root) as scratch:
         source = Path(scratch)/'source'
         shutil.copytree(upstream/'source',source,ignore=shutil.ignore_patterns('FILES.json'),
                         copy_function=shutil.copyfile)
-        for name in RUNTIME_CHANGES:
+        for name in (() if online else RUNTIME_CHANGES):
             shutil.copyfile(repo/name,source/name)
         # The window imports the frozen loss audit. Its remote observer is not
         # used inside the training container.
@@ -106,7 +118,7 @@ def prepare(c):
               'finite_updates','parity_passes','master_addr','master_port')}
     window['source'] = dict(old_window['source'],sha256=snapshot['manifest_sha256'])
     window['resume'] = dict(start_update=start,parent_config_sha256=resume['config_sha256'],
-                            checkpoint_sha256=checkpoint_digest,confusion_sha256=audit['confusion_sha256'],
+                            checkpoint_sha256=checkpoint_digest,**evidence,
                             checkpoint_root='/jev-resume',prepared_root='/jev-resume-prepared')
     for role in ('finite','formal'):
         commit_json(entry/f'{role}.json',dict(schema='jev-local-macros-v1',
@@ -118,7 +130,7 @@ def prepare(c):
             if job['name'] in ('finite','formal')]
     if [job['name'] for job in jobs] != ['finite','formal'] or any(job['devices'] != devices for job in jobs):
         raise ValueError('expected the frozen eight-rank finite and formal allocation')
-    names = [*passthrough,'parent-training.json','confusion.json','finite.json','formal.json','source/FILES.json']
+    names = [*passthrough,'parent-training.json',*(() if online else ('confusion.json',)),'finite.json','formal.json','source/FILES.json']
     deployment.update(archive=str(archive), entry_archive_sha256=file_hash(archive),
                       entry_pins={name:file_hash(entry/name) for name in names},
                       chains=[[[job] for job in jobs]])
@@ -152,7 +164,8 @@ def observe(c, deployment, window, parent):
             or train['stop_update'] != parent['reference_endpoint']
             or train['start_update'] != start or train['engineering_prefix'] is not False
             or train['training_dispatch_allowed'] is not True
-            or train['resume_confusion']['sha256'] != resume['confusion_sha256']
+            or ('sampler_state' in resume and train['class_logit_ema'] != parent['class_logit_ema'])
+            or ('confusion_sha256' in resume and train['resume_confusion']['sha256'] != resume['confusion_sha256'])
             or train['pins'][f'/jev-resume/checkpoint-{start:04d}-committed.json'] != resume['checkpoint_sha256']
             or finite['passed'] is not True or finite['ranks'] != world):
         raise ValueError('formal resume configuration or finite admission differs')
@@ -161,10 +174,13 @@ def observe(c, deployment, window, parent):
         *(str(path/'run'/f'rank-{rank}'/'restored.json') for rank in range(world))).stdout)
     if restored != [dict(exact_masters=True,exact_adam=True,completed_updates=start)]*world:
         raise ValueError('formal optimizer state was not restored on all ranks')
+    evidence = {key:resume[key] for key in ('sampler_state','confusion_sha256') if key in resume}
+    if 'sampler_state' in evidence and finite['sampler_state'] != evidence['sampler_state']:
+        raise ValueError('all-rank sampler restoration proof differs')
     updates = [summarize(records[i*world:(i+1)*world],start+i+1,train) for i in range(count)]
     result = dict(passed=True, container_id=cid, image=obj['Image'], ranks=world,
                   start_update=start, total_updates=train['stop_update'], checkpoint_sha256=resume['checkpoint_sha256'],
-                  confusion_sha256=resume['confusion_sha256'], config_sha256=sha256(raw).hexdigest(),
+                  **evidence, config_sha256=sha256(raw).hexdigest(),
                   finite=finite, updates=updates)
     commit_json(ops/'first-updates.json',result)
     print(json.dumps(result),flush=True)

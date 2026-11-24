@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 import statistics
 
+from multimodal_jev.card_scoring_settings import scoring_settings
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.context_execution import map_cpu, map_io
 from multimodal_jev.local_checkpoint import commit_json
@@ -218,7 +219,7 @@ def progress(root, entry):
                   total_recordings=full['population'], total_pairs=full['population']*len(full['labels']))
     if not path.is_file():
         return counts
-    gate = audit_admission(root, c, panel, read(entry/'training.json')['epoch_mining']['forward_rows'])
+    gate = audit_admission(root, c, panel, scoring_settings(read(entry/'training.json'))['forward_rows'])
     if read(path) != gate:
         raise ValueError('stored scoring admission differs')
     width, = c['widths']
@@ -266,7 +267,7 @@ def audit_formal(root, entry, c, panel, receipt, cid):
     if len(roster) != panel['population'] or len(set(roster)) != len(roster):
         raise ValueError('full TRAIN roster differs')
     width, = c['widths']
-    baseline_width = read(entry/'training.json')['epoch_mining']['forward_rows']
+    baseline_width = scoring_settings(read(entry/'training.json'))['forward_rows']
     gate = root/'admission.json'
     if (receipt['admission_sha256'] != file_hash(gate)
             or read(gate) != audit_admission(root, c, panel, baseline_width)):
@@ -322,7 +323,7 @@ def audit_formal(root, entry, c, panel, receipt, cid):
         raise ValueError('class denominator differs from the frozen TRAIN roster')
     import torch
     from multimodal_jev.intent_triplet_training import confusion_distribution
-    mining = read(entry/'training.json')['epoch_mining']
+    mining = scoring_settings(read(entry/'training.json'))
     distribution = confusion_distribution(labels, torch.tensor(totals, dtype=torch.float64),
                                            torch.tensor(counts), mining['zipf_exponent'])
     workers = [worker for _, worker in results]
@@ -382,7 +383,7 @@ def audit(root, entry, operations):
         if w['device'] != c['devices'][i] or w['rows'] != len(ids):
             raise ValueError('worker identity or roster differs')
         baseline = read(path/'baseline.json')
-        p, _ = predictions(baseline, ids, labels, read(entry/'training.json')['epoch_mining']['forward_rows'])
+        p, _ = predictions(baseline, ids, labels, scoring_settings(read(entry/'training.json'))['forward_rows'])
         reference.update(p)
         members.append((path, ids))
         old_seconds.append(baseline['seconds'])

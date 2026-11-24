@@ -35,6 +35,16 @@ def endpoint(c, train, launch):
     commit_path = root/f'checkpoint-{update:04d}-committed.json'
     raw = remote(host, 'cat', str(commit_path)).stdout
     ckpt = json.loads(raw)
+    sampler = ckpt.get('sampler_state')
+    if 'class_logit_ema' in train:
+        if (not isinstance(sampler, dict) or sampler.get('kind') != 'class-logit-ema-v1'
+                or sampler.get('updates') != update or sampler.get('config') != train['class_logit_ema']
+                or len(sampler.get('labels', [])) < 2
+                or len(sampler['labels']) != len(sampler.get('anchor_counts', []))
+                or sum(sampler['anchor_counts']) != (update // train['checkpoint_interval']) * train['batch_config']['source_queries']
+                or any(len(sampler.get(key, '')) != 64 for key in
+                       ('values_sha256', 'observed_sha256', 'counts_sha256', 'distribution_sha256'))):
+            raise ValueError('committed endpoint lacks the expected full-epoch sampler state')
     joint = ckpt['joint_policy']
     policy = root/expected
     manifest_path = policy/'MANIFEST.json'
@@ -87,7 +97,8 @@ def endpoint(c, train, launch):
     return dict(updates=update, policy=str(policy), policy_id=joint['policy_id'],
                 manifest_sha256=ckpt['joint_policy_manifest_sha256'],
                 checkpoint_sha256=expected_files[commit_path],
-                rank_records_sha256=content_key(rows), devices=train['physical_devices'])
+                rank_records_sha256=content_key(rows), devices=train['physical_devices'],
+                **(dict(sampler_state=sampler) if sampler else {}))
 
 
 def content_key_policy(value):

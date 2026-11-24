@@ -97,7 +97,12 @@ def run(c,root):
             raise ValueError('pressure witness is restricted to the initial two-step finite window')
         contract={k:c[k] for k in ('base_id','source_policy_id','source_contract','runtime_profile',
             'release_sha256','schedule_sha256','global_batch','microbatch','stage')}
-        if triplet:contract['epoch_mining']=c['epoch_mining']
+        online = triplet and 'class_logit_ema' in c
+        if triplet:
+            key = 'class_logit_ema' if online else 'epoch_mining'
+            contract[key] = c[key]
+        if online:
+            contract.update(triplet_prefetch=c['triplet_prefetch'], sampler_seed=c['mixed']['seed'])
         if 'single_card' in c:contract['single_card_sha256']=c['single_card']['sha256']
         if 'stage1_layout' in c:
             from multimodal_jev.stage1_training_layout import Stage1TrainingLayout, checkpoint_layout
@@ -178,7 +183,7 @@ def run(c,root):
             audio_token_id=base.config.audio_token_id,audio_chunk_size=base.config.audio_config.n_window*2,
             audio_infer_window=base.config.audio_config.n_window_infer)
         progress('prepare_full_schedule')
-        signal=[None];stream=None
+        signal=[None];stream=None;class_ema=None
         if rank==0 or triplet:
             try:
                 if c.get('mixed'):
@@ -251,7 +256,13 @@ def run(c,root):
                     audio_token_id=base.config.audio_token_id,max_tokens=c.get('mixed',{}).get('input_limit',4096),audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))
                 if triplet:
                     from multimodal_jev.intent_triplet_training import TripletStream
-                    stream = TripletStream(batches,population,preparer,layout_reader,spec,c,rank,world,collation)
+                    stream_type = TripletStream
+                    if online:
+                        from multimodal_jev.class_logit_ema import ClassLogitEMA
+                        from multimodal_jev.intent_triplet_training import OnlineTripletStream
+                        stream_type = OnlineTripletStream
+                        class_ema = ClassLogitEMA(spec['labels'], **c['class_logit_ema'])
+                    stream = stream_type(batches,population,preparer,layout_reader,spec,c,rank,world,collation)
                 else:
                     stream=CachedContextBatches(batches,population,task,preparer,
                         slot_request=layout_reader,
@@ -281,11 +292,19 @@ def run(c,root):
             state=torch.load(previous/f'rank-{rank}'/f'checkpoint-{start_update:04d}.pt',map_location='cpu',weights_only=True)
             identity=dict(rank=rank,world_size=world,completed_updates=start_update,contract=contract)
             local_error=None
-            try:validate(named,opt,state,**identity)
+            try:
+                validate(named,opt,state,**identity)
+                if online:
+                    class_ema.load_state_dict(state['auxiliary']['class_logit_ema'])
+                    witness = class_ema.receipt(c['class_logit_ema'])
+                    if witness != commit.get('sampler_state') or class_ema.updates != start_update:
+                        raise ValueError('restored EMA differs from committed optimizer step')
             except Exception as exc:local_error=repr(exc)
             peers=[None]*world;dist.all_gather_object(peers,local_error)
             if any(peers):raise ValueError('collective checkpoint rejection: '+str(peers))
             atomic_json(out/'restored.json',restore(named,opt,state,**identity))
+            if online:
+                atomic_json(out/'sampler-restored.json', witness)
         records=[]
         try:
             for index in range(start_update,stop_update):
@@ -293,38 +312,41 @@ def run(c,root):
                 cfg.jev_policy_id=c['source_policy_id']+':instruction-update'+str(index)
                 if triplet:
                     if index == start_update or batches[index]['epoch'] != batches[index-1]['epoch']:
-                        previous = None
-                        if batches[index]['epoch']:
-                            resumed = index == start_update and bool(start_update)
-                            witness = c.get('resume_confusion') if resumed else None
-                            report_path = (Path(witness['path']) if witness else
-                                           root/f'confusion-epoch-{batches[index]["epoch"]}.json')
-                            if witness and file_hash(report_path) != witness['sha256']:
-                                raise ValueError('resumed epoch confusion changed')
-                            report = json.loads(report_path.read_bytes())
-                            checkpoint_root = Path(c['resume_root']) if resumed else root
-                            checkpoint = checkpoint_root/f'checkpoint-{index:04d}-committed.json'
-                            if report['checkpoint_sha256'] != file_hash(checkpoint):
-                                raise ValueError('hard negative map belongs to a different checkpoint')
-                            previous = report['distribution']
+                        if online:
+                            stream.begin_epoch(index, class_ema)
                         else:
-                            from multimodal_jev.intent_triplet_training import mine_epoch
-                            progress('bootstrap_train_confusion',update=index)
-                            cached = c.get('bootstrap_input')
-                            if cached is None:
-                                report = mine_epoch(wrapped,stream,c,0,device,c['source_policy_id'],bootstrap=True)
+                            previous = None
+                            if batches[index]['epoch']:
+                                resumed = index == start_update and bool(start_update)
+                                witness = c.get('resume_confusion') if resumed else None
+                                report_path = (Path(witness['path']) if witness else
+                                               root/f'confusion-epoch-{batches[index]["epoch"]}.json')
+                                if witness and file_hash(report_path) != witness['sha256']:
+                                    raise ValueError('resumed epoch confusion changed')
+                                report = json.loads(report_path.read_bytes())
+                                checkpoint_root = Path(c['resume_root']) if resumed else root
+                                checkpoint = checkpoint_root/f'checkpoint-{index:04d}-committed.json'
+                                if report['checkpoint_sha256'] != file_hash(checkpoint):
+                                    raise ValueError('hard negative map belongs to a different checkpoint')
+                                previous = report['distribution']
                             else:
-                                if file_hash(cached['path']) != cached['sha256']:
-                                    raise ValueError('bootstrap report changed')
-                                report = json.loads(Path(cached['path']).read_bytes())
-                                if report['policy_id'] != c['source_policy_id'] or report['labels'] != spec['labels']:
-                                    raise ValueError('bootstrap policy or labels changed')
-                            if rank == 0:
-                                atomic_json(root/'confusion-init.json',dict(report,policy_id=c['source_policy_id']))
-                            previous = report['distribution']
-                        stream.begin_epoch(index,previous)
+                                from multimodal_jev.intent_triplet_training import mine_epoch
+                                progress('bootstrap_train_confusion',update=index)
+                                cached = c.get('bootstrap_input')
+                                if cached is None:
+                                    report = mine_epoch(wrapped,stream,c,0,device,c['source_policy_id'],bootstrap=True)
+                                else:
+                                    if file_hash(cached['path']) != cached['sha256']:
+                                        raise ValueError('bootstrap report changed')
+                                    report = json.loads(Path(cached['path']).read_bytes())
+                                    if report['policy_id'] != c['source_policy_id'] or report['labels'] != spec['labels']:
+                                        raise ValueError('bootstrap policy or labels changed')
+                                if rank == 0:
+                                    atomic_json(root/'confusion-init.json',dict(report,policy_id=c['source_policy_id']))
+                                previous = report['distribution']
+                            stream.begin_epoch(index,previous)
                     from multimodal_jev.intent_triplet_training import update
-                    actual, groups, real_queries = next(stream.queue)
+                    actual, groups, real_queries, *versions = next(stream.queue)
                     if actual != index:
                         raise ValueError('triplet prefetch order differs')
                     preparation = time.monotonic()-step_begin
@@ -335,7 +357,11 @@ def run(c,root):
                     passes = c['parity_passes'] if index == start_update else 0
                     if c['batch_config'].get('batch_rule') and len(groups) != c['microbatch']:
                         raise ValueError('one local microbatch per optimizer update required')
-                    metrics,parity = update(wrapped,opt,groups,real_queries,c,collation,cfg.jev_policy_id,device,world,passes)
+                    metrics,parity = update(wrapped,opt,groups,real_queries,c,collation,cfg.jev_policy_id,device,world,passes,
+                        **(dict(class_ema=class_ema) if online else {}))
+                    if online:
+                        stream.publish(class_ema)
+                        metrics.update(sampler_source_update=versions[0], sampler_lag=index-versions[0])
                     torch.npu.synchronize()
                     seconds = time.monotonic()-started
                     if passes:
@@ -381,7 +407,18 @@ def run(c,root):
                 if save_now:
                     if frozen!={n:tensor_identity(p.detach().cpu()) for n,p in wrapped.named_parameters() if not p.requires_grad}:
                         raise ValueError('frozen backbone changed')
-                    state=capture(named,opt,rank=rank,world_size=world,completed_updates=index+1,contract=contract)
+                    sampler_proof = {}
+                    auxiliary = None
+                    if online:
+                        witness = class_ema.receipt(c['class_logit_ema'])
+                        peers = [None]*world
+                        dist.all_gather_object(peers, witness)
+                        if class_ema.updates != index+1 or any(peer != witness for peer in peers):
+                            raise ValueError('checkpoint sampler differs across ranks or steps')
+                        sampler_proof = dict(sampler_state=witness)
+                        auxiliary = dict(class_logit_ema=class_ema.state_dict())
+                    state=capture(named,opt,rank=rank,world_size=world,completed_updates=index+1,
+                                  contract=contract,**(dict(auxiliary=auxiliary) if online else {}))
                     commit_file(out/f'checkpoint-{index+1:04d}.pt',lambda f:torch.save(state,f))
                     with FSDP.summon_full_params(wrapped,writeback=False,rank0_only=False):
                         full=canonical_execution({n:p.detach().cpu().to(torch.bfloat16).clone()
@@ -401,7 +438,7 @@ def run(c,root):
                             execution_file=f'execution-{index+1:04d}.pt',
                             joint_policy=joint,joint_policy_directory=f'policy-{index+1:04d}',
                             joint_policy_manifest_sha256=file_hash(root/f'policy-{index+1:04d}/MANIFEST.json'),
-                            execution_sha256=file_hash(root/f'execution-{index+1:04d}.pt')))
+                            execution_sha256=file_hash(root/f'execution-{index+1:04d}.pt'), **sampler_proof))
                     dist.barrier()
                 record=dict(update=index+1,learning_rate=current_lr,preparation_seconds=preparation,actor_seconds=seconds,
                     total_seconds=time.monotonic()-step_begin,input_service=timing,metrics=metrics,
@@ -410,7 +447,7 @@ def run(c,root):
                 if probe is not None or pressure is not None:
                     record['peak_reserved'] = torch.npu.max_memory_reserved()
                 records.append(record);atomic_json(out/f'update-{index+1:04d}.json',record)
-                if (triplet and not c['engineering_prefix'] and c.get('mine_after_window', True) and
+                if (triplet and not online and not c['engineering_prefix'] and c.get('mine_after_window', True) and
                         (index+1 == len(batches) or batches[index+1]['epoch'] != batches[index]['epoch'])):
                     from multimodal_jev.intent_triplet_training import mine_epoch
                     epoch = batches[index]['epoch']

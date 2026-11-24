@@ -11,6 +11,7 @@ import subprocess
 import sys
 import time
 
+from multimodal_jev.card_scoring_settings import scoring_settings
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.context_execution import content_key
 from multimodal_jev.local_checkpoint import commit_json
@@ -52,7 +53,7 @@ def make_panel(c, output):
             or spec['full_verified'] != len(real)+len(synth)
             or train['layout_cache']['sha256'] != c['acoustics']['sha256']
             or train['single_card']['sha256'] != c['cards']['sha256']
-            or train['epoch_mining']['card_arm'] != c['card_arm']
+            or scoring_settings(train)['card_arm'] != c['card_arm']
             or pinned(dict(path=policy/'MANIFEST.json', sha256=c['policy_sha256']))['policy_id']
             != train['source_policy_id']):
         raise ValueError('benchmark must bind to the frozen TRAIN population and source policy')
@@ -223,7 +224,7 @@ def wait_for_admission(c, output, workers, deadline):
             raise TimeoutError('scoring replicas did not finish admission within the configured deadline')
         time.sleep(c['formal']['coordination_seconds'])
     admission = audit_admission(output, c, load_panel(c)[0],
-                                pinned(c['training'])['epoch_mining']['forward_rows'])
+                                scoring_settings(pinned(c['training']))['forward_rows'])
     if resume := c['formal'].get('resume_from'):
         previous = Path(resume)
         if any(previous.glob('worker-*/block-*.json')):
@@ -325,7 +326,7 @@ def worker(c, output, ordinal):
     if formal:
         from tools.reports.audit_card_scoring_benchmark import predictions, read, validate_block, validate_timing
         width, = c['widths']
-        legacy_width = train['epoch_mining']['forward_rows']
+        legacy_width = scoring_settings(train)['forward_rows']
         baseline, candidate = measure(legacy_width, True), measure(width, False)
         commit_json(output/'baseline.json', baseline)
         commit_json(output/f'batch-{width}.json', candidate)
@@ -399,7 +400,7 @@ def worker(c, output, ordinal):
             commit_json(output/f'batch-{width}{suffix}.json', result)
             if result.get('oom'):
                 torch.npu.empty_cache()
-    legacy_width = train['epoch_mining']['forward_rows']
+    legacy_width = scoring_settings(train)['forward_rows']
     commit_json(output/'baseline.json', measure(legacy_width, True))
     commit_json(output/'result.json', dict(device=devices[ordinal], rows=len(rows),
                                           cache_and_model_seconds=startup_seconds))

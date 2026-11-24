@@ -5,6 +5,37 @@ import math
 from itertools import accumulate
 
 
+class AnchorSampler:
+    """Index the admitted TRAIN roster once. Draws only visit candidate classes."""
+    def __init__(self, population, labels, k, seed):
+        self.population = population
+        self.by_label = defaultdict(list)
+        for uid, row in population.items():
+            if row['role'] != 'learning' or row['official_split'] != 'train' or row['id'] != uid:
+                raise ValueError('sampling requires indexed official TRAIN records')
+            self.by_label[row['intent']].append(uid)
+        if (set(self.by_label) != set(labels) or len(set(labels)) != len(labels)
+                or type(k) is not int or not 1 <= k < len(labels)):
+            raise ValueError('invalid TRAIN vocabulary or negative card count')
+        self.positions = {}
+        for members in self.by_label.values():
+            if len(members) < 2:
+                raise ValueError('each class needs an independent positive recording')
+            members.sort()
+            self.positions.update((uid, i) for i, uid in enumerate(members))
+        self.k, self.seed = k, seed
+
+    def draw(self, anchor, epoch, update, distribution):
+        gold = self.population[anchor]['intent']
+        members = self.by_label[gold]
+        rng = random.Random(f'{self.seed}|online-triplet|{epoch}|{update}|{anchor}')
+        pos = rng.randrange(len(members) - 1)
+        positive = members[pos + (pos >= self.positions[anchor])]
+        weights = distribution[gold]
+        wrong = tuple(sorted(weights, key=lambda label: rng.expovariate(weights[label]))[:self.k])
+        return positive, (rng.choice(self.by_label[wrong[0]]), wrong)
+
+
 def sample_epoch(records, *, seed, epoch, distribution=None, negative_cards_per_anchor=None):
     by_label = defaultdict(list)
     by_id = {}

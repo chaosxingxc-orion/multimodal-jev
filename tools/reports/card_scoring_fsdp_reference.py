@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import time
 
+from multimodal_jev.card_scoring_settings import scoring_settings
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
 from tools.reports.card_scoring_benchmark import load_panel, pinned, render
@@ -62,7 +63,7 @@ def reference(c, output):
         cache = {False: ReadOnlyEncodedAudioCache(train['encoded_audio_cache']),
                  True: ReadOnlyEncodedAudioCache(c['synthetic_cache'])}
         cards = [tuple(torch.tensor(card[k]) for k in ('prefix', 'suffix')) for card in catalog]
-        width = train['epoch_mining']['forward_rows']
+        width = scoring_settings(train)['forward_rows']
         rows = panel['rows']
         records, calls = [], Counter()
         start = time.monotonic()
