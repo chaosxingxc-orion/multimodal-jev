@@ -18,11 +18,17 @@ def read(p):
     return json.loads(p.read_bytes())
 
 
-def capacity(experiment, local):
+def capacity(experiment, local, variant=None):
     from tools.reports.experiment_package import REGISTRY, committed
     selected = plan(experiment, states=('in_progress', 'planned'))
     spec = json.loads(committed(selected['commit'], REGISTRY / (experiment+'.json')))
-    protocol = Path(spec['capacity_window'])
+    if variant is None:
+        protocol = Path(spec['capacity_window'])
+    else:
+        variants = spec.get('capacity_variants', {})
+        if variant not in variants:
+            raise ValueError('unregistered capacity variant: ' + variant)
+        protocol = Path(variants[variant])
     if protocol.read_bytes() != committed(selected['commit'], protocol):
         raise ValueError('capacity protocol differs from ledger')
     c, _ = load_config(str(protocol), str(local))

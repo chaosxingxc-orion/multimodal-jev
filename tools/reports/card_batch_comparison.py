@@ -34,11 +34,23 @@ def prepare(c):
     parent = Path(c['package'])
     old = read(parent/'operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
     archive = parent/'entry.tar'
+    checkpointing = c.get('activation_checkpointing')
+    prior_comparison = None
+    if checkpointing is not None:
+        prior_comparison = Path(c['baseline_comparison'])
     if old['entry_archive_sha256'] != c['archive_sha256'] or file_hash(archive) != c['archive_sha256']:
         raise ValueError('comparison parent archive differs')
     deployment = c['deployment'].copy()
     if deployment['host'] != old['host']:
         raise ValueError('comparison must reuse the same host and prepared caches')
+    if prior_comparison is not None:
+        prior_entry = read(prior_comparison/'operations.json')
+        if (not deployment.get('predecessor')
+                or Path(deployment['predecessor']['terminal']) != Path(prior_entry['operations'])/'terminal.json'
+                or deployment['host'] != prior_entry['host']
+                or deployment['lease'] != prior_entry['lease']
+                or deployment['idle_devices'] != prior_entry['idle_devices']):
+            raise ValueError('recompute probe requires the exact baseline comparison and lease')
     upstream = Path(old['remote_root'])
     devices = deployment['idle_devices']
     widths = c['widths']
@@ -87,6 +99,8 @@ def prepare(c):
     allowed = {'tools/jev/train_card_stage1.py', 'tools/reports/card_stage1_window.py',
                'tools/reports/card_capacity_sweep.py', 'tools/reports/card_batch_comparison.py',
                'src/multimodal_jev/stage1_batch_probe.py'}
+    if prior_comparison is not None:
+        allowed.add('tools/reports/experiment_package.py')
     if changed - allowed:
         raise ValueError(f'comparison snapshot changes unrelated code: {changed - allowed}')
 
@@ -114,7 +128,9 @@ def prepare(c):
     names = []
     jobs = []
     for width in widths:
-        role = f'micro-{width}'
+        if prior_comparison is not None and width == widths[0]:
+            continue
+        role = f'micro-{width}' + ('-recompute' if prior_comparison is not None else '')
         config = deepcopy(formal)
         config['batch_config'].update(training_devices=len(devices), microbatch=width,
                                       per_dp_replica_batch=width)
@@ -153,6 +169,12 @@ def prepare(c):
                       bootstrap_input=dict(path='/jev-entry/bootstrap.json', sha256=c['confusion_sha256']),
                       batch_probe=dict(spans=spans))
         config['single_card']['path'] = '/jev-parent-prepare/single.json'
+        if prior_comparison is not None:
+            base_name = f'micro-{width}-training.json'
+            base_raw = pinned((prior_comparison/'entry'/base_name).read_bytes(), prior_entry['entry_pins'][base_name])
+            if config != json.loads(base_raw):
+                raise ValueError('recompute probe differs from the frozen baseline')
+            config['activation_checkpointing'] = checkpointing
         run_name = f'{role}-training.json'
         commit_json(entry/run_name, config)
         leaf = dict(phase='card_stage1', role=role, work='/jev-work', source=runtime,
@@ -209,7 +231,8 @@ def summarize(root, config, outcome):
     if outcome == 'completed' and any(s['completed_steps'] != s['steps'] for s in spans):
         raise ValueError('missing optimizer updates in completed comparison')
     return dict(outcome=outcome, microbatch=config['microbatch'], global_batch=width,
-                devices=config['physical_devices'], accumulation=1, spans=spans)
+                devices=config['physical_devices'], accumulation=1, spans=spans,
+                activation_checkpointing=config.get('activation_checkpointing'))
 
 
 def run_probe(c):
@@ -256,9 +279,10 @@ def execute(c):
     if run(deployment):
         raise ValueError('batch comparison operations did not exit successfully')
     ops = Path(deployment['operations'])
-    arms = []
-    for width in c['widths']:
-        role = f'micro-{width}'
+    baseline = c.get('baseline_comparison')
+    arms = read(Path(baseline)/'results.json')['arms'] if baseline else []
+    for group in deployment['chains'][0]:
+        role = group[0]['name']
         sample = read(ops/f'{role}-collected.json')
         launch = read(ops/f'{role}-launch.json')
         terminal = read(ops/f'{role}-inspect.json')['State']

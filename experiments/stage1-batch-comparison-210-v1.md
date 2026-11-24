@@ -7,3 +7,5 @@
 主指标为普通窗口录音数除以逐步最慢 rank 的墙钟耗时之和。另记录热身和长批吞吐、峰值已分配和保留显存及 OOM。计时仅覆盖 Stage1 训练更新。microbatch 8 跑通压力窗口且吞吐改善后，再在六卡上复核容量与首轮耗时。
 
 通过 `run_experiment.py capacity --experiment JEV-210 --local <本机宏>` 派发。[冻结配置](../configs/portable/operations/card-stage1-batch-comparison-210-v1.json) · [主实验报告](../wiki/reports/JEV-210.md)
+
+激活重计算另用 `--capacity-variant recompute` 接续。该配置只重跑 microbatch 8。封包逐项比对基础包的冻结训练配置，仅增加 BF16 语言层的非重入式激活重计算。使用同一两张卡、同一租约、相同三个窗口，并等待原对照完成。共同报告峰值显存、普通窗口的录音吞吐及长批 OOM。若原版 microbatch 8 未跑完，按长批容量与 microbatch 4 的吞吐判断是否值得做六卡复核。[重计算配置](../configs/portable/operations/card-stage1-recompute-210-v1.json)

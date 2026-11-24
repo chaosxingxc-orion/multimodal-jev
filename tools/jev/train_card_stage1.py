@@ -147,6 +147,11 @@ def run(c,root):
             sharding_strategy=ShardingStrategy.FULL_SHARD,use_orig_params=True,sync_module_states=True,
             mixed_precision=MixedPrecision(param_dtype=torch.bfloat16,reduce_dtype=torch.float32,
                 buffer_dtype=torch.float32,cast_forward_inputs=True,keep_low_precision_grads=False),limit_all_gathers=True)
+        if 'activation_checkpointing' in c:
+            if probe is None:
+                raise ValueError('Stage1 activation checkpointing requires a registered capacity probe')
+            from tools.reports.stage2_view_actor import configure_activation_checkpointing
+            configure_activation_checkpointing(model, c['activation_checkpointing'])
         model.decision_head.module.register_forward_pre_hook(capture_dtype('head'))
         for n,m in model.named_modules():
             if type(m) is torch.nn.Linear and ('lora_A.' in n or 'lora_B.' in n):
