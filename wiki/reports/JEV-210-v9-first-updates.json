@@ -1,0 +1,67 @@
+{
+  "container_id": "62bf996fc44688ee408828ef2a7ec20023745ed402889d6d34636e11b7bcc4f9",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": "running",
+  "config_sha256": "334f5549e0c2dae586620f813befe3cf97f9de04eac88f6ff35ebe1ca083288d",
+  "policy_id": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+  "plan_sha256": "340f17e3c5d6ad5cf57766a790fddc4e3114c976840a1a4da3575f9e672fcd83",
+  "finite": {
+    "microbatch": 8,
+    "updates": 2,
+    "engineering_prefix": true,
+    "config_sha256": "d539ceb57f0a5c935305d5b282d0e751f1c911c20524a5df4d579de79b880c81",
+    "negative_cards_per_anchor": 16,
+    "sampler": {
+      "kind": "class-logit-ema-v1",
+      "config": {
+        "decay": 0.95,
+        "temperature": 0.2,
+        "uniform_mix": 0.05,
+        "min_shared_coordinates": 4,
+        "max_staleness_updates": 1
+      },
+      "maximum_observed_lag_updates": 1,
+      "expected_updates": 2
+    },
+    "finite_pressure": {
+      "offset": 1152,
+      "anchor": "slurp:audio-1497621480.flac"
+    }
+  },
+  "total_updates": 1713,
+  "updates": [
+    {
+      "step": 1,
+      "real_queries": 64,
+      "ranks": 8,
+      "loss": 0.8430895805358887,
+      "recomputed_loss": 0.8430895283818245,
+      "learning_rate": 1.25e-05,
+      "grad_norm": 10.320513725280762,
+      "max_rank_seconds": 16.6894143599784,
+      "max_peak_allocated": 7628797952
+    },
+    {
+      "step": 2,
+      "real_queries": 64,
+      "ranks": 8,
+      "loss": 0.7354984283447266,
+      "recomputed_loss": 0.7354984432458878,
+      "learning_rate": 2.5e-05,
+      "grad_norm": 7.720328330993652,
+      "max_rank_seconds": 29.911171750049107,
+      "max_peak_allocated": 22986325504
+    },
+    {
+      "step": 3,
+      "real_queries": 64,
+      "ranks": 8,
+      "loss": 0.81943678855896,
+      "recomputed_loss": 0.8194367289543152,
+      "learning_rate": 3.7500000000000003e-05,
+      "grad_norm": 8.998594284057617,
+      "max_rank_seconds": 28.533735789940692,
+      "max_peak_allocated": 28882084352
+    }
+  ]
+}
