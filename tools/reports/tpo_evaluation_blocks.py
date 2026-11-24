@@ -167,10 +167,22 @@ def worker(spec):
         if not reference_rows:
             raise ValueError('all workers require a nonempty HF reference shard')
     verified = {}
+    finite = spec.get('finite_policy_parity')
+    finite_blocks = []
+    if finite:
+        for dataset in spec['endpoints']:
+            for arm in spec['inferred_arms'][dataset]:
+                candidates = [b for b in plan['blocks'] if b['dataset'] == dataset and b['arm'] == arm]
+                finite_blocks.extend({b['key']: b for b in (candidates[0], candidates[-1])}.values())
+        finite_blocks = [b['key'] for i, b in enumerate(finite_blocks) if i % finite['shards'] == finite['shard']]
+        if not finite_blocks:
+            raise ValueError('every evaluation device requires a finite HF block')
     model_loading = None
     start = time.monotonic()
     for index, block in enumerate(plan['blocks']):
         probe = spec.get('single_card_probe')
+        if finite and block['key'] not in finite_blocks:
+            continue
         if reference and block['key'] not in reference_rows:
             continue
         if probe and index % probe['shards'] != probe['shard']:
@@ -248,6 +260,17 @@ def worker(spec):
                             first_batch_unix = time.time()
                         yield item
                 items = remember()
+                if finite:
+                    from tools.reports.probe_single_card_batches import compare
+                    witness = compare(single, model, device, provider, pid, items, finite)
+                    for mini in witness:
+                        for x in mini['examples']:
+                            candidate = x['variants'].get(single.mode,
+                                dict(logit=x['batch_logit'], probability=x['batch_probability']))
+                            if (candidate['logit'], candidate['probability']) != (x['singleton_logit'], x['singleton_probability']):
+                                raise ValueError(f'finite evaluation {dataset}/{arm} fails HF parity: {x["id"]}')
+                    verified[block['key']] = dict(dataset=dataset, arm=arm, policy_id=pid, batches=witness)
+                    continue
                 if probe:
                     from tools.reports.probe_single_card_batches import compare
                     diagnostic.append(dict(block=block['key'], dataset=dataset, arm=arm, policy_id=pid,
@@ -277,6 +300,12 @@ def worker(spec):
                   seconds=time.monotonic()-start, devices=spec['devices'])
     if 'single_card_probe' in spec:
         result.update(diagnostic=diagnostic, labels_used=False, npu_executed=bool(diagnostic))
+    if finite:
+        if verified.keys() != set(finite_blocks):
+            raise ValueError('incomplete independent HF policy parity')
+        result.update(status='hf_reference_exact', labels_used=False, npu_executed=True,
+                      verified=verified, comparisons=sum(len(b['examples']) for row in verified.values()
+                                                         for b in row['batches']))
     if reference:
         if verified.keys() != reference_rows.keys():
             raise ValueError('incomplete HF reference reproduction')

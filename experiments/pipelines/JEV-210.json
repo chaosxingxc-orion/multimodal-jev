@@ -158,6 +158,23 @@
               ]
             }
           }
+        ],
+        "config": "configs/portable/operations/card-stage1-epoch1-audit.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.audit_card_training_endpoint",
+            "configs/portable/operations/card-stage1-epoch1-audit.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "dispatch_guards": [
+          "${CARD_EPOCH_HANDOFF}/receipt.json"
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_STAGE1_OPERATIONS}/terminal.json"
+          }
         ]
       },
       {
@@ -208,6 +225,23 @@
                 "checkpoint_sha256"
               ]
             }
+          }
+        ],
+        "config": "configs/portable/operations/card-scoring-epoch1-scale.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_card_scoring_benchmark",
+            "configs/portable/operations/card-scoring-epoch1-scale.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "dispatch_guards": [
+          "${CARD_MERGED_SCORE}/entry.tar"
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_EPOCH_HANDOFF}/receipt.json"
           }
         ]
       },
@@ -283,6 +317,11 @@
               ]
             ]
           }
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_MERGED_SCORE}/audit.json"
+          }
         ]
       },
       {
@@ -331,13 +370,30 @@
               ]
             }
           }
+        ],
+        "config": "configs/portable/operations/card-stage1-endpoint-audit.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.audit_card_training_endpoint",
+            "configs/portable/operations/card-stage1-endpoint-audit.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "dispatch_guards": [
+          "${CARD_ENDPOINT_DIR}/receipt.json"
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_RESUME_OPERATIONS}/formal-collected.json"
+          }
         ]
       },
       {
         "id": "score-stage1-endpoint-train",
         "checks": [
           {
-            "path": "${CARD_ENDPOINT_MERGED_AUDIT}",
+            "path": "${CARD_ENDPOINT_SCORE}/audit.json",
             "equals": [
               [
                 [
@@ -379,22 +435,36 @@
               ],
               "pairs": [
                 "pairs"
-              ],
-              "cross_host_parity": [
-                "cross_host_parity"
               ]
             }
+          }
+        ],
+        "config": "configs/portable/operations/card-scoring-endpoint-scale.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_card_scoring_benchmark",
+            "configs/portable/operations/card-scoring-endpoint-scale.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "dispatch_guards": [
+          "${CARD_ENDPOINT_SCORE}/entry.tar"
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_ENDPOINT_AUDIT}"
           }
         ]
       },
       {
         "id": "build-fused-stage2-view",
-        "config": "configs/portable/operations/card-tpo-targets.json",
+        "config": "configs/portable/operations/card-tpo-targets-single-host.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.build_card_tpo_targets",
-            "configs/portable/operations/card-tpo-targets.json",
+            "configs/portable/operations/card-tpo-targets-single-host.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -442,16 +512,51 @@
               ]
             }
           }
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_ENDPOINT_SCORE}/audit.json"
+          }
+        ]
+      },
+      {
+        "id": "bind-stage2-endpoint",
+        "python": "${CARD_PYTHON}",
+        "config": "configs/portable/operations/card-tpo-parent-endpoint.json",
+        "run": [
+          [
+            "tools.reports.bind_card_tpo_parent",
+            "configs/portable/operations/card-tpo-parent-endpoint.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json"
+          }
+        ],
+        "checks": [
+          {
+            "path": "${CARD_TPO_PARENT}",
+            "equals": [
+              [
+                [
+                  "base_id"
+                ],
+                "feecbef15963f282a2eeb36165f4b8ca127911b30330b62e23e87bc2c7e8c436"
+              ]
+            ]
+          }
         ]
       },
       {
         "id": "freeze-fused-stage2",
-        "config": "configs/portable/operations/card-tpo-package.json",
+        "config": "configs/portable/operations/card-tpo-package-endpoint.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_tpo_windows",
-            "configs/portable/operations/card-tpo-package.json",
+            "configs/portable/operations/card-tpo-package-endpoint.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -474,6 +579,11 @@
                 true
               ]
             ]
+          }
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_TPO_PARENT}"
           }
         ]
       },
@@ -621,13 +731,32 @@
               ]
             ]
           }
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_TPO_ROOT}/package/operations-local.json"
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_TPO_ROOT}/package/operations-local.json",
+            "--observe-tpo-package",
+            "${CARD_TPO_ROOT}/package"
+          ]
+        ],
+        "dispatch_guards": [
+          "${CARD_TPO_ROOT}/ops"
         ]
       }
     ],
     "evaluate": [
       {
         "id": "evaluate-stage1-and-fused-stage2",
-        "config": "configs/portable/operations/card-paired-endpoint-evaluation.json",
+        "config": "configs/portable/operations/card-paired-endpoint-scale.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PAIR_ROOT}/ops"
@@ -635,7 +764,7 @@
         "run": [
           [
             "tools.reports.prepare_paired_card_evaluation",
-            "configs/portable/operations/card-paired-endpoint-evaluation.json",
+            "configs/portable/operations/card-paired-endpoint-scale.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -820,6 +949,190 @@
                   "status"
                 ],
                 "declared_stages_finished"
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-0-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-1-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-2-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-3-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-4-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-5-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-6-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/hf-check-7-collected.json",
+            "equals": [
+              [
+                [
+                  "status"
+                ],
+                "hf_reference_exact"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                true
+              ],
+              [
+                [
+                  "labels_used"
+                ],
+                false
               ]
             ]
           }
@@ -1118,6 +1431,11 @@
                 }
               }
             ]
+          }
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json"
           }
         ]
       }

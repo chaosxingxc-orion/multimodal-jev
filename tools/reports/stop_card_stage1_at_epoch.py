@@ -43,7 +43,9 @@ def endpoint(c, train, launch):
     shards = {f'rank-{rank}/checkpoint-{update:04d}.pt' for rank in range(world)}
     hashes = {k: v for k, v in manifest.items() if k != 'policy_id'}
     from hashlib import sha256
-    if (update != train['checkpoint_interval'] or not update < train['stop_update']
+    if (update % train['checkpoint_interval'] or
+            (update != train['stop_update'] if c.get('completed_window')
+             else update != train['checkpoint_interval'] or not update < train['stop_update'])
             or train['engineering_prefix'] is not False
             or ckpt['updates'] != update or ckpt['joint_policy_directory'] != expected
             or set(ckpt['rank_shards']) != shards

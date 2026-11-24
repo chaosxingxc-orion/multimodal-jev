@@ -35,7 +35,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
 | JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md)、[尺寸与知识卡复核](reports/JEV-208-card-review.md) |
 | JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 全部登记步骤已审核。[执行报告](reports/JEV-209.md) |
-| JEV-210 | 45 | planned | [1.7B r256 知识卡与融合 TPO](../experiments/stage1-cards-tpo-210.md) | 初始化 1.7B 基座并验收八卡 Stage1。[执行报告](reports/JEV-210.md) |
+| JEV-210 | 45 | in_progress | [1.7B r256 知识卡与融合 TPO](../experiments/stage1-cards-tpo-210.md) | 181 已启动八卡有限验收。[执行报告](reports/JEV-210.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
@@ -61,7 +61,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-207 | 从共同 Stage1 起点验证新训练集 + actor 排序项；按新视图定步数，206 为历史对照 | 2,750 条、62 对；16 步训练及五个面板已审核，八卡评测用时 22 分 54 秒 | 选模 macro-F1 80.10%（−3.08 点），未晋级。SLURP TEST 79.11%（−2.47 点），MINDS 73.46%（+1.56 点），SIB-FLEURS 持平，MMSU 少答对 11 题。[报告](reports/JEV-207.md) |
 | JEV-208 | 从共同 Stage1 接续，覆盖全部准入 TRAIN 录音，以 TPO 和当前最强错类的概率间隔训练两轮 | 19,269 条，102 步与五面板已审 | 源域 selection +1.03 点但区间跨零；MINDS −0.17 点，话题 −4.57 点。保留 206。[错例分析](reports/JEV-208-errors.md) [报告](reports/JEV-208.md) |
 | JEV-209 | 0.6B r128 知识卡 Stage1 全量两轮，单份分层视图，一轮双向 TPO 加按样本启用的动态间隔 | 混合版已冻结 109,610 条、68 类，真人端点五面板已归档 | [真人版归档](archive/JEV-209-real-only/report.md)；混合版单列完整官方 TEST 与五面板。[报告](reports/JEV-209.md) |
-| JEV-210 | 1.7B r256 知识卡 Stage1 两轮及融合 TPO 一轮 | 已登记，等待 181 八卡验收 | [执行报告](reports/JEV-210.md) |
+| JEV-210 | 1.7B r256 知识卡 Stage1 两轮及融合 TPO 一轮 | CPU 初始化通过，181 八卡有限验收运行中 | [执行报告](reports/JEV-210.md) |
 
 未逐号回填更早的工程包。旧实验以[归档](archive/)和既有研究文档为准；FSC 数字留在
 历史收据里，当前主参考为 SLURP 与 MINDS。仅比较相同封存人口、候选和指标；

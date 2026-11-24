@@ -253,7 +253,7 @@ def run_resume(c):
             or file_hash(confusion) != resume['confusion_sha256']
             or read(confusion)['checkpoint_sha256'] != resume['checkpoint_sha256']):
         raise ValueError('resume checkpoint or merged confusion identity differs')
-    stop = start+c['finite_updates'] if finite else parent['stop_update']
+    stop = start+c['finite_updates'] if finite else parent['reference_endpoint']
     binding = dict(checkpoint_sha256=resume['checkpoint_sha256'], confusion_sha256=resume['confusion_sha256'],
                    start_update=start)
     if not finite:
@@ -263,6 +263,10 @@ def run_resume(c):
                 or proof['parity_passes'] != c['parity_passes']):
             raise ValueError('finite resume did not admit this checkpoint and confusion table')
     card = dict(parent['single_card'],path=str(Path(resume['prepared_root'])/'single.json'))
+    prepared = Path(resume['prepared_root'])
+    if Path(parent['source_policy']) == Path('/jev-work/prepare/policy'):
+        parent['source_policy'] = str(prepared/'policy')
+        parent['layout_cache'] = dict(parent['layout_cache'],path=str(prepared/'card-cache.json'))
     parent.update(start_update=start, stop_update=stop, resume_root=str(checkpoint.parent),
                   resume_confusion=dict(path=str(confusion),sha256=resume['confusion_sha256']),
                   single_card=card, engineering_prefix=finite, training_dispatch_allowed=not finite,

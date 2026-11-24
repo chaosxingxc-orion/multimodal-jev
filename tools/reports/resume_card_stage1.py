@@ -62,7 +62,8 @@ def prepare(c):
     if (sha256(raw).hexdigest() != resume['config_sha256']
             or devices != resume['devices'] or devices != deployment['idle_devices']
             or train['instruction_objective']['kind'] != 'intent_triplet_infonce_v1'
-            or train['stop_update'] != 2*start
+            or train['reference_endpoint'] != 2*start
+            or train['stop_update'] not in (start, train['reference_endpoint'])
             or train['batch_config']['source_queries'] != audit['recordings']
             or set(confusion['labels']) != confusion['distribution'].keys()
             or any(count <= 0 for count in confusion['counts'])):
@@ -74,7 +75,8 @@ def prepare(c):
     parent_files = verify(upstream/'source', manifest_sha256=old_window['source']['sha256'],
                           io_workers=old_window['io_workers'])
     parent_proof = endpoint(dict(updates=start, training=dict(sha256=resume['config_sha256']),
-                                 hash_timeout_seconds=c['transfer_timeout_seconds']),train,launch)
+                                 hash_timeout_seconds=c['transfer_timeout_seconds'],
+                                 completed_window=train['stop_update'] == start),train,launch)
     if any(resume[k] != v for k,v in parent_proof.items()):
         raise ValueError('live parent checkpoint differs from the handoff')
 
@@ -144,9 +146,10 @@ def observe(c, deployment, window, parent):
     finite = read(ops/'finite-collected.json')
     raw = remote(host,'cat',str(path/'config.json')).stdout
     train = json.loads(raw)
-    fields = ('physical_devices','batch_config','instruction_objective','stop_update','lr_schedule',
+    fields = ('physical_devices','batch_config','instruction_objective','reference_endpoint','lr_schedule',
               'schedule_sha256','source_policy_id','source_contract')
     if (len(records) != count*world or any(train[k] != parent[k] for k in fields)
+            or train['stop_update'] != parent['reference_endpoint']
             or train['start_update'] != start or train['engineering_prefix'] is not False
             or train['training_dispatch_allowed'] is not True
             or train['resume_confusion']['sha256'] != resume['confusion_sha256']

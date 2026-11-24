@@ -98,7 +98,8 @@ def collect(package, count, timeout):
         batch = dict(design['stage1']['batch_config'], per_dp_replica_batch=window['effective_anchors_per_rank'],
                      microbatch=window['execution_microbatch'])
         plan = derive(batch)
-        expected_stop = plan['total_updates']
+        expected_stop = (plan['updates_per_epoch'] * window['stop_after_epoch']
+                         if 'stop_after_epoch' in window else plan['total_updates'])
         if (config['global_batch'] != plan['global_batch'] or config['microbatch'] != finite['microbatch']
                 or config['instruction_objective'] != window['triplet_objective']):
             raise ValueError('triplet objective or admitted batch differs')

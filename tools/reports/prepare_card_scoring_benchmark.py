@@ -46,13 +46,17 @@ def formal_policy(c, train, deploy):
     proof = json.loads((local/'receipt.json').read_bytes())
     capture = pinned(dict(path=local/'inspect.json', sha256=proof['inspect_sha256']))
     state = capture['State']
-    updates = train['checkpoint_interval']
-    stop = json.loads((local/'stop-intent.json').read_bytes())
+    completed = proof.get('completed_window', False)
+    updates = train['stop_update'] if completed else train['checkpoint_interval']
+    stop = None if completed else json.loads((local/'stop-intent.json').read_bytes())
     if (proof['passed'] is not True or proof['container_exited'] is not True
-            or proof['updates'] != updates or updates >= train['stop_update']
+            or proof['updates'] != updates
+            or (not completed and updates >= train['stop_update'])
+            or (completed and state['ExitCode'] != 0)
             or proof['config_sha256'] != c['inputs']['training']['sha256']
-            or proof['container_id'] != capture['Id'] or stop['container_id'] != capture['Id']
-            or any(stop[k] != proof[k] for k in ('policy', 'policy_id', 'manifest_sha256', 'checkpoint_sha256'))
+            or proof['container_id'] != capture['Id']
+            or (stop and (stop['container_id'] != capture['Id']
+                or any(stop[k] != proof[k] for k in ('policy', 'policy_id', 'manifest_sha256', 'checkpoint_sha256'))))
             or proof['host'] != deploy['host'] or proof['devices'] != deploy['devices']
             or state['Running'] or state['Status'] != 'exited' or state['Pid'] != 0
             or state['OOMKilled'] or proof['exit_code'] != state['ExitCode']):
@@ -75,6 +79,10 @@ def package(c):
     repo = Path(__file__).resolve().parents[2]
     deploy = c['deployment'].copy()
     inputs = c['inputs']
+    if isinstance(inputs, str):
+        root_inputs = Path(c['formal']['epoch_handoff'])
+        proof = json.loads((root_inputs/'receipt.json').read_bytes())
+        inputs = pinned(dict(path=inputs,sha256=proof['inputs_sha256']))
     policy = Path(inputs['policy'])
     names = ('training', 'cards', 'acoustics', 'synthetic', 'real_lengths')
     formal = c.get('formal')
@@ -194,7 +202,7 @@ def package(c):
         entries += ('full', *(f'full-{i}' for i in range(len(devices))))
         spec.update(cpu_workers=c['cpu_workers'], audit_min_parallel_blocks=c['audit_min_parallel_blocks'],
                     seed=c['seed'])
-        spec['formal'] = dict(policy_id=policy_id, updates=train['checkpoint_interval'], image=deploy['image'],
+        spec['formal'] = dict(policy_id=policy_id, updates=int(target.name.split('-')[-1]), image=deploy['image'],
                               checkpoint_sha256=checkpoint_sha, coordination_seconds=c['coordination_seconds'],
                               recordings_per_block=c['recordings_per_block'],
                               fsdp_timeout_seconds=c['fsdp_timeout_seconds'],

@@ -85,10 +85,40 @@ def extend_official(entry, inputs, clean):
                        population=inputs['population'])
 
 
+
+def bind_completed_endpoints(c):
+    inputs = c['completed_endpoints']
+    proof_path = Path(inputs['stage1_receipt'])
+    proof_pin = dict(path=str(proof_path), sha256=file_hash(proof_path))
+    proof = read_pinned(proof_pin)
+    training_dir = Path(inputs['stage2_package'])
+    staged = training_dir/'entry'
+    target = staged/'targets/MANIFEST.json'
+    training = staged/'tpo.json'
+    train_pin = dict(path=str(training), sha256=file_hash(training))
+    bound = settings(train_pin)
+    if file_hash(target) != bound['training']['target_sha']:
+        raise ValueError('audited TPO target schedule changed')
+    manifest = read_pinned(dict(path=str(target), sha256=bound['training']['target_sha']))
+    if (manifest['source_policy'] != proof['policy_id']
+            or manifest['card_input']['checkpoint_sha256'] != proof['checkpoint_sha256']):
+        raise ValueError('evaluation endpoints do not belong to the same training run')
+    card = proof_path.with_name('cards.json')
+    cards = dict(path=str(card), sha256=manifest['card_input']['cards_sha256'])
+    deployment = training_dir/'operations-local.json'
+    result = dict(c, stage1_snapshot=proof['policy'], stage1_audit=proof_pin,
+                  stage1_manifest=dict(path=str(proof_path.with_name('endpoint-manifest.json')), sha256=proof['manifest_sha256']),
+                  cards=cards, stage2_updates=manifest['updates'], training_config=train_pin,
+                  training_deployment=dict(path=str(deployment), sha256=file_hash(deployment)))
+    result['completed_endpoints'] = dict(inputs, stage1_training=dict(
+        path=str(proof_path.with_name('training.json')), sha256=proof['config_sha256']))
+    return result
+
 def run(c):
     base = settings(c['eval_plan'])
     score_base = settings(c['eval_score'])
     cal_previous = settings(c['eval_calibration'])
+    c = bind_completed_endpoints(c) if 'completed_endpoints' in c else c
     parent = read_pinned(c['old_parent'])
     policy_proof = read_pinned(c['stage1_audit'])
     endpoint = read_pinned(c['stage1_manifest'])
@@ -114,6 +144,9 @@ def run(c):
     policies = dict(stage1=endpoint['policy_id'], tpo=receipt['endpoint'])
     parent.update(source_policy=c['stage1_snapshot'], source_policy_id=endpoint['policy_id'],
                   source_contract=endpoint['contract'])
+    if 'completed_endpoints' in c:
+        stage1 = read_pinned(c['completed_endpoints']['stage1_training'])
+        parent.update(model=stage1['model'], base_id=stage1['base_id'])
     root = Path(c['output'])
     entry = root/'entry'
     entry.mkdir(parents=True)
@@ -168,8 +201,8 @@ def run(c):
         partitions[name] = 1
         panels[name] = dict(panels[official_spec['clean_dataset']], primary='top1_accuracy', cluster='id',
                             comparisons=[])
-        if 'reuse' in c:
-            prior = c['reuse']
+        prior = c.get('official_cache_reuse', c.get('reuse'))
+        if prior:
             proof = read_pinned(prior['official_receipt'])
             if (proof['status'] != 'full_stable_prefix_cache_verified' or proof['model_calls'] != 0
                     or proof['npu_executed'] is not False
@@ -225,6 +258,17 @@ def run(c):
         c = dict(c, single_card_reference=dict(path='/jev-entry/hf-reference.json', sha256=admission['sha256']))
     prep, workers, queue = queue_jobs(c, entry, common, datasets, ports, inferred, inputs, deploy['image'])
     checks = []
+    finite = c.get('finite_policy_parity')
+    if finite:
+        if admission or probe or len(modes) != len(ports) or type(finite['batches_per_block']) is not int or finite['batches_per_block'] < 1:
+            raise ValueError('explicit finite parity specification for every evaluation dataset required')
+        for i, job in enumerate(workers):
+            name = f'hf-check-{i}'
+            opts = settings(dict(path=entry/(job['name']+'.json'),
+                                 sha256=file_hash(entry/(job['name']+'.json'))))
+            write(name, dict(opts, output='/jev-work/'+name, result_path='/jev-work/'+name+'.json',
+                             finite_policy_parity=dict(finite, shard=i, shards=len(workers))))
+            checks.append(dict(job, name=name, collect=name+'.json', visible_ordinal='0'))
     if admission:
         for i, job in enumerate(workers):
             name = f'hf-check-{i}'
@@ -280,7 +324,7 @@ def run(c):
         raise ValueError('numerical-only replay requires reusable calibration')
     score_jobs = [] if probe else [[cpu('score','metrics.json')]]
     if checks:
-        cal_groups = [*cal_groups, checks]
+        cal_groups = [checks, *cal_groups] if finite else [*cal_groups, checks]
     with tarfile.open(root/'entry.tar', 'x') as archive:
         archive.add(entry, arcname='entry')
     for port in ports.values():

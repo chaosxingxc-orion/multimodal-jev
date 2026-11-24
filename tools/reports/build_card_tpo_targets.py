@@ -33,6 +33,36 @@ def score_spec(path):
 
 
 def load_scores(config):
+    if 'single_host_score' in config:
+        path = Path(config['single_host_score'])
+        ops = Path(config['single_host_operations'])
+        audit = path/'audit.json'
+        from tools.reports.audit_card_scoring_benchmark import audit as audit_score
+        verified = audit_score(path/'collected/score', path/'entry', ops)
+        saved = read(audit)
+        if any(saved[key] != value for key, value in verified.items() if key != 'confusion'):
+            raise ValueError('saved score does not match the independently reaudited output')
+        config.update(merged=dict(path=str(audit), sha256=file_hash(audit)))
+        spec = score_spec(path/'entry/score.json')
+        full = read(path/'entry/full.json')
+        tasks = []
+        for ordinal, worker in enumerate(read(path/'collected/score/receipt.json')['workers']):
+            ids = [row['id'] for row in full['rows'][ordinal::len(spec['devices'])]]
+            size = spec['formal']['recordings_per_block']
+            lineage = scoring_lineage(spec, ordinal)
+            for number, block in enumerate(worker['blocks']):
+                start = number*size
+                tasks.append((path/'collected/score'/f'worker-{ordinal}'/block['name'],
+                              lineage, ids[start:start+size], full['labels'], spec['widths'][0],
+                              (spec['io_workers'], spec['prefetch_audio'])))
+        cpu = dict(config['execution'])
+        del cpu['io_workers']
+        values, _ = map_cpu(validate_block, tasks, workers=cpu.pop('cpu_workers'), **cpu)
+        pairs = {uid: probability for task, rows in zip(tasks, values, strict=True)
+                 for uid, probability in zip(task[2], rows, strict=True)}
+        if len(pairs) != saved['recordings'] or sum(len(t[2]) for t in tasks) != len(pairs):
+            raise ValueError('validated scores did not cover the full population exactly once')
+        return spec, full, pairs, path/'entry'
     merged = read_pin(config['merged'])
     specs, receipts = [], []
     for lane in config['lanes']:

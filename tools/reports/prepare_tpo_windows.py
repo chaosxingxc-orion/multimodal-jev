@@ -47,6 +47,13 @@ def prepare(c):
             for name, sha in m['files'].items():
                 verified(data/name, sha)
         if cards:
+            if 'endpoint_receipt' in cards:
+                proof = json.loads(Path(cards['endpoint_receipt']).read_bytes())
+                if (not proof['passed'] or not proof['container_exited']
+                        or m['source_policy'] != proof['policy_id']
+                        or f"{proof['policy']}:{parent['source_policy']}" not in c['deployment']['read_only_mounts']):
+                    raise ValueError('Stage2 mount differs from the audited endpoint')
+                cards = dict(cards, policy_sha256=proof['manifest_sha256'])
             if (full or joint or c.get('next_macro_reference') or not m.get('card_input')
                     or m['reference_sha256'] != parent['reference_dataset']['manifest_sha256']
                     or m['source_policy_sha256'] != cards['policy_sha256']
