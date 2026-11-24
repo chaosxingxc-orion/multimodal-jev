@@ -2,6 +2,21 @@
 from .slurp_training import content_hash
 
 
+def bring_pressure_forward(batches, global_batch, pressure):
+    """Use one fixed real TRAIN batch as the second finite update."""
+    offset, witness = pressure['offset'], pressure['anchor']
+    if type(offset) is not int or offset % global_batch or offset < 2 * global_batch:
+        raise ValueError('pressure offset must select a distinct complete TRAIN batch')
+    index = offset // global_batch
+    if index >= len(batches):
+        raise ValueError('pressure batch is outside the source schedule')
+    batch = batches[index]
+    if batch['epoch'] != 0 or batch['real_queries'] != global_batch or not any(
+            slot['id'] == witness for slot in batch['slots']):
+        raise ValueError('the pressure witness is not in the pinned full TRAIN batch')
+    batches[1], batches[index] = batch, batches[1]
+
+
 def select_batches(batches, global_batch, probe, stop_update):
     prefix = []
     used = set()

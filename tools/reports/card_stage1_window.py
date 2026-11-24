@@ -190,10 +190,16 @@ def run(c):
         prior = read(reuse['config']['path'])
         for key in ('source_policy_id', 'source_contract', 'base_id', 'release_sha256',
                     'stage1_layout', 'single_card', 'layout_cache',
-                    'mixed', 'epoch_mining', 'physical_devices', 'runtime_profile'):
+                    'mixed', 'epoch_mining', 'runtime_profile'):
             if prior[key] != parent[key]:
                 raise ValueError(f'bootstrap identity differs: {key}')
+        if prior['physical_devices'] != parent['physical_devices'] and reuse.get('topology_independent') is not True:
+            raise ValueError('bootstrap reuse across topologies must be declared')
         parent['bootstrap_input'] = reuse['report']
+    if 'activation_checkpointing' in c:
+        parent['activation_checkpointing'] = c['activation_checkpointing']
+    if finite and 'finite_pressure' in c:
+        parent['finite_pressure'] = c['finite_pressure']
     for width in widths:
         parent['microbatch'] = parent['batch_config']['microbatch'] = width
         commit_json(root/'config.json',parent)
@@ -231,6 +237,8 @@ def run(c):
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
     if 'negative_cards_per_anchor' in parent['instruction_objective']:
         receipt['negative_cards_per_anchor'] = parent['instruction_objective']['negative_cards_per_anchor']
+    if 'finite_pressure' in parent:
+        receipt['finite_pressure'] = parent['finite_pressure']
     commit_json(root/'receipt.json',receipt)
     return receipt
 

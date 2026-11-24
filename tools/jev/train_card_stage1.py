@@ -91,6 +91,10 @@ def run(c,root):
                 raise ValueError('batch comparison requires a bounded triplet window from initialization')
         elif c['engineering_prefix'] is True and stop_update-start_update>2:
             raise ValueError('engineering prefix is at most two updates')
+        pressure = c.get('finite_pressure')
+        if pressure is not None and (probe is not None or not c['engineering_prefix']
+                or start_update != 0 or stop_update != 2 or not triplet or not c.get('mixed')):
+            raise ValueError('pressure witness is restricted to the initial two-step finite window')
         contract={k:c[k] for k in ('base_id','source_policy_id','source_contract','runtime_profile',
             'release_sha256','schedule_sha256','global_batch','microbatch','stage')}
         if triplet:contract['epoch_mining']=c['epoch_mining']
@@ -103,6 +107,7 @@ def run(c,root):
             batch_config=c['batch_config'],parent_schedule_sha256=c['parent_schedule_sha256'],
             schedule_release_sha256=c['schedule_release_sha256'])
         if c.get('prompt_layout') is not None:contract['prompt_layout']=c['prompt_layout']
+        if 'activation_checkpointing' in c:contract['activation_checkpointing']=c['activation_checkpointing']
         progress('load')
         if checkpoint_identity(c['model'])[0]!=c['base_id']:raise ValueError('base changed')
         bundle=read_execution_bundle(c['source_policy'],expected_policy_id=c['source_policy_id'],
@@ -148,8 +153,6 @@ def run(c,root):
             mixed_precision=MixedPrecision(param_dtype=torch.bfloat16,reduce_dtype=torch.float32,
                 buffer_dtype=torch.float32,cast_forward_inputs=True,keep_low_precision_grads=False),limit_all_gathers=True)
         if 'activation_checkpointing' in c:
-            if probe is None:
-                raise ValueError('Stage1 activation checkpointing requires a registered capacity probe')
             from tools.reports.stage2_view_actor import configure_activation_checkpointing
             configure_activation_checkpointing(model, c['activation_checkpointing'])
         model.decision_head.module.register_forward_pre_hook(capture_dtype('head'))
@@ -197,6 +200,9 @@ def run(c,root):
                     if probe is not None:
                         from multimodal_jev.stage1_batch_probe import select_batches
                         batches = select_batches(batches, c['global_batch'], probe, stop_update)
+                    if pressure is not None:
+                        from multimodal_jev.stage1_batch_probe import bring_pressure_forward
+                        bring_pressure_forward(batches, c['global_batch'], pressure)
                 else:
                     rows,task,_=load(c['release'],c['release_sha256'],'learning',purpose='optimize')
                     population={r['id']:r for r in rows}
@@ -371,7 +377,7 @@ def run(c,root):
                     timing = signal[0]['timing']
                     real_queries = actor.last_admission['global_real_requests']
                 audit=audit_adam_shards(named,opt,index+1)
-                save_now=probe is None and ((index+1)%c['checkpoint_interval']==0 or index+1==stop_update)
+                save_now=probe is None and pressure is None and ((index+1)%c['checkpoint_interval']==0 or index+1==stop_update)
                 if save_now:
                     if frozen!={n:tensor_identity(p.detach().cpu()) for n,p in wrapped.named_parameters() if not p.requires_grad}:
                         raise ValueError('frozen backbone changed')
@@ -401,7 +407,7 @@ def run(c,root):
                     total_seconds=time.monotonic()-step_begin,input_service=timing,metrics=metrics,
                     real_queries=real_queries,
                     peak_allocated=torch.npu.max_memory_allocated(),checkpoint=save_now,optimizer_audit=audit)
-                if probe is not None:
+                if probe is not None or pressure is not None:
                     record['peak_reserved'] = torch.npu.max_memory_reserved()
                 records.append(record);atomic_json(out/f'update-{index+1:04d}.json',record)
                 if (triplet and not c['engineering_prefix'] and c.get('mine_after_window', True) and

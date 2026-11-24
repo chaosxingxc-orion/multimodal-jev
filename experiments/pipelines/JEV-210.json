@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "matched-06b-k16-dp6-v4",
+  "revision": "matched-06b-k16-dp5-micro8-v6",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "recompute": "configs/portable/operations/card-stage1-recompute-210-v1.json",
@@ -23,7 +23,7 @@
     "train": [
       {
         "id": "prepare-and-run-stage1-epoch1",
-        "config": "configs/portable/operations/card-stage1-knegative.json",
+        "config": "configs/portable/operations/card-stage1-knegative-dp5.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -31,7 +31,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-knegative.json",
+            "configs/portable/operations/card-stage1-knegative-dp5.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -88,6 +88,27 @@
                   "engineering_prefix"
                 ],
                 true
+              ],
+              [
+                [
+                  "microbatch"
+                ],
+                8
+              ],
+              [
+                [
+                  "negative_cards_per_anchor"
+                ],
+                16
+              ],
+              [
+                [
+                  "finite_pressure"
+                ],
+                {
+                  "offset": 1200,
+                  "anchor": "slurp:audio-1497621480.flac"
+                }
               ]
             ],
             "report": {
@@ -106,7 +127,7 @@
                 [
                   "updates"
                 ],
-                4568
+                2741
               ],
               [
                 [
@@ -162,7 +183,7 @@
                 [
                   "updates"
                 ],
-                4568
+                2741
               ]
             ],
             "report": {
@@ -172,12 +193,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-epoch1-audit-dp6.json",
+        "config": "configs/portable/operations/card-stage1-epoch1-audit-dp5.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-epoch1-audit-dp6.json",
+            "configs/portable/operations/card-stage1-epoch1-audit-dp5.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -212,7 +233,7 @@
                 [
                   "updates"
                 ],
-                4568
+                2741
               ],
               [
                 [
@@ -240,12 +261,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-scoring-epoch1-scale-dp6.json",
+        "config": "configs/portable/operations/card-scoring-epoch1-scale-dp5.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-epoch1-scale-dp6.json",
+            "configs/portable/operations/card-scoring-epoch1-scale-dp5.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -286,13 +307,13 @@
                 [
                   "start_update"
                 ],
-                4568
+                2741
               ],
               [
                 [
                   "total_updates"
                 ],
-                9136
+                5482
               ]
             ],
             "report": {
@@ -320,7 +341,7 @@
                 [
                   "stop_update"
                 ],
-                9136
+                5482
               ],
               [
                 [
@@ -359,13 +380,13 @@
                 [
                   "updates"
                 ],
-                9136
+                5482
               ],
               [
                 [
                   "ranks"
                 ],
-                6
+                5
               ]
             ],
             "report": {
@@ -384,12 +405,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-endpoint-audit-dp6.json",
+        "config": "configs/portable/operations/card-stage1-endpoint-audit-dp5.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-endpoint-audit-dp6.json",
+            "configs/portable/operations/card-stage1-endpoint-audit-dp5.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -424,7 +445,7 @@
                 [
                   "updates"
                 ],
-                9136
+                5482
               ],
               [
                 [
@@ -452,12 +473,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-scoring-endpoint-scale-dp6.json",
+        "config": "configs/portable/operations/card-scoring-endpoint-scale-dp5.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-endpoint-scale-dp6.json",
+            "configs/portable/operations/card-scoring-endpoint-scale-dp5.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -472,13 +493,13 @@
       },
       {
         "id": "stage2",
-        "pending": "按锁定的六卡预算及无累积规则另封 Stage2，禁止沿用历史 6+2 包。"
+        "pending": "按照新 Stage1 终点和五卡预算另行封装 Stage2。"
       }
     ],
     "evaluate": [
       {
         "id": "evaluate-endpoints",
-        "pending": "等待新端点和同一六卡预算下的评测配置。"
+        "pending": "等待新端点和同一五卡预算下的评测配置。"
       }
     ]
   }
