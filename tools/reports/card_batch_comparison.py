@@ -57,8 +57,26 @@ def prepare(c):
     if len(widths) != 2 or widths[1] != 2 * widths[0] or any(
             type(w) is not int or w < 1 or w & (w - 1) for w in widths):
         raise ValueError('two adjacent powers of two are required')
-    if not devices or not set(devices).isdisjoint(old['idle_devices']):
-        raise ValueError('comparison requires its own devices')
+    if not devices or len(set(devices)) != len(devices):
+        raise ValueError('comparison requires a unique, nonempty device allocation')
+    if not set(devices).isdisjoint(old['idle_devices']):
+        # A retired run can lend its devices, but its successful preparation is still reusable.
+        role = c.get('retired_parent_role')
+        if not role or deployment['lease'] != old['lease']:
+            raise ValueError('overlapping comparison requires the retired parent and its lease')
+        ops = Path(old['operations'])
+        launch = read(ops/f'{role}-launch.json')
+        old_result = read(ops/f'{role}-inspect.json')
+        cid = launch['container_id']
+        cmd = shlex.join(['docker', 'inspect', cid])
+        ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', deployment['host']]
+        live, = json.loads(subprocess.check_output([*ssh, cmd], timeout=25))
+        state = live['State']
+        if (live['Id'] != cid or old_result['Id'] != cid or live['State'] != old_result['State']
+                or live['Name'] != '/' + old['tag'] + '-' + role or live['Image'] != old['image']
+                or state['Status'] != 'exited' or state['Pid'] != 0
+                or live['HostConfig']['RestartPolicy']['Name'] not in ('', 'no')):
+            raise ValueError('parent container retirement does not match the launch evidence')
     predecessors = deployment.get('device_predecessors', [])
     if not {d for job in predecessors for d in job['devices']} <= set(devices):
         raise ValueError('comparison may only wait for owners of its assigned devices')
