@@ -17,3 +17,11 @@
 普通窗口以锚点每秒为主指标。长音频压力窗口要求完成全部更新，另记录显存峰值和分配失败。按每个更新中最慢 rank 的耗时统计。对两档相同曝光复算，记录实际使用的卡数和批量。五卡测试沿用已发布的 CPU 准备证据，按现场设备检查重新派发。配置从本机宏解析设备和路径。
 
 运行入口为 `run_experiment.py capacity --experiment JEV-210 --capacity-variant dp5 --local <本机宏>`。[配置](../configs/portable/operations/card-stage1-batch-comparison-210-dp5-v1.json)
+
+## 五卡 microbatch 16 短测
+
+沿用五卡正式包的 BF16、LoRA、K=16、语言层激活重计算和同一组 TRAIN 锚点。使用 181 的 3–7 号卡，每卡 16 个锚点，全局 batch 80，梯度累积为 1。共 12 步，960 个锚点。前 8 步热身，随后 3 步跑 240 条普通录音，最后一步跑 80 条压力录音，其中包含 23.36 秒的已知长音频。
+
+microbatch 8 直接引用已停全量运行中相同锚点范围的逐步收据，普通窗口为第 17–22 步，长音频窗口为第 31–32 步。普通窗口按每步最慢 rank 的耗时合计换算录音吞吐。两档热身更新数和学习率位置不同，结果用于比较工程吞吐与显存。长音频窗口记录峰值已分配显存、保留显存及是否发生 OOM。短测结束自动释放租约，仅保存更新证据。
+
+统一入口为 `run_experiment.py capacity --experiment JEV-210 --capacity-variant dp5-micro16 --local <本机宏>`。[配置](../configs/portable/operations/card-stage1-micro16-210-dp5-v1.json)

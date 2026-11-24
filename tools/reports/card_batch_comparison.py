@@ -57,6 +57,9 @@ def prepare(c):
     if len(widths) != 2 or widths[1] != 2 * widths[0] or any(
             type(w) is not int or w < 1 or w & (w - 1) for w in widths):
         raise ValueError('two adjacent powers of two are required')
+    execution_widths = c.get('execution_widths', widths[1:] if prior_comparison is not None else widths)
+    if not execution_widths or execution_widths != [w for w in widths if w in execution_widths]:
+        raise ValueError('execution widths must be an ordered subset of the comparison widths')
     if not devices or len(set(devices)) != len(devices):
         raise ValueError('comparison requires a unique, nonempty device allocation')
     if not set(devices).isdisjoint(old['idle_devices']):
@@ -146,8 +149,6 @@ def prepare(c):
     names = []
     jobs = []
     for width in widths:
-        if prior_comparison is not None and width == widths[0]:
-            continue
         role = f'micro-{width}' + ('-recompute' if prior_comparison is not None else '')
         config = deepcopy(formal)
         config['batch_config'].update(training_devices=len(devices), microbatch=width,
@@ -176,6 +177,8 @@ def prepare(c):
         count = pressure['recordings'] // global_batch
         if witness not in {s['id'] for b in batches[offset:offset + count] for s in b['slots']}:
             raise ValueError('long audio witness missing from the fixed pressure span')
+        if width not in execution_widths:
+            continue
         manifest_name = f'micro-{width}-schedule.json'
         commit_json(entry/manifest_name, manifest)
         config['mixed']['schedule_manifest'] = '/jev-entry/' + manifest_name

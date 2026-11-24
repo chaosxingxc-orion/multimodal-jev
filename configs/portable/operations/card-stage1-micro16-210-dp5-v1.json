@@ -1,0 +1,50 @@
+{
+  "kind": "stage1_batch_comparison",
+  "package": "${CARD_210_MICRO16_PARENT}",
+  "output": "${CARD_210_MICRO16_OUTPUT}",
+  "deployment": "${CARD_210_MICRO16_DEPLOYMENT}",
+  "archive_sha256": "60c9ad06177ba0561b0b9d0624fddff7ef703d5a253a39680b8c044047072811",
+  "formal_config_sha256": "12fa43909786aa46b586187c85f7acc41219e293a28e70e8edee6557d62463c3",
+  "confusion_sha256": "4ebbd6949b028cbafa802e5fc8ee672c32601369d5c9c39402707fa960a6cb1d",
+  "prepare_receipt_sha256": "63060d77e812fd15be533bbb6b4a7fef3c5a01460dd850606c00eb7eb0a44fd4",
+  "widths": [
+    8,
+    16
+  ],
+  "spans": [
+    {
+      "name": "warmup",
+      "offset": 0,
+      "recordings": 640
+    },
+    {
+      "name": "ordinary",
+      "offset": 640,
+      "recordings": 240
+    },
+    {
+      "name": "long_audio",
+      "offset": 1200,
+      "recordings": 80
+    }
+  ],
+  "long_audio_anchor": "slurp:audio-1497621480.flac",
+  "master_port": 29525,
+  "io_workers": 8,
+  "resources": {
+    "cpus": 32,
+    "memory": "1024g",
+    "shm": "8g"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ],
+  "retired_parent_role": "formal",
+  "execution_widths": [
+    16
+  ]
+}
