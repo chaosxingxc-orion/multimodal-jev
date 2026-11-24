@@ -117,6 +117,41 @@ def audit(root, archive, archive_plan_digest, limit):
                 passed=all(s['passed'] for arms in endpoints.values() for s in arms.values()))
 
 
+def apply_throughput_gate(result, protocol, panel):
+    """Fail closed on partial checkpoint populations and distinguish screening from acceptance."""
+    min_rate, max_latency = protocol['throughput_min'], protocol['first_decision_ratio_max']
+    if not all(math.isfinite(x) and x > 0 for x in (min_rate, max_latency)):
+        raise ValueError('positive finite performance limits required')
+    dataset, arms = protocol['dataset'], protocol['arms']
+    if set(result['endpoints']) != {dataset} or set(result['endpoints'][dataset]) != set(arms):
+        raise ValueError('expected both registered checkpoints on the registered dataset')
+    n = protocol[panel + '_blocks_per_arm']
+    checks = []
+    for row in result['endpoints'][dataset].values():
+        if row['blocks'] != n:
+            raise ValueError('incomplete registered panel')
+        ratios = row['ratios']
+        row['throughput_multiple'] = row['standard']['scoring_seconds'] / row['candidate']['scoring_seconds']
+        row['throughput_pass'] = row['throughput_multiple'] >= min_rate
+        row['latency_pass'] = max(ratios[k] for k in ('first_decision_p50','first_decision_p95')) <= max_latency
+        row['parity_pass'] = row['candidate']['probability_differences'] == 0
+        row['passed'] = all(row[k] for k in ('throughput_pass', 'latency_pass', 'parity_pass'))
+        checks.append(row['passed'])
+    result.update(panel=panel, protocol=protocol, passed=all(checks),
+                  acceptance_pass=(panel == 'acceptance' and all(checks)))
+    return result
+
+
+def validate_protocol(probe, archive_digest, protocol, panel):
+    keys = probe['trace_blocks']
+    digest = hashlib.sha256(json.dumps(sorted(keys), separators=(',', ':')).encode()).hexdigest()
+    if (archive_digest != protocol['archive_plan_sha256']
+            or len(keys) != len(set(keys)) or digest != protocol['block_ids_sha256'][panel]
+            or probe['latency_rounds'] != protocol['rounds']
+            or probe['latency_reference'] != {protocol['dataset']: protocol['reference_mode']}):
+        raise ValueError('registered blocks, rounds or archived precision reference changed')
+
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     for name in ('root', 'archive', 'output'):
@@ -124,10 +159,19 @@ if __name__ == '__main__':
     p.add_argument('--archive-plan-digest', required=True)
     p.add_argument('--limit', type=float, required=True)
     p.add_argument('--wait-for-workers', action='store_true')
+    p.add_argument('--protocol', type=Path)
+    p.add_argument('--panel', choices=('screen', 'acceptance'))
     args = p.parse_args()
+    if bool(args.protocol) != bool(args.panel):
+        p.error('--protocol and --panel must be supplied together')
     if args.wait_for_workers:
         from tools.reports.finalize_context_infonce import wait_exact
         wait_exact(blocks.read(args.root/'ops.started.json'), args.root/'ops/terminal.json')
     result = audit(args.root, args.archive, args.archive_plan_digest, args.limit)
+    if args.protocol:
+        protocol = blocks.read(args.protocol)
+        probe = blocks.read(args.root / 'package/entry/block-plan.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['single_card_probe']
+        validate_protocol(probe, args.archive_plan_digest, protocol, args.panel)
+        apply_throughput_gate(result, protocol, args.panel)
     commit_json(args.output, result)
     raise SystemExit(0 if result['passed'] else 1)

@@ -8,6 +8,24 @@ from tools.reports.audit_card_archive import compare_archive
 from tools.reports.audit_card_latency import validate_trial
 
 
+def test_twofold_is_per_checkpoint_and_small_panel_cannot_accept():
+    from copy import deepcopy
+    from tools.reports.audit_card_latency import apply_throughput_gate
+    policy = dict(dataset='d', arms=['stage1', 'tpo'], throughput_min=2,
+                  first_decision_ratio_max=1.1, screen_blocks_per_arm=3, acceptance_blocks_per_arm=20)
+    row = dict(blocks=3, standard=dict(scoring_seconds=10), candidate=dict(scoring_seconds=5, probability_differences=0),
+               ratios=dict(first_decision_p50=1., first_decision_p95=1.1))
+    result = dict(endpoints={'d': {arm: deepcopy(row) for arm in policy['arms']}})
+    apply_throughput_gate(result, policy, 'screen')
+    assert result['passed'] and not result['acceptance_pass']
+    tpo = result['endpoints']['d']['tpo']
+    tpo['candidate']['scoring_seconds'] = 5.01
+    assert not apply_throughput_gate(result, policy, 'screen')['passed']
+    assert tpo['parity_pass'] and tpo['latency_pass'] and not tpo['throughput_pass']
+    with pytest.raises(ValueError, match='incomplete'):
+        apply_throughput_gate(result, policy, 'acceptance')
+
+
 def test_archive_checks_each_probability_even_when_top1_identical(tmp_path):
     block = dict(key='block-000000', dataset='d', arm='s', ids=['u'], widths=[2])
     plan = dict(inputs={}, policies={'s': 'p'}, choice=False, blocks=[block])

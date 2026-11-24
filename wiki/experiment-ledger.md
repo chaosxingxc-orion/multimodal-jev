@@ -34,7 +34,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-206 | 41 | complete | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 五组评测已审核；排序较 201 改善，MINDS 阈值迁移未证实。[执行报告](reports/JEV-206.md) |
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
 | JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md)、[尺寸与知识卡复核](reports/JEV-208-card-review.md) |
-| JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 模型实验已审核。MINDS 推理工程实测约 1.22 倍原生吞吐；2 倍目标尚未达成，采用短工程重放。[执行报告](reports/JEV-209.md) · [推理报告](reports/JEV-209-inference-latency.md) |
+| JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 模型实验已审核。MINDS 已发布版约 1.22 倍原生吞吐；候选 .21 在 3 块/端点上为 1.353 / 1.321 倍，概率零差异，2 倍目标未达成。[执行报告](reports/JEV-209.md) · [推理报告](reports/JEV-209-inference-latency.md) |
 | JEV-210 | 45 | in_progress | [0.6B r128：K 张负卡与 209 配对](../experiments/stage1-cards-tpo-210.md) | 181 的 3–7 号卡正式训练中，microbatch 8、全局 40。长音频和前三次优化器更新均已核验。[执行报告](reports/JEV-210.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
