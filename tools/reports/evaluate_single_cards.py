@@ -1,4 +1,5 @@
 """Evaluate one audio/candidate pair at a time with the training card layout."""
+from collections import defaultdict
 from dataclasses import replace
 from functools import lru_cache
 import json
@@ -42,6 +43,19 @@ def bounded_batches(rows, width, chunk_size, max_chunks):
             yield group
 
 
+def pair_geometry(item):
+    inputs = item['inputs']
+    return (inputs['input_ids'].numel(), inputs['input_features'].shape[-1],
+            int(inputs['input_features_mask'].sum()))
+
+
+def shape_groups(group):
+    buckets = defaultdict(list)
+    for i, item in enumerate(group):
+        buckets[pair_geometry(item)].append(i)
+    return buckets.values()
+
+
 class SingleCardScorer:
     def __init__(self, spec, processor, candidates, collate, *, requests=None):
         frozen = read_pinned(spec['cards'])
@@ -51,6 +65,9 @@ class SingleCardScorer:
         self.max_tokens = spec['encoding']['max_tokens']
         self.max_chunks = spec.get('max_batch_audio_chunks')
         self.parity_pairs = spec.get('parity_pairs', 1)
+        self.mode = spec.get('mode', 'bounded_batch')
+        if self.mode not in {'bounded_batch', 'hf_singleton', 'matched_shape'}:
+            raise ValueError('unknown single-card evaluation mode')
         if (self.max_chunks is not None and (type(self.max_chunks) is not int or self.max_chunks < 1)
                 or type(self.parity_pairs) is not int or self.parity_pairs < 1):
             raise ValueError('positive audio work limit and parity count required')
@@ -90,9 +107,7 @@ class SingleCardScorer:
             raise ValueError('native task candidate order or context changed')
         return tuple(self.compile_card(q, source.requirements) for q in source.questions)
 
-    @torch.inference_mode()
-    def score(self, model, device, provider, policy, rows, *, check_batch=True):
-        records = {}
+    def groups(self, policy, rows, records):
         def compiled():
             for asset, row in rows:
                 uid = asset['id']
@@ -109,23 +124,54 @@ class SingleCardScorer:
                         yield item
                 yield bounded(render(inputs, self.tiles(uid), self.collate, uid, policy))
 
-        def forward(group):
-            logits = provider.forward(model, group, device=device, dtype=torch.bfloat16,
-                                      policy_id=policy, **self.collate)
-            if logits.shape != (len(group), 1):
-                raise ValueError('each audio/card pair must have one logit')
-            result = logits.sigmoid().float().flatten().cpu()
-            if not torch.isfinite(result).all():
-                raise ValueError('nonfinite pair probabilities')
-            return result
+        if self.max_chunks is None:
+            return batches(compiled(), self.width, group_audio=False, collate=self.collate)
+        return bounded_batches(compiled(), self.width, self.collate['audio_chunk_size'], self.max_chunks)
 
-        groups = (batches(compiled(), self.width, group_audio=False, collate=self.collate)
-                  if self.max_chunks is None else
-                  bounded_batches(compiled(), self.width, self.collate['audio_chunk_size'], self.max_chunks))
+    def forward(self, model, device, provider, policy, group):
+        logits = provider.forward(model, group, device=device, dtype=torch.bfloat16,
+                                  policy_id=policy, **self.collate)
+        if logits.shape != (len(group), 1) or not torch.isfinite(logits).all():
+            raise ValueError('each audio/card pair must have one finite logit')
+        return logits
+
+    def evaluation_forward(self, model, device, provider, policy):
+        def native(items):
+            return self.forward(model, device, provider, policy, items)
+
+        def forward(group):
+            if self.mode == 'hf_singleton':
+                return torch.cat([native([item]) for item in group])
+            if self.mode == 'matched_shape':
+                outputs = None
+                for positions in shape_groups(group):
+                    values = native([group[i] for i in positions])
+                    if outputs is None:
+                        outputs = values.new_empty((len(group), 1))
+                    outputs[positions] = values
+                return outputs
+            return native(group)
+        return forward
+
+    @torch.inference_mode()
+    def score(self, model, device, provider, policy, rows, *, check_batch=True):
+        records = {}
+        forward = self.evaluation_forward(model, device, provider, policy)
+        groups = self.groups(policy, rows, records)
+        if self.mode == 'hf_singleton':
+            groups = ([item] for group in groups for item in group)
         for index, group in enumerate(groups):
-            values = forward(group)
-            if check_batch and index < self.parity_pairs and not torch.equal(values[:1], forward(group[:1])):
-                raise ValueError('single-card batch differs from its singleton')
+            logits = forward(group)
+            values = logits.sigmoid().float().flatten().cpu()
+            if logits.shape != (len(group), 1) or not torch.isfinite(values).all():
+                raise ValueError('invalid single-card probabilities')
+            if (check_batch and self.mode != 'hf_singleton' and index < self.parity_pairs):
+                single = self.forward(model, device, provider, policy, group[:1])
+                if not torch.equal(logits[:1], single):
+                    sample = group[0]['request_id']
+                    raise ValueError(f'single-card batch differs from its singleton: '
+                                     f'{sample}; pairs={len(group)}; '
+                                     f'batch={logits[0].item()}; singleton={single[0].item()}')
             for item, value in zip(group, values.tolist(), strict=True):
                 uid, offset = item['request_id'].rsplit(':', 1)
                 records[uid][int(offset)] = value

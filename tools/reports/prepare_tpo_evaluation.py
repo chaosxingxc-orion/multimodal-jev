@@ -104,6 +104,9 @@ def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, ima
                         raise ValueError('limited parity references require absolute remote paths')
                     mounts.add(str(path.parent))
         queue['parity'] = parity
+    probe = config.get('single_card_probe')
+    if probe:
+        parent['single_card_probe'] = probe
     queue['namespace'] = content_key(parent, queue, image)
     parent['queue'] = queue
     plan = dict(parent, phase='tpo_eval_block_plan', devices=[], result_path='/jev-work/blocks-planned.json')
@@ -121,8 +124,10 @@ def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, ima
     for index, device in enumerate(settings['devices']):
         name = f'block-worker-{index}'
         receipt = name + '.json'
-        commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG',
-            dict(parent, devices=[device], output='/jev-work/'+name, result_path='/jev-work/'+receipt)))
+        job = dict(parent, devices=[device], output='/jev-work/'+name, result_path='/jev-work/'+receipt)
+        if probe:
+            job['single_card_probe'] = dict(probe, shards=len(settings['devices']), shard=index)
+        commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG', job))
         workers.append(dict(name=name, devices=[device], collect=receipt, **config['eval_container']))
     return prep, workers, queue
 

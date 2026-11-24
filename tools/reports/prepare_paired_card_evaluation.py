@@ -130,6 +130,9 @@ def run(c):
                   token_cache_entries=c['token_cache_entries'])
     if 'max_batch_audio_chunks' in c:
         single.update(max_batch_audio_chunks=c['max_batch_audio_chunks'], parity_pairs=c['parity_pairs'])
+    modes = c.get('single_card_modes', {})
+    if any(mode not in {'bounded_batch', 'matched_shape', 'hf_singleton'} for mode in modes.values()):
+        raise ValueError('unsupported single-card benchmark mode')
     commit_json(entry/'parent.json', parent)
     repo = Path(__file__).resolve().parents[2]
     frozen = freeze(repo, entry/'source', patterns=c['source_patterns'], io_workers=c['io_workers'])
@@ -162,7 +165,6 @@ def run(c):
         cache.update(io_workers=c['io_workers'], prefetch=c['sample_blocks']['prefetch'],
                      progress_interval=c['progress_interval'])
         name = official_spec['dataset']
-        ports[name] = dict(cache=cache, audio_token_id=parent['audio_token_id'], use_source_cards=True)
         partitions[name] = 1
         panels[name] = dict(panels[official_spec['clean_dataset']], primary='top1_accuracy', cluster='id',
                             comparisons=[])
@@ -187,11 +189,52 @@ def run(c):
                 write(role, dict(common, phase=phase, cache=cache))
                 pre.append([cpu(role, 'official-extra-cache/VERIFIED.json' if phase == 'verify' else None)])
 
+        ports[name] = dict(cache=cache, cache_verification=cache['output']+'/VERIFIED.json',
+                           audio_token_id=parent['audio_token_id'], use_source_cards=True)
+
+    if modes.keys() - ports.keys():
+        raise ValueError('unknown dataset in single-card modes')
+    for name, mode in modes.items():
+        ports[name]['single_card_mode'] = mode
+
     deploy = dict(c['deployment'])
     datasets = {name:dict(logical_partitions=n) for name,n in partitions.items()}
     inferred = {name:arms for name in datasets}
     inputs = {c['stage1_snapshot'], str(Path(trained_deploy['remote_root'])/'tpo')}
+    probe = c.get('single_card_probe')
+    if probe:
+        if (set(probe) != {'plan', 'first_blocks', 'batches_per_block', 'edge_and_middle'}
+                or any(type(probe[k]) is not int or probe[k] < 1
+                       for k in ('first_blocks', 'batches_per_block'))
+                or type(probe['edge_and_middle']) is not bool
+                or set(probe['plan']) != {'path', 'sha256'}
+                or not Path(probe['plan']['path']).is_absolute()):
+            raise ValueError('finite probe requires a pinned failed plan and a declared sample budget')
+        inputs.add(str(Path(probe['plan']['path']).parent))
+    admission = c.get('single_card_reference')
+    if admission:
+        if probe or len(modes) != len(ports):
+            raise ValueError('full single-card evaluation requires modes for every referenced dataset')
+        reference = read_pinned(admission)
+        if (reference['schema'] != 'jev-single-card-hf-panel-v1'
+                or reference['policies'] != policies or set(reference['inputs']) != set(ports)):
+            raise ValueError('independent HF evidence differs from evaluation scope')
+        commit_json(entry/'hf-reference.json', reference)
+        if file_hash(entry/'hf-reference.json') != admission['sha256']:
+            raise ValueError('cannot reproduce the independent HF evidence')
+        c = dict(c, single_card_reference=dict(path='/jev-entry/hf-reference.json', sha256=admission['sha256']))
     prep, workers, queue = queue_jobs(c, entry, common, datasets, ports, inferred, inputs, deploy['image'])
+    checks = []
+    if admission:
+        for i, job in enumerate(workers):
+            name = f'hf-check-{i}'
+            opts = settings(dict(path=entry/(job['name']+'.json'),
+                                 sha256=file_hash(entry/(job['name']+'.json'))))
+            write(name, dict(opts, output='/jev-work/'+name, result_path='/jev-work/'+name+'.json',
+                             single_card_reference=c['single_card_reference'],
+                             single_card_shard=i, single_card_shards=len(workers)))
+            checks.append(dict(job, name=name, collect=name+'.json', visible_ordinal='0'))
+
     cal = dict(cal_previous['calibration'], policy_ids=policies, prefetch=c['sample_blocks']['prefetch'])
     if cal['roster']['sha256'] != c['calibration_roster']['sha256']:
         raise ValueError('calibration population differs')
@@ -233,6 +276,11 @@ def run(c):
     write('score', score)
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json',
                     entry/'native-seal-container.json')
+    if probe and cal_groups:
+        raise ValueError('numerical-only replay requires reusable calibration')
+    score_jobs = [] if probe else [[cpu('score','metrics.json')]]
+    if checks:
+        cal_groups = [*cal_groups, checks]
     with tarfile.open(root/'entry.tar', 'x') as archive:
         archive.add(entry, arcname='entry')
     for port in ports.values():
@@ -240,7 +288,7 @@ def run(c):
     entry_pins = {str(p.relative_to(entry)):file_hash(p) for p in
                   [*entry.glob('*.json'), *entry.glob('official-supplement/**/*.json'), entry/'source/FILES.json']}
     deploy.update(archive=str(root/'entry.tar'), entry_archive_sha256=file_hash(root/'entry.tar'), entry_pins=entry_pins,
-                  chains=[[*pre, [prep], *cal_groups, workers, [cpu('score','metrics.json')]]],
+                  chains=[[*pre, [prep], *cal_groups, workers, *score_jobs]],
                   read_only_mounts=[p+':'+p for p in sorted(inputs)
                                     if not any(Path(p).is_relative_to(r) for r in
                                                (deploy['shared_root'], '/jev-entry','/jev-work'))],

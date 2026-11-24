@@ -97,6 +97,21 @@ def build(spec):
         all_blocks = selected
     plan = dict(schema=blocks.SCHEMA, namespace=spec['queue']['namespace'], inputs=inputs,
                 policies=policies, choice=choice, blocks=blocks.ordered_blocks(all_blocks, arm_order))
+    if 'single_card_probe' in spec:
+        probe = spec['single_card_probe']
+        frozen = Path(probe['plan']['path'])
+        if file_hash(frozen) != probe['plan']['sha256']:
+            raise ValueError('frozen replay plan changed')
+        previous = json.loads(frozen.read_bytes())['plan']
+        if any(previous[k] != plan[k] for k in ('inputs', 'policies', 'choice', 'blocks')):
+            raise ValueError('replay must reproduce original evaluation inputs and blocks')
+        chosen = {b['key']: b for b in plan['blocks'][:probe['first_blocks']]}
+        for dataset in spec['endpoints']:
+            for arm in spec['inferred_arms'][dataset]:
+                group = [b for b in plan['blocks'] if (b['dataset'], b['arm']) == (dataset, arm)]
+                for block in (group[0], group[-1]):
+                    chosen[block['key']] = block
+        plan['blocks'] = [b for b in plan['blocks'] if b['key'] in chosen]
     manifest = dict(plan=plan, sha256=content_key(plan))
     commit_json(root / 'plan.json', manifest)
     reused = 0
@@ -133,9 +148,33 @@ def worker(spec):
     plan = manifest['plan']
     outputs = Path(spec['output'])
     completed = []
+    diagnostic = []
+    reference = spec.get('single_card_reference')
+    reference_rows = {}
+    if reference:
+        from tools.reports.evaluate_single_cards import read_pinned
+        reference = read_pinned(reference)
+        if any(reference[k] != plan[k] for k in ('inputs', 'policies')):
+            raise ValueError('HF reference inputs or policies changed')
+        for i, row in enumerate(reference['blocks']):
+            if i % spec['single_card_shards'] == spec['single_card_shard']:
+                key = row['block']
+                block = next(b for b in plan['blocks'] if b['key'] == key)
+                if (key in reference_rows or row['dataset'] != block['dataset']
+                        or row['arm'] != block['arm'] or row['policy_id'] != plan['policies'][block['arm']]):
+                    raise ValueError('invalid HF reference block binding')
+                reference_rows[key] = row['batches']
+        if not reference_rows:
+            raise ValueError('all workers require a nonempty HF reference shard')
+    verified = {}
     model_loading = None
     start = time.monotonic()
-    for block in plan['blocks']:
+    for index, block in enumerate(plan['blocks']):
+        probe = spec.get('single_card_probe')
+        if reference and block['key'] not in reference_rows:
+            continue
+        if probe and index % probe['shards'] != probe['shard']:
+            continue
         with blocks.claim(root, block) as owned:
             if not owned:
                 continue
@@ -161,7 +200,8 @@ def worker(spec):
                     from tools.reports.evaluate_single_cards import SingleCardScorer
                     assets, candidates, encode, requests = load(c, include_requests=True, **verify)
                     source_cards = c.get('use_source_cards', False)
-                    single = SingleCardScorer(spec['single_card'], processor, candidates, collate,
+                    single_spec = dict(spec['single_card'], mode=c.get('single_card_mode', 'bounded_batch'))
+                    single = SingleCardScorer(single_spec, processor, candidates, collate,
                                               requests=None if source_cards else requests)
                 elif 'train_view' in c:
                     from tools.reports.calibrate_tpo_probabilities import cached_source
@@ -208,6 +248,16 @@ def worker(spec):
                             first_batch_unix = time.time()
                         yield item
                 items = remember()
+                if probe:
+                    from tools.reports.probe_single_card_batches import compare
+                    diagnostic.append(dict(block=block['key'], dataset=dataset, arm=arm, policy_id=pid,
+                        batches=compare(single, model, device, provider, pid, items, probe)))
+                    continue
+                if reference:
+                    from tools.reports.probe_single_card_batches import verify
+                    verified[block['key']] = verify(single, model, device, provider, pid, items,
+                                                    reference_rows[block['key']])
+                    continue
                 products = {'prob': (single.score(model, device, provider, pid, items,
                                                    check_batch=not completed or block['offset'] == 0)
                                      if single else probabilities(model, device, provider, collate, pid, items,
@@ -225,8 +275,19 @@ def worker(spec):
                                   seconds=time.monotonic()-tick))
     result = dict(plan_sha256=manifest['sha256'], blocks=completed, model_load_seconds=model_loading,
                   seconds=time.monotonic()-start, devices=spec['devices'])
+    if 'single_card_probe' in spec:
+        result.update(diagnostic=diagnostic, labels_used=False, npu_executed=bool(diagnostic))
+    if reference:
+        if verified.keys() != reference_rows.keys():
+            raise ValueError('incomplete HF reference reproduction')
+        result.update(status='hf_reference_exact', reference_sha256=spec['single_card_reference']['sha256'],
+                      verified=verified, comparisons=sum(verified.values()), labels_used=False,
+                      npu_executed=True)
+    payload = dict(result)
     commit_json(Path(spec['result_path']), result)
-    return result
+    if 'diagnostic' in result:
+        payload['diagnostic'] = len(diagnostic)
+    return payload
 
 
 def publications(spec):
