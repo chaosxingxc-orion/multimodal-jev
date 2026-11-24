@@ -226,6 +226,8 @@ def run(c):
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    if 'negative_cards_per_anchor' in parent['instruction_objective']:
+        receipt['negative_cards_per_anchor'] = parent['instruction_objective']['negative_cards_per_anchor']
     commit_json(root/'receipt.json',receipt)
     return receipt
 
