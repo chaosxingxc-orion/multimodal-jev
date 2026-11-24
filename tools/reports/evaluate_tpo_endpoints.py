@@ -311,6 +311,9 @@ def collect(spec):
         result = dict(schema='jev-audited-tpo-evaluation-v1', datasets=result,
                       seals={dataset: c['cache']['seal']['sha256']
                              for dataset, c in spec['endpoints'].items()})
+    if 'performance_comparison' in spec:
+        comparison = read(Path(spec['output']).with_name('archived-probability-comparison.json'))
+        result = dict(schema='jev-performance-replay-v1', comparison=comparison, metrics=result)
     commit_json(Path(spec['output']),result)
     return result
 

@@ -164,7 +164,7 @@ def run(c):
     if 'max_batch_audio_chunks' in c:
         single.update(max_batch_audio_chunks=c['max_batch_audio_chunks'], parity_pairs=c['parity_pairs'])
     modes = c.get('single_card_modes', {})
-    if any(mode not in {'bounded_batch', 'matched_shape', 'hf_singleton'} for mode in modes.values()):
+    if any(mode not in {'bounded_batch', 'matched_shape', 'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention', 'hf_singleton'} for mode in modes.values()):
         raise ValueError('unsupported single-card benchmark mode')
     commit_json(entry/'parent.json', parent)
     repo = Path(__file__).resolve().parents[2]
@@ -173,6 +173,16 @@ def run(c):
     common = dict(source=source, parent='/jev-entry/parent.json', parent_sha=file_hash(entry/'parent.json'),
                   arms=arms, batch=c['batch'], io_workers=c['io_workers'], single_card=single,
                   trained=trained_deploy['remote_root'], updates=c['stage2_updates'], binding=binding)
+    benchmark = c.get('performance_comparison')
+    if benchmark is not None:
+        if (set(benchmark) != {'role', 'archive_plan'} or benchmark['role'] not in {'standard', 'candidate'}
+                or not c.get('single_card_reference') or 'single_card_probe' in c
+                or benchmark['role'] == 'standard' and set(modes.values()) != {'bounded_batch'}
+                or set(benchmark['archive_plan']) != {'path', 'sha256'}
+                or Path(benchmark['archive_plan']['path']).name != 'plan.json'
+                or not Path(benchmark['archive_plan']['path']).is_absolute()):
+            raise ValueError('invalid full performance comparison')
+        common['performance_comparison'] = benchmark
     ports = base['endpoints']
     for name, port in ports.items():
         port.pop('card_view', None)
@@ -234,9 +244,11 @@ def run(c):
     datasets = {name:dict(logical_partitions=n) for name,n in partitions.items()}
     inferred = {name:arms for name in datasets}
     inputs = {c['stage1_snapshot'], str(Path(trained_deploy['remote_root'])/'tpo')}
+    if benchmark is not None:
+        inputs.add(str(Path(benchmark['archive_plan']['path']).parent))
     probe = c.get('single_card_probe')
     if probe:
-        if (set(probe) != {'plan', 'first_blocks', 'batches_per_block', 'edge_and_middle'}
+        if (set(probe) - {'compare_reuse', 'trace_padding', 'trace_blocks', 'latency_rounds', 'latency_reference'} != {'plan', 'first_blocks', 'batches_per_block', 'edge_and_middle'}
                 or any(type(probe[k]) is not int or probe[k] < 1
                        for k in ('first_blocks', 'batches_per_block'))
                 or type(probe['edge_and_middle']) is not bool

@@ -78,3 +78,17 @@ def test_masked_row_variant_dispatch(monkeypatch):
     mask = options['atten_mask']
     assert mask.shape == (2048, 2048) and mask.dtype == torch.bool
     assert mask[0, 1] and not mask[1, 0] and not mask.diagonal().any()
+
+def test_attention_length_grouping_restores_rows_and_resets_after_scope():
+    from multimodal_jev.card_attention_groups import by_length
+    q = torch.randn(4, 2, 7, 4)
+    lengths = [5, 7, 5, 3]
+    groups = []
+    def observe(q, k, v, cq, ck, **kwargs):
+        groups.append(tuple(cq.diff().tolist()))
+        return fake_varlen(q, k, v, cq, ck, **kwargs)
+    with by_length():
+        candidate = packed_causal_attention(q, q, q, lengths, scaling=.25, kernel=observe)
+    reference = packed_causal_attention(q, q, q, lengths, scaling=.25, kernel=observe)
+    torch.testing.assert_close(candidate, reference)
+    assert groups == [(5,5), (7,), (3,), tuple(lengths)]

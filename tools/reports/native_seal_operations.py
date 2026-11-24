@@ -146,6 +146,28 @@ def run(c, on_started=None):
             raise RuntimeError(r.stderr or r.stdout)
         return r.stdout
 
+    def await_idle(group):
+        policy = c.get('idle_wait')
+        if not policy:
+            return
+        devices = {i for job in group for i in job['devices']}
+        interval, timeout = policy['interval_seconds'], policy['timeout_seconds']
+        if not 0 < interval <= timeout:
+            raise ValueError('invalid idle wait policy')
+        deadline = time.monotonic() + timeout
+        while True:
+            smi = checked(['npu-smi','info'])
+            active = checked(['docker','ps','-q']).split()
+            mapped = {d['PathOnHost'] for obj in (json.loads(checked(['docker','inspect',*active])) if active else [])
+                      for d in (obj['HostConfig']['Devices'] or [])}
+            if all(f'No running processes found in NPU {i} ' in smi
+                   and f'/dev/davinci{i}' not in mapped for i in devices):
+                return
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError(f'evaluation devices still occupied: {sorted(devices)}')
+            time.sleep(min(interval, remaining))
+
     def launch(job):
         role, devices = job['name'], job['devices']
         if 'after_driver' in job:
@@ -276,6 +298,8 @@ def run(c, on_started=None):
                 for group in chain:
                     needs_cards = group_lease and any(j['devices'] and j.get('lane') not in failed for j in group)
                     with lease() if needs_cards else nullcontext():
+                        if needs_cards:
+                            await_idle(group)
                         run_group(group, launch, failed)
                 return failed
             with ThreadPoolExecutor(max_workers=len(c['chains'])) as pool:

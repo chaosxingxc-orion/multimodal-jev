@@ -15,6 +15,7 @@ def geometry(item):
 @torch.inference_mode()
 def compare(scorer, model, device, provider, policy, rows, spec):
     records = []
+    sliced_trace = False
     def forward(group):
         start = time.monotonic()
         out = scorer.forward(model, device, provider, policy, group)
@@ -33,6 +34,13 @@ def compare(scorer, model, device, provider, policy, rows, spec):
             out = candidate(group)
             candidate_z, candidate_p = out.float().flatten().cpu(), out.sigmoid().float().flatten().cpu()
             candidate_seconds = time.monotonic()-start
+        if spec.get('compare_reuse') and scorer.mode.startswith('reuse_audio_'):
+            from multimodal_jev.card_acoustic_reuse import score
+            # The same original inputs, including the cases where bounded batches disagree.
+            alt_start = time.monotonic()
+            alt = score(model, group, device, policy, scorer.collate, split_lengths=True)
+            alt_z, alt_p = alt.float().flatten().cpu(), alt.sigmoid().float().flatten().cpu()
+            alt_seconds = time.monotonic() - alt_start
         examples = []
         shapes = [geometry(item) for item in group]
         for i in indices:
@@ -59,10 +67,23 @@ def compare(scorer, model, device, provider, policy, rows, spec):
             if candidate is not None:
                 variants[scorer.mode] = dict(pairs=len(group), logit=candidate_z[i].item(),
                                             probability=candidate_p[i].item(), seconds=candidate_seconds)
+            if spec.get('compare_reuse') and scorer.mode.startswith('reuse_audio_'):
+                variants['reuse_audio_length'] = dict(pairs=len(group), logit=alt_z[i].item(),
+                    probability=alt_p[i].item(), seconds=alt_seconds)
             examples.append(dict(index=i, id=item['request_id'], singleton_logit=z.item(),
                 singleton_probability=p.item(), singleton_seconds=seconds, batch_logit=batch_z[i].item(),
                 batch_probability=batch_p[i].item(), variants=variants))
-        records.append(dict(pairs=len(group), batch_seconds=batch_seconds, examples=examples,
+        trace_data = {}
+        if spec.get('trace_padding') and not sliced_trace and candidate is not None:
+            for example in examples:
+                if example['variants'][scorer.mode]['logit'] == example['singleton_logit']:
+                    continue
+                from tools.reports.trace_card_padding import trace
+                trace_data['trace'] = trace(model, group, example['index'], candidate,
+                    lambda one: scorer.forward(model, device, provider, policy, one))
+                sliced_trace = True
+                break
+        records.append(dict(**trace_data, pairs=len(group), batch_seconds=batch_seconds, examples=examples,
                             neighbors=[dict(id=x['request_id'], **g) for x, g in zip(group, shapes, strict=True)]))
     if not records:
         raise ValueError('empty single-card comparison')
@@ -70,7 +91,7 @@ def compare(scorer, model, device, provider, policy, rows, spec):
 
 
 @torch.inference_mode()
-def verify(scorer, model, device, provider, policy, rows, expected):
+def verify(scorer, model, device, provider, policy, rows, expected, diagnostic_mismatches=None):
     forward = scorer.evaluation_forward(model, device, provider, policy)
     groups = scorer.groups(policy, rows, {})
     for group, receipt in zip(islice(groups, len(expected)), expected, strict=True):
@@ -89,7 +110,10 @@ def verify(scorer, model, device, provider, policy, rows, expected):
             values = {row['index']: (output[row['index'], 0].item(), prob[row['index'], 0].item())
                       for row in receipt['examples']}
         for row in receipt['examples']:
-            if (group[row['index']]['request_id'] != row['id']
-                    or values[row['index']] != (row['singleton_logit'], row['singleton_probability'])):
-                raise ValueError(f'worker {scorer.mode} differs from pinned HF reference: {row["id"]}')
+            if group[row['index']]['request_id'] != row['id']:
+                raise ValueError('pinned HF candidate identity changed')
+            if values[row['index']] != (row['singleton_logit'], row['singleton_probability']):
+                if diagnostic_mismatches is None or scorer.mode != 'bounded_batch':
+                    raise ValueError(f'worker {scorer.mode} differs from pinned HF reference: {row["id"]}')
+                diagnostic_mismatches.append(row['id'])
     return sum(len(receipt['examples']) for receipt in expected)

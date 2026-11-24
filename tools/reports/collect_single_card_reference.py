@@ -51,8 +51,8 @@ def collect(root, manifest_path, output, candidate_modes):
                 if batch['pairs'] != len(batch['neighbors']) or not batch['examples']:
                     raise ValueError('incomplete batch geometry or comparisons')
                 elapsed = batch['batch_seconds']
-                if modes[dataset] == 'matched_shape':
-                    elapsed = batch['examples'][0]['variants']['matched_shape']['seconds']
+                if modes[dataset] not in ('bounded_batch', 'hf_singleton'):
+                    elapsed = batch['examples'][0]['variants'][modes[dataset]]['seconds']
                 timing = times[dataset]
                 timing['pairs'] += batch['pairs']
                 timing['seconds'] += elapsed
@@ -67,7 +67,7 @@ def collect(root, manifest_path, output, candidate_modes):
                     if not math.isfinite(z) or not 0 <= p <= 1:
                         raise ValueError('invalid independent HF probability')
                     if modes[dataset] != 'hf_singleton':
-                        observed = (x['variants']['matched_shape'] if modes[dataset] == 'matched_shape' else
+                        observed = (x['variants'][modes[dataset]] if modes[dataset] != 'bounded_batch' else
                                     dict(logit=x['batch_logit'], probability=x['batch_probability']))
                         fail[dataset] += int(observed['logit'] != z or observed['probability'] != p)
                     counts[dataset] += 1

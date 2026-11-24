@@ -111,6 +111,11 @@ def build(spec):
                 group = [b for b in plan['blocks'] if (b['dataset'], b['arm']) == (dataset, arm)]
                 for block in (group[0], group[-1]):
                     chosen[block['key']] = block
+        if 'trace_blocks' in probe:
+            keys = probe['trace_blocks']
+            if not keys or len(keys) != len(set(keys)) or not set(keys) <= chosen.keys():
+                raise ValueError('trace keys must belong to the registered finite replay')
+            chosen = {k: chosen[k] for k in keys}
         plan['blocks'] = [b for b in plan['blocks'] if b['key'] in chosen]
     manifest = dict(plan=plan, sha256=content_key(plan))
     commit_json(root / 'plan.json', manifest)
@@ -150,6 +155,8 @@ def worker(spec):
     completed = []
     diagnostic = []
     reference = spec.get('single_card_reference')
+    benchmark = spec.get('performance_comparison', {})
+    control_differences = [] if benchmark.get('role') == 'standard' else None
     reference_rows = {}
     if reference:
         from tools.reports.evaluate_single_cards import read_pinned
@@ -249,6 +256,14 @@ def worker(spec):
             first_batch_unix = None
             def encode_one(uid):
                 return assets[uid], encode(assets[uid])[0]
+            if probe and 'latency_rounds' in probe:
+                from tools.reports.card_latency_replay import compare_block
+                timing = compare_block(single, model, device, provider, pid, block, encode_one,
+                        workers=spec['io_workers'], prefetch=spec['queue']['prefetch'],
+                        aligned=single.mode, reference=probe['latency_reference'][dataset],
+                        rounds=probe['latency_rounds'], swap=index % 2)
+                diagnostic.append(dict(dataset=dataset, arm=arm, policy_id=pid, **timing))
+                continue
             with OrderedPrefetch(encode_one, block['ids'], workers=spec['io_workers'],
                                  ahead=spec['queue']['prefetch']) as stream:
                 def remember():
@@ -279,12 +294,16 @@ def worker(spec):
                 if reference:
                     from tools.reports.probe_single_card_batches import verify
                     verified[block['key']] = verify(single, model, device, provider, pid, items,
-                                                    reference_rows[block['key']])
+                                                    reference_rows[block['key']], control_differences)
                     continue
+                from multimodal_jev.card_score_latency import ScoreLatency
+                latency = ScoreLatency(len(single.candidates)) if single else None
                 products = {'prob': (single.score(model, device, provider, pid, items,
-                                                   check_batch=not completed or block['offset'] == 0)
+                                                   check_batch=not completed or block['offset'] == 0, latency=latency,
+                                                   diagnostic_mismatches=control_differences)
                                      if single else probabilities(model, device, provider, collate, pid, items,
                                                                   spec['batch'], check_singleton=block['offset'] == 0))}
+                latency_result = latency.result() if latency else {}
             if compiler is not None:
                 def forward(batch, policy):
                     return provider.forward(model, batch, device=device, dtype=torch.bfloat16,
@@ -293,7 +312,7 @@ def worker(spec):
                                                      spec['choice']['temperature'], forward, pid)
             blocks.publish(root, manifest, block, products)
             completed.append(dict(block=block['key'], dataset=dataset, arm=arm,
-                                  recordings=len(block['ids']), claimed_unix=claimed_unix,
+                                  recordings=len(block['ids']), claimed_unix=claimed_unix, **latency_result,
                                   first_input_unix=first_batch_unix, committed_unix=time.time(),
                                   seconds=time.monotonic()-tick))
     result = dict(plan_sha256=manifest['sha256'], blocks=completed, model_load_seconds=model_loading,
@@ -312,6 +331,12 @@ def worker(spec):
         result.update(status='hf_reference_exact', reference_sha256=spec['single_card_reference']['sha256'],
                       verified=verified, comparisons=sum(verified.values()), labels_used=False,
                       npu_executed=True)
+    if benchmark:
+        result['performance_role'] = benchmark['role']
+    if control_differences is not None:
+        result['singleton_differences'] = len(control_differences)
+        if reference:
+            result['status'] = 'performance_only_hf_comparison'
     payload = dict(result)
     commit_json(Path(spec['result_path']), result)
     if 'diagnostic' in result:
@@ -336,6 +361,12 @@ def publications(spec):
     result = {}
     read_one = partial(blocks.read_block, root, manifest)
     payloads, _ = map_io(read_one, plan['blocks'], workers=spec['io_workers'])
+    if 'performance_comparison' in spec:
+        from tools.reports.audit_card_archive import compare_archive
+        report = compare_archive(spec['performance_comparison'], plan, payloads, spec['io_workers'])
+        commit_json(Path(spec['output']).with_name('archived-probability-comparison.json'), report)
+        if report['role'] == 'candidate' and report['differences']:
+            raise ValueError('candidate probabilities differ from the archived evaluation')
     for block, products in zip(plan['blocks'], payloads, strict=True):
         for kind, payload in products.items():
             result.setdefault((block['dataset'], block['arm'], kind), []).append(payload)

@@ -8,6 +8,8 @@ import math
 import torch
 from torch.nn import functional as F
 
+from . import card_attention_groups as card_groups
+
 
 def masked_row_varlen_kernel(q, k, v, cq, ck, **kwargs):
     """Candidate Ascend variant; inner_precise=2 handles invalid masked rows.
@@ -15,7 +17,7 @@ def masked_row_varlen_kernel(q, k, v, cq, ck, **kwargs):
     This is not a request for FP32 accumulation or a production profile.
     """
     import torch_npu
-    mask = torch.ones((2048, 2048), device=q.device, dtype=torch.bool).triu(1)
+    mask = card_groups.causal_mask(q.device) if card_groups.active() else torch.ones((2048, 2048), device=q.device, dtype=torch.bool).triu(1)
     return torch_npu.npu_fusion_attention(
         q, k, v, q.shape[1], "TND", atten_mask=mask,
         scale=kwargs['softmax_scale'], keep_prob=1.,
@@ -45,6 +47,8 @@ def packed_causal_attention(query, key, value, lengths, *, scaling, kernel=None)
             raise ValueError('default experimental kernel requires BF16 Ascend tensors')
         from transformers.integrations.npu_flash_attention import npu_flash_attn_varlen_func
         kernel = npu_flash_attn_varlen_func
+    if card_groups.active():
+        return card_groups.grouped(query, key, value, lengths, scaling, kernel)
     packed = [torch.cat([t[i, :, :n].transpose(0, 1) for i, n in enumerate(lengths)], 0)
               for t in (query, key, value)]
     cumulative = torch.tensor([0, *lengths], dtype=torch.int32).cumsum(0, dtype=torch.int32)

@@ -66,7 +66,7 @@ class SingleCardScorer:
         self.max_chunks = spec.get('max_batch_audio_chunks')
         self.parity_pairs = spec.get('parity_pairs', 1)
         self.mode = spec.get('mode', 'bounded_batch')
-        if self.mode not in {'bounded_batch', 'hf_singleton', 'matched_shape'}:
+        if self.mode not in {'bounded_batch', 'hf_singleton', 'matched_shape', 'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention'}:
             raise ValueError('unknown single-card evaluation mode')
         if (self.max_chunks is not None and (type(self.max_chunks) is not int or self.max_chunks < 1)
                 or type(self.parity_pairs) is not int or self.parity_pairs < 1):
@@ -140,6 +140,17 @@ class SingleCardScorer:
             return self.forward(model, device, provider, policy, items)
 
         def forward(group):
+            if self.mode in {'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention'}:
+                from multimodal_jev.qwen3_asr_provider import Qwen3ASR
+                from multimodal_jev.card_acoustic_reuse import score
+                if not isinstance(provider, Qwen3ASR):
+                    raise ValueError('acoustic reuse requires Qwen3-ASR')
+                if self.mode == 'reuse_audio_attention':
+                    from multimodal_jev.card_attention_groups import by_length
+                    with by_length():
+                        return score(model, group, device, policy, self.collate, split_lengths=False)
+                return score(model, group, device, policy, self.collate,
+                             split_lengths=self.mode == 'reuse_audio_length')
             if self.mode == 'hf_singleton':
                 return torch.cat([native([item]) for item in group])
             if self.mode == 'matched_shape':
@@ -154,7 +165,9 @@ class SingleCardScorer:
         return forward
 
     @torch.inference_mode()
-    def score(self, model, device, provider, policy, rows, *, check_batch=True):
+    def score(self, model, device, provider, policy, rows, *, check_batch=True, latency=None, diagnostic_mismatches=None):
+        if diagnostic_mismatches is not None and self.mode != 'bounded_batch':
+            raise ValueError('only the unaligned timing control may record singleton differences')
         records = {}
         forward = self.evaluation_forward(model, device, provider, policy)
         groups = self.groups(policy, rows, records)
@@ -169,10 +182,15 @@ class SingleCardScorer:
                 single = self.forward(model, device, provider, policy, group[:1])
                 if not torch.equal(logits[:1], single):
                     sample = group[0]['request_id']
-                    raise ValueError(f'single-card batch differs from its singleton: '
-                                     f'{sample}; pairs={len(group)}; '
-                                     f'batch={logits[0].item()}; singleton={single[0].item()}')
-            for item, value in zip(group, values.tolist(), strict=True):
+                    if diagnostic_mismatches is None:
+                        raise ValueError(f'single-card batch differs from its singleton: '
+                                         f'{sample}; pairs={len(group)}; '
+                                         f'batch={logits[0].item()}; singleton={single[0].item()}')
+                    diagnostic_mismatches.append(sample)
+            host_values = values.tolist()
+            if latency is not None:
+                latency.visible(group)
+            for item, value in zip(group, host_values, strict=True):
                 uid, offset = item['request_id'].rsplit(':', 1)
                 records[uid][int(offset)] = value
         if not records or any(None in row for row in records.values()):
