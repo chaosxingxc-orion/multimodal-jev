@@ -177,8 +177,10 @@ def run(c):
             cache.update(output=str(Path(prior['remote_root'])/'official-extra-cache'),
                          cache_identity=dict(manifest_sha256=proof['manifest_sha256'],
                                              verification_sha256=prior['official_receipt']['sha256']))
-            write('official-preflight', dict(common, phase='preflight_eval_cache', cache=cache))
-            pre.append([cpu('official-preflight')])
+            preflight_result = 'official-cache-preflight.json'
+            write('official-preflight', dict(common, phase='preflight_eval_cache', cache=cache,
+                                             result_path='/jev-work/'+preflight_result))
+            pre.append([cpu('official-preflight', preflight_result)])
         else:
             for phase in ('encode','verify'):
                 role = 'official-'+phase
