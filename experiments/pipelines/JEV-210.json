@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "matched-06b-k16-dp8-v5",
+  "revision": "matched-06b-k16-dp6-v4",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "recompute": "configs/portable/operations/card-stage1-recompute-210-v1.json",
@@ -23,7 +23,7 @@
     "train": [
       {
         "id": "prepare-and-run-stage1-epoch1",
-        "config": "configs/portable/operations/card-stage1-knegative-dp8.json",
+        "config": "configs/portable/operations/card-stage1-knegative.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -31,7 +31,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-knegative-dp8.json",
+            "configs/portable/operations/card-stage1-knegative.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -106,7 +106,7 @@
                 [
                   "updates"
                 ],
-                3426
+                4568
               ],
               [
                 [
@@ -162,7 +162,7 @@
                 [
                   "updates"
                 ],
-                3426
+                4568
               ]
             ],
             "report": {
@@ -172,12 +172,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-epoch1-audit-dp8.json",
+        "config": "configs/portable/operations/card-stage1-epoch1-audit-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-epoch1-audit-dp8.json",
+            "configs/portable/operations/card-stage1-epoch1-audit-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -212,7 +212,7 @@
                 [
                   "updates"
                 ],
-                3426
+                4568
               ],
               [
                 [
@@ -240,12 +240,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-scoring-epoch1-scale-dp8.json",
+        "config": "configs/portable/operations/card-scoring-epoch1-scale-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-epoch1-scale-dp8.json",
+            "configs/portable/operations/card-scoring-epoch1-scale-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -286,13 +286,13 @@
                 [
                   "start_update"
                 ],
-                3426
+                4568
               ],
               [
                 [
                   "total_updates"
                 ],
-                6852
+                9136
               ]
             ],
             "report": {
@@ -320,7 +320,7 @@
                 [
                   "stop_update"
                 ],
-                6852
+                9136
               ],
               [
                 [
@@ -359,13 +359,13 @@
                 [
                   "updates"
                 ],
-                6852
+                9136
               ],
               [
                 [
                   "ranks"
                 ],
-                8
+                6
               ]
             ],
             "report": {
@@ -384,12 +384,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-endpoint-audit-dp8.json",
+        "config": "configs/portable/operations/card-stage1-endpoint-audit-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-endpoint-audit-dp8.json",
+            "configs/portable/operations/card-stage1-endpoint-audit-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -424,7 +424,7 @@
                 [
                   "updates"
                 ],
-                6852
+                9136
               ],
               [
                 [
@@ -452,12 +452,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-scoring-endpoint-scale-dp8.json",
+        "config": "configs/portable/operations/card-scoring-endpoint-scale-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-endpoint-scale-dp8.json",
+            "configs/portable/operations/card-scoring-endpoint-scale-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -472,13 +472,13 @@
       },
       {
         "id": "stage2",
-        "pending": "按照新 Stage1 终点和八卡预算另行封装 Stage2。"
+        "pending": "按锁定的六卡预算及无累积规则另封 Stage2，禁止沿用历史 6+2 包。"
       }
     ],
     "evaluate": [
       {
         "id": "evaluate-endpoints",
-        "pending": "等待新端点和同一八卡预算下的评测配置。"
+        "pending": "等待新端点和同一六卡预算下的评测配置。"
       }
     ]
   }
