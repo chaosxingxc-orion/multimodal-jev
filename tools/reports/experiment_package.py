@@ -525,6 +525,7 @@ def main():
     parser.add_argument("action", choices=("plan", "status", "run", "resume", "publish", "capacity", "score-shard", "score-merge"), nargs="?", default="plan")
     parser.add_argument("--experiment", help="Experiment ID in the committed queue")
     parser.add_argument("--scoring", action="store_true", help="Use the registered scoring capacity window")
+    parser.add_argument("--capacity-variant", help="Use a named training capacity variant from the experiment package")
     parser.add_argument("--local", type=Path, default=LOCAL)
     parser.add_argument("--publish", action="store_true", help="Sync the generated Wiki changes to origin/main")
     parser.add_argument("--wait-for-ledger", action="store_true", help="Wait for the current experiment to release the ledger")
@@ -533,6 +534,8 @@ def main():
         parser.error("--publish is available with run or resume")
     if args.scoring and args.action != "capacity":
         parser.error("--scoring is available with capacity")
+    if args.capacity_variant and (args.action != "capacity" or args.scoring):
+        parser.error("--capacity-variant requires training capacity")
     try:
         if args.action in {"score-shard", "score-merge"}:
             from tools.reports.card_scoring_shards import execute as score_shard, merge as score_merge
@@ -549,7 +552,8 @@ def main():
                 from tools.reports.prepare_card_scoring_benchmark import capacity
             else:
                 from tools.reports.card_capacity_sweep import capacity
-            print(json.dumps(capacity(args.experiment, args.local), indent=2))
+            params = {"variant": args.capacity_variant} if args.capacity_variant else {}
+            print(json.dumps(capacity(args.experiment, args.local, **params), indent=2))
             return 0
         result = execute(args.action, args.experiment, args.local, publish=args.publish,
                          wait_for_ledger=args.wait_for_ledger)

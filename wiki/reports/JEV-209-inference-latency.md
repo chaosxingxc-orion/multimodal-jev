@@ -1,6 +1,6 @@
 # JEV-209：对齐版推理耗时
 
-本轮按有限工程重放验收通过。两个检查点的概率均逐值对齐，首条完整判决 P95 分别为原生版的 0.890 和 0.870 倍。181 的三卡全量对照已在原生组停止，候选全量组未启动。停止收据为 `jev-card-eval-209-perf-full-comparison-v4/scope-change.json`。对应的运行配置见[推理模式](../../configs/experiments/jev-209-aligned-inference.json)。
+已有对齐版本达到历史 1.10 倍耗时门槛。当前吞吐目标为原生版的 2.00 倍。两个检查点现有吞吐分别为原生版的 1.221 与 1.218 倍。两个检查点的概率均逐值对齐，首条完整判决 P95 分别为原生版的 0.890 和 0.870 倍。181 的三卡全量对照已在原生组停止，候选全量组未启动。停止收据为 `jev-card-eval-209-perf-full-comparison-v4/scope-change.json`。对应的运行配置见[推理模式](../../configs/experiments/jev-209-aligned-inference.json)。
 
 以下为各轮诊断记录。登记口径见[实验协议](../../experiments/jev-209-inference-latency.md)。这是端点评测的工程验收，不产生新训练版本。以下时间是每个原始批次所有候选输出回到 CPU 的累计时间；不含样本加载，不等于首条录音可以决策的时间。
 
