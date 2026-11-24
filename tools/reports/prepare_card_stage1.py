@@ -72,6 +72,12 @@ def run(c):
     commit_json(entry/'native-lengths.json',lengths)
     commit_json(entry/'native-cache.json',native)
     init=load(c['init'],c['init_sha256'])
+    # Carry only authenticated immutable inputs consumed from the historical release.
+    old_source=Path(parent['source_root'])
+    old_policy=Path(parent['source_policy'])
+    parent['pins']={p:h for p,h in parent['pins'].items() if (not Path(p).is_relative_to(old_source)
+        or Path(p).is_relative_to(parent['schedule']) or Path(p).is_relative_to(parent['parent_schedule']))
+        and not Path(p).is_relative_to(old_policy)}
     fresh = c.get('fresh_policy')
     if fresh:
         from multimodal_jev.context_model_profile import from_hf, validate_against_config
@@ -97,12 +103,6 @@ def run(c):
         if design['stage1']['lr_schedule'] != parent['lr_schedule']:
             raise ValueError('different learning rate from parent runtime')
     commit_json(entry/'init.json',init)
-    # Carry only authenticated immutable inputs consumed from the historical release.
-    old_source=Path(parent['source_root'])
-    old_policy=Path(parent['source_policy'])
-    parent['pins']={p:h for p,h in parent['pins'].items() if (not Path(p).is_relative_to(old_source)
-        or Path(p).is_relative_to(parent['schedule']) or Path(p).is_relative_to(parent['parent_schedule']))
-        and not Path(p).is_relative_to(old_policy)}
     if extension:
         from multimodal_jev.stage1_mixed_schedule import schedule
         real = [json.loads(line) for line in (Path(parent['release'])/'learning.jsonl').open()]
