@@ -38,7 +38,7 @@ def initialize_qwen(c, output):
     profile = from_hf(c['model'])
     geometry = validate_against_config(profile, design)
     base_id, files = checkpoint_identity(c['model'])
-    if files['model.safetensors'] != c['weights_sha256']:
+    if base_id != c.get('base_id',base_id) or files['model.safetensors'] != c['weights_sha256']:
         raise ValueError('official model weights differ')
     processor_root = Path(c['processor'])
     tokens = validate_processor_extension(c['model'], processor_root)

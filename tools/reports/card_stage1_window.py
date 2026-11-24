@@ -65,6 +65,7 @@ def run(c):
     reuse = c.get('prepared_input')
     init = Path(reuse['root']) if reuse else work/'prepare'
     acoustic = Path(c['prepared_mixed']['root']) if 'prepared_mixed' in c else work/'prepare'
+    prior_plan = c.get('fresh_card_plan_sha256')
     if role == 'prepare':
         if 'prepared_mixed' in c:
             receipt = acoustic/'receipt.json'
@@ -75,12 +76,25 @@ def run(c):
                 raise ValueError('mixed cache changed')
             view=read(acoustic/'card-cache.json')
             training=read(entry/'training.json')
-            if (view['layout_plan_sha256']!=file_hash(entry/'card-plan.json') or
+            plan_sha = file_hash(entry/'card-plan.json')
+            if (view['layout_plan_sha256']!=(prior_plan or plan_sha) or
                 view['source_identity']!=training['release_sha256'] or
                 view['full_verified']!=training['batch_config']['source_queries'] or
                 not (acoustic/'synthetic-cache').is_dir()):
                 raise ValueError('mixed layout, release or population changed')
             proof=dict(proof,reused_receipt=c['prepared_mixed']['receipt_sha256'])
+            if prior_plan:
+                from tools.reports.initialize_context_stage1_policy import run as initialize
+                design = entry/'design.json'
+                declared = read(entry/'init.json')
+                policy = initialize(dict(declared,design=str(design),design_sha256=file_hash(design)),root)
+                if (policy['base_id'] != training['base_id']
+                        or policy['processor_sha256'] != view['processor_sha256']
+                        or policy['audio_token_id'] != view['encoding']['audio_token_id']):
+                    raise ValueError('fresh model does not reproduce cached input identity')
+                commit_json(root/'card-cache.json',dict(view,layout_plan_sha256=plan_sha))
+                proof.update(policy_id=policy['policy_id'],base_id=policy['base_id'],
+                             cache_sha256=file_hash(root/'card-cache.json'))
             if 'single_card' in c:
                 from multimodal_jev.single_card_forward import prepare as prepare_single
                 reuse_single = c.get('reuse_single')
@@ -90,9 +104,12 @@ def run(c):
                     if file_hash(path) != reuse_single['sha256']:
                         raise ValueError('published card token identities differ')
                     spec = read(path)
-                    if spec['plan'] != file_hash(entry/'card-plan.json') or spec['config'] != c['single_card']:
+                    if spec['plan'] != (prior_plan or plan_sha) or spec['config'] != c['single_card']:
                         raise ValueError('published card assignment or template differs')
-                    shutil.copyfile(path,root/'single.json')
+                    if prior_plan:
+                        commit_json(root/'single.json',dict(spec,plan=plan_sha))
+                    else:
+                        shutil.copyfile(path,root/'single.json')
                     proof['single_card'] = dict(classes=len(spec['labels']),unique_prompts=len(spec['catalog']),questions_per_sequence=1)
                 else:
                     proof['single_card']=prepare_single(entry,root/'single.json',init/'policy',c['sample'],c['single_card'])
@@ -129,7 +146,7 @@ def run(c):
         source_contract=manifest['contract'],stage_lora_transition=bind_design(design,manifest['contract']),
         stage1_layout={k:dict(path=str(entry/name),sha256=file_hash(entry/name))
                        for k,name in [('design','design.json'),('plan','card-plan.json')]},
-        layout_cache=dict(path=str((acoustic if c.get('mixed') else init)/'card-cache.json'),sha256=proof['cache_sha256']),
+        layout_cache=dict(path=str((acoustic if c.get('mixed') and not prior_plan else init)/'card-cache.json'),sha256=proof['cache_sha256']),
         stop_update=c['finite_updates'] if finite else budget,engineering_prefix=finite,training_dispatch_allowed=not finite,
         checkpoint_interval=c['finite_updates'] if finite else c['checkpoint_interval'],evaluation_steps=c['evaluation_steps'],
         reference_endpoint=budget,selection_rule='predeclared_final_endpoint',parity_passes=c['parity_passes'] if finite else 0,
@@ -150,6 +167,11 @@ def run(c):
                       stop_update=c['finite_updates'] if finite else budget,
                       checkpoint_interval=c['finite_updates'] if finite else plan['updates_per_epoch'],
                       evaluation_steps=list(range(0,budget+1,plan['updates_per_epoch'])))
+    if not finite and c.get('stop_after_epoch'):
+        epoch = c['stop_after_epoch']
+        if not 0 < epoch < parent['batch_config']['epochs']:
+            raise ValueError('first training window must stop at an interior epoch boundary')
+        parent.update(stop_update=plan['updates_per_epoch']*epoch,mine_after_window=False)
     if 'execution_microbatch' in c:
         micro=c['execution_microbatch']
         if type(micro)!=int or micro<1 or parent['batch_config']['per_dp_replica_batch']%micro:

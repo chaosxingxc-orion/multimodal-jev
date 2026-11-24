@@ -1,0 +1,127 @@
+{
+  "output": "${CARD_PACKAGE}",
+  "deployment": "${CARD_DEPLOYMENT}",
+  "bank": "${CARD_BANK}",
+  "truth": "${CARD_TRUTH}",
+  "roster": "${CARD_ROSTER}",
+  "calibration": "${CARD_CALIBRATION}",
+  "annotations": "${CARD_ANNOTATIONS}",
+  "release": "${CARD_RELEASE}",
+  "parent": "${CARD_PARENT}",
+  "batches": "${CARD_BATCHES}",
+  "native_cache": "${CARD_NATIVE_CACHE}",
+  "init": "${CARD_INIT}",
+  "design": "configs/experiments/jev-210-context-design.json",
+  "template": "configs/portable/operations/intent-card-template-v1.json",
+  "review": "experiments/knowledge-card-transfer-draft.json",
+  "seed": 317,
+  "design_sha256": "a75b1dbf4e6d370405ffdda1e2bc9528e1f0964879815da7e01255322e8c883c",
+  "init_sha256": "${CARD_INIT_SHA256}",
+  "parent_sha256": "06d895ccc5764d74c7c0f16334953e040a3d5501f4a83818685626d9027d11c1",
+  "bank_sha256": "82f786741cf85a8dd160db4b671bf8a7ddd8c3dff012e8a0dc730d76001e7197",
+  "calibration_sha256": "11f979070100b1983e55abc1664c4a10c91fdd4cc70b040257f22dd482d906a9",
+  "native_cache_sha256": "17f2399b66478a943a09f307cbb74cda30549ed8164c240153bce9900048a8f7",
+  "lora": {
+    "rank": 256,
+    "alpha": 512
+  },
+  "model_description": "Qwen3-ASR-1.7B q/v LoRA r256 + shared probability head",
+  "io_workers": 8,
+  "window": {
+    "finite_updates": 2,
+    "parity_passes": 4,
+    "parity_probability_atol": 2e-06,
+    "evaluation_steps": [
+      0,
+      143,
+      286
+    ],
+    "checkpoint_interval": 143,
+    "master_addr": "127.0.0.1",
+    "master_port": 29500,
+    "execution_microbatch": 24,
+    "prepared_mixed": {
+      "root": "/jev-acoustic-prepare",
+      "receipt_sha256": "2036a28f133cb359353236adaf053ce2ceb2efcb1f90f52eac9d2f1191f32585"
+    },
+    "single_card": {
+      "version": "jev-single-card-v1",
+      "instruction": "Listen to the whole recording. Judge the supplied intent using its definition.",
+      "question": "Does this intent apply?"
+    },
+    "triplet_prefetch": {
+      "workers": 1,
+      "ahead": 1
+    },
+    "triplet_objective": {
+      "kind": "intent_triplet_infonce_v1",
+      "temperature": 0.1,
+      "probability_coefficient": 0.0,
+      "probability_margin": {
+        "margin": 0.1,
+        "decision_threshold": 0.5,
+        "gap_weight": 1.0,
+        "anchor_weight": 0.25
+      }
+    },
+    "reuse_single": {
+      "root": "/jev-single-prepare",
+      "sha256": "3c11f1e042ba00f556582643d919b6005e9ec633e257188e5514c7373efa1a32"
+    },
+    "epoch_mining": {
+      "forward_rows": 32,
+      "card_arm": "rules",
+      "zipf_exponent": 1.0,
+      "bootstrap_per_class": 4
+    },
+    "effective_anchors_per_rank": 96,
+    "capacity_widths": [
+      24,
+      16,
+      8,
+      4,
+      2
+    ],
+    "stop_after_epoch": 1
+  },
+  "resources": {
+    "cpus": 32,
+    "memory": "1024g",
+    "shm": "8g"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ],
+  "max_supports_per_class": 16,
+  "support_panels": 32,
+  "max_support_words": 8,
+  "mixed": {
+    "data": "${MIXED_ROOT}/full-train",
+    "admission_sha256": "11fc1867b19aa7b332fbe04aea61a0eb28e3a018cdc37cf8b3c9475fd3690661",
+    "protocol": "configs/portable/operations/card-synthetic-admission.json",
+    "runtime": {
+      "max_tokens": 5120,
+      "pool": {
+        "workers": 12,
+        "window": 24,
+        "chunk": 32,
+        "min_parallel": 32
+      }
+    },
+    "native_lengths": {
+      "path": "${MIXED_PRIOR}/entry/native-lengths.json",
+      "sha256": "dcb73dc2f1f89794757c77e3bbb223aebf95d84993de7d2fe5441e21f4f436c5"
+    }
+  },
+  "fresh_policy": {
+    "base_id": "feecbef15963f282a2eeb36165f4b8ca127911b30330b62e23e87bc2c7e8c436",
+    "plan": {
+      "path": "${CARD_REUSED_PLAN}",
+      "sha256": "ce7427ec1541e25e9930d6be753c869bf858263e8e86bbc1ecabff2fe0f0300c"
+    }
+  }
+}

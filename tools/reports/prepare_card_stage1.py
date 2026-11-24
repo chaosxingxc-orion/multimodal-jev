@@ -39,8 +39,11 @@ def run(c):
         extension = synth, definitions, m['admission_sha256']
         d = design['stage1']
         d['batch_config']['source_queries'] = design['population']['learning'] = proof['population']
+        if c.get('fresh_policy'):
+            d['batch_config'].update(per_dp_replica_batch=c['window']['effective_anchors_per_rank'],
+                                     microbatch=c['window']['execution_microbatch'])
         plan = derive(d['batch_config'])
-        d.update(initialization='fresh_rank128_pre_stage1_joint_snapshot',total_updates=plan['total_updates'],
+        d.update(initialization='fresh_pre_stage1_joint_snapshot' if c.get('fresh_policy') else 'fresh_rank128_pre_stage1_joint_snapshot',total_updates=plan['total_updates'],
             updates_per_epoch=plan['updates_per_epoch'],reference_endpoint=plan['total_updates'],
             tail_real=plan['tail_real_queries'],tail_padding=plan['tail_padding_slots'],
             evaluation_steps=[i*plan['updates_per_epoch'] for i in range(1+d['batch_config']['epochs'])])
@@ -69,6 +72,30 @@ def run(c):
     commit_json(entry/'native-lengths.json',lengths)
     commit_json(entry/'native-cache.json',native)
     init=load(c['init'],c['init_sha256'])
+    fresh = c.get('fresh_policy')
+    if fresh:
+        from multimodal_jev.context_model_profile import from_hf, validate_against_config
+        from multimodal_jev.policy_identity import checkpoint_identity
+
+        base_id, files = checkpoint_identity(init['model'], io_workers=c['io_workers'])
+        if base_id != fresh['base_id'] or files['model.safetensors'] != init['weights_sha256']:
+            raise ValueError('fresh base does not match the registered model')
+        validate_against_config(from_hf(init['model']), design)
+        prior = load(fresh['plan']['path'],fresh['plan']['sha256'])
+        new = json.loads((entry/'card-plan.json').read_bytes())
+        if dict(prior,design_sha256=new['design_sha256']) != new:
+            raise ValueError('cache reuse requires identical card panels and per-recording assignments')
+        source_base = Path(parent['model'])
+        parent['pins'] = {p:h for p,h in parent['pins'].items() if not Path(p).is_relative_to(source_base)}
+        parent['pins'].update({str(Path(init['model'])/p):h for p,h in files.items()})
+        parent.update(model=init['model'],base_id=base_id)
+        for key in ('source_policy', 'source_policy_id', 'source_contract', 'stage_lora_transition'):
+            parent.pop(key, None)
+        init = dict(init, base_id=base_id)
+        if c['seed'] != init['seed'] or c['deployment'].get('prepared_input') or 'bootstrap_input' in c['window']:
+            raise ValueError('fresh policy requires its own policy and bootstrap')
+        if design['stage1']['lr_schedule'] != parent['lr_schedule']:
+            raise ValueError('different learning rate from parent runtime')
     commit_json(entry/'init.json',init)
     # Carry only authenticated immutable inputs consumed from the historical release.
     old_source=Path(parent['source_root'])
@@ -103,6 +130,8 @@ def run(c):
             root='/jev-entry/source',sha256=frozen['manifest_sha256']),sample=dict(
             path=sample['audio'] if extension else str(Path(parent['audio_mirror_root'])/'audio'/(sample['audio_sha256']+'.audio')),sha256=sample['audio_sha256']),
             io_workers=c['io_workers'],prepared_input=deploy.get('prepared_input'),**c['window'])
+        if fresh:
+            spec['fresh_card_plan_sha256'] = fresh['plan']['sha256']
         commit_json(entry/(role+'.json'),dict(schema='jev-local-macros-v1',macros=dict(NATIVE_SEAL_CONTAINER_CONFIG=spec)))
         groups.append([dict(name=role,devices=[] if role=='prepare' else devices,
             collect=role+'/receipt.json',**c['resources'])])

@@ -1,0 +1,1126 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/stage1-cards-tpo-210.md",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "revision": "scale-r256-v1",
+  "stages": {
+    "data": [
+      {
+        "id": "admit-mixed-recordings",
+        "checks": [
+          {
+            "path": "${MIXED_ROOT}/full-train/admission.json",
+            "sha256": "11fc1867b19aa7b332fbe04aea61a0eb28e3a018cdc37cf8b3c9475fd3690661"
+          }
+        ]
+      }
+    ],
+    "train": [
+      {
+        "id": "prepare-and-run-stage1-epoch1",
+        "config": "configs/portable/operations/card-stage1-scale.json",
+        "python": "${CARD_PYTHON}",
+        "dispatch_guards": [
+          "${CARD_PACKAGE}/entry.tar"
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_card_stage1",
+            "configs/portable/operations/card-stage1-scale.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_PACKAGE}/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_STAGE1_OPERATIONS}/prepare-collected.json",
+            "equals": [
+              [
+                [
+                  "population"
+                ],
+                109610
+              ],
+              [
+                [
+                  "base_id"
+                ],
+                "feecbef15963f282a2eeb36165f4b8ca127911b30330b62e23e87bc2c7e8c436"
+              ],
+              [
+                [
+                  "npu_executed"
+                ],
+                false
+              ]
+            ],
+            "report": {
+              "policy_id": [
+                "policy_id"
+              ],
+              "input_cache": [
+                "cache_sha256"
+              ]
+            }
+          },
+          {
+            "path": "${CARD_STAGE1_OPERATIONS}/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "updates"
+                ],
+                2
+              ],
+              [
+                [
+                  "engineering_prefix"
+                ],
+                true
+              ]
+            ],
+            "report": {
+              "microbatch": [
+                "microbatch"
+              ]
+            }
+          },
+          {
+            "path": "${CARD_STAGE1_OPERATIONS}/formal-collected.json",
+            "equals": [
+              [
+                [
+                  "updates"
+                ],
+                143
+              ],
+              [
+                [
+                  "engineering_prefix"
+                ],
+                false
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_STAGE1_OPERATIONS}/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "audit-stage1-epoch1",
+        "checks": [
+          {
+            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                143
+              ]
+            ],
+            "report": {
+              "checkpoint_sha256": [
+                "checkpoint_sha256"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "score-full-train",
+        "checks": [
+          {
+            "path": "${CARD_MERGED_SCORE}/audit.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                143
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                109610
+              ],
+              [
+                [
+                  "pairs"
+                ],
+                7453480
+              ]
+            ],
+            "report": {
+              "recordings": [
+                "recordings"
+              ],
+              "pairs": [
+                "pairs"
+              ],
+              "checkpoint_sha256": [
+                "checkpoint_sha256"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "resume-stage1-epoch2",
+        "config": "configs/portable/operations/card-stage1-epoch-resume.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.resume_card_stage1",
+            "configs/portable/operations/card-stage1-epoch-resume.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "dispatch_guards": [
+          "${CARD_RESUME_PACKAGE}/entry.tar"
+        ],
+        "checks": [
+          {
+            "path": "${CARD_RESUME_OPERATIONS}/first-updates.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "start_update"
+                ],
+                143
+              ],
+              [
+                [
+                  "total_updates"
+                ],
+                286
+              ]
+            ],
+            "report": {
+              "start_update": [
+                "start_update"
+              ],
+              "total_updates": [
+                "total_updates"
+              ],
+              "ranks": [
+                "ranks"
+              ]
+            }
+          },
+          {
+            "path": "${CARD_RESUME_OPERATIONS}/formal-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "stop_update"
+                ],
+                286
+              ],
+              [
+                [
+                  "engineering_prefix"
+                ],
+                false
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "audit-stage1-endpoint",
+        "checks": [
+          {
+            "path": "${CARD_ENDPOINT_AUDIT}",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                286
+              ],
+              [
+                [
+                  "ranks"
+                ],
+                8
+              ]
+            ],
+            "report": {
+              "updates": [
+                "updates"
+              ],
+              "ranks": [
+                "ranks"
+              ],
+              "checkpoint_sha256": [
+                "checkpoint_sha256"
+              ],
+              "policy_id": [
+                "policy_id"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "score-stage1-endpoint-train",
+        "checks": [
+          {
+            "path": "${CARD_ENDPOINT_MERGED_AUDIT}",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                286
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                109610
+              ],
+              [
+                [
+                  "pairs"
+                ],
+                7453480
+              ]
+            ],
+            "report": {
+              "updates": [
+                "updates"
+              ],
+              "recordings": [
+                "recordings"
+              ],
+              "pairs": [
+                "pairs"
+              ],
+              "cross_host_parity": [
+                "cross_host_parity"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "build-fused-stage2-view",
+        "config": "configs/portable/operations/card-tpo-targets.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.build_card_tpo_targets",
+            "configs/portable/operations/card-tpo-targets.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-tpo-reward-view-v1"
+              ],
+              [
+                [
+                  "schedule",
+                  "global_batch"
+                ],
+                384
+              ],
+              [
+                [
+                  "schedule",
+                  "epochs"
+                ],
+                1
+              ],
+              [
+                [
+                  "probability_gap",
+                  "gate"
+                ],
+                "strict_target_top1"
+              ]
+            ],
+            "report": {
+              "recordings": [
+                "recordings"
+              ],
+              "updates": [
+                "updates"
+              ],
+              "strata": [
+                "strata"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "freeze-fused-stage2",
+        "config": "configs/portable/operations/card-tpo-package.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.prepare_tpo_windows",
+            "configs/portable/operations/card-tpo-package.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_TPO_ROOT}/package/operations-local.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-local-macros-v1"
+              ],
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_OPERATIONS_CONFIG",
+                  "device_group_lease"
+                ],
+                true
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "train-fused-tpo",
+        "python": "${CARD_PYTHON}",
+        "checks": [
+          {
+            "path": "${CARD_TPO_ROOT}/ops/infer-0-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "physical_device"
+                ],
+                6
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/infer-1-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "physical_device"
+                ],
+                7
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "finite"
+              ],
+              [
+                [
+                  "updates"
+                ],
+                2
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/first-three.json",
+            "equals": [
+              [
+                [
+                  "updates",
+                  0,
+                  "step"
+                ],
+                1
+              ],
+              [
+                [
+                  "updates",
+                  1,
+                  "step"
+                ],
+                2
+              ],
+              [
+                [
+                  "updates",
+                  2,
+                  "step"
+                ],
+                3
+              ]
+            ],
+            "report": {
+              "step 1 loss": [
+                "updates",
+                0,
+                "metrics",
+                "jev/tpo_loss"
+              ],
+              "step 2 loss": [
+                "updates",
+                1,
+                "metrics",
+                "jev/tpo_loss"
+              ],
+              "step 3 loss": [
+                "updates",
+                2,
+                "metrics",
+                "jev/tpo_loss"
+              ]
+            }
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "window"
+                ],
+                "formal"
+              ],
+              [
+                [
+                  "arm"
+                ],
+                "tpo"
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "evaluate-stage1-and-fused-stage2",
+        "config": "configs/portable/operations/card-paired-endpoint-evaluation.json",
+        "python": "${CARD_PYTHON}",
+        "dispatch_guards": [
+          "${CARD_PAIR_ROOT}/ops"
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_paired_card_evaluation",
+            "configs/portable/operations/card-paired-endpoint-evaluation.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${CARD_PAIR_ROOT}/package/operations-local.json"
+          ]
+        ],
+        "checks": [
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-probability-panels-v1"
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                12991
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                12991
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                9226
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                9226
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                8168
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                8168
+              ],
+              [
+                [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                320
+              ],
+              [
+                [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                320
+              ],
+              [
+                [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                98
+              ],
+              [
+                [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                98
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "stage1",
+                  "queries"
+                ],
+                13078
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "tpo",
+                  "queries"
+                ],
+                13078
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_ENDPOINT_AUDIT}",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                286
+              ]
+            ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60",
+            "scope": "SLURP clean TEST",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 endpoint",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_clean_SELECTION60",
+            "scope": "SLURP clean selection",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 endpoint",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14",
+            "scope": "MINDS native14",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 endpoint",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SIB_FLEURS_eng_topic7",
+            "scope": "SIB-FLEURS 英语话题",
+            "population": 320,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "Stage2 endpoint",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MMSU_polysemy",
+            "scope": "MMSU 多义词",
+            "population": 98,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "Stage2 endpoint",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_official_TEST60",
+            "scope": "SLURP 完整官方 TEST（历史口径诊断）",
+            "population": 13078,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "Stage2 endpoint",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "tpo"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "endpoint"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy"
+                }
+              },
+              {
+                "label": "Stage1 step 286",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 2,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
