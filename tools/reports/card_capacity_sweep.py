@@ -26,6 +26,9 @@ def capacity(experiment, local):
     if protocol.read_bytes() != committed(selected['commit'], protocol):
         raise ValueError('capacity protocol differs from ledger')
     c, _ = load_config(str(protocol), str(local))
+    if c.get('kind') == 'stage1_batch_comparison':
+        from tools.reports.card_batch_comparison import execute
+        return execute(c)
     base = Path(c['package'])
     parent = read(base/'operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
     ops = Path(parent['operations'])

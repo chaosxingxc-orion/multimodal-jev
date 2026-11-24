@@ -82,7 +82,14 @@ def run(c,root):
             raise ValueError('bounded full two-epoch instruction cursor required')
         if c['engineering_prefix'] is not True and not c['training_dispatch_allowed']:
             raise ValueError('formal full training requires runtime admission')
-        if c['engineering_prefix'] is True and stop_update-start_update>2:
+        probe = c.get('batch_probe')
+        if probe is not None:
+            if (not triplet or not c.get('mixed') or start_update != 0 or
+                    c['engineering_prefix'] is not True or c['training_dispatch_allowed'] is not False or
+                    c['parity_passes'] != 0 or not c['batch_config'].get('batch_rule') or
+                    stop_update > c['batch_config']['efficiency_steps']):
+                raise ValueError('batch comparison requires a bounded triplet window from initialization')
+        elif c['engineering_prefix'] is True and stop_update-start_update>2:
             raise ValueError('engineering prefix is at most two updates')
         contract={k:c[k] for k in ('base_id','source_policy_id','source_contract','runtime_profile',
             'release_sha256','schedule_sha256','global_batch','microbatch','stage')}
@@ -170,17 +177,21 @@ def run(c,root):
                     from multimodal_jev.stage1_mixed_schedule import schedule
                     entry = Path(c['mixed']['entry'])
                     proof = json.loads((entry/'admission.json').read_bytes())
+                    schedule_manifest = Path(c['mixed']['schedule_manifest']) if probe else entry/'mixed-schedule.json'
                     if (file_hash(entry/'admission.json')!=c['release_sha256'] or
                         file_hash(entry/'synthetic.json')!=proof['roster_sha256'] or
-                        file_hash(entry/'mixed-schedule.json')!=c['schedule_sha256']):
+                        file_hash(schedule_manifest)!=c['schedule_sha256']):
                         raise ValueError('mixed release or schedule changed')
                     rows,_,_=load(c['release'],c['mixed']['real_release_sha256'],'learning',purpose='optimize')
                     extra = json.loads((entry/'synthetic.json').read_bytes())
                     population = {r['id']:r for r in rows+extra}
                     task = json.loads((entry/'mixed-task.json').read_bytes())
                     batches,manifest = schedule(population,c['batch_config'],c['mixed']['seed'])
-                    if manifest!=json.loads((entry/'mixed-schedule.json').read_bytes()):
+                    if manifest!=json.loads(schedule_manifest.read_bytes()):
                         raise ValueError('mixed schedule not reproducible')
+                    if probe is not None:
+                        from multimodal_jev.stage1_batch_probe import select_batches
+                        batches = select_batches(batches, c['global_batch'], probe, stop_update)
                 else:
                     rows,task,_=load(c['release'],c['release_sha256'],'learning',purpose='optimize')
                     population={r['id']:r for r in rows}
@@ -355,7 +366,7 @@ def run(c,root):
                     timing = signal[0]['timing']
                     real_queries = actor.last_admission['global_real_requests']
                 audit=audit_adam_shards(named,opt,index+1)
-                save_now=(index+1)%c['checkpoint_interval']==0 or index+1==stop_update
+                save_now=probe is None and ((index+1)%c['checkpoint_interval']==0 or index+1==stop_update)
                 if save_now:
                     if frozen!={n:tensor_identity(p.detach().cpu()) for n,p in wrapped.named_parameters() if not p.requires_grad}:
                         raise ValueError('frozen backbone changed')
@@ -385,6 +396,8 @@ def run(c,root):
                     total_seconds=time.monotonic()-step_begin,input_service=timing,metrics=metrics,
                     real_queries=real_queries,
                     peak_allocated=torch.npu.max_memory_allocated(),checkpoint=save_now,optimizer_audit=audit)
+                if probe is not None:
+                    record['peak_reserved'] = torch.npu.max_memory_reserved()
                 records.append(record);atomic_json(out/f'update-{index+1:04d}.json',record)
                 if (triplet and not c['engineering_prefix'] and c.get('mine_after_window', True) and
                         (index+1 == len(batches) or batches[index+1]['epoch'] != batches[index]['epoch'])):

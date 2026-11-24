@@ -1,0 +1,27 @@
+{
+  "kind": "stage1_batch_comparison",
+  "package": "${CARD_210_BATCH_PARENT}",
+  "output": "${CARD_210_BATCH_OUTPUT}",
+  "deployment": "${CARD_210_BATCH_DEPLOYMENT}",
+  "archive_sha256": "be18255855854750b9cc17e117cce9d1934dbe0a29338316224cea5535f83fdd",
+  "formal_config_sha256": "ca1a3f8bcd2d726367510fdcd9b09524afad0cd22d9fddebdfb3265da0f7e8f6",
+  "confusion_sha256": "4ebbd6949b028cbafa802e5fc8ee672c32601369d5c9c39402707fa960a6cb1d",
+  "prepare_receipt_sha256": "63060d77e812fd15be533bbb6b4a7fef3c5a01460dd850606c00eb7eb0a44fd4",
+  "widths": [4, 8],
+  "spans": [
+    {"name": "warmup", "offset": 0, "recordings": 128},
+    {"name": "ordinary", "offset": 128, "recordings": 320},
+    {"name": "long_audio", "offset": 1200, "recordings": 32}
+  ],
+  "long_audio_anchor": "slurp:audio-1497621480.flac",
+  "master_port": 29500,
+  "io_workers": 8,
+  "resources": {"cpus": 32, "memory": "1024g", "shm": "8g"},
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ]
+}

@@ -56,6 +56,9 @@ def prepare(c, root):
 
 
 def run(c):
+    if 'batch_probe' in c:
+        from tools.reports.card_batch_comparison import run_probe
+        return run_probe(c)
     if 'resume' in c:
         return run_resume(c)
     role = c['role']
