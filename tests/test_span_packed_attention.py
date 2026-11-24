@@ -92,3 +92,16 @@ def test_attention_length_grouping_restores_rows_and_resets_after_scope():
     reference = packed_causal_attention(q, q, q, lengths, scaling=.25, kernel=observe)
     torch.testing.assert_close(candidate, reference)
     assert groups == [(5,5), (7,), (3,), tuple(lengths)]
+
+
+def test_sorted_cohorts_match_original_with_interleaved_recordings():
+    from multimodal_jev.card_attention_groups import by_length
+    lengths = [7, 4, 6, 4, 7]
+    tensors = [torch.randn(5, 2, 7, 4) for _ in range(3)]
+    order = sorted(range(len(lengths)), key=lengths.__getitem__)
+    restored = sorted(range(len(order)), key=order.__getitem__)
+    with by_length():
+        expected = packed_causal_attention(*tensors, lengths, scaling=.25, kernel=fake_varlen)
+    with by_length(contiguous=True):
+        output = packed_causal_attention(*(t[order] for t in tensors), sorted(lengths), scaling=.25, kernel=fake_varlen)
+    torch.testing.assert_close(output[restored], expected, rtol=0, atol=0)

@@ -66,8 +66,11 @@ class SingleCardScorer:
         self.max_chunks = spec.get('max_batch_audio_chunks')
         self.parity_pairs = spec.get('parity_pairs', 1)
         self.mode = spec.get('mode', 'bounded_batch')
-        if self.mode not in {'bounded_batch', 'hf_singleton', 'matched_shape', 'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention'}:
+        self.tile_projections = spec.get('combined_tile_projections')
+        if self.mode not in {'bounded_batch', 'hf_singleton', 'matched_shape', 'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention', 'reuse_audio_tiles'}:
             raise ValueError('unknown single-card evaluation mode')
+        if self.mode == 'reuse_audio_tiles' and not self.tile_projections:
+            raise ValueError('combined tiles require an explicit projection allowlist')
         if (self.max_chunks is not None and (type(self.max_chunks) is not int or self.max_chunks < 1)
                 or type(self.parity_pairs) is not int or self.parity_pairs < 1):
             raise ValueError('positive audio work limit and parity count required')
@@ -140,11 +143,20 @@ class SingleCardScorer:
             return self.forward(model, device, provider, policy, items)
 
         def forward(group):
-            if self.mode in {'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention'}:
+            if self.mode in {'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention', 'reuse_audio_tiles'}:
                 from multimodal_jev.qwen3_asr_provider import Qwen3ASR
                 from multimodal_jev.card_acoustic_reuse import score
                 if not isinstance(provider, Qwen3ASR):
                     raise ValueError('acoustic reuse requires Qwen3-ASR')
+                if self.mode == 'reuse_audio_tiles':
+                    from multimodal_jev.card_language_projection import combined_language
+                    from multimodal_jev.card_attention_groups import by_length
+                    order = sorted(range(len(group)), key=lambda i: group[i]['inputs']['input_ids'].numel())
+                    inverse = sorted(range(len(order)), key=order.__getitem__)
+                    with by_length(contiguous=True), combined_language(model, self.tile_projections):
+                        logits = score(model, [group[i] for i in order], device, policy, self.collate,
+                                       split_lengths=False, text_only=True)
+                    return logits[inverse]
                 if self.mode == 'reuse_audio_attention':
                     from multimodal_jev.card_attention_groups import by_length
                     with by_length():

@@ -3,7 +3,20 @@
   "macros": {
     "CARD_PAIR_MODES": {
       "SLURP_clean_TEST60": "bounded_batch",
-      "MINDS_native14": "reuse_audio_attention",
+      "MINDS_native14": {
+        "mode": "reuse_audio_tiles",
+        "combined_tile_projections": [
+          "self_attn.q_proj.base_layer",
+          "self_attn.q_proj.lora_A.default",
+          "self_attn.q_proj.lora_B.default",
+          "self_attn.k_proj",
+          "self_attn.v_proj.base_layer",
+          "self_attn.v_proj.lora_A.default",
+          "self_attn.v_proj.lora_B.default",
+          "mlp.gate_proj",
+          "mlp.up_proj"
+        ]
+      },
       "SIB_FLEURS_eng_topic7": "bounded_batch",
       "MMSU_polysemy": "bounded_batch",
       "SLURP_clean_SELECTION60": "bounded_batch",

@@ -41,3 +41,13 @@ def test_invalid_contract_rejected(fault):
     if fault=='bias':b=torch.ones(6)
     if fault=='shape':x=x[0]
     with pytest.raises(ValueError):fixed_shape_linear(x,w,b,**kw)
+
+
+@torch.inference_mode()
+def test_combined_tile_batch_keeps_partial_tiles_and_bias():
+    x = torch.randn(11, 9, 32, dtype=torch.bfloat16)
+    w = torch.randn(13, 32, dtype=x.dtype)
+    b = torch.randn(13, dtype=x.dtype)
+    options = dict(tile_rows=4, tile_batch=8)
+    assert torch.equal(fixed_shape_linear(x, w, b, **options),
+                       fixed_shape_linear(x, w, b, combined=True, **options))

@@ -114,6 +114,31 @@ def bind_completed_endpoints(c):
         path=str(proof_path.with_name('training.json')), sha256=proof['config_sha256']))
     return result
 
+def single_card_modes(config):
+    modes = {}
+    projections = config.get('combined_tile_projections')
+    for dataset, entry in config.get('single_card_modes', {}).items():
+        mode = entry
+        if isinstance(entry, dict):
+            if set(entry) != {'mode', 'combined_tile_projections'} or entry['mode'] != 'reuse_audio_tiles':
+                raise ValueError('invalid combined-tile mode configuration')
+            mode = entry['mode']
+            selected = entry['combined_tile_projections']
+            if projections is not None and projections != selected:
+                raise ValueError('combined-tile modes must share the frozen projection allowlist')
+            projections = selected
+        if mode not in ('bounded_batch', 'matched_shape', 'reuse_audio_length', 'reuse_audio_batch',
+                        'reuse_audio_attention', 'reuse_audio_tiles', 'hf_singleton'):
+            raise ValueError('unsupported single-card benchmark mode')
+        modes[dataset] = mode
+    if 'reuse_audio_tiles' in modes.values():
+        if (not isinstance(projections, list) or not projections
+                or not all(isinstance(name, str) and name for name in projections)
+                or len(set(projections)) != len(projections)):
+            raise ValueError('combined tiles require a nonempty list of distinct projection names')
+    return modes, projections
+
+
 def run(c):
     base = settings(c['eval_plan'])
     score_base = settings(c['eval_score'])
@@ -163,9 +188,9 @@ def run(c):
                   token_cache_entries=c['token_cache_entries'])
     if 'max_batch_audio_chunks' in c:
         single.update(max_batch_audio_chunks=c['max_batch_audio_chunks'], parity_pairs=c['parity_pairs'])
-    modes = c.get('single_card_modes', {})
-    if any(mode not in {'bounded_batch', 'matched_shape', 'reuse_audio_length', 'reuse_audio_batch', 'reuse_audio_attention', 'hf_singleton'} for mode in modes.values()):
-        raise ValueError('unsupported single-card benchmark mode')
+    modes, projections = single_card_modes(c)
+    if 'reuse_audio_tiles' in modes.values():
+        single['combined_tile_projections'] = projections
     commit_json(entry/'parent.json', parent)
     repo = Path(__file__).resolve().parents[2]
     frozen = freeze(repo, entry/'source', patterns=c['source_patterns'], io_workers=c['io_workers'])

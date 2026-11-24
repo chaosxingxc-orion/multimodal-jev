@@ -31,6 +31,16 @@ def collate_span_audio(items, *, pad_token_id, audio_token_id,
     Token positions are unchanged by right padding; explicit position IDs avoid
     batch-dependent rotary offsets. Reject changed per-audio attention windows.
     """
+    return _collate_span_audio(items, pad_token_id=pad_token_id, audio_token_id=audio_token_id,
+                               audio_chunk_size=audio_chunk_size, audio_infer_window=audio_infer_window,
+                               text_only=False)
+
+
+def _collate_span_audio(items, *, pad_token_id, audio_token_id, audio_chunk_size,
+                        audio_infer_window, text_only):
+    # text_only is for the card scorer which feeds each owner's original features
+    # directly to the tower. Keep every per-request text, span and window check.
+    frame_cache = {}
     if (not items or any(type(x) is not int or x < 0 for x in
                         (pad_token_id, audio_token_id)) or pad_token_id == audio_token_id
             or type(audio_chunk_size) is not int or audio_chunk_size != 100
@@ -62,14 +72,20 @@ def collate_span_audio(items, *, pad_token_id, audio_token_id,
             raise ValueError('one unpadded sequence and ordered valid spans required')
         if 'position_ids' in inputs and not torch.equal(inputs['position_ids'], torch.arange(ids.shape[1])[None]):
             raise ValueError('canonical original position IDs required')
-        if (features.ndim != 3 or features.shape[0] != 1 or features.shape[1] < 1
-                or features.shape[-1] == 0 or features.shape[-1] % audio_chunk_size
-                or not features.is_floating_point() or not torch.isfinite(features).all()
-                or fmask.shape != (1, features.shape[-1])
-                or not ((fmask == 0) | (fmask == 1)).all()
-                or not torch.equal(fmask, fmask.cumprod(-1)) or fmask.sum() < 1):
-            raise ValueError('finite chunk-padded audio and contiguous prefix mask required')
-        frames = int(fmask.sum())
+        owner = (id(features), id(fmask))
+        if text_only and owner in frame_cache:
+            frames = frame_cache[owner]
+        else:
+            if (features.ndim != 3 or features.shape[0] != 1 or features.shape[1] < 1
+                    or features.shape[-1] == 0 or features.shape[-1] % audio_chunk_size
+                    or not features.is_floating_point() or not torch.isfinite(features).all()
+                    or fmask.shape != (1, features.shape[-1])
+                    or not ((fmask == 0) | (fmask == 1)).all()
+                    or not torch.equal(fmask, fmask.cumprod(-1)) or fmask.sum() < 1):
+                raise ValueError('finite chunk-padded audio and contiguous prefix mask required')
+            frames = int(fmask.sum())
+            if text_only:
+                frame_cache[owner] = frames
         full, tail = divmod(frames, audio_chunk_size)
         expected = full * _cnn_length(audio_chunk_size) + _cnn_length(tail)
         audio_positions = (ids[0] == audio_token_id).nonzero().flatten()
@@ -89,7 +105,7 @@ def collate_span_audio(items, *, pad_token_id, audio_token_id,
     token_width = max(item['inputs']['input_ids'].shape[-1] for item in items)
     feature_width = max(item['inputs']['input_features'].shape[-1] for item in items)
     packed = {}
-    for key in sorted(required):
+    for key in sorted(required if not text_only else ('input_ids', 'attention_mask')):
         width = feature_width if key.startswith('input_features') else token_width
         packed[key] = torch.cat([F.pad(item['inputs'][key],
                                       (0, width - item['inputs'][key].shape[-1]),

@@ -3,15 +3,16 @@ from collections import defaultdict
 
 import torch
 
-from .context_audio_collate import collate_context_audio
+from .context_audio_collate import collate_card_text, collate_context_audio
 
 
 @torch.inference_mode()
-def score(model, group, device, policy, collate, *, split_lengths):
+def score(model, group, device, policy, collate, *, split_lengths, text_only=False):
     if model.training or not group:
         raise ValueError("acoustic reuse requires nonempty inference inputs")
     # Validate the original unpadded rows and spans exactly as the reference does.
-    packed, positions = collate_context_audio(group, policy_id=policy, **collate)
+    pack = collate_card_text if text_only else collate_context_audio
+    packed, positions = pack(group, policy_id=policy, **collate)
     owners = {}
     sounds = []
     buckets = defaultdict(list)

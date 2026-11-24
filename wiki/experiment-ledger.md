@@ -34,7 +34,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-206 | 41 | complete | [逐类概率、双向对比奖励与 harness 阈值](../experiments/tpo-choice-coverage-206.md) | 五组评测已审核；排序较 201 改善，MINDS 阈值迁移未证实。[执行报告](reports/JEV-206.md) |
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
 | JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md)、[尺寸与知识卡复核](reports/JEV-208-card-review.md) |
-| JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 模型实验已审核。MINDS 锁定已发布的 `reuse_audio_attention`：20 块/端点概率零差异，Stage1/Stage2 吞吐为原生的 1.220 / 1.218 倍。最后候选 .25 在 3 块/端点上概率零差异，吞吐 1.877 / 1.886 倍，未达到 2 倍；探索已停止，181 的 0、1、2 卡已释放。[执行报告](reports/JEV-209.md) · [推理报告](reports/JEV-209-inference-latency.md) |
+| JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 模型实验已审核。MINDS 推理锁定 `.25` 为 `v0.0.rc25`：20 块/端点、两轮各端点 17,920 个概率零差异；Stage1/Stage2 评分吞吐为原生的 1.825 / 1.805 倍，以各轮原生归一化后较上一版提高 49.6% / 48.2%。181 八卡已释放。[执行报告](reports/JEV-209.md) · [推理报告](reports/JEV-209-inference-latency.md) |
 | JEV-210 | 45 | stopped | [0.6B r128：K 张负卡与 209 配对](../experiments/stage1-cards-tpo-210.md) | 五卡效率短测结束。16 档普通窗口吞吐降 41.9%，长音频 OOM，保留 8 档基线。全量任务止于第 148 步，3–7 号卡已释放。[执行报告](reports/JEV-210.md#五卡-microbatch-16-短测结果) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |

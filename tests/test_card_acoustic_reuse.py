@@ -33,7 +33,8 @@ class Head(nn.Module):
 
 
 @pytest.mark.parametrize('by_length', [True, False])
-def test_card_scores_preserve_acoustic_owner_and_original_order(by_length):
+@pytest.mark.parametrize('text_only', [True, False])
+def test_card_scores_preserve_acoustic_owner_and_original_order(by_length, text_only):
     from multimodal_jev.context_audio_collate import collate_context_audio
     model = nn.Module()
     model.backbone = Backbone()
@@ -56,8 +57,8 @@ def test_card_scores_preserve_acoustic_owner_and_original_order(by_length):
         single_emb = model.backbone.embedding(ids).masked_scatter((ids==8).unsqueeze(-1),
                               row['inputs']['input_features'].flatten()[:1].to(torch.bfloat16))
         reference.append(single_emb.cumsum(1)[0,pos.item()].float())
-    assert torch.equal(score(model, rows, 'cpu', 'p', cfg, split_lengths=by_length), torch.stack(reference))
+    assert torch.equal(score(model, rows, 'cpu', 'p', cfg, split_lengths=by_length, text_only=text_only), torch.stack(reference))
     assert model.backbone.audio_calls == len(sounds)
     rows[2]['inputs']['input_features'] = sounds['a'][0]
     with pytest.raises(ValueError, match='share the same recording'):
-        score(model, rows, 'cpu', 'p', cfg, split_lengths=by_length)
+        score(model, rows, 'cpu', 'p', cfg, split_lengths=by_length, text_only=text_only)

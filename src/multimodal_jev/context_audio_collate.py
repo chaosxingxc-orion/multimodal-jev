@@ -6,10 +6,21 @@ Equal decision count is required, but candidate identities may differ by query.
 """
 import torch
 
-from .span_audio_collate import collate_span_audio
+from .span_audio_collate import _collate_span_audio
 
 
 def collate_context_audio(items, *, decision_token_id, policy_id, **audio_config):
+    return _collate(items, decision_token_id=decision_token_id, policy_id=policy_id,
+                    text_only=False, **audio_config)
+
+
+def collate_card_text(items, *, decision_token_id, policy_id, **audio_config):
+    """Check full requests, keeping acoustic tensors on their per-recording path."""
+    return _collate(items, decision_token_id=decision_token_id, policy_id=policy_id,
+                    text_only=True, **audio_config)
+
+
+def _collate(items, *, decision_token_id, policy_id, text_only, **audio_config):
     if (not items or type(decision_token_id) is not int or decision_token_id < 0 or
             not isinstance(policy_id,str) or not policy_id or
             decision_token_id in (audio_config.get('audio_token_id'),audio_config.get('pad_token_id'))):
@@ -37,7 +48,7 @@ def collate_context_audio(items, *, decision_token_id, policy_id, **audio_config
             raise ValueError('marker positions must cover all markers exactly')
         adapted.append(dict(inputs=item['inputs'],positions=positions,
                             candidates=[[0,1] for _ in range(count)]))
-    inputs, positions, _ = collate_span_audio(adapted,**audio_config)
+    inputs, positions, _ = _collate_span_audio(adapted,text_only=text_only,**audio_config)
     return inputs,positions
 
 
