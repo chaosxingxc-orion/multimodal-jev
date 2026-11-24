@@ -354,6 +354,17 @@ def run(c):
             raise ValueError('collected calibration did not reproduce the committed receipt')
         score.update(thresholds='/jev-entry/thresholds.json', thresholds_sha256=reuse['thresholds']['sha256'])
         cal_groups = []
+    if 'historical_comparison' in c:
+        history = c['historical_comparison']
+        metrics = read_pinned(history['metrics'])
+        path = Path(history['archive_root'])
+        if not path.is_absolute():
+            raise ValueError('historical evaluation requires the absolute archived block directory')
+        inputs.add(str(path))
+        commit_json(entry/'historical-metrics.json',metrics)
+        if file_hash(entry/'historical-metrics.json') != history['metrics']['sha256']:
+            raise ValueError('historical metrics serialization differs')
+        score['historical_comparison'] = dict(history, metrics=dict(history['metrics'],path='/jev-entry/historical-metrics.json'))
     write('score', score)
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json',
                     entry/'native-seal-container.json')

@@ -68,7 +68,7 @@ def run(c):
     reuse = c.get('prepared_input')
     init = Path(reuse['root']) if reuse else work/'prepare'
     acoustic = Path(c['prepared_mixed']['root']) if 'prepared_mixed' in c else work/'prepare'
-    prior_plan = c.get('fresh_card_plan_sha256')
+    prior_plan = c.get('fresh_card_plan_sha256') or c.get('cache_card_plan_sha256')
     if role == 'prepare':
         if 'prepared_mixed' in c:
             receipt = acoustic/'receipt.json'
@@ -86,7 +86,10 @@ def run(c):
                 not (acoustic/'synthetic-cache').is_dir()):
                 raise ValueError('mixed layout, release or population changed')
             proof=dict(proof,reused_receipt=c['prepared_mixed']['receipt_sha256'])
-            if prior_plan:
+            if c.get('cache_card_plan_sha256'):
+                commit_json(root/'card-cache.json',dict(view,layout_plan_sha256=plan_sha))
+                proof.update(cache_sha256=file_hash(root/'card-cache.json'))
+            if c.get('fresh_card_plan_sha256'):
                 from tools.reports.initialize_context_stage1_policy import run as initialize
                 design = entry/'design.json'
                 declared = read(entry/'init.json')
@@ -149,7 +152,7 @@ def run(c):
         source_contract=manifest['contract'],stage_lora_transition=bind_design(design,manifest['contract']),
         stage1_layout={k:dict(path=str(entry/name),sha256=file_hash(entry/name))
                        for k,name in [('design','design.json'),('plan','card-plan.json')]},
-        layout_cache=dict(path=str((acoustic if c.get('mixed') and not prior_plan else init)/'card-cache.json'),sha256=proof['cache_sha256']),
+        layout_cache=dict(path=str((work/'prepare' if prior_plan else acoustic if c.get('mixed') else init)/'card-cache.json'),sha256=proof['cache_sha256']),
         stop_update=c['finite_updates'] if finite else budget,engineering_prefix=finite,training_dispatch_allowed=not finite,
         checkpoint_interval=c['finite_updates'] if finite else c['checkpoint_interval'],evaluation_steps=c['evaluation_steps'],
         reference_endpoint=budget,selection_rule='predeclared_final_endpoint',parity_passes=c['parity_passes'] if finite else 0,
@@ -202,6 +205,8 @@ def run(c):
         if prior['physical_devices'] != parent['physical_devices'] and reuse.get('topology_independent') is not True:
             raise ValueError('bootstrap reuse across topologies must be declared')
         parent['bootstrap_input'] = reuse['report']
+    if not finite and 'recovery' in c:
+        parent['recovery'] = c['recovery']
     if 'activation_checkpointing' in c:
         parent['activation_checkpointing'] = c['activation_checkpointing']
     if finite and 'finite_pressure' in c:
@@ -210,7 +215,7 @@ def run(c):
         parent['microbatch'] = parent['batch_config']['microbatch'] = width
         commit_json(root/'config.json',parent)
         command = [sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
-            '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),'--max-restarts=0',
+            '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),f"--max-restarts={0 if finite else parent.get('recovery', {}).get('max_restarts', 0)}",
             '--nproc-per-node='+str(len(parent['physical_devices'])),str(entry/'source/tools/jev/train_card_stage1.py'),
             '--config',str(root/'config.json'),'--output',str(root/'run')]
         if not finite or 'capacity_widths' not in c:
@@ -298,10 +303,13 @@ def run_resume(c):
                 or proof['stop_update'] != start+c['finite_updates']
                 or proof['parity_passes'] != c['parity_passes']):
             raise ValueError('finite resume did not admit this checkpoint and confusion table')
+    if finite:
+        parent.pop('recovery', None)
     card = dict(parent['single_card'],path=str(Path(resume['prepared_root'])/'single.json'))
     prepared = Path(resume['prepared_root'])
     if Path(parent['source_policy']) == Path('/jev-work/prepare/policy'):
         parent['source_policy'] = str(prepared/'policy')
+    if 'layout_cache' in parent and Path(parent['layout_cache']['path']) == Path('/jev-work/prepare/card-cache.json'):
         parent['layout_cache'] = dict(parent['layout_cache'],path=str(prepared/'card-cache.json'))
     parent.update(start_update=start, stop_update=stop, resume_root=str(checkpoint.parent),
                   single_card=card, engineering_prefix=finite, training_dispatch_allowed=not finite,
@@ -311,7 +319,7 @@ def run_resume(c):
     world = len(parent['physical_devices'])
     subprocess.run([sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
                     '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),
-                    '--max-restarts=0','--nproc-per-node='+str(world),
+                    f"--max-restarts={0 if finite else parent.get('recovery', {}).get('max_restarts', 0)}",'--nproc-per-node='+str(world),
                     str(entry/'source/tools/jev/train_card_stage1.py'),
                     '--config',str(root/'config.json'),'--output',str(root/'run')],check=True)
     result = read(root/'run/result.json')

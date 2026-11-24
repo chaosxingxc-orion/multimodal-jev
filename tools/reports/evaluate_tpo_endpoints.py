@@ -223,6 +223,11 @@ def collect(spec):
                     raise ValueError('historical prediction policy differs')
             result[dataset] = score_panel(c['cache'], jobs, predictions, spec['probability_panels'][dataset],
                                           thresholds=thresholds['arms'] if thresholds else None)
+            history = spec.get('historical_comparison')
+            if history and dataset in history['datasets']:
+                from tools.reports.score_probability_panels import compare_history
+                result[dataset]['versus_209'] = compare_history(history, c['cache'], jobs, predictions,
+                                                                spec['probability_panels'][dataset], spec['io_workers'])
             continue
         semantic_protocol = spec.get('semantic_scoring', {}).get(dataset)
         if semantic_protocol is not None:

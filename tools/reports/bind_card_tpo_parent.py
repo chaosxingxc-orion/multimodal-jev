@@ -31,6 +31,8 @@ def bind(c):
                   training_dataset=dict(manifest_sha256=targets['view_sha256']),
                   reference_dataset=dict(manifest_sha256=targets['reference_sha256']),
                   card_caches=dict(parent['card_caches'], real=training['encoded_audio_cache']))
+    if 'recovery' in c:
+        parent['recovery'] = c['recovery']
     commit_json(Path(c['output']), parent)
 
 

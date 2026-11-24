@@ -146,20 +146,40 @@ def run_commands(step, state, lock, selection, binding, resources):
             with tarfile.open(archive) as tar:
                 tar.extractall(source, filter="data")
         check_commands(commands, source)
-        commit_json(intent, dict(commit=selection["commit"], binding_sha256=binding,
-                                 commands=commands, python=str(python)))
+        journal = dict(schema="experiment-command-intent-v2", commit=selection["commit"],
+                       binding_sha256=binding, commands=commands, python=str(python))
+        if intent.exists():
+            if json.loads(intent.read_bytes()) != journal:
+                raise ValueError("Cannot resume: source, command, interpreter or bindings changed")
+        else:
+            commit_json(intent, journal)
         env = dict(os.environ, PYTHONPATH=os.pathsep.join(map(str, (source / "src", source))))
-        with (state / f"{step['id']}.log").open("x") as log:
+        with (state / f"{step['id']}.log").open("a") as log:
             if resources:
                 print(json.dumps(resources), file=log, flush=True)
-            for module, *args in commands:
-                result = subprocess.run([str(python), "-B", "-m", module, *args],
+            code = 0
+            for index, (module, *args) in enumerate(commands):
+                prefix = state / f"{step['id']}.command-{index}"
+                started, returned = Path(str(prefix)+".started"), Path(str(prefix)+".returned")
+                if returned.exists():
+                    code = json.loads(returned.read_bytes())["exit_code"]
+                    if code:
+                        break
+                    continue
+                if started.exists():
+                    raise ValueError(f"Command {index} may have run; collect the original backend handle before resuming")
+                result = subprocess.run([str(python), "-B", "-m", "tools.reports.experiment_package",
+                                         "_backend", str(started), str(returned), binding, str(index),
+                                         str(lock.fileno()), module, *args],
                                         cwd=source, stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
                                         env=env, pass_fds=(lock.fileno(),))
-                if result.returncode != 0:
+                code = result.returncode
+                if not returned.exists() or json.loads(returned.read_bytes())["exit_code"] != code:
+                    raise ValueError(f"Backend wrapper interrupted at command {index}; use resume")
+                if code:
                     break
-        commit_json(state / f"{step['id']}.exit.json", dict(exit_code=result.returncode))
-        return result.returncode == 0
+        commit_json(state / f"{step['id']}.exit.json", dict(exit_code=code))
+        return code == 0
 
 
 def evaluate_panel(panel, proofs):
@@ -191,7 +211,7 @@ def evaluate_panel(panel, proofs):
                 primary=primary, delta=delta, rows=rows)
 
 
-def step_result(template, macros, state, selection, lock, upstream):
+def step_result(template, macros, state, selection, lock, upstream, resume=False):
     name = template["id"]
     resolved, issue = resolve_step(template, macros)
     if issue:
@@ -230,10 +250,18 @@ def step_result(template, macros, state, selection, lock, upstream):
     if any(not path.is_absolute() for path in guards):
         raise ValueError("Dispatch guards require absolute paths")
     occupied = [path.name for path in guards if path.exists()]
+    owned = step.get("owned_checks", range(len(step["checks"])))
+    if (step.get("requires_current_dispatch") and not intent.exists()
+            and (occupied or any(Path(step["checks"][i]["path"]).exists() for i in owned))):
+        raise ValueError(f"{name}: unclaimed output in this revision; bind a fresh output directory")
     if missing and occupied and not intent.exists():
         return dict(id=name, status="awaiting_evidence", detail="Existing output: " + "、".join(occupied),
                     **resource_plan)
-    if missing and step.get("run") and lock is not None and not intent.exists():
+    recoverable = (resume and intent.exists() and not terminal.exists()
+                   and json.loads(intent.read_bytes()).get("schema") == "experiment-command-intent-v2")
+    if missing and recoverable and occupied and not (state / f"{name}.command-0.started").exists():
+        raise ValueError("Output appeared before this command started: " + ", ".join(occupied))
+    if missing and step.get("run") and lock is not None and (not intent.exists() or recoverable):
         if config is not None:
             config_path = state / f"{name}.macros.json"
             resolved = {"schema": "jev-local-macros-v1", "macros": {key: macros[key] for key in used}}
@@ -254,9 +282,21 @@ def step_result(template, macros, state, selection, lock, upstream):
             proofs, missing = attest(step["checks"])
         else:
             return dict(id=name, status="failed", detail=f"See {name}.log", **resource_plan)
+    if not missing and intent.exists() and not terminal.exists():
+        journal = json.loads(intent.read_bytes())
+        if journal.get("schema") == "experiment-command-intent-v2":
+            count = len(journal["commands"])
+            if not all((state / f"{name}.command-{i}.started").exists() for i in range(count)):
+                raise ValueError(f"{name}: outputs appeared before the registered commands started")
+            for i in range(count):
+                returned = state / f"{name}.command-{i}.returned"
+                if returned.exists() and json.loads(returned.read_bytes())["exit_code"] != 0:
+                    raise ValueError(f"{name}: command {i} failed; inspect the original backend")
     if terminal.exists() and json.loads(terminal.read_bytes())["exit_code"] != 0:
         return dict(id=name, status="failed", detail=f"See {name}.log", **resource_plan)
     if missing:
+        if resume and intent.exists() and not terminal.exists() and not recoverable:
+            return dict(id=name, status="failed", detail="Legacy intent lacks a command journal; collect the original backend handle", **resource_plan)
         if intent.exists() and terminal.exists():
             status = "failed"
         elif intent.exists() or not step.get("run"):
@@ -265,6 +305,21 @@ def step_result(template, macros, state, selection, lock, upstream):
             status = "ready"
         return dict(id=name, status=status, detail="、".join(missing), **resource_plan)
 
+    for output, input_ in step.get("lineage", []):
+        if lookup(proofs, output) != lookup(prerequisites, input_):
+            raise ValueError(f"{name}: evidence does not match prerequisite {input_}: {output}")
+    for i, check in enumerate(step["checks"]):
+        if check.get("verify_files"):
+            from multimodal_jev.baseline import file_hash
+            base = Path(check["path"]).parent
+            files = proofs[i]["value"]["files"]
+            from multimodal_jev.context_execution import map_io
+            def verify(item):
+                key, expected = item
+                return Path(key).name == key and not (base/key).is_symlink() and file_hash(base/key) == expected
+            valid, _ = map_io(verify, files.items(), workers=lookup(config,check["hash_workers"]))
+            if set(files) != set(check["verify_files"]) or not all(valid):
+                raise ValueError(f"{name}: published file hash differs")
     evidence = [{k: r[k] for k in ("file", "sha256")} for r in proofs]
     for check, proof, identity in zip(step["checks"], proofs, evidence, strict=True):
         if "cite" in check:
@@ -283,7 +338,7 @@ def step_result(template, macros, state, selection, lock, upstream):
     return dict(result, **resource_plan)
 
 
-def workflow(spec, macros, state, selection, lock=None):
+def workflow(spec, macros, state, selection, lock=None, resume=False):
     results, upstream, downstream = [], [], True
     for phase in PHASES:
         phase_results = []
@@ -294,12 +349,12 @@ def workflow(spec, macros, state, selection, lock=None):
                 result = dict(id=step["id"], status="waiting_for_dependency")
             else:
                 try:
-                    result = step_result(step, macros, state, selection, lock, upstream)
+                    result = step_result(step, macros, state, selection, lock, upstream, resume)
                 except (KeyError, IndexError, TypeError, ValueError, OSError,
                         subprocess.CalledProcessError) as exc:
                     result = dict(id=step["id"], status="failed", detail=str(exc))
             phase_results.append(dict(stage=phase, **result))
-            if result["status"] == "failed":
+            if result["status"] == "failed" or (spec.get("ordered_steps") and result["status"] != "audited"):
                 downstream = False
         downstream = downstream and all(row["status"] == "audited" for row in phase_results)
         if downstream:
@@ -478,7 +533,7 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False):
             update_wiki(claim, dict(selection, working_row_sha256=work_row["row_sha256"]),
                         starting, "in_progress")
             work_row = queue_rows(Path(LEDGER).read_text())[selection["experiment_id"]]
-        results = workflow(spec, macros, state, selection, lock)
+        results = workflow(spec, macros, state, selection, lock, resume=action == "resume")
         statuses = {r["status"] for r in results}
         status = "complete" if statuses == {"audited"} else "in_progress"
         update_wiki(claim, dict(selection, working_row_sha256=work_row["row_sha256"]), results, status)
@@ -521,6 +576,15 @@ def publish_wiki(experiment):
 
 
 def main():
+    if sys.argv[1:2] == ["_backend"]:
+        # The child owns both journal writes and inherits the lease. Killing the coordinator
+        # cannot leave a normally returning backend without its exit receipt.
+        started, returned, binding, index, fd, module, *args = sys.argv[2:]
+        commit_json(Path(started), dict(index=int(index), binding_sha256=binding))
+        code = subprocess.run([sys.executable, "-B", "-m", module, *args], pass_fds=(int(fd),)).returncode
+        code = code if code >= 0 else 128-code
+        commit_json(Path(returned), dict(exit_code=code))
+        return code
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("plan", "status", "run", "resume", "publish", "capacity", "score-shard", "score-merge"), nargs="?", default="plan")
     parser.add_argument("--experiment", help="Experiment ID in the committed queue")
@@ -562,3 +626,7 @@ def main():
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return int(result["status"] == "unbound" or any(
         step["status"] in {"failed", "unbound"} for step in result.get("steps", [])))
+
+
+if __name__ == '__main__':
+    sys.exit(main())

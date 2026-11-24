@@ -62,7 +62,9 @@ def run(c,root):
     torch.set_num_threads(2);torch.npu.set_device(local);device=torch.device('npu',local)
     torch.manual_seed(317);torch.npu.manual_seed_all(317);torch.use_deterministic_algorithms(True)
     dist.init_process_group('hccl',timeout=timedelta(seconds=900))
-    out=root/f'rank-{rank}';out.mkdir(parents=True,exist_ok=False)
+    from multimodal_jev import window_recovery as recovery
+    restart = recovery.restart_enabled(c.get('recovery'))
+    out=root/f'rank-{rank}';out.mkdir(parents=True,exist_ok=restart)
     progress=lambda phase,**kw:atomic_json(out/'progress.json',dict(phase=phase,unix=time.time(),**kw))
     try:
         from multimodal_jev.context_training_checkpoint import capture,restore,validate
@@ -113,6 +115,19 @@ def run(c,root):
             schedule_release_sha256=c['schedule_release_sha256'])
         if c.get('prompt_layout') is not None:contract['prompt_layout']=c['prompt_layout']
         if 'activation_checkpointing' in c:contract['activation_checkpointing']=c['activation_checkpointing']
+        window_start = start_update
+        window_contract = dict(stage='stage1', config=content_hash(c), start=window_start, stop=stop_update)
+        recovered = recovery.latest(root, window_contract, start_update, stop_update, world) if restart else None
+        if recovered:
+            start_update = recovered['step']
+        if restart:
+            # Formal endpoint publications after the last durable cursor are from the interrupted attempt.
+            recovery.preserve_tail(out, [out/f'checkpoint-{stop_update:04d}.pt'])
+            if rank == 0:
+                recovery.preserve_tail(root, [root/f'policy-{stop_update:04d}',root/f'execution-{stop_update:04d}.pt',
+                                              root/f'checkpoint-{stop_update:04d}-committed.json'])
+            dist.barrier()
+        pending = None
         progress('load')
         if checkpoint_identity(c['model'])[0]!=c['base_id']:raise ValueError('base changed')
         bundle=read_execution_bundle(c['source_policy'],expected_policy_id=c['source_policy_id'],
@@ -281,7 +296,14 @@ def run(c,root):
         from multimodal_jev.context_lora_checkpoint_scope import validate_trainable_scope
         atomic_json(out/'checkpoint-scope.json',validate_trainable_scope(named))
         frozen={n:tensor_identity(p.detach().cpu()) for n,p in wrapped.named_parameters() if not p.requires_grad}
-        if start_update:
+        if recovered:
+            auxiliary = recovery.recover(root, recovered, named, opt, dict(rank=rank,world_size=world,
+                                        completed_updates=start_update,contract=window_contract))
+            class_ema.load_state_dict(auxiliary['ema'])
+            if class_ema.updates != start_update:
+                raise ValueError('recovery sampler and optimizer differ')
+            pending = auxiliary['pending']
+        elif start_update:
             previous=Path(c['resume_root']);commit_path=previous/f'checkpoint-{start_update:04d}-committed.json'
             if c['pins'].get(str(commit_path))!=file_hash(commit_path):raise ValueError('pinned committed checkpoint required')
             commit=json.loads(commit_path.read_text())
@@ -305,7 +327,6 @@ def run(c,root):
             atomic_json(out/'restored.json',restore(named,opt,state,**identity))
             if online:
                 atomic_json(out/'sampler-restored.json', witness)
-        records=[]
         try:
             for index in range(start_update,stop_update):
                 step_begin=time.monotonic();progress('prepare_batch',update=index)
@@ -313,7 +334,8 @@ def run(c,root):
                 if triplet:
                     if index == start_update or batches[index]['epoch'] != batches[index-1]['epoch']:
                         if online:
-                            stream.begin_epoch(index, class_ema)
+                            stream.begin_epoch(index, class_ema, pending)
+                            pending = None
                         else:
                             previous = None
                             if batches[index]['epoch']:
@@ -360,6 +382,7 @@ def run(c,root):
                     metrics,parity = update(wrapped,opt,groups,real_queries,c,collation,cfg.jev_policy_id,device,world,passes,
                         **(dict(class_ema=class_ema) if online else {}))
                     if online:
+                        pending_next = stream.snapshot
                         stream.publish(class_ema)
                         metrics.update(sampler_source_update=versions[0], sampler_lag=index-versions[0])
                     torch.npu.synchronize()
@@ -402,7 +425,9 @@ def run(c,root):
                         atomic_json(out/'inference-parity.json', parity)
                     timing = signal[0]['timing']
                     real_queries = actor.last_admission['global_real_requests']
+                audit_begin=time.monotonic()
                 audit=audit_adam_shards(named,opt,index+1)
+                timing['adam_audit_seconds']=time.monotonic()-audit_begin
                 save_now=probe is None and pressure is None and ((index+1)%c['checkpoint_interval']==0 or index+1==stop_update)
                 if save_now:
                     if frozen!={n:tensor_identity(p.detach().cpu()) for n,p in wrapped.named_parameters() if not p.requires_grad}:
@@ -446,7 +471,12 @@ def run(c,root):
                     peak_allocated=torch.npu.max_memory_allocated(),checkpoint=save_now,optimizer_audit=audit)
                 if probe is not None or pressure is not None:
                     record['peak_reserved'] = torch.npu.max_memory_reserved()
-                records.append(record);atomic_json(out/f'update-{index+1:04d}.json',record)
+                atomic_json(out/f'update-{index+1:04d}.json',record)
+                if c.get('recovery') and not save_now and (index+1) % c['recovery']['interval'] == 0:
+                    checkpoint_begin = time.monotonic()
+                    recovery.save(root, named, opt, dict(rank=rank,world_size=world,completed_updates=index+1,
+                                  contract=window_contract), dict(ema=class_ema.state_dict(),pending=pending_next),dist)
+                    atomic_json(out/f'recovery-timing-{index+1:04d}.json',dict(seconds=time.monotonic()-checkpoint_begin))
                 if (triplet and not online and not c['engineering_prefix'] and c.get('mine_after_window', True) and
                         (index+1 == len(batches) or batches[index+1]['epoch'] != batches[index]['epoch'])):
                     from multimodal_jev.intent_triplet_training import mine_epoch
@@ -457,10 +487,10 @@ def run(c,root):
                         report.update(checkpoint_sha256=file_hash(root/f'checkpoint-{index+1:04d}-committed.json'))
                         atomic_json(root/f'confusion-epoch-{epoch+1}.json',report)
                     dist.barrier()
-            atomic_json(out/'result.json',dict(passed=True,start_update=start_update,stop_update=stop_update,
+            atomic_json(out/'result.json',dict(passed=True,start_update=window_start,stop_update=stop_update,
                 executions=executions,scope='Native context instruction loop; task RL and efficacy separate'))
             dist.barrier()
-            if rank==0:atomic_json(root/'result.json',dict(passed=True,start_update=start_update,
+            if rank==0:atomic_json(root/'result.json',dict(passed=True,start_update=window_start,
                 stop_update=stop_update,schedule_updates=layout['total_updates'],learning_population=c['batch_config']['source_queries'],
                 engineering_prefix=c['engineering_prefix']))
         finally:

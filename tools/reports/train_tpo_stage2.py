@@ -65,7 +65,10 @@ def main(args):
     dist.init_process_group('hccl',timeout=timedelta(seconds=e['collective_timeout_seconds']))
     try:
         out = root/f'rank-{rank}'
-        out.mkdir(parents=True,exist_ok=False)
+        from multimodal_jev import window_recovery as recovery
+        options = c.get('recovery') if args.window == 'formal' else None
+        restart = recovery.restart_enabled(options)
+        out.mkdir(parents=True,exist_ok=restart)
         transition = admit_stage2(c['stage_lora_transition'],c['source_contract'])
         base,processor,model,wrapped,opt,executions,handle = load_actor_stack(
             c,torch.device('npu',local),out,e,transition)
@@ -178,10 +181,26 @@ def main(args):
                         or file_hash(ref_file)!=seal['rank_files'][rank]):
                     raise ValueError('Choice reference binding differs')
                 reference_rows=torch.load(ref_file,map_location='cpu',weights_only=True)
+        start_step = 0
+        contract = dict(stage='card-tpo', parent=args.parent_sha, targets=args.target_sha, arm=args.arm, end=end)
+        named = [(n,p) for n,p in wrapped.named_parameters() if p.requires_grad]
+        if options and not card_binding:
+            raise ValueError('window recovery requires fixed card targets')
+        if restart:
+            recovered = recovery.latest(root, contract, 0, end, world)
+            if recovered:
+                start_step = recovered['step']
+                recovery.recover(root,recovered,named,opt,dict(rank=rank,world_size=world,
+                                 completed_updates=start_step,contract=contract))
+            if rank == 0:
+                paths = [root/f'update-{i:04d}.json' for i in range(start_step+1,end+1)]
+                paths.extend(root/f'policy-step-{i}' for i in m.get('intermediate_steps',[]) if i > start_step)
+                recovery.preserve_tail(root,[*paths,root/'policy',root/'result.json'])
+            dist.barrier()
         if card_binding:
             from tools.reports.card_tpo_batches import CardTPOBatches
             batch_source = CardTPOBatches(batches, rows, cards, card_binding,
-                                         c['card_caches'], e['prefetch'], collate, end)
+                                         c['card_caches'], e['prefetch'], collate, end, start_step)
             forward = batch_source.forward
         else:
             batch_source = CachedContextBatches(batches,population,task,prep,start_update=0,
@@ -189,7 +208,7 @@ def main(args):
             forward = forward_context_audio_batch
         with batch_source as stream:
             actor=build_actor(cfg,wrapped,opt,objective=EXTENSION,collation=collate,forward=forward)
-            for step in range(end):
+            for step in range(start_step,end):
                 now=time.monotonic()
                 policy=f"{c['source_policy_id']}:{args.arm}:{step}"
                 cfg.jev_policy_id=policy
@@ -334,6 +353,12 @@ def main(args):
                                 policy_id=c['source_policy_id'], contract=c['source_contract'], base_id=c['base_id'])
                             del state
                     dist.barrier()
+                if options and step+1 < end and (step+1) % options['interval'] == 0:
+                    checkpoint_begin = time.monotonic()
+                    recovery.save(root,named,opt,dict(rank=rank,world_size=world,completed_updates=step+1,
+                                  contract=contract),{},dist)
+                    from multimodal_jev.baseline import atomic_json
+                    atomic_json(out/f'recovery-timing-{step+1:04d}.json',dict(seconds=time.monotonic()-checkpoint_begin))
         if args.window=='reference':
             commit_file(ref_file,lambda f:torch.save(reference_rows,f))
             dist.barrier()

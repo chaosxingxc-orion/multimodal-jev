@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "matched-06b-k16-dp8-micro8-v8-class-logit-ema",
+  "revision": "online-ema-v9",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "recompute": "configs/portable/operations/card-stage1-recompute-210-v1.json",
@@ -24,7 +24,7 @@
     "train": [
       {
         "id": "prepare-and-run-stage1-epoch1",
-        "config": "configs/portable/operations/card-stage1-knegative-ema-dp8.json",
+        "config": "configs/portable/operations/card-stage1-knegative-ema-dp8-v9.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -32,7 +32,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-knegative-ema-dp8.json",
+            "configs/portable/operations/card-stage1-knegative-ema-dp8-v9.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -187,7 +187,8 @@
               ]
             ]
           }
-        ]
+        ],
+        "requires_current_dispatch": true
       },
       {
         "id": "audit-stage1-epoch1",
@@ -244,7 +245,8 @@
           {
             "path": "${CARD_STAGE1_OPERATIONS}/terminal.json"
           }
-        ]
+        ],
+        "requires_current_dispatch": true
       },
       {
         "id": "resume-stage1-epoch2",
@@ -330,7 +332,8 @@
           {
             "path": "${CARD_EPOCH_HANDOFF}/receipt.json"
           }
-        ]
+        ],
+        "requires_current_dispatch": true
       },
       {
         "id": "audit-stage1-endpoint",
@@ -402,7 +405,8 @@
           {
             "path": "${CARD_RESUME_OPERATIONS}/formal-collected.json"
           }
-        ]
+        ],
+        "requires_current_dispatch": true
       },
       {
         "id": "score-stage1-endpoint-train",
@@ -470,6 +474,32 @@
           {
             "path": "${CARD_ENDPOINT_AUDIT}"
           }
+        ],
+        "lineage": [
+          [
+            [
+              0,
+              "value",
+              "checkpoint_sha256"
+            ],
+            [
+              0,
+              "value",
+              "checkpoint_sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "policy_id"
+            ],
+            [
+              0,
+              "value",
+              "policy_id"
+            ]
+          ]
         ]
       },
       {
@@ -533,18 +563,105 @@
               "strata": [
                 "strata"
               ]
-            }
+            },
+            "verify_files": [
+              "rows.json",
+              "batches.json",
+              "population-audit.json",
+              "reference.pt",
+              "targets.pt",
+              "calibration.json",
+              "cards.json"
+            ],
+            "hash_workers": [
+              "execution",
+              "io_workers"
+            ]
           }
+        ],
+        "lineage": [
+          [
+            [
+              0,
+              "value",
+              "card_input",
+              "checkpoint_sha256"
+            ],
+            [
+              0,
+              "value",
+              "checkpoint_sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "source_policy"
+            ],
+            [
+              0,
+              "value",
+              "policy_id"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "source_policy_sha256"
+            ],
+            [
+              0,
+              "value",
+              "policy_sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "reference_sha256"
+            ],
+            [
+              0,
+              "sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "view_sha256"
+            ],
+            [
+              0,
+              "value",
+              "full_sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "candidate_ids"
+            ],
+            [
+              0,
+              "value",
+              "labels"
+            ]
+          ]
         ]
       },
       {
         "id": "bind-fused-stage2-parent",
-        "config": "configs/portable/operations/card-tpo-parent-endpoint.json",
+        "config": "configs/portable/operations/card-tpo-parent-endpoint-v9.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.bind_card_tpo_parent",
-            "configs/portable/operations/card-tpo-parent-endpoint.json",
+            "configs/portable/operations/card-tpo-parent-endpoint-v9.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -584,7 +701,60 @@
               ]
             ]
           }
-        ]
+        ],
+        "lineage": [
+          [
+            [
+              0,
+              "value",
+              "source_policy_id"
+            ],
+            [
+              0,
+              "value",
+              "source_policy"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "reference_dataset",
+              "manifest_sha256"
+            ],
+            [
+              0,
+              "value",
+              "reference_sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "training_dataset",
+              "manifest_sha256"
+            ],
+            [
+              0,
+              "value",
+              "view_sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "source_policy_id"
+            ],
+            [
+              1,
+              "value",
+              "policy_id"
+            ]
+          ]
+        ],
+        "requires_current_dispatch": true
       },
       {
         "id": "freeze-fused-stage2",
@@ -628,7 +798,8 @@
               ]
             ]
           }
-        ]
+        ],
+        "requires_current_dispatch": true
       },
       {
         "id": "train-fused-tpo",
@@ -756,13 +927,14 @@
               ]
             ]
           }
-        ]
+        ],
+        "requires_current_dispatch": true
       }
     ],
     "evaluate": [
       {
         "id": "evaluate-stage1-and-fused-stage2",
-        "config": "configs/portable/operations/card-paired-endpoint-210.json",
+        "config": "configs/portable/operations/card-paired-endpoint-210-v9.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PAIR_ROOT}/ops"
@@ -770,7 +942,7 @@
         "run": [
           [
             "tools.reports.prepare_paired_card_evaluation",
-            "configs/portable/operations/card-paired-endpoint-210.json",
+            "configs/portable/operations/card-paired-endpoint-210-v9.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -910,8 +1082,134 @@
                   "queries"
                 ],
                 13078
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "versus_209",
+                  "stage1",
+                  "baseline"
+                ],
+                "JEV-209"
+              ],
+              [
+                [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "versus_209",
+                  "tpo",
+                  "baseline"
+                ],
+                "JEV-209"
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "versus_209",
+                  "stage1",
+                  "baseline"
+                ],
+                "JEV-209"
+              ],
+              [
+                [
+                  "datasets",
+                  "MINDS_native14",
+                  "versus_209",
+                  "tpo",
+                  "baseline"
+                ],
+                "JEV-209"
               ]
-            ]
+            ],
+            "report": {
+              "SLURP_clean_TEST60 stage1 vs 209 ΔF1": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "versus_209",
+                "stage1",
+                "macro_f1_delta"
+              ],
+              "SLURP_clean_TEST60 stage1 95% CI": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "versus_209",
+                "stage1",
+                "macro_f1_delta_ci95"
+              ],
+              "SLURP_clean_TEST60 stage1 结论": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "versus_209",
+                "stage1",
+                "direction"
+              ],
+              "SLURP_clean_TEST60 tpo vs 209 ΔF1": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "versus_209",
+                "tpo",
+                "macro_f1_delta"
+              ],
+              "SLURP_clean_TEST60 tpo 95% CI": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "versus_209",
+                "tpo",
+                "macro_f1_delta_ci95"
+              ],
+              "SLURP_clean_TEST60 tpo 结论": [
+                "datasets",
+                "SLURP_clean_TEST60",
+                "versus_209",
+                "tpo",
+                "direction"
+              ],
+              "MINDS_native14 stage1 vs 209 ΔF1": [
+                "datasets",
+                "MINDS_native14",
+                "versus_209",
+                "stage1",
+                "macro_f1_delta"
+              ],
+              "MINDS_native14 stage1 95% CI": [
+                "datasets",
+                "MINDS_native14",
+                "versus_209",
+                "stage1",
+                "macro_f1_delta_ci95"
+              ],
+              "MINDS_native14 stage1 结论": [
+                "datasets",
+                "MINDS_native14",
+                "versus_209",
+                "stage1",
+                "direction"
+              ],
+              "MINDS_native14 tpo vs 209 ΔF1": [
+                "datasets",
+                "MINDS_native14",
+                "versus_209",
+                "tpo",
+                "macro_f1_delta"
+              ],
+              "MINDS_native14 tpo 95% CI": [
+                "datasets",
+                "MINDS_native14",
+                "versus_209",
+                "tpo",
+                "macro_f1_delta_ci95"
+              ],
+              "MINDS_native14 tpo 结论": [
+                "datasets",
+                "MINDS_native14",
+                "versus_209",
+                "tpo",
+                "direction"
+              ]
+            }
           },
           {
             "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
@@ -1274,8 +1572,14 @@
           {
             "path": "${CARD_ENDPOINT_AUDIT}"
           }
+        ],
+        "requires_current_dispatch": true,
+        "owned_checks": [
+          0,
+          3
         ]
       }
     ]
-  }
+  },
+  "ordered_steps": true
 }

@@ -34,6 +34,10 @@ def run(c):
     command=[sys.executable,'-m','torch.distributed.run','--master_addr','127.0.0.1',
              '--master_port',str(read(Path(t['parent']))['view_execution']['master_port']),
              '--nproc_per_node',str(world),'--module','tools.reports.train_tpo_stage2']
+    if t['window'] == 'formal':
+        parent = read(Path(t['parent']))
+        if 'recovery' in parent:
+            command[3:3] = ['--max-restarts',str(parent['recovery']['max_restarts'])]
     for k in ('parent','targets','output','parent_sha','target_sha','arm','window'):
         command.extend(('--'+k.replace('_','-'),str(t[k])))
     if 'next_macro_sha' in t: command.extend(('--next-macro-sha',t['next_macro_sha']))

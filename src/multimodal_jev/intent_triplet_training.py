@@ -114,7 +114,7 @@ class OnlineTripletStream(TripletStream):
         if self.config['triplet_prefetch']['ahead'] > self.max_lag:
             raise ValueError('prefetch depth exceeds configured sampler lag')
 
-    def begin_epoch(self, first, ema):
+    def begin_epoch(self, first, ema, pending=None):
         if self.queue is not None:
             self.queue.close()
         if ema.updates != first:
@@ -123,7 +123,9 @@ class OnlineTripletStream(TripletStream):
         epoch = self.batches[first]['epoch']
         stop = next((i for i in range(first+1,self.config['stop_update'])
                      if self.batches[i]['epoch'] != epoch), self.config['stop_update'])
-        items = ((i, *self.snapshot) for i in range(first, stop))
+        if pending is not None and pending[0] != first-1:
+            raise ValueError('recovered prefetched batch has the wrong EMA version')
+        items = ((i, *(pending if i == first and pending is not None else self.snapshot)) for i in range(first, stop))
         self.queue = OrderedPrefetch(self.prepare_snapshot, items, **self.config['triplet_prefetch'])
 
     def publish(self, ema):

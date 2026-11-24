@@ -47,10 +47,28 @@ def run(c):
             updates_per_epoch=plan['updates_per_epoch'],reference_endpoint=plan['total_updates'],
             tail_real=plan['tail_real_queries'],tail_padding=plan['tail_padding_slots'],
             evaluation_steps=[i*plan['updates_per_epoch'] for i in range(1+d['batch_config']['epochs'])])
+        if c.get('bind_design_budget'):
+            # Reproduce the historical cache key with only the schedule metadata substituted.
+            from hashlib import sha256
+            def publication_hash(value):
+                return sha256((json.dumps(value, indent=2)+'\n').encode()).hexdigest()
+            cache_design = publication_hash(design)
+            w = c['window']
+            d['batch_config'].update(training_devices=w['training_npus'], batch_rule=w['batch_rule'],
+                                     microbatch=w['execution_microbatch'], per_dp_replica_batch=w['effective_anchors_per_rank'])
+            plan = derive(d['batch_config'])
+            d.update(global_batch=plan['global_batch'], instruction_objective=w['triplet_objective'],total_updates=plan['total_updates'], updates_per_epoch=plan['updates_per_epoch'],
+                     reference_endpoint=plan['total_updates'], tail_real=plan['tail_real_queries'],
+                     tail_padding=plan['tail_padding_slots'],
+                     evaluation_steps=list(range(0,plan['total_updates']+1,plan['updates_per_epoch'])))
         c['window'].update(checkpoint_interval=d['updates_per_epoch'],evaluation_steps=d['evaluation_steps'],
                            mixed=m['runtime'])
     commit_json(entry/'design.json',design)
     compile_plan(c,entry,file_hash(entry/'design.json'),extension=extension)
+    if c.get('bind_design_budget'):
+        assignments = json.loads((entry/'card-plan.json').read_bytes())
+        c['window']['cache_card_plan_sha256'] = publication_hash(dict(assignments, design_sha256=cache_design))
+        del assignments
     parent=load(c['parent'],c['parent_sha256'])
     native=load(c['native_cache'],c['native_cache_sha256'])
     if native['source_identity']!=parent['release_sha256'] or len(native['templates']['both']['suffix'])!=len(native['templates']['native']['suffix']) or len(native['templates']['both']['prefix'])!=len(native['templates']['native']['prefix']):
@@ -124,6 +142,9 @@ def run(c):
             parent['physical_devices'] = devices
             derive(batch_config)
         _, schedule_proof = schedule(pop,batch_config,c['seed'])
+        if c.get('bind_design_budget') and (batch_config != d['batch_config']
+                or schedule_proof['updates'] != d['total_updates'] or schedule_proof['population'] != d['batch_config']['source_queries']):
+            raise ValueError('published design and executed schedule differ')
         commit_json(entry/'mixed-schedule.json',schedule_proof)
         parent.update(mixed=dict(real_release_sha256=parent['release_sha256'],seed=c['seed'],
                       input_limit=m['runtime']['max_tokens']),audio_mirror_root=None,

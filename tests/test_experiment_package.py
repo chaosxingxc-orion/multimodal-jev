@@ -191,3 +191,54 @@ assert Path.cwd() != Path(c['repository'])
         assert result["steps"][0]["device_plan"] == expected
     assert result["status"] == "complete"
     assert json.loads((state / EXP / "data.log").read_text())["device_plan"] == expected
+
+
+@pytest.mark.parametrize("ambiguous", [False, True])
+def test_resume_at_intent_boundary(package, ambiguous):
+    repo,state,cli = package
+    state.mkdir()
+    (state/'skip-audit').touch()
+    cli('run',code=1)
+    step = state/EXP
+    # Reconstruct the two crash cuts on either side of backend invocation.
+    for ext in ['exit.json','command-0.returned'] + ([] if ambiguous else ['command-0.started']):
+        (step/f'train.{ext}').unlink()
+    (state/'skip-audit').unlink()
+    result=json.loads(cli('resume',code=int(ambiguous)).stdout)
+    if ambiguous:
+        assert result['steps'][1]['status']=='failed'
+        assert 'original backend handle' in result['steps'][1]['detail']
+        assert (state/'calls').read_text().count('train')==1
+    else:
+        assert result['status']=='complete'
+        assert (state/'calls').read_text().count('train')==2
+
+
+def test_killing_driver_during_backend_preserves_lock_and_single_submission(package):
+    import time
+    repo,state,cli=package
+    fixture=repo/'tools/reports/fixture.py'
+    source=fixture.read_text().replace("if phase == 'train':","""if phase == 'train':
+    (root/'inside').touch()
+    with (root/'gate').open() as gate: gate.read()
+""")
+    fixture.write_text(source)
+    git(repo,'commit','-qam','Interruptible test backend')
+    state.mkdir(); os.mkfifo(state/'gate')
+    command=[sys.executable,str(repo/'run_experiment.py'),'--local',str(repo.parent/'local.json'),'run']
+    child=subprocess.Popen(command,cwd=repo,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    try:
+        for _ in range(500):
+            if (state/'inside').exists(): break
+            assert child.poll() is None
+            time.sleep(.01)
+        assert (state/'inside').exists()
+        child.kill();child.wait(timeout=5)
+        assert 'temporarily unavailable' in cli('resume',code=2).stderr
+        with (state/'gate').open('w') as gate: gate.write('continue')
+        result=json.loads(cli('resume','--wait-for-ledger').stdout)
+        assert result['status']=='complete'
+        assert (state/'calls').read_text().splitlines()==['data','train','evaluate']
+    finally:
+        if child.poll() is None:
+            child.kill();child.wait()

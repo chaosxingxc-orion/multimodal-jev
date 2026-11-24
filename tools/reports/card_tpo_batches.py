@@ -8,7 +8,7 @@ from tools.reports.card_scoring_benchmark import render, restore_binding
 
 
 class CardTPOBatches:
-    def __init__(self, batches, rows, cards, binding, cache_paths, prefetch, collate, stop):
+    def __init__(self, batches, rows, cards, binding, cache_paths, prefetch, collate, stop, start=0):
         self.batches = batches
         self.rows = rows
         self.binding = binding
@@ -21,8 +21,8 @@ class CardTPOBatches:
         self.templates = [tuple(torch.tensor(c[key], dtype=torch.long) for key in ('prefix', 'suffix'))
                           for c in selected]
         self.collate = collate
-        self.cursor = 0
-        self.queue = OrderedPrefetch(self.read_batch, batches[:stop], **prefetch)
+        self.cursor = start
+        self.queue = OrderedPrefetch(self.read_batch, batches[start:stop], **prefetch)
 
     def read_batch(self, batch):
         audio = {}

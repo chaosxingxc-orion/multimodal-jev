@@ -86,3 +86,52 @@ def score_panel(cache, jobs, predictions, protocol, *, thresholds=None):
             result.update(delta=float(diff.mean()), interval=np.quantile(samples,[.025,.975]).tolist())
         paired[arm] = result
     return dict(arms=rows, paired=paired)
+
+
+def compare_history(history, cache, jobs, predictions, protocol, workers):
+    """Use historical recording-level scores, with the same seal, arms and cluster intervals."""
+    from functools import partial
+    from multimodal_jev import evaluation_blocks as blocks
+    from multimodal_jev.context_execution import map_io
+    from tools.reports.evaluate_tpo_endpoints import collect_predictions
+
+    root = Path(history['archive_root'])
+    snapshot = blocks.read(root/'plan.json')
+    manifest = blocks.checked_plan(root, snapshot['plan']['namespace'])
+    dataset = cache['dataset']
+    archived = bound(history['metrics'])
+    if (manifest['sha256'] != history['plan_digest']
+            or archived['seals'][dataset] != cache['seal']['sha256']
+            or manifest['plan']['inputs'][dataset]['seal_sha256'] != cache['seal']['sha256']):
+        raise ValueError('historical archive or evaluation seal differs')
+    base = Path(cache['seal']['root'])
+    seal = bound(dict(path=base/'MANIFEST.json',sha256=cache['seal']['sha256']))
+    rel = f'scoring/{dataset}/targets.json'
+    targets = bound(dict(path=base/rel, sha256=seal['files'][rel]))
+    ids = [q.id for q in jobs[0][2].questions]
+    if any((name,row['id'],row['audio_sha256']) != (dataset,t['id'],t['audio_sha256'])
+           or [q.id for q in request.questions] != ids
+           for (name,row,request),t in zip(jobs,targets,strict=True)):
+        raise ValueError('historical panel population or candidate order differs')
+    results = {}
+    for arm in ('stage1','tpo'):
+        chosen = [b for b in manifest['plan']['blocks'] if (b['dataset'],b['arm']) == (dataset,arm)]
+        payloads, _ = map_io(partial(blocks.read_block,root,manifest),chosen,workers=workers)
+        old, old_policy = collect_predictions((),'',targets,publications=(v['prob'] for v in payloads))
+        prior = archived['datasets'][dataset]['arms'][arm]
+        new, new_policy = predictions[arm]
+        if old_policy != prior['policy_id'] or prior['queries'] != len(targets):
+            raise ValueError('historical policy or population differs from the audited result')
+        def aligned(records):
+            return {uid:dict(zip(ids,row['prob'],strict=True)) for uid,row in records.items()}
+        proof = compare(ids, targets, aligned(old), aligned(new), interval=protocol['interval'],
+                        cluster=protocol['cluster'])
+        if any(not math.isclose(proof['left'][k],prior[k],abs_tol=1e-12,rel_tol=0)
+               for k in ('top1_macro_f1','top1_accuracy')):
+            raise ValueError('historical winners do not reproduce audited metrics')
+        lo,hi = proof['macro_f1_delta_ci95']
+        results[arm] = dict(proof, baseline=history['experiment'], baseline_policy=old_policy,
+                            target_policy=new_policy, archive_digest=manifest['sha256'],
+                            metrics_sha256=history['metrics']['sha256'],
+                            direction='改善' if lo > 0 else '退化' if hi < 0 else '不确定')
+    return results

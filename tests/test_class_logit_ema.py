@@ -94,7 +94,16 @@ def distributed_steps(rank, path):
                 actual, groups, n, used = next(source.queue)
                 assert (actual,used) == (i,version)
                 update(model,optimizer,groups,n,config,{},'policy','cpu',2,0,ema)
+                pending = source.snapshot
                 source.publish(ema)
+                if i == 1:
+                    # Restore at update 2: batch 2 was already prefetched with update 1.
+                    replay = stream()
+                    replay.begin_epoch(2,ema,pending)
+                    try:
+                        assert next(replay.queue) == source.queue.pending[0].result()
+                    finally:
+                        replay.close()
                 if i == 0:
                     assert torch.allclose(ema.values[:2],torch.tensor([[.3,.6,.9],[.6,.9,1.2]]))
             assert reduce.call_count == model.calls == 3
