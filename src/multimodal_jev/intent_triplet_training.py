@@ -7,17 +7,22 @@ from .intent_triplet_sampling import sample_epoch
 from .ordered_prefetch import OrderedPrefetch
 
 
-def components(markers, logits, temperature, margin):
+def components(markers, logits, temperature, margin, negative_cards_per_anchor=None):
     # Within each anchor group: A/a, B/b, C/c (three matches), C/a (mismatch).
     a, b, c = F.normalize(markers[:, :3].float(), dim=-1).unbind(dim=1)
     nce = F.softplus(((a*c).sum(-1) - (a*b).sum(-1)) / temperature)
     matched, wrong = logits[:, :3].float(), logits[:, 3:].float()
-    gap = matched.sigmoid() - wrong.sigmoid()
+    if negative_cards_per_anchor is None:
+        gap = matched.sigmoid() - wrong.sigmoid()
+    else:
+        if wrong.shape[1] != negative_cards_per_anchor:
+            raise ValueError('sampled card count differs from objective')
+        gap = matched[:, :1].sigmoid() - wrong.sigmoid()
     separation = (margin['margin'] - gap).relu().mean(-1)
     hi = margin['decision_threshold'] + margin['margin']/2
     lo = margin['decision_threshold'] - margin['margin']/2
     anchor = ((math.log(hi/(1-hi))-matched).relu().mean(-1)
-              + (wrong-math.log(lo/(1-lo))).relu().squeeze(-1))/2
+              + (wrong-math.log(lo/(1-lo))).relu().mean(-1))/2
     total = nce + margin['gap_weight']*separation + margin['anchor_weight']*anchor
     return torch.stack((total, nce, separation, anchor), dim=1)
 
@@ -32,6 +37,7 @@ class TripletStream:
         self.collation = collation
         self.queue = None
         self.partners = {}
+        self.negative_cards = config['instruction_objective'].get('negative_cards_per_anchor')
 
     def begin_epoch(self, first, distribution=None):
         epoch = self.batches[first]['epoch']
@@ -40,7 +46,8 @@ class TripletStream:
         if self.queue is not None:
             self.queue.close()
         self.partners = {a:(p,n) for a,p,n in sample_epoch(self.population.values(),
-            seed=self.config['mixed']['seed'],epoch=epoch,distribution=distribution)}
+            seed=self.config['mixed']['seed'],epoch=epoch,distribution=distribution,
+            negative_cards_per_anchor=self.negative_cards)}
         stop = next((i for i in range(first+1,self.config['stop_update'])
                      if self.batches[i]['epoch']!=epoch),self.config['stop_update'])
         self.queue = OrderedPrefetch(self.prepare,range(first,stop),**self.config['triplet_prefetch'])
@@ -62,6 +69,8 @@ class TripletStream:
         for ordinal, slot in enumerate(slots):
             a = slot['id']
             p,n = self.partners[a]
+            if self.negative_cards is not None:
+                n, wrong_labels = n
             recording_ids = (a,p,n)
             inputs = {}
             for uid in recording_ids:
@@ -72,9 +81,15 @@ class TripletStream:
                     raise ValueError('published acoustic cache required')
                 inputs[uid] = prepared.inputs
             rows = []
-            for j,(audio,card) in enumerate(((a,a),(p,p),(n,n),(n,a))):
+            pairs = [(uid, self.population[uid]['intent'], uid) for uid in recording_ids]
+            if self.negative_cards is None:
+                pairs.append((n, self.population[a]['intent'], a))
+            else:
+                # Use the anchor's template variant for both its true and its wrong cards.
+                pairs.extend((a, label, a) for label in wrong_labels)
+            for j,(audio,label,card) in enumerate(pairs):
                 acoustic = inputs[audio]
-                column = self.label_index[self.population[card]['intent']]
+                column = self.label_index[label]
                 arm = self.layout.assignments[card][epoch]
                 rows.append(self.render(acoustic,self.spec['arms'][arm][column],f'{index}/{self.rank}/{ordinal}/{j}'))
             groups.append((rows,slot['weight'],recording_ids))
@@ -110,8 +125,10 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
                 raise ValueError(f'probability parity failed: {error}')
             parity.update(inference_passes=parity['inference_passes']+probes,compared=parity['compared']+probes*len(chunk),
                           max_abs=max(error,parity['max_abs']))
-        terms = components(markers.reshape(len(chunk),4,-1),raw.reshape(len(chunk),4),
-                           objective['temperature'],objective['probability_margin'])
+        k = objective.get('negative_cards_per_anchor')
+        width = 3 + (k if k is not None else 1)
+        terms = components(markers.reshape(len(chunk),width,-1),raw.reshape(len(chunk),width),
+                           objective['temperature'],objective['probability_margin'],k)
         weight = terms.new_tensor([w for _,w,_ in chunk])
         sums = (terms*weight[:,None]).sum(0)
         (sums[0]*world/global_count).backward()

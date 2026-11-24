@@ -5,7 +5,7 @@ import math
 from itertools import accumulate
 
 
-def sample_epoch(records, *, seed, epoch, distribution=None):
+def sample_epoch(records, *, seed, epoch, distribution=None, negative_cards_per_anchor=None):
     by_label = defaultdict(list)
     by_id = {}
     for row in records:
@@ -20,6 +20,11 @@ def sample_epoch(records, *, seed, epoch, distribution=None):
     labels = sorted(by_label)
     if len(labels) < 2:
         raise ValueError('an independently labeled negative is required')
+    k = negative_cards_per_anchor
+    if k is not None and (type(k) is not int or not 1 <= k < len(labels)):
+        raise ValueError('negative_cards_per_anchor must fit the non-gold vocabulary')
+    # Separate RNG keeps the historical positive and first negative draws intact.
+    extra_rng = random.Random(f'{seed}|additional-cards|{epoch}')
     draws = {}
     if distribution is not None:
         if set(distribution) != set(labels):
@@ -52,4 +57,14 @@ def sample_epoch(records, *, seed, epoch, distribution=None):
             other = rng.randrange(len(labels)-1)
             neg_label = labels[other + (other >= label_positions[label])]
         negative = rng.choice(by_label[neg_label])
-        yield anchor, positive, negative
+        if k is None:
+            yield anchor, positive, negative
+            continue
+        available = [key for key in labels if key not in (label, neg_label)]
+        if distribution is None:
+            extra = extra_rng.sample(available, k - 1)
+        else:
+            # Independent exponential clocks give weighted draws without replacement.
+            extra = (sorted(available, key=lambda key: extra_rng.expovariate(distribution[label][key]))
+                     [:k - 1] if k > 1 else [])
+        yield anchor, positive, (negative, (neg_label, *extra))

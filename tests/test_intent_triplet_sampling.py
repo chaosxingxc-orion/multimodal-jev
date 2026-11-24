@@ -43,3 +43,43 @@ def test_confusion_tail_respects_denominators_ties_and_reaches_all_classes():
                for label in labels for i in range(600)]
     negatives = Counter(n[0] for a,p,n in sample_epoch(records,seed=3,epoch=1,distribution=table) if a[0]=='A')
     assert negatives['B'] > max(negatives['C'],negatives['D']) and set(negatives)=={'B','C','D'}
+
+
+@pytest.mark.parametrize('k', [1, 3, 16, 17])
+def test_multi_card_rows_share_anchor_and_all_active_negatives_receive_gradient(k):
+    import torch
+    from types import SimpleNamespace
+    from multimodal_jev.intent_triplet_training import TripletStream, components
+    records = {f'{j}/{i}': dict(id=f'{j}/{i}', intent=str(j), role='learning', official_split='train',
+                                audio=f'{j}/{i}', audio_sha256='test') for j in range(18) for i in range(2)}
+    labels = sorted({r['intent'] for r in records.values()})
+    weights = {x: {y:1/17 for y in labels if y != x} for x in labels}
+    def draw(rows):
+        return list(sample_epoch(rows, seed=317, epoch=0, distribution=weights, negative_cards_per_anchor=k))
+    plan = draw(records.values())
+    assert plan == draw(reversed(list(records.values())))
+    for a, p, (n, wrong) in plan:
+        assert len(set(wrong)) == k and records[a]['intent'] not in wrong
+        assert records[n]['intent'] == wrong[0] and a != p
+    a,p,(n,wrong) = plan[0]
+    class Layout:
+        assignments = {uid:['rules'] for uid in records}
+        def __call__(self, audio, uid, epoch):
+            return audio
+    stream = TripletStream([dict(epoch=0, slots=[dict(id=a, weight=1)], real_queries=1)], records,
+                           lambda args: SimpleNamespace(cache_hit=True, inputs=args[0]), Layout(),
+                           dict(labels=labels, catalog=[], arms={'rules':labels}),
+                           {'instruction_objective':{'negative_cards_per_anchor':k}}, 0, 1, {})
+    stream.partners = {a:(p,(n,wrong))}
+    stream.render = lambda audio, card, uid: (audio,card)
+    _, [(pairs,weight,_)], _ = stream.prepare(0)
+    assert pairs[:3] == [(uid, records[uid]['intent']) for uid in (a,p,n)]
+    assert pairs[3:] == [(a,lab) for lab in wrong]
+    scores = torch.zeros(1,len(pairs),requires_grad=True)
+    terms = components(torch.randn(1,len(pairs),5), scores, .1,
+                       dict(margin=.1, decision_threshold=.5, gap_weight=1., anchor_weight=.25), k)
+    terms[0,0].backward()
+    assert scores.grad[0,0] < 0 and (scores.grad[0,3:] > 0).all()
+    assert terms[0,2].item() == pytest.approx(.1)
+    with pytest.raises(ValueError):
+        list(sample_epoch(records.values(), seed=317, epoch=0, negative_cards_per_anchor=len(labels)))

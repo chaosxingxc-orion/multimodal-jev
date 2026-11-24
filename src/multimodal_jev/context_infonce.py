@@ -93,6 +93,10 @@ def validate_objective(c):
         expected = {'kind','temperature','probability_coefficient'}
     elif c.get('kind') in ('candidate_infonce_probability_margin_v1', 'intent_triplet_infonce_v1'):
         expected = {'kind','temperature','probability_coefficient','probability_margin'}
+        if c['kind'] == 'intent_triplet_infonce_v1' and 'negative_cards_per_anchor' in c:
+            expected.add('negative_cards_per_anchor')
+            if type(c['negative_cards_per_anchor']) is not int or c['negative_cards_per_anchor'] < 1:
+                raise ValueError('positive integer negative_cards_per_anchor required')
         validate_margin(c.get('probability_margin'))
     else:
         raise ValueError('unknown Stage1 objective')

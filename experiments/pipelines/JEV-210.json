@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "scale-r256-v2",
+  "revision": "matched-06b-knegative-v3",
   "stages": {
     "data": [
       {
@@ -18,7 +18,7 @@
     "train": [
       {
         "id": "prepare-and-run-stage1-epoch1",
-        "config": "configs/portable/operations/card-stage1-scale.json",
+        "config": "configs/portable/operations/card-stage1-knegative.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -26,7 +26,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-scale.json",
+            "configs/portable/operations/card-stage1-knegative.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -49,9 +49,9 @@
               ],
               [
                 [
-                  "base_id"
+                  "policy_id"
                 ],
-                "feecbef15963f282a2eeb36165f4b8ca127911b30330b62e23e87bc2c7e8c436"
+                "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce"
               ],
               [
                 [
@@ -88,6 +88,9 @@
             "report": {
               "microbatch": [
                 "microbatch"
+              ],
+              "negative_cards_per_anchor": [
+                "negative_cards_per_anchor"
               ]
             }
           },
@@ -106,7 +109,12 @@
                 ],
                 false
               ]
-            ]
+            ],
+            "report": {
+              "negative_cards_per_anchor": [
+                "negative_cards_per_anchor"
+              ]
+            }
           },
           {
             "path": "${CARD_STAGE1_OPERATIONS}/terminal.json",
@@ -543,7 +551,7 @@
                 [
                   "base_id"
                 ],
-                "feecbef15963f282a2eeb36165f4b8ca127911b30330b62e23e87bc2c7e8c436"
+                "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458"
               ]
             ]
           }
