@@ -30,3 +30,12 @@ def test_rejects_shuffled_latency_boundaries():
     times = dict(first_score_seconds=1., first_decision_seconds=3., scoring_seconds=2., differences=0)
     with pytest.raises(ValueError, match='host timing'):
         validate_trial(dict(standard=times, candidate=times), 2)
+
+
+def test_endpoint_work_uses_wall_span_with_parallel_workers_and_nearest_rank_tail():
+    from tools.reports.audit_card_endpoint_timing import metrics
+    def row(start, end, first):
+        return dict(claimed_unix=start, committed_unix=end, recordings=2, first_decision_seconds=first)
+    result = metrics([row(100, 110, 2),row(105, 112, 5),row(110, 117, 3)])
+    assert result == dict(blocks=3,recordings=6,claim_commit_span_seconds=17,
+                          first_decision_p50=3,first_decision_p95=5)

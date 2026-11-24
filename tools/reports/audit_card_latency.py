@@ -28,6 +28,16 @@ def validate_trial(trial, pairs):
             raise ValueError('invalid comparison count')
 
 
+def first_output_times(times):
+    scores = [row['first_score_seconds'] for row in times]
+    decisions = [row['first_decision_seconds'] for row in times]
+    gaps = [end - start for start, end in zip(scores, decisions, strict=True)]
+    return {f'{metric}_{quantile}': percentile(values, p)
+            for metric, values in [('first_score', scores), ('first_decision', decisions),
+                                   ('score_to_decision', gaps)]
+            for quantile, p in [('p50', .50), ('p95', .95)]}
+
+
 def audit(root, archive, archive_plan_digest, limit):
     if not math.isfinite(limit) or limit <= 0:
         raise ValueError('invalid latency threshold')
@@ -94,9 +104,7 @@ def audit(root, archive, archive_plan_digest, limit):
         summary = dict(counts[dataset, arm], measured_block_traversals=len(trials))
         for kind in ('standard', 'candidate'):
             times = [t[kind] for t in trials]
-            decisions = [t['first_decision_seconds'] for t in times]
-            summary[kind] = dict(first_decision_p50=percentile(decisions, .50),
-                                 first_decision_p95=percentile(decisions, .95),
+            summary[kind] = dict(**first_output_times(times),
                                  scoring_seconds=sum(t['scoring_seconds'] for t in times),
                                  probability_differences=sum(t['differences'] for t in times))
         ratios = {k: summary['candidate'][k] / summary['standard'][k]
@@ -115,7 +123,11 @@ if __name__ == '__main__':
         p.add_argument(name, type=Path)
     p.add_argument('--archive-plan-digest', required=True)
     p.add_argument('--limit', type=float, required=True)
+    p.add_argument('--wait-for-workers', action='store_true')
     args = p.parse_args()
+    if args.wait_for_workers:
+        from tools.reports.finalize_context_infonce import wait_exact
+        wait_exact(blocks.read(args.root/'ops.started.json'), args.root/'ops/terminal.json')
     result = audit(args.root, args.archive, args.archive_plan_digest, args.limit)
     commit_json(args.output, result)
     raise SystemExit(0 if result['passed'] else 1)
