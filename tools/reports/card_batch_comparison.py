@@ -158,7 +158,7 @@ def prepare(c):
         count = pressure['recordings'] // global_batch
         if witness not in {s['id'] for b in batches[offset:offset + count] for s in b['slots']}:
             raise ValueError('long audio witness missing from the fixed pressure span')
-        manifest_name = f'{role}-schedule.json'
+        manifest_name = f'micro-{width}-schedule.json'
         commit_json(entry/manifest_name, manifest)
         config['mixed']['schedule_manifest'] = '/jev-entry/' + manifest_name
         config.update(physical_devices=devices, global_batch=global_batch, microbatch=width,
@@ -172,8 +172,12 @@ def prepare(c):
         if prior_comparison is not None:
             base_name = f'micro-{width}-training.json'
             base_raw = pinned((prior_comparison/'entry'/base_name).read_bytes(), prior_entry['entry_pins'][base_name])
-            if config != json.loads(base_raw):
-                raise ValueError('recompute probe differs from the frozen baseline')
+            baseline_config = json.loads(base_raw)
+            differences = sorted(k for k in config.keys() | baseline_config.keys()
+                                 if config.get(k) != baseline_config.get(k) or
+                                 (k in config) != (k in baseline_config))
+            if differences:
+                raise ValueError('recompute probe differs from the frozen baseline: ' + ', '.join(differences))
             config['activation_checkpointing'] = checkpointing
         run_name = f'{role}-training.json'
         commit_json(entry/run_name, config)
