@@ -111,6 +111,18 @@ def run(c):
         if 'effective_anchors_per_rank' in c['window']:
             batch_config.update(per_dp_replica_batch=c['window']['effective_anchors_per_rank'],
                                 microbatch=c['window']['execution_microbatch'])
+        if 'batch_rule' in c['window']:
+            devices = c['deployment']['devices']
+            if (not devices or len(set(devices)) != len(devices) or
+                    any(type(d) is not int or d < 0 for d in devices)):
+                raise ValueError('unique physical training devices required')
+            if len(devices) != c['window']['training_npus']:
+                raise ValueError('physical device count differs from the registered budget')
+            if c['window'].get('capacity_widths') != [batch_config['microbatch']]:
+                raise ValueError('a changed microbatch needs a new schedule and package')
+            batch_config.update(batch_rule=c['window']['batch_rule'], training_devices=len(devices))
+            parent['physical_devices'] = devices
+            derive(batch_config)
         _, schedule_proof = schedule(pop,batch_config,c['seed'])
         commit_json(entry/'mixed-schedule.json',schedule_proof)
         parent.update(mixed=dict(real_release_sha256=parent['release_sha256'],seed=c['seed'],

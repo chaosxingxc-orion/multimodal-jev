@@ -95,7 +95,7 @@ def collect(package, count, timeout):
     expected_stop = design['stage1']['total_updates']
     if 'triplet_objective' in (window := read(entry/'formal.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']):
         from multimodal_jev.context_topology_batch_plan import derive
-        batch = dict(design['stage1']['batch_config'], per_dp_replica_batch=window['effective_anchors_per_rank'],
+        batch = dict(read(entry/'training.json')['batch_config'], per_dp_replica_batch=window['effective_anchors_per_rank'],
                      microbatch=window['execution_microbatch'])
         plan = derive(batch)
         expected_stop = (plan['updates_per_epoch'] * window['stop_after_epoch']

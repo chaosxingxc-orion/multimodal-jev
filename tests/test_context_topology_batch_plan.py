@@ -65,3 +65,13 @@ def test_stage1_local128_micro32_full_population():
     c=config(devices=4);c.update(per_dp_replica_batch=128,microbatch=32)
     p=derive(c)
     assert (p['global_batch'],p['accumulation'],p['total_updates'],p['tail_real_queries'])==(512,4,160,65)
+
+
+def test_locked_batch_counts_training_devices_and_rejects_accumulation():
+    c = dict(config(), training_devices=6, per_dp_replica_batch=4, microbatch=4,
+             batch_rule='microbatch_times_training_npus', source_queries=109610)
+    p = derive(c)
+    assert (p['global_batch'], p['accumulation'], p['total_updates'], p['tail_real_queries']) == (24, 1, 9136, 2)
+    for change in [dict(per_dp_replica_batch=8), dict(tensor_parallel=2)]:
+        with pytest.raises(ValueError):
+            derive(dict(c, **change))

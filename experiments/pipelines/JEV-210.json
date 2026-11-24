@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "matched-06b-knegative-v3",
+  "revision": "matched-06b-k16-dp6-v4",
   "stages": {
     "data": [
       {
@@ -101,7 +101,7 @@
                 [
                   "updates"
                 ],
-                143
+                4568
               ],
               [
                 [
@@ -157,7 +157,7 @@
                 [
                   "updates"
                 ],
-                143
+                4568
               ]
             ],
             "report": {
@@ -167,12 +167,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-epoch1-audit.json",
+        "config": "configs/portable/operations/card-stage1-epoch1-audit-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-epoch1-audit.json",
+            "configs/portable/operations/card-stage1-epoch1-audit-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -207,7 +207,7 @@
                 [
                   "updates"
                 ],
-                143
+                4568
               ],
               [
                 [
@@ -235,12 +235,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-scoring-epoch1-scale.json",
+        "config": "configs/portable/operations/card-scoring-epoch1-scale-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-epoch1-scale.json",
+            "configs/portable/operations/card-scoring-epoch1-scale-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -281,13 +281,13 @@
                 [
                   "start_update"
                 ],
-                143
+                4568
               ],
               [
                 [
                   "total_updates"
                 ],
-                286
+                9136
               ]
             ],
             "report": {
@@ -315,7 +315,7 @@
                 [
                   "stop_update"
                 ],
-                286
+                9136
               ],
               [
                 [
@@ -354,13 +354,13 @@
                 [
                   "updates"
                 ],
-                286
+                9136
               ],
               [
                 [
                   "ranks"
                 ],
-                8
+                6
               ]
             ],
             "report": {
@@ -379,12 +379,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-endpoint-audit.json",
+        "config": "configs/portable/operations/card-stage1-endpoint-audit-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-endpoint-audit.json",
+            "configs/portable/operations/card-stage1-endpoint-audit-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -419,7 +419,7 @@
                 [
                   "updates"
                 ],
-                286
+                9136
               ],
               [
                 [
@@ -447,12 +447,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-scoring-endpoint-scale.json",
+        "config": "configs/portable/operations/card-scoring-endpoint-scale-dp6.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-endpoint-scale.json",
+            "configs/portable/operations/card-scoring-endpoint-scale-dp6.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -466,986 +466,14 @@
         ]
       },
       {
-        "id": "build-fused-stage2-view",
-        "config": "configs/portable/operations/card-tpo-targets-single-host.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.build_card_tpo_targets",
-            "configs/portable/operations/card-tpo-targets-single-host.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "checks": [
-          {
-            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-tpo-reward-view-v1"
-              ],
-              [
-                [
-                  "schedule",
-                  "global_batch"
-                ],
-                384
-              ],
-              [
-                [
-                  "schedule",
-                  "epochs"
-                ],
-                1
-              ],
-              [
-                [
-                  "probability_gap",
-                  "gate"
-                ],
-                "strict_target_top1"
-              ]
-            ],
-            "report": {
-              "recordings": [
-                "recordings"
-              ],
-              "updates": [
-                "updates"
-              ],
-              "strata": [
-                "strata"
-              ]
-            }
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_ENDPOINT_SCORE}/audit.json"
-          }
-        ]
-      },
-      {
-        "id": "bind-stage2-endpoint",
-        "python": "${CARD_PYTHON}",
-        "config": "configs/portable/operations/card-tpo-parent-endpoint.json",
-        "run": [
-          [
-            "tools.reports.bind_card_tpo_parent",
-            "configs/portable/operations/card-tpo-parent-endpoint.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json"
-          }
-        ],
-        "checks": [
-          {
-            "path": "${CARD_TPO_PARENT}",
-            "equals": [
-              [
-                [
-                  "base_id"
-                ],
-                "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458"
-              ]
-            ]
-          }
-        ]
-      },
-      {
-        "id": "freeze-fused-stage2",
-        "config": "configs/portable/operations/card-tpo-package-endpoint.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.prepare_tpo_windows",
-            "configs/portable/operations/card-tpo-package-endpoint.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "checks": [
-          {
-            "path": "${CARD_TPO_ROOT}/package/operations-local.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-local-macros-v1"
-              ],
-              [
-                [
-                  "macros",
-                  "NATIVE_SEAL_OPERATIONS_CONFIG",
-                  "device_group_lease"
-                ],
-                true
-              ]
-            ]
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_TPO_PARENT}"
-          }
-        ]
-      },
-      {
-        "id": "train-fused-tpo",
-        "python": "${CARD_PYTHON}",
-        "checks": [
-          {
-            "path": "${CARD_TPO_ROOT}/ops/infer-0-collected.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "physical_device"
-                ],
-                6
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_TPO_ROOT}/ops/infer-1-collected.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "physical_device"
-                ],
-                7
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_TPO_ROOT}/ops/finite-collected.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "window"
-                ],
-                "finite"
-              ],
-              [
-                [
-                  "updates"
-                ],
-                2
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_TPO_ROOT}/ops/first-three.json",
-            "equals": [
-              [
-                [
-                  "updates",
-                  0,
-                  "step"
-                ],
-                1
-              ],
-              [
-                [
-                  "updates",
-                  1,
-                  "step"
-                ],
-                2
-              ],
-              [
-                [
-                  "updates",
-                  2,
-                  "step"
-                ],
-                3
-              ]
-            ],
-            "report": {
-              "step 1 loss": [
-                "updates",
-                0,
-                "metrics",
-                "jev/tpo_loss"
-              ],
-              "step 2 loss": [
-                "updates",
-                1,
-                "metrics",
-                "jev/tpo_loss"
-              ],
-              "step 3 loss": [
-                "updates",
-                2,
-                "metrics",
-                "jev/tpo_loss"
-              ]
-            }
-          },
-          {
-            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "window"
-                ],
-                "formal"
-              ],
-              [
-                [
-                  "arm"
-                ],
-                "tpo"
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_TPO_ROOT}/ops/terminal.json",
-            "equals": [
-              [
-                [
-                  "exit_code"
-                ],
-                0
-              ]
-            ]
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_TPO_ROOT}/package/operations-local.json"
-          }
-        ],
-        "run": [
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${CARD_TPO_ROOT}/package/operations-local.json",
-            "--observe-tpo-package",
-            "${CARD_TPO_ROOT}/package"
-          ]
-        ],
-        "dispatch_guards": [
-          "${CARD_TPO_ROOT}/ops"
-        ]
+        "id": "stage2",
+        "pending": "按锁定的六卡预算及无累积规则另封 Stage2，禁止沿用历史 6+2 包。"
       }
     ],
     "evaluate": [
       {
-        "id": "evaluate-stage1-and-fused-stage2",
-        "config": "configs/portable/operations/card-paired-endpoint-scale.json",
-        "python": "${CARD_PYTHON}",
-        "dispatch_guards": [
-          "${CARD_PAIR_ROOT}/ops"
-        ],
-        "run": [
-          [
-            "tools.reports.prepare_paired_card_evaluation",
-            "configs/portable/operations/card-paired-endpoint-scale.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ],
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${CARD_PAIR_ROOT}/package/operations-local.json"
-          ]
-        ],
-        "checks": [
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/score-collected.json",
-            "equals": [
-              [
-                [
-                  "schema"
-                ],
-                "jev-audited-probability-panels-v1"
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_clean_TEST60",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                12991
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_clean_TEST60",
-                  "arms",
-                  "tpo",
-                  "queries"
-                ],
-                12991
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_clean_SELECTION60",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                9226
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_clean_SELECTION60",
-                  "arms",
-                  "tpo",
-                  "queries"
-                ],
-                9226
-              ],
-              [
-                [
-                  "datasets",
-                  "MINDS_native14",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                8168
-              ],
-              [
-                [
-                  "datasets",
-                  "MINDS_native14",
-                  "arms",
-                  "tpo",
-                  "queries"
-                ],
-                8168
-              ],
-              [
-                [
-                  "datasets",
-                  "SIB_FLEURS_eng_topic7",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                320
-              ],
-              [
-                [
-                  "datasets",
-                  "SIB_FLEURS_eng_topic7",
-                  "arms",
-                  "tpo",
-                  "queries"
-                ],
-                320
-              ],
-              [
-                [
-                  "datasets",
-                  "MMSU_polysemy",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                98
-              ],
-              [
-                [
-                  "datasets",
-                  "MMSU_polysemy",
-                  "arms",
-                  "tpo",
-                  "queries"
-                ],
-                98
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_official_TEST60",
-                  "arms",
-                  "stage1",
-                  "queries"
-                ],
-                13078
-              ],
-              [
-                [
-                  "datasets",
-                  "SLURP_official_TEST60",
-                  "arms",
-                  "tpo",
-                  "queries"
-                ],
-                13078
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_ENDPOINT_AUDIT}",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "updates"
-                ],
-                286
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/terminal.json",
-            "equals": [
-              [
-                [
-                  "exit_code"
-                ],
-                0
-              ],
-              [
-                [
-                  "status"
-                ],
-                "declared_stages_finished"
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-0-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-1-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-2-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-3-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-4-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-5-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-6-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          },
-          {
-            "path": "${CARD_PAIR_ROOT}/ops/hf-check-7-collected.json",
-            "equals": [
-              [
-                [
-                  "status"
-                ],
-                "hf_reference_exact"
-              ],
-              [
-                [
-                  "npu_executed"
-                ],
-                true
-              ],
-              [
-                [
-                  "labels_used"
-                ],
-                false
-              ]
-            ]
-          }
-        ],
-        "panels": [
-          {
-            "id": "SLURP_clean_TEST60",
-            "scope": "SLURP clean TEST",
-            "population": 12991,
-            "primary": "Top-1 macro-F1",
-            "arms": [
-              {
-                "label": "Stage2 endpoint",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SLURP_clean_TEST60",
-                  "arms",
-                  "tpo"
-                ],
-                "policy": {
-                  "proof": 1,
-                  "path": [
-                    "endpoint"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              },
-              {
-                "label": "Stage1 step 286",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SLURP_clean_TEST60",
-                  "arms",
-                  "stage1"
-                ],
-                "policy": {
-                  "proof": 2,
-                  "path": [
-                    "policy_id"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              }
-            ]
-          },
-          {
-            "id": "SLURP_clean_SELECTION60",
-            "scope": "SLURP clean selection",
-            "population": 9226,
-            "primary": "Top-1 macro-F1",
-            "arms": [
-              {
-                "label": "Stage2 endpoint",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SLURP_clean_SELECTION60",
-                  "arms",
-                  "tpo"
-                ],
-                "policy": {
-                  "proof": 1,
-                  "path": [
-                    "endpoint"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              },
-              {
-                "label": "Stage1 step 286",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SLURP_clean_SELECTION60",
-                  "arms",
-                  "stage1"
-                ],
-                "policy": {
-                  "proof": 2,
-                  "path": [
-                    "policy_id"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              }
-            ]
-          },
-          {
-            "id": "MINDS_native14",
-            "scope": "MINDS native14",
-            "population": 8168,
-            "primary": "Top-1 macro-F1",
-            "arms": [
-              {
-                "label": "Stage2 endpoint",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "MINDS_native14",
-                  "arms",
-                  "tpo"
-                ],
-                "policy": {
-                  "proof": 1,
-                  "path": [
-                    "endpoint"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              },
-              {
-                "label": "Stage1 step 286",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "MINDS_native14",
-                  "arms",
-                  "stage1"
-                ],
-                "policy": {
-                  "proof": 2,
-                  "path": [
-                    "policy_id"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              }
-            ]
-          },
-          {
-            "id": "SIB_FLEURS_eng_topic7",
-            "scope": "SIB-FLEURS 英语话题",
-            "population": 320,
-            "primary": "Top-1 macro-F1",
-            "arms": [
-              {
-                "label": "Stage2 endpoint",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SIB_FLEURS_eng_topic7",
-                  "arms",
-                  "tpo"
-                ],
-                "policy": {
-                  "proof": 1,
-                  "path": [
-                    "endpoint"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              },
-              {
-                "label": "Stage1 step 286",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SIB_FLEURS_eng_topic7",
-                  "arms",
-                  "stage1"
-                ],
-                "policy": {
-                  "proof": 2,
-                  "path": [
-                    "policy_id"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
-                  "Top-1 macro-F1": "top1_macro_f1"
-                }
-              }
-            ]
-          },
-          {
-            "id": "MMSU_polysemy",
-            "scope": "MMSU 多义词",
-            "population": 98,
-            "primary": "Top-1 准确率",
-            "arms": [
-              {
-                "label": "Stage2 endpoint",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "MMSU_polysemy",
-                  "arms",
-                  "tpo"
-                ],
-                "policy": {
-                  "proof": 1,
-                  "path": [
-                    "endpoint"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability"
-                }
-              },
-              {
-                "label": "Stage1 step 286",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "MMSU_polysemy",
-                  "arms",
-                  "stage1"
-                ],
-                "policy": {
-                  "proof": 2,
-                  "path": [
-                    "policy_id"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability"
-                }
-              }
-            ]
-          },
-          {
-            "id": "SLURP_official_TEST60",
-            "scope": "SLURP 完整官方 TEST（历史口径诊断）",
-            "population": 13078,
-            "primary": "Top-1 准确率",
-            "arms": [
-              {
-                "label": "Stage2 endpoint",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SLURP_official_TEST60",
-                  "arms",
-                  "tpo"
-                ],
-                "policy": {
-                  "proof": 1,
-                  "path": [
-                    "endpoint"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy"
-                }
-              },
-              {
-                "label": "Stage1 step 286",
-                "proof": 0,
-                "path": [
-                  "datasets",
-                  "SLURP_official_TEST60",
-                  "arms",
-                  "stage1"
-                ],
-                "policy": {
-                  "proof": 2,
-                  "path": [
-                    "policy_id"
-                  ]
-                },
-                "metrics": {
-                  "Top-1 准确率": "top1_accuracy"
-                }
-              }
-            ]
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json"
-          }
-        ]
+        "id": "evaluate-endpoints",
+        "pending": "等待新端点和同一六卡预算下的评测配置。"
       }
     ]
   }

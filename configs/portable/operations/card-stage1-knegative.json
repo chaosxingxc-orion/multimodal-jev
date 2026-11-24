@@ -33,10 +33,10 @@
     "parity_probability_atol": 2e-06,
     "evaluation_steps": [
       0,
-      80,
-      160
+      4568,
+      9136
     ],
-    "checkpoint_interval": 80,
+    "checkpoint_interval": 4568,
     "master_addr": "127.0.0.1",
     "master_port": 29500,
     "execution_microbatch": 4,
@@ -75,23 +75,13 @@
       "zipf_exponent": 1.0,
       "bootstrap_per_class": 4
     },
-    "effective_anchors_per_rank": 96,
+    "effective_anchors_per_rank": 4,
+    "training_npus": 6,
     "capacity_widths": [
-      4,
-      2,
-      1
+      4
     ],
-    "bootstrap_input": {
-      "config": {
-        "path": "/jev-triplet-bootstrap/config.json",
-        "sha256": "fa9a1d95717b2339a76098f289306a732dfc9f2cbaf84e9862bf4528efeb23ca"
-      },
-      "report": {
-        "path": "/jev-triplet-bootstrap/oom-64/confusion-init.json",
-        "sha256": "4ebbd6949b028cbafa802e5fc8ee672c32601369d5c9c39402707fa960a6cb1d"
-      }
-    },
-    "stop_after_epoch": 1
+    "stop_after_epoch": 1,
+    "batch_rule": "microbatch_times_training_npus"
   },
   "resources": {
     "cpus": 32,

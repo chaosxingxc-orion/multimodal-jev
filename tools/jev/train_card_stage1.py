@@ -311,6 +311,8 @@ def run(c,root):
                     torch.npu.reset_peak_memory_stats()
                     started = time.monotonic()
                     passes = c['parity_passes'] if index == start_update else 0
+                    if c['batch_config'].get('batch_rule') and len(groups) != c['microbatch']:
+                        raise ValueError('one local microbatch per optimizer update required')
                     metrics,parity = update(wrapped,opt,groups,real_queries,c,collation,cfg.jev_policy_id,device,world,passes)
                     torch.npu.synchronize()
                     seconds = time.monotonic()-started
