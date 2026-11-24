@@ -128,6 +128,8 @@ def run(c):
     single = dict(cards=dict(path='/jev-entry/cards.json', sha256=c['cards']['sha256']),
                   encoding=view['encoding'], witness=view['witness'], pair_batch=c['pair_batch'],
                   token_cache_entries=c['token_cache_entries'])
+    if 'max_batch_audio_chunks' in c:
+        single.update(max_batch_audio_chunks=c['max_batch_audio_chunks'], parity_pairs=c['parity_pairs'])
     commit_json(entry/'parent.json', parent)
     repo = Path(__file__).resolve().parents[2]
     frozen = freeze(repo, entry/'source', patterns=c['source_patterns'], io_workers=c['io_workers'])
@@ -164,10 +166,24 @@ def run(c):
         partitions[name] = 1
         panels[name] = dict(panels[official_spec['clean_dataset']], primary='top1_accuracy', cluster='id',
                             comparisons=[])
-        for phase in ('encode','verify'):
-            role = 'official-'+phase
-            write(role, dict(common, phase=phase, cache=cache))
-            pre.append([cpu(role, 'official-extra-cache/VERIFIED.json' if phase == 'verify' else None)])
+        if 'reuse' in c:
+            prior = c['reuse']
+            proof = read_pinned(prior['official_receipt'])
+            if (proof['status'] != 'full_stable_prefix_cache_verified' or proof['model_calls'] != 0
+                    or proof['npu_executed'] is not False
+                    or proof['recordings'] != read_pinned(dict(path=entry/'official-supplement/MANIFEST.json',
+                                                               sha256=cache['seal']['sha256']))['datasets'][name]['recordings']):
+                raise ValueError('full official supplement verification required')
+            cache.update(output=str(Path(prior['remote_root'])/'official-extra-cache'),
+                         cache_identity=dict(manifest_sha256=proof['manifest_sha256'],
+                                             verification_sha256=prior['official_receipt']['sha256']))
+            write('official-preflight', dict(common, phase='preflight_eval_cache', cache=cache))
+            pre.append([cpu('official-preflight')])
+        else:
+            for phase in ('encode','verify'):
+                role = 'official-'+phase
+                write(role, dict(common, phase=phase, cache=cache))
+                pre.append([cpu(role, 'official-extra-cache/VERIFIED.json' if phase == 'verify' else None)])
 
     deploy = dict(c['deployment'])
     datasets = {name:dict(logical_partitions=n) for name,n in partitions.items()}
@@ -189,10 +205,30 @@ def run(c):
         job['visible_ordinal'] = '0'
     write('calibration-fit', dict(common, phase='tpo_score', calibration=cal, calibration_fit=True,
                                  shards=shards, output='/jev-work/thresholds.json'))
-    write('score', dict(common, phase='tpo_score', queue=queue, endpoints=ports, inferred_arms=inferred,
-                        probability_panels=panels, thresholds='/jev-work/thresholds.json',
-                        calibration_roster_sha256=cal['roster']['sha256'], output='/jev-work/metrics.json',
-                        official_combination=official))
+    cal_groups = [calibration, [cpu('calibration-fit','thresholds.json')]]
+    score = dict(common, phase='tpo_score', queue=queue, endpoints=ports, inferred_arms=inferred,
+                 probability_panels=panels, thresholds='/jev-work/thresholds.json',
+                 calibration_roster_sha256=cal['roster']['sha256'], output='/jev-work/metrics.json',
+                 official_combination=official)
+    if 'reuse' in c:
+        reuse = c['reuse']
+        old_deploy = read_pinned(reuse['deployment'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+        failure = read_pinned(reuse['terminal'])
+        threshold = read_pinned(reuse['thresholds'])
+        if (old_deploy['remote_root'] != reuse['remote_root'] or deploy['host'] != old_deploy['host']
+                or deploy['image'] != old_deploy['image'] or failure['exit_code'] != 1 or failure['restart'] is not False
+                or threshold['schema'] != 'jev-source-train-harness-thresholds-v1'
+                or threshold['roster_sha256'] != cal['roster']['sha256']
+                or {arm: fit['policy_id'] for arm, fit in threshold['arms'].items()} != policies
+                or any(fit['queries'] != cal['recordings'] or not 0 <= fit['threshold'] <= 1
+                       for fit in threshold['arms'].values())):
+            raise ValueError('calibration reuse must match the exact evaluated policies, roster and runtime')
+        commit_json(entry/'thresholds.json', threshold)
+        if file_hash(entry/'thresholds.json') != reuse['thresholds']['sha256']:
+            raise ValueError('collected calibration did not reproduce the committed receipt')
+        score.update(thresholds='/jev-entry/thresholds.json', thresholds_sha256=reuse['thresholds']['sha256'])
+        cal_groups = []
+    write('score', score)
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json',
                     entry/'native-seal-container.json')
     with tarfile.open(root/'entry.tar', 'x') as archive:
@@ -202,8 +238,7 @@ def run(c):
     entry_pins = {str(p.relative_to(entry)):file_hash(p) for p in
                   [*entry.glob('*.json'), *entry.glob('official-supplement/**/*.json'), entry/'source/FILES.json']}
     deploy.update(archive=str(root/'entry.tar'), entry_archive_sha256=file_hash(root/'entry.tar'), entry_pins=entry_pins,
-                  chains=[[*pre, [prep], calibration, [cpu('calibration-fit','thresholds.json')], workers,
-                           [cpu('score','metrics.json')]]],
+                  chains=[[*pre, [prep], *cal_groups, workers, [cpu('score','metrics.json')]]],
                   read_only_mounts=[p+':'+p for p in sorted(inputs)
                                     if not any(Path(p).is_relative_to(r) for r in
                                                (deploy['shared_root'], '/jev-entry','/jev-work'))],

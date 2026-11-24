@@ -21,6 +21,27 @@ def read_pinned(pin):
     return json.loads(path.read_bytes())
 
 
+def bounded_batches(rows, width, chunk_size, max_chunks):
+    """Respect both the pair limit and the padded audio work of each forward."""
+    pending = {}
+    for record in rows:
+        for item in record:
+            inputs = item['inputs']
+            bucket = min(int(inputs['input_features_mask'].sum()), chunk_size)
+            chunks = (inputs['input_features'].shape[-1] + chunk_size - 1) // chunk_size
+            if not 0 < chunks <= max_chunks:
+                raise ValueError('audio exceeds the declared single-pair chunk budget')
+            group, largest = pending.setdefault(bucket, ([], 0))
+            if group and (len(group) >= width or (len(group) + 1) * max(largest, chunks) > max_chunks):
+                yield group
+                group, largest = [], 0
+            group.append(item)
+            pending[bucket] = (group, max(largest, chunks))
+    for group, _ in pending.values():
+        if group:
+            yield group
+
+
 class SingleCardScorer:
     def __init__(self, spec, processor, candidates, collate, *, requests=None):
         frozen = read_pinned(spec['cards'])
@@ -28,6 +49,11 @@ class SingleCardScorer:
         self.collate = collate
         self.width = spec['pair_batch']
         self.max_tokens = spec['encoding']['max_tokens']
+        self.max_chunks = spec.get('max_batch_audio_chunks')
+        self.parity_pairs = spec.get('parity_pairs', 1)
+        if (self.max_chunks is not None and (type(self.max_chunks) is not int or self.max_chunks < 1)
+                or type(self.parity_pairs) is not int or self.parity_pairs < 1):
+            raise ValueError('positive audio work limit and parity count required')
         if type(self.width) is not int or self.width < 2 or not self.candidates:
             raise ValueError('explicit pair batch size and ordered candidates required')
         self.requests = requests
@@ -93,9 +119,12 @@ class SingleCardScorer:
                 raise ValueError('nonfinite pair probabilities')
             return result
 
-        for index, group in enumerate(batches(compiled(), self.width, group_audio=False, collate=self.collate)):
+        groups = (batches(compiled(), self.width, group_audio=False, collate=self.collate)
+                  if self.max_chunks is None else
+                  bounded_batches(compiled(), self.width, self.collate['audio_chunk_size'], self.max_chunks))
+        for index, group in enumerate(groups):
             values = forward(group)
-            if check_batch and index == 0 and not torch.equal(values[:1], forward(group[:1])):
+            if check_batch and index < self.parity_pairs and not torch.equal(values[:1], forward(group[:1])):
                 raise ValueError('single-card batch differs from its singleton')
             for item, value in zip(group, values.tolist(), strict=True):
                 uid, offset = item['request_id'].rsplit(':', 1)

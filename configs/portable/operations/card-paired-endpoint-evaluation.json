@@ -49,7 +49,10 @@
   "stage1_updates": 286,
   "stage2_updates": 70,
   "training_labels": 68,
-  "source_card_datasets": ["SLURP_clean_TEST60", "SLURP_clean_SELECTION60"],
+  "source_card_datasets": [
+    "SLURP_clean_TEST60",
+    "SLURP_clean_SELECTION60"
+  ],
   "official_test": {
     "clean_dataset": "SLURP_clean_TEST60",
     "dataset": "SLURP_official_TEST_extra60",
@@ -70,14 +73,55 @@
   "io_workers": 8,
   "progress_interval": 16,
   "sample_blocks": {
-    "devices": [0, 1, 2, 3, 4, 5, 6, 7],
+    "devices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
     "batches_per_block": 4,
     "prefetch": 16
   },
-  "cache_container": {"cpus": 8, "memory": "1024g", "shm": "2g"},
-  "eval_container": {"cpus": 6, "memory": "1024g", "shm": "2g"},
+  "cache_container": {
+    "cpus": 8,
+    "memory": "1024g",
+    "shm": "2g"
+  },
+  "eval_container": {
+    "cpus": 6,
+    "memory": "1024g",
+    "shm": "2g"
+  },
   "source_patterns": [
-    "src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py",
-    "tools/__init__.py", "tools/reports/__init__.py"
-  ]
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ],
+  "max_batch_audio_chunks": 768,
+  "parity_pairs": 4,
+  "reuse": {
+    "remote_root": "${CARD_PAIR_REUSE_REMOTE}",
+    "deployment": {
+      "path": "${CARD_PAIR_REUSE_ROOT}/package/operations-local.json",
+      "sha256": "f16c4f9e96d52cd5d7d4b562e8edac31e9f6ba1dcd40d3bb9ead1ccb6ddbbe22"
+    },
+    "terminal": {
+      "path": "${CARD_PAIR_REUSE_ROOT}/ops/terminal.json",
+      "sha256": "61c4c9ddb9414c65e7628cb9fbea692ba586d1afd2cf551975c76c584435710b"
+    },
+    "thresholds": {
+      "path": "${CARD_PAIR_REUSE_ROOT}/ops/calibration-fit-collected.json",
+      "sha256": "d3d20d1b24d70e7e1a2b78a1fd56458f6f8c3d6b2dc124b7115aeb4a18f33ea8"
+    },
+    "official_receipt": {
+      "path": "${CARD_PAIR_REUSE_ROOT}/ops/official-verify-collected.json",
+      "sha256": "12674f1850b30748f128bf1be07733bc1ca46966a30d44c4827c11a56322333d"
+    }
+  }
 }

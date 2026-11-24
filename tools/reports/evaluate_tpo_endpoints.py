@@ -190,6 +190,8 @@ def collect(spec):
     result={}
     thresholds = None
     if 'thresholds' in spec:
+        if 'thresholds_sha256' in spec and file_hash(spec['thresholds']) != spec['thresholds_sha256']:
+            raise ValueError('reused calibration receipt changed')
         thresholds = read(spec['thresholds'])
         if (thresholds['schema'] != 'jev-source-train-harness-thresholds-v1'
                 or thresholds['roster_sha256'] != spec['calibration_roster_sha256']):

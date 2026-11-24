@@ -209,7 +209,7 @@ def worker(spec):
                         yield item
                 items = remember()
                 products = {'prob': (single.score(model, device, provider, pid, items,
-                                                   check_batch=block['offset'] == 0)
+                                                   check_batch=not completed or block['offset'] == 0)
                                      if single else probabilities(model, device, provider, collate, pid, items,
                                                                   spec['batch'], check_singleton=block['offset'] == 0))}
             if compiler is not None:
