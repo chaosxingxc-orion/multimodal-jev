@@ -38,7 +38,11 @@ class ContextDecisionModel(nn.Module):
                 or not (ids.gather(1, positions) == self.decision_token_id).all()
                 or not (((ids == self.decision_token_id) & mask.bool()).sum(-1) == positions.shape[1]).all()):
             raise ValueError('positions must cover every valid decision marker exactly once')
-        hidden = self.backbone(**inputs, use_cache=False, return_dict=True).last_hidden_state
+        if 'audio_owner_tokens' in inputs:
+            from .card_training_acoustics import hidden as acoustic_hidden
+            hidden = acoustic_hidden(self.backbone, inputs)
+        else:
+            hidden = self.backbone(**inputs, use_cache=False, return_dict=True).last_hidden_state
         # Enter the head's Module.__call__ as well: its own FSDP unit must
         # gather/cast all attention, normalization and FFN parameters together.
         logits = self.decision_head(hidden, positions, mask.bool(), return_logits=True)

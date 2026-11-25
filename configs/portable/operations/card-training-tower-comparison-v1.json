@@ -1,0 +1,43 @@
+{
+  "kind": "tower_comparison",
+  "engine": "unique_recording_v1",
+  "package": "${CARD_PACKAGE}",
+  "output": "${TOWER_OUTPUT}",
+  "tag": "${TOWER_TAG}",
+  "devices": "${TOWER_DEVICES}",
+  "formal_sha256": "b198c9eb87318b24a9e51891cd73b925245e101992d47561b7daf6d6007c8717",
+  "resources": {
+    "cpus": 32,
+    "memory": "1024g",
+    "shm": "8g"
+  },
+  "io_workers": 8,
+  "master_port": 29526,
+  "pressure_anchor": "slurp:audio-1497621480.flac",
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ],
+  "logit_atol": 0.0,
+  "max_time_ratio": 0.95,
+  "spans": [
+    {
+      "name": "warmup",
+      "offset": 0,
+      "recordings": 128
+    },
+    {
+      "name": "ordinary",
+      "offset": 128,
+      "recordings": 384
+    },
+    {
+      "name": "long_audio",
+      "offset": 1152,
+      "recordings": 384
+    }
+  ]
+}

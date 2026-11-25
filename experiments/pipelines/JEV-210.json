@@ -7,7 +7,8 @@
   "capacity_variants": {
     "recompute": "configs/portable/operations/card-stage1-recompute-210-v1.json",
     "dp5": "configs/portable/operations/card-stage1-batch-comparison-210-dp5-v1.json",
-    "dp5-micro16": "configs/portable/operations/card-stage1-micro16-210-dp5-v1.json"
+    "dp5-micro16": "configs/portable/operations/card-stage1-micro16-210-dp5-v1.json",
+    "tower": "configs/portable/operations/card-training-tower-comparison-v1.json"
   },
   "stages": {
     "data": [
@@ -1020,7 +1021,7 @@
               ]
             ],
             "report": {
-              "SLURP_clean_TEST60 stage1 vs 209 ΔF1": [
+              "SLURP_clean_TEST60 stage1 vs 209 \u0394F1": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
@@ -1034,14 +1035,14 @@
                 "stage1",
                 "macro_f1_delta_ci95"
               ],
-              "SLURP_clean_TEST60 stage1 结论": [
+              "SLURP_clean_TEST60 stage1 \u7ed3\u8bba": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
                 "stage1",
                 "direction"
               ],
-              "SLURP_clean_TEST60 tpo vs 209 ΔF1": [
+              "SLURP_clean_TEST60 tpo vs 209 \u0394F1": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
@@ -1055,14 +1056,14 @@
                 "tpo",
                 "macro_f1_delta_ci95"
               ],
-              "SLURP_clean_TEST60 tpo 结论": [
+              "SLURP_clean_TEST60 tpo \u7ed3\u8bba": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
                 "tpo",
                 "direction"
               ],
-              "MINDS_native14 stage1 vs 209 ΔF1": [
+              "MINDS_native14 stage1 vs 209 \u0394F1": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
@@ -1076,14 +1077,14 @@
                 "stage1",
                 "macro_f1_delta_ci95"
               ],
-              "MINDS_native14 stage1 结论": [
+              "MINDS_native14 stage1 \u7ed3\u8bba": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
                 "stage1",
                 "direction"
               ],
-              "MINDS_native14 tpo vs 209 ΔF1": [
+              "MINDS_native14 tpo vs 209 \u0394F1": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
@@ -1097,7 +1098,7 @@
                 "tpo",
                 "macro_f1_delta_ci95"
               ],
-              "MINDS_native14 tpo 结论": [
+              "MINDS_native14 tpo \u7ed3\u8bba": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
@@ -1172,7 +1173,7 @@
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 末点",
+                "label": "Stage2 \u672b\u70b9",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1187,8 +1188,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
@@ -1208,8 +1209,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1222,7 +1223,7 @@
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 末点",
+                "label": "Stage2 \u672b\u70b9",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1237,8 +1238,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
@@ -1258,8 +1259,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1272,7 +1273,7 @@
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 末点",
+                "label": "Stage2 \u672b\u70b9",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1287,8 +1288,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
@@ -1308,8 +1309,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1317,12 +1318,12 @@
           },
           {
             "id": "SIB_FLEURS_eng_topic7",
-            "scope": "SIB-FLEURS 英语话题",
+            "scope": "SIB-FLEURS \u82f1\u8bed\u8bdd\u9898",
             "population": 320,
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 末点",
+                "label": "Stage2 \u672b\u70b9",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1337,8 +1338,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
@@ -1358,8 +1359,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1367,12 +1368,12 @@
           },
           {
             "id": "MMSU_polysemy",
-            "scope": "MMSU 多义词",
+            "scope": "MMSU \u591a\u4e49\u8bcd",
             "population": 98,
-            "primary": "Top-1 准确率",
+            "primary": "Top-1 \u51c6\u786e\u7387",
             "arms": [
               {
-                "label": "Stage2 末点",
+                "label": "Stage2 \u672b\u70b9",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1387,8 +1388,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability"
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability"
                 }
               },
               {
@@ -1407,20 +1408,20 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy",
-                  "平均最高概率": "mean_top1_probability"
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
+                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability"
                 }
               }
             ]
           },
           {
             "id": "SLURP_official_TEST60",
-            "scope": "SLURP 完整官方 TEST（历史口径诊断）",
+            "scope": "SLURP \u5b8c\u6574\u5b98\u65b9 TEST\uff08\u5386\u53f2\u53e3\u5f84\u8bca\u65ad\uff09",
             "population": 13078,
-            "primary": "Top-1 准确率",
+            "primary": "Top-1 \u51c6\u786e\u7387",
             "arms": [
               {
-                "label": "Stage2 末点",
+                "label": "Stage2 \u672b\u70b9",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1435,7 +1436,7 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy"
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy"
                 }
               },
               {
@@ -1454,7 +1455,7 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 准确率": "top1_accuracy"
+                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy"
                 }
               }
             ]

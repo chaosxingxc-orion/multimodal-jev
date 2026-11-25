@@ -182,10 +182,16 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
     stats = reduction[:stat_width]
     parity = dict(inference_passes=0,compared=0,max_abs=0.)
     optimizer.zero_grad(set_to_none=True)
+    collate = collate_context_audio
+    if 'training_acoustic_engine' in config:
+        from .card_training_acoustics import ENGINE, collate as unique_collate
+        if not directions or config['training_acoustic_engine'] != ENGINE:
+            raise ValueError('unregistered Stage1 acoustic engine')
+        collate = unique_collate
     for start in range(0,len(groups),micro):
         chunk = groups[start:start+micro]
         rows = [dict(row,policy_id=policy) for group,*_ in chunk for row in group]
-        inputs,positions = collate_context_audio(rows,policy_id=policy,**collation)
+        inputs,positions = collate(rows,policy_id=policy,**collation)
         inputs = {k:v.to(device=device,dtype=torch.bfloat16 if v.is_floating_point() else v.dtype) for k,v in inputs.items()}
         positions = positions.to(device)
         probes = len(range(start//micro,parity_passes,len(groups)//micro))
@@ -195,6 +201,8 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
                 references = [model(inputs,positions).detach() for _ in range(probes)]
         if directions:
             raw = model(inputs,positions,return_logits=True)
+            if 'tower_witness' in config:
+                digest = raw.detach().float().cpu().flatten().tolist()
             logits = raw.reshape(len(chunk), directions.width)
             terms = contrast_loss(logits, directions)
             pack_observations(slots[start:start+len(chunk)], logits[:, :fields], chunk, class_ema.label_index,
@@ -235,6 +243,8 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
     metrics = dict(zip(metric_names,
                        (stats[:-1]/global_count).tolist(),strict=True))
     metrics['actor/grad_norm'] = norm.item()
+    if 'tower_witness' in config:
+        parity['pair_logits'] = digest
     return metrics, parity
 
 

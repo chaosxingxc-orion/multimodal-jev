@@ -476,6 +476,22 @@ def run(c,root):
                 if probe is not None or pressure is not None:
                     record['peak_reserved'] = torch.npu.max_memory_reserved()
                 atomic_json(out/f'update-{index+1:04d}.json',record)
+                if 'tower_witness' in c:
+                    if not probe or not triplet or len(groups)!=c['microbatch']:
+                        raise ValueError('startup witnesses require a single probe microbatch')
+                    import hashlib
+                    def digest(parts):
+                        h=hashlib.sha256()
+                        for n,x in parts:
+                            h.update(n.encode())
+                            h.update(x.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes())
+                        return h.hexdigest()
+                    atomic_json(out/f'tower-{index+1:04d}.json', dict(logits=parity['pair_logits'],
+                        sampler_source_update=versions[0],sample_identity=content_hash(
+                            [(w,u,coords) for _,w,u,coords in groups]),
+                        gradient=digest((n,p.grad) for n,p in named if p.grad is not None),
+                        parameters=digest(named),raw_grad_norm=metrics['actor/grad_norm'],loss=metrics['actor/pg_loss']))
+
                 if c.get('recovery') and not save_now and (index+1) % c['recovery']['interval'] == 0:
                     checkpoint_begin = time.monotonic()
                     recovery.save(root, named, opt, dict(rank=rank,world_size=world,completed_updates=index+1,

@@ -32,6 +32,9 @@ def capacity(experiment, local, variant=None):
     if protocol.read_bytes() != committed(selected['commit'], protocol):
         raise ValueError('capacity protocol differs from ledger')
     c, _ = load_config(str(protocol), str(local))
+    if c.get('kind') == 'tower_comparison':
+        from tools.reports.card_tower_comparison import execute
+        return execute(c)
     if c.get('kind') == 'stage1_batch_comparison':
         from tools.reports.card_batch_comparison import execute
         return execute(c)
