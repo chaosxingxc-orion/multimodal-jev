@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "online-ema-v9",
+  "revision": "bidirectional-ema-v1",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "recompute": "configs/portable/operations/card-stage1-recompute-210-v1.json",
@@ -24,7 +24,7 @@
     "train": [
       {
         "id": "prepare-and-run-stage1-epoch1",
-        "config": "configs/portable/operations/card-stage1-knegative-ema-dp8-v9.json",
+        "config": "configs/portable/operations/card-stage1-bidirectional-v1.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -32,7 +32,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-knegative-ema-dp8-v9.json",
+            "configs/portable/operations/card-stage1-bidirectional-v1.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -100,7 +100,7 @@
                 [
                   "negative_cards_per_anchor"
                 ],
-                16
+                5
               ],
               [
                 [
@@ -130,6 +130,22 @@
                   "maximum_observed_lag_updates"
                 ],
                 1
+              ],
+              [
+                [
+                  "instruction_objective"
+                ],
+                {
+                  "kind": "card_bidirectional_infonce_v1",
+                  "temperature": 0.1,
+                  "probability_coefficient": 0.0,
+                  "positive_recordings_per_anchor": 5,
+                  "negative_cards_per_anchor": 5,
+                  "negative_recordings_per_anchor": 5,
+                  "sample_with_replacement": true,
+                  "fixed_audio_weight": 0.5,
+                  "fixed_card_weight": 0.5
+                }
               ]
             ],
             "report": {
@@ -138,6 +154,10 @@
               ],
               "negative_cards_per_anchor": [
                 "negative_cards_per_anchor"
+              ],
+              "objective": [
+                "instruction_objective",
+                "kind"
               ]
             }
           },
@@ -162,11 +182,31 @@
                   "kind"
                 ],
                 "class-logit-ema-v1"
+              ],
+              [
+                [
+                  "instruction_objective"
+                ],
+                {
+                  "kind": "card_bidirectional_infonce_v1",
+                  "temperature": 0.1,
+                  "probability_coefficient": 0.0,
+                  "positive_recordings_per_anchor": 5,
+                  "negative_cards_per_anchor": 5,
+                  "negative_recordings_per_anchor": 5,
+                  "sample_with_replacement": true,
+                  "fixed_audio_weight": 0.5,
+                  "fixed_card_weight": 0.5
+                }
               ]
             ],
             "report": {
               "negative_cards_per_anchor": [
                 "negative_cards_per_anchor"
+              ],
+              "objective": [
+                "instruction_objective",
+                "kind"
               ]
             }
           },

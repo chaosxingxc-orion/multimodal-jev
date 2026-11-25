@@ -1,6 +1,6 @@
 # Stage1：同语音换卡、同卡换语音的双向 InfoNCE
 
-这是可选的 Stage1 工程配置。冻结的 JEV-210 继续使用原协议；此处没有领取实验、登记新编号或派发。下一次登记时，在根目录 `run_experiment.py` 驱动的台账包中，将 Stage1 步骤的 `config` 与 `tools.reports.prepare_card_stage1` 的配置参数均指向[双向配置](../configs/portable/operations/card-stage1-bidirectional-v1.json)。单独绑定新的 `CARD_CONTRAST_PACKAGE` 和 `CARD_CONTRAST_DEPLOYMENT`（目录、句柄、租约和端口），按新配置先做有限验收；既有声学缓存和提示需核对内容身份后复用。两轮之间沿用已有的 EMA/Adam/checkpoint 接续。不要用 210 的有限验收收据代替新配置的证明。
+这是 [JEV-210 当前协议](stage1-cards-tpo-210.md) 的 Stage1 算法。[统一入口配置](pipelines/JEV-210.json) 已登记[双向配置](../configs/portable/operations/card-stage1-bidirectional-v1.json)。在新的本地宏文件中给 `CARD_PACKAGE`、`CARD_DEPLOYMENT`、轮间接续及下游产物绑定独立目录与句柄。发布件可按身份复用，旧运行收据不能作为新包的有限验收。
 
 | 每个锚点的配对 | 默认次数 | 采样范围 |
 |---|---:|---|
