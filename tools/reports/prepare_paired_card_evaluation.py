@@ -14,6 +14,14 @@ from tools.reports.prepare_tpo_evaluation import queue_jobs
 from tools.reports.prepare_tpo_windows import macros
 
 
+def history_result_key(experiment):
+    import re
+    match = re.fullmatch(r'JEV-([0-9]+)', experiment)
+    if not match:
+        raise ValueError('expected a registered JEV experiment comparison')
+    return 'versus_' + match[1]
+
+
 def read_pinned(pin):
     return pinned(pin["path"], pin["sha256"])
 
@@ -191,12 +199,14 @@ def run(c):
     modes, projections = single_card_modes(c)
     if 'reuse_audio_tiles' in modes.values():
         single['combined_tile_projections'] = projections
+    from multimodal_jev.card_experiment_config import reference_settings
+    parent['reference_inference'] = reference_settings(c)
     commit_json(entry/'parent.json', parent)
     repo = Path(__file__).resolve().parents[2]
     frozen = freeze(repo, entry/'source', patterns=c['source_patterns'], io_workers=c['io_workers'])
     source = dict(root='/jev-entry/source', sha256=frozen['manifest_sha256'])
     common = dict(source=source, parent='/jev-entry/parent.json', parent_sha=file_hash(entry/'parent.json'),
-                  arms=arms, batch=c['batch'], io_workers=c['io_workers'], single_card=single,
+                  reference_inference=parent['reference_inference'], arms=arms, batch=c['batch'], io_workers=c['io_workers'], single_card=single,
                   trained=trained_deploy['remote_root'], updates=c['stage2_updates'], binding=binding)
     benchmark = c.get('performance_comparison')
     if benchmark is not None:
@@ -364,7 +374,7 @@ def run(c):
         commit_json(entry/'historical-metrics.json',metrics)
         if file_hash(entry/'historical-metrics.json') != history['metrics']['sha256']:
             raise ValueError('historical metrics serialization differs')
-        score['historical_comparison'] = dict(history, metrics=dict(history['metrics'],path='/jev-entry/historical-metrics.json'))
+        score['historical_comparison'] = dict(history, result_key=history_result_key(history['experiment']), metrics=dict(history['metrics'],path='/jev-entry/historical-metrics.json'))
     write('score', score)
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json',
                     entry/'native-seal-container.json')

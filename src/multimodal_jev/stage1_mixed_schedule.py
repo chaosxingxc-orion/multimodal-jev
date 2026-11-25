@@ -1,4 +1,4 @@
-"""Recreate the seed-bound two-epoch recording schedule and zero-weight tails."""
+"""Recreate the seed-bound recording schedule and zero-weight tails."""
 from collections import Counter
 import random
 

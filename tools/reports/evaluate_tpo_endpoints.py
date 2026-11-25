@@ -23,6 +23,8 @@ def read_parent(spec):
 def endpoint_config(spec, parent, endpoint):
     c = dict(endpoint, base_id=parent['base_id'], model=parent['model'], contract=parent['source_contract'],
              snapshot=parent['source_policy'], physical_devices=spec['devices'], policy_id=parent['source_policy_id'])
+    if 'reference_inference' in spec:
+        c['reference_inference'] = spec['reference_inference']
     if 'single_card' in spec:
         c['max_model_len'] = parent['view_execution']['max_input_tokens']
         c['process_device_scope'] = dict(kind='same_container_runtime_visibility_v1',
@@ -226,7 +228,7 @@ def collect(spec):
             history = spec.get('historical_comparison')
             if history and dataset in history['datasets']:
                 from tools.reports.score_probability_panels import compare_history
-                result[dataset]['versus_209'] = compare_history(history, c['cache'], jobs, predictions,
+                result[dataset][history['result_key']] = compare_history(history, c['cache'], jobs, predictions,
                                                                 spec['probability_panels'][dataset], spec['io_workers'])
             continue
         semantic_protocol = spec.get('semantic_scoring', {}).get(dataset)

@@ -124,7 +124,15 @@ def load_reference_model(config,bundle,output):
         validate_tp1(config)
     elif len(devices)!=1 or sorted(p.name for p in Path('/dev').glob('davinci[0-9]*'))!=['davinci'+str(devices[0])]:
         raise ValueError('one isolated HF NPU required')
-    torch.set_num_threads(2);torch.npu.set_device(0);torch.manual_seed(317);torch.npu.manual_seed_all(317)
+    torch.npu.set_device(0)
+    if 'reference_inference' in config:
+        runtime = config['reference_inference']
+        torch.set_num_threads(runtime['torch_threads'])
+        torch.manual_seed(runtime['seed'])
+        torch.npu.manual_seed_all(runtime['seed'])
+    else:
+        # Compatibility for historical non-card protocols with no execution binding.
+        torch.set_num_threads(2);torch.manual_seed(317);torch.npu.manual_seed_all(317)
     return load_native_reference(config,bundle,output,torch.device('npu',0))
 
 

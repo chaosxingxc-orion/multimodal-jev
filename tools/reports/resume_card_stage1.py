@@ -8,24 +8,17 @@ from pathlib import Path
 import shutil
 import subprocess
 import tarfile
-from tempfile import TemporaryDirectory
 
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.card_contrast import TRIPLET_KINDS
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
-from multimodal_jev.source_snapshot import freeze, verify
+from multimodal_jev.source_snapshot import verify
 from tools.reports.collect_card_first_updates import summarize
 from tools.reports.context_macro_probe_operations import inspect_runtime
 from tools.reports.native_seal_operations import run, verify_memory
 from tools.reports.stop_card_stage1_at_epoch import endpoint, inspect, read, remote
 from tools.reports.watch_stage1_first_updates import REMOTE
-
-
-RUNTIME_CHANGES = (
-    'tools/jev/train_card_stage1.py',
-    'tools/reports/card_stage1_window.py',
-)
 
 
 def prepare(c):
@@ -74,7 +67,9 @@ def prepare(c):
     if (sha256(raw).hexdigest() != resume['config_sha256']
             or devices != resume['devices'] or devices != deployment['idle_devices']
             or train['instruction_objective']['kind'] not in TRIPLET_KINDS
-            or train['reference_endpoint'] != 2*start
+            or not 0 < start < train['reference_endpoint']
+            or start % train['checkpoint_interval']
+            or train['reference_endpoint'] != train['checkpoint_interval'] * train['batch_config']['epochs']
             or train['stop_update'] not in (start, train['reference_endpoint'])
             or online != ('class_logit_ema' in train)
             or (online and train['class_logit_ema'] != sampler['config'])
@@ -84,7 +79,7 @@ def prepare(c):
                                      f'{old_root}/formal/run:/jev-resume',
                                      f'{old_root}/prepare:/jev-resume-prepared']
     old_window = read(upstream/'formal.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
-    parent_files = verify(upstream/'source', manifest_sha256=old_window['source']['sha256'],
+    verify(upstream/'source', manifest_sha256=old_window['source']['sha256'],
                           io_workers=old_window['io_workers'])
     parent_proof = endpoint(dict(updates=start, training=dict(sha256=resume['config_sha256']),
                                  hash_timeout_seconds=c['transfer_timeout_seconds'],
@@ -104,20 +99,16 @@ def prepare(c):
     (entry/'parent-training.json').write_bytes(raw)
     if not online:
         shutil.copyfile(confusion_path,entry/'confusion.json')
-    repo = Path(__file__).resolve().parents[2]
-    with TemporaryDirectory(dir=root) as scratch:
-        source = Path(scratch)/'source'
-        shutil.copytree(upstream/'source',source,ignore=shutil.ignore_patterns('FILES.json'),
-                        copy_function=shutil.copyfile)
-        for name in (() if online else RUNTIME_CHANGES):
-            shutil.copyfile(repo/name,source/name)
-        # The window imports the frozen loss audit. Its remote observer is not
-        # used inside the training container.
-        snapshot = freeze(source,entry/'source',patterns=sorted(parent_files),
-                          io_workers=old_window['io_workers'])
+    # Epoch resumes preserve the exact runtime that produced the optimizer checkpoint.
+    # Pre-resume archival packages need their original, versioned migration tool.
+    if not (upstream/'source/tools/reports/card_stage1_window.py').is_file() or (
+            not online and 'def run_resume(' not in (upstream/'source/tools/reports/card_stage1_window.py').read_text()):
+        raise ValueError('legacy package requires its original epoch-resume migration release')
+    shutil.copytree(upstream/'source',entry/'source')
+    verify(entry/'source', manifest_sha256=old_window['source']['sha256'], io_workers=old_window['io_workers'])
     window = {k:old_window[k] for k in ('phase','entry','work','io_workers',
               'finite_updates','parity_passes','master_addr','master_port')}
-    window['source'] = dict(old_window['source'],sha256=snapshot['manifest_sha256'])
+    window['source'] = old_window['source']
     window['resume'] = dict(start_update=start,parent_config_sha256=resume['config_sha256'],
                             checkpoint_sha256=checkpoint_digest,**evidence,
                             checkpoint_root='/jev-resume',prepared_root='/jev-resume-prepared')

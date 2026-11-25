@@ -8,6 +8,7 @@
 
 | 入口 | 内容 |
 | --- | --- |
+| [知识卡执行参数](card-execution-config.md) | 参数来源、操作配置覆盖、断点兼容性与自检 |
 | [JEV-209 预登记](stage1-cards-tpo-209.md) | 0.6B r128 知识卡 Stage1 与融合 206、208 的单次 Stage2 |
 | [JEV-210 预登记](stage1-cards-tpo-210.md) | 与 209 同一 0.6B、r128 和数据，Stage1 每条录音对比 K 张错卡 |
 | [Stage1 双向对比配置](stage1-card-bidirectional.md) | 同语音换卡与同卡换语音；有放回抽样，每个锚点当前 210 每个锚点 14 个配对 |

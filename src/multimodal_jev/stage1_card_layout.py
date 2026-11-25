@@ -1,4 +1,4 @@
-"""Frozen card assignments. A recording sees each training arm exactly once."""
+"""Frozen card assignments. Each recording alternates rules and examples across the registered epochs."""
 from dataclasses import replace
 
 from .context_decision_contract import ApplicabilityQuestion, ContextDecisionRequest
@@ -10,14 +10,15 @@ def from_panel(panel):
 
 
 class CardLayout:
-    def __init__(self, plan, ids, task):
+    def __init__(self, plan, ids, task, *, epochs):
         self.requests = {key: from_panel(panel) for key, panel in plan['panels'].items()}
         self.assignments = plan['assignments']
         labels = [c['id'] for c in task['schema']['candidates']]
-        if (set(self.assignments) != set(ids) or any([q.id for q in r.questions] != labels
-                for r in self.requests.values()) or any(len(pair) != 2 or pair.count('rules') != 1 or
+        if (type(epochs) is not int or epochs < 1 or set(self.assignments) != set(ids) or any([q.id for q in r.questions] != labels
+                for r in self.requests.values()) or any(len(pair) != epochs or
+                any((a == 'rules') == (b == 'rules') for a, b in zip(pair, pair[1:])) or
                 any(k not in self.requests or k == 'native' for k in pair) for pair in self.assignments.values())):
-            raise ValueError('incomplete two-epoch card assignment or different readout order')
+            raise ValueError('incomplete alternating card assignment or different readout order')
 
     def __call__(self, audio, uid, epoch):
         return replace(self.requests[self.assignments[uid][epoch]], audio=audio)

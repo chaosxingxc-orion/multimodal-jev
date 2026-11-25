@@ -97,6 +97,8 @@ def build(spec):
         all_blocks = selected
     plan = dict(schema=blocks.SCHEMA, namespace=spec['queue']['namespace'], inputs=inputs,
                 policies=policies, choice=choice, blocks=blocks.ordered_blocks(all_blocks, arm_order))
+    if 'reference_inference' in spec:
+        plan['reference_inference'] = spec['reference_inference']
     if 'single_card_probe' in spec:
         probe = spec['single_card_probe']
         frozen = Path(probe['plan']['path'])
@@ -151,6 +153,8 @@ def worker(spec):
     root = Path(spec['queue']['root'])
     manifest = blocks.checked_plan(root, spec['queue']['namespace'])
     plan = manifest['plan']
+    if plan.get('reference_inference') != spec.get('reference_inference'):
+        raise ValueError('worker inference settings differ from the frozen block plan')
     outputs = Path(spec['output'])
     completed = []
     diagnostic = []

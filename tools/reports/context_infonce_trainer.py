@@ -19,7 +19,7 @@ def topology(c, world, mounted):
     objective = c['instruction_objective']
     from multimodal_jev.context_infonce import validate_objective
     validate_objective(objective)
-    if (type(world) is not int or not 1 <= world <= 8 or plan['dp_replicas'] != world
+    if (type(world) is not int or world < 1 or plan['dp_replicas'] != world
             or c['batch_config']['tensor_parallel'] != 1
             or c['batch_config']['pipeline_parallel'] != 1
             or c['batch_config']['inference_instances'] != 0

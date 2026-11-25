@@ -123,7 +123,7 @@ def render(inputs, cards, collate, uid, policy):
 
 def batches(rows, width, *, group_audio, collate):
     if group_audio:
-        # The legacy path consumes the 68 candidates for each recording before advancing.
+        # The legacy path consumes all candidates for each recording before advancing.
         for per_audio in rows:
             yield from batches([per_audio], width, group_audio=False, collate=collate)
         return
@@ -163,6 +163,7 @@ def scoring_lineage(c, ordinal):
                        c['policy_sha256'], c['cards']['sha256'], c['training']['sha256'],
                        c['devices'], ordinal, c['widths'], c['streaming'], c['io_workers'],
                        c['prefetch_audio'], c['torch_threads'], c['max_model_len'], *layout,
+                       *((c['seed'],) if c.get('bind_inference_seed') else ()),
                        *([formal['block_range']] if 'block_range' in formal else []))
 
 
@@ -261,6 +262,7 @@ def worker(c, output, ordinal):
     model_config = dict(model=train['model'], base_id=train['base_id'], contract=train['source_contract'],
                         snapshot=c['policy'], policy_id=pid, physical_devices=[devices[ordinal]],
                         max_model_len=c['max_model_len'],
+                        reference_inference=dict(seed=c['seed'], torch_threads=c['torch_threads']),
                         process_device_scope=dict(kind='same_container_runtime_visibility_v1',
                                                   mounted_physical=devices, visible_ordinal=str(ordinal)))
     output.mkdir()

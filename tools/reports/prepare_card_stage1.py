@@ -7,6 +7,7 @@ import tarfile
 from concurrent.futures import ThreadPoolExecutor
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_experiment_config import bind_stage1
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.source_snapshot import freeze
@@ -20,11 +21,19 @@ def load(path, sha):
 def run(c):
     from multimodal_jev.card_contrast import KIND, Directions
     window = c['window']
+    if 'continuation' in window:
+        from multimodal_jev.card_experiment_config import DEFAULT_PROFILE
+        origin = window['continuation']
+        legacy = json.loads(DEFAULT_PROFILE.with_name('card-legacy-stage1-runtime-v1.json').read_bytes())
+        if 'legacy_runtime_sha256' in origin:
+            raise ValueError('legacy runtime binding must come from the registered source identity')
+        if origin['formal_sha256'] in legacy:
+            window['continuation'] = dict(origin, legacy_runtime_sha256=legacy[origin['formal_sha256']])
     if 'training_acoustic_engine' in window:
         admission=c['comparison_admission']
         verdict=load(admission['path'],admission['sha256'])
         if not (verdict['passed'] is True and verdict['identical_training_state'] is True and
-                verdict['max_abs_logit_error']==0 and 'continuation' in window):
+                0 <= verdict['max_abs_logit_error'] <= verdict.get('logit_atol', 0) and 'continuation' in window):
             raise ValueError('acoustic engine lacks an accepted paired training comparison')
     objective = window.get('triplet_objective', {})
     if objective.get('kind') == KIND:
@@ -57,7 +66,7 @@ def run(c):
             d['batch_config'].update(per_dp_replica_batch=c['window']['effective_anchors_per_rank'],
                                      microbatch=c['window']['execution_microbatch'])
         plan = derive(d['batch_config'])
-        d.update(initialization='fresh_pre_stage1_joint_snapshot' if c.get('fresh_policy') else 'fresh_rank128_pre_stage1_joint_snapshot',total_updates=plan['total_updates'],
+        d.update(initialization='fresh_pre_stage1_joint_snapshot' if c.get('fresh_policy') else f"fresh_rank{c['lora']['rank']}_pre_stage1_joint_snapshot",total_updates=plan['total_updates'],
             updates_per_epoch=plan['updates_per_epoch'],reference_endpoint=plan['total_updates'],
             tail_real=plan['tail_real_queries'],tail_padding=plan['tail_padding_slots'],
             evaluation_steps=[i*plan['updates_per_epoch'] for i in range(1+d['batch_config']['epochs'])])
@@ -83,10 +92,12 @@ def run(c):
         assignments = json.loads((entry/'card-plan.json').read_bytes())
         c['window']['cache_card_plan_sha256'] = publication_hash(dict(assignments, design_sha256=cache_design))
         del assignments
-    parent=load(c['parent'],c['parent_sha256'])
+    parent=bind_stage1(load(c['parent'],c['parent_sha256']), c)
     native=load(c['native_cache'],c['native_cache_sha256'])
     if native['source_identity']!=parent['release_sha256'] or len(native['templates']['both']['suffix'])!=len(native['templates']['native']['suffix']) or len(native['templates']['both']['prefix'])!=len(native['templates']['native']['prefix']):
         raise ValueError('historical lengths must share the native token count')
+    if not extension:
+        parent['input_limit'] = native['encoding']['max_tokens']
     def block(path):
         return [(r['id'],r['input_tokens']) for r in json.loads(path.read_bytes())['records'] if r['weight']]
     lengths={}

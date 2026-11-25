@@ -1,4 +1,5 @@
 """Seal and compare two concurrent Stage1 acoustic paths on matched devices and TRAIN draws."""
+from multimodal_jev.card_experiment_config import bind_stage1, finite, settings
 from copy import deepcopy
 import json
 import math
@@ -21,7 +22,27 @@ def read(path):
     return json.loads(path.read_bytes())
 
 
+def comparison_policy(c):
+    rule = settings('tower_comparison', c)
+    spans = [span['name'] for span in c['spans']]
+    measured = rule['measured_spans']
+    if (len(set(spans)) != len(spans) or not measured or len(set(measured)) != len(measured)
+            or not set(measured) <= set(spans) or rule['pressure_span'] not in measured
+            or not finite(rule['quantile']) or not 0 < rule['quantile'] <= 1
+            or not all(finite(v) and v > 0 for v in (rule['max_quantile_ratio'], c['max_time_ratio']))
+            or not finite(c['logit_atol']) or c['logit_atol'] < 0):
+        raise ValueError('invalid tower comparison spans or thresholds')
+    return rule
+
+
 def execute(c):
+    rule = comparison_policy(c)
+    devices = c['devices']
+    if (set(devices) != {'baseline', 'candidate'} or not devices['baseline']
+            or len(devices['baseline']) != len(devices['candidate'])
+            or any(type(n) is not int or n < 0 for group in devices.values() for n in group)
+            or len(set(devices['baseline'] + devices['candidate'])) != 2 * len(devices['baseline'])):
+        raise ValueError('matched, disjoint comparison devices required')
     base=Path(c['package'])
     old=read(base/'operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
     out=Path(c['output']);entry=out/'entry'
@@ -43,13 +64,13 @@ def execute(c):
     pop={r['id']:r for r in real+read(entry/'synthetic.json')}
     jobs=[]
     for arm,devices in c['devices'].items():
-        cfg=deepcopy(formal)
+        cfg=bind_stage1(deepcopy(formal), c)
         cfg['batch_config']['training_devices']=len(devices)
         plan=derive(cfg['batch_config']);width=plan['global_batch']
         batches,manifest=schedule(pop,cfg['batch_config'],cfg['mixed']['seed'])
         spans=[dict(s,steps=s['recordings']//width) for s in c['spans']]
         count=sum(s['steps'] for s in spans)
-        if not any(slot['id']==c['pressure_anchor'] for s in spans if s['name']=='long_audio'
+        if not any(slot['id']==c['pressure_anchor'] for s in spans if s['name']==rule['pressure_span']
                    for b in batches[s['offset']//width:(s['offset']+s['recordings'])//width] for slot in b['slots']):
             raise ValueError('registered long recording absent')
         select_batches(batches,width,dict(spans=spans),count)
@@ -64,7 +85,7 @@ def execute(c):
         if arm=='candidate':cfg['training_acoustic_engine']=c['engine']
         path=entry/f'{arm}-config.json';commit_json(path,cfg)
         leaf=dict(phase='card_stage1',role=arm,work='/jev-work',source=dict(root='/jev-entry/source',sha256=source['manifest_sha256']),
-                  io_workers=c['io_workers'],master_port=c['master_port'],batch_probe=dict(path='/jev-entry/'+path.name,sha256=file_hash(path)))
+                  io_workers=c['io_workers'],master_port=c['master_port'],master_addr=rule['master_addr'],batch_probe=dict(path='/jev-entry/'+path.name,sha256=file_hash(path)))
         (entry/f'{arm}.json').write_text(json.dumps(dict(schema='jev-local-macros-v1',macros=dict(NATIVE_SEAL_CONTAINER_CONFIG=leaf))))
         jobs.append(dict(name=arm,devices=devices,collect=arm+'/receipt.json',**c['resources']))
     archive=out/'entry.tar'
@@ -83,6 +104,7 @@ def execute(c):
 
 
 def audit(c,cfg):
+    rule = comparison_policy(c)
     from statistics import mean
     root=Path(cfg['remote_root'])
     ops=Path(cfg['operations'])
@@ -102,15 +124,20 @@ p=pathlib.Path(sys.argv[1]); print(json.dumps([[json.loads((p/f'rank-{r}'/f'towe
     numerical=True;error=0.
     for x,y in zip(old[1],new[1],strict=True):
         for a,b in zip(x,y,strict=True):
-            error=max(error,max(abs(i-j) for i,j in zip(a['logits'],b['logits'],strict=True)))
+            differences = [abs(i-j) for i,j in zip(a['logits'],b['logits'],strict=True)]
+            if not differences or not all(math.isfinite(v) for v in differences):
+                raise ValueError('empty or nonfinite tower logit evidence')
+            error=max(error,max(differences))
             numerical &= all(a[k]==b[k] for k in ('gradient','parameters','sample_identity','sampler_source_update','raw_grad_norm','loss'))
     segments={}
-    for a,b in zip(old[0]['spans'],new[0]['spans'],strict=True):
+    for declared,a,b in zip(c['spans'],old[0]['spans'],new[0]['spans'],strict=True):
+        if a['name'] != b['name'] or a['name'] != declared['name'] or not a['updates'] or len(a['updates']) != len(b['updates']):
+            raise ValueError('comparison span evidence differs')
         x=[r['actor_seconds'] for r in a['updates']];y=[r['actor_seconds'] for r in b['updates']]
         wall_a=[r['seconds'] for r in a['updates']];wall_b=[r['seconds'] for r in b['updates']]
-        q=math.ceil(.9*len(x))-1
+        q=math.ceil(rule['quantile']*len(x))-1
         segments[a['name']]=dict(old_actor=mean(x),new_actor=mean(y),wall_ratio=sum(wall_b)/sum(wall_a),
-                                 p90_ratio=sorted(wall_b)[q]/sorted(wall_a)[q])
+                                 quantile_ratio=sorted(wall_b)[q]/sorted(wall_a)[q])
     passed=numerical and error<=c['logit_atol'] and all(segments[k]['wall_ratio']<=c['max_time_ratio']
-        and segments[k]['p90_ratio']<=1 for k in ('ordinary','long_audio'))
-    return dict(passed=passed,identical_training_state=numerical,max_abs_logit_error=error,segments=segments)
+        and segments[k]['quantile_ratio']<=rule['max_quantile_ratio'] for k in rule['measured_spans'])
+    return dict(passed=passed,identical_training_state=numerical,max_abs_logit_error=error,segments=segments,policy=rule,logit_atol=c['logit_atol'])

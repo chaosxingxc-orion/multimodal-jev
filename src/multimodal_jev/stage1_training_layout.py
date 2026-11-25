@@ -53,7 +53,7 @@ class Stage1TrainingLayout:
             from .stage1_card_layout import CardLayout
             if plan['design_sha256'] != spec['design']['sha256'] or plan['release_sha256'] != config['release_sha256']:
                 raise ValueError('stage1 card source changed')
-            return CardLayout(plan, ids, task)
+            return CardLayout(plan, ids, task, epochs=config['batch_config']['epochs'])
         if plan['design_sha256']!=spec['design']['sha256'] or plan['stage1_design_sha256']!=design['stage1']['sha256']:
             raise ValueError('layout plan belongs to a different design')
         return cls(ids,task,design=design,plan=plan,release_sha256=config['release_sha256'],

@@ -242,7 +242,7 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         class_ema.update(sums, counts)
     if stats[-1].item()!=global_count or not torch.isfinite(stats).all():
         raise ValueError('global count or objective invalid')
-    norm = model.clip_grad_norm_(1.)
+    norm = model.clip_grad_norm_(config['stage1_runtime']['grad_clip'])
     if not torch.isfinite(norm):
         raise ValueError('nonfinite gradient')
     optimizer.step()

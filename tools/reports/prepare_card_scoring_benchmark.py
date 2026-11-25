@@ -41,6 +41,14 @@ def validate_resume_config(current, prior, current_files, prior_files):
         raise ValueError('resume requires identical scoring inputs and numerical runtime')
 
 
+def ssh_limits(c):
+    from multimodal_jev.card_experiment_config import settings, positive_int
+    limits = settings('scoring_ssh', c)
+    if not all(positive_int(v) for v in limits.values()):
+        raise ValueError('positive scoring SSH timeouts required')
+    return ['ssh', '-o', 'BatchMode=yes', '-o', f"ConnectTimeout={limits['connect_seconds']}"], limits['command_seconds']
+
+
 def formal_policy(c, train, deploy):
     local = Path(c['formal']['epoch_handoff'])
     proof = json.loads((local/'receipt.json').read_bytes())
@@ -66,8 +74,9 @@ def formal_policy(c, train, deploy):
         raise ValueError('invalid stopped epoch policy path')
     expected = {str(target/'MANIFEST.json'): proof['manifest_sha256'],
                 str(target.parent/f'checkpoint-{updates:04d}-committed.json'): proof['checkpoint_sha256']}
-    observed = subprocess.check_output(['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
-        deploy['host'], shlex.join(['sha256sum', '--', *expected])], text=True, timeout=30)
+    ssh, timeout = ssh_limits(c)
+    observed = subprocess.check_output([*ssh,
+        deploy['host'], shlex.join(['sha256sum', '--', *expected])], text=True, timeout=timeout)
     if {path: digest for digest, path in (line.split(maxsplit=1) for line in observed.splitlines())} != expected:
         raise ValueError('committed Stage1 checkpoint or manifest differs')
     return target, proof['manifest_sha256'], proof['policy_id'], proof['checkpoint_sha256']
@@ -121,9 +130,11 @@ def package(c):
             from tools.reports.context_macro_probe_operations import inspect_runtime
 
             origin = pinned(formal['resume_from'])
+            ssh, timeout = ssh_limits(c)
+            ssh.append(deploy['host'])
             state, = json.loads(subprocess.check_output([
-                'ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', deploy['host'],
-                shlex.join(['docker', 'inspect', origin['container_id']])], timeout=30))
+                *ssh,
+                shlex.join(['docker', 'inspect', origin['container_id']])], timeout=timeout))
             if (origin['host'] != deploy['host'] or state['Image'] != deploy['image']
                     or state['State']['Running'] or state['State']['Status'] != 'exited'
                     or state['State']['Pid'] != 0 or state['State']['OOMKilled']):
@@ -144,13 +155,12 @@ def package(c):
             if any(f'{bind}:ro' not in state['HostConfig']['Binds'] for bind in runtime_binds):
                 raise ValueError('resume requires identical read-only model and data bindings')
             prior_config_pin = formal['resume_from']['config_sha256']
-            ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', deploy['host']]
 
             def copy_prior(remote_path, name, sha256):
                 local = entry/name
                 with local.open('xb') as stream:
                     subprocess.run([*ssh, shlex.join(['cat', '--', str(remote_path)])],
-                                   stdout=stream, check=True, timeout=30)
+                                   stdout=stream, check=True, timeout=timeout)
                 return pinned(dict(path=local, sha256=sha256))
 
             prior = copy_prior(origin_root/'entry/score.json', 'resume-score.json',
@@ -173,7 +183,7 @@ def package(c):
         keys = sorted({key_for(row['binding'])+'.pt' for row in panel['rows'] if row['synthetic']})
         synthetic = entry/'synthetic-cache'
         synthetic.mkdir()
-        with subprocess.Popen(['ssh', '-o', 'BatchMode=yes', inputs['cache_host'],
+        with subprocess.Popen([*ssh_limits(c)[0], inputs['cache_host'],
                                 shlex.join(['docker', 'exec', inputs['cache_container'], 'tar', '-C',
                                             inputs['cache_path'], '-cf', '-', '--', *keys])],
                                stdout=subprocess.PIPE) as remote:
@@ -189,12 +199,12 @@ def package(c):
     snapshot = freeze(repo, entry/'source', patterns=c['source_patterns'], io_workers=c['io_workers'])
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json', entry/'native-seal-container.json')
     spec = {k:c[k] for k in ('widths','io_workers','prefetch_audio','torch_threads',
-                             'worker_timeout_seconds','max_model_len','probability_atol')}
+                             'worker_timeout_seconds','max_model_len','probability_atol','seed')}
     if 'streaming' in c:
         spec['streaming'] = c['streaming']
     if c.get('capture_host_memory'):
         spec['capture_host_memory'] = True
-    spec.update(phase='card_scoring_benchmark', devices=devices, output='/jev-work/score',
+    spec.update(bind_inference_seed=True, phase='card_scoring_benchmark', devices=devices, output='/jev-work/score',
                 worker_config='/jev-entry/score.json', policy=policy_root,
                 policy_sha256=policy_sha, synthetic_cache=cache_root,
                 source=dict(root='/jev-entry/source', sha256=snapshot['manifest_sha256']))
@@ -246,7 +256,7 @@ def execute(config):
     collected = root/'collected'
     collected.mkdir()
     command = shlex.join(['tar', '-C', deployment['remote_root'], '-cf', '-', 'score'])
-    with subprocess.Popen(['ssh', '-o', 'BatchMode=yes', deployment['host'], command],
+    with subprocess.Popen([*ssh_limits(config)[0], deployment['host'], command],
                           stdout=subprocess.PIPE) as remote:
         with tarfile.open(mode='r|', fileobj=remote.stdout) as stream:
             stream.extractall(collected, filter='data')

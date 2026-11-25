@@ -1,0 +1,49 @@
+{
+  "stage1": {
+    "actor_seed": 317,
+    "actor_threads": 2,
+    "collective_timeout_seconds": 900,
+    "grad_clip": 1.0,
+    "optimizer": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.0
+    },
+    "actor_clip": {
+      "clip_ratio": 0.2,
+      "clip_ratio_c": 3.0
+    }
+  },
+  "tower_comparison": {
+    "pressure_span": "long_audio",
+    "measured_spans": [
+      "ordinary",
+      "long_audio"
+    ],
+    "quantile": 0.9,
+    "max_quantile_ratio": 1.0,
+    "master_addr": "127.0.0.1"
+  },
+  "scoring_ssh": {
+    "connect_seconds": 10,
+    "command_seconds": 30
+  },
+  "batch_comparison": {
+    "warmup_span": "warmup",
+    "pressure_span": "long_audio",
+    "master_addr": "127.0.0.1",
+    "ssh_connect_seconds": 10,
+    "ssh_command_seconds": 25
+  },
+  "reference_inference": {
+    "seed": 317,
+    "torch_threads": 2
+  },
+  "startup_audit": {
+    "updates": 3,
+    "timeout_seconds": 900
+  }
+}

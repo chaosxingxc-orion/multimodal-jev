@@ -11,6 +11,8 @@ from multimodal_jev.baseline import atomic_json,file_hash
 
 
 def run(c,root):
+    from multimodal_jev.card_experiment_config import validate_stage1, adamw, prior_runtime
+    runtime = validate_stage1(c["stage1_runtime"])
     import torch
     import torch.distributed as dist
     from torch.distributed.fsdp import FullyShardedDataParallel as FSDP,MixedPrecision,ShardingStrategy
@@ -63,9 +65,9 @@ def run(c,root):
     if c['runtime_profile']!=PROFILE:raise ValueError('fixed actor runtime required')
     for path,digest in c['pins'].items():
         if file_hash(path)!=digest:raise ValueError('dependency changed: '+path)
-    torch.set_num_threads(2);torch.npu.set_device(local);device=torch.device('npu',local)
-    torch.manual_seed(317);torch.npu.manual_seed_all(317);torch.use_deterministic_algorithms(True)
-    dist.init_process_group('hccl',timeout=timedelta(seconds=900))
+    torch.set_num_threads(runtime['actor_threads']);torch.npu.set_device(local);device=torch.device('npu',local)
+    torch.manual_seed(runtime['actor_seed']);torch.npu.manual_seed_all(runtime['actor_seed']);torch.use_deterministic_algorithms(True)
+    dist.init_process_group('hccl',timeout=timedelta(seconds=runtime['collective_timeout_seconds']))
     from multimodal_jev import window_recovery as recovery
     restart = recovery.restart_enabled(c.get('recovery'))
     out=root/f'rank-{rank}';out.mkdir(parents=True,exist_ok=restart)
@@ -85,7 +87,7 @@ def run(c,root):
         if (type(start_update) is not int or type(stop_update) is not int or
                 not 0<=start_update<stop_update<=layout['total_updates'] or c['stage']!='instruction' or
                 type(c['checkpoint_interval']) is not int or c['checkpoint_interval']<1):
-            raise ValueError('bounded full two-epoch instruction cursor required')
+            raise ValueError('bounded instruction cursor required')
         if c['engineering_prefix'] is not True and not c['training_dispatch_allowed']:
             raise ValueError('formal full training requires runtime admission')
         probe = c.get('batch_probe')
@@ -113,8 +115,8 @@ def run(c,root):
         if 'stage1_layout' in c:
             from multimodal_jev.stage1_training_layout import Stage1TrainingLayout, checkpoint_layout
             contract['stage1_layout']=checkpoint_layout(c)
-        contract.update(optimizer=dict(lr=c['lr_schedule']['peak_lr'],betas=[.9,.999],eps=1e-8,weight_decay=0.),
-            objective=c['instruction_objective'],lr_schedule=c['lr_schedule'],grad_clip=1.,world_size=world,
+        contract.update(optimizer=dict(lr=c['lr_schedule']['peak_lr'],**runtime['optimizer']),
+            objective=c['instruction_objective'],lr_schedule=c['lr_schedule'],grad_clip=runtime['grad_clip'],stage1_runtime=runtime,world_size=world,
             batch_config=c['batch_config'],parent_schedule_sha256=c['parent_schedule_sha256'],
             schedule_release_sha256=c['schedule_release_sha256'])
         if c.get('prompt_layout') is not None:contract['prompt_layout']=c['prompt_layout']
@@ -133,7 +135,7 @@ def run(c,root):
             original=json.loads(cfg_path.read_bytes())
             # Every training and sampling setting must match except the admitted execution changes.
             allowed={'training_acoustic_engine','continuation','start_update','packed_acoustics'}
-            if {k:v for k,v in c.items() if k not in allowed}!={k:v for k,v in original.items() if k not in allowed}:
+            if {k:v for k,v in c.items() if k not in allowed}!={k:v for k,v in prior_runtime(original,runtime,origin).items() if k not in allowed}:
                 raise ValueError('continuation changes the training contract')
             if {k:v for k,v in c['packed_acoustics'].items() if k!='path'}!={k:v for k,v in original['packed_acoustics'].items() if k!='path'}:
                 raise ValueError('continuation acoustic index changed')
@@ -206,8 +208,7 @@ def run(c,root):
             if type(m) is torch.nn.Linear and ('lora_A.' in n or 'lora_B.' in n):
                 m.register_forward_pre_hook(capture_dtype(n))
         parameters=[p for p in wrapped.parameters() if p.requires_grad]
-        def optimizer():return torch.optim.AdamW(parameters,lr=learning_rate(c['lr_schedule'],max(0,start_update-1),layout['total_updates']),betas=(.9,.999),eps=1e-8,
-            weight_decay=0.,foreach=False,fused=False)
+        def optimizer():return adamw(parameters,runtime,learning_rate(c['lr_schedule'],max(0,start_update-1),layout['total_updates']))
         opt=optimizer()
         cfg=OmegaConf.create(dict(use_remove_padding=False,use_fused_kernels=False,
             ulysses_sequence_parallel_size=1,use_dynamic_bsz=False,use_prefix_grouper=False,
@@ -215,7 +216,7 @@ def run(c,root):
             calculate_sum_pi_squared=False,entropy_checkpointing=False,ppo_mini_batch_size=layout['local_batch'],
             ppo_micro_batch_size_per_gpu=c['microbatch'],ppo_epochs=1,use_kl_loss=False,calculate_entropy=False,
             entropy_coeff=0.,loss_agg_mode='token-mean',use_rollout_log_probs=True,policy_loss={'loss_mode':MODE},
-            clip_ratio=.2,clip_ratio_low=None,clip_ratio_high=None,clip_ratio_c=3.,global_batch_info={},grad_clip=1.,
+            **runtime['actor_clip'],clip_ratio_low=None,clip_ratio_high=None,global_batch_info={},grad_clip=runtime['grad_clip'],
             jev_policy_id=c['source_policy_id'],jev_context_parity=dict(probability_max_abs=0.,binary_logprob_max_abs=0.)))
         options=dict(stage='instruction',ranking_coefficient=1.,probability_coefficient=0.,algorithm='grpo_v1',
             kl_coefficient=0.,reference_policy_id=None)
@@ -294,7 +295,7 @@ def run(c,root):
                     cache=ViewCache(cache,read_view(source_pin(c,c['layout_cache']),layout_reader,c))
                 preparer=CachedContextPreparer(factory,cache,
                     processor_sha256=processor_identity,decision_token_id=model.decision_token_id,
-                    audio_token_id=base.config.audio_token_id,max_tokens=c.get('mixed',{}).get('input_limit',4096),audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))
+                    audio_token_id=base.config.audio_token_id,max_tokens=c['mixed']['input_limit'] if 'mixed' in c else c['input_limit'],audio_mirror=audio_mirror,prompt_layout=c.get('prompt_layout'))
                 if triplet:
                     from multimodal_jev.intent_triplet_training import TripletStream
                     stream_type = TripletStream

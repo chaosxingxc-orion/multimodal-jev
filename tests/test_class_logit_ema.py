@@ -66,7 +66,7 @@ def distributed_steps(rank, path, contrast):
     dist.init_process_group('gloo', init_method='file://'+path, rank=rank, world_size=2, timeout=timedelta(seconds=30))
     labels = list('abc')
     data = population(labels)
-    config = dict(mixed={'seed':8}, microbatch=1, triplet_prefetch=dict(workers=1,ahead=1),
+    config = dict(stage1_runtime={'grad_clip':1.}, mixed={'seed':8}, microbatch=1, triplet_prefetch=dict(workers=1,ahead=1),
                   stop_update=4, class_logit_ema=CFG, instruction_objective=dict(negative_cards_per_anchor=2,
                   temperature=.2, probability_margin=dict(margin=.1, decision_threshold=.5, gap_weight=1., anchor_weight=.25)))
     if contrast:

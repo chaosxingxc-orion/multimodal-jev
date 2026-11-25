@@ -127,8 +127,10 @@ def prepare(c):
         shutil.copyfile(orig, entry/'parent.json')
         parent_in = '/jev-entry/parent.json'
         inference = cards['inference_devices']
-        if len(inference) != 2 or len(set(devices+inference)) != len(devices)+len(inference):
-            raise ValueError('two independent inference cards are required')
+        if (not inference or any(type(i) is not int or i < 0 for i in inference)
+                or len(set(devices+inference)) != len(devices)+len(inference)
+                or len(inference)*4*m['schedule']['microbatch'] > m['schedule']['global_batch']):
+            raise ValueError('independent inference cards need distinct, complete parity windows')
         probes = []
         for index, device in enumerate(inference):
             name = f'infer-{index}'

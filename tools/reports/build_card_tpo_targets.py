@@ -204,7 +204,9 @@ def eligible(config, full):
     return clean, calibration, dict(excluded)
 
 
-def select_rows(clean, probs, labels, selection, margin, seed):
+def select_rows(clean, probs, labels, selection, margin, seed, epsilon):
+    if not 0 < epsilon < .5 or 1-epsilon == 1:
+        raise ValueError('invalid probability clipping epsilon')
     label_index = {label: i for i, label in enumerate(labels)}
 
     def seeded(uid):
@@ -223,7 +225,7 @@ def select_rows(clean, probs, labels, selection, margin, seed):
     existing = set(easy)
     for kind, metric in (
         ('positive_underconfidence', lambda r, p: 1-p[r['gold']]),
-        ('negative_overconfidence', lambda r, p: math.fsum(-math.log1p(-min(p[i], 1-1e-6))
+        ('negative_overconfidence', lambda r, p: math.fsum(-math.log1p(-min(p[i], 1-epsilon))
                                                            for i in range(len(p)) if i != r['gold'])),
     ):
         ranked = sorted(existing, key=lambda uid: (-metric(annotated[uid], probs[uid]), seeded(uid)))
@@ -265,6 +267,17 @@ def select_rows(clean, probs, labels, selection, margin, seed):
     return result, dict(replay_requested=requested, replay_actual=len(replay), replay_shortfall=requested-len(replay))
 
 
+def target_rank_counts(target, gold):
+    counts = dict(strict=0, tied=0, wrong=0)
+    for epoch in target:
+        probability = epoch.sigmoid()
+        q_true = probability.gather(1, gold[:, None]).squeeze(1)
+        q_rival = probability.scatter(1, gold[:, None], float('-inf')).amax(1)
+        for k, mask in zip(counts, (q_true > q_rival, q_true == q_rival, q_true < q_rival), strict=True):
+            counts[k] += int(mask.sum())
+    return counts
+
+
 def build(config):
     dst = Path(config['output'])
     check_paths({'card TPO targets': dst})
@@ -273,19 +286,16 @@ def build(config):
     clean, calibration, excluded = eligible(config, full)
     schedule = config['schedule']
     loss = config['loss']
-    if (not 0 < loss['margin'] < 1 or loss['weight'] != 1/len(labels)
-            or loss.get('gate') != 'strict_target_top1' or schedule['epochs'] != 1):
+    if (not 0 < loss['margin'] < 1 or not math.isfinite(loss['weight']) or loss['weight'] <= 0
+            or loss.get('gate') != 'strict_target_top1' or type(schedule['epochs']) is not int or schedule['epochs'] < 1):
         raise ValueError('invalid single-card probability gap or schedule')
-    rows, replay = select_rows(clean, probs, labels, config['selection'], loss['margin'], schedule['seed'])
+    rows, replay = select_rows(clean, probs, labels, config['selection'], loss['margin'], schedule['seed'],
+                               config['reward']['probability_epsilon'])
     batches = shuffled_batches(rows, schedule)
     target, batches, counts, audit, ordering = compile_schedule(
         dict(schedule=schedule, reward=config['reward'], updates=len(batches)), rows, batches, list(rows), probs)
     gold = torch.tensor([r['gold'] for r in rows.values()])
-    probability = target[0].sigmoid()
-    q_true = probability.gather(1, gold[:, None]).squeeze(1)
-    q_rival = probability.scatter(1, gold[:, None], float('-inf')).amax(1)
-    gate_counts = dict(strict=int((q_true>q_rival).sum()), tied=int((q_true==q_rival).sum()),
-                       wrong=int((q_true<q_rival).sum()))
+    gate_counts = target_rank_counts(target, gold)
     evidence = dict(eligible=len(clean), excluded=excluded, **replay,
                     strata=dict(Counter(r['stratum'] for r in rows.values())),
                     source_types=dict(Counter('synthetic' if r['synthetic'] else 'real' for r in rows.values())),

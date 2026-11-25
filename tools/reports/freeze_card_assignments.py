@@ -1,4 +1,4 @@
-"""Freeze TRAIN-only support decisions, template variants and two epoch exposures."""
+"""Freeze TRAIN-only support decisions, template variants and per-epoch exposures."""
 import hashlib
 import json
 import random
@@ -115,6 +115,8 @@ def compile_plan(c, output, design_sha, *, extension=None):
         del d['audio']
         return d
     panels = dict(native=panel('original'),rules=panel('definitions_rules'))
+    design = json.loads(read(output/'design.json', design_sha))
+    epochs = design['stage1']['batch_config']['epochs']
     assignments, variants, roles = {}, {}, {}
     review = Counter()
     for row in rows:
@@ -132,7 +134,7 @@ def compile_plan(c, output, design_sha, *, extension=None):
         pair = ['rules',variants[indices]]
         if hashlib.sha256(f"{c['seed']}:{row['source_group']}".encode()).digest()[0] % 2:
             pair.reverse()
-        assignments[uid] = pair
+        assignments[uid] = [pair[e % len(pair)] for e in range(epochs)]
         review['alternate'] += sum(x is not None and x!=order[0] for x,order in zip(indices,rankings[draw]))
         review['omitted'] += indices.count(None)
         if terms & support_keys:
@@ -158,6 +160,6 @@ def compile_plan(c, output, design_sha, *, extension=None):
                 panels=panels,assignments=assignments)
     commit_json(output/'card-plan.json',plan)
     commit_json(output/'roles.json',roles)
-    commit_json(output/'card-review.json',dict(population=len(rows),exposures=2*len(rows),panels=len(panels),
+    commit_json(output/'card-review.json',dict(population=len(rows),exposures=epochs*len(rows),panels=len(panels),
         supports=sum(map(len,supports)),conflicts=review,roles=Counter(roles.values()),pair_review=report,
         words=words,supports_by_class=dict(zip(labels,map(len,supports))),seed=c['seed'],sampled_panels=len(rankings),permutation_roundtrip=True,bank=c['bank_sha256'],plan=file_hash(output/'card-plan.json')))

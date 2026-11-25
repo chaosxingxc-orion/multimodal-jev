@@ -112,7 +112,7 @@ def collect(package, count, timeout):
         if (config['global_batch'] != plan['global_batch'] or config['microbatch'] != finite['microbatch']
                 or config['instruction_objective'] != window['triplet_objective']):
             raise ValueError('triplet objective or admitted batch differs')
-    if (finite['engineering_prefix'] is not True or finite['updates'] != 2
+    if (finite['engineering_prefix'] is not True or finite['updates'] != window['finite_updates']
             or config['engineering_prefix'] is not False or config['training_dispatch_allowed'] is not True
             or config['start_update'] != 0 or config['stop_update'] != expected_stop
             or config['physical_devices'] != planned_devices
@@ -138,9 +138,11 @@ def collect(package, count, timeout):
 
 
 if __name__ == '__main__':
+    from multimodal_jev.card_experiment_config import settings
+    defaults = settings('startup_audit', {})
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument('package', type=Path)
-    cli.add_argument('--count', type=int, default=3)
-    cli.add_argument('--timeout', type=int, default=900)
+    cli.add_argument('--count', type=int, default=defaults['updates'])
+    cli.add_argument('--timeout', type=int, default=defaults['timeout_seconds'])
     args = cli.parse_args()
     print(json.dumps(collect(args.package, args.count, args.timeout), indent=2))

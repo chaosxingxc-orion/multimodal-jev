@@ -96,6 +96,7 @@ class Scorer(torch.nn.Module):
         return raw if return_logits else raw.sigmoid()
 
     def clip_grad_norm_(self,n):
+        self.applied_clip = n
         return torch.nn.utils.clip_grad_norm_(self.parameters(),n)
 
 
@@ -115,7 +116,7 @@ def test_real_render_collate_update_parity_audit_and_ema_on_padded_batch(tmp_pat
             input_features=torch.full((1,1,100), float(labels.index(pop[uid]['intent']))),
             input_features_mask=torch.tensor([[1]+[0]*99])))
     col=dict(pad_token_id=0,audio_token_id=9,decision_token_id=8,audio_chunk_size=100,audio_infer_window=100)
-    cfg=dict(instruction_objective=OBJ, microbatch=2,stop_update=1,mixed={'seed':3},
+    cfg=dict(stage1_runtime={"grad_clip": .25}, instruction_objective=OBJ, microbatch=2,stop_update=1,mixed={'seed':3},
              triplet_prefetch=WINDOW['triplet_prefetch'], parity_probability_atol=1e-6,
              class_logit_ema=dict(WINDOW['class_logit_ema'],min_shared_coordinates=2))
     batch=dict(epoch=0,slots=[dict(id='a/0',weight=1),dict(id='b/0',weight=0)],real_queries=1)
@@ -138,6 +139,7 @@ def test_real_render_collate_update_parity_audit_and_ema_on_padded_batch(tmp_pat
             return int(i['input_ids'][0,0]),int(i['input_features'][0,0,0])
         assert list(map(identity,rows))==[(10,0)]+[(11,0)]*5+[(10,1)]*5+[(10,0)]*5
         metrics, parity=update(model,opt,groups,count,cfg,col,'test','cpu',1,4,ema)
+        assert model.applied_clip == .25
         assert model.scale.item()>.1 and parity['max_abs']==0 and parity['inference_passes']==4
         assert version==0 and ema.updates==1
         assert ema.observation_counts.tolist()==[[1,5],[5,0]]

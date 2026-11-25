@@ -1,4 +1,5 @@
 """Seal, run and collect equal-exposure Stage1 batch comparisons."""
+from multimodal_jev.card_experiment_config import bind_stage1, settings
 from copy import deepcopy
 import json
 import math
@@ -53,10 +54,14 @@ def prepare(c):
             raise ValueError('recompute probe requires the exact baseline comparison and lease')
     upstream = Path(old['remote_root'])
     devices = deployment['idle_devices']
+    policy = settings('batch_comparison', c)
+    from multimodal_jev.card_experiment_config import positive_int
+    if not all(positive_int(policy[k]) for k in ('ssh_connect_seconds','ssh_command_seconds')):
+        raise ValueError('positive batch comparison timeouts required')
+    ssh = ['ssh', '-o', 'BatchMode=yes', '-o', f"ConnectTimeout={policy['ssh_connect_seconds']}", deployment['host']]
     widths = c['widths']
-    if len(widths) != 2 or widths[1] != 2 * widths[0] or any(
-            type(w) is not int or w < 1 or w & (w - 1) for w in widths):
-        raise ValueError('two adjacent powers of two are required')
+    if not widths or any(type(w) is not int or w < 1 for w in widths) or widths != sorted(set(widths)):
+        raise ValueError('declare increasing, distinct positive batch widths')
     execution_widths = c.get('execution_widths', widths[1:] if prior_comparison is not None else widths)
     if not execution_widths or execution_widths != [w for w in widths if w in execution_widths]:
         raise ValueError('execution widths must be an ordered subset of the comparison widths')
@@ -72,8 +77,7 @@ def prepare(c):
         old_result = read(ops/f'{role}-inspect.json')
         cid = launch['container_id']
         cmd = shlex.join(['docker', 'inspect', cid])
-        ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', deployment['host']]
-        live, = json.loads(subprocess.check_output([*ssh, cmd], timeout=25))
+        live, = json.loads(subprocess.check_output([*ssh, cmd], timeout=policy['ssh_command_seconds']))
         state = live['State']
         if (live['Id'] != cid or old_result['Id'] != cid or live['State'] != old_result['State']
                 or live['Name'] != '/' + old['tag'] + '-' + role or live['Image'] != old['image']
@@ -83,11 +87,10 @@ def prepare(c):
     predecessors = deployment.get('device_predecessors', [])
     if not {d for job in predecessors for d in job['devices']} <= set(devices):
         raise ValueError('comparison may only wait for owners of its assigned devices')
-    ssh = ['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10', deployment['host']]
 
     def fetch(relative, digest):
         cmd = shlex.join(['cat', str(upstream/relative)])
-        return pinned(subprocess.check_output([*ssh, cmd], timeout=25), digest)
+        return pinned(subprocess.check_output([*ssh, cmd], timeout=policy['ssh_command_seconds']), digest)
 
     formal = json.loads(fetch('formal/config.json', c['formal_config_sha256']))
     bootstrap = fetch('formal/run/confusion-init.json', c['confusion_sha256'])
@@ -139,10 +142,12 @@ def prepare(c):
         raise ValueError('comparison cannot reproduce parent TRAIN order')
 
     (entry/'bootstrap.json').write_bytes(bootstrap)
-    warmup, ordinary, pressure = c['spans']
-    if [s['name'] for s in c['spans']] != ['warmup', 'ordinary', 'long_audio']:
-        raise ValueError('declare one warmup, ordinary and long audio span each')
-    if min(s['recordings'] for s in (warmup, ordinary, pressure)) < 1:
+    spans_by_name = {s['name']: s for s in c['spans']}
+    if (len(spans_by_name) != len(c['spans']) or policy['warmup_span'] == policy['pressure_span']
+            or not {policy['warmup_span'], policy['pressure_span']} <= spans_by_name.keys()):
+        raise ValueError('declare distinct warmup and pressure spans')
+    warmup, pressure = (spans_by_name[policy[k]] for k in ('warmup_span', 'pressure_span'))
+    if min(s['recordings'] for s in c['spans']) < 1:
         raise ValueError('empty comparison span')
     runtime = {'root': '/jev-entry/source', 'sha256': script['manifest_sha256']}
     freeze_identity = None
@@ -150,7 +155,7 @@ def prepare(c):
     jobs = []
     for width in widths:
         role = f'micro-{width}' + ('-recompute' if prior_comparison is not None else '')
-        config = deepcopy(formal)
+        config = bind_stage1(deepcopy(formal), c)
         config['batch_config'].update(training_devices=len(devices), microbatch=width,
                                       per_dp_replica_batch=width)
         plan = derive(config['batch_config'])
@@ -193,7 +198,7 @@ def prepare(c):
         if prior_comparison is not None:
             base_name = f'micro-{width}-training.json'
             base_raw = pinned((prior_comparison/'entry'/base_name).read_bytes(), prior_entry['entry_pins'][base_name])
-            baseline_config = json.loads(base_raw)
+            baseline_config = bind_stage1(json.loads(base_raw), {})
             differences = sorted(k for k in config.keys() | baseline_config.keys()
                                  if config.get(k) != baseline_config.get(k) or
                                  (k in config) != (k in baseline_config))
@@ -205,7 +210,7 @@ def prepare(c):
         leaf = dict(phase='card_stage1', role=role, work='/jev-work', source=runtime,
                     io_workers=c['io_workers'], batch_probe=dict(path='/jev-entry/' + run_name,
                                                                 sha256=file_hash(entry/run_name)),
-                    master_port=c['master_port'])
+                    master_port=c['master_port'], master_addr=policy['master_addr'])
         commit_json(entry/f'{role}.json', dict(schema='jev-local-macros-v1',
                                                macros=dict(NATIVE_SEAL_CONTAINER_CONFIG=leaf)))
         names.extend([manifest_name, run_name, f'{role}.json'])
@@ -269,7 +274,7 @@ def run_probe(c):
     config = json.loads(pinned(path.read_bytes(), pin['sha256']))
     output = root/'run'
     command = [sys.executable, '-m', 'torch.distributed.run', '--nnodes=1', '--node-rank=0',
-               '--master-addr=127.0.0.1', '--master-port=' + str(c['master_port']), '--max-restarts=0',
+               '--master-addr='+c['master_addr'], '--master-port=' + str(c['master_port']), '--max-restarts=0',
                '--nproc-per-node=' + str(len(config['physical_devices'])),
                str(Path(c['source']['root'])/'tools/jev/train_card_stage1.py'),
                '--config', str(path), '--output', str(output)]
