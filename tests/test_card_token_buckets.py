@@ -126,3 +126,25 @@ def test_rebudget_reuses_pack_only_for_same_authenticated_inputs(tmp_path):
     receipts[1]['single_sha256'] = file_hash(path)
     with pytest.raises(ValueError, match='beyond its schedule'):
         verify_pack_inputs(*receipts, *roots, rebind_plan=True)
+
+
+def test_attention_mask_reaches_backbone_and_head():
+    from multimodal_jev.context_decision_model import ContextDecisionModel
+
+    class Backbone(torch.nn.Module):
+        def forward(self, **kwargs):
+            self.received = kwargs['attention_mask'].clone()
+            return SimpleNamespace(last_hidden_state=torch.zeros(2, 6, 3))
+
+    class Head(torch.nn.Module):
+        def forward(self, hidden, positions, mask, return_logits=False):
+            self.received = mask.clone()
+            return hidden.new_zeros((2, 1))
+
+    backbone, head = Backbone(), Head()
+    model = ContextDecisionModel(backbone, head, 8)
+    ids = torch.tensor([[1, 8, 0, 0, 0, 0], [1, 2, 3, 4, 8, 0]])
+    mask = torch.tensor([[1, 1, 0, 0, 0, 0], [1, 1, 1, 1, 1, 0]])
+    model(dict(input_ids=ids, attention_mask=mask), torch.tensor([[1], [4]]))
+    assert torch.equal(backbone.received, mask)
+    assert torch.equal(head.received, mask.bool())
