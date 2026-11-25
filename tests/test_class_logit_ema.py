@@ -143,13 +143,14 @@ def test_distributed_prefetch_padding_fused_reduction_and_epoch_restore(tmp_path
 def test_registered_stage1_commands_use_the_online_contract():
     spec = json.loads(Path('experiments/pipelines/JEV-210.json').read_text())
     train = {s['id']:s for s in spec['stages']['train']}
-    first = train['prepare-and-run-stage1-epoch1']
-    second = train['resume-stage1-epoch2']
-    assert first['config'] == first['run'][0][1] and second['config'] == second['run'][0][1]
+    first = train['train-stage1-two-epochs']
+    assert first['config'] == first['run'][0][1]
     window = json.loads(Path(first['config']).read_text())['window']
+    assert not {'stop_after_epoch','epoch_mining','bootstrap_input'} & window.keys()
+    assert not {'resume-stage1-epoch2','audit-stage1-epoch1'} & train.keys()
     assert window['triplet_prefetch']['ahead'] == window['class_logit_ema']['max_staleness_updates'] == 1
-    assert not {'epoch_mining','bootstrap_input'} & window.keys()
-    assert 'scoring' not in json.loads(Path(second['config']).read_text())
+    assert window['execution_microbatch'] == window['effective_anchors_per_rank'] == 16
+    assert window['triplet_objective']['positive_recordings_per_anchor'] == 3
     assert [s for s in train if s.startswith('score-')] == ['score-stage1-endpoint-train']
 
 

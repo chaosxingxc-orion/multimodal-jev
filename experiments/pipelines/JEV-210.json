@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "bidirectional-ema-v1",
+  "revision": "bidirectional-m16p3-v1",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "recompute": "configs/portable/operations/card-stage1-recompute-210-v1.json",
@@ -23,8 +23,8 @@
     ],
     "train": [
       {
-        "id": "prepare-and-run-stage1-epoch1",
-        "config": "configs/portable/operations/card-stage1-bidirectional-v1.json",
+        "id": "train-stage1-two-epochs",
+        "config": "configs/portable/operations/card-stage1-bidirectional-m16p3-v1.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -32,7 +32,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-bidirectional-v1.json",
+            "configs/portable/operations/card-stage1-bidirectional-m16p3-v1.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -94,7 +94,7 @@
                 [
                   "microbatch"
                 ],
-                8
+                16
               ],
               [
                 [
@@ -139,7 +139,7 @@
                   "kind": "card_bidirectional_infonce_v1",
                   "temperature": 0.1,
                   "probability_coefficient": 0.0,
-                  "positive_recordings_per_anchor": 5,
+                  "positive_recordings_per_anchor": 3,
                   "negative_cards_per_anchor": 5,
                   "negative_recordings_per_anchor": 5,
                   "sample_with_replacement": true,
@@ -168,7 +168,7 @@
                 [
                   "updates"
                 ],
-                1713
+                1714
               ],
               [
                 [
@@ -191,7 +191,7 @@
                   "kind": "card_bidirectional_infonce_v1",
                   "temperature": 0.1,
                   "probability_coefficient": 0.0,
-                  "positive_recordings_per_anchor": 5,
+                  "positive_recordings_per_anchor": 3,
                   "negative_cards_per_anchor": 5,
                   "negative_recordings_per_anchor": 5,
                   "sample_with_replacement": true,
@@ -231,151 +231,6 @@
         "requires_current_dispatch": true
       },
       {
-        "id": "audit-stage1-epoch1",
-        "checks": [
-          {
-            "path": "${CARD_EPOCH_HANDOFF}/receipt.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "container_exited"
-                ],
-                true
-              ],
-              [
-                [
-                  "updates"
-                ],
-                1713
-              ],
-              [
-                [
-                  "sampler_state",
-                  "kind"
-                ],
-                "class-logit-ema-v1"
-              ]
-            ],
-            "report": {
-              "checkpoint_sha256": [
-                "checkpoint_sha256"
-              ]
-            }
-          }
-        ],
-        "config": "configs/portable/operations/card-stage1-epoch1-audit-dp8.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-epoch1-audit-dp8.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "dispatch_guards": [
-          "${CARD_EPOCH_HANDOFF}/receipt.json"
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_STAGE1_OPERATIONS}/terminal.json"
-          }
-        ],
-        "requires_current_dispatch": true
-      },
-      {
-        "id": "resume-stage1-epoch2",
-        "config": "configs/portable/operations/card-stage1-ema-resume.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.resume_card_stage1",
-            "configs/portable/operations/card-stage1-ema-resume.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "dispatch_guards": [
-          "${CARD_RESUME_PACKAGE}/entry.tar"
-        ],
-        "checks": [
-          {
-            "path": "${CARD_RESUME_OPERATIONS}/first-updates.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "start_update"
-                ],
-                1713
-              ],
-              [
-                [
-                  "total_updates"
-                ],
-                3426
-              ],
-              [
-                [
-                  "sampler_state",
-                  "kind"
-                ],
-                "class-logit-ema-v1"
-              ]
-            ],
-            "report": {
-              "start_update": [
-                "start_update"
-              ],
-              "total_updates": [
-                "total_updates"
-              ],
-              "ranks": [
-                "ranks"
-              ]
-            }
-          },
-          {
-            "path": "${CARD_RESUME_OPERATIONS}/formal-collected.json",
-            "equals": [
-              [
-                [
-                  "passed"
-                ],
-                true
-              ],
-              [
-                [
-                  "stop_update"
-                ],
-                3426
-              ],
-              [
-                [
-                  "engineering_prefix"
-                ],
-                false
-              ]
-            ]
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_EPOCH_HANDOFF}/receipt.json"
-          }
-        ],
-        "requires_current_dispatch": true
-      },
-      {
         "id": "audit-stage1-endpoint",
         "checks": [
           {
@@ -397,7 +252,7 @@
                 [
                   "updates"
                 ],
-                3426
+                1714
               ],
               [
                 [
@@ -429,12 +284,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-endpoint-audit-dp8.json",
+        "config": "configs/portable/operations/card-stage1-endpoint-continuous-m16.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-endpoint-audit-dp8.json",
+            "configs/portable/operations/card-stage1-endpoint-continuous-m16.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -443,7 +298,7 @@
         ],
         "inputs": [
           {
-            "path": "${CARD_RESUME_OPERATIONS}/formal-collected.json"
+            "path": "${CARD_STAGE1_OPERATIONS}/terminal.json"
           }
         ],
         "requires_current_dispatch": true
@@ -470,7 +325,7 @@
                 [
                   "updates"
                 ],
-                3426
+                1714
               ],
               [
                 [
@@ -974,7 +829,7 @@
     "evaluate": [
       {
         "id": "evaluate-stage1-and-fused-stage2",
-        "config": "configs/portable/operations/card-paired-endpoint-210-v9.json",
+        "config": "configs/portable/operations/card-paired-endpoint-210-m16.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PAIR_ROOT}/ops"
@@ -982,7 +837,7 @@
         "run": [
           [
             "tools.reports.prepare_paired_card_evaluation",
-            "configs/portable/operations/card-paired-endpoint-210-v9.json",
+            "configs/portable/operations/card-paired-endpoint-210-m16.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -1287,7 +1142,7 @@
                 [
                   "updates"
                 ],
-                3426
+                1714
               ]
             ]
           },
@@ -1338,7 +1193,7 @@
                 }
               },
               {
-                "label": "Stage1 step 3426",
+                "label": "Stage1 step 1714",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1388,7 +1243,7 @@
                 }
               },
               {
-                "label": "Stage1 step 3426",
+                "label": "Stage1 step 1714",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1438,7 +1293,7 @@
                 }
               },
               {
-                "label": "Stage1 step 3426",
+                "label": "Stage1 step 1714",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1488,7 +1343,7 @@
                 }
               },
               {
-                "label": "Stage1 step 3426",
+                "label": "Stage1 step 1714",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1537,7 +1392,7 @@
                 }
               },
               {
-                "label": "Stage1 step 3426",
+                "label": "Stage1 step 1714",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1584,7 +1439,7 @@
                 }
               },
               {
-                "label": "Stage1 step 3426",
+                "label": "Stage1 step 1714",
                 "proof": 0,
                 "path": [
                   "datasets",
