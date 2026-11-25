@@ -35,7 +35,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
 | JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md)、[尺寸与知识卡复核](reports/JEV-208-card-review.md) |
 | JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 模型实验已审核。MINDS 推理锁定 `.25` 为 `v0.0.rc25`：20 块/端点、两轮各端点 17,920 个概率零差异；Stage1/Stage2 评分吞吐为原生的 1.825 / 1.805 倍，以各轮原生归一化后较上一版提高 49.6% / 48.2%。181 八卡已释放。[执行报告](reports/JEV-209.md) · [推理报告](reports/JEV-209-inference-latency.md) |
-| JEV-210 | 45 | stopped | [0.6B r128 双向 InfoNCE Stage1](../experiments/stage1-cards-tpo-210.md) | 旧训练已停，181 八卡已释放。新方案已登记：1＋5＋5＋5、有放回。待重新派发时从初始化开始，先做有限验收。[执行报告](reports/JEV-210.md) |
+| JEV-210 | 45 | planned | [0.6B r128 双向 InfoNCE Stage1](../experiments/stage1-cards-tpo-210.md) | 181 八卡授权派发新版 1＋5＋5＋5 双向 InfoNCE，从初始化开始，先有限验收，正式前三步独立复核。[执行报告](reports/JEV-210.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
