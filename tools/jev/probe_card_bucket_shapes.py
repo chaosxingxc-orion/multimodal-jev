@@ -1,4 +1,4 @@
-"""Single-rank FSDP capacity/timing diagnostic; synthetic features, no persisted weights."""
+"""Single-rank FSDP capacity/timing diagnostic on synthetic or pinned TRAIN inputs."""
 import json
 import sys
 import time
@@ -26,7 +26,8 @@ def run(config, prior, case):
     from multimodal_jev.card_training_acoustics import collate
     from tools.reports.stage2_view_actor import configure_activation_checkpointing
 
-    length,width=config['cases'][case]
+    real = config.get('real_lane')
+    length,width=(None,real['width']) if real else config['cases'][case]
     torch.set_num_threads(config['threads'])
     torch.manual_seed(config['seed'])
     torch.npu.set_device(0)
@@ -47,7 +48,7 @@ def run(config, prior, case):
         load_policy(c['source_policy'],model,expected_policy_id=c['source_policy_id'],
                     expected_contract=c['source_contract'],expected_base_id=c['base_id'])
         check = config.get('paired_check')
-        graph = check['graphs'][case] if check else None
+        graph = check['graphs'][case] if check else config.get('training_graph')
         hooks,profile=install_actor(adapted,model,c['runtime_profile'],training_graph=graph)
         units=context_fsdp_units(model)
         for p in model.parameters():
@@ -55,6 +56,9 @@ def run(config, prior, case):
         wrapped=FSDP(model,auto_wrap_policy=CustomPolicy(lambda m:m in units),device_id=device,use_orig_params=True,
             mixed_precision=MixedPrecision(param_dtype=torch.bfloat16,reduce_dtype=torch.float32,buffer_dtype=torch.float32,cast_forward_inputs=True))
         configure_activation_checkpointing(model,c['activation_checkpointing'])
+        if real:
+            from tools.jev.card_real_bucket_panel import measure
+            return measure(config,c,wrapped,base,processor,model,device)
         opt=torch.optim.AdamW([p for p in wrapped.parameters() if p.requires_grad],lr=c['lr_schedule']['peak_lr'])
         d=Directions.from_objective(c['instruction_objective'])
         rows=[]

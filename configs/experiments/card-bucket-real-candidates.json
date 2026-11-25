@@ -1,0 +1,58 @@
+{
+  "14": {
+    "contrast_samples": {
+      "positive_recordings": 3,
+      "negative_cards": 5,
+      "negative_recordings": 5
+    },
+    "token_bucketing": {
+      "lookahead_batches": 2,
+      "buckets": [
+        {
+          "max_tokens": 106,
+          "batch_size_per_rank": 32
+        },
+        {
+          "max_tokens": 122,
+          "batch_size_per_rank": 24
+        },
+        {
+          "max_tokens": 174,
+          "batch_size_per_rank": 16
+        },
+        {
+          "max_tokens": null,
+          "batch_size_per_rank": 8
+        }
+      ]
+    }
+  },
+  "8": {
+    "contrast_samples": {
+      "positive_recordings": 1,
+      "negative_cards": 3,
+      "negative_recordings": 3
+    },
+    "token_bucketing": {
+      "lookahead_batches": 2,
+      "buckets": [
+        {
+          "max_tokens": 116,
+          "batch_size_per_rank": 32
+        },
+        {
+          "max_tokens": 136,
+          "batch_size_per_rank": 24
+        },
+        {
+          "max_tokens": 165,
+          "batch_size_per_rank": 16
+        },
+        {
+          "max_tokens": null,
+          "batch_size_per_rank": 8
+        }
+      ]
+    }
+  }
+}
