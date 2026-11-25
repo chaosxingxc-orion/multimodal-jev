@@ -1,0 +1,542 @@
+{
+  "host": "181",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "model": "Qwen3-ASR-0.6B",
+  "base_id": "02fe809e756cd2de3d9fa5364c763bb5127d50d8956f2570c265e7c34264a458",
+  "policy_id": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+  "config": {
+    "seed": 317,
+    "warmup": 1,
+    "repeats": 2,
+    "threads": 2,
+    "token_fill": [
+      0.72,
+      0.82,
+      0.91,
+      1.0
+    ],
+    "audio_tokens": {
+      "112": 40
+    },
+    "cases": [
+      [
+        112,
+        16
+      ],
+      [
+        112,
+        32
+      ],
+      [
+        112,
+        16
+      ],
+      [
+        112,
+        32
+      ],
+      [
+        112,
+        16
+      ],
+      [
+        112,
+        32
+      ],
+      [
+        112,
+        16
+      ],
+      [
+        112,
+        32
+      ]
+    ],
+    "modes": [
+      "control",
+      "control",
+      "attention",
+      "attention",
+      "linear",
+      "linear",
+      "head",
+      "head"
+    ]
+  },
+  "baseline_commit": "7fcccef",
+  "source_deltas": "--- a/tools/jev/probe_card_bucket_shapes.py\n+++ b/probe_card_bucket_shapes.py\n@@ -6,6 +6,11 @@\n \n \n def run(config, prior, case):\n+    import multimodal_jev\n+    import hashlib\n+    mode=config['modes'][case]\n+    if mode != 'control':\n+        multimodal_jev.__path__.insert(0,str(Path(__file__).parent / mode))\n     import torch\n     import torch_npu\n     import torch.distributed as dist\n@@ -78,16 +83,35 @@\n                 audio_token_id=base.config.audio_token_id,audio_chunk_size=chunk,audio_infer_window=base.config.audio_config.n_window_infer)\n         if inp['input_ids'].shape!=(width*d.width,length) or inp['attention_mask'].all():raise ValueError('incorrect padding geometry')\n         inp={k:v.to(device) for k,v in inp.items()}; pos=pos.to(device)\n+        def stamp():\n+            torch.npu.synchronize()\n+            return time.monotonic()\n+        def mark(tag):\n+            def finish(module,args,output): phases[tag] = stamp()\n+            return finish\n+        model.backbone.audio_tower.register_forward_hook(mark('tower'))\n+        model.backbone.register_forward_hook(mark('language'))\n+        if mode != 'control':\n+            assert any(str(getattr(m,'__file__','')).startswith(str(Path(__file__).parent / mode)+'/') for m in sys.modules.values())\n         times=[]\n         for i in range(config['warmup']+config['repeats']):\n             opt.zero_grad(set_to_none=True);torch.npu.synchronize();torch.npu.reset_peak_memory_stats()\n             t=time.monotonic()\n+            phases={}\n             logits=wrapped(inp,pos,return_logits=True).reshape(width,d.width)\n+            phases['head_end']=stamp()\n             loss=components(logits,d)[:,0].mean()\n+            phases['loss']=stamp()\n             loss.backward()\n+            phases['backward']=stamp()\n             norm=wrapped.clip_grad_norm_(1.)\n             opt.step();torch.npu.synchronize()\n             seconds=time.monotonic()-t\n+            assert list(phases)==['tower','language','head_end','loss','backward'],list(phases)\n+            edges=[t,*phases.values(),t+seconds]\n+            parts=dict(zip([*phases,'optimizer'],[b-a for a,b in zip(edges,edges[1:])]))\n+            digest=hashlib.sha256(logits.detach().float().cpu().contiguous().numpy().tobytes()).hexdigest()\n+            print('PHASE '+json.dumps(dict(case=case,mode=mode,width=width,i=i,seconds=seconds,parts=parts,logits_sha256=digest,loss=loss.item(),norm=norm.item())),flush=True)\n             if not torch.isfinite(loss).item() or not torch.isfinite(norm).item():raise ValueError('nonfinite update')\n             print('update',i,round(seconds,3),flush=True)\n             if i>=config['warmup']:times.append(dict(seconds=seconds,allocated=torch.npu.max_memory_allocated(),\n--- a/src/multimodal_jev/span_packed_attention.py\n+++ b/attention/span_packed_attention.py\n@@ -49,7 +49,7 @@\n         kernel = npu_flash_attn_varlen_func\n     if card_groups.active():\n         return card_groups.grouped(query, key, value, lengths, scaling, kernel)\n-    packed = [torch.cat([t[i, :, :n].transpose(0, 1) for i, n in enumerate(lengths)], 0)\n+    packed = [torch.cat([row[:, :n].transpose(0, 1) for row, n in zip(t.unbind(0),lengths,strict=True)], 0)\n               for t in (query, key, value)]\n     cumulative = torch.tensor([0, *lengths], dtype=torch.int32).cumsum(0, dtype=torch.int32)\n     output = kernel(*packed, cumulative, cumulative, max_seqlen_q=max(lengths),\n--- a/src/multimodal_jev/context_row_head.py\n+++ b/head/context_row_head.py\n@@ -15,8 +15,8 @@\n         head._validate(hidden, positions, valid)\n         if not torch.equal(valid, valid.long().cumprod(-1).bool()):\n             raise ValueError('row readout requires right padding')\n-        return torch.cat([original(hidden[i:i+1, :n], positions[i:i+1], valid[i:i+1, :n])\n-                          for i,n in enumerate(valid.sum(-1).tolist())])\n+        return torch.cat([original(row[:, :n], positions[i:i+1], valid[i:i+1, :n])\n+                          for i,(row,n) in enumerate(zip(hidden.split(1, dim=0),valid.sum(-1).tolist(),strict=True))])\n \n     head.score_logits = score\n     head._jev_row_head = True\n--- a/src/multimodal_jev/span_fixed_shape_linear.py\n+++ b/linear/span_fixed_shape_linear.py\n@@ -34,7 +34,7 @@\n         return out if bias is None else out + bias\n     outputs = []\n     weights = weight.t()[None].expand(tile_batch, -1, -1)\n-    for offset in range(0, tiles.shape[0], tile_batch):\n-        outputs.append(torch.bmm(tiles[offset:offset+tile_batch], weights))\n+    for block in tiles.split(tile_batch, dim=0):\n+        outputs.append(torch.bmm(block, weights))\n     output = torch.cat(outputs, 0)[:count].reshape(batch, padded_length, weight.shape[0])[:, :length]\n     return output if bias is None else output + bias\n",
+  "runs": [
+    {
+      "container": "14a5b7568b9cfbacd0cb7d0af867867365b3701f9eb01ba3fb6db4efaf422e26",
+      "rows": [
+        {
+          "case": 0,
+          "mode": "control",
+          "width": 16,
+          "i": 0,
+          "seconds": 15.212201460031793,
+          "parts": {
+            "tower": 1.8526948899962008,
+            "language": 2.5140533598605543,
+            "head_end": 0.8417829400859773,
+            "loss": 0.08233277988620102,
+            "backward": 9.364584460156038,
+            "optimizer": 0.5567530300468206
+          },
+          "logits_sha256": "24318c4e53bf67e9c449aa7737f3622f7f4e0204aaadf959189dda441a772ebf",
+          "loss": 1.8449345827102661,
+          "norm": 8.133069038391113
+        },
+        {
+          "case": 0,
+          "mode": "control",
+          "width": 16,
+          "i": 1,
+          "seconds": 13.067325650015846,
+          "parts": {
+            "tower": 1.062516590114683,
+            "language": 2.5102521600201726,
+            "head_end": 0.6578159900382161,
+            "loss": 0.06369255995377898,
+            "backward": 8.75113404984586,
+            "optimizer": 0.02191430004313588
+          },
+          "logits_sha256": "59d371f342f30433be926e182843cad80ac9af141a56eef9bb52285858196ca6",
+          "loss": 1.9898462295532227,
+          "norm": 21.522014617919922
+        },
+        {
+          "case": 0,
+          "mode": "control",
+          "width": 16,
+          "i": 2,
+          "seconds": 12.685763319954276,
+          "parts": {
+            "tower": 1.0924988200422376,
+            "language": 2.196239409968257,
+            "head_end": 0.6242891801521182,
+            "loss": 0.059534789994359016,
+            "backward": 8.691555159864947,
+            "optimizer": 0.021645959932357073
+          },
+          "logits_sha256": "165e146d5eaf06aa3ecb207a7f434e9e3dc80e5c3af95ce4901c828b084b3810",
+          "loss": 1.8123732805252075,
+          "norm": 2.889960765838623
+        }
+      ]
+    },
+    {
+      "container": "7136696f70564b19c91ef974c67d743c7e82be38e94a46b3b9ec0e50c865545a",
+      "rows": [
+        {
+          "case": 1,
+          "mode": "control",
+          "width": 32,
+          "i": 0,
+          "seconds": 44.154111499898136,
+          "parts": {
+            "tower": 2.949006849899888,
+            "language": 4.434218639973551,
+            "head_end": 1.6177604901604354,
+            "loss": 0.08393707987852395,
+            "backward": 34.489461860153824,
+            "optimizer": 0.5797265798319131
+          },
+          "logits_sha256": "6f53801d76edb78ebfd07edb738fe38983d97c502f99585320606310f414cfaf",
+          "loss": 1.8296334743499756,
+          "norm": 6.725510597229004
+        },
+        {
+          "case": 1,
+          "mode": "control",
+          "width": 32,
+          "i": 1,
+          "seconds": 41.093130270019174,
+          "parts": {
+            "tower": 1.9338018500711769,
+            "language": 3.7626001199241728,
+            "head_end": 1.2566092100460082,
+            "loss": 0.1378907400649041,
+            "backward": 33.967508299974725,
+            "optimizer": 0.034720049938187
+          },
+          "logits_sha256": "8b6ffe3c3606cc8c23c4cecbb0854de0fd2d3e0fa89894d1c6db87ee6386ae4a",
+          "loss": 1.8823935985565186,
+          "norm": 12.017900466918945
+        },
+        {
+          "case": 1,
+          "mode": "control",
+          "width": 32,
+          "i": 2,
+          "seconds": 41.318575519835576,
+          "parts": {
+            "tower": 1.9554284198675305,
+            "language": 3.8673352401237935,
+            "head_end": 1.254337869817391,
+            "loss": 0.13858217000961304,
+            "backward": 34.06603325018659,
+            "optimizer": 0.03685856983065605
+          },
+          "logits_sha256": "6e64cbfbfba90a80b3193d1a38b089930f442d2b1238c16eec8ed0a84fd559c9",
+          "loss": 1.8693026304244995,
+          "norm": 15.596832275390625
+        }
+      ]
+    },
+    {
+      "container": "67c99fbdef251a2f98c9496ca9eb1277ec78d404ecf20de424dbca63fd6a4f72",
+      "rows": [
+        {
+          "case": 2,
+          "mode": "attention",
+          "width": 16,
+          "i": 0,
+          "seconds": 12.515997919952497,
+          "parts": {
+            "tower": 1.8302651999983937,
+            "language": 2.454578550066799,
+            "head_end": 0.8037822400219738,
+            "loss": 0.08159722993150353,
+            "backward": 6.812761740060523,
+            "optimizer": 0.5330129598733038
+          },
+          "logits_sha256": "24318c4e53bf67e9c449aa7737f3622f7f4e0204aaadf959189dda441a772ebf",
+          "loss": 1.8449345827102661,
+          "norm": 8.133069038391113
+        },
+        {
+          "case": 2,
+          "mode": "attention",
+          "width": 16,
+          "i": 1,
+          "seconds": 10.667916440172121,
+          "parts": {
+            "tower": 1.0586553600151092,
+            "language": 2.491548960097134,
+            "head_end": 0.6395082799717784,
+            "loss": 0.05434681009501219,
+            "backward": 6.402296129846945,
+            "optimizer": 0.02156090014614165
+          },
+          "logits_sha256": "59d371f342f30433be926e182843cad80ac9af141a56eef9bb52285858196ca6",
+          "loss": 1.9898462295532227,
+          "norm": 21.522014617919922
+        },
+        {
+          "case": 2,
+          "mode": "attention",
+          "width": 16,
+          "i": 2,
+          "seconds": 10.321811310015619,
+          "parts": {
+            "tower": 1.0618856300134212,
+            "language": 2.2169319801032543,
+            "head_end": 0.6308280299417675,
+            "loss": 0.06417828006669879,
+            "backward": 6.327091820072383,
+            "optimizer": 0.020895569818094373
+          },
+          "logits_sha256": "165e146d5eaf06aa3ecb207a7f434e9e3dc80e5c3af95ce4901c828b084b3810",
+          "loss": 1.8123732805252075,
+          "norm": 2.889960765838623
+        }
+      ]
+    },
+    {
+      "container": "dafb1eddbda0b1dca220e0300efea244774192b430680b44e5636e59ffe11fc4",
+      "rows": [
+        {
+          "case": 3,
+          "mode": "attention",
+          "width": 32,
+          "i": 0,
+          "seconds": 26.023137839976698,
+          "parts": {
+            "tower": 3.0273104100488126,
+            "language": 4.53919572988525,
+            "head_end": 1.6454080801922828,
+            "loss": 0.08359082997776568,
+            "backward": 16.170714949956164,
+            "optimizer": 0.556917839916423
+          },
+          "logits_sha256": "6f53801d76edb78ebfd07edb738fe38983d97c502f99585320606310f414cfaf",
+          "loss": 1.8296334743499756,
+          "norm": 6.725510597229004
+        },
+        {
+          "case": 3,
+          "mode": "attention",
+          "width": 32,
+          "i": 1,
+          "seconds": 23.518043390009552,
+          "parts": {
+            "tower": 2.076055840123445,
+            "language": 4.24637652002275,
+            "head_end": 1.2931431799661368,
+            "loss": 0.11952694994397461,
+            "backward": 15.731901860097423,
+            "optimizer": 0.05103903985582292
+          },
+          "logits_sha256": "8b6ffe3c3606cc8c23c4cecbb0854de0fd2d3e0fa89894d1c6db87ee6386ae4a",
+          "loss": 1.8823935985565186,
+          "norm": 12.017900466918945
+        },
+        {
+          "case": 3,
+          "mode": "attention",
+          "width": 32,
+          "i": 2,
+          "seconds": 23.723273870069534,
+          "parts": {
+            "tower": 2.0997943899128586,
+            "language": 4.344648470170796,
+            "head_end": 1.28340205992572,
+            "loss": 0.12422075006179512,
+            "backward": 15.833883709972724,
+            "optimizer": 0.037324490025639534
+          },
+          "logits_sha256": "6e64cbfbfba90a80b3193d1a38b089930f442d2b1238c16eec8ed0a84fd559c9",
+          "loss": 1.8693026304244995,
+          "norm": 15.596832275390625
+        }
+      ]
+    },
+    {
+      "container": "a3e21ae1ad524040e3ec2a94b6787161333d6e64770da8177c0e93af826b7693",
+      "rows": [
+        {
+          "case": 4,
+          "mode": "linear",
+          "width": 16,
+          "i": 0,
+          "seconds": 13.866899359971285,
+          "parts": {
+            "tower": 1.8673903499729931,
+            "language": 2.3300150900613517,
+            "head_end": 0.843041619984433,
+            "loss": 0.08571995003148913,
+            "backward": 8.173336709849536,
+            "optimizer": 0.5673956400714815
+          },
+          "logits_sha256": "24318c4e53bf67e9c449aa7737f3622f7f4e0204aaadf959189dda441a772ebf",
+          "loss": 1.8449345827102661,
+          "norm": 8.133069038391113
+        },
+        {
+          "case": 4,
+          "mode": "linear",
+          "width": 16,
+          "i": 1,
+          "seconds": 12.021095129894093,
+          "parts": {
+            "tower": 1.068570570088923,
+            "language": 2.5750388198066503,
+            "head_end": 0.64696174999699,
+            "loss": 0.1307479201350361,
+            "backward": 7.567405589856207,
+            "optimizer": 0.032370480010285974
+          },
+          "logits_sha256": "59d371f342f30433be926e182843cad80ac9af141a56eef9bb52285858196ca6",
+          "loss": 1.9898462295532227,
+          "norm": 21.522014617919922
+        },
+        {
+          "case": 4,
+          "mode": "linear",
+          "width": 16,
+          "i": 2,
+          "seconds": 11.659430099884048,
+          "parts": {
+            "tower": 1.1309863498900086,
+            "language": 2.1955975801683962,
+            "head_end": 0.6372634097933769,
+            "loss": 0.08043899014592171,
+            "backward": 7.589512570062652,
+            "optimizer": 0.02563119982369244
+          },
+          "logits_sha256": "165e146d5eaf06aa3ecb207a7f434e9e3dc80e5c3af95ce4901c828b084b3810",
+          "loss": 1.8123732805252075,
+          "norm": 2.889960765838623
+        }
+      ]
+    },
+    {
+      "container": "aa03c57a0ba6537b6c9a133766c85405c787abc116b2445b38fbe767e38b4898",
+      "rows": [
+        {
+          "case": 5,
+          "mode": "linear",
+          "width": 32,
+          "i": 0,
+          "seconds": 35.628821739926934,
+          "parts": {
+            "tower": 2.987640429986641,
+            "language": 4.263636769959703,
+            "head_end": 1.581195049919188,
+            "loss": 0.07993221003562212,
+            "backward": 26.144634190015495,
+            "optimizer": 0.5717830900102854
+          },
+          "logits_sha256": "6f53801d76edb78ebfd07edb738fe38983d97c502f99585320606310f414cfaf",
+          "loss": 1.8296334743499756,
+          "norm": 6.725510597229004
+        },
+        {
+          "case": 5,
+          "mode": "linear",
+          "width": 32,
+          "i": 1,
+          "seconds": 32.73439878993668,
+          "parts": {
+            "tower": 1.9761583500076085,
+            "language": 3.648853899911046,
+            "head_end": 1.2474583100993186,
+            "loss": 0.10907931998372078,
+            "backward": 25.72065571998246,
+            "optimizer": 0.032193189952522516
+          },
+          "logits_sha256": "8b6ffe3c3606cc8c23c4cecbb0854de0fd2d3e0fa89894d1c6db87ee6386ae4a",
+          "loss": 1.8823935985565186,
+          "norm": 12.017900466918945
+        },
+        {
+          "case": 5,
+          "mode": "linear",
+          "width": 32,
+          "i": 2,
+          "seconds": 32.966603650012985,
+          "parts": {
+            "tower": 2.006870549870655,
+            "language": 3.680646670050919,
+            "head_end": 1.2444919000845402,
+            "loss": 0.11139410990290344,
+            "backward": 25.882209199946374,
+            "optimizer": 0.04099122015759349
+          },
+          "logits_sha256": "6e64cbfbfba90a80b3193d1a38b089930f442d2b1238c16eec8ed0a84fd559c9",
+          "loss": 1.8693026304244995,
+          "norm": 15.596832275390625
+        }
+      ]
+    },
+    {
+      "container": "f5061d1af190c95a77250452b0d00280c3ea3d234c442e8cc729fbd692640a95",
+      "rows": [
+        {
+          "case": 6,
+          "mode": "head",
+          "width": 16,
+          "i": 0,
+          "seconds": 15.231847519986331,
+          "parts": {
+            "tower": 1.8644038198981434,
+            "language": 2.569805009989068,
+            "head_end": 0.8689634399488568,
+            "loss": 0.08370999014005065,
+            "backward": 9.296517879934981,
+            "optimizer": 0.5484473800752312
+          },
+          "logits_sha256": "24318c4e53bf67e9c449aa7737f3622f7f4e0204aaadf959189dda441a772ebf",
+          "loss": 1.8449345827102661,
+          "norm": 8.133069038391113
+        },
+        {
+          "case": 6,
+          "mode": "head",
+          "width": 16,
+          "i": 1,
+          "seconds": 13.157867289846763,
+          "parts": {
+            "tower": 1.0992231599520892,
+            "language": 2.5389272498432547,
+            "head_end": 0.6541210601571947,
+            "loss": 0.06506975996308029,
+            "backward": 8.777592370053753,
+            "optimizer": 0.02293368987739086
+          },
+          "logits_sha256": "59d371f342f30433be926e182843cad80ac9af141a56eef9bb52285858196ca6",
+          "loss": 1.9898462295532227,
+          "norm": 21.522014617919922
+        },
+        {
+          "case": 6,
+          "mode": "head",
+          "width": 16,
+          "i": 2,
+          "seconds": 12.904348920099437,
+          "parts": {
+            "tower": 1.1084066601470113,
+            "language": 2.264065600000322,
+            "head_end": 0.6435564300045371,
+            "loss": 0.061291669961065054,
+            "backward": 8.805090480018407,
+            "optimizer": 0.021938079968094826
+          },
+          "logits_sha256": "165e146d5eaf06aa3ecb207a7f434e9e3dc80e5c3af95ce4901c828b084b3810",
+          "loss": 1.8123732805252075,
+          "norm": 2.889960765838623
+        }
+      ]
+    },
+    {
+      "container": "1dd3cc7919aaeae565d8f70624af9d0d3998709e25d4f670935929bed669ddc1",
+      "rows": [
+        {
+          "case": 7,
+          "mode": "head",
+          "width": 32,
+          "i": 0,
+          "seconds": 44.11303065996617,
+          "parts": {
+            "tower": 2.990888400003314,
+            "language": 4.557696459814906,
+            "head_end": 1.6494870700407773,
+            "loss": 0.08095405995845795,
+            "backward": 34.24221916007809,
+            "optimizer": 0.591785510070622
+          },
+          "logits_sha256": "6f53801d76edb78ebfd07edb738fe38983d97c502f99585320606310f414cfaf",
+          "loss": 1.8296334743499756,
+          "norm": 6.725510597229004
+        },
+        {
+          "case": 7,
+          "mode": "head",
+          "width": 32,
+          "i": 1,
+          "seconds": 41.47641734988429,
+          "parts": {
+            "tower": 2.0338760297745466,
+            "language": 3.937510650139302,
+            "head_end": 1.2842996299732476,
+            "loss": 0.1393288599792868,
+            "backward": 34.03785532992333,
+            "optimizer": 0.04354685009457171
+          },
+          "logits_sha256": "8b6ffe3c3606cc8c23c4cecbb0854de0fd2d3e0fa89894d1c6db87ee6386ae4a",
+          "loss": 1.8823935985565186,
+          "norm": 12.017900466918945
+        },
+        {
+          "case": 7,
+          "mode": "head",
+          "width": 32,
+          "i": 2,
+          "seconds": 41.57579775992781,
+          "parts": {
+            "tower": 2.0661979499273,
+            "language": 4.034817900042981,
+            "head_end": 1.2544173400383443,
+            "loss": 0.1441568499431014,
+            "backward": 34.04180761007592,
+            "optimizer": 0.034400109900161624
+          },
+          "logits_sha256": "6e64cbfbfba90a80b3193d1a38b089930f442d2b1238c16eec8ed0a84fd559c9",
+          "loss": 1.8693026304244995,
+          "norm": 15.596832275390625
+        }
+      ]
+    }
+  ]
+}
