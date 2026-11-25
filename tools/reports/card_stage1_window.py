@@ -253,6 +253,8 @@ def run(c):
         parent['token_buckets'] = c['token_buckets']
     if 'training_acoustic_engine' in c:
         parent['training_acoustic_engine']=c['training_acoustic_engine']
+    if 'training_graph' in c:
+        parent['training_graph'] = c['training_graph']
     if not finite and 'continuation' in c:
         parent.update(continuation=c['continuation'],start_update=c['continuation']['step'])
     if not finite and 'recovery' in c:

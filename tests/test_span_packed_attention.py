@@ -20,7 +20,8 @@ def fake_varlen(q, k, v, cq, ck, **kwargs):
                       for a, b in zip(cq[:-1], cq[1:])])
 
 
-def test_values_gradients_causality_and_zero_padding():
+@pytest.mark.parametrize('shared_splits', [False, True])
+def test_values_gradients_causality_and_zero_padding(shared_splits):
     torch.manual_seed(317)
     q = torch.randn(3, 4, 7, 5, dtype=torch.float64, requires_grad=True)
     k = torch.randn(3, 2, 7, 5, dtype=torch.float64, requires_grad=True)
@@ -30,7 +31,7 @@ def test_values_gradients_causality_and_zero_padding():
     def kernel(*args, **kwargs):
         calls.append(1)
         return fake_varlen(*args, **kwargs)
-    actual = packed_causal_attention(q, k, v, lengths, scaling=.3, kernel=kernel)
+    actual = packed_causal_attention(q, k, v, lengths, scaling=.3, kernel=kernel, shared_splits=shared_splits)
     expected = torch.stack([torch.nn.functional.pad(dense(q[i, :, :n], k[i, :, :n],
                               v[i, :, :n], .3), (0, 0, 0, 0, 0, 7-n))
                             for i, n in enumerate(lengths)])

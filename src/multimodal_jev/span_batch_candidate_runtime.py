@@ -11,7 +11,7 @@ from .span_fixed_shape_linear import fixed_shape_linear
 from .span_packed_attention import packed_causal_attention, masked_row_varlen_kernel
 
 
-def install_candidate(adapted, span_model):
+def install_candidate(adapted, span_model, *, shared_splits=False):
     import transformers.models.qwen3.modeling_qwen3 as qwen3
     if getattr(qwen3.eager_attention_forward, '_jev_batch_candidate', False):
         raise ValueError('candidate already installed in this process')
@@ -21,7 +21,8 @@ def install_candidate(adapted, span_model):
         if inputs.ndim not in (2, 3):
             raise ValueError('candidate supports 2D/3D Linear only')
         values = inputs[None] if inputs.ndim == 2 else inputs
-        out = fixed_shape_linear(values, module.weight, module.bias, tile_rows=128, tile_batch=8)
+        out = fixed_shape_linear(values, module.weight, module.bias, tile_rows=128, tile_batch=8,
+                                 shared_splits=shared_splits)
         return out[0] if inputs.ndim == 2 else out
 
     for name, module in adapted.named_modules():
@@ -46,7 +47,7 @@ def install_candidate(adapted, span_model):
         if dropout != 0. or 'lengths' not in active:
             raise ValueError('explicit deterministic complete prefills required')
         return packed_causal_attention(query, key, value, active['lengths'], scaling=scaling,
-                                       kernel=masked_row_varlen_kernel), None
+                                       kernel=masked_row_varlen_kernel, shared_splits=shared_splits), None
 
     attention._jev_batch_candidate = True
     qwen3.eager_attention_forward = attention

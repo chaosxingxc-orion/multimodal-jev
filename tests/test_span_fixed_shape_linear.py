@@ -5,13 +5,14 @@ from multimodal_jev.span_fixed_shape_linear import fixed_shape_linear
 
 
 @pytest.mark.parametrize('shape', [(1,1,5),(2,13,5),(3,8,5),(17,19,5)])
-def test_matches_dense_values_and_input_weight_bias_gradients(shape):
+@pytest.mark.parametrize('shared_splits', [False, True])
+def test_matches_dense_values_and_input_weight_bias_gradients(shape, shared_splits):
     torch.manual_seed(317)
     x = torch.randn(shape, dtype=torch.float64, requires_grad=True)
     w = torch.randn(7, 5, dtype=torch.float64, requires_grad=True)
     b = torch.randn(7, dtype=torch.float64, requires_grad=True)
     expected = torch.nn.functional.linear(x, w, b)
-    actual = fixed_shape_linear(x, w, b, tile_rows=8, tile_batch=4)
+    actual = fixed_shape_linear(x, w, b, tile_rows=8, tile_batch=4, shared_splits=shared_splits)
     upstream = torch.randn_like(actual)
     torch.testing.assert_close(actual, expected)
     ga = torch.autograd.grad(actual, (x,w,b), upstream, retain_graph=True)

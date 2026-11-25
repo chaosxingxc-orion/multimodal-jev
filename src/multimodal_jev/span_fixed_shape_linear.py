@@ -9,7 +9,7 @@ import torch
 from torch.nn import functional as F
 
 
-def fixed_shape_linear(inputs, weight, bias=None, *, tile_rows=128, tile_batch=8, combined=False):
+def fixed_shape_linear(inputs, weight, bias=None, *, tile_rows=128, tile_batch=8, combined=False, shared_splits=False):
     if (inputs.ndim != 3 or weight.ndim != 2 or inputs.shape[-1] != weight.shape[-1]
             or min(inputs.shape) < 1 or weight.shape[0] < 1
             or inputs.dtype != weight.dtype or inputs.device != weight.device
@@ -34,7 +34,9 @@ def fixed_shape_linear(inputs, weight, bias=None, *, tile_rows=128, tile_batch=8
         return out if bias is None else out + bias
     outputs = []
     weights = weight.t()[None].expand(tile_batch, -1, -1)
-    for offset in range(0, tiles.shape[0], tile_batch):
-        outputs.append(torch.bmm(tiles[offset:offset+tile_batch], weights))
+    blocks = tiles.split(tile_batch) if shared_splits else (
+        tiles[offset:offset+tile_batch] for offset in range(0, tiles.shape[0], tile_batch))
+    for block in blocks:
+        outputs.append(torch.bmm(block, weights))
     output = torch.cat(outputs, 0)[:count].reshape(batch, padded_length, weight.shape[0])[:, :length]
     return output if bias is None else output + bias

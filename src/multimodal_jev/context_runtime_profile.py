@@ -9,12 +9,19 @@ PROFILE = 'qwen3-asr-context-bf16-packed-row-v1'
 NATIVE_DIAGNOSTIC = 'context-vllm-native-bf16-diagnostic-v1'
 
 
-def install_actor(adapted, model, name):
+SHARED_SPLITS = 'attention_and_projection_shared_splits_v1'
+
+
+def install_actor(adapted, model, name, *, training_graph=None):
     if name != PROFILE:
         raise ValueError('explicit context packed-row profile required')
     from .span_batch_candidate_runtime import install_candidate
     from .context_row_head import install_row_head
-    handle, components = install_candidate(adapted, model)
+    if training_graph not in (None, SHARED_SPLITS):
+        raise ValueError('unknown training autograd graph')
+    handle, components = install_candidate(adapted, model, shared_splits=training_graph == SHARED_SPLITS)
+    if training_graph:
+        components['training_graph'] = training_graph
     components['head'] = install_row_head(model.decision_head)
     return handle, dict(profile=PROFILE, components=components,
         scope='Complete BF16 prefills; batched backbone, shared per-request head; admission separate')

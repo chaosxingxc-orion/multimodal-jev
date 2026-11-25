@@ -1,0 +1,15 @@
+{
+  "seed": 317, "warmup": 1, "repeats": 2, "threads": 2,
+  "token_fill": [0.72, 0.82, 0.91, 1.0],
+  "audio_tokens": {"112":40,"192":106,"320":200},
+  "cases": [[112,16],[112,16],[112,32],[112,32],[192,8],[192,8],[320,8],[320,8]],
+  "paired_check": {
+    "graphs": [null,"attention_and_projection_shared_splits_v1",null,"attention_and_projection_shared_splits_v1",null,"attention_and_projection_shared_splits_v1",null,"attention_and_projection_shared_splits_v1"],
+    "check_updates": [0,2],
+    "witness_indices": [0,1,5,6,9,13,14,27],
+    "replay_groups": [[0,1,2,3,4,5,6,7],[6,0,5,2],[7]],
+    "inference_panels": ["MINDS_native14","SLURP_clean_TEST60"],
+    "inference_profile": "/probe/configs/experiments/jev-209-aligned-inference.json",
+    "scratch": "/probe-out/replay"
+  }
+}

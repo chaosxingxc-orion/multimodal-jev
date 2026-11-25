@@ -124,6 +124,10 @@ def run(c,root):
             schedule_release_sha256=c['schedule_release_sha256'])
         if c.get('prompt_layout') is not None:contract['prompt_layout']=c['prompt_layout']
         if 'activation_checkpointing' in c:contract['activation_checkpointing']=c['activation_checkpointing']
+        if 'training_graph' in c:
+            if not c['engineering_prefix']:
+                raise ValueError('candidate training graph is limited to finite engineering checks')
+            contract['training_graph'] = c['training_graph']
         if 'token_buckets' in c:
             contract['source_order_block_size'] = contract.pop('global_batch')
             contract['bucket_max_anchors_per_rank'] = contract.pop('microbatch')
@@ -206,7 +210,7 @@ def run(c,root):
         model=ContextDecisionModel(adapted.get_base_model().model,head,bundle['contract']['token']['id']).eval()
         load_policy(c['source_policy'],model,expected_policy_id=c['source_policy_id'],
             expected_contract=c['source_contract'],expected_base_id=c['base_id'])
-        runtime_handle,profile=install_actor(adapted,model,PROFILE)
+        runtime_handle,profile=install_actor(adapted,model,PROFILE,training_graph=c.get('training_graph'))
         atomic_json(out/'runtime.json',profile)
         # Entire head is one FSDP unit. MHA calls out_proj functionally.
         units=context_fsdp_units(model)

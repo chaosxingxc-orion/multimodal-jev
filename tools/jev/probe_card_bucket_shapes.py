@@ -46,7 +46,9 @@ def run(config, prior, case):
         model=ContextDecisionModel(adapted.get_base_model().model,head,token).eval()
         load_policy(c['source_policy'],model,expected_policy_id=c['source_policy_id'],
                     expected_contract=c['source_contract'],expected_base_id=c['base_id'])
-        hooks,profile=install_actor(adapted,model,c['runtime_profile'])
+        check = config.get('paired_check')
+        graph = check['graphs'][case] if check else None
+        hooks,profile=install_actor(adapted,model,c['runtime_profile'],training_graph=graph)
         units=context_fsdp_units(model)
         for p in model.parameters():
             if p.requires_grad:p.data=p.data.float()
@@ -72,14 +74,19 @@ def run(config, prior, case):
                 f,m=sounds[max(0,j-d.cards)]
                 n=max(counts+2,round(length*config['token_fill'][(a+j)%len(config['token_fill'])]))
                 ids=torch.tensor([[13]*(n-counts-1)+[base.config.audio_token_id]*counts+[token]])
-                rows.append(dict(request_id=f'{a}/{j}',policy_id='probe',positions=torch.tensor([[n-1]]),
+                rows.append(dict(request_id=f'{a}/{max(0,j-d.cards)}:{j}',policy_id='probe',positions=torch.tensor([[n-1]]),
                     inputs=dict(input_ids=ids,attention_mask=torch.ones_like(ids),input_features=f,input_features_mask=m)))
         inp,pos=collate(rows,'probe',decision_token_id=token,pad_token_id=processor.tokenizer.pad_token_id,
                 audio_token_id=base.config.audio_token_id,audio_chunk_size=chunk,audio_infer_window=base.config.audio_config.n_window_infer)
         if inp['input_ids'].shape!=(width*d.width,length) or inp['attention_mask'].all():raise ValueError('incorrect padding geometry')
         inp={k:v.to(device) for k,v in inp.items()}; pos=pos.to(device)
         times=[]
+        if check:
+            from tools.jev.card_split_parity import Witness
+            witness = Witness(check, rows, c, base, processor, model, case)
         for i in range(config['warmup']+config['repeats']):
+            if check and i in check['check_updates']:
+                witness.snapshot(i, wrapped, model)
             opt.zero_grad(set_to_none=True);torch.npu.synchronize();torch.npu.reset_peak_memory_stats()
             t=time.monotonic()
             logits=wrapped(inp,pos,return_logits=True).reshape(width,d.width)
@@ -88,12 +95,16 @@ def run(config, prior, case):
             norm=wrapped.clip_grad_norm_(1.)
             opt.step();torch.npu.synchronize()
             seconds=time.monotonic()-t
+            if check:
+                witness.observe(i,logits,loss,norm,wrapped)
             if not torch.isfinite(loss).item() or not torch.isfinite(norm).item():raise ValueError('nonfinite update')
             print('update',i,round(seconds,3),flush=True)
             if i>=config['warmup']:times.append(dict(seconds=seconds,allocated=torch.npu.max_memory_allocated(),
                                                reserved=torch.npu.max_memory_reserved()))
         print('PROBE_RESULT '+json.dumps(dict(case=case,length=length,width=width,pairs=d.width,frames=frames,times=times,
             base_id=c['base_id'],policy_id=c['source_policy_id'])),flush=True)
+        if check:
+            witness.finish()
     finally:
         dist.destroy_process_group()
 

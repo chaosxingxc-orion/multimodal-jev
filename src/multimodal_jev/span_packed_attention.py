@@ -26,7 +26,7 @@ def masked_row_varlen_kernel(q, k, v, cq, ck, **kwargs):
         sparse_mode=3, inner_precise=2, next_tockens=0)[0]
 
 
-def packed_causal_attention(query, key, value, lengths, *, scaling, kernel=None):
+def packed_causal_attention(query, key, value, lengths, *, scaling, kernel=None, shared_splits=False):
     """Pack B,H,S,D into T,H,D, invoke one varlen kernel, restore B,S,H,D.
 
     A supplied kernel is for independent CPU contract tests. The default uses
@@ -49,8 +49,12 @@ def packed_causal_attention(query, key, value, lengths, *, scaling, kernel=None)
         kernel = npu_flash_attn_varlen_func
     if card_groups.active():
         return card_groups.grouped(query, key, value, lengths, scaling, kernel)
-    packed = [torch.cat([t[i, :, :n].transpose(0, 1) for i, n in enumerate(lengths)], 0)
-              for t in (query, key, value)]
+    def pack(t):
+        if shared_splits:
+            return torch.cat([row[:, :n].transpose(0, 1) for row, n in
+                              zip(t.unbind(0), lengths, strict=True)])
+        return torch.cat([t[i, :, :n].transpose(0, 1) for i, n in enumerate(lengths)])
+    packed = [pack(t) for t in (query, key, value)]
     cumulative = torch.tensor([0, *lengths], dtype=torch.int32).cumsum(0, dtype=torch.int32)
     output = kernel(*packed, cumulative, cumulative, max_seqlen_q=max(lengths),
                     max_seqlen_k=max(lengths), dropout_p=0., softmax_scale=scaling, causal=True)
