@@ -90,10 +90,13 @@ class TripletStream:
         batch = self.batches[index]
         epoch = batch['epoch']
         slots = batch['slots'][self.rank::self.world]
+        return index, self.render_slots(index, epoch, slots, distribution), batch['real_queries']
+
+    def render_slots(self, index, epoch, slots, distribution, plans=None):
         groups = []
         batch_inputs = {}
         for ordinal, slot in enumerate(slots):
-            pairs, coords = self.group_plan(slot['id'], epoch, index, distribution)
+            pairs, coords = plans[slot['id']] if plans is not None else self.group_plan(slot['id'], epoch, index, distribution)
             recording_ids = tuple(dict.fromkeys(audio for audio, _, _ in pairs))
             inputs = {}
             for uid in recording_ids:
@@ -118,7 +121,7 @@ class TripletStream:
             if coords is not None:
                 group += (coords,)
             groups.append(group)
-        return index,groups,batch['real_queries']
+        return groups
 
     def close(self):
         if self.queue is not None:

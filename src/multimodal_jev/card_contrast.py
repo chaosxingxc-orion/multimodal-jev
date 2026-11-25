@@ -85,3 +85,19 @@ def components(logits, directions):
         terms.append(F.softplus(negatives - positives).mean(dim=1))
         weights.append(directions.card_weight)
     return torch.stack([sum(w*term for w, term in zip(weights, terms, strict=True)), *terms], dim=1)
+
+
+def bind_sample_counts(config):
+    """Transfer public experiment counts into the single frozen objective."""
+    names = {'positive_recordings': 'positive_recordings_per_anchor',
+             'negative_cards': 'negative_cards_per_anchor',
+             'negative_recordings': 'negative_recordings_per_anchor'}
+    counts = config['contrast_samples']
+    objective = config['window']['triplet_objective']
+    if (not isinstance(counts, dict) or counts.keys() != names.keys()
+            or any(type(value) is not int or value < 1 for value in counts.values())
+            or any(key in objective for key in names.values())):
+        raise ValueError('declare positive contrast counts once at experiment level')
+    bound = dict(objective, **{target: counts[key] for key,target in names.items()})
+    Directions.from_objective(bound)
+    config['window']['triplet_objective'] = bound

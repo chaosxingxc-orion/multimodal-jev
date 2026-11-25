@@ -32,3 +32,15 @@
 
 CPU 自检：在有 PyTorch 和 pytest 的项目环境运行
 `PYTHONPATH=src:. python -m pytest -q tests/test_card_device_config.py tests/test_card_experiment_config.py tests/test_card_contrast.py tests/test_class_logit_ema.py tests/test_210_window_recovery.py`。覆盖非连续设备封包、来源核验、实际 AdamW 更新、梯度裁剪、跨轮训练输入、全轮目标分母及历史恢复校验。设备上的数值和性能另以 NPU 验收为准。
+
+[动态分桶候选配置](../configs/portable/operations/card-stage1-token-buckets-v1.json)的顶层 `token_bucketing.buckets` 定义每个桶的 token 上界（包含端点，最后一档用 null 表示无上界）与 `batch_size_per_rank`，档数可改。顶层 `contrast_samples` 定义额外的同类正语音、错卡和异类语音数，当前为 3/5/5，加上锚点是 14 条配对。不要在底层重复配置。
+
+每次在线抽取配对后，用当次卡片前后缀 token 数和冻结缓存的音频 token 数算出每条拼接长度，再取整组最大值；本卡实际渲染后逐组复核。分桶依据本批所有配对中的最长序列，每卡对自己的张量右补齐到本卡实际最长值，padding 的 attention mask 为 0。候选每卡上限是 ≤112:32、≤144:24、≤192:16、更长:8。首轮 109,610 个正确配对的长度中位数 97、P95 130、最大 379；这些不是负采样后批最长值的统计，边界尚待 NPU 验证。
+
+每个桶批次独立更新一次 AdamW 和 EMA。各 rank 用同一快照和冻结源顺序组全局桶，再分给各卡；先消费最早未用的锚点，在指定前瞻范围内收集同桶项。候选缓冲区仅保存待消费 ID，下一批重新按采样结果计算长度。八卡满桶时全局为 256/192/128/64，桶中余样全部训练，跨卡补位锚点权重为零；loss 按本次真实全局锚点总数归一化。学习率按实际 optimizer step 推进。封包中重用的固定块只用于复现 TRAIN 输入顺序，正式轮长与末步读取实际收据，不能沿用固定日程或从旧第 128 步精确恢复。正式下游消费者绑定须以实测的 epoch 末点替换旧台账；此候选未替换运行台账。有限检查不能证明四档 NPU 容量或吞吐。
+
+参考实现：
+
+- [icefall 的 LibriSpeech 数据加载](https://github.com/k2-fsa/icefall/blob/f3353b772b0f8f4c7b0c74dc091ebbb0f2d417bf/egs/librispeech/ASR/tdnn_lstm_ctc/asr_datamodule.py#L317)按时长预算分桶，[该训练循环](https://github.com/k2-fsa/icefall/blob/f3353b772b0f8f4c7b0c74dc091ebbb0f2d417bf/egs/librispeech/ASR/pruned_transducer_stateless2/train.py#L762)对每个 loader batch 执行一次 optimizer step。借鉴更新频率；JEV 用拼接 token 长度和锚点均值。
+- [Lhotse FixedBucketBatchSizeConstraint](https://github.com/lhotse-speech/lhotse/blob/3a4f0971f4f05c3d012e36b85097ddb5cb235c33/lhotse/dataset/sampling/dynamic_bucketing.py#L403)支持显式桶宽。SpeechBrain 的 [DynamicBatchSampler](https://github.com/speechbrain/speechbrain/blob/c0241278f93ef02cd5191f03caf4e5f8e1292bf6/speechbrain/dataio/sampler.py#L321)按预算派生桶宽；[verl](https://github.com/verl-project/verl/blob/61adb0c7eb90730306e7794c2bf248331211e657/verl/utils/seqlen_balancing.py)也支持在一批内按 token 预算拆微批，更新语义不同。
+- 工程直接复用已有 PyTorch 的 [bucketize](https://docs.pytorch.org/docs/stable/generated/torch.bucketize.html) 和 [BatchSampler](https://docs.pytorch.org/docs/stable/data.html#torch.utils.data.BatchSampler)，不额外引入语音框架。

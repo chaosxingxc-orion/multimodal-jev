@@ -62,6 +62,9 @@ def run(c,root):
     from tools.reports.context_infonce_trainer import topology
     from multimodal_jev.context_warmup import learning_rate,set_learning_rate
     layout=topology(c,world,[p.name for p in Path('/dev').glob('davinci[0-9]*')])
+    bucketed = 'token_buckets' in c
+    if bucketed and (not c.get('packed_acoustics') or not triplet or c.get('continuation') or c['start_update']):
+        raise ValueError('online bucket updates require their own fresh window and acoustic index')
     if c['runtime_profile']!=PROFILE:raise ValueError('fixed actor runtime required')
     for path,digest in c['pins'].items():
         if file_hash(path)!=digest:raise ValueError('dependency changed: '+path)
@@ -121,6 +124,13 @@ def run(c,root):
             schedule_release_sha256=c['schedule_release_sha256'])
         if c.get('prompt_layout') is not None:contract['prompt_layout']=c['prompt_layout']
         if 'activation_checkpointing' in c:contract['activation_checkpointing']=c['activation_checkpointing']
+        if 'token_buckets' in c:
+            contract['source_order_block_size'] = contract.pop('global_batch')
+            contract['bucket_max_anchors_per_rank'] = contract.pop('microbatch')
+            contract['token_buckets'] = c['token_buckets']
+        if bucketed and not c['engineering_prefix']:
+            # At least one real anchor per update. Stop on source exhaustion, never this bound.
+            stop_update = c['batch_config']['source_queries'] * c['batch_config']['epochs']
         window_start = start_update
         window_contract = dict(stage='stage1', config=content_hash(c), start=window_start, stop=stop_update)
         recovered = recovery.latest(root, window_contract, start_update, stop_update, world) if restart else None
@@ -148,7 +158,21 @@ def run(c,root):
             if not recovered or recovered['step']!=start_update:raise ValueError('continuation cursor not latest committed step')
         if recovered:
             start_update = recovered['step']
-        if restart:
+        if restart and bucketed:
+            # A retry may cross an already exported epoch with a data-dependent step number.
+            import re
+            publications = ((out, r'checkpoint-([0-9]+)\.pt'),)
+            if rank == 0:
+                publications += ((root, r'(?:policy-|execution-|checkpoint-)([0-9]+)(?:\.pt|-committed\.json)?'),)
+            for directory, pattern in publications:
+                tails = []
+                for path in directory.iterdir():
+                    match = re.fullmatch(pattern, path.name)
+                    if match and int(match[1]) > start_update:
+                        tails.append(path)
+                recovery.preserve_tail(directory, tails)
+            dist.barrier()
+        elif restart:
             # Formal endpoint publications after the last durable cursor are from the interrupted attempt.
             recovery.preserve_tail(out, [out/f'checkpoint-{stop_update:04d}.pt'])
             if rank == 0:
@@ -208,7 +232,7 @@ def run(c,root):
             if type(m) is torch.nn.Linear and ('lora_A.' in n or 'lora_B.' in n):
                 m.register_forward_pre_hook(capture_dtype(n))
         parameters=[p for p in wrapped.parameters() if p.requires_grad]
-        def optimizer():return adamw(parameters,runtime,learning_rate(c['lr_schedule'],max(0,start_update-1),layout['total_updates']))
+        def optimizer():return adamw(parameters,runtime,learning_rate(c['lr_schedule'],max(0,start_update-1),max(stop_update,layout['total_updates'])))
         opt=optimizer()
         cfg=OmegaConf.create(dict(use_remove_padding=False,use_fused_kernels=False,
             ulysses_sequence_parallel_size=1,use_dynamic_bsz=False,use_prefix_grouper=False,
@@ -247,7 +271,7 @@ def run(c,root):
                     if probe is not None:
                         from multimodal_jev.stage1_batch_probe import select_batches
                         batches = select_batches(batches, c['global_batch'], probe, stop_update)
-                    if pressure is not None:
+                    if pressure is not None and not bucketed:
                         from multimodal_jev.stage1_batch_probe import bring_pressure_forward
                         bring_pressure_forward(batches, c['global_batch'], pressure)
                 else:
@@ -360,11 +384,16 @@ def run(c,root):
             if online:
                 atomic_json(out/'sampler-restored.json', witness)
         try:
+            if bucketed:
+                from multimodal_jev.card_token_buckets import OnlineBuckets
+                dynamic = OnlineBuckets(stream, class_ema, start_update, stop_update, pending,
+                                        auxiliary['bucket_cursor'] if recovered else None)
+                stream.queue = dynamic.queue
             for index in range(start_update,stop_update):
                 step_begin=time.monotonic();progress('prepare_batch',update=index)
                 cfg.jev_policy_id=c['source_policy_id']+':instruction-update'+str(index)
                 if triplet:
-                    if index == start_update or batches[index]['epoch'] != batches[index-1]['epoch']:
+                    if not bucketed and (index == start_update or batches[index]['epoch'] != batches[index-1]['epoch']):
                         if online:
                             stream.begin_epoch(index, class_ema, pending)
                             pending = None
@@ -403,19 +432,28 @@ def run(c,root):
                     actual, groups, real_queries, *versions = next(stream.queue)
                     if actual != index:
                         raise ValueError('triplet prefetch order differs')
+                    if bucketed:
+                        bucket = versions.pop()
+                        last_bucket = bucket['end'] and bucket['epoch']+1 == c['batch_config']['epochs']
+                        if last_bucket and not c['engineering_prefix']:
+                            stop_update = index+1
                     preparation = time.monotonic()-step_begin
-                    current_lr = set_learning_rate(opt,c['lr_schedule'],index,layout['total_updates'])
+                    current_lr = set_learning_rate(opt,c['lr_schedule'],index,max(layout['total_updates'],stop_update))
                     progress('native_update',update=index,learning_rate=current_lr)
                     torch.npu.reset_peak_memory_stats()
                     started = time.monotonic()
                     passes = c['parity_passes'] if index == start_update else 0
-                    if c['batch_config'].get('batch_rule') and len(groups) != c['microbatch']:
-                        raise ValueError('one local microbatch per optimizer update required')
-                    metrics,parity = update(wrapped,opt,groups,real_queries,c,collation,cfg.jev_policy_id,device,world,passes,
+                    if not bucketed and c['batch_config'].get('batch_rule') and len(groups) != c['microbatch']:
+                        raise ValueError('local anchor count differs from the registered optimizer batch')
+                    metrics,parity = update(wrapped,opt,groups,real_queries,dict(c,microbatch=len(groups)) if bucketed else c,collation,cfg.jev_policy_id,device,world,passes,
                         **(dict(class_ema=class_ema) if online else {}))
                     if online:
-                        pending_next = stream.snapshot
-                        stream.publish(class_ema)
+                        if bucketed:
+                            pending_next = dynamic.source
+                            dynamic.source = class_ema.updates, class_ema.distribution()
+                        else:
+                            pending_next = stream.snapshot
+                            stream.publish(class_ema)
                         metrics.update(sampler_source_update=versions[0], sampler_lag=index-versions[0])
                     torch.npu.synchronize()
                     seconds = time.monotonic()-started
@@ -424,6 +462,9 @@ def run(c,root):
                             raise ValueError('incomplete inference parity')
                         atomic_json(out/'inference-parity.json',parity)
                     timing = dict(wait_seconds=preparation,local_groups=len(groups))
+                    if 'token_buckets' in c:
+                        timing.update(bucket=bucket['bucket'], bucket_max_tokens=bucket['max_tokens'],
+                                      local_max_tokens=bucket['local_max'], epoch=bucket['epoch'], epoch_end=bucket['end'])
                 else:
                     signal=[None];parts=None
                     if rank==0:
@@ -461,6 +502,8 @@ def run(c,root):
                 audit=audit_adam_shards(named,opt,index+1)
                 timing['adam_audit_seconds']=time.monotonic()-audit_begin
                 save_now=probe is None and pressure is None and ((index+1)%c['checkpoint_interval']==0 or index+1==stop_update)
+                if bucketed:
+                    save_now = pressure is None and (bucket['end'] or index+1 == stop_update)
                 if save_now:
                     if frozen!={n:tensor_identity(p.detach().cpu()) for n,p in wrapped.named_parameters() if not p.requires_grad}:
                         raise ValueError('frozen backbone changed')
@@ -520,10 +563,10 @@ def run(c,root):
                         gradient=digest((n,p.grad) for n,p in named if p.grad is not None),
                         parameters=digest(named),raw_grad_norm=metrics['actor/grad_norm'],loss=metrics['actor/pg_loss']))
 
-                if c.get('recovery') and not save_now and (index+1) % c['recovery']['interval'] == 0:
+                if c.get('recovery') and (not save_now or bucketed and index+1 != stop_update) and (index+1) % c['recovery']['interval'] == 0:
                     checkpoint_begin = time.monotonic()
                     recovery.save(root, named, opt, dict(rank=rank,world_size=world,completed_updates=index+1,
-                                  contract=window_contract), dict(ema=class_ema.state_dict(),pending=pending_next),dist)
+                                  contract=window_contract), dict(ema=class_ema.state_dict(),pending=pending_next,**({'bucket_cursor':bucket['cursor']} if bucketed else {})),dist)
                     atomic_json(out/f'recovery-timing-{index+1:04d}.json',dict(seconds=time.monotonic()-checkpoint_begin))
                 if (triplet and not online and not c['engineering_prefix'] and c.get('mine_after_window', True) and
                         (index+1 == len(batches) or batches[index+1]['epoch'] != batches[index]['epoch'])):
@@ -535,11 +578,13 @@ def run(c,root):
                         report.update(checkpoint_sha256=file_hash(root/f'checkpoint-{index+1:04d}-committed.json'))
                         atomic_json(root/f'confusion-epoch-{epoch+1}.json',report)
                     dist.barrier()
+                if bucketed and index+1 == stop_update:
+                    break
             atomic_json(out/'result.json',dict(passed=True,start_update=window_start,stop_update=stop_update,
                 executions=executions,scope='Native context instruction loop; task RL and efficacy separate'))
             dist.barrier()
             if rank==0:atomic_json(root/'result.json',dict(passed=True,start_update=window_start,
-                stop_update=stop_update,schedule_updates=layout['total_updates'],learning_population=c['batch_config']['source_queries'],
+                stop_update=stop_update,schedule_updates=stop_update if bucketed else layout['total_updates'],learning_population=c['batch_config']['source_queries'],
                 engineering_prefix=c['engineering_prefix']))
         finally:
             if stream is not None:stream.close()

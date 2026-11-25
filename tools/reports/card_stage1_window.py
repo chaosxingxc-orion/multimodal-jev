@@ -14,6 +14,26 @@ def read(path):
     return json.loads(Path(path).read_bytes())
 
 
+def verify_pack_inputs(previous, current, old_root, new_root, *, rebind_plan):
+    for key in ('population', 'policy_id'):
+        if previous[key] != current[key]:
+            raise ValueError('previous acoustic pack population or policy differs')
+    for name, key, field in [('card-cache.json', 'cache_sha256', 'layout_plan_sha256'),
+                             ('single.json', 'single_sha256', 'plan')]:
+        if previous[key] == current[key]:
+            continue
+        if not rebind_plan:
+            raise ValueError('previous prepared audio or cards differ')
+        old, new = old_root/name, new_root/name
+        if file_hash(old) != previous[key] or file_hash(new) != current[key]:
+            raise ValueError('prepared input bytes differ from receipt')
+        a, b = read(old), read(new)
+        # The published design changes the schedule hash inside the card-plan identity.
+        # The preparer already proved the original cache key and rebuilt this field.
+        if field not in a or dict(a, **{field: b[field]}) != b:
+            raise ValueError('previous prepared input differs beyond its schedule binding')
+
+
 def prepare(c, root):
     from tools.reports.initialize_context_stage1_policy import run
     from multimodal_jev.stage1_card_layout import from_panel
@@ -126,8 +146,8 @@ def run(c):
                 if file_hash(receipt)!=published['receipt_sha256']:
                     raise ValueError('previous preparation receipt changed')
                 prev=read(receipt)
-                if any(proof[k]!=prev[k] for k in ('population','policy_id','cache_sha256','single_sha256')):
-                    raise ValueError('previous prepared policy, audio or cards differ')
+                verify_pack_inputs(prev, proof, receipt.parent, root,
+                                   rebind_plan='token_buckets' in c and bool(c.get('cache_card_plan_sha256')))
                 pin=prev['packed_acoustics']
                 path=Path(published['root'])/'acoustics/index.json'
                 if file_hash(path)!=pin['sha256']:raise ValueError('published pack index changed')
@@ -166,7 +186,7 @@ def run(c):
     if not finite:
         witness = read(work/'finite/receipt.json')
         objective = c.get('triplet_objective', {})
-        if witness['updates'] != c['finite_updates']:
+        if ('token_buckets' in c and witness.get('token_buckets') != c['token_buckets']) or witness['updates'] != c['finite_updates']:
             raise ValueError('two finite updates required')
         if objective.get('kind') == KIND and witness.get('instruction_objective') != objective:
             raise ValueError('finite window did not admit this contrastive configuration')
@@ -229,6 +249,8 @@ def run(c):
         if prior['physical_devices'] != parent['physical_devices'] and reuse.get('topology_independent') is not True:
             raise ValueError('bootstrap reuse across topologies must be declared')
         parent['bootstrap_input'] = reuse['report']
+    if 'token_buckets' in c:
+        parent['token_buckets'] = c['token_buckets']
     if 'training_acoustic_engine' in c:
         parent['training_acoustic_engine']=c['training_acoustic_engine']
     if not finite and 'continuation' in c:
@@ -263,15 +285,42 @@ def run(c):
         (root/'run').rename(failed)
         (root/'config.json').rename(failed/'config.json')
     result = read(root/'run/result.json')
-    if result['passed'] is not True or result['stop_update']!=parent['stop_update'] or result['engineering_prefix']!=finite:
+    dynamic = parent.get('token_buckets')
+    actual_stop = result['stop_update']
+    if (result['passed'] is not True or result['engineering_prefix']!=finite
+            or ((not dynamic or finite) and actual_stop != parent['stop_update'])
+            or type(actual_stop) is not int or actual_stop < 1):
         raise ValueError('stage1 terminal differs')
     max_observed_lag = 0
     for rank in range(len(parent['physical_devices'])):
         rank_root=root/'run'/f'rank-{rank}'
-        if finite and read(rank_root/'inference-parity.json')['compared']!=c['parity_passes']*parent['microbatch']:
-            raise ValueError('finite inference parity incomplete')
-        for step in range(parent.get('start_update',0)+1,parent['stop_update']+1):
+        epoch_counts = []
+        epoch_count = 0
+        if finite:
+            parity = read(rank_root/'inference-parity.json')
+            passes = c['parity_passes']
+            widths = [parent['microbatch']]
+            if 'token_buckets' in parent:
+                widths = [read(rank_root/'update-0001.json')['input_service']['local_groups']]
+            if parity['inference_passes'] != passes or parity['compared'] != sum(widths[i % len(widths)] for i in range(passes)):
+                raise ValueError('finite inference parity incomplete')
+        for step in range(parent.get('start_update',0)+1,actual_stop+1):
             record=read(rank_root/f'update-{step:04d}.json')
+            if dynamic:
+                from bisect import bisect_left
+                info = record['input_service']
+                label = bisect_left(dynamic['max_tokens'], info['bucket_max_tokens'])
+                real = record['real_queries']
+                if (info['bucket'] != label or not 0 < info['local_groups'] <= dynamic['max_anchors'][label]
+                        or info['local_groups'] != math.ceil(real / len(parent['physical_devices']))
+                        or real < 1 or info['epoch'] != len(epoch_counts)):
+                    raise ValueError('bucket update geometry or epoch differs')
+                epoch_count += real
+                if info['epoch_end']:
+                    if epoch_count != parent['batch_config']['source_queries']:
+                        raise ValueError('incomplete bucket epoch')
+                    epoch_counts.append(step)
+                    epoch_count = 0
             if 'class_logit_ema' in parent:
                 lag = step-1-record['metrics']['sampler_source_update']
                 if lag != record['metrics']['sampler_lag'] or not 0 <= lag <= parent['class_logit_ema']['max_staleness_updates']:
@@ -279,7 +328,12 @@ def run(c):
                 max_observed_lag = max(max_observed_lag, lag)
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
+        if dynamic and not finite and (len(epoch_counts) != parent['batch_config']['epochs'] or epoch_count):
+            raise ValueError('incomplete bucket training population')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    if dynamic:
+        receipt.pop('microbatch')
+        receipt.update(token_buckets=dynamic, epoch_end_updates=epoch_counts)
     if 'continuation' in parent:
         receipt.update(start_update=parent['start_update'],stop_update=parent['stop_update'],continuation=parent['continuation'])
     if parent['instruction_objective']['kind'] == KIND:
@@ -289,7 +343,7 @@ def run(c):
     if 'class_logit_ema' in parent:
         receipt['sampler'] = dict(kind='class-logit-ema-v1',config=parent['class_logit_ema'],
             maximum_observed_lag_updates=max_observed_lag,
-            expected_updates=parent['stop_update'])
+            expected_updates=actual_stop)
     if 'finite_pressure' in parent:
         receipt['finite_pressure'] = parent['finite_pressure']
     commit_json(root/'receipt.json',receipt)

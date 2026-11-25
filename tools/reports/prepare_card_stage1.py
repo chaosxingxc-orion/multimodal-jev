@@ -21,9 +21,27 @@ def load(path, sha):
 
 def run(c):
     from multimodal_jev.card_contrast import KIND, Directions
+    if 'token_bucketing' in c:
+        from multimodal_jev.card_token_buckets import bind_buckets
+        bind_buckets(c)
+    if 'contrast_samples' in c:
+        from multimodal_jev.card_contrast import bind_sample_counts
+        bind_sample_counts(c)
     window = c['window']
+    if 'token_buckets' in window:
+        from multimodal_jev.card_token_buckets import validate
+        validate(window['token_buckets'])
+        if any(k in window for k in ('execution_microbatch', 'effective_anchors_per_rank', 'batch_rule', 'capacity_widths', 'continuation')):
+            raise ValueError('per-bucket updates cannot declare a fixed optimizer batch or legacy cursor')
+        # The legacy schedule authenticates source order only; its block size is not an optimizer batch.
+        width = max(window['token_buckets']['max_anchors'])
+        window.update(execution_microbatch=width, effective_anchors_per_rank=width, capacity_widths=[width],
+                      batch_rule='microbatch_times_training_npus')
     if 'batch_rule' in window:
         window['training_npus'] = device_count(c['deployment']['devices'], window, 'training_npus')
+    if 'token_buckets' in window:
+        if window['triplet_objective']['kind'] != KIND or not c.get('bind_design_budget'):
+            raise ValueError('token buckets require a budget-bound contrast schedule')
     if 'continuation' in window:
         from multimodal_jev.card_experiment_config import DEFAULT_PROFILE
         origin = window['continuation']
@@ -36,7 +54,7 @@ def run(c):
         admission=c['comparison_admission']
         verdict=load(admission['path'],admission['sha256'])
         if not (verdict['passed'] is True and verdict['identical_training_state'] is True and
-                0 <= verdict['max_abs_logit_error'] <= verdict.get('logit_atol', 0) and 'continuation' in window):
+                0 <= verdict['max_abs_logit_error'] <= verdict.get('logit_atol', 0) and ('continuation' in window or 'token_buckets' in window)):
             raise ValueError('acoustic engine lacks an accepted paired training comparison')
     objective = window.get('triplet_objective', {})
     if objective.get('kind') == KIND:
@@ -83,6 +101,9 @@ def run(c):
             d['batch_config'].update(training_devices=w['training_npus'], batch_rule=w['batch_rule'],
                                      microbatch=w['execution_microbatch'], per_dp_replica_batch=w['effective_anchors_per_rank'])
             plan = derive(d['batch_config'])
+            if 'token_buckets' in w:
+                d['optimizer_batching'] = dict(rule='one_update_per_token_bucket', token_buckets=w['token_buckets'],
+                    endpoint='last_real_anchor_of_final_epoch', fixed_block_counts='source_order_only')
             d.update(global_batch=plan['global_batch'], instruction_objective=w['triplet_objective'],total_updates=plan['total_updates'], updates_per_epoch=plan['updates_per_epoch'],
                      reference_endpoint=plan['total_updates'], tail_real=plan['tail_real_queries'],
                      tail_padding=plan['tail_padding_slots'],
