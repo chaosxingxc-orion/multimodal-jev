@@ -1,0 +1,433 @@
+{
+  "spec": {
+    "seed": 317,
+    "threads": 2,
+    "warmup": 1,
+    "repeats": 2,
+    "contrast_samples": {
+      "positive_recordings": 1,
+      "negative_cards": 3,
+      "negative_recordings": 3
+    },
+    "panel": "/probe/panel/panel-8.json",
+    "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+    "lanes": [
+      {
+        "band": 1,
+        "width": 16,
+        "graph": null
+      },
+      {
+        "band": 1,
+        "width": 16,
+        "graph": "attention_and_projection_shared_splits_v1"
+      },
+      {
+        "band": 1,
+        "width": 32,
+        "graph": null
+      },
+      {
+        "band": 1,
+        "width": 32,
+        "graph": "attention_and_projection_shared_splits_v1"
+      },
+      {
+        "band": 3,
+        "width": 16,
+        "graph": null
+      },
+      {
+        "band": 3,
+        "width": 16,
+        "graph": "attention_and_projection_shared_splits_v1"
+      },
+      {
+        "band": 3,
+        "width": 32,
+        "graph": null
+      },
+      {
+        "band": 3,
+        "width": 32,
+        "graph": "attention_and_projection_shared_splits_v1"
+      }
+    ]
+  },
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "equal_witnesses": true,
+  "cases": [
+    {
+      "graph": null,
+      "width": 16,
+      "tokens": 116,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 1,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        116,
+        115
+      ],
+      "runs": [
+        {
+          "seconds": [
+            6.640835530124605,
+            11.183715570019558,
+            0.5253932899795473
+          ],
+          "witness": "1b06f3482d07e377515d3acc2e719db7fe3f24d8c7b21fd460971412b5b5ed77"
+        },
+        {
+          "seconds": [
+            5.18296048999764,
+            11.234761629719287,
+            0.04411432007327676
+          ],
+          "witness": "6ed284b640f9957c47c2254425ab9f8fe8ad519dc2e1866c0fb1586f744164cf"
+        },
+        {
+          "seconds": [
+            5.325668420176953,
+            10.864950449904427,
+            0.04127103998325765
+          ],
+          "witness": "0384801581fe7c4289ff6571c3b0ab2a5400b80da10fb6d54f438ded5c91624e"
+        }
+      ],
+      "median_phase_seconds": [
+        5.254314455087297,
+        11.049856039811857,
+        0.042692680028267205
+      ],
+      "anchors_per_second": 1.9575621119213338,
+      "container": "db979e5a71aa404b415f90813adce2ee20cf7af21787d601042cd4e2c7a0f7a7"
+    },
+    {
+      "graph": "attention_and_projection_shared_splits_v1",
+      "width": 16,
+      "tokens": 116,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 1,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        116,
+        115
+      ],
+      "runs": [
+        {
+          "seconds": [
+            6.514539599651471,
+            8.521267630159855,
+            0.5230772800277919
+          ],
+          "witness": "1b06f3482d07e377515d3acc2e719db7fe3f24d8c7b21fd460971412b5b5ed77"
+        },
+        {
+          "seconds": [
+            5.209826180012897,
+            8.586439490085468,
+            0.041489149909466505
+          ],
+          "witness": "6ed284b640f9957c47c2254425ab9f8fe8ad519dc2e1866c0fb1586f744164cf"
+        },
+        {
+          "seconds": [
+            5.092027109814808,
+            8.35724148992449,
+            0.04122830997221172
+          ],
+          "witness": "0384801581fe7c4289ff6571c3b0ab2a5400b80da10fb6d54f438ded5c91624e"
+        }
+      ],
+      "median_phase_seconds": [
+        5.150926644913852,
+        8.471840490004979,
+        0.04135872994083911
+      ],
+      "anchors_per_second": 2.341898802490915,
+      "container": "8c12e503885e21ea4b2fdaa736656af03137f34cc910dbe720f27ce2f8640492"
+    },
+    {
+      "graph": null,
+      "width": 32,
+      "tokens": 116,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 1,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        116
+      ],
+      "runs": [
+        {
+          "seconds": [
+            6.336950510041788,
+            12.64593761996366,
+            0.5462229500990361
+          ],
+          "witness": "00503c5af87051405e5da13876dda84fd7caf457b0c6dfe155c1b45695f1d191"
+        },
+        {
+          "seconds": [
+            4.552653109887615,
+            12.35570108005777,
+            0.027242139913141727
+          ],
+          "witness": "5cf5716bd6dd5375b79c79b71698502ad1b9ff2c0530009665d0eeb1c6345191"
+        },
+        {
+          "seconds": [
+            4.909486650023609,
+            12.338362209964544,
+            0.0250594699755311
+          ],
+          "witness": "353d8222e36198de00a61cb74b7af602bb5dfb603f678a4438ed797b096654d9"
+        }
+      ],
+      "median_phase_seconds": [
+        4.731069879955612,
+        12.347031645011157,
+        0.026150804944336414
+      ],
+      "anchors_per_second": 1.870879789585419,
+      "container": "505c960f832363969a7153ee7ef83269ff8e0c78c1fbee23692ebe60e940f83f"
+    },
+    {
+      "graph": "attention_and_projection_shared_splits_v1",
+      "width": 32,
+      "tokens": 116,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 1,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        116
+      ],
+      "runs": [
+        {
+          "seconds": [
+            5.743168769869953,
+            7.116940530017018,
+            0.5288705199491233
+          ],
+          "witness": "00503c5af87051405e5da13876dda84fd7caf457b0c6dfe155c1b45695f1d191"
+        },
+        {
+          "seconds": [
+            4.6034854599274695,
+            6.5995864700526,
+            0.024804270127788186
+          ],
+          "witness": "5cf5716bd6dd5375b79c79b71698502ad1b9ff2c0530009665d0eeb1c6345191"
+        },
+        {
+          "seconds": [
+            4.359739650040865,
+            6.645027759950608,
+            0.0218310400377959
+          ],
+          "witness": "353d8222e36198de00a61cb74b7af602bb5dfb603f678a4438ed797b096654d9"
+        }
+      ],
+      "median_phase_seconds": [
+        4.481612554984167,
+        6.622307115001604,
+        0.023317655082792044
+      ],
+      "anchors_per_second": 2.8758261431080623,
+      "container": "9d586a2098f1ea70a6d7281b80f21d9f49acb7a242a31a0aff804211242295f3"
+    },
+    {
+      "graph": null,
+      "width": 16,
+      "tokens": 165,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 3,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        165,
+        158
+      ],
+      "runs": [
+        {
+          "seconds": [
+            7.623141770251095,
+            14.530772649915889,
+            0.5405907300300896
+          ],
+          "witness": "567917c018a45500617bb5219b5c6af57098a57ba2915beae89ac373f7e5e170"
+        },
+        {
+          "seconds": [
+            6.560532769886777,
+            14.04108961019665,
+            0.045180949848145247
+          ],
+          "witness": "abc911845b7bb98780bed96222c028d7456145321ff77d41d0604c7f5648b32b"
+        },
+        {
+          "seconds": [
+            6.614971770206466,
+            14.760036899941042,
+            0.05517591000534594
+          ],
+          "witness": "83619a36eb793afd3bf2cbd007f7d5b8fc6e8fd3895b6b7a0974ea1670d40b62"
+        }
+      ],
+      "median_phase_seconds": [
+        6.587752270046622,
+        14.400563255068846,
+        0.050178429926745594
+      ],
+      "anchors_per_second": 1.521021422369004,
+      "container": "908908f47b7e8de62d0abc457a0cc6db705b18da25bf3f34b75240c61ab6e5f2"
+    },
+    {
+      "graph": "attention_and_projection_shared_splits_v1",
+      "width": 16,
+      "tokens": 165,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 3,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        165,
+        158
+      ],
+      "runs": [
+        {
+          "seconds": [
+            6.97999143996276,
+            9.308182619977742,
+            0.5256130900233984
+          ],
+          "witness": "567917c018a45500617bb5219b5c6af57098a57ba2915beae89ac373f7e5e170"
+        },
+        {
+          "seconds": [
+            5.977520089829341,
+            8.61826712009497,
+            0.04124553990550339
+          ],
+          "witness": "abc911845b7bb98780bed96222c028d7456145321ff77d41d0604c7f5648b32b"
+        },
+        {
+          "seconds": [
+            5.934922529850155,
+            8.675553099950776,
+            0.041913390159606934
+          ],
+          "witness": "83619a36eb793afd3bf2cbd007f7d5b8fc6e8fd3895b6b7a0974ea1670d40b62"
+        }
+      ],
+      "median_phase_seconds": [
+        5.956221309839748,
+        8.646910110022873,
+        0.04157946503255516
+      ],
+      "anchors_per_second": 2.185089227879902,
+      "container": "6f85134eda02913befae6177eb4ae2149321bfabf7fa5436fbb821be37f3497f"
+    },
+    {
+      "graph": null,
+      "width": 32,
+      "tokens": 165,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 3,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        165
+      ],
+      "runs": [
+        {
+          "seconds": [
+            7.0475286799483,
+            25.305810120189562,
+            0.5504026999697089
+          ],
+          "witness": "08644be8f298373c44e747154a6f0a6081da4b41e73e5ff6558a13322b5d6a7f"
+        },
+        {
+          "seconds": [
+            5.618623310001567,
+            24.896238259971142,
+            0.026163630187511444
+          ],
+          "witness": "f58ff9b37ebe4fb6d3f0d23652cc453022cc81494d7f6cacf93eb4d57b73d31a"
+        },
+        {
+          "seconds": [
+            5.612005309900269,
+            24.86179340002127,
+            0.032244569854810834
+          ],
+          "witness": "4bfc6329d5eec27925282894e3b61cfe6053a9226d0d11f0da6911087feea21a"
+        }
+      ],
+      "median_phase_seconds": [
+        5.615314309950918,
+        24.879015829996206,
+        0.02920410002116114
+      ],
+      "anchors_per_second": 1.0483713893818494,
+      "container": "5eb10f2b08d3fe3548a97e24b91ff5aa1cd9e9124d02218ef7461086d18c47bf"
+    },
+    {
+      "graph": "attention_and_projection_shared_splits_v1",
+      "width": 32,
+      "tokens": 165,
+      "anchors": 32,
+      "pairs": 8,
+      "policy": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+      "band": 3,
+      "panel_sha256": "b83952864da7462dba4daa6e3146c34337955f84dd7953c112e371d30492ce3f",
+      "lengths": [
+        165
+      ],
+      "runs": [
+        {
+          "seconds": [
+            6.977365559898317,
+            8.720327550079674,
+            0.528935229871422
+          ],
+          "witness": "08644be8f298373c44e747154a6f0a6081da4b41e73e5ff6558a13322b5d6a7f"
+        },
+        {
+          "seconds": [
+            5.43804757995531,
+            8.0820939601399,
+            0.026671969797462225
+          ],
+          "witness": "f58ff9b37ebe4fb6d3f0d23652cc453022cc81494d7f6cacf93eb4d57b73d31a"
+        },
+        {
+          "seconds": [
+            5.423835479887202,
+            8.234502770006657,
+            0.02458412991836667
+          ],
+          "witness": "4bfc6329d5eec27925282894e3b61cfe6053a9226d0d11f0da6911087feea21a"
+        }
+      ],
+      "median_phase_seconds": [
+        5.430941529921256,
+        8.158298365073279,
+        0.025628049857914448
+      ],
+      "anchors_per_second": 2.350371676729972,
+      "container": "889c678d100445fd32df6bee2b70829f390724acc43e7d1d3264a42d4e908028"
+    }
+  ]
+}

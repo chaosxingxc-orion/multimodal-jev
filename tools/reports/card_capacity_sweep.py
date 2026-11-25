@@ -32,6 +32,17 @@ def capacity(experiment, local, variant=None):
     if protocol.read_bytes() != committed(selected['commit'], protocol):
         raise ValueError('capacity protocol differs from ledger')
     c, _ = load_config(str(protocol), str(local))
+    if c.get('finite_only') is True:
+        from tools.reports.prepare_card_stage1 import run as prepare
+        if not (c.get('token_bucketing') and c.get('contrast_samples') and c['window'].get('training_graph')):
+            raise ValueError('expected an explicit graph, contrast samples and real token buckets')
+        prepare(c)
+        operations = read(Path(c['output'])/'operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+        if [j['name'] for chain in operations['chains'] for group in chain for j in group] != ['prepare','finite']:
+            raise ValueError('capacity variant must terminate after finite checks')
+        if run(operations):
+            raise RuntimeError('real bucket finite run failed')
+        return read(Path(operations['operations'])/'finite-collected.json')
     if c.get('kind') == 'tower_comparison':
         from tools.reports.card_tower_comparison import execute
         return execute(c)

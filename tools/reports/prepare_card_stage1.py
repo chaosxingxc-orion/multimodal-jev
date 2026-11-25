@@ -214,7 +214,7 @@ def run(c):
     devices=parent['physical_devices']
     groups=[]
     sample=json.loads((Path(parent['release'])/'learning.jsonl').open().readline())
-    for role in ('prepare','finite','formal'):
+    for role in (('prepare','finite') if c.get('finite_only') is True else ('prepare','finite','formal')):
         spec=dict(phase='card_stage1', role=role, entry='/jev-entry',work='/jev-work',source=dict(
             root='/jev-entry/source',sha256=frozen['manifest_sha256']),sample=dict(
             path=sample['audio'] if extension else str(Path(parent['audio_mirror_root'])/'audio'/(sample['audio_sha256']+'.audio')),sha256=sample['audio_sha256']),

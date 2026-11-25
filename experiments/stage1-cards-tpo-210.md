@@ -1,6 +1,8 @@
 # JEV-210：双向 InfoNCE Stage1 与融合 TPO Stage2
 
-本次修订 `bidirectional-m16p3-packed-v1` 替代已停止的 `online-ema-v9`，沿用 JEV-210。以[统一入口配置](pipelines/JEV-210.json)和[双向采样与 loss 协议](stage1-card-bidirectional.md)为准。已授权在 181 八卡派发；启动验收须独立复核正式训练前三步。
+当前正式训练暂停。本轮工程验证使用真实 TRAIN 音频与知识卡、有放回采样，配置为 **1 个锚点、1 条额外同类正语音、3 张错卡、3 条异类语音**；保留两个 InfoNCE 方向。统一入口的 `capacity --experiment JEV-210 --capacity-variant real-buckets` 指向[独立有限配置](../configs/portable/operations/card-stage1-real-buckets-8-finite.json)，只封装 prepare 和 finite；需独立的本地包及部署绑定 `REAL_BUCKET_FINITE_PACKAGE`、`REAL_BUCKET_FINITE_DEPLOYMENT`。旧 `run/resume` 配置只供追溯，不用于新配方。
+
+以下为此前正式训练方案。修订 `bidirectional-m16p3-packed-v1` 替代已停止的 `online-ema-v9`，沿用 JEV-210。以[统一入口配置](pipelines/JEV-210.json)和[双向采样与 loss 协议](stage1-card-bidirectional.md)为准。已授权在 181 八卡派发；启动验收须独立复核正式训练前三步。
 
 - **起点与预算：**从 209 同源的冻结初始策略重新训练 0.6B、LoRA r128/α256，不从 v9 的 checkpoint 接续。沿用 clean TRAIN 109,610 条、68 类、两轮；181 八卡，每卡 16 个锚点，无梯度累积，全局 128。每个满批 1,792 个配对，两轮 1,714 步。
 - **训练：**每组 1 个锚点＋3 个额外同类正样本＋5 个固定语音错卡负例＋5 个固定卡异类语音负例。有放回，仍排除锚点自配和真类负例。两个方向直接优化成员 logit，各占 0.5；同卡四个正例不互斥。新目标不含旧的概率间隔或双侧阈值项。
