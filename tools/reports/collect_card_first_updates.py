@@ -4,6 +4,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from bisect import bisect_left
 import shlex
 import subprocess
 
@@ -20,7 +21,20 @@ def read(path):
 def summarize(rows, step, config):
     world = len(config['physical_devices'])
     n = rows[0]['real_queries']
-    if len(rows) != world or n != config['global_batch']:
+    buckets = config.get('token_buckets')
+    geometry = {}
+    if buckets:
+        first = rows[0]['input_service']
+        limit = first['bucket_max_tokens']
+        bucket = bisect_left(buckets['max_tokens'], limit)
+        slots = math.ceil(n / world)
+        if (not 0 < slots <= buckets['max_anchors'][bucket] or
+                max(r['input_service']['local_max_tokens'] for r in rows) != limit or
+                any((r['input_service']['bucket'], r['input_service']['bucket_max_tokens'],
+                     r['input_service']['local_groups']) != (bucket, limit, slots) for r in rows)):
+            raise ValueError('startup batch differs from the admitted token bucket')
+        geometry = dict(bucket_max_tokens=limit, slots_per_rank=slots)
+    if len(rows) != world or (not buckets and n != config['global_batch']):
         raise ValueError('incomplete startup batch')
     sums = {}
     gradu = []
@@ -61,7 +75,7 @@ def summarize(rows, step, config):
         if (not math.isfinite(loss) or not math.isclose(loss, rebuilt, abs_tol=1e-6)
                 or len(rates) != 1 or not 0 < min(rates) < math.inf):
             raise ValueError('global triplet components or learning rate differ')
-        return dict(step=step, real_queries=n, ranks=world, loss=loss, recomputed_loss=rebuilt,
+        return dict(**geometry, step=step, real_queries=n, ranks=world, loss=loss, recomputed_loss=rebuilt,
                     learning_rate=rates.pop(), grad_norm=metrics['actor/grad_norm'],
                     max_prepare_seconds=max(row['preparation_seconds'] for row in rows),
                     max_rank_seconds=max(row['total_seconds'] for row in rows),
@@ -109,7 +123,14 @@ def collect(package, count, timeout):
         plan = derive(batch)
         expected_stop = (plan['updates_per_epoch'] * window['stop_after_epoch']
                          if 'stop_after_epoch' in window else plan['total_updates'])
-        if (config['global_batch'] != plan['global_batch'] or config['microbatch'] != finite['microbatch']
+        dynamic = 'token_buckets' in window
+        if dynamic and (window['token_buckets'] != config.get('token_buckets')
+                or window['token_buckets'] != finite.get('token_buckets')
+                or window['training_graph'] != config.get('training_graph')
+                or window['training_graph'] != finite.get('training_graph')
+                or config['finite_graph_admission']['sha256'] != file_hash(ops/'finite-collected.json')):
+            raise ValueError('formal graph or buckets differ from admitted finite receipt')
+        if (config['global_batch'] != plan['global_batch'] or (not dynamic and config['microbatch'] != finite['microbatch'])
                 or config['instruction_objective'] != window['triplet_objective']):
             raise ValueError('triplet objective or admitted batch differs')
     if (finite['engineering_prefix'] is not True or finite['updates'] != window['finite_updates']
@@ -131,7 +152,9 @@ def collect(package, count, timeout):
         raise ValueError('incomplete formal prefix')
     result = dict(container_id=obj['Id'], image=obj['Image'], state=obj['State']['Status'],
                   config_sha256=hashlib.sha256(cfg_raw).hexdigest(), policy_id=prepare['policy_id'],
-                  plan_sha256=file_hash(entry/'card-plan.json'), finite=finite, total_updates=config['stop_update'],
+                  plan_sha256=file_hash(entry/'card-plan.json'), finite=finite,
+                  **(dict(epochs=config['batch_config']['epochs'], population=config['batch_config']['source_queries'])
+                     if 'token_buckets' in config else dict(total_updates=config['stop_update'])),
                   updates=[summarize(rows[i*world:(i+1)*world], i+1, config) for i in range(count)])
     commit_json(ops/'first-updates.json', result)
     return result
