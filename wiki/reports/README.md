@@ -17,4 +17,4 @@
 | JEV-207 | [新构造的音频对与 actor 排序](JEV-207.md) | 训练与五组评测已审，源域未晋级 |
 | JEV-208 | [Stage1 错例覆盖与当前概率间隔](JEV-208.md) | 102 步与五面板已审，未晋级；[错例分析](JEV-208-errors.md)、[三点验证](JEV-208-curve.md) |
 | JEV-209 | [0.6B r128 知识卡与融合 TPO](JEV-209.md) | 混合版全 TRAIN 打分已审，第二轮正式第 144–146 步已审核；[真人版报告](../archive/JEV-209-real-only/report.md) |
-| JEV-210 | [0.6B 多负卡 Stage1](JEV-210.md) | K=16，直接对照 209 混合版；CPU 配置与封包通过，待 NPU 验收 |
+| JEV-210 | [0.6B 双向 InfoNCE Stage1](JEV-210.md) | 真实 TRAIN 1＋1＋3＋3，181 DP8 两步有限验收通过；正式训练暂停 |

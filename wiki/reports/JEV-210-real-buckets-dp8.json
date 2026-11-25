@@ -1,0 +1,120 @@
+{
+  "source_commit": "2ddd1dd",
+  "container": "e61050da8c09e7671af5694cbdab8a7832af86dbf91dad5514faed0591052e57",
+  "receipt": {
+    "updates": 2,
+    "engineering_prefix": true,
+    "config_sha256": "ea97c5b2b5f447ebca0451770f407cb0f3b803c4b67cf82241eb68c0302904df",
+    "token_buckets": {
+      "max_tokens": [
+        116,
+        136,
+        165
+      ],
+      "max_anchors": [
+        32,
+        24,
+        16,
+        8
+      ],
+      "lookahead_batches": 2
+    },
+    "epoch_end_updates": [],
+    "instruction_objective": {
+      "kind": "card_bidirectional_infonce_v1",
+      "temperature": 0.1,
+      "probability_coefficient": 0.0,
+      "sample_with_replacement": true,
+      "fixed_audio_weight": 0.5,
+      "fixed_card_weight": 0.5,
+      "positive_recordings_per_anchor": 1,
+      "negative_cards_per_anchor": 3,
+      "negative_recordings_per_anchor": 3
+    },
+    "negative_cards_per_anchor": 3,
+    "sampler": {
+      "kind": "class-logit-ema-v1",
+      "config": {
+        "decay": 0.95,
+        "temperature": 0.2,
+        "uniform_mix": 0.05,
+        "min_shared_coordinates": 4,
+        "max_staleness_updates": 1
+      },
+      "maximum_observed_lag_updates": 1,
+      "expected_updates": 2
+    },
+    "finite_pressure": {
+      "anchor": "slurp:audio-1497621480.flac",
+      "offset": 1024
+    }
+  },
+  "source_population": 109610,
+  "pack_sha256": "ee84685a2c83503648b4dc6f4805ef74e3ce3206e2ad8f55b374ea0ab2cd294d",
+  "steps": [
+    {
+      "step": 1,
+      "length": 386,
+      "local_slots": 2,
+      "real": 12,
+      "loss": 1.4548646211624146,
+      "lag": 0,
+      "max_actor_seconds": 14.997672819998115,
+      "max_total_seconds": 15.192092980025336,
+      "max_allocated_bytes": 3522422272
+    },
+    {
+      "step": 2,
+      "length": 116,
+      "local_slots": 32,
+      "real": 256,
+      "loss": 1.7058486938476562,
+      "lag": 1,
+      "max_actor_seconds": 13.376487290021032,
+      "max_total_seconds": 13.438491439912468,
+      "max_allocated_bytes": 6746379776
+    }
+  ],
+  "parity": [
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    },
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    },
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    },
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    },
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    },
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    },
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    },
+    {
+      "inference_passes": 4,
+      "compared": 8,
+      "max_abs": 0.0
+    }
+  ]
+}
