@@ -1,0 +1,78 @@
+{
+  "container_id": "b1a66f5d90bc4c6df99951459d7f4067fee91cf48852b2640624d85d1df4c500",
+  "image": "sha256:52ba94e1b6ba35f09066a92222f013ce9563fdbd83a6a5e7a60d209ac29f756c",
+  "state": "running",
+  "config_sha256": "2219a1124ea58ef8763d01a8cbc98dcb9d83db2c291e568e32b8eb8416bbfff4",
+  "policy_id": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+  "plan_sha256": "bf6e34943d9170f3497be50c4a7cadb05171121650c736c11d67908cc4bb0bd6",
+  "finite": {
+    "microbatch": 8,
+    "updates": 2,
+    "engineering_prefix": true,
+    "config_sha256": "0b6af9598bdad5bc6e94ad0b6e25cf7eb8e6276ce78f0f0cc018274bd6935164",
+    "instruction_objective": {
+      "kind": "card_bidirectional_infonce_v1",
+      "temperature": 0.1,
+      "probability_coefficient": 0.0,
+      "positive_recordings_per_anchor": 5,
+      "negative_cards_per_anchor": 5,
+      "negative_recordings_per_anchor": 5,
+      "sample_with_replacement": true,
+      "fixed_audio_weight": 0.5,
+      "fixed_card_weight": 0.5
+    },
+    "negative_cards_per_anchor": 5,
+    "sampler": {
+      "kind": "class-logit-ema-v1",
+      "config": {
+        "decay": 0.95,
+        "temperature": 0.2,
+        "uniform_mix": 0.05,
+        "min_shared_coordinates": 4,
+        "max_staleness_updates": 1
+      },
+      "maximum_observed_lag_updates": 1,
+      "expected_updates": 2
+    },
+    "finite_pressure": {
+      "offset": 1152,
+      "anchor": "slurp:audio-1497621480.flac"
+    }
+  },
+  "total_updates": 1713,
+  "updates": [
+    {
+      "step": 1,
+      "real_queries": 64,
+      "ranks": 8,
+      "loss": 2.2391204833984375,
+      "recomputed_loss": 2.2391204833984375,
+      "learning_rate": 1.25e-05,
+      "grad_norm": 63.056095123291016,
+      "max_rank_seconds": 15.77598166000098,
+      "max_peak_allocated": 10482278400
+    },
+    {
+      "step": 2,
+      "real_queries": 64,
+      "ranks": 8,
+      "loss": 1.9511698484420776,
+      "recomputed_loss": 1.9511698484420776,
+      "learning_rate": 2.5e-05,
+      "grad_norm": 25.692567825317383,
+      "max_rank_seconds": 23.193774919956923,
+      "max_peak_allocated": 20433705472
+    },
+    {
+      "step": 3,
+      "real_queries": 64,
+      "ranks": 8,
+      "loss": 1.6807448863983154,
+      "recomputed_loss": 1.6807448267936707,
+      "learning_rate": 3.7500000000000003e-05,
+      "grad_norm": 35.651344299316406,
+      "max_rank_seconds": 14.973797230049968,
+      "max_peak_allocated": 13484056064
+    }
+  ]
+}
