@@ -120,6 +120,8 @@ def bind_completed_endpoints(c):
                   training_deployment=dict(path=str(deployment), sha256=file_hash(deployment)))
     result['completed_endpoints'] = dict(inputs, stage1_training=dict(
         path=str(proof_path.with_name('training.json')), sha256=proof['config_sha256']))
+    if 'stage1_updates' not in result:
+        result['stage1_updates'] = read_pinned(result['completed_endpoints']['stage1_training'])['stop_update']
     return result
 
 def single_card_modes(config):
@@ -276,6 +278,8 @@ def run(c):
         ports[name]['single_card_mode'] = mode
 
     deploy = dict(c['deployment'])
+    # Each concurrent worker checks its own cards before mounting them.
+    deploy.pop('idle_devices', None)
     datasets = {name:dict(logical_partitions=n) for name,n in partitions.items()}
     inferred = {name:arms for name in datasets}
     inputs = {c['stage1_snapshot'], str(Path(trained_deploy['remote_root'])/'tpo')}

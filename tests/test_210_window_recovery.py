@@ -116,7 +116,7 @@ def test_published_design_and_legacy_cache_rebinding(tmp_path,monkeypatch):
     from tools.reports import prepare_card_stage1 as prepare
     cfg=json.loads(Path('configs/portable/operations/card-stage1-knegative-ema-dp8-v9.json').read_bytes())
     monkeypatch.setattr('multimodal_jev.local_checkpoint.check_paths',lambda _:None)
-    cfg.update(output=str(tmp_path/'out'))
+    cfg.update(output=str(tmp_path/'out'), deployment=dict(devices=list(range(8))))
     cfg['mixed']['data']=str(tmp_path)
     cfg['mixed']['protocol']=str(tmp_path/'protocol.json')
     for name in ['protocol','synthetic','admission','annotation-errors']:
@@ -139,3 +139,17 @@ def test_published_design_and_legacy_cache_rebinding(tmp_path,monkeypatch):
     assert [d[k] for k in ('global_batch','updates_per_epoch','total_updates','tail_real','tail_padding')]==[64,1713,3426,42,22]
     assert cfg['window']['cache_card_plan_sha256']==file_hash(tmp_path/'old/entry/card-plan.json')
     assert d['evaluation_steps']==cfg['window']['evaluation_steps']==[0,1713,3426]
+
+    for pool in ([2, 6], [0, 2, 4, 6]):
+        candidate = json.loads(Path('configs/portable/operations/card-stage1-device-pool-v1.json').read_bytes())
+        candidate.update(output=str(tmp_path/f'pool-{len(pool)}'), deployment=dict(devices=pool))
+        candidate['mixed'] = cfg['mixed']
+        with pytest.raises(StopIteration):
+            prepare.run(candidate)
+        design = json.loads((Path(candidate['output'])/'entry/design.json').read_bytes())['stage1']
+        width = 16 * len(pool)
+        steps = (109610 + width - 1) // width
+        assert design['global_batch'] == width
+        assert design['evaluation_steps'] == [0, steps, 2 * steps]
+        assert candidate['window']['checkpoint_interval'] == steps
+        assert candidate['window']['cache_card_plan_sha256'] == cfg['window']['cache_card_plan_sha256']

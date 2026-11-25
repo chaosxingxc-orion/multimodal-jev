@@ -11,6 +11,7 @@ import sys
 import tarfile
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_device_config import physical_devices
 from multimodal_jev.context_topology_batch_plan import derive
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.slurp_training import content_hash
@@ -53,7 +54,7 @@ def prepare(c):
                 or deployment['idle_devices'] != prior_entry['idle_devices']):
             raise ValueError('recompute probe requires the exact baseline comparison and lease')
     upstream = Path(old['remote_root'])
-    devices = deployment['idle_devices']
+    devices = physical_devices(deployment['idle_devices'])
     policy = settings('batch_comparison', c)
     from multimodal_jev.card_experiment_config import positive_int
     if not all(positive_int(policy[k]) for k in ('ssh_connect_seconds','ssh_command_seconds')):
@@ -65,8 +66,6 @@ def prepare(c):
     execution_widths = c.get('execution_widths', widths[1:] if prior_comparison is not None else widths)
     if not execution_widths or execution_widths != [w for w in widths if w in execution_widths]:
         raise ValueError('execution widths must be an ordered subset of the comparison widths')
-    if not devices or len(set(devices)) != len(devices):
-        raise ValueError('comparison requires a unique, nonempty device allocation')
     if not set(devices).isdisjoint(old['idle_devices']):
         # A retired run can lend its devices, but its successful preparation is still reusable.
         role = c.get('retired_parent_role')

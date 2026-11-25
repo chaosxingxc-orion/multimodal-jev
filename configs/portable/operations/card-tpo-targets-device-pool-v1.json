@@ -1,0 +1,42 @@
+{
+  "output": "${CARD_TPO_ROOT}/targets",
+  "release": "${CARD_TPO_REAL_RELEASE}",
+  "synthetic": "${CARD_TPO_SYNTHETIC}",
+  "calibration": "${CARD_TPO_CALIBRATION}",
+  "native": "${CARD_TPO_NATIVE_RELEASE}",
+  "annotation": "${CARD_TPO_TRAIN_ANNOTATION}",
+  "execution": {
+    "io_workers": 8,
+    "cpu_workers": 8,
+    "min_parallel": 16,
+    "chunk": 8,
+    "window": 16
+  },
+  "cpu_threads": 4,
+  "schedule": {
+    "epochs": 1,
+    "microbatch": 1,
+    "seed": 317
+  },
+  "selection": {
+    "easy_fraction": 0.25,
+    "replay_class_priority": 16,
+    "probability_examples_per_type": 384
+  },
+  "reward": {
+    "temperature": 1.0,
+    "probability_epsilon": 1e-06,
+    "max_displacement": 1.0,
+    "audio_to_label": 0.5,
+    "label_to_audio": 0.5,
+    "brier": 1.0
+  },
+  "loss": {
+    "margin": 0.1,
+    "weight": 0.014705882352941176,
+    "gate": "strict_target_top1"
+  },
+  "single_host_score": "${CARD_ENDPOINT_SCORE}",
+  "single_host_operations": "${CARD_SCORE_ENDPOINT_OPERATIONS}",
+  "training_layout": "${CARD_STAGE2_LAYOUT}"
+}

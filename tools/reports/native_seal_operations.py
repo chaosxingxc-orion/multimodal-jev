@@ -23,6 +23,10 @@ from multimodal_jev.baseline import file_hash
 RESOURCE_POLICY = Path(__file__).resolve().parents[2]/'configs/portable/operations/experiment-container-resources.json'
 
 
+def idle_npus(smi):
+    return {int(i) for i in re.findall(r'No running processes found in NPU ([0-9]+)\b', smi)}
+
+
 def container_memory(requested, minimum_gib):
     match = re.fullmatch(r'([1-9][0-9]*)([bkmg]?)', requested)
     if not match or type(minimum_gib) is not int or minimum_gib < 1:
@@ -160,8 +164,7 @@ def run(c, on_started=None):
             active = checked(['docker','ps','-q']).split()
             mapped = {d['PathOnHost'] for obj in (json.loads(checked(['docker','inspect',*active])) if active else [])
                       for d in (obj['HostConfig']['Devices'] or [])}
-            if all(f'No running processes found in NPU {i} ' in smi
-                   and f'/dev/davinci{i}' not in mapped for i in devices):
+            if devices <= idle_npus(smi) and not mapped.intersection(f'/dev/davinci{i}' for i in devices):
                 return
             remaining = deadline - time.monotonic()
             if remaining <= 0:
@@ -186,7 +189,7 @@ def run(c, on_started=None):
         if devices:
             required_idle = c.get('idle_devices',devices)
             smi = checked(['npu-smi','info'])
-            if any(f'No running processes found in NPU {i}' not in smi for i in required_idle):
+            if not set(required_idle) <= idle_npus(smi):
                 raise ValueError('assigned devices are busy: '+str(required_idle))
             active = checked(['docker','ps','-q']).split()
             if active:

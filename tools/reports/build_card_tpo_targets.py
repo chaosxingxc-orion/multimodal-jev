@@ -12,6 +12,7 @@ import unicodedata
 import torch
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_device_config import tpo_schedule
 from multimodal_jev.context_execution import map_cpu, map_io
 from multimodal_jev.local_checkpoint import commit_file, commit_json, sync_directory
 from multimodal_jev.local_config import load_config
@@ -280,11 +281,13 @@ def target_rank_counts(target, gold):
 
 def build(config):
     dst = Path(config['output'])
+    schedule = config['schedule']
+    if 'training_layout' in config:
+        schedule = tpo_schedule(config['training_layout'], schedule)
     check_paths({'card TPO targets': dst})
     source, full, probs, first = load_scores(config)
     labels = full['labels']
     clean, calibration, excluded = eligible(config, full)
-    schedule = config['schedule']
     loss = config['loss']
     if (not 0 < loss['margin'] < 1 or not math.isfinite(loss['weight']) or loss['weight'] <= 0
             or loss.get('gate') != 'strict_target_top1' or type(schedule['epochs']) is not int or schedule['epochs'] < 1):

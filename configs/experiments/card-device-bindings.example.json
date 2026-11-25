@@ -1,0 +1,17 @@
+{
+  "schema": "jev-local-macros-v1",
+  "macros": {
+    "CARD_STAGE1_DEVICES": [0, 1, 2, 3, 4, 5, 6, 7],
+    "CARD_SCORING_DEVICES": [1, 3, 5, 7],
+    "CARD_STAGE2_LAYOUT": {
+      "training_devices": [0, 2, 4, 6],
+      "per_dp_replica_batch": 64
+    },
+    "CARD_STAGE2_INFERENCE_DEVICES": [1, 5],
+    "CARD_EVAL_DEVICES": [2, 6],
+    "TOWER_DEVICES": {
+      "baseline": [0, 2, 4, 6],
+      "candidate": [1, 3, 5, 7]
+    }
+  }
+}

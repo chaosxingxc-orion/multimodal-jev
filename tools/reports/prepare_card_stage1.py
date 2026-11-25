@@ -7,6 +7,7 @@ import tarfile
 from concurrent.futures import ThreadPoolExecutor
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_device_config import device_count
 from multimodal_jev.card_experiment_config import bind_stage1
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
@@ -21,6 +22,8 @@ def load(path, sha):
 def run(c):
     from multimodal_jev.card_contrast import KIND, Directions
     window = c['window']
+    if 'batch_rule' in window:
+        window['training_npus'] = device_count(c['deployment']['devices'], window, 'training_npus')
     if 'continuation' in window:
         from multimodal_jev.card_experiment_config import DEFAULT_PROFILE
         origin = window['continuation']
@@ -156,17 +159,24 @@ def run(c):
                                 microbatch=c['window']['execution_microbatch'])
         if 'batch_rule' in c['window']:
             devices = c['deployment']['devices']
-            if (not devices or len(set(devices)) != len(devices) or
-                    any(type(d) is not int or d < 0 for d in devices)):
-                raise ValueError('unique physical training devices required')
-            if len(devices) != c['window']['training_npus']:
-                raise ValueError('physical device count differs from the registered budget')
             if c['window'].get('capacity_widths') != [batch_config['microbatch']]:
                 raise ValueError('a changed microbatch needs a new schedule and package')
             batch_config.update(batch_rule=c['window']['batch_rule'], training_devices=len(devices))
             parent['physical_devices'] = devices
             derive(batch_config)
-        _, schedule_proof = schedule(pop,batch_config,c['seed'])
+        batches, schedule_proof = schedule(pop,batch_config,c['seed'])
+        pressure = window.get('finite_pressure')
+        if pressure is not None and 'offset' not in pressure:
+            # Keep the registered TRAIN witness when DP changes the batch boundaries.
+            matches = [i for i, batch in enumerate(batches) if batch['epoch'] == 0
+                       and any(s['id'] == pressure['anchor'] and s['weight'] for s in batch['slots'])]
+            if len(matches) != 1:
+                raise ValueError('finite pressure anchor must occur once in the epoch')
+            width = derive(batch_config)['global_batch']
+            if matches[0] < 2 or batches[matches[0]]['real_queries'] != width:
+                raise ValueError('finite pressure witness requires a distinct full training batch')
+            window['finite_pressure'] = dict(pressure, offset=matches[0]*width)
+        del batches
         if c.get('bind_design_budget') and (batch_config != d['batch_config']
                 or schedule_proof['updates'] != d['total_updates'] or schedule_proof['population'] != d['batch_config']['source_queries']):
             raise ValueError('published design and executed schedule differ')

@@ -1,0 +1,44 @@
+{
+  "output": "${CARD_ENDPOINT_SCORE}",
+  "deployment": "${CARD_SCORE_ENDPOINT_DEPLOYMENT}",
+  "inputs": "${CARD_ENDPOINT_DIR}/inputs.json",
+  "seed": 317,
+  "panel_per_class": 2,
+  "long_audio_count": 8,
+  "card_arm": "rules",
+  "widths": [
+    64
+  ],
+  "max_model_len": 4096,
+  "io_workers": 8,
+  "prefetch_audio": 16,
+  "streaming": {
+    "length_window": 8
+  },
+  "torch_threads": 2,
+  "worker_timeout_seconds": 54000,
+  "fsdp_timeout_seconds": 900,
+  "fsdp_master_addr": "127.0.0.1",
+  "fsdp_master_port": 29500,
+  "coordination_seconds": 2,
+  "probability_atol": 2e-06,
+  "resources": {
+    "cpus": 96,
+    "memory": "1024g",
+    "shm": "8g"
+  },
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ],
+  "formal": {
+    "epoch_handoff": "${CARD_ENDPOINT_DIR}",
+    "synthetic_cache": "${CARD_SCORE_SYNTHETIC_CACHE}"
+  },
+  "recordings_per_block": 64,
+  "cpu_workers": 8,
+  "audit_min_parallel_blocks": 16
+}

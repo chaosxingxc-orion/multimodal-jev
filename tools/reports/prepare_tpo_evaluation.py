@@ -67,10 +67,10 @@ def block_queue(config, common, datasets):
             or not {'devices', 'batches_per_block', 'prefetch'} <= queue.keys()):
         raise ValueError('invalid sample block scheduling configuration')
     devices = queue['devices']
-    if (not isinstance(devices, list) or not devices or any(type(i) is not int or i < 0 for i in devices)
-            or len(set(devices)) != len(devices)
-            or any(type(queue[k]) is not int or queue[k] < 1 for k in ('batches_per_block', 'prefetch'))):
-        raise ValueError('distinct device pool and positive block size and prefetch required')
+    from multimodal_jev.card_device_config import physical_devices
+    physical_devices(devices)
+    if any(type(queue[k]) is not int or queue[k] < 1 for k in ('batches_per_block', 'prefetch')):
+        raise ValueError('positive block size and prefetch required')
     if 'choice' in common and (not common.get('full_ontology_only') or common.get('choice_only')
             or 'candidate_lengths' in common['choice'] or 'paired_lengths' in common):
         raise ValueError('variable Choice records depend on legacy shard/batch indices')

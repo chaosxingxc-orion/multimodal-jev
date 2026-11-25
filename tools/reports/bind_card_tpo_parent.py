@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_device_config import tpo_schedule
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from tools.reports.card_scoring_benchmark import pinned
@@ -24,6 +25,13 @@ def bind(c):
             or manifest['contract'] != training['source_contract']):
         raise ValueError('TPO requires the audited endpoint and its matching fixed reference')
     parent = pinned(c['runtime'])
+    if 'training_layout' in c:
+        layout = c['training_layout']
+        schedule = tpo_schedule(layout, targets['schedule'])
+        pool = layout['training_devices']
+        parent.update(physical_devices=pool, global_batch=schedule['global_batch'], microbatch=schedule['microbatch'])
+        parent['batch_config'].update(training_devices=len(pool), microbatch=schedule['microbatch'],
+                                      per_dp_replica_batch=layout['per_dp_replica_batch'])
     parent.update(model=training['model'], base_id=training['base_id'],
                   source_contract=manifest['contract'], source_policy_id=manifest['policy_id'],
                   stage_lora_transition=training['stage_lora_transition'],

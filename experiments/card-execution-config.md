@@ -18,5 +18,17 @@
 
 精确续训不能改变已绑定的训练参数。老的 JEV-210 恢复游标没有显式执行参数，只有[已登记的旧配置摘要](../configs/experiments/card-legacy-stage1-runtime-v1.json)可补全并验证；无法证明等价时拒绝续训。历史封包按原提交复现。新包调整日程、卡数或评测参考时，还要同步注册期望收据并重新做有限验收。工程规约要求的有限验收（两次训练更新、四次推理）继续执行。
 
+新台账可以通过根目录的 `run_experiment.py` 选择 [device-pool-v1 操作模板](../configs/portable/operations/card-stage1-device-pool-v1.json)。把[设备宏示例](../configs/experiments/card-device-bindings.example.json)的字段合入本地绑定，在 `CARD_DEPLOYMENT.devices` 填 `${CARD_STAGE1_DEVICES}`，在 `CARD_SCORE_ENDPOINT_DEPLOYMENT.devices` 填 `${CARD_SCORING_DEVICES}`。已有部署对象中的主机、镜像、资源和挂载继续按本机配置。示例为同一主机各阶段的独立分配。
+
+| 阶段 | 操作模板（位于 `configs/portable/operations/`） | 改卡后的行为 |
+| --- | --- | --- |
+| Stage1 | `card-stage1-device-pool-v1.json`、`card-stage1-endpoint-device-pool-v1.json` | 每卡 16 个锚点，4 卡全局 64，8 卡全局 128。封包重算轮长和末点，有限验收按原压力样本定位所在批。末点审核读取封包的设计摘要。 |
+| TRAIN 打分 | `card-scoring-device-pool-v1.json` | 每张卡启动一个打分实例，同机可另选物理卡。按打分卡数分片，来源按原训练收据和容器挂载校验。 |
+| Stage2 | `card-tpo-targets-device-pool-v1.json`、`card-tpo-parent-device-pool-v1.json`、`card-tpo-package-device-pool-v1.json` | 构建视图和绑定训练器都读取 `CARD_STAGE2_LAYOUT`。每卡有效批量 64 时，4 卡为 256，6 卡为 384。推理核验读取独立的 `CARD_STAGE2_INFERENCE_DEVICES`。 |
+| 联合评测 | `card-paired-device-pool-v1.json` | `CARD_EVAL_DEVICES` 决定校准分片和评测 worker 数。样本块仍按数据集原人口收集。 |
+| 新旧基座对照 | `card-training-tower-comparison-v1.json` | `TOWER_DEVICES` 的两组物理卡须等宽且互斥。两侧使用同一批序和相同样本数，各窗口须能整除全局批量。 |
+
+例如将打分从 8 卡改为 `[1,3,5,7]`，只改本地的 `CARD_SCORING_DEVICES` 即可。新台账应把卡相关的期望收据（rank 数、步数和逐卡推理核验）按所选拓扑登记。冻结台账按原提交复现，精确续训沿用原卡组和分片。
+
 CPU 自检：在有 PyTorch 和 pytest 的项目环境运行
-`PYTHONPATH=src:. python -m pytest -q tests/test_card_experiment_config.py tests/test_card_contrast.py tests/test_class_logit_ema.py tests/test_210_window_recovery.py`。包含实际 AdamW 更新、非默认梯度裁剪、跨轮训练输入、全轮目标分母、历史恢复不匹配拒绝及评测绑定；不代替 NPU 准入。
+`PYTHONPATH=src:. python -m pytest -q tests/test_card_device_config.py tests/test_card_experiment_config.py tests/test_card_contrast.py tests/test_class_logit_ema.py tests/test_210_window_recovery.py`。覆盖非连续设备封包、来源核验、实际 AdamW 更新、梯度裁剪、跨轮训练输入、全轮目标分母及历史恢复校验。设备上的数值和性能另以 NPU 验收为准。

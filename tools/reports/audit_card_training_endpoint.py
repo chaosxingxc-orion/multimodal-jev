@@ -26,7 +26,13 @@ def audit(c):
     training = output/'training.json'
     training.write_bytes(remote(host, 'cat', str(root/'formal/config.json')).stdout)
     train = read(training)
-    updates = c['updates']
+    if 'updates' in c:
+        updates = c['updates']
+    else:
+        design = Path(c['package'])/'entry/design.json'
+        if file_hash(design) != read(operations/'formal-admission.json')['entry_pins']['design.json']:
+            raise ValueError('Stage1 design differs from the admitted package')
+        updates = read(design)['stage1']['total_updates']
     if (train['stop_update'] != updates or train['source_contract']['base_id'] != train['base_id']
             or read(operations/'formal-collected.json')['stop_update' if train['start_update'] else 'updates'] != updates):
         raise ValueError('training receipt differs from the registered endpoint')

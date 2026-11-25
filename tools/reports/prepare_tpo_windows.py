@@ -6,6 +6,7 @@ import shutil
 import tarfile
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_device_config import physical_devices
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.source_snapshot import freeze, verify
@@ -47,6 +48,11 @@ def prepare(c):
             for name, sha in m['files'].items():
                 verified(data/name, sha)
         if cards:
+            actor = physical_devices(parent['physical_devices'])
+            inference = physical_devices(cards['inference_devices'])
+            if (set(actor).intersection(inference)
+                    or len(inference)*4*m['schedule']['microbatch'] > m['schedule']['global_batch']):
+                raise ValueError('independent inference cards need distinct, complete parity windows')
             if 'endpoint_receipt' in cards:
                 proof = json.loads(Path(cards['endpoint_receipt']).read_bytes())
                 if (not proof['passed'] or not proof['container_exited']
@@ -126,11 +132,6 @@ def prepare(c):
     if cards:
         shutil.copyfile(orig, entry/'parent.json')
         parent_in = '/jev-entry/parent.json'
-        inference = cards['inference_devices']
-        if (not inference or any(type(i) is not int or i < 0 for i in inference)
-                or len(set(devices+inference)) != len(devices)+len(inference)
-                or len(inference)*4*m['schedule']['microbatch'] > m['schedule']['global_batch']):
-            raise ValueError('independent inference cards need distinct, complete parity windows')
         probes = []
         for index, device in enumerate(inference):
             name = f'infer-{index}'

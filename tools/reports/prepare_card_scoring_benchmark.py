@@ -1,6 +1,7 @@
 """Freeze the scoring benchmark and dispatch it through the native operations runner."""
 import argparse
 import ipaddress
+import re
 import json
 from pathlib import Path
 import shlex
@@ -10,6 +11,7 @@ import tarfile
 import time
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_device_config import device_count, physical_devices
 from multimodal_jev.context_execution import map_io
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
@@ -54,6 +56,9 @@ def formal_policy(c, train, deploy):
     proof = json.loads((local/'receipt.json').read_bytes())
     capture = pinned(dict(path=local/'inspect.json', sha256=proof['inspect_sha256']))
     state = capture['State']
+    source_devices = physical_devices(train['physical_devices'])
+    mounts = [d for d in capture['HostConfig']['Devices']
+              if re.fullmatch(r'/dev/davinci[0-9]+', d['PathOnHost'])]
     completed = proof.get('completed_window', False)
     updates = train['stop_update'] if completed else train['checkpoint_interval']
     stop = None if completed else json.loads((local/'stop-intent.json').read_bytes())
@@ -65,7 +70,9 @@ def formal_policy(c, train, deploy):
             or proof['container_id'] != capture['Id']
             or (stop and (stop['container_id'] != capture['Id']
                 or any(stop[k] != proof[k] for k in ('policy', 'policy_id', 'manifest_sha256', 'checkpoint_sha256'))))
-            or proof['host'] != deploy['host'] or proof['devices'] != deploy['devices']
+            or proof['host'] != deploy['host'] or physical_devices(proof['devices']) != source_devices
+            or sorted(d['PathOnHost'] for d in mounts) != sorted(f'/dev/davinci{i}' for i in source_devices)
+            or any(d['PathInContainer'] != d['PathOnHost'] for d in mounts)
             or state['Running'] or state['Status'] != 'exited' or state['Pid'] != 0
             or state['OOMKilled'] or proof['exit_code'] != state['ExitCode']):
         raise ValueError('audited, deliberately stopped epoch endpoint on target host required')
@@ -96,12 +103,10 @@ def package(c):
     policy = Path(inputs['policy'])
     names = ('training', 'cards', 'acoustics', 'synthetic', 'real_lengths')
     formal = c.get('formal')
-    devices = deploy['devices']
+    devices = physical_devices(deploy['devices'])
     if formal:
         check_paths({'scoring package': root})
-        if (len(devices) != c['replicas'] or len(set(devices)) != len(devices)
-                or any(type(d) is not int or d < 0 for d in devices)):
-            raise ValueError('one independent scoring replica per declared card required')
+        c = dict(c, replicas=device_count(devices, c, 'replicas'))
         if (len(c['widths']) != 1 or set(c['streaming']) != {'length_window'}
                 or any(type(n) is not int or n < 1 for n in (
                     c['widths'][0], c['recordings_per_block'], c['streaming']['length_window'],
