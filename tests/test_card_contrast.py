@@ -143,7 +143,7 @@ def test_real_render_collate_update_parity_audit_and_ema_on_padded_batch(tmp_pat
         assert ema.observation_counts.tolist()==[[1,5],[5,0]]
         torch.testing.assert_close(ema.values,torch.tensor([[.1,-.1],[-.1,0.]]))
         summary_cfg=dict(physical_devices=[0],global_batch=1,instruction_objective=OBJ)
-        record=dict(metrics=metrics,real_queries=1,update=1,learning_rate=.01,total_seconds=.1,peak_allocated=0,
+        record=dict(metrics=metrics,real_queries=1,update=1,learning_rate=.01,preparation_seconds=.01,total_seconds=.1,peak_allocated=0,
                     optimizer_audit={'head':dict(numel=1,state='initialized',step=1)})
         summary=summarize([record],1,summary_cfg)
         assert summary['loss']==pytest.approx(summary['recomputed_loss'])

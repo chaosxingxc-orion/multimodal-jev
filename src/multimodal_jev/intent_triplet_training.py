@@ -38,6 +38,10 @@ class TripletStream:
         self.collation = collation
         self.queue = None
         self.partners = {}
+        self.packed = None
+        if 'packed_acoustics' in config:
+            from .card_acoustic_pack import PackedAcoustics
+            self.packed = PackedAcoustics(config['packed_acoustics'],population,collation['audio_token_id'])
         self.negative_cards = config['instruction_objective'].get('negative_cards_per_anchor')
         objective = config['instruction_objective']
         self.directions = Directions.from_objective(objective) if objective.get('kind') == KIND else None
@@ -87,11 +91,17 @@ class TripletStream:
         epoch = batch['epoch']
         slots = batch['slots'][self.rank::self.world]
         groups = []
+        batch_inputs = {}
         for ordinal, slot in enumerate(slots):
             pairs, coords = self.group_plan(slot['id'], epoch, index, distribution)
             recording_ids = tuple(dict.fromkeys(audio for audio, _, _ in pairs))
             inputs = {}
             for uid in recording_ids:
+                if self.packed is not None:
+                    if uid not in batch_inputs:
+                        batch_inputs[uid] = self.packed.read(uid)
+                    inputs[uid] = batch_inputs[uid]
+                    continue
                 row = self.population[uid]
                 request = self.layout(row['audio'], uid, epoch)
                 prepared = self.preparer((request, row['audio_sha256']))

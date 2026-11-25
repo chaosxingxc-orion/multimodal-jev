@@ -120,6 +120,10 @@ def run(c):
                 else:
                     proof['single_card']=prepare_single(entry,root/'single.json',init/'policy',c['sample'],c['single_card'])
                 proof['single_sha256']=file_hash(root/'single.json')
+            if 'acoustic_pack' in c:
+                from multimodal_jev.card_acoustic_pack import build
+                proof['packed_acoustics'] = build(root/'acoustics',entry,training,view,
+                    acoustic/'synthetic-cache',c['acoustic_pack'])
             commit_json(root/'receipt.json',proof)
         elif c.get('mixed'):
             from multimodal_jev.stage1_mixed_cache import build
@@ -170,6 +174,8 @@ def run(c):
     if 'triplet_objective' in c:
         parent['instruction_objective'] = c['triplet_objective']
         parent['triplet_prefetch'] = c['triplet_prefetch']
+        if 'acoustic_pack' in c:
+            parent['packed_acoustics'] = proof['packed_acoustics']
         if 'class_logit_ema' in c:
             parent['class_logit_ema'] = c['class_logit_ema']
             parent['class_scoring'] = c['class_scoring']

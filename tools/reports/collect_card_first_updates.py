@@ -63,6 +63,7 @@ def summarize(rows, step, config):
             raise ValueError('global triplet components or learning rate differ')
         return dict(step=step, real_queries=n, ranks=world, loss=loss, recomputed_loss=rebuilt,
                     learning_rate=rates.pop(), grad_norm=metrics['actor/grad_norm'],
+                    max_prepare_seconds=max(row['preparation_seconds'] for row in rows),
                     max_rank_seconds=max(row['total_seconds'] for row in rows),
                     max_peak_allocated=max(row['peak_allocated'] for row in rows))
     objective = (sums['infonce_numerator'] + margin['gap_weight'] * sums['probability_margin_numerator']
