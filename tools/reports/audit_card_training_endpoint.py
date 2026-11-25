@@ -26,18 +26,28 @@ def audit(c):
     training = output/'training.json'
     training.write_bytes(remote(host, 'cat', str(root/'formal/config.json')).stdout)
     train = read(training)
-    if 'updates' in c:
+    collected = read(operations/'formal-collected.json')
+    dynamic = 'token_buckets' in train
+    evidence = {}
+    if dynamic:
+        from multimodal_jev.card_training_admission import completed_update
+        updates = completed_update(train, collected)
+        if (collected['engineering_prefix'] is not False or collected['config_sha256'] != file_hash(training)
+                or collected['token_buckets'] != train['token_buckets'] or c.get('updates', updates) != updates):
+            raise ValueError('bucket endpoint differs from admitted formal configuration')
+        evidence['epoch_end_updates'] = collected['epoch_end_updates']
+    elif 'updates' in c:
         updates = c['updates']
     else:
         design = Path(c['package'])/'entry/design.json'
         if file_hash(design) != read(operations/'formal-admission.json')['entry_pins']['design.json']:
             raise ValueError('Stage1 design differs from the admitted package')
         updates = read(design)['stage1']['total_updates']
-    if (train['stop_update'] != updates or train['source_contract']['base_id'] != train['base_id']
+    if ((not dynamic and train['stop_update'] != updates) or train['source_contract']['base_id'] != train['base_id']
             or read(operations/'formal-collected.json')['stop_update' if train['start_update'] else 'updates'] != updates):
         raise ValueError('training receipt differs from the registered endpoint')
     proof = endpoint(dict(updates=updates, training=dict(sha256=file_hash(training)),
-                          hash_timeout_seconds=c['hash_timeout_seconds'], completed_window=True), train, launch)
+                          hash_timeout_seconds=c['hash_timeout_seconds'], completed_window=True, **evidence), train, launch)
     views = {'/jev-entry': root/'entry', '/jev-work': root}
     for mount in launch['argv']:
         if mount.endswith(':ro') and mount.count(':') == 2:

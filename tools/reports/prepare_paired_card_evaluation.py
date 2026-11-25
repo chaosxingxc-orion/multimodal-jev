@@ -1,6 +1,7 @@
 """Freeze one paired evaluation from audited single-card training endpoints."""
 import json
 from pathlib import Path
+from multimodal_jev.card_training_admission import completed_update
 import shutil
 import sys
 import tarfile
@@ -121,7 +122,7 @@ def bind_completed_endpoints(c):
     result['completed_endpoints'] = dict(inputs, stage1_training=dict(
         path=str(proof_path.with_name('training.json')), sha256=proof['config_sha256']))
     if 'stage1_updates' not in result:
-        result['stage1_updates'] = read_pinned(result['completed_endpoints']['stage1_training'])['stop_update']
+        result['stage1_updates'] = completed_update(read_pinned(result['completed_endpoints']['stage1_training']), proof)
     return result
 
 def single_card_modes(config):

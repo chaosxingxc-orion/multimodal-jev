@@ -1,6 +1,6 @@
 # JEV-210：双向 InfoNCE Stage1 与融合 TPO Stage2
 
-当前正式训练暂停。本轮工程验证使用真实 TRAIN 音频与知识卡、有放回采样，配置为 **1 个锚点、1 条额外同类正语音、3 张错卡、3 条异类语音**；保留两个 InfoNCE 方向。统一入口的 `capacity --experiment JEV-210 --capacity-variant real-buckets` 指向[独立有限配置](../configs/portable/operations/card-stage1-real-buckets-8-finite.json)，只封装 prepare 和 finite；需独立的本地包及部署绑定 `REAL_BUCKET_FINITE_PACKAGE`、`REAL_BUCKET_FINITE_DEPLOYMENT`。旧 `run/resume` 配置只供追溯，不用于新配方。
+本次正式派发使用 181 DP8、0.6B r128、109,610 条真实及合成 TRAIN 锚点；同卡与同语音两个方向各占一半，分组为 1＋1＋3＋3。以组内最长配对序列分桶：≤116 / ≤136 / ≤165 / 更长，每卡上限分别为 32 / 24 / 16 / 8。每桶批次更新一次，按实际覆盖两轮判定终点，轮间无验证。统一入口先复验训推一致性，再从初始化训练；Stage2 构建、训练及两阶段评测依赖本次正式终点。
 
 以下为此前正式训练方案。修订 `bidirectional-m16p3-packed-v1` 替代已停止的 `online-ema-v9`，沿用 JEV-210。以[统一入口配置](pipelines/JEV-210.json)和[双向采样与 loss 协议](stage1-card-bidirectional.md)为准。已授权在 181 八卡派发；启动验收须独立复核正式训练前三步。
 

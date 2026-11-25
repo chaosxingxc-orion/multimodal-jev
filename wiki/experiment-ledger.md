@@ -35,7 +35,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-207 | 42 | complete | [新构造的源域音频对与 actor 成对排序](../experiments/tpo-actor-pair-margin-207.md) | 五个面板已审核；源域选模未达标，保留 206。[执行报告](reports/JEV-207.md) |
 | JEV-208 | 43 | complete | [Stage1 错例覆盖与当前概率间隔](../experiments/tpo-probability-gap-208.md) | 全部登记步骤已审核。[执行报告](reports/JEV-208.md)、[三点验证](reports/JEV-208-curve.md)、[尺寸与知识卡复核](reports/JEV-208-card-review.md) |
 | JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 模型实验已审核。MINDS 推理锁定 `.25` 为 `v0.0.rc25`：20 块/端点、两轮各端点 17,920 个概率零差异；Stage1/Stage2 评分吞吐为原生的 1.825 / 1.805 倍，以各轮原生归一化后较上一版提高 49.6% / 48.2%。181 八卡已释放。[执行报告](reports/JEV-209.md) · [推理报告](reports/JEV-209-inference-latency.md) |
-| JEV-210 | 45 | in_progress | [0.6B r128 双向 InfoNCE Stage1](../experiments/stage1-cards-tpo-210.md) | 正式训练已暂停。选用真实 TRAIN 的 1＋1＋3＋3；181 DP8 已通过两步有限验收，八卡已释放。[执行报告](reports/JEV-210.md) |
+| JEV-210 | 45 | in_progress | [0.6B r128 双向 InfoNCE Stage1](../experiments/stage1-cards-tpo-210.md) | 正式两轮已授权派发；沿用 181 DP8 有限验收通过的真实 TRAIN 1＋1＋3＋3 分桶配置。[执行报告](reports/JEV-210.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
 | JEV-R64-S2 | 25 | complete | [Stage2 selection 补评](../experiments/r64-stage2-selection.md) | 全部登记步骤已审核。[执行报告](reports/JEV-R64-S2.md) |
@@ -61,7 +61,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-207 | 从共同 Stage1 起点验证新训练集 + actor 排序项；按新视图定步数，206 为历史对照 | 2,750 条、62 对；16 步训练及五个面板已审核，八卡评测用时 22 分 54 秒 | 选模 macro-F1 80.10%（−3.08 点），未晋级。SLURP TEST 79.11%（−2.47 点），MINDS 73.46%（+1.56 点），SIB-FLEURS 持平，MMSU 少答对 11 题。[报告](reports/JEV-207.md) |
 | JEV-208 | 从共同 Stage1 接续，覆盖全部准入 TRAIN 录音，以 TPO 和当前最强错类的概率间隔训练两轮 | 19,269 条，102 步与五面板已审 | 源域 selection +1.03 点但区间跨零；MINDS −0.17 点，话题 −4.57 点。保留 206。[错例分析](reports/JEV-208-errors.md) [报告](reports/JEV-208.md) |
 | JEV-209 | 0.6B r128 知识卡 Stage1 全量两轮，单份分层视图，一轮双向 TPO 加按样本启用的动态间隔 | 混合版已冻结 109,610 条、68 类，真人端点五面板已归档 | [真人版归档](archive/JEV-209-real-only/report.md)；混合版单列完整官方 TEST 与五面板。[报告](reports/JEV-209.md) |
-| JEV-210 | 0.6B r128，双向 InfoNCE（选定 1＋1＋3＋3；历史 1＋3＋5＋5） | 新配方完成 DP8 工程验收；正式两轮暂停，新配方尚无 Stage2、SLURP 或跨数据集评测结果 | [执行报告](reports/JEV-210.md) |
+| JEV-210 | 0.6B r128，双向 InfoNCE（选定 1＋1＋3＋3；历史 1＋3＋5＋5） | 新配方完成 DP8 工程验收；正式两轮已授权，新配方尚无 Stage2、SLURP 或跨数据集评测结果 | [执行报告](reports/JEV-210.md) |
 
 未逐号回填更早的工程包。旧实验以[归档](archive/)和既有研究文档为准；FSC 数字留在
 历史收据里，当前主参考为 SLURP 与 MINDS。仅比较相同封存人口、候选和指标；

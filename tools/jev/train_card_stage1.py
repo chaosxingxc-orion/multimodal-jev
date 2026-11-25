@@ -126,7 +126,8 @@ def run(c,root):
         if 'activation_checkpointing' in c:contract['activation_checkpointing']=c['activation_checkpointing']
         if 'training_graph' in c:
             if not c['engineering_prefix']:
-                raise ValueError('candidate training graph is limited to finite engineering checks')
+                from multimodal_jev.card_training_admission import admit_graph
+                admit_graph(c, c['finite_graph_admission'])
             contract['training_graph'] = c['training_graph']
         if 'token_buckets' in c:
             contract['source_order_block_size'] = contract.pop('global_batch')

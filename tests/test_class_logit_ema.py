@@ -145,12 +145,14 @@ def test_registered_stage1_commands_use_the_online_contract():
     train = {s['id']:s for s in spec['stages']['train']}
     first = train['train-stage1-two-epochs']
     assert first['config'] == first['run'][0][1]
-    window = json.loads(Path(first['config']).read_text())['window']
+    config = json.loads(Path(first['config']).read_text())
+    window = config['window']
     assert not {'stop_after_epoch','epoch_mining','bootstrap_input'} & window.keys()
     assert not {'resume-stage1-epoch2','audit-stage1-epoch1'} & train.keys()
     assert window['triplet_prefetch']['ahead'] == window['class_logit_ema']['max_staleness_updates'] == 1
-    assert window['execution_microbatch'] == window['effective_anchors_per_rank'] == 16
-    assert window['triplet_objective']['positive_recordings_per_anchor'] == 3
+    assert not {'execution_microbatch','effective_anchors_per_rank'} & window.keys()
+    assert [b['batch_size_per_rank'] for b in config['token_bucketing']['buckets']] == [32,24,16,8]
+    assert config['contrast_samples'] == dict(positive_recordings=1, negative_cards=3, negative_recordings=3)
     assert [s for s in train if s.startswith('score-')] == ['score-stage1-endpoint-train']
 
 

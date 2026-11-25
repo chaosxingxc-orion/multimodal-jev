@@ -255,6 +255,9 @@ def run(c):
         parent['training_acoustic_engine']=c['training_acoustic_engine']
     if 'training_graph' in c:
         parent['training_graph'] = c['training_graph']
+        if not finite:
+            receipt_path = work/'finite/receipt.json'
+            parent['finite_graph_admission'] = dict(path=str(receipt_path), sha256=file_hash(receipt_path))
     if not finite and 'continuation' in c:
         parent.update(continuation=c['continuation'],start_update=c['continuation']['step'])
     if not finite and 'recovery' in c:
@@ -333,6 +336,8 @@ def run(c):
         if dynamic and not finite and (len(epoch_counts) != parent['batch_config']['epochs'] or epoch_count):
             raise ValueError('incomplete bucket training population')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    if 'training_graph' in parent:
+        receipt['training_graph'] = parent['training_graph']
     if dynamic:
         receipt.pop('microbatch')
         receipt.update(token_buckets=dynamic, epoch_end_updates=epoch_counts)

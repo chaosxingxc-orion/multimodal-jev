@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "tower-m16-continuation-v1",
+  "revision": "real-buckets-eight-pairs-v1",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "real-buckets": "configs/portable/operations/card-stage1-real-buckets-8-finite.json",
@@ -26,7 +26,7 @@
     "train": [
       {
         "id": "train-stage1-two-epochs",
-        "config": "configs/portable/operations/card-stage1-tower-m16-v1.json",
+        "config": "configs/portable/operations/card-stage1-real-buckets-8.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -34,7 +34,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-tower-m16-v1.json",
+            "configs/portable/operations/card-stage1-real-buckets-8.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -94,23 +94,17 @@
               ],
               [
                 [
-                  "microbatch"
-                ],
-                16
-              ],
-              [
-                [
                   "negative_cards_per_anchor"
                 ],
-                5
+                3
               ],
               [
                 [
                   "finite_pressure"
                 ],
                 {
-                  "offset": 1152,
-                  "anchor": "slurp:audio-1497621480.flac"
+                  "anchor": "slurp:audio-1497621480.flac",
+                  "offset": 1024
                 }
               ],
               [
@@ -141,37 +135,56 @@
                   "kind": "card_bidirectional_infonce_v1",
                   "temperature": 0.1,
                   "probability_coefficient": 0.0,
-                  "positive_recordings_per_anchor": 3,
-                  "negative_cards_per_anchor": 5,
-                  "negative_recordings_per_anchor": 5,
                   "sample_with_replacement": true,
                   "fixed_audio_weight": 0.5,
-                  "fixed_card_weight": 0.5
+                  "fixed_card_weight": 0.5,
+                  "positive_recordings_per_anchor": 1,
+                  "negative_cards_per_anchor": 3,
+                  "negative_recordings_per_anchor": 3
                 }
+              ],
+              [
+                [
+                  "token_buckets"
+                ],
+                {
+                  "max_tokens": [
+                    116,
+                    136,
+                    165
+                  ],
+                  "max_anchors": [
+                    32,
+                    24,
+                    16,
+                    8
+                  ],
+                  "lookahead_batches": 2
+                }
+              ],
+              [
+                [
+                  "training_graph"
+                ],
+                "attention_and_projection_shared_splits_v1"
               ]
             ],
             "report": {
-              "microbatch": [
-                "microbatch"
-              ],
               "negative_cards_per_anchor": [
                 "negative_cards_per_anchor"
               ],
               "objective": [
                 "instruction_objective",
                 "kind"
+              ],
+              "token_buckets": [
+                "token_buckets"
               ]
             }
           },
           {
             "path": "${CARD_STAGE1_OPERATIONS}/formal-collected.json",
             "equals": [
-              [
-                [
-                  "updates"
-                ],
-                1714
-              ],
               [
                 [
                   "engineering_prefix"
@@ -193,13 +206,38 @@
                   "kind": "card_bidirectional_infonce_v1",
                   "temperature": 0.1,
                   "probability_coefficient": 0.0,
-                  "positive_recordings_per_anchor": 3,
-                  "negative_cards_per_anchor": 5,
-                  "negative_recordings_per_anchor": 5,
                   "sample_with_replacement": true,
                   "fixed_audio_weight": 0.5,
-                  "fixed_card_weight": 0.5
+                  "fixed_card_weight": 0.5,
+                  "positive_recordings_per_anchor": 1,
+                  "negative_cards_per_anchor": 3,
+                  "negative_recordings_per_anchor": 3
                 }
+              ],
+              [
+                [
+                  "token_buckets"
+                ],
+                {
+                  "max_tokens": [
+                    116,
+                    136,
+                    165
+                  ],
+                  "max_anchors": [
+                    32,
+                    24,
+                    16,
+                    8
+                  ],
+                  "lookahead_batches": 2
+                }
+              ],
+              [
+                [
+                  "training_graph"
+                ],
+                "attention_and_projection_shared_splits_v1"
               ]
             ],
             "report": {
@@ -209,6 +247,9 @@
               "objective": [
                 "instruction_objective",
                 "kind"
+              ],
+              "token_buckets": [
+                "token_buckets"
               ]
             }
           },
@@ -252,12 +293,6 @@
               ],
               [
                 [
-                  "updates"
-                ],
-                1714
-              ],
-              [
-                [
                   "ranks"
                 ],
                 8
@@ -286,12 +321,12 @@
             }
           }
         ],
-        "config": "configs/portable/operations/card-stage1-endpoint-continuous-m16.json",
+        "config": "configs/portable/operations/card-stage1-endpoint-device-pool-v1.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-endpoint-continuous-m16.json",
+            "configs/portable/operations/card-stage1-endpoint-device-pool-v1.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -322,12 +357,6 @@
                   "container_exited"
                 ],
                 true
-              ],
-              [
-                [
-                  "updates"
-                ],
-                1714
               ],
               [
                 [
@@ -831,7 +860,7 @@
     "evaluate": [
       {
         "id": "evaluate-stage1-and-fused-stage2",
-        "config": "configs/portable/operations/card-paired-endpoint-210-m16.json",
+        "config": "configs/portable/operations/card-paired-endpoint-210-real8.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PAIR_ROOT}/ops"
@@ -839,7 +868,7 @@
         "run": [
           [
             "tools.reports.prepare_paired_card_evaluation",
-            "configs/portable/operations/card-paired-endpoint-210-m16.json",
+            "configs/portable/operations/card-paired-endpoint-210-real8.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [
@@ -1022,7 +1051,7 @@
               ]
             ],
             "report": {
-              "SLURP_clean_TEST60 stage1 vs 209 \u0394F1": [
+              "SLURP_clean_TEST60 stage1 vs 209 ΔF1": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
@@ -1036,14 +1065,14 @@
                 "stage1",
                 "macro_f1_delta_ci95"
               ],
-              "SLURP_clean_TEST60 stage1 \u7ed3\u8bba": [
+              "SLURP_clean_TEST60 stage1 结论": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
                 "stage1",
                 "direction"
               ],
-              "SLURP_clean_TEST60 tpo vs 209 \u0394F1": [
+              "SLURP_clean_TEST60 tpo vs 209 ΔF1": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
@@ -1057,14 +1086,14 @@
                 "tpo",
                 "macro_f1_delta_ci95"
               ],
-              "SLURP_clean_TEST60 tpo \u7ed3\u8bba": [
+              "SLURP_clean_TEST60 tpo 结论": [
                 "datasets",
                 "SLURP_clean_TEST60",
                 "versus_209",
                 "tpo",
                 "direction"
               ],
-              "MINDS_native14 stage1 vs 209 \u0394F1": [
+              "MINDS_native14 stage1 vs 209 ΔF1": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
@@ -1078,14 +1107,14 @@
                 "stage1",
                 "macro_f1_delta_ci95"
               ],
-              "MINDS_native14 stage1 \u7ed3\u8bba": [
+              "MINDS_native14 stage1 结论": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
                 "stage1",
                 "direction"
               ],
-              "MINDS_native14 tpo vs 209 \u0394F1": [
+              "MINDS_native14 tpo vs 209 ΔF1": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
@@ -1099,7 +1128,7 @@
                 "tpo",
                 "macro_f1_delta_ci95"
               ],
-              "MINDS_native14 tpo \u7ed3\u8bba": [
+              "MINDS_native14 tpo 结论": [
                 "datasets",
                 "MINDS_native14",
                 "versus_209",
@@ -1139,12 +1168,6 @@
                   "passed"
                 ],
                 true
-              ],
-              [
-                [
-                  "updates"
-                ],
-                1714
               ]
             ]
           },
@@ -1174,7 +1197,7 @@
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 \u672b\u70b9",
+                "label": "Stage2 末点",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1189,13 +1212,13 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
               {
-                "label": "Stage1 step 1714",
+                "label": "Stage1 full epoch endpoint",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1210,8 +1233,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1224,7 +1247,7 @@
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 \u672b\u70b9",
+                "label": "Stage2 末点",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1239,13 +1262,13 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
               {
-                "label": "Stage1 step 1714",
+                "label": "Stage1 full epoch endpoint",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1260,8 +1283,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1274,7 +1297,7 @@
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 \u672b\u70b9",
+                "label": "Stage2 末点",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1289,13 +1312,13 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
               {
-                "label": "Stage1 step 1714",
+                "label": "Stage1 full epoch endpoint",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1310,8 +1333,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1319,12 +1342,12 @@
           },
           {
             "id": "SIB_FLEURS_eng_topic7",
-            "scope": "SIB-FLEURS \u82f1\u8bed\u8bdd\u9898",
+            "scope": "SIB-FLEURS 英语话题",
             "population": 320,
             "primary": "Top-1 macro-F1",
             "arms": [
               {
-                "label": "Stage2 \u672b\u70b9",
+                "label": "Stage2 末点",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1339,13 +1362,13 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               },
               {
-                "label": "Stage1 step 1714",
+                "label": "Stage1 full epoch endpoint",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1360,8 +1383,8 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability",
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
                   "Top-1 macro-F1": "top1_macro_f1"
                 }
               }
@@ -1369,12 +1392,12 @@
           },
           {
             "id": "MMSU_polysemy",
-            "scope": "MMSU \u591a\u4e49\u8bcd",
+            "scope": "MMSU 多义词",
             "population": 98,
-            "primary": "Top-1 \u51c6\u786e\u7387",
+            "primary": "Top-1 准确率",
             "arms": [
               {
-                "label": "Stage2 \u672b\u70b9",
+                "label": "Stage2 末点",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1389,12 +1412,12 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability"
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
                 }
               },
               {
-                "label": "Stage1 step 1714",
+                "label": "Stage1 full epoch endpoint",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1409,20 +1432,20 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy",
-                  "\u5e73\u5747\u6700\u9ad8\u6982\u7387": "mean_top1_probability"
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
                 }
               }
             ]
           },
           {
             "id": "SLURP_official_TEST60",
-            "scope": "SLURP \u5b8c\u6574\u5b98\u65b9 TEST\uff08\u5386\u53f2\u53e3\u5f84\u8bca\u65ad\uff09",
+            "scope": "SLURP 完整官方 TEST（历史口径诊断）",
             "population": 13078,
-            "primary": "Top-1 \u51c6\u786e\u7387",
+            "primary": "Top-1 准确率",
             "arms": [
               {
-                "label": "Stage2 \u672b\u70b9",
+                "label": "Stage2 末点",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1437,11 +1460,11 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy"
+                  "Top-1 准确率": "top1_accuracy"
                 }
               },
               {
-                "label": "Stage1 step 1714",
+                "label": "Stage1 full epoch endpoint",
                 "proof": 0,
                 "path": [
                   "datasets",
@@ -1456,7 +1479,7 @@
                   ]
                 },
                 "metrics": {
-                  "Top-1 \u51c6\u786e\u7387": "top1_accuracy"
+                  "Top-1 准确率": "top1_accuracy"
                 }
               }
             ]

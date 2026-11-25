@@ -4,6 +4,7 @@ import ipaddress
 import re
 import json
 from pathlib import Path
+from multimodal_jev.card_training_admission import completed_update
 import shlex
 import shutil
 import subprocess
@@ -60,7 +61,7 @@ def formal_policy(c, train, deploy):
     mounts = [d for d in capture['HostConfig']['Devices']
               if re.fullmatch(r'/dev/davinci[0-9]+', d['PathOnHost'])]
     completed = proof.get('completed_window', False)
-    updates = train['stop_update'] if completed else train['checkpoint_interval']
+    updates = completed_update(train, proof) if completed else train['checkpoint_interval']
     stop = None if completed else json.loads((local/'stop-intent.json').read_bytes())
     if (proof['passed'] is not True or proof['container_exited'] is not True
             or proof['updates'] != updates

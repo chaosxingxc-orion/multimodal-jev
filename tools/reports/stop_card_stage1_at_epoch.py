@@ -36,12 +36,16 @@ def endpoint(c, train, launch):
     raw = remote(host, 'cat', str(commit_path)).stdout
     ckpt = json.loads(raw)
     sampler = ckpt.get('sampler_state')
+    dynamic = 'token_buckets' in train and c.get('completed_window')
+    if dynamic:
+        from multimodal_jev.card_training_admission import completed_update
+        completed_update(train, c)
     if 'class_logit_ema' in train:
         if (not isinstance(sampler, dict) or sampler.get('kind') != 'class-logit-ema-v1'
                 or sampler.get('updates') != update or sampler.get('config') != train['class_logit_ema']
                 or len(sampler.get('labels', [])) < 2
                 or len(sampler['labels']) != len(sampler.get('anchor_counts', []))
-                or sum(sampler['anchor_counts']) != (update // train['checkpoint_interval']) * train['batch_config']['source_queries']
+                or sum(sampler['anchor_counts']) != (len(c['epoch_end_updates']) if dynamic else update // train['checkpoint_interval']) * train['batch_config']['source_queries']
                 or any(len(sampler.get(key, '')) != 64 for key in
                        ('values_sha256', 'observed_sha256', 'counts_sha256', 'distribution_sha256'))):
             raise ValueError('committed endpoint lacks the expected full-epoch sampler state')
@@ -53,8 +57,8 @@ def endpoint(c, train, launch):
     shards = {f'rank-{rank}/checkpoint-{update:04d}.pt' for rank in range(world)}
     hashes = {k: v for k, v in manifest.items() if k != 'policy_id'}
     from hashlib import sha256
-    if (update % train['checkpoint_interval'] or
-            (update != train['stop_update'] if c.get('completed_window')
+    if ((not dynamic and update % train['checkpoint_interval']) or
+            (not dynamic and update != train['stop_update'] if c.get('completed_window')
              else update != train['checkpoint_interval'] or not update < train['stop_update'])
             or train['engineering_prefix'] is not False
             or ckpt['updates'] != update or ckpt['joint_policy_directory'] != expected
@@ -98,6 +102,7 @@ def endpoint(c, train, launch):
                 manifest_sha256=ckpt['joint_policy_manifest_sha256'],
                 checkpoint_sha256=expected_files[commit_path],
                 rank_records_sha256=content_key(rows), devices=train['physical_devices'],
+                **(dict(epoch_end_updates=c['epoch_end_updates']) if dynamic else {}),
                 **(dict(sampler_state=sampler) if sampler else {}))
 
 
