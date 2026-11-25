@@ -122,6 +122,28 @@ def run(c,root):
         window_start = start_update
         window_contract = dict(stage='stage1', config=content_hash(c), start=window_start, stop=stop_update)
         recovered = recovery.latest(root, window_contract, start_update, stop_update, world) if restart else None
+        recovered_root=root
+        recovered_contract=window_contract
+        if not recovered and 'continuation' in c:
+            origin=c['continuation']
+            history=Path(origin['root'])
+            cfg_path=history/'config.json'
+            if file_hash(cfg_path)!=origin['formal_sha256']:
+                raise ValueError('continuation source config changed')
+            original=json.loads(cfg_path.read_bytes())
+            # Every training and sampling setting must match except the admitted execution changes.
+            allowed={'training_acoustic_engine','continuation','start_update','packed_acoustics'}
+            if {k:v for k,v in c.items() if k not in allowed}!={k:v for k,v in original.items() if k not in allowed}:
+                raise ValueError('continuation changes the training contract')
+            if {k:v for k,v in c['packed_acoustics'].items() if k!='path'}!={k:v for k,v in original['packed_acoustics'].items() if k!='path'}:
+                raise ValueError('continuation acoustic index changed')
+            prior=history/'run'/'recovery'/f'step-{start_update}.json'
+            if file_hash(prior)!=origin['cursor_sha256']:
+                raise ValueError('continuation cursor differs')
+            recovered_root=history/'run'
+            recovered_contract=dict(stage='stage1',config=content_hash(original),start=original['start_update'],stop=original['stop_update'])
+            recovered=recovery.latest(recovered_root,recovered_contract,original['start_update'],original['stop_update'],world)
+            if not recovered or recovered['step']!=start_update:raise ValueError('continuation cursor not latest committed step')
         if recovered:
             start_update = recovered['step']
         if restart:
@@ -301,12 +323,17 @@ def run(c,root):
         atomic_json(out/'checkpoint-scope.json',validate_trainable_scope(named))
         frozen={n:tensor_identity(p.detach().cpu()) for n,p in wrapped.named_parameters() if not p.requires_grad}
         if recovered:
-            auxiliary = recovery.recover(root, recovered, named, opt, dict(rank=rank,world_size=world,
-                                        completed_updates=start_update,contract=window_contract))
+            auxiliary = recovery.recover(recovered_root, recovered, named, opt, dict(rank=rank,world_size=world,
+                                        completed_updates=start_update,contract=recovered_contract))
             class_ema.load_state_dict(auxiliary['ema'])
             if class_ema.updates != start_update:
                 raise ValueError('recovery sampler and optimizer differ')
             pending = auxiliary['pending']
+            if pending[0]!=start_update-1:
+                raise ValueError('recovery lacks the pending previous-step EMA snapshot')
+            atomic_json(out/f'restored-{start_update:04d}.json',dict(step=start_update,rank=rank,
+                exact_masters=True,exact_adam=True,pending_version=pending[0],ema_updates=class_ema.updates,
+                generation=recovered['generation'],shard_sha256=recovered['shards'][rank]))
         elif start_update:
             previous=Path(c['resume_root']);commit_path=previous/f'checkpoint-{start_update:04d}-committed.json'
             if c['pins'].get(str(commit_path))!=file_hash(commit_path):raise ValueError('pinned committed checkpoint required')

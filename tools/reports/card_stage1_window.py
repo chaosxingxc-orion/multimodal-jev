@@ -120,7 +120,19 @@ def run(c):
                 else:
                     proof['single_card']=prepare_single(entry,root/'single.json',init/'policy',c['sample'],c['single_card'])
                 proof['single_sha256']=file_hash(root/'single.json')
-            if 'acoustic_pack' in c:
+            if 'published_acoustic_pack' in c:
+                published=c['published_acoustic_pack']
+                receipt=Path(published['root'])/'receipt.json'
+                if file_hash(receipt)!=published['receipt_sha256']:
+                    raise ValueError('previous preparation receipt changed')
+                prev=read(receipt)
+                if any(proof[k]!=prev[k] for k in ('population','policy_id','cache_sha256','single_sha256')):
+                    raise ValueError('previous prepared policy, audio or cards differ')
+                pin=prev['packed_acoustics']
+                path=Path(published['root'])/'acoustics/index.json'
+                if file_hash(path)!=pin['sha256']:raise ValueError('published pack index changed')
+                proof['packed_acoustics']=dict(pin,path=str(path))
+            elif 'acoustic_pack' in c:
                 from multimodal_jev.card_acoustic_pack import build
                 proof['packed_acoustics'] = build(root/'acoustics',entry,training,view,
                     acoustic/'synthetic-cache',c['acoustic_pack'])
@@ -174,7 +186,7 @@ def run(c):
     if 'triplet_objective' in c:
         parent['instruction_objective'] = c['triplet_objective']
         parent['triplet_prefetch'] = c['triplet_prefetch']
-        if 'acoustic_pack' in c:
+        if 'acoustic_pack' in c or 'published_acoustic_pack' in c:
             parent['packed_acoustics'] = proof['packed_acoustics']
         if 'class_logit_ema' in c:
             parent['class_logit_ema'] = c['class_logit_ema']
@@ -217,6 +229,10 @@ def run(c):
         if prior['physical_devices'] != parent['physical_devices'] and reuse.get('topology_independent') is not True:
             raise ValueError('bootstrap reuse across topologies must be declared')
         parent['bootstrap_input'] = reuse['report']
+    if 'training_acoustic_engine' in c:
+        parent['training_acoustic_engine']=c['training_acoustic_engine']
+    if not finite and 'continuation' in c:
+        parent.update(continuation=c['continuation'],start_update=c['continuation']['step'])
     if not finite and 'recovery' in c:
         parent['recovery'] = c['recovery']
     if 'activation_checkpointing' in c:
@@ -254,7 +270,7 @@ def run(c):
         rank_root=root/'run'/f'rank-{rank}'
         if finite and read(rank_root/'inference-parity.json')['compared']!=c['parity_passes']*parent['microbatch']:
             raise ValueError('finite inference parity incomplete')
-        for step in range(1,parent['stop_update']+1):
+        for step in range(parent.get('start_update',0)+1,parent['stop_update']+1):
             record=read(rank_root/f'update-{step:04d}.json')
             if 'class_logit_ema' in parent:
                 lag = step-1-record['metrics']['sampler_source_update']
@@ -264,6 +280,8 @@ def run(c):
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    if 'continuation' in parent:
+        receipt.update(start_update=parent['start_update'],stop_update=parent['stop_update'],continuation=parent['continuation'])
     if parent['instruction_objective']['kind'] == KIND:
         receipt['instruction_objective'] = parent['instruction_objective']
     if 'negative_cards_per_anchor' in parent['instruction_objective']:

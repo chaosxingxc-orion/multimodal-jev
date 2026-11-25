@@ -198,7 +198,13 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         probe = probes > 0
         if probe:
             with torch.no_grad():
-                references = [model(inputs,positions).detach() for _ in range(probes)]
+                parity_inputs, parity_positions = inputs,positions
+                if 'training_acoustic_engine' in config:
+                    native, parity_positions = collate_context_audio(rows,policy_id=policy,**collation)
+                    parity_inputs = {k:v.to(device=device,dtype=torch.bfloat16 if v.is_floating_point() else v.dtype) for k,v in native.items()}
+                    parity_positions = parity_positions.to(device)
+                references = [model(parity_inputs,parity_positions).detach() for _ in range(probes)]
+                del parity_inputs,parity_positions
         if directions:
             raw = model(inputs,positions,return_logits=True)
             if 'tower_witness' in config:

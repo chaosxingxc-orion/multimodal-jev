@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "bidirectional-m16p3-packed-v1",
+  "revision": "tower-m16-continuation-v1",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "recompute": "configs/portable/operations/card-stage1-recompute-210-v1.json",
@@ -25,7 +25,7 @@
     "train": [
       {
         "id": "train-stage1-two-epochs",
-        "config": "configs/portable/operations/card-stage1-bidirectional-m16p3-packed-v1.json",
+        "config": "configs/portable/operations/card-stage1-tower-m16-v1.json",
         "python": "${CARD_PYTHON}",
         "dispatch_guards": [
           "${CARD_PACKAGE}/entry.tar"
@@ -33,7 +33,7 @@
         "run": [
           [
             "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-bidirectional-m16p3-packed-v1.json",
+            "configs/portable/operations/card-stage1-tower-m16-v1.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ],
           [

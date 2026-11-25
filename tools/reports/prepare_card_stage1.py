@@ -20,6 +20,12 @@ def load(path, sha):
 def run(c):
     from multimodal_jev.card_contrast import KIND, Directions
     window = c['window']
+    if 'training_acoustic_engine' in window:
+        admission=c['comparison_admission']
+        verdict=load(admission['path'],admission['sha256'])
+        if not (verdict['passed'] is True and verdict['identical_training_state'] is True and
+                verdict['max_abs_logit_error']==0 and 'continuation' in window):
+            raise ValueError('acoustic engine lacks an accepted paired training comparison')
     objective = window.get('triplet_objective', {})
     if objective.get('kind') == KIND:
         Directions.from_objective(objective)
