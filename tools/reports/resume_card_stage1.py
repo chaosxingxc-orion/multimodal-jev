@@ -11,6 +11,7 @@ import tarfile
 from tempfile import TemporaryDirectory
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_contrast import TRIPLET_KINDS
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from multimodal_jev.source_snapshot import freeze, verify
@@ -72,7 +73,7 @@ def prepare(c):
     devices = train['physical_devices']
     if (sha256(raw).hexdigest() != resume['config_sha256']
             or devices != resume['devices'] or devices != deployment['idle_devices']
-            or train['instruction_objective']['kind'] != 'intent_triplet_infonce_v1'
+            or train['instruction_objective']['kind'] not in TRIPLET_KINDS
             or train['reference_endpoint'] != 2*start
             or train['stop_update'] not in (start, train['reference_endpoint'])
             or online != ('class_logit_ema' in train)

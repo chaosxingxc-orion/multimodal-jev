@@ -29,7 +29,11 @@ def run(c,root):
     from multimodal_jev.context_policy_snapshot import load_policy
     from multimodal_jev.context_policy_artifacts import read_execution_bundle
     from tools.reports.context_infonce_actor import load as load_actor
-    triplet = c['instruction_objective']['kind'] == 'intent_triplet_infonce_v1'
+    from multimodal_jev.card_contrast import KIND, TRIPLET_KINDS
+    triplet = c['instruction_objective']['kind'] in TRIPLET_KINDS
+    if c['instruction_objective']['kind'] == KIND and not all(key in c for key in (
+            'single_card', 'stage1_layout', 'class_logit_ema', 'mixed')):
+        raise ValueError('card contrast requires the single-card TRAIN layout and online EMA')
     actor_module=load_actor(c['source_root'],temperature=c['instruction_objective']['temperature'],probability_margin=c['instruction_objective'].get('probability_margin'))
     if 'single_card' in c:
         from multimodal_jev.single_card_forward import IndependentForward

@@ -7,9 +7,9 @@ from multimodal_jev import context_objective_registry as objectives
 
 
 def test_objective_names_are_the_registered_literal_set():
-    assert objectives.names() == ('candidate_infonce', 'dual_credit_grpo_floor_clipped_v1',
+    assert objectives.names() == ('candidate_infonce', 'card_bidirectional_infonce_v1', 'dual_credit_grpo_floor_clipped_v1',
                                   'dual_credit_rloo_clipped_v1', 'rloo_v1')
-    assert objectives.names(stage=1) == ('candidate_infonce',)
+    assert objectives.names(stage=1) == ('candidate_infonce', 'card_bidirectional_infonce_v1')
     assert objectives.names(stage=2) == ('dual_credit_grpo_floor_clipped_v1',
                                          'dual_credit_rloo_clipped_v1', 'rloo_v1')
     assert objectives.names(status='design_only') == ('rloo_v1',)

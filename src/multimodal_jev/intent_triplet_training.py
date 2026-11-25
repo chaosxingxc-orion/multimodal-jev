@@ -3,6 +3,7 @@ import math
 import torch
 from torch.nn import functional as F
 from .context_audio_collate import collate_context_audio
+from .card_contrast import KIND, Directions
 from .intent_triplet_sampling import sample_epoch
 from .ordered_prefetch import OrderedPrefetch
 
@@ -38,6 +39,11 @@ class TripletStream:
         self.queue = None
         self.partners = {}
         self.negative_cards = config['instruction_objective'].get('negative_cards_per_anchor')
+        objective = config['instruction_objective']
+        self.directions = Directions.from_objective(objective) if objective.get('kind') == KIND else None
+        if self.directions and 'class_logit_ema' not in config:
+            raise ValueError('card contrast requires online class-logit EMA')
+
 
     def begin_epoch(self, first, distribution=None):
         epoch = self.batches[first]['epoch']
@@ -61,18 +67,29 @@ class TripletStream:
                          input_features=acoustic['input_features'],input_features_mask=acoustic['input_features_mask']),
                     positions=positions,request_id=uid)
 
+    def group_plan(self, a, epoch, index, distribution):
+        if self.directions:
+            draws = self.sampler.draw_contrast(a, epoch, index, distribution)
+            return self.directions.pairs(a, self.population[a]['intent'], *draws)
+        p, n = (self.partners[a] if distribution is None else self.sampler.draw(a, epoch, index, distribution))
+        if self.negative_cards is not None:
+            n, wrong_labels = n
+        pairs = [(uid, self.population[uid]['intent'], uid) for uid in (a, p, n)]
+        if self.negative_cards is None:
+            pairs.append((n, self.population[a]['intent'], a))
+        else:
+            pairs.extend((a, label, a) for label in wrong_labels)
+        coords = (self.population[a]['intent'], *wrong_labels) if distribution is not None else None
+        return pairs, coords
+
     def prepare(self, index, distribution=None):
         batch = self.batches[index]
         epoch = batch['epoch']
         slots = batch['slots'][self.rank::self.world]
         groups = []
         for ordinal, slot in enumerate(slots):
-            a = slot['id']
-            p,n = (self.partners[a] if distribution is None else
-                   self.sampler.draw(a, epoch, index, distribution))
-            if self.negative_cards is not None:
-                n, wrong_labels = n
-            recording_ids = (a,p,n)
+            pairs, coords = self.group_plan(slot['id'], epoch, index, distribution)
+            recording_ids = tuple(dict.fromkeys(audio for audio, _, _ in pairs))
             inputs = {}
             for uid in recording_ids:
                 row = self.population[uid]
@@ -82,20 +99,14 @@ class TripletStream:
                     raise ValueError('published acoustic cache required')
                 inputs[uid] = prepared.inputs
             rows = []
-            pairs = [(uid, self.population[uid]['intent'], uid) for uid in recording_ids]
-            if self.negative_cards is None:
-                pairs.append((n, self.population[a]['intent'], a))
-            else:
-                # Use the anchor's template variant for both its true and its wrong cards.
-                pairs.extend((a, label, a) for label in wrong_labels)
             for j,(audio,label,card) in enumerate(pairs):
                 acoustic = inputs[audio]
                 column = self.label_index[label]
                 arm = self.layout.assignments[card][epoch]
                 rows.append(self.render(acoustic,self.spec['arms'][arm][column],f'{index}/{self.rank}/{ordinal}/{j}'))
             group = (rows, slot['weight'], recording_ids)
-            if distribution is not None:
-                group += ((self.population[a]['intent'], *wrong_labels),)
+            if coords is not None:
+                group += (coords,)
             groups.append(group)
         return index,groups,batch['real_queries']
 
@@ -109,7 +120,7 @@ class OnlineTripletStream(TripletStream):
         super().__init__(*args)
         from .intent_triplet_sampling import AnchorSampler
         self.sampler = AnchorSampler(self.population, self.spec['labels'], self.negative_cards,
-                                     self.config['mixed']['seed'])
+                                     self.config['mixed']['seed'], contrast=self.directions)
         self.max_lag = self.config['class_logit_ema']['max_staleness_updates']
         if self.config['triplet_prefetch']['ahead'] > self.max_lag:
             raise ValueError('prefetch depth exceeds configured sampler lag')
@@ -144,11 +155,21 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
     objective = config['instruction_objective']
     size = len(class_ema.labels) if class_ema is not None else 0
     fields = (1 + objective['negative_cards_per_anchor']) if class_ema is not None else 0
-    reduction = torch.zeros(5 + world * len(groups) * fields * 2, device=device, dtype=torch.float32)
+    directions = Directions.from_objective(objective) if objective.get('kind') == KIND else None
+    metric_names = ('actor/pg_loss','jev/infonce','jev/gap','jev/anchor')
+    if directions:
+        from .context_objective_registry import resolve
+        contrast_loss = resolve(KIND)
+        metric_names = directions.metrics
+        if class_ema is None:
+            raise ValueError('card contrast requires online class-logit EMA')
+        fields = directions.observed
+    stat_width = len(metric_names) + 1
+    reduction = torch.zeros(stat_width + world * len(groups) * fields * 2, device=device, dtype=torch.float32)
     if class_ema is not None:
         from .class_logit_ema import pack_observations, global_tables
-        slots = reduction[5:].view(world, len(groups), fields, 2)[dist.get_rank()]
-    stats = reduction[:5]
+        slots = reduction[stat_width:].view(world, len(groups), fields, 2)[dist.get_rank()]
+    stats = reduction[:stat_width]
     parity = dict(inference_passes=0,compared=0,max_abs=0.)
     optimizer.zero_grad(set_to_none=True)
     for start in range(0,len(groups),micro):
@@ -162,40 +183,47 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         if probe:
             with torch.no_grad():
                 references = [model(inputs,positions).detach() for _ in range(probes)]
-        raw, markers = model(inputs,positions,return_logits=True,return_marker=True)
-        if class_ema is not None:
-            pack_observations(slots[start:start+len(chunk)], raw, chunk, class_ema.label_index)
+        if directions:
+            raw = model(inputs,positions,return_logits=True)
+            logits = raw.reshape(len(chunk), directions.width)
+            terms = contrast_loss(logits, directions)
+            pack_observations(slots[start:start+len(chunk)], logits[:, :fields], chunk, class_ema.label_index,
+                              paired_coordinates=True)
+        else:
+            raw, markers = model(inputs,positions,return_logits=True,return_marker=True)
+            if class_ema is not None:
+                pack_observations(slots[start:start+len(chunk)], raw, chunk, class_ema.label_index)
+            k = objective.get('negative_cards_per_anchor')
+            width = 3 + (k if k is not None else 1)
+            terms = components(markers.reshape(len(chunk),width,-1),raw.reshape(len(chunk),width),
+                               objective['temperature'],objective['probability_margin'],k)
         if probe:
             error = max((raw.sigmoid()-reference).abs().max().item() for reference in references)
             if not 0 <= error <= config['parity_probability_atol']:
                 raise ValueError(f'probability parity failed: {error}')
             parity.update(inference_passes=parity['inference_passes']+probes,compared=parity['compared']+probes*len(chunk),
                           max_abs=max(error,parity['max_abs']))
-        k = objective.get('negative_cards_per_anchor')
-        width = 3 + (k if k is not None else 1)
-        terms = components(markers.reshape(len(chunk),width,-1),raw.reshape(len(chunk),width),
-                           objective['temperature'],objective['probability_margin'],k)
         weight = terms.new_tensor([group[1] for group in chunk])
         sums = (terms*weight[:,None]).sum(0)
         (sums[0]*world/global_count).backward()
-        stats[:4] += sums.detach()
-        stats[4] += weight.sum()
+        stats[:-1] += sums.detach()
+        stats[-1] += weight.sum()
     dist.all_reduce(reduction)
     if class_ema is not None:
         reduction = reduction.cpu()
-        stats = reduction[:5]
-        sums, counts = global_tables(reduction[5:], size)
+        stats = reduction[:stat_width]
+        sums, counts = global_tables(reduction[stat_width:], size)
         if int(counts.diag().sum()) != global_count or int(counts.sum()) != global_count * fields:
             raise ValueError('anchor observation denominator differs from real TRAIN batch')
         class_ema.update(sums, counts)
-    if stats[4].item()!=global_count or not torch.isfinite(stats).all():
+    if stats[-1].item()!=global_count or not torch.isfinite(stats).all():
         raise ValueError('global count or objective invalid')
     norm = model.clip_grad_norm_(1.)
     if not torch.isfinite(norm):
         raise ValueError('nonfinite gradient')
     optimizer.step()
-    metrics = dict(zip(('actor/pg_loss','jev/infonce','jev/gap','jev/anchor'),
-                       (stats[:4]/global_count).tolist(),strict=True))
+    metrics = dict(zip(metric_names,
+                       (stats[:-1]/global_count).tolist(),strict=True))
     metrics['actor/grad_norm'] = norm.item()
     return metrics, parity
 

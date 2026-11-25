@@ -109,20 +109,26 @@ class ClassLogitEMA:
         self.updates = state['updates']
 
 
-def pack_observations(output, logits, groups, label_index):
+def pack_observations(output, logits, groups, label_index, *, paired_coordinates=False):
     """Write this rank's disjoint slots. Padding has coordinate -1."""
     size = len(label_index)
     indices = []
     for _, weight, _, coordinates in groups:
-        gold = label_index[coordinates[0]]
         if weight == 1:
-            indices.extend(gold * size + label_index[label] for label in coordinates)
+            if paired_coordinates:
+                indices.extend(label_index[a] * size + label_index[b] for a, b in coordinates)
+            else:
+                gold = label_index[coordinates[0]]
+                indices.extend(gold * size + label_index[label] for label in coordinates)
         elif weight == 0:
             indices.extend([-1] * len(coordinates))
         else:
             raise ValueError('expected real or padding anchor')
     rows = logits.detach().reshape(len(groups), -1)
     output[:, :, 0].copy_(torch.tensor(indices, dtype=torch.float32, device=output.device).reshape_as(output[:, :, 0]))
+    if paired_coordinates:
+        output[:, :, 1].copy_(rows)
+        return
     output[:, :1, 1].copy_(rows[:, :1])
     output[:, 1:, 1].copy_(rows[:, 3:])
 

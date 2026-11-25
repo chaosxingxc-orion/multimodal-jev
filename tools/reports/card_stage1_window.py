@@ -146,8 +146,14 @@ def run(c):
     design = read(entry/'design.json')
     budget = design['stage1']['total_updates']
     finite = role == 'finite'
-    if not finite and read(work/'finite/receipt.json')['updates'] != c['finite_updates']:
-        raise ValueError('two finite updates required')
+    from multimodal_jev.card_contrast import KIND
+    if not finite:
+        witness = read(work/'finite/receipt.json')
+        objective = c.get('triplet_objective', {})
+        if witness['updates'] != c['finite_updates']:
+            raise ValueError('two finite updates required')
+        if objective.get('kind') == KIND and witness.get('instruction_objective') != objective:
+            raise ValueError('finite window did not admit this contrastive configuration')
     parent.update(source_root=str(entry/'source'),source_policy=str(init/'policy'),source_policy_id=proof['policy_id'],
         source_contract=manifest['contract'],stage_lora_transition=bind_design(design,manifest['contract']),
         stage1_layout={k:dict(path=str(entry/name),sha256=file_hash(entry/name))
@@ -252,6 +258,8 @@ def run(c):
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    if parent['instruction_objective']['kind'] == KIND:
+        receipt['instruction_objective'] = parent['instruction_objective']
     if 'negative_cards_per_anchor' in parent['instruction_objective']:
         receipt['negative_cards_per_anchor'] = parent['instruction_objective']['negative_cards_per_anchor']
     if 'class_logit_ema' in parent:

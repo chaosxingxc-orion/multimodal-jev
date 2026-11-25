@@ -10,6 +10,7 @@
 | --- | --- |
 | [JEV-209 预登记](stage1-cards-tpo-209.md) | 0.6B r128 知识卡 Stage1 与融合 206、208 的单次 Stage2 |
 | [JEV-210 预登记](stage1-cards-tpo-210.md) | 与 209 同一 0.6B、r128 和数据，Stage1 每条录音对比 K 张错卡 |
+| [Stage1 双向对比配置](stage1-card-bidirectional.md) | 同语音换卡与同卡换语音；有放回抽样，每个锚点默认 16 个配对 |
 | [JEV-210 微批短测](stage1-batch-comparison-210-v1.md) | 两档 2 的幂次微批在相同 TRAIN 录音上的吞吐与显存 |
 | [JEV-208 预登记](tpo-probability-gap-208.md) | 扩大可信错例覆盖，在 TPO 中加入当前最强错类的概率间隔 |
 | [JEV-207 预登记](tpo-actor-pair-margin-207.md) | 验证新构造的源域音频对 + actor 排序项；按新视图推导预算 |

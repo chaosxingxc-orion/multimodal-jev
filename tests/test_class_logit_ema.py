@@ -53,13 +53,15 @@ class ToyModel(torch.nn.Module):
     def forward(self, inputs, positions, **kwargs):
         self.calls += 1
         scores = inputs['x'].float() * self.weight
-        return scores, torch.stack((scores, torch.ones_like(scores)), dim=-1)
+        if kwargs.get('return_marker'):
+            return scores, torch.stack((scores, torch.ones_like(scores)), dim=-1)
+        return scores if kwargs.get('return_logits') else scores.sigmoid()
 
     def clip_grad_norm_(self, value):
         return torch.nn.utils.clip_grad_norm_(self.parameters(), value)
 
 
-def distributed_steps(rank, path):
+def distributed_steps(rank, path, contrast):
     torch.set_num_threads(1)
     dist.init_process_group('gloo', init_method='file://'+path, rank=rank, world_size=2, timeout=timedelta(seconds=30))
     labels = list('abc')
@@ -67,6 +69,9 @@ def distributed_steps(rank, path):
     config = dict(mixed={'seed':8}, microbatch=1, triplet_prefetch=dict(workers=1,ahead=1),
                   stop_update=4, class_logit_ema=CFG, instruction_objective=dict(negative_cards_per_anchor=2,
                   temperature=.2, probability_margin=dict(margin=.1, decision_threshold=.5, gap_weight=1., anchor_weight=.25)))
+    if contrast:
+        config['instruction_objective'] = json.loads(Path(
+            'configs/portable/operations/card-stage1-bidirectional-v1.json').read_bytes())['window']['triplet_objective']
     batches = [dict(epoch=i//3, real_queries=2 if i!=1 else 1,
                     slots=[dict(id='a0',weight=1),dict(id='b0',weight=int(i!=1))]) for i in range(4)]
 
@@ -104,10 +109,14 @@ def distributed_steps(rank, path):
                         assert next(replay.queue) == source.queue.pending[0].result()
                     finally:
                         replay.close()
-                if i == 0:
+                if i == 0 and not contrast:
                     assert torch.allclose(ema.values[:2],torch.tensor([[.3,.6,.9],[.6,.9,1.2]]))
             assert reduce.call_count == model.calls == 3
-        assert ema.observation_counts.tolist() == [[3,3,3],[2,2,2],[0,0,0]]
+        if contrast:
+            assert ema.observation_counts.diag().tolist() == [3,2,0]
+            assert ema.observation_counts.sum().item() == 5 * 11
+        else:
+            assert ema.observation_counts.tolist() == [[3,3,3],[2,2,2],[0,0,0]]
         peers = [None,None]
         dist.all_gather_object(peers,ema.receipt(CFG))
         assert peers[0] == peers[1]
@@ -126,8 +135,9 @@ def distributed_steps(rank, path):
         dist.destroy_process_group()
 
 
-def test_distributed_prefetch_padding_fused_reduction_and_epoch_restore(tmp_path):
-    torch.multiprocessing.spawn(distributed_steps,(str(tmp_path/'rendezvous'),),nprocs=2)
+@pytest.mark.parametrize('contrast', [False, True], ids=['triplet', 'card_contrast'])
+def test_distributed_prefetch_padding_fused_reduction_and_epoch_restore(tmp_path, contrast):
+    torch.multiprocessing.spawn(distributed_steps,(str(tmp_path/'rendezvous'),contrast),nprocs=2)
 
 
 def test_registered_stage1_commands_use_the_online_contract():

@@ -27,6 +27,9 @@ OBJECTIVES = (
          status='admitted',
          summary='Supervised candidate InfoNCE; the softmax is the training objective '
                  'only, never the inference readout.'),
+    dict(name='card_bidirectional_infonce_v1', module='multimodal_jev.card_contrast',
+         attribute='components', stage=1, algorithm='card_bidirectional_infonce_v1', requires=('torch',),
+         status='admitted', summary='Membership-logit InfoNCE over wrong cards and wrong recordings.'),
     dict(name='dual_credit_grpo_floor_clipped_v1', module='multimodal_jev.context_dual_credit',
          attribute='hybrid_loss', stage=2, algorithm='dual_credit_grpo_floor_clipped_v1',
          requires=('omegaconf', 'verl'), status='admitted',

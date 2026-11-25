@@ -89,6 +89,10 @@ def validate_margin(c):
 
 
 def validate_objective(c):
+    from .card_contrast import KIND, Directions
+    if c.get('kind') == KIND:
+        Directions.from_objective(c)
+        return
     if c.get('kind') == 'candidate_infonce':
         expected = {'kind','temperature','probability_coefficient'}
     elif c.get('kind') in ('candidate_infonce_probability_margin_v1', 'intent_triplet_infonce_v1'):

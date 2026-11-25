@@ -18,6 +18,14 @@ def load(path, sha):
 
 
 def run(c):
+    from multimodal_jev.card_contrast import KIND, Directions
+    window = c['window']
+    objective = window.get('triplet_objective', {})
+    if objective.get('kind') == KIND:
+        Directions.from_objective(objective)
+        if ('class_logit_ema' not in window or 'single_card' not in window or not c.get('mixed')
+                or not c.get('bind_design_budget') or 'epoch_mining' in window or 'bootstrap_input' in window):
+            raise ValueError('card contrast requires the budget-bound single-card online EMA pipeline')
     root=Path(c['output'])
     entry=root/'entry'
     entry.mkdir(parents=True,exist_ok=False)

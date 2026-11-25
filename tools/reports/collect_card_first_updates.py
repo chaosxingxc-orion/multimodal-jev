@@ -8,6 +8,7 @@ import shlex
 import subprocess
 
 from multimodal_jev.baseline import file_hash
+from multimodal_jev.card_contrast import KIND, TRIPLET_KINDS, Directions
 from multimodal_jev.local_checkpoint import commit_json
 from tools.reports.watch_stage1_first_updates import REMOTE
 
@@ -24,7 +25,8 @@ def summarize(rows, step, config):
     sums = {}
     gradu = []
     rates = set()
-    triplet = config['instruction_objective']['kind'] == 'intent_triplet_infonce_v1'
+    obj = config['instruction_objective']
+    triplet = obj['kind'] in TRIPLET_KINDS
     for row in rows:
         metrics = row['metrics']
         owned = [v for v in row['optimizer_audit'].values() if v['numel'] > 0]
@@ -44,11 +46,17 @@ def summarize(rows, step, config):
         gradu.extend(metrics['actor/grad_norm'])
         for key in ('infonce_numerator', 'probability_margin_numerator', 'threshold_anchor_numerator', 'local_real_queries'):
             sums[key] = sums.get(key, 0.) + sum(metrics['jev/'+key])
-    margin = config['instruction_objective']['probability_margin']
+    margin = obj.get('probability_margin')
     if triplet:
         metrics = rows[0]['metrics']
-        rebuilt = (metrics['jev/infonce'] + margin['gap_weight'] * metrics['jev/gap']
-                   + margin['anchor_weight'] * metrics['jev/anchor'])
+        if obj['kind'] == KIND:
+            directions = Directions.from_objective(obj)
+            rebuilt = sum(weight * metrics[key] for key, weight in (
+                ('jev/fixed_audio_nce', directions.audio_weight), ('jev/fixed_card_nce', directions.card_weight))
+                if weight)
+        else:
+            rebuilt = (metrics['jev/infonce'] + margin['gap_weight'] * metrics['jev/gap']
+                       + margin['anchor_weight'] * metrics['jev/anchor'])
         loss = metrics['actor/pg_loss']
         if (not math.isfinite(loss) or not math.isclose(loss, rebuilt, abs_tol=1e-6)
                 or len(rates) != 1 or not 0 < min(rates) < math.inf):
