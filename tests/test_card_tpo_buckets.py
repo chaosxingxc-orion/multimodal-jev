@@ -131,3 +131,17 @@ def test_prefetch_preserves_mask_card_order_and_local_gradient():
         torch.testing.assert_close(z, torch.tensor([[9.5, 12.], [13.5, 16.]]))
         z.sum().backward()
     assert weight.grad.item() == 102.
+
+
+def test_collect_each_finite_actor_step_without_overwriting_evidence(tmp_path):
+    from tools.reports.tpo_training_window import verify_actor_parity
+    import pytest
+    batches = [dict(microbatch=4), dict(microbatch=1)]
+    for step, (batch, comparison) in enumerate(zip(batches, ('frozen_stage1', 'current_native_actor')),1):
+        proof = [dict(passed=True, rows=batch['microbatch'], step=step, comparison=comparison)]*2
+        path = tmp_path/f'parity-step-{step:04d}.json'
+        path.write_text(json.dumps(proof))
+    verify_actor_parity(tmp_path, batches, 1)
+    path.write_bytes((tmp_path/'parity-step-0001.json').read_bytes())
+    with pytest.raises(ValueError, match='wrong actor batch'):
+        verify_actor_parity(tmp_path, batches, 1)

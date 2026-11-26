@@ -11,6 +11,26 @@ from multimodal_jev.baseline import file_hash
 from multimodal_jev.local_checkpoint import commit_json
 
 
+def verify_actor_parity(rank_dir, batches, default_micro):
+    def read(name):
+        return json.loads((rank_dir/name).read_bytes())
+    if batches is None:
+        probes = read('initial-parity.json')
+        windows = [(probes, 4, default_micro)]
+    else:
+        if len(batches) != 2:
+            raise ValueError('two finite bucket updates required')
+        windows = []
+        for step, (batch, comparison) in enumerate(zip(batches, ('frozen_stage1', 'current_native_actor')), 1):
+            probes = read(f'parity-step-{step:04d}.json')
+            if any((p['step'], p['comparison']) != (step, comparison) for p in probes):
+                raise ValueError('Stage2 parity tested the wrong actor batch')
+            windows.append((probes, 2, batch['microbatch']))
+    for probes, count, micro in windows:
+        if len(probes) != count or any(p['passed'] is not True or p['rows'] != micro for p in probes):
+            raise ValueError('incomplete or failed actor probability parity')
+
+
 def run(c):
     def read(p):
         return json.loads(p.read_bytes())
@@ -69,20 +89,7 @@ def run(c):
         raise ValueError('new endpoint not independently collected')
     if t['window']=='finite':
         for rank in range(world):
-            parity=read(root/f'rank-{rank}'/'initial-parity.json')
-            if len(parity) != 4:
-                raise ValueError('four independent actor parity passes required')
-            for i, probe in enumerate(parity):
-                if batches is None:
-                    micro = m['schedule']['microbatch']
-                else:
-                    probe_batch = i//2
-                    micro = batches[probe_batch]['microbatch']
-                    comparison = 'frozen_stage1' if probe_batch == 0 else 'current_native_actor'
-                    if (probe['step'], probe['comparison']) != (probe_batch+1, comparison):
-                        raise ValueError('Stage2 parity tested the wrong actor batch')
-                if not probe['passed'] or probe['rows'] != micro:
-                    raise ValueError('producer/actor probability mismatch')
+            verify_actor_parity(root/f'rank-{rank}', batches, m['schedule']['microbatch'])
     pair_spec = m.get('actor_pair_margin')
     pair_by_epoch = {}
     bucket_timing = {}

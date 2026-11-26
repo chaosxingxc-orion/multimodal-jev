@@ -221,6 +221,8 @@ def main(args):
                 paths = [root/f'update-{i:04d}.json' for i in range(start_step+1,end+1)]
                 paths.extend(root/f'policy-step-{i}' for i in m.get('intermediate_steps',[]) if i > start_step)
                 recovery.preserve_tail(root,[*paths,root/'policy',root/'result.json'])
+            if start_step == 0:
+                recovery.preserve_tail(out, [out/'initial-parity.json'])
             dist.barrier()
         if card_binding:
             from tools.reports.card_tpo_batches import CardTPOBatches
@@ -232,7 +234,6 @@ def main(args):
                                                 stop_update=end,global_batch=local_size)
             forward = forward_context_audio_batch
         with batch_source as stream:
-            parity_reports = []
             actor=build_actor(cfg,wrapped,opt,objective=EXTENSION,collation=collate,forward=forward)
             for step in range(start_step,end):
                 now=time.monotonic()
@@ -341,16 +342,17 @@ def main(args):
                             reports.append(dict(rows=len(prob),max_abs=error,threshold_flips=flips,
                                 passed=error<=c['behavior_bounds']['probability_max_abs'] and flips==0))
                     if bucket_probe:
-                        parity_reports.extend(dict(r, step=step+1,
-                            comparison='frozen_stage1' if step == 0 else 'current_native_actor') for r in reports)
-                    commit_json(out/'initial-parity.json',parity_reports if bucket_probe else reports)
+                        reports = [dict(r, step=step+1, comparison='frozen_stage1' if step == 0
+                                        else 'current_native_actor') for r in reports]
+                    receipt_name = f'parity-step-{step+1:04d}.json' if bucket_probe else 'initial-parity.json'
+                    commit_json(out/receipt_name, reports)
                     parity_passed = all(r['passed'] for r in reports)
                     if card_binding:
                         reports_by_rank = [None]*world
                         dist.all_gather_object(reports_by_rank, parity_passed)
                         parity_passed = all(reports_by_rank)
                     if not parity_passed:
-                        raise ValueError('Stage1 producer vs actor discrepancy; see initial-parity.json')
+                        raise ValueError(f'producer vs actor discrepancy; see {receipt_name}')
                     ref_records = card_probs = None
                 if bucket_plan:
                     # veRL puts the whole model in train mode at update entry.

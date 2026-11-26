@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "stage2-stratified-source-v1",
+  "revision": "stage2-stratified-parity-v2",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "real-buckets": "configs/portable/operations/card-stage1-real-buckets-8-finite.json",
@@ -535,14 +535,6 @@
       {
         "id": "publish-stratified-stage2-view",
         "config": "configs/portable/operations/card-tpo-stratified-210.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.build_stratified_card_tpo",
-            "configs/portable/operations/card-tpo-stratified-210.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
         "inputs": [
           {
             "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json",
@@ -623,7 +615,8 @@
             "hash_workers": [
               "execution",
               "io_workers"
-            ]
+            ],
+            "sha256": "cd9c257f8f8110d314c352931b4ae4d6b9181dcc4740a5d4b067c82ca2a3c2f4"
           }
         ],
         "lineage": [
