@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "stage2-endpoint-buckets-v1",
+  "revision": "stage2-stratified-source-v1",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "real-buckets": "configs/portable/operations/card-stage1-real-buckets-8-finite.json",
@@ -533,19 +533,175 @@
         ]
       },
       {
-        "id": "bind-fused-stage2-parent",
-        "config": "configs/portable/operations/card-tpo-parent-endpoint-v9.json",
+        "id": "publish-stratified-stage2-view",
+        "config": "configs/portable/operations/card-tpo-stratified-210.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
-            "tools.reports.bind_card_tpo_parent",
-            "configs/portable/operations/card-tpo-parent-endpoint-v9.json",
+            "tools.reports.build_stratified_card_tpo",
+            "configs/portable/operations/card-tpo-stratified-210.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
         "inputs": [
           {
-            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json"
+            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json",
+            "sha256": "206eb23c2cf09dc0f7e94a77fe228f2382767be6ff294df505a8b78fa7711111"
+          }
+        ],
+        "checks": [
+          {
+            "path": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-tpo-reward-view-v1"
+              ],
+              [
+                [
+                  "schedule",
+                  "global_batch"
+                ],
+                384
+              ],
+              [
+                [
+                  "schedule",
+                  "epochs"
+                ],
+                1
+              ],
+              [
+                [
+                  "probability_gap",
+                  "gate"
+                ],
+                "strict_target_top1"
+              ],
+              [
+                [
+                  "recordings"
+                ],
+                32768
+              ],
+              [
+                [
+                  "real_exposures"
+                ],
+                32768
+              ],
+              [
+                [
+                  "sampling",
+                  "seed"
+                ],
+                317
+              ]
+            ],
+            "report": {
+              "recordings": [
+                "recordings"
+              ],
+              "updates": [
+                "updates"
+              ],
+              "strata": [
+                "strata"
+              ]
+            },
+            "verify_files": [
+              "rows.json",
+              "batches.json",
+              "population-audit.json",
+              "reference.pt",
+              "targets.pt",
+              "calibration.json",
+              "cards.json"
+            ],
+            "hash_workers": [
+              "execution",
+              "io_workers"
+            ]
+          }
+        ],
+        "lineage": [
+          [
+            [
+              0,
+              "value",
+              "pool_manifest_sha256"
+            ],
+            [
+              0,
+              "sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "reference_sha256"
+            ],
+            [
+              0,
+              "value",
+              "reference_sha256"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "source_policy"
+            ],
+            [
+              0,
+              "value",
+              "source_policy"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "card_input"
+            ],
+            [
+              0,
+              "value",
+              "card_input"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "candidate_ids"
+            ],
+            [
+              0,
+              "value",
+              "candidate_ids"
+            ]
+          ]
+        ]
+      },
+      {
+        "id": "bind-fused-stage2-parent",
+        "config": "configs/portable/operations/card-tpo-parent-endpoint-v9-stratified.json",
+        "python": "${CARD_PYTHON}",
+        "run": [
+          [
+            "tools.reports.bind_card_tpo_parent",
+            "configs/portable/operations/card-tpo-parent-endpoint-v9-stratified.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "inputs": [
+          {
+            "path": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json"
           },
           {
             "path": "${CARD_ENDPOINT_AUDIT}"
@@ -636,18 +792,18 @@
       },
       {
         "id": "freeze-fused-stage2",
-        "config": "configs/portable/operations/card-tpo-package-endpoint-buckets-v1.json",
+        "config": "configs/portable/operations/card-tpo-package-endpoint-buckets-v1-stratified.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_tpo_windows",
-            "configs/portable/operations/card-tpo-package-endpoint-buckets-v1.json",
+            "configs/portable/operations/card-tpo-package-endpoint-buckets-v1-stratified.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
         "inputs": [
           {
-            "path": "${CARD_TPO_ROOT}/targets/MANIFEST.json"
+            "path": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json"
           },
           {
             "path": "${CARD_TPO_PARENT}"

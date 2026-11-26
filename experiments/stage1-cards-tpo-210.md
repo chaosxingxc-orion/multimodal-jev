@@ -1,5 +1,11 @@
 # JEV-210：双向 InfoNCE Stage1 与融合 TPO Stage2
 
+2026-11-26：Stage2 正式训练前，先从已审核的 68,303 条候选只读生成独立 TRAIN 视图。
+使用 [分层配置](../configs/portable/operations/card-tpo-stratified-210.json)，随机种子 317，预算 32,768 条、简单回放 6,554 条。
+全部保留错误、并列和两个概率专项组；其余按正确卡、最强错卡、多错卡高分和音频来源分层，优先覆盖不同来源组。
+每条录音最多入选一次，保留同文的不同录音。固定参考分数取自原视图，按新投影批次重新计算双向 TPO 目标。
+统一入口使用 `run --experiment JEV-210 --through publish-stratified-stage2-view --local <宏文件>`，此次交付止于数据审核。
+
 当前 Stage2 接续版本为 `stage2-endpoint-buckets-v1`：复用原派发生成的 Stage1、全 TRAIN 评分和冻结视图，
 由同一实验入口从已审核终点绑定独立训练目录，经过训推对齐、两步有限验收、六卡正式训练，再做两阶段配对评测。
 分桶配置见 [Stage2 运行包](../configs/portable/operations/card-tpo-package-endpoint-buckets-v1.json)，

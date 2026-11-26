@@ -338,12 +338,15 @@ def step_result(template, macros, state, selection, lock, upstream, resume=False
     return dict(result, **resource_plan)
 
 
-def workflow(spec, macros, state, selection, lock=None, resume=False):
+def workflow(spec, macros, state, selection, lock=None, resume=False, through=None):
     results, upstream, downstream = [], [], True
+    stopped = False
     for phase in PHASES:
         phase_results = []
         for step in spec["stages"][phase]:
-            if "pending" in step:
+            if stopped:
+                result = dict(id=step["id"], status="outside_requested_scope")
+            elif "pending" in step:
                 result = dict(id=step["id"], status="pending", detail=step["pending"])
             elif not downstream:
                 result = dict(id=step["id"], status="waiting_for_dependency")
@@ -354,6 +357,8 @@ def workflow(spec, macros, state, selection, lock=None, resume=False):
                         subprocess.CalledProcessError) as exc:
                     result = dict(id=step["id"], status="failed", detail=str(exc))
             phase_results.append(dict(stage=phase, **result))
+            if step["id"] == through:
+                stopped = True
             if result["status"] == "failed" or (spec.get("ordered_steps") and result["status"] != "audited"):
                 downstream = False
         downstream = downstream and all(row["status"] == "audited" for row in phase_results)
@@ -465,7 +470,7 @@ def update_wiki(claim, selection, results, status):
     write_wiki(ledger, original, "".join(lines))
 
 
-def execute(action, experiment, local, *, publish=False, wait_for_ledger=False):
+def execute(action, experiment, local, *, publish=False, wait_for_ledger=False, through=None):
     if action == "publish":
         if not experiment or not re.fullmatch(r"JEV-[A-Z0-9]+(?:-[A-Z0-9]+)*", experiment):
             raise ValueError("Specify --experiment for Wiki publication")
@@ -488,6 +493,9 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False):
     selection = dict(selection, pipeline_sha256=digest(raw))
     spec = json.loads(raw)
     validate(spec, selection)
+    if through is not None and (action not in {"run", "resume"} or
+            through not in {s["id"] for group in spec["stages"].values() for s in group}):
+        raise ValueError("Unknown or inapplicable --through step")
     bindings = json.loads(local.read_bytes())
     if bindings["schema"] != "jev-local-macros-v1":
         raise ValueError("Expected jev-local-macros-v1")
@@ -533,7 +541,7 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False):
             update_wiki(claim, dict(selection, working_row_sha256=work_row["row_sha256"]),
                         starting, "in_progress")
             work_row = queue_rows(Path(LEDGER).read_text())[selection["experiment_id"]]
-        results = workflow(spec, macros, state, selection, lock, resume=action == "resume")
+        results = workflow(spec, macros, state, selection, lock, resume=action == "resume", through=through)
         statuses = {r["status"] for r in results}
         status = "complete" if statuses == {"audited"} else "in_progress"
         update_wiki(claim, dict(selection, working_row_sha256=work_row["row_sha256"]), results, status)
@@ -592,8 +600,11 @@ def main():
     parser.add_argument("--capacity-variant", help="Use a named training capacity variant from the experiment package")
     parser.add_argument("--local", type=Path, default=LOCAL)
     parser.add_argument("--publish", action="store_true", help="Sync the generated Wiki changes to origin/main")
+    parser.add_argument("--through", help="Run through this registered step inclusive, then stop before later steps")
     parser.add_argument("--wait-for-ledger", action="store_true", help="Wait for the current experiment to release the ledger")
     args = parser.parse_args()
+    if args.through and args.action not in {"run", "resume"}:
+        parser.error("--through requires run or resume")
     if args.publish and args.action not in {"run", "resume"}:
         parser.error("--publish is available with run or resume")
     if args.scoring and args.action != "capacity":
@@ -620,7 +631,7 @@ def main():
             print(json.dumps(capacity(args.experiment, args.local, **params), indent=2))
             return 0
         result = execute(args.action, args.experiment, args.local, publish=args.publish,
-                         wait_for_ledger=args.wait_for_ledger)
+                         wait_for_ledger=args.wait_for_ledger, through=args.through)
     except (KeyError, OSError, TypeError, ValueError, subprocess.CalledProcessError) as exc:
         parser.exit(2, f"{exc}\n")
     print(json.dumps(result, ensure_ascii=False, indent=2))
