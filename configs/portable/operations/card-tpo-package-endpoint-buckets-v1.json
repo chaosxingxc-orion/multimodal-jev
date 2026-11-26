@@ -1,0 +1,47 @@
+{
+  "repository": "${PROJECT_ROOT}",
+  "package": "${CARD_TPO_ROOT}/package",
+  "targets": "${CARD_TPO_ROOT}/targets",
+  "parent_config": "${CARD_TPO_PARENT}",
+  "deployment": "${CARD_TPO_DEPLOYMENT}",
+  "card_input": {
+    "inference_devices": "${CARD_STAGE2_INFERENCE_DEVICES}",
+    "inference_cpus": 12,
+    "endpoint_receipt": "${CARD_ENDPOINT_AUDIT}"
+  },
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py"
+  ],
+  "freeze_committed_repository": true,
+  "optimizer_bucketing": {
+    "lookahead_batches": 2,
+    "buckets": [
+      {
+        "max_tokens": 116,
+        "batch_size_per_rank": 32,
+        "microbatch_per_rank": 4
+      },
+      {
+        "max_tokens": 136,
+        "batch_size_per_rank": 24,
+        "microbatch_per_rank": 3
+      },
+      {
+        "max_tokens": 165,
+        "batch_size_per_rank": 16,
+        "microbatch_per_rank": 2
+      },
+      {
+        "max_tokens": null,
+        "batch_size_per_rank": 8,
+        "microbatch_per_rank": 1
+      }
+    ],
+    "acoustic_engine": "unique_recording_v1",
+    "acoustic_mount": "${CARD_TPO_ACOUSTIC_MOUNT}",
+    "acoustic_index": "${CARD_TPO_ACOUSTIC_INDEX}"
+  }
+}

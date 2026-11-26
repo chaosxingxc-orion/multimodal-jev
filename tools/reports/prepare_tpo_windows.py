@@ -24,6 +24,10 @@ def prepare(c):
     joint=c.get('joint')
     allocation = window_device_plan(c) if full or joint else None
     cards = c.get('card_input')
+    bucket = c.get('optimizer_bucketing')
+    ctl = c['deployment'].copy()
+    if bucket is not None and (not cards or full or joint or c.get('reuse_frozen_source')):
+        raise ValueError('bucketed Stage2 needs an independent fixed-card source release')
     parent=json.loads((verified(orig,full['runtime_sha256']) if full else orig).read_bytes())
     if not full:
         data=Path(c['targets'])
@@ -53,11 +57,23 @@ def prepare(c):
             if (set(actor).intersection(inference)
                     or len(inference)*4*m['schedule']['microbatch'] > m['schedule']['global_batch']):
                 raise ValueError('independent inference cards need distinct, complete parity windows')
+            if bucket is not None and 'endpoint_receipt' not in cards:
+                raise ValueError('Stage2 acoustic reuse requires an audited Stage1 endpoint')
             if 'endpoint_receipt' in cards:
                 proof = json.loads(Path(cards['endpoint_receipt']).read_bytes())
+                if bucket is not None:
+                    stage1 = json.loads(verified(Path(cards['endpoint_receipt']).with_name('training.json'),
+                                                 proof['config_sha256']).read_bytes())
+                mount = f"{proof['policy']}:{parent['source_policy']}"
+                if bucket is not None:
+                    # A variable training schedule publishes an actual endpoint,
+                    # so this candidate builds the mount from its verified receipt.
+                    # Remove only the obsolete binding for this exact destination.
+                    ctl['read_only_mounts'] = [v for v in ctl['read_only_mounts']
+                        if v.split(':', 1)[-1] != parent['source_policy']] + [mount]
                 if (not proof['passed'] or not proof['container_exited']
                         or m['source_policy'] != proof['policy_id']
-                        or f"{proof['policy']}:{parent['source_policy']}" not in c['deployment']['read_only_mounts']):
+                        or mount not in ctl['read_only_mounts']):
                     raise ValueError('Stage2 mount differs from the audited endpoint')
                 cards = dict(cards, policy_sha256=proof['manifest_sha256'])
             if (full or joint or c.get('next_macro_reference') or not m.get('card_input')
@@ -83,7 +99,6 @@ def prepare(c):
     else:
         frozen=freeze(repo,entry/'source',patterns=c['source_patterns'],io_workers=c['io_workers'])
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json',entry/'native-seal-container.json')
-    ctl=c['deployment'].copy()
     devices=parent['physical_devices']
     world=len(devices)
     geometry=parent['view_execution']['container']
@@ -127,6 +142,14 @@ def prepare(c):
         commit_json(pkg/'operations-local.json',macros('NATIVE_SEAL_OPERATIONS_CONFIG',ctl))
         return
     shutil.copytree(data,entry/'targets')
+    optimizer = None
+    if bucket is not None:
+        from tools.reports.card_tpo_bucket_package import prepare as prepare_buckets
+        for name, sha in m['files'].items():
+            verified(data/name, sha)
+        mount = prepare_buckets(bucket, stage1, data, entry, m, world)
+        ctl['read_only_mounts'] = [*ctl['read_only_mounts'], mount]
+        optimizer = file_hash(entry/'optimizer-buckets.json')
     windows = [('finite','tpo','finite'),('tpo','tpo','formal')]
     parity = []
     if cards:
@@ -143,6 +166,8 @@ def prepare(c):
                 process_device_scope=scope,
                 parent=parent_in, parent_sha=file_hash(orig), targets='/jev-entry/targets',
                 target_sha=file_hash(data/'MANIFEST.json'), output=f'/jev-work/{name}'))
+            if optimizer:
+                opts['training'].update(optimizer_sha=optimizer, bucket_probe=index % 2)
             commit_json(entry/(name+'.json'),macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
             parity.append(dict(path='/jev-work/'+receipt, physical_device=device))
             probes.append(dict(name=name,devices=[device],cpus=cards['inference_cpus'],memory=f"{geometry['memory_gib']}g",
@@ -166,6 +191,8 @@ def prepare(c):
                   target_sha=file_hash(data/'MANIFEST.json'),arm=arm,window=window,finite_receipt='/jev-work/finite/receipt.json'))
         if cards:
             opts['training']['card_inference_parity'] = parity
+        if optimizer:
+            opts['training']['optimizer_sha'] = optimizer
         if dynamic:
             opts['training']['next_macro_sha']=file_hash(entry/'next-macro.json')
         commit_json(entry/(name+'.json'),macros('NATIVE_SEAL_CONTAINER_CONFIG',opts))
@@ -180,6 +207,8 @@ def prepare(c):
         ctl['entry_archive_sha256'] = file_hash(archive)
         names = ['source/FILES.json', 'finite.json', 'tpo.json', 'targets/MANIFEST.json',
                  *(f'targets/{name}' for name in m['files'])]
+        if optimizer:
+            names.append('optimizer-buckets.json')
         if cards:
             names += ['parent.json', *(j['name']+'.json' for j in groups[0])]
             ctl.pop('idle_devices', None)

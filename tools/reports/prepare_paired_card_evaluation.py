@@ -114,10 +114,16 @@ def bind_completed_endpoints(c):
         raise ValueError('evaluation endpoints do not belong to the same training run')
     card = proof_path.with_name('cards.json')
     cards = dict(path=str(card), sha256=manifest['card_input']['cards_sha256'])
+    stage2_updates = manifest['updates']
+    if 'optimizer_sha' in bound['training']:
+        from tools.reports.card_tpo_bucket_package import load
+        t = bound['training']
+        plan = load(staged, t['optimizer_sha'], t['target_sha'], t['world_size'], manifest['schedule']['epochs'])
+        stage2_updates = len(plan['updates'])
     deployment = training_dir/'operations-local.json'
     result = dict(c, stage1_snapshot=proof['policy'], stage1_audit=proof_pin,
                   stage1_manifest=dict(path=str(proof_path.with_name('endpoint-manifest.json')), sha256=proof['manifest_sha256']),
-                  cards=cards, stage2_updates=manifest['updates'], training_config=train_pin,
+                  cards=cards, stage2_updates=stage2_updates, training_config=train_pin,
                   training_deployment=dict(path=str(deployment), sha256=file_hash(deployment)))
     result['completed_endpoints'] = dict(inputs, stage1_training=dict(
         path=str(proof_path.with_name('training.json')), sha256=proof['config_sha256']))
@@ -163,6 +169,8 @@ def run(c):
     train = terminal['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
     binding = {k:train['training'][k] for k in ('target_sha','parent_sha','world_size')}
     binding['source'] = train['source']['sha256']
+    if 'optimizer_sha' in train['training']:
+        binding['optimizer_sha'] = train['training']['optimizer_sha']
     receipt = json.loads((Path(trained_deploy['operations'])/'tpo-collected.json').read_bytes())
     train_status = json.loads((Path(trained_deploy['operations'])/'terminal.json').read_bytes())
     if (train_status != dict(exit_code=0, status='declared_stages_finished')

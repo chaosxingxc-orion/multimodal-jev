@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import time
+from threading import Lock
 
 import torch
 
@@ -105,24 +106,28 @@ def build(root, entry, train, spec, synth_cache, options):
 
 
 class PackedAcoustics:
-    def __init__(self, pin, population, token):
+    def __init__(self, pin, population, token, *, allow_subset=False):
         self.path=Path(pin['path'])
         if file_hash(self.path)!=pin['sha256']:
             raise ValueError('acoustic pack index changed')
         index=json.loads(self.path.read_bytes())
         if (index['schema']!=SCHEMA or index['token']!=token or index['identity']!=pin['identity']
-                or population.keys()!=index['entries'].keys()
+                or not (population.keys() <= index['entries'].keys() if allow_subset
+                        else population.keys() == index['entries'].keys())
                 or any(row['audio_sha256']!=index['entries'][uid][3] for uid,row in population.items())):
             raise ValueError('acoustic pack and TRAIN population differ')
         self.entries=index['entries']
         self.token=token
         self.parts={}
+        self.lock=Lock()
 
     def read(self, uid):
         part, offset, size, _, n, mel, frames, dtype, sha=self.entries[uid]
         if part not in self.parts:
-            path=self.path.parent/f'part-{part}.bin'
-            self.parts[part]=torch.from_file(str(path),shared=False,size=path.stat().st_size,dtype=torch.uint8)
+            with self.lock:
+                if part not in self.parts:
+                    path=self.path.parent/f'part-{part}.bin'
+                    self.parts[part]=torch.from_file(str(path),shared=False,size=path.stat().st_size,dtype=torch.uint8)
         raw=self.parts[part].narrow(0,offset,size)
         # Authenticate the exact mapped bytes used for training, including original feature padding.
         if hashlib.sha256(memoryview(raw.numpy())).hexdigest()!=sha:

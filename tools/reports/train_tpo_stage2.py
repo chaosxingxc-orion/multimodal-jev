@@ -119,6 +119,25 @@ def main(args):
             with (release/'learning.jsonl').open() as f:
                 population={v['id']:v for line in f if (v:=json.loads(line))['id'] in rows}
         batches=read(data/'batches.json')
+        bucket_plan, packed = None, None
+        bucket_steps = None
+        if args.optimizer_sha:
+            from multimodal_jev.card_acoustic_pack import PackedAcoustics
+            from multimodal_jev.card_training_acoustics import ENGINE
+            from tools.reports.card_tpo_bucket_package import load
+            if not card_binding or pair_spec or args.window not in ('finite', 'formal'):
+                raise ValueError('optimizer bucketing requires immutable recording-wise card targets')
+            bucket_plan = load(data.parent, args.optimizer_sha, args.target_sha, world, schedule['epochs'])
+            if (bucket_plan['lengths'].keys() != rows.keys() or bucket_plan['acoustic_engine'] != ENGINE):
+                raise ValueError('bucket plan inputs changed')
+            acoustics = (model.backbone.audio_tower, model.backbone.multi_modal_projector)
+            if any(p.requires_grad for part in acoustics for p in part.parameters()):
+                raise ValueError('Stage2 acoustic reuse requires frozen acoustic weights')
+            packed = PackedAcoustics(bucket_plan['cache'], rows, base.config.audio_token_id, allow_subset=True)
+            bucket_steps = bucket_plan['updates']
+            if args.window == 'finite':
+                bucket_steps = [bucket_steps[i] for i in bucket_plan['finite']]
+            batches = [dict(b, index=i) for i, b in enumerate(bucket_steps)]
         end = 2 if args.window == 'finite' else len(batches)
         denominators = [sum(not s['padding'] for s in b['slots']) for b in batches]
         epochs = [b['epoch'] for b in batches]
@@ -132,10 +151,14 @@ def main(args):
                 raise ValueError('invalid frozen actor pair coordinates')
             if denominators != m['batch_real'] or epochs != pair_spec['epochs']:
                 raise ValueError('frozen actor pair schedule changed')
-        batches = [dict(b,slots=b['slots'][rank*local_size:(rank+1)*local_size]) for b in batches]
+        if bucket_plan:
+            batches = [dict(b, slots=b['slots'][rank::world]) for b in batches]
+        else:
+            batches = [dict(b,slots=b['slots'][rank*local_size:(rank+1)*local_size]) for b in batches]
         ref_records, card_probs = None, None
         if card_binding:
-            if denominators != m['batch_real'] or len(batches) != m['updates']:
+            if ((not bucket_plan and (denominators != m['batch_real'] or len(batches) != m['updates']))
+                    or (bucket_plan and denominators != [b['real'] for b in bucket_steps])):
                 raise ValueError('card TPO schedule budget differs')
             if args.window == 'finite':
                 card_probs = torch.load(data/'reference.pt', map_location='cpu', weights_only=True)
@@ -183,6 +206,8 @@ def main(args):
                 reference_rows=torch.load(ref_file,map_location='cpu',weights_only=True)
         start_step = 0
         contract = dict(stage='card-tpo', parent=args.parent_sha, targets=args.target_sha, arm=args.arm, end=end)
+        if bucket_plan:
+            contract['optimizer_sha'] = args.optimizer_sha
         named = [(n,p) for n,p in wrapped.named_parameters() if p.requires_grad]
         if options and not card_binding:
             raise ValueError('window recovery requires fixed card targets')
@@ -200,19 +225,26 @@ def main(args):
         if card_binding:
             from tools.reports.card_tpo_batches import CardTPOBatches
             batch_source = CardTPOBatches(batches, rows, cards, card_binding,
-                                         c['card_caches'], e['prefetch'], collate, end, start_step)
+                                         c['card_caches'], e['prefetch'], collate, end, start_step, packed=packed, optimizer=bucket_plan)
             forward = batch_source.forward
         else:
             batch_source = CachedContextBatches(batches,population,task,prep,start_update=0,
                                                 stop_update=end,global_batch=local_size)
             forward = forward_context_audio_batch
         with batch_source as stream:
+            parity_reports = []
             actor=build_actor(cfg,wrapped,opt,objective=EXTENSION,collation=collate,forward=forward)
             for step in range(start_step,end):
                 now=time.monotonic()
                 policy=f"{c['source_policy_id']}:{args.arm}:{step}"
                 cfg.jev_policy_id=policy
                 items,metadata=stream.consume(step,policy)
+                if bucket_plan:
+                    width = batches[step]['microbatch']
+                    cfg.ppo_mini_batch_size = batches[step]['local_batch']
+                    cfg.ppo_micro_batch_size_per_gpu = width
+                    if len(items) != cfg.ppo_mini_batch_size or len(items) % width:
+                        raise ValueError('rank does not match frozen bucket geometry')
                 for x,meta,slot in zip(items,metadata,batches[step]['slots'],strict=True):
                     row=rows[meta['id']]
                     if not card_binding:
@@ -229,6 +261,7 @@ def main(args):
                     if pair_spec is not None:
                         x.update(pair_rival=int(rivals[row['index']]),
                                  pair_enabled=bool(enabled[epochs[step], row['index']]))
+                prepared = time.monotonic()-now
                 if choice:
                     mode=batches[step]['mode']
                     for x,meta,slot in zip(items,metadata,batches[step]['slots'],strict=True):
@@ -275,17 +308,29 @@ def main(args):
                         if not dynamic and args.window!='reference':
                             for x,k in zip(items,keys,strict=True):x['log_target']=reference_rows[k]
                     if args.window=='reference':continue
-                if (ref_records is not None or card_probs is not None) and step == 0:
+                bucket_probe = bucket_plan and args.window == 'finite'
+                if ((ref_records is not None or card_probs is not None) and step == 0) or bucket_probe:
+                    if bucket_plan:
+                        for part in acoustics:
+                            part.eval()
                     reports=[]
                     with torch.no_grad():
-                        for group in range(4):
-                            start=group*c['microbatch']
-                            sample=items[start:start+c['microbatch']]
+                        for group in range(2 if bucket_probe else 4):
+                            probe_micro = width if bucket_plan else c['microbatch']
+                            start = (group % (len(items)//probe_micro))*probe_micro
+                            sample=items[start:start+probe_micro]
                             inputs=[{k:x[k] for k in ('request_id','policy_id','inputs','positions')} for x in sample]
                             z=forward(wrapped,inputs,device=torch.device('npu',local),
                                       dtype=torch.bfloat16,policy_id=policy,**collate)
                             ids = [rows[v['id']] for v in metadata[start:start+len(sample)]]
-                            if card_binding:
+                            if bucket_probe and step != 0:
+                                # After the first update, compare to the native
+                                # actor at the current weights, not Stage1 scores.
+                                prior = stream.forward_native(wrapped, inputs,
+                                    device=torch.device('npu',local), dtype=torch.bfloat16,
+                                    policy_id=policy, **collate)
+                                prob, actual = prior.sigmoid().float().cpu(), z.sigmoid().float().cpu()
+                            elif card_binding:
                                 prob=card_probs[[v['index'] for v in ids]]
                                 actual=z.sigmoid().float().cpu()
                             else:
@@ -295,7 +340,10 @@ def main(args):
                             flips=int(((actual>=.5)!=(prob>=.5)).sum())
                             reports.append(dict(rows=len(prob),max_abs=error,threshold_flips=flips,
                                 passed=error<=c['behavior_bounds']['probability_max_abs'] and flips==0))
-                    commit_json(out/'initial-parity.json',reports)
+                    if bucket_probe:
+                        parity_reports.extend(dict(r, step=step+1,
+                            comparison='frozen_stage1' if step == 0 else 'current_native_actor') for r in reports)
+                    commit_json(out/'initial-parity.json',parity_reports if bucket_probe else reports)
                     parity_passed = all(r['passed'] for r in reports)
                     if card_binding:
                         reports_by_rank = [None]*world
@@ -304,8 +352,25 @@ def main(args):
                     if not parity_passed:
                         raise ValueError('Stage1 producer vs actor discrepancy; see initial-parity.json')
                     ref_records = card_probs = None
-                metrics=actor.update_policy(pack(items))
-                torch.npu.synchronize()
+                if bucket_plan:
+                    # veRL puts the whole model in train mode at update entry.
+                    def freeze_acoustics(*_):
+                        for part in acoustics:
+                            if part.training:
+                                part.eval()
+                    acoustic_hook = model.register_forward_pre_hook(freeze_acoustics)
+                    torch.npu.reset_peak_memory_stats()
+                begin_actor = time.monotonic()
+                try:
+                    metrics=actor.update_policy(pack(items))
+                    torch.npu.synchronize()
+                finally:
+                    if bucket_plan:
+                        acoustic_hook.remove()
+                if bucket_plan:
+                    metrics['jev/input_wait_seconds'] = [prepared]
+                    metrics['jev/train_seconds'] = [time.monotonic()-begin_actor]
+                    metrics['jev/peak_bytes'] = [torch.npu.max_memory_allocated()]
                 norms=metrics['actor/grad_norm']
                 if not all(math.isfinite(v) and v>0 for v in norms):
                     raise ValueError('invalid optimizer gradient norm')
@@ -317,6 +382,13 @@ def main(args):
                     names = ['actor/pg_loss', 'actor/grad_norm'] + [
                         k for k in metrics if k.startswith('jev/') and not k.startswith((count_prefix, 'jev/gap_count/'))]
                     reduced={k:sum(float(torch.as_tensor(r[k]).mean()) for r in gathered)/world for k in names}
+                    if bucket_plan:
+                        # Each TPO microbatch metric includes its accumulation scale.
+                        accumulation = batches[step]['local_batch']//width
+                        for key in names:
+                            if key.startswith('jev/') and not key.endswith('_seconds'):
+                                if any(len(r[key]) != accumulation for r in gathered):
+                                    raise ValueError('unexpected Stage2 metric accumulation')
                     if not all(math.isfinite(v) for v in reduced.values()):
                         raise ValueError('nonfinite reduced metrics')
                     extra={}
@@ -330,6 +402,13 @@ def main(args):
                             seconds_max=max(r['jev/reference_seconds'][0] for r in gathered),config_sha256=args.next_macro_sha)
                     update = dict(step=step+1,seconds=time.monotonic()-now,
                         real=denominators[step],task=batches[step].get('mode','noul'),metrics=reduced,**extra)
+                    if bucket_plan:
+                        update['bucket'] = {k: batches[step][k] for k in ('bucket','local_batch','microbatch','max_tokens','epoch_end')}
+                        update['optimizer_sha'] = args.optimizer_sha
+                        update['epoch'] = epochs[step]
+                        update['peak_bytes'] = max(r['jev/peak_bytes'][0] for r in gathered)
+                        update['timing'] = {k: max(r['jev/'+k][0] for r in gathered)
+                                            for k in ('input_wait_seconds', 'train_seconds')}
                     if pair_spec is not None:
                         update['epoch'] = epochs[step]
                         update['pair_margin'] = {
@@ -342,7 +421,7 @@ def main(args):
                         update['epoch'] = epochs[step]
                         update['gap_counts'] = {k.split('/')[-1]: int(sum(sum(r[k]) for r in gathered))
                                                 for k in metrics if k.startswith('jev/gap_count/')}
-                        verify_gap_update(update, step+1, m['batch_real'])
+                        verify_gap_update(update, step+1, denominators)
                     commit_json(root/f'update-{step+1:04d}.json', update)
                 if args.window == 'formal' and step+1 in m.get('intermediate_steps', []):
                     with FSDP.summon_full_params(wrapped,writeback=False,rank0_only=False):
@@ -383,6 +462,7 @@ if __name__=='__main__':
     for key in ('parent-sha','target-sha'):
         p.add_argument('--'+key,required=True)
     p.add_argument('--next-macro-sha')
+    p.add_argument('--optimizer-sha')
     p.add_argument('--arm',choices=['direct','tpo'],required=True)
     p.add_argument('--window',choices=['reference','finite','formal'],required=True)
     main(p.parse_args())
