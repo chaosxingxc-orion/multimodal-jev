@@ -48,6 +48,7 @@ def collect(package, controller_terminal=None):
         training = binding['training']
         joint=binding['phase']=='joint_tpo'
         dynamic='next_macro_sha' in training
+        bucket_plan = None
         fixed_view = None
         if not (joint or dynamic):
             path = package/'entry/targets/MANIFEST.json'
@@ -74,6 +75,11 @@ def collect(package, controller_terminal=None):
         else:
             keys = ('target_sha','parent_sha','world_size') + (('next_macro_sha',) if dynamic else ())
             expected=dict(source=binding['source']['sha256'], **{k:training[k] for k in keys})
+            if 'optimizer_sha' in training:
+                from tools.reports.card_tpo_bucket_package import load
+                expected['optimizer_sha'] = training['optimizer_sha']
+                bucket_plan = load(package/'entry', training['optimizer_sha'], training['target_sha'],
+                                   training['world_size'], fixed_view['schedule']['epochs'])
         if (training['window'] != 'formal' or receipt['passed'] is not True or receipt['window'] != 'finite'
                 or receipt['binding'] != expected):
             raise ValueError('finite and formal bindings differ')
@@ -92,6 +98,8 @@ def collect(package, controller_terminal=None):
             formal, = [job for group in groups for job in group if job['name']=='tpo']
             remote.update(config_files={name: file_hash(package/'entry'/name) for name in
                 ('tpo.json', 'targets/MANIFEST.json', 'source/FILES.json')}, devices=formal['devices'])
+        if bucket_plan:
+            remote['config_files']['optimizer-buckets.json'] = expected['optimizer_sha']
         command = shlex.join(['python3','-','--remote-json',json.dumps(remote)])
         result = subprocess.run(['ssh','-o','BatchMode=yes',handle['host'],command],input=observer,
                                 text=True,capture_output=True)
@@ -113,7 +121,15 @@ def collect(package, controller_terminal=None):
                     from multimodal_jev.context_tpo_probability_gap import verify_gap_update
                     if receipt['updates'] != 2 or 'reference' in row or not row['seconds'] > 0:
                         raise ValueError('invalid formal probability gap window')
-                    verify_gap_update(row, i, fixed_view['batch_real'])
+                    counts = fixed_view['batch_real']
+                    if bucket_plan:
+                        update = bucket_plan['updates'][i-1]
+                        fields = ('bucket', 'local_batch', 'microbatch', 'max_tokens', 'epoch_end')
+                        if (row['optimizer_sha'] != expected['optimizer_sha'] or
+                                row['bucket'] != {k:update[k] for k in fields}):
+                            raise ValueError('formal update differs from frozen optimizer bucket')
+                        counts = [b['real'] for b in bucket_plan['updates']]
+                    verify_gap_update(row, i, counts)
                 elif pair_spec is None:
                     check_fixed_update(row, i, fixed_view['batch_real'])
                 else:
