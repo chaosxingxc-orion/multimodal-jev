@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage2-calibrated-replay.md",
-  "revision": "calibrated-replay-v1",
+  "revision": "calibrated-replay-parity-v2",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -52,8 +52,7 @@
             ],
             "hash_workers": [
               "cpu_threads"
-            ],
-            "sha256": "34710e2ae238e4be26a2ffd0d79a4fd9495b5ddab77ec9e173bd036b7335a9a6"
+            ]
           }
         ]
       }
@@ -61,12 +60,12 @@
     "train": [
       {
         "id": "bind-fused-stage2-parent",
-        "config": "configs/portable/operations/card-tpo-parent-endpoint-v9-stratified.json",
+        "config": "configs/portable/operations/card-tpo-parent-calibrated-parity.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.bind_card_tpo_parent",
-            "configs/portable/operations/card-tpo-parent-endpoint-v9-stratified.json",
+            "configs/portable/operations/card-tpo-parent-calibrated-parity.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -104,8 +103,7 @@
                 ],
                 "/jev-endpoint"
               ]
-            ],
-            "sha256": "c2dd4d55018d7950894d889bcd638ad3c6dee9e05bebcf9ce8f28981d42de85f"
+            ]
           }
         ],
         "lineage": [
@@ -201,8 +199,7 @@
                 ],
                 true
               ]
-            ],
-            "sha256": "6aa26b49103b844bd920ad188ea7395a2e9a607b22f7ef4f65a186da91bfa796"
+            ]
           }
         ]
       },

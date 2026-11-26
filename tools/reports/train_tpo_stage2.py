@@ -98,7 +98,7 @@ def main(args):
         targets = torch.load(data/'targets.pt',map_location='cpu',weights_only=True)
         scale = m.get('frozen_probability')
         if scale is not None:
-            from multimodal_jev.frozen_probability import parity as calibrated_parity, validate
+            from multimodal_jev.frozen_probability import parity as calibrated_parity, reference_logits, validate
             validate(scale)
             path = data/'probability-targets.pt'
             if file_hash(path) != m['files'][path.name]:
@@ -354,8 +354,8 @@ def main(args):
                             reports.append(dict(rows=len(prob),max_abs=error,threshold_flips=flips,
                                 passed=error<=c['behavior_bounds']['probability_max_abs'] and flips==0))
                             if scale is not None:
-                                ref_logits = prior.float().cpu() if bucket_probe and step != 0 else prob.logit()
-                                calibrated_parity(reports[-1], z.float().cpu(), ref_logits, scale,
+                                ref_logits = prior.float().cpu() if bucket_probe and step != 0 else reference_logits(prob, scale)
+                                calibrated_parity(reports[-1], z.float(), ref_logits, scale,
                                                   c['behavior_bounds']['probability_max_abs'])
                     if bucket_probe:
                         reports = [dict(r, step=step+1, comparison='frozen_stage1' if step == 0

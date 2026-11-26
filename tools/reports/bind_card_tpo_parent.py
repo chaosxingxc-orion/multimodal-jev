@@ -39,6 +39,11 @@ def bind(c):
                   training_dataset=dict(manifest_sha256=targets['view_sha256']),
                   reference_dataset=dict(manifest_sha256=targets['reference_sha256']),
                   card_caches=dict(parent['card_caches'], real=training['encoded_audio_cache']))
+    if 'probability_max_abs' in c:
+        bound = c['probability_max_abs']
+        if not 0 < bound <= parent['behavior_bounds']['probability_max_abs']:
+            raise ValueError('release may only tighten the probability admission bound')
+        parent['behavior_bounds']['probability_max_abs'] = bound
     if 'recovery' in c:
         parent['recovery'] = c['recovery']
     commit_json(Path(c['output']), parent)

@@ -64,8 +64,8 @@ def project(reference, gold, spec, calibration=None):
         raise ValueError("nonfinite contrast utility")
     cap = spec.max_displacement
     if calibration is not None:
-        from .frozen_probability import transform
-        calibrated = transform(p.logit(), calibration)
+        from .frozen_probability import transform, reference_logits
+        calibrated = transform(reference_logits(raw, calibration), calibration)
         utilities['brier'] = 2 * (F.one_hot(gold, p.shape[1]).to(p.dtype) - calibrated.sigmoid())
         probability_target = calibrated + spec.brier * utilities['brier'].clamp(-cap, cap)
     logits = p.logit() + sum(getattr(spec, key) * v.clamp(-cap, cap)
