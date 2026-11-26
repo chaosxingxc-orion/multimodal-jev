@@ -1,5 +1,10 @@
 # JEV-210：双向 InfoNCE Stage1 与融合 TPO Stage2
 
+当前 Stage2 接续版本为 `stage2-endpoint-buckets-v1`：复用原派发生成的 Stage1、全 TRAIN 评分和冻结视图，
+由同一实验入口从已审核终点绑定独立训练目录，经过训推对齐、两步有限验收、六卡正式训练，再做两阶段配对评测。
+分桶配置见 [Stage2 运行包](../configs/portable/operations/card-tpo-package-endpoint-buckets-v1.json)，
+交接和证据见 [210 台账报告](../wiki/reports/JEV-210.md)。从头复现上游用原领取提交 `e9dfdc8` 的入口和独立输出目录。
+
 本次正式派发使用 181 DP8、0.6B r128、109,610 条真实及合成 TRAIN 锚点；同卡与同语音两个方向各占一半，分组为 1＋1＋3＋3。以组内最长配对序列分桶：≤116 / ≤136 / ≤165 / 更长，每卡上限分别为 32 / 24 / 16 / 8。每桶批次更新一次，按实际覆盖两轮判定终点，轮间无验证。统一入口先复验训推一致性，再从初始化训练；Stage2 构建、训练及两阶段评测依赖本次正式终点。
 
 以下为此前正式训练方案。修订 `bidirectional-m16p3-packed-v1` 替代已停止的 `online-ema-v9`，沿用 JEV-210。以[统一入口配置](pipelines/JEV-210.json)和[双向采样与 loss 协议](stage1-card-bidirectional.md)为准。已授权在 181 八卡派发；启动验收须独立复核正式训练前三步。

@@ -140,11 +140,15 @@ def test_distributed_prefetch_padding_fused_reduction_and_epoch_restore(tmp_path
     torch.multiprocessing.spawn(distributed_steps,(str(tmp_path/'rendezvous'),contrast),nprocs=2)
 
 
-def test_registered_stage1_commands_use_the_online_contract():
+def test_registered_stage2_handoff_reuses_the_pinned_online_stage1():
     spec = json.loads(Path('experiments/pipelines/JEV-210.json').read_text())
     train = {s['id']:s for s in spec['stages']['train']}
     first = train['train-stage1-two-epochs']
-    assert first['config'] == first['run'][0][1]
+    upstream = [first, *(train[name] for name in ('audit-stage1-endpoint', 'score-stage1-endpoint-train',
+                                                  'build-fused-stage2-view'))]
+    assert all('run' not in step for step in upstream)
+    assert all(len(check['sha256']) == 64 for step in upstream[:2] for check in step['checks'])
+    assert all(step['lineage'] for step in upstream[2:])
     config = json.loads(Path(first['config']).read_text())
     window = config['window']
     assert not {'stop_after_epoch','epoch_mining','bootstrap_input'} & window.keys()

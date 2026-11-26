@@ -2,7 +2,7 @@
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-cards-tpo-210.md",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
-  "revision": "real-buckets-eight-pairs-v1",
+  "revision": "stage2-endpoint-buckets-v1",
   "capacity_window": "configs/portable/operations/card-stage1-batch-comparison-210-v1.json",
   "capacity_variants": {
     "real-buckets": "configs/portable/operations/card-stage1-real-buckets-8-finite.json",
@@ -27,24 +27,6 @@
       {
         "id": "train-stage1-two-epochs",
         "config": "configs/portable/operations/card-stage1-real-buckets-8.json",
-        "python": "${CARD_PYTHON}",
-        "dispatch_guards": [
-          "${CARD_PACKAGE}/entry.tar"
-        ],
-        "run": [
-          [
-            "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-real-buckets-8.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ],
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${CARD_PACKAGE}/operations-local.json"
-          ]
-        ],
         "checks": [
           {
             "path": "${CARD_STAGE1_OPERATIONS}/prepare-collected.json",
@@ -75,7 +57,8 @@
               "input_cache": [
                 "cache_sha256"
               ]
-            }
+            },
+            "sha256": "eedf8473c5243a6eeea4b2df6f390497d0c6021d27c3dc0f850a32d7fcc38111"
           },
           {
             "path": "${CARD_STAGE1_OPERATIONS}/finite-collected.json",
@@ -180,7 +163,8 @@
               "token_buckets": [
                 "token_buckets"
               ]
-            }
+            },
+            "sha256": "f596f94d870a813b57084d10b77f9278e5faf878c166cd1868a3397dec853eb5"
           },
           {
             "path": "${CARD_STAGE1_OPERATIONS}/formal-collected.json",
@@ -251,7 +235,8 @@
               "token_buckets": [
                 "token_buckets"
               ]
-            }
+            },
+            "sha256": "5129cbca40bcbb242fa14d3f428d87e2f9974d1bef08a2b35373a962ca09d885"
           },
           {
             "path": "${CARD_STAGE1_OPERATIONS}/terminal.json",
@@ -268,10 +253,10 @@
                 ],
                 "declared_stages_finished"
               ]
-            ]
+            ],
+            "sha256": "5d7e7862ce75250b6f2c13901d5bdacc7352a92c4db3868670a02c9afd78c5e5"
           }
-        ],
-        "requires_current_dispatch": true
+        ]
       },
       {
         "id": "audit-stage1-endpoint",
@@ -318,27 +303,16 @@
               "policy_id": [
                 "policy_id"
               ]
-            }
+            },
+            "sha256": "872258d6471788aef39d66532e8b261e773597fee1f4050e3831b257b4a3d742"
           }
         ],
         "config": "configs/portable/operations/card-stage1-endpoint-device-pool-v1.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.audit_card_training_endpoint",
-            "configs/portable/operations/card-stage1-endpoint-device-pool-v1.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "dispatch_guards": [
-          "${CARD_ENDPOINT_DIR}/receipt.json"
-        ],
         "inputs": [
           {
             "path": "${CARD_STAGE1_OPERATIONS}/terminal.json"
           }
-        ],
-        "requires_current_dispatch": true
+        ]
       },
       {
         "id": "score-stage1-endpoint-train",
@@ -385,17 +359,6 @@
           }
         ],
         "config": "configs/portable/operations/card-scoring-endpoint-scale-dp8.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-endpoint-scale-dp8.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "dispatch_guards": [
-          "${CARD_ENDPOINT_SCORE}/entry.tar"
-        ],
         "inputs": [
           {
             "path": "${CARD_ENDPOINT_AUDIT}"
@@ -431,21 +394,10 @@
       {
         "id": "build-fused-stage2-view",
         "config": "configs/portable/operations/card-tpo-targets-single-host.json",
-        "python": "${CARD_PYTHON}",
-        "run": [
-          [
-            "tools.reports.build_card_tpo_targets",
-            "configs/portable/operations/card-tpo-targets-single-host.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
         "inputs": [
           {
             "path": "${CARD_ENDPOINT_SCORE}/audit.json"
           }
-        ],
-        "dispatch_guards": [
-          "${CARD_TPO_ROOT}/targets/MANIFEST.json"
         ],
         "checks": [
           {
@@ -702,11 +654,11 @@
           }
         ],
         "dispatch_guards": [
-          "${CARD_TPO_ROOT}/package/entry.tar"
+          "${CARD_STAGE2_RUN_ROOT}/package/entry.tar"
         ],
         "checks": [
           {
-            "path": "${CARD_TPO_ROOT}/package/operations-local.json",
+            "path": "${CARD_STAGE2_RUN_ROOT}/package/operations-local.json",
             "equals": [
               [
                 [
@@ -732,11 +684,11 @@
         "python": "${CARD_PYTHON}",
         "inputs": [
           {
-            "path": "${CARD_TPO_ROOT}/package/operations-local.json"
+            "path": "${CARD_STAGE2_RUN_ROOT}/package/operations-local.json"
           }
         ],
         "dispatch_guards": [
-          "${CARD_TPO_ROOT}/ops"
+          "${CARD_STAGE2_RUN_ROOT}/ops"
         ],
         "run": [
           [
@@ -744,12 +696,12 @@
             "--config",
             "configs/portable/operations/native-seal-operations.json",
             "--local",
-            "${CARD_TPO_ROOT}/package/operations-local.json"
+            "${CARD_STAGE2_RUN_ROOT}/package/operations-local.json"
           ]
         ],
         "checks": [
           {
-            "path": "${CARD_TPO_ROOT}/ops/infer-0-collected.json",
+            "path": "${CARD_STAGE2_RUN_ROOT}/ops/infer-0-collected.json",
             "equals": [
               [
                 [
@@ -766,7 +718,7 @@
             ]
           },
           {
-            "path": "${CARD_TPO_ROOT}/ops/infer-1-collected.json",
+            "path": "${CARD_STAGE2_RUN_ROOT}/ops/infer-1-collected.json",
             "equals": [
               [
                 [
@@ -783,7 +735,7 @@
             ]
           },
           {
-            "path": "${CARD_TPO_ROOT}/ops/finite-collected.json",
+            "path": "${CARD_STAGE2_RUN_ROOT}/ops/finite-collected.json",
             "equals": [
               [
                 [
@@ -806,7 +758,7 @@
             ]
           },
           {
-            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
+            "path": "${CARD_STAGE2_RUN_ROOT}/ops/tpo-collected.json",
             "equals": [
               [
                 [
@@ -837,7 +789,7 @@
             }
           },
           {
-            "path": "${CARD_TPO_ROOT}/ops/terminal.json",
+            "path": "${CARD_STAGE2_RUN_ROOT}/ops/terminal.json",
             "equals": [
               [
                 [
@@ -1138,7 +1090,7 @@
             }
           },
           {
-            "path": "${CARD_TPO_ROOT}/ops/tpo-collected.json",
+            "path": "${CARD_STAGE2_RUN_ROOT}/ops/tpo-collected.json",
             "equals": [
               [
                 [
@@ -1487,7 +1439,7 @@
         ],
         "inputs": [
           {
-            "path": "${CARD_TPO_ROOT}/ops/terminal.json"
+            "path": "${CARD_STAGE2_RUN_ROOT}/ops/terminal.json"
           },
           {
             "path": "${CARD_ENDPOINT_AUDIT}"
