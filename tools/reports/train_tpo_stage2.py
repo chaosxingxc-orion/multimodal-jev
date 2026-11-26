@@ -367,17 +367,19 @@ def main(args):
                 finally:
                     if bucket_plan:
                         acoustic_hook.remove()
+                runtime = None
                 if bucket_plan:
-                    metrics['jev/input_wait_seconds'] = [prepared]
-                    metrics['jev/train_seconds'] = [time.monotonic()-begin_actor]
-                    metrics['jev/peak_bytes'] = [torch.npu.max_memory_allocated()]
+                    runtime = dict(input_wait_seconds=prepared,
+                                   train_seconds=time.monotonic()-begin_actor,
+                                   peak_bytes=torch.npu.max_memory_allocated())
                 norms=metrics['actor/grad_norm']
                 if not all(math.isfinite(v) and v>0 for v in norms):
                     raise ValueError('invalid optimizer gradient norm')
                 if dynamic: metrics['jev/reference_seconds']=[ref_seconds]
                 gathered=[None]*world
-                dist.all_gather_object(gathered,metrics)
+                dist.all_gather_object(gathered, (metrics, runtime))
                 if rank==0:
+                    gathered, runtimes = zip(*gathered, strict=True)
                     count_prefix = 'jev/pair_count/'
                     names = ['actor/pg_loss', 'actor/grad_norm'] + [
                         k for k in metrics if k.startswith('jev/') and not k.startswith((count_prefix, 'jev/gap_count/'))]
@@ -406,8 +408,8 @@ def main(args):
                         update['bucket'] = {k: batches[step][k] for k in ('bucket','local_batch','microbatch','max_tokens','epoch_end')}
                         update['optimizer_sha'] = args.optimizer_sha
                         update['epoch'] = epochs[step]
-                        update['peak_bytes'] = max(r['jev/peak_bytes'][0] for r in gathered)
-                        update['timing'] = {k: max(r['jev/'+k][0] for r in gathered)
+                        update['peak_bytes'] = max(r['peak_bytes'] for r in runtimes)
+                        update['timing'] = {k: max(r[k] for r in runtimes)
                                             for k in ('input_wait_seconds', 'train_seconds')}
                     if pair_spec is not None:
                         update['epoch'] = epochs[step]
