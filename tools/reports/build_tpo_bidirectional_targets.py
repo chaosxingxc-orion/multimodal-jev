@@ -81,6 +81,11 @@ def compile_schedule(c, rows, batches, order, probs):
     gold = torch.tensor([rows[uid]["gold"] for uid in order], dtype=torch.long)
     shape = (c["schedule"]["epochs"], len(rows))
     target = torch.empty((*shape, ref.shape[1]), dtype=torch.float32)
+    calibration = c.get("frozen_probability")
+    if calibration is not None:
+        from multimodal_jev.frozen_probability import validate
+        validate(calibration)
+        probability_target = torch.empty_like(target)
     seen = torch.zeros(shape, dtype=torch.bool)
     audit = Counter()
     expected = []
@@ -97,7 +102,9 @@ def compile_schedule(c, rows, batches, order, probs):
         ix = torch.tensor([rows[s["id"]]["index"] for s in slots if not s["padding"]], dtype=torch.long)
         if not len(ix) or ix.unique().numel() != len(ix) or seen[epoch, ix].any():
             raise ValueError("empty or repeated real exposure")
-        q, report = project(ref[ix], gold[ix], spec)
+        q, report = project(ref[ix], gold[ix], spec, calibration)
+        if calibration is not None:
+            q, probability_target[epoch, ix] = q
         target[epoch, ix] = q
         seen[epoch, ix] = True
         audit.update({key: value for key, value in report.items() if key != "clipped"})
@@ -112,6 +119,9 @@ def compile_schedule(c, rows, batches, order, probs):
     digest_after = digest([[b["epoch"], b["index"], [[s["id"], s["padding"]] for s in b["slots"]]] for b in schedule])
     if digest_before != digest_after:
         raise ValueError("batch membership or order changed")
+    if calibration is not None:
+        if not torch.isfinite(probability_target).all(): raise ValueError("invalid calibrated target")
+        target = (target, probability_target)
     return target, schedule, expected, dict(audit), digest_after
 
 

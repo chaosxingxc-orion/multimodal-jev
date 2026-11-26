@@ -54,7 +54,7 @@ def contrast_utilities(p, gold, temperature):
 
 
 @torch.no_grad()
-def project(reference, gold, spec):
+def project(reference, gold, spec, calibration=None):
     if not ((reference >= 0) & (reference <= 1)).all():
         raise ValueError("reference must contain probabilities")
     raw = reference.double()
@@ -63,8 +63,13 @@ def project(reference, gold, spec):
     if not all(torch.isfinite(v).all() for v in utilities.values()):
         raise ValueError("nonfinite contrast utility")
     cap = spec.max_displacement
+    if calibration is not None:
+        from .frozen_probability import transform
+        calibrated = transform(p.logit(), calibration)
+        utilities['brier'] = 2 * (F.one_hot(gold, p.shape[1]).to(p.dtype) - calibrated.sigmoid())
+        probability_target = calibrated + spec.brier * utilities['brier'].clamp(-cap, cap)
     logits = p.logit() + sum(getattr(spec, key) * v.clamp(-cap, cap)
-                             for key, v in utilities.items())
+                             for key, v in utilities.items() if calibration is None or key != "brier")
     audit = {
         "members": p.numel(),
         "boundary_clipped": int((p != raw).sum()),
@@ -72,4 +77,6 @@ def project(reference, gold, spec):
         "column_positive_total": len(p),
         "clipped": {name: int((v.abs() > cap).sum()) for name, v in utilities.items()},
     }
+    if calibration is not None:
+        return (logits.float(), probability_target.float()), audit
     return logits.float(), audit

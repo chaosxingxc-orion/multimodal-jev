@@ -93,9 +93,19 @@ def main(args):
             entropy_coeff=0.,loss_agg_mode='token-mean',use_rollout_log_probs=True,policy_loss={'loss_mode':MODE},
             global_batch_info={},grad_clip=e['grad_clip'],jev_policy_id=c['source_policy_id'],
             jev_context_parity=c['behavior_bounds'],jev_context_objective=opts,jev_reward_projection=reward_only,
-            jev_choice=m.get('choice'),jev_probability_gap=m.get('probability_gap'),jev_actor_pair_margin=pair_spec['loss'] if pair_spec is not None else None))
+            jev_frozen_probability=m.get('frozen_probability'),jev_choice=m.get('choice'),jev_probability_gap=m.get('probability_gap'),jev_actor_pair_margin=pair_spec['loss'] if pair_spec is not None else None))
         rows = read(data/'rows.json')
         targets = torch.load(data/'targets.pt',map_location='cpu',weights_only=True)
+        scale = m.get('frozen_probability')
+        if scale is not None:
+            from multimodal_jev.frozen_probability import parity as calibrated_parity, validate
+            validate(scale)
+            path = data/'probability-targets.pt'
+            if file_hash(path) != m['files'][path.name]:
+                raise ValueError('calibrated target changed')
+            probability_targets = torch.load(path, map_location='cpu', weights_only=True)
+            if probability_targets.shape != targets.shape or not torch.isfinite(probability_targets).all():
+                raise ValueError('calibrated target geometry or values changed')
         card_binding = m.get('card_input')
         if card_binding:
             if (args.window == 'reference' or not reward_only or choice or
@@ -257,6 +267,8 @@ def main(args):
                     x.update(request_id=f"{rank}:{x['request_id']}",stage='tpo', gold=row['gold'],
                              paired=slot['paired'],confusion=slot['confusion'],group=row['group'],audio_sha256=row['audio_sha256'],
                              global_real=denominators[step],log_target=(targets[batches[step]['epoch'],row['index']] if reward_only else targets[row['index']]))
+                    if scale is not None:
+                        x['probability_target'] = probability_targets[batches[step]['epoch'],row['index']]
                     if 'probability_gap' in m:
                         x['reference_rival'] = row['competitor']
                     if pair_spec is not None:
@@ -341,6 +353,10 @@ def main(args):
                             flips=int(((actual>=.5)!=(prob>=.5)).sum())
                             reports.append(dict(rows=len(prob),max_abs=error,threshold_flips=flips,
                                 passed=error<=c['behavior_bounds']['probability_max_abs'] and flips==0))
+                            if scale is not None:
+                                ref_logits = prior.float().cpu() if bucket_probe and step != 0 else prob.logit()
+                                calibrated_parity(reports[-1], z.float().cpu(), ref_logits, scale,
+                                                  c['behavior_bounds']['probability_max_abs'])
                     if bucket_probe:
                         reports = [dict(r, step=step+1, comparison='frozen_stage1' if step == 0
                                         else 'current_native_actor') for r in reports]

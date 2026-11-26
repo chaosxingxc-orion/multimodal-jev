@@ -166,6 +166,10 @@ def check_inference(config):
                 flips = int(((p>=.5)!=(q>=.5)).sum())
                 reports.append(dict(rows=len(sample), max_abs=error, threshold_flips=flips,
                     passed=error<=parent['behavior_bounds']['probability_max_abs'] and flips==0))
+                if 'frozen_probability' in m:
+                    from multimodal_jev.frozen_probability import parity
+                    parity(reports[-1], logits.float().reshape_as(q).cpu(), q.logit(),
+                           m['frozen_probability'], parent['behavior_bounds']['probability_max_abs'])
     if len(reports) != 4 or not all(r['passed'] and r['rows'] == micro for r in reports):
         commit_json(root/'parity-failure.json', reports)
         raise ValueError('independent single-card probability parity failed')

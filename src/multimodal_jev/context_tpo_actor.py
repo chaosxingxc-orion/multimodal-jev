@@ -102,11 +102,21 @@ def registered_loss(old_log_prob, log_prob, advantages, response_mask, loss_agg_
         from .context_tpo_rewards import projection
         value = projection(logits, targets)
         terms = dict(reward_projection_kl=value)
+        gap_logits, gap_targets = logits, targets
+        scale = config.get('jev_frozen_probability')
+        if scale is not None:
+            from .frozen_probability import transform
+            gap_logits = transform(logits.float(), scale)
+            gap_targets = torch.stack([x['probability_target'] for x in items]).to(device)
+            rank_loss = value
+            probability_loss = projection(gap_logits, gap_targets)
+            value = scale['rank_weight'] * rank_loss + scale['probability_weight'] * probability_loss
+            terms.update(rank_kl=rank_loss, calibrated_kl=probability_loss, reward_projection_kl=value)
         gap_spec = config.get('jev_probability_gap')
         if gap_spec is not None:
             from .context_tpo_probability_gap import probability_gap
             penalty, gap_counts, diagnostics = probability_gap(
-                logits, targets, torch.tensor([x['gold'] for x in items], device=device),
+                gap_logits, gap_targets, torch.tensor([x['gold'] for x in items], device=device),
                 torch.tensor([x['reference_rival'] for x in items], device=device), weights > 0, gap_spec)
             terms.update(diagnostics, probability_gap=penalty)
             value = value + penalty
