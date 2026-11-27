@@ -111,7 +111,7 @@ class OnlineBuckets:
             pairs, coords = stream.group_plan(uid, epoch, step, distribution)
             plans[uid] = pairs, coords
             lengths[uid] = max(stream.packed.entries[audio][4] + self.lengths[
-                stream.spec['arms'][stream.layout.assignments[card][epoch]][stream.label_index[label]]]
+                stream.spec['arms'][stream.card_arm(pairs,card,epoch)][stream.label_index[label]]]
                 for audio,label,card in pairs)
             return lengths[uid]
         ids, epoch, bucket, end, maximum = self.cursor.take(measure)

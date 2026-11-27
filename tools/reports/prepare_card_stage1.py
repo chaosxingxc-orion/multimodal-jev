@@ -20,7 +20,7 @@ def load(path, sha):
 
 
 def run(c):
-    from multimodal_jev.card_contrast import KIND, Directions
+    from multimodal_jev.card_contrast import CARD_KINDS, Directions
     if 'token_bucketing' in c:
         from multimodal_jev.card_token_buckets import bind_buckets
         bind_buckets(c)
@@ -40,7 +40,7 @@ def run(c):
     if 'batch_rule' in window:
         window['training_npus'] = device_count(c['deployment']['devices'], window, 'training_npus')
     if 'token_buckets' in window:
-        if window['triplet_objective']['kind'] != KIND or not c.get('bind_design_budget'):
+        if window['triplet_objective']['kind'] not in CARD_KINDS or not c.get('bind_design_budget'):
             raise ValueError('token buckets require a budget-bound contrast schedule')
     if 'continuation' in window:
         from multimodal_jev.card_experiment_config import DEFAULT_PROFILE
@@ -57,11 +57,15 @@ def run(c):
                 0 <= verdict['max_abs_logit_error'] <= verdict.get('logit_atol', 0) and ('continuation' in window or 'token_buckets' in window)):
             raise ValueError('acoustic engine lacks an accepted paired training comparison')
     objective = window.get('triplet_objective', {})
-    if objective.get('kind') == KIND:
-        Directions.from_objective(objective)
+    if objective.get('kind') in CARD_KINDS:
+        directions = Directions.from_objective(objective)
+        if directions.speech and window.get('training_acoustic_engine') != 'unique_recording_v1':
+            raise ValueError('speech contrast requires unique recording acoustics')
         if ('class_logit_ema' not in window or 'single_card' not in window or not c.get('mixed')
                 or not c.get('bind_design_budget') or 'epoch_mining' in window or 'bootstrap_input' in window):
             raise ValueError('card contrast requires the budget-bound single-card online EMA pipeline')
+    if 'semantic_sampling' in c and (objective.get('kind') not in CARD_KINDS or not directions.speech):
+        raise ValueError('semantic sampling requires the speech objective')
     root=Path(c['output'])
     entry=root/'entry'
     entry.mkdir(parents=True,exist_ok=False)
@@ -174,6 +178,18 @@ def run(c):
         from multimodal_jev.stage1_mixed_schedule import schedule
         real = [json.loads(line) for line in (Path(parent['release'])/'learning.jsonl').open()]
         pop = {r['id']:r for r in real+extension[0]}
+        if 'semantic_sampling' in c:
+            from tools.reports.prepare_speech_pairs import compile_view
+            if not directions.speech or not directions.replacement:
+                raise ValueError('semantic partners require supervised speech contrast with replacement')
+            view, checked_rows = compile_view(c)
+            if pop.keys() != checked_rows.keys() or any(
+                    (r['intent'],r['audio_sha256']) != (checked_rows[u]['intent'],checked_rows[u]['audio_sha256'])
+                    for u,r in pop.items()):
+                raise ValueError('semantic TRAIN population differs from schedule')
+            path = entry/'speech-partners.json'
+            commit_json(path,view)
+            parent['speech_partners'] = dict(path='/jev-entry/'+path.name,sha256=file_hash(path))
         batch_config = dict(d['batch_config'])
         if 'effective_anchors_per_rank' in c['window']:
             batch_config.update(per_dp_replica_batch=c['window']['effective_anchors_per_rank'],

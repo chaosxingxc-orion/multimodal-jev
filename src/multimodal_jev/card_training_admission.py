@@ -18,6 +18,7 @@ def admit_graph(config, pin):
             or finite['training_dispatch_allowed'] is not False or finite['parity_passes'] < 1
             or receipt['updates'] != finite['stop_update'] or finite['start_update'] != 0
             or receipt['training_graph'] != config['training_graph']
+            or finite.get('speech_partners') != config.get('speech_partners')
             or any(config[k] != finite[k] for k in ('training_graph', 'physical_devices', 'source_policy_id',
                    'instruction_objective', 'token_buckets', 'training_acoustic_engine', 'packed_acoustics',
                    'class_logit_ema', 'schedule_sha256', 'stage1_layout', 'parity_probability_atol'))):

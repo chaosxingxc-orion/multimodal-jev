@@ -114,7 +114,7 @@ def compare_history(history, cache, jobs, predictions, protocol, workers):
            for (name,row,request),t in zip(jobs,targets,strict=True)):
         raise ValueError('historical panel population or candidate order differs')
     results = {}
-    for arm in ('stage1','tpo'):
+    for arm in predictions:
         chosen = [b for b in manifest['plan']['blocks'] if (b['dataset'],b['arm']) == (dataset,arm)]
         payloads, _ = map_io(partial(blocks.read_block,root,manifest),chosen,workers=workers)
         old, old_policy = collect_predictions((),'',targets,publications=(v['prob'] for v in payloads))

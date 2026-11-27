@@ -113,7 +113,7 @@ def pack_observations(output, logits, groups, label_index, *, paired_coordinates
     """Write this rank's disjoint slots. Padding has coordinate -1."""
     size = len(label_index)
     indices = []
-    for _, weight, _, coordinates in groups:
+    for _, weight, _, coordinates, *_ in groups:
         if weight == 1:
             if paired_coordinates:
                 indices.extend(label_index[a] * size + label_index[b] for a, b in coordinates)

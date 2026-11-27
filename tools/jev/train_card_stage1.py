@@ -31,9 +31,9 @@ def run(c,root):
     from multimodal_jev.context_policy_snapshot import load_policy
     from multimodal_jev.context_policy_artifacts import read_execution_bundle
     from tools.reports.context_infonce_actor import load as load_actor
-    from multimodal_jev.card_contrast import KIND, TRIPLET_KINDS
+    from multimodal_jev.card_contrast import CARD_KINDS, TRIPLET_KINDS
     triplet = c['instruction_objective']['kind'] in TRIPLET_KINDS
-    if c['instruction_objective']['kind'] == KIND and not all(key in c for key in (
+    if c['instruction_objective']['kind'] in CARD_KINDS and not all(key in c for key in (
             'single_card', 'stage1_layout', 'class_logit_ema', 'mixed')):
         raise ValueError('card contrast requires the single-card TRAIN layout and online EMA')
     actor_module=load_actor(c['source_root'],temperature=c['instruction_objective']['temperature'],probability_margin=c['instruction_objective'].get('probability_margin'))
@@ -114,6 +114,7 @@ def run(c,root):
             contract[key] = c[key]
         if online:
             contract.update(triplet_prefetch=c['triplet_prefetch'], sampler_seed=c['mixed']['seed'])
+        if 'speech_partners' in c:contract['speech_partners'] = c['speech_partners']
         if 'single_card' in c:contract['single_card_sha256']=c['single_card']['sha256']
         if 'stage1_layout' in c:
             from multimodal_jev.stage1_training_layout import Stage1TrainingLayout, checkpoint_layout
@@ -564,7 +565,7 @@ def run(c,root):
                         return h.hexdigest()
                     atomic_json(out/f'tower-{index+1:04d}.json', dict(logits=parity['pair_logits'],
                         sampler_source_update=versions[0],sample_identity=content_hash(
-                            [(w,u,coords) for _,w,u,coords in groups]),
+                            [(w,u,coords) for _,w,u,coords,*_ in groups]),
                         gradient=digest((n,p.grad) for n,p in named if p.grad is not None),
                         parameters=digest(named),raw_grad_norm=metrics['actor/grad_norm'],loss=metrics['actor/pg_loss']))
 

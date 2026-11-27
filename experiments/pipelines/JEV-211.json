@@ -1,0 +1,666 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/stage1-speech-alignment-211.md",
+  "revision": "stage1-three-contrast-v1",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "ordered_steps": true,
+  "stages": {
+    "data": [
+      {
+        "id": "admit-mixed-recordings",
+        "checks": [
+          {
+            "path": "${MIXED_ROOT}/full-train/admission.json",
+            "sha256": "11fc1867b19aa7b332fbe04aea61a0eb28e3a018cdc37cf8b3c9475fd3690661"
+          }
+        ]
+      },
+      {
+        "id": "prepare-stage1-speech-panels",
+        "config": "configs/portable/operations/card-stage1-speech-alignment-211.json",
+        "run": [
+          [
+            "tools.reports.prepare_card_stage1",
+            "configs/portable/operations/card-stage1-speech-alignment-211.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "requires_current_dispatch": true,
+        "dispatch_guards": [
+          "${S211_ROOT}/package"
+        ],
+        "checks": [
+          {
+            "path": "${S211_ROOT}/package/entry/speech-partners.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-train-speech-pairs-v1"
+              ],
+              [
+                [
+                  "settings"
+                ],
+                {
+                  "positive_cycle": [
+                    "repeat",
+                    "same_intent"
+                  ],
+                  "min_shared_words": 2,
+                  "control_arm": "rules"
+                }
+              ]
+            ]
+          },
+          {
+            "path": "${S211_ROOT}/package/entry/finite.json",
+            "equals": [
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_CONTAINER_CONFIG",
+                  "triplet_objective"
+                ],
+                {
+                  "kind": "card_and_speech_infonce_v1",
+                  "temperature": 0.1,
+                  "probability_coefficient": 0.0,
+                  "sample_with_replacement": true,
+                  "fixed_audio_weight": 0.5,
+                  "fixed_card_weight": 0.5,
+                  "speech": {
+                    "fixed_card_temperature": 0.1,
+                    "speech_temperature": 0.1,
+                    "speech_weight": 0.25,
+                    "probability_margin": 0.3,
+                    "margin_weight": 1.0
+                  },
+                  "positive_recordings_per_anchor": 1,
+                  "negative_cards_per_anchor": 3,
+                  "negative_recordings_per_anchor": 3
+                }
+              ]
+            ]
+          },
+          {
+            "path": "${S211_ROOT}/package/entry/formal.json",
+            "equals": [
+              [
+                [
+                  "macros",
+                  "NATIVE_SEAL_CONTAINER_CONFIG",
+                  "triplet_objective"
+                ],
+                {
+                  "kind": "card_and_speech_infonce_v1",
+                  "temperature": 0.1,
+                  "probability_coefficient": 0.0,
+                  "sample_with_replacement": true,
+                  "fixed_audio_weight": 0.5,
+                  "fixed_card_weight": 0.5,
+                  "speech": {
+                    "fixed_card_temperature": 0.1,
+                    "speech_temperature": 0.1,
+                    "speech_weight": 0.25,
+                    "probability_margin": 0.3,
+                    "margin_weight": 1.0
+                  },
+                  "positive_recordings_per_anchor": 1,
+                  "negative_cards_per_anchor": 3,
+                  "negative_recordings_per_anchor": 3
+                }
+              ]
+            ]
+          },
+          {
+            "path": "${S211_ROOT}/package/operations-local.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-local-macros-v1"
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "train": [
+      {
+        "id": "train-stage1-two-epochs",
+        "inputs": [
+          {
+            "path": "${S211_ROOT}/package/operations-local.json"
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${S211_ROOT}/package/operations-local.json"
+          ]
+        ],
+        "requires_current_dispatch": true,
+        "dispatch_guards": [
+          "${S211_ROOT}/ops/formal-launch.json"
+        ],
+        "checks": [
+          {
+            "path": "${S211_ROOT}/ops/finite-collected.json",
+            "equals": [
+              [
+                [
+                  "engineering_prefix"
+                ],
+                true
+              ],
+              [
+                [
+                  "updates"
+                ],
+                2
+              ],
+              [
+                [
+                  "instruction_objective"
+                ],
+                {
+                  "kind": "card_and_speech_infonce_v1",
+                  "temperature": 0.1,
+                  "probability_coefficient": 0.0,
+                  "sample_with_replacement": true,
+                  "fixed_audio_weight": 0.5,
+                  "fixed_card_weight": 0.5,
+                  "speech": {
+                    "fixed_card_temperature": 0.1,
+                    "speech_temperature": 0.1,
+                    "speech_weight": 0.25,
+                    "probability_margin": 0.3,
+                    "margin_weight": 1.0
+                  },
+                  "positive_recordings_per_anchor": 1,
+                  "negative_cards_per_anchor": 3,
+                  "negative_recordings_per_anchor": 3
+                }
+              ]
+            ]
+          },
+          {
+            "path": "${S211_ROOT}/ops/formal-collected.json",
+            "equals": [
+              [
+                [
+                  "engineering_prefix"
+                ],
+                false
+              ],
+              [
+                [
+                  "instruction_objective"
+                ],
+                {
+                  "kind": "card_and_speech_infonce_v1",
+                  "temperature": 0.1,
+                  "probability_coefficient": 0.0,
+                  "sample_with_replacement": true,
+                  "fixed_audio_weight": 0.5,
+                  "fixed_card_weight": 0.5,
+                  "speech": {
+                    "fixed_card_temperature": 0.1,
+                    "speech_temperature": 0.1,
+                    "speech_weight": 0.25,
+                    "probability_margin": 0.3,
+                    "margin_weight": 1.0
+                  },
+                  "positive_recordings_per_anchor": 1,
+                  "negative_cards_per_anchor": 3,
+                  "negative_recordings_per_anchor": 3
+                }
+              ]
+            ]
+          },
+          {
+            "path": "${S211_ROOT}/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "id": "audit-stage1-endpoint",
+        "config": "configs/portable/operations/card-stage1-endpoint-211.json",
+        "inputs": [
+          {
+            "path": "${S211_ROOT}/ops/formal-collected.json"
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.audit_card_training_endpoint",
+            "configs/portable/operations/card-stage1-endpoint-211.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ]
+        ],
+        "requires_current_dispatch": true,
+        "checks": [
+          {
+            "path": "${S211_ROOT}/endpoint/receipt.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "completed_window"
+                ],
+                true
+              ],
+              [
+                [
+                  "container_exited"
+                ],
+                true
+              ],
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ]
+            ]
+          }
+        ],
+        "lineage": [
+          [
+            [
+              0,
+              "value",
+              "epoch_end_updates"
+            ],
+            [
+              0,
+              "value",
+              "epoch_end_updates"
+            ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "config_sha256"
+            ],
+            [
+              0,
+              "value",
+              "config_sha256"
+            ]
+          ]
+        ]
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "evaluate-stage1-with-210",
+        "config": "configs/portable/operations/card-stage1-evaluation-211.json",
+        "inputs": [
+          {
+            "path": "${S211_ROOT}/endpoint/receipt.json"
+          }
+        ],
+        "run": [
+          [
+            "tools.reports.prepare_paired_card_evaluation",
+            "configs/portable/operations/card-stage1-evaluation-211.json",
+            "${EXPERIMENT_LOCAL_CONFIG}"
+          ],
+          [
+            "tools.reports.native_seal_operations",
+            "--config",
+            "configs/portable/operations/native-seal-operations.json",
+            "--local",
+            "${S211_EVAL_ROOT}/package/operations-local.json"
+          ]
+        ],
+        "requires_current_dispatch": true,
+        "dispatch_guards": [
+          "${S211_EVAL_ROOT}/package"
+        ],
+        "owned_checks": [
+          0,
+          3
+        ],
+        "checks": [
+          {
+            "path": "${S211_EVAL_ROOT}/ops/score-collected.json",
+            "equals": [
+              [
+                [
+                  "schema"
+                ],
+                "jev-audited-probability-panels-v1"
+              ]
+            ]
+          },
+          {
+            "path": "${S211_ROOT}/endpoint/receipt.json",
+            "equals": [
+              [
+                [
+                  "passed"
+                ],
+                true
+              ]
+            ]
+          },
+          {
+            "path": "${S210_METRICS}",
+            "sha256": "bf843d25bd9fb98ae30fa4cf432272627b4f4af5a1a5e9816338b45920d9f819"
+          },
+          {
+            "path": "${S211_EVAL_ROOT}/ops/terminal.json",
+            "equals": [
+              [
+                [
+                  "exit_code"
+                ],
+                0
+              ],
+              [
+                [
+                  "status"
+                ],
+                "declared_stages_finished"
+              ]
+            ]
+          }
+        ],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60",
+            "scope": "SLURP clean TEST",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "211 Stage1",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "210 Stage1",
+                "proof": 2,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "a7d03e3d7172a3a72ec12052029f8dfa2313f2318d65a1b6664be175401ef3d4",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_clean_SELECTION60",
+            "scope": "SLURP clean selection",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "211 Stage1",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "210 Stage1",
+                "proof": 2,
+                "path": [
+                  "datasets",
+                  "SLURP_clean_SELECTION60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "a7d03e3d7172a3a72ec12052029f8dfa2313f2318d65a1b6664be175401ef3d4",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MINDS_native14",
+            "scope": "MINDS native14",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "211 Stage1",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "210 Stage1",
+                "proof": 2,
+                "path": [
+                  "datasets",
+                  "MINDS_native14",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "a7d03e3d7172a3a72ec12052029f8dfa2313f2318d65a1b6664be175401ef3d4",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SIB_FLEURS_eng_topic7",
+            "scope": "SIB-FLEURS 英语话题",
+            "population": 320,
+            "primary": "Top-1 macro-F1",
+            "arms": [
+              {
+                "label": "211 Stage1",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              },
+              {
+                "label": "210 Stage1",
+                "proof": 2,
+                "path": [
+                  "datasets",
+                  "SIB_FLEURS_eng_topic7",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "a7d03e3d7172a3a72ec12052029f8dfa2313f2318d65a1b6664be175401ef3d4",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability",
+                  "Top-1 macro-F1": "top1_macro_f1"
+                }
+              }
+            ]
+          },
+          {
+            "id": "MMSU_polysemy",
+            "scope": "MMSU 多义词",
+            "population": 98,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "211 Stage1",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
+                }
+              },
+              {
+                "label": "210 Stage1",
+                "proof": 2,
+                "path": [
+                  "datasets",
+                  "MMSU_polysemy",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "a7d03e3d7172a3a72ec12052029f8dfa2313f2318d65a1b6664be175401ef3d4",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy",
+                  "平均最高概率": "mean_top1_probability"
+                }
+              }
+            ]
+          },
+          {
+            "id": "SLURP_official_TEST60",
+            "scope": "SLURP 完整官方 TEST（历史口径诊断）",
+            "population": 13078,
+            "primary": "Top-1 准确率",
+            "arms": [
+              {
+                "label": "211 Stage1",
+                "proof": 0,
+                "path": [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": {
+                  "proof": 1,
+                  "path": [
+                    "policy_id"
+                  ]
+                },
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy"
+                }
+              },
+              {
+                "label": "210 Stage1",
+                "proof": 2,
+                "path": [
+                  "datasets",
+                  "SLURP_official_TEST60",
+                  "arms",
+                  "stage1"
+                ],
+                "policy": "a7d03e3d7172a3a72ec12052029f8dfa2313f2318d65a1b6664be175401ef3d4",
+                "metrics": {
+                  "Top-1 准确率": "top1_accuracy"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

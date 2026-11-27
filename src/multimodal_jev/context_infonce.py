@@ -89,8 +89,8 @@ def validate_margin(c):
 
 
 def validate_objective(c):
-    from .card_contrast import KIND, Directions
-    if c.get('kind') == KIND:
+    from .card_contrast import CARD_KINDS, Directions
+    if c.get('kind') in CARD_KINDS:
         Directions.from_objective(c)
         return
     if c.get('kind') == 'candidate_infonce':

@@ -182,13 +182,13 @@ def run(c):
     design = read(entry/'design.json')
     budget = design['stage1']['total_updates']
     finite = role == 'finite'
-    from multimodal_jev.card_contrast import KIND
+    from multimodal_jev.card_contrast import CARD_KINDS
     if not finite:
         witness = read(work/'finite/receipt.json')
         objective = c.get('triplet_objective', {})
         if ('token_buckets' in c and witness.get('token_buckets') != c['token_buckets']) or witness['updates'] != c['finite_updates']:
             raise ValueError('two finite updates required')
-        if objective.get('kind') == KIND and witness.get('instruction_objective') != objective:
+        if objective.get('kind') in CARD_KINDS and witness.get('instruction_objective') != objective:
             raise ValueError('finite window did not admit this contrastive configuration')
     parent.update(source_root=str(entry/'source'),source_policy=str(init/'policy'),source_policy_id=proof['policy_id'],
         source_contract=manifest['contract'],stage_lora_transition=bind_design(design,manifest['contract']),
@@ -297,6 +297,7 @@ def run(c):
             or type(actual_stop) is not int or actual_stop < 1):
         raise ValueError('stage1 terminal differs')
     max_observed_lag = 0
+    pair_total = {}
     for rank in range(len(parent['physical_devices'])):
         rank_root=root/'run'/f'rank-{rank}'
         epoch_counts = []
@@ -331,6 +332,15 @@ def run(c):
                 if lag != record['metrics']['sampler_lag'] or not 0 <= lag <= parent['class_logit_ema']['max_staleness_updates']:
                     raise ValueError('sampler source step differs')
                 max_observed_lag = max(max_observed_lag, lag)
+            if 'speech_partners' in parent:
+                from multimodal_jev.speech_pair_readout import tally
+                by_type = tally(record['metrics'],record['real_queries'])
+                # The counts were all-reduced; each update contributes once, not once per rank.
+                if rank == 0:
+                    for kind, row in by_type.items():
+                        acc = pair_total.setdefault(kind,dict.fromkeys(row,0))
+                        for k,n in row.items():
+                            acc[k] += n
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
         if dynamic and not finite and (len(epoch_counts) != parent['batch_config']['epochs'] or epoch_count):
@@ -343,7 +353,10 @@ def run(c):
         receipt.update(token_buckets=dynamic, epoch_end_updates=epoch_counts)
     if 'continuation' in parent:
         receipt.update(start_update=parent['start_update'],stop_update=parent['stop_update'],continuation=parent['continuation'])
-    if parent['instruction_objective']['kind'] == KIND:
+    if 'speech_partners' in parent:
+        receipt['paired_alignment'] = dict(index_sha256=parent['speech_partners']['sha256'],
+                                          before_optimizer_updates=pair_total)
+    if parent['instruction_objective']['kind'] in CARD_KINDS:
         receipt['instruction_objective'] = parent['instruction_objective']
     if 'negative_cards_per_anchor' in parent['instruction_objective']:
         receipt['negative_cards_per_anchor'] = parent['instruction_objective']['negative_cards_per_anchor']

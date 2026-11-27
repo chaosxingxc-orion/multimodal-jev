@@ -3,7 +3,28 @@ from dataclasses import dataclass
 import math
 
 KIND = 'card_bidirectional_infonce_v1'
-TRIPLET_KINDS = ('intent_triplet_infonce_v1', KIND)
+SPEECH_KIND = 'card_and_speech_infonce_v1'
+CARD_KINDS = (KIND, SPEECH_KIND)
+TRIPLET_KINDS = ('intent_triplet_infonce_v1', *CARD_KINDS)
+
+
+@dataclass(frozen=True)
+class SpeechObjective:
+    fixed_card_temperature: float
+    speech_temperature: float
+    speech_weight: float
+    probability_margin: float
+    margin_weight: float
+
+    @classmethod
+    def parse(cls, value):
+        if not isinstance(value, dict) or set(value) != set(cls.__dataclass_fields__):
+            raise ValueError('explicit speech contrast temperatures, margin and weights required')
+        if any(type(x) not in (float, int) or not math.isfinite(x) or x <= 0 for x in value.values()):
+            raise ValueError('positive finite speech objective settings required')
+        if value['probability_margin'] >= 1:
+            raise ValueError('probability margin must be less than one')
+        return cls(**value)
 
 
 @dataclass(frozen=True)
@@ -16,12 +37,18 @@ class Directions:
     audio_weight: float   # fixed audio, vary card
     card_weight: float    # fixed card, vary audio
 
+    speech: SpeechObjective | None = None
+
     @classmethod
     def from_objective(cls, objective):
         keys = {'kind', 'temperature', 'negative_cards_per_anchor', 'fixed_audio_weight',
                 'fixed_card_weight', 'probability_coefficient', 'positive_recordings_per_anchor',
                 'negative_recordings_per_anchor', 'sample_with_replacement'}
-        if (set(objective) != keys or objective['kind'] != KIND or
+        speech = None
+        if objective.get('kind') == SPEECH_KIND:
+            keys.add('speech')
+            speech = SpeechObjective.parse(objective.get('speech'))
+        if (set(objective) != keys or objective['kind'] not in CARD_KINDS or
                 objective['probability_coefficient'] != 0):
             raise ValueError('expected the explicit membership-logit contrastive objective')
         counts = tuple(objective[key] for key in ('positive_recordings_per_anchor', 'negative_cards_per_anchor',
@@ -32,7 +59,9 @@ class Directions:
                 any(type(x) not in (int, float) or not math.isfinite(x) for x in (t, a, c)) or
                 t <= 0 or min(a, c) < 0 or not math.isclose(a+c, 1.)):
             raise ValueError('positive K and temperature; nonnegative direction weights must sum to one')
-        return cls(*counts, replacement, t, a, c)
+        if speech and min(a, c) <= 0:
+            raise ValueError('speech objective needs both membership directions')
+        return cls(*counts, replacement, t, a, c, speech)
 
     @property
     def anchor_end(self):
@@ -50,7 +79,8 @@ class Directions:
     @property
     def metrics(self):
         return ('actor/pg_loss', *(('jev/fixed_audio_nce',) if self.audio_weight else ()),
-                *(('jev/fixed_card_nce',) if self.card_weight else ()))
+                *(('jev/fixed_card_nce',) if self.card_weight else ()),
+                *(('jev/speech_nce', 'jev/probability_margin') if self.speech else ()))
 
     def pairs(self, anchor, gold, positives, wrong, negatives):
         # One template assignment for the entire group, including its few-shot panel.
@@ -66,7 +96,7 @@ class Directions:
         return pairs, coords
 
 
-def components(logits, directions):
+def components(logits, directions, speech_vectors=None):
     """Columns: A/a, [A/c_i], [C_i/a, B_j/a]. Return per-anchor loss terms."""
     import torch
     import torch.nn.functional as F
@@ -80,10 +110,31 @@ def components(logits, directions):
         weights.append(directions.audio_weight)
     if directions.card_weight:
         # Each positive has its own denominator containing only it and the K negatives.
-        negatives = torch.logsumexp(z[:, split:directions.observed], dim=-1, keepdim=True)
-        positives = torch.cat((z[:, :1], z[:, directions.observed:]), dim=1)
+        card_z = logits.float() / directions.speech.fixed_card_temperature if directions.speech else z
+        negatives = torch.logsumexp(card_z[:, split:directions.observed], dim=-1, keepdim=True)
+        positives = torch.cat((card_z[:, :1], card_z[:, directions.observed:]), dim=1)
         terms.append(F.softplus(negatives - positives).mean(dim=1))
         weights.append(directions.card_weight)
+    if directions.speech:
+        cfg = directions.speech
+        if (speech_vectors is None or speech_vectors.ndim != 3 or
+                speech_vectors.shape[:2] != logits.shape or not speech_vectors.shape[-1]):
+            raise ValueError('one pre-card speech representation per scored pair required')
+        # Pair order is anchor, wrong cards on the anchor, wrong recordings, extra positives.
+        vectors = F.normalize(speech_vectors.float(), dim=-1)
+        similarities = (vectors[:, :1] * vectors[:, split:]).sum(-1) / cfg.speech_temperature
+        negatives, positives = similarities.split((directions.recordings, directions.positives), dim=1)
+        speech_nce = F.softplus(negatives.logsumexp(1, keepdim=True) - positives).mean(1)
+        p = logits.float().sigmoid()  # deployed member probability, never sigmoid(z / temperature)
+        true = torch.cat((p[:, :1], p[:, directions.observed:]), dim=1)
+        card_gap = p[:, 0] - p[:, 1:split].amax(1)
+        recording_gap = true - p[:, split:directions.observed].amax(1, keepdim=True)
+        penalty = (directions.audio_weight * (cfg.probability_margin - card_gap).relu()
+                   + directions.card_weight * (cfg.probability_margin - recording_gap).relu().mean(1))
+        terms.extend((speech_nce, penalty))
+        weights.extend((cfg.speech_weight, cfg.margin_weight))
+    elif speech_vectors is not None:
+        raise ValueError('unexpected speech features for membership-only objective')
     return torch.stack([sum(w*term for w, term in zip(weights, terms, strict=True)), *terms], dim=1)
 
 

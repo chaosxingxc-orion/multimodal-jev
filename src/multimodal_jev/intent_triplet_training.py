@@ -3,7 +3,7 @@ import math
 import torch
 from torch.nn import functional as F
 from .context_audio_collate import collate_context_audio
-from .card_contrast import KIND, Directions
+from .card_contrast import CARD_KINDS, Directions
 from .intent_triplet_sampling import sample_epoch
 from .ordered_prefetch import OrderedPrefetch
 
@@ -37,6 +37,7 @@ class TripletStream:
         self.config = config
         self.collation = collation
         self.queue = None
+        self.partners_by_meaning = None
         self.partners = {}
         self.packed = None
         if 'packed_acoustics' in config:
@@ -44,7 +45,7 @@ class TripletStream:
             self.packed = PackedAcoustics(config['packed_acoustics'],population,collation['audio_token_id'])
         self.negative_cards = config['instruction_objective'].get('negative_cards_per_anchor')
         objective = config['instruction_objective']
-        self.directions = Directions.from_objective(objective) if objective.get('kind') == KIND else None
+        self.directions = Directions.from_objective(objective) if objective.get('kind') in CARD_KINDS else None
         if self.directions and 'class_logit_ema' not in config:
             raise ValueError('card contrast requires online class-logit EMA')
 
@@ -74,7 +75,22 @@ class TripletStream:
     def group_plan(self, a, epoch, index, distribution):
         if self.directions:
             draws = self.sampler.draw_contrast(a, epoch, index, distribution)
-            return self.directions.pairs(a, self.population[a]['intent'], *draws)
+            gold = self.population[a]['intent']
+            if self.partners_by_meaning is None:
+                return self.directions.pairs(a, gold, *draws)
+            kind,p,n = self.partners_by_meaning.draws(a,epoch,self.config['mixed']['seed'])
+            positives,wrong,negatives = draws
+            if p is not None:
+                positives = (p,*positives[1:])
+            if n is not None:
+                rival = self.population[n]['intent']
+                wrong,negatives = (rival,*wrong[1:]),((rival,n),*negatives[1:])
+            pairs,coords = self.directions.pairs(a,gold,positives,wrong,negatives)
+            if p is not None and n is not None:
+                # Read the reciprocal and positive/rival cells only for a supported panel.
+                # Acoustic owners, card template arm, and the original objective/EMA columns are unchanged.
+                pairs.extend(((n,rival,a),(p,rival,a)))
+            return pairs,coords
         p, n = (self.partners[a] if distribution is None else self.sampler.draw(a, epoch, index, distribution))
         if self.negative_cards is not None:
             n, wrong_labels = n
@@ -85,6 +101,12 @@ class TripletStream:
             pairs.extend((a, label, a) for label in wrong_labels)
         coords = (self.population[a]['intent'], *wrong_labels) if distribution is not None else None
         return pairs, coords
+
+    def card_arm(self, pairs, card, epoch):
+        if self.partners_by_meaning is not None and len(pairs)>self.directions.width:
+            # A few-shot example selected for A may contain P or N. Freeze one example-free arm for this control.
+            return self.partners_by_meaning.arm
+        return self.layout.assignments[card][epoch]
 
     def prepare(self, index, distribution=None):
         batch = self.batches[index]
@@ -115,11 +137,18 @@ class TripletStream:
             for j,(audio,label,card) in enumerate(pairs):
                 acoustic = inputs[audio]
                 column = self.label_index[label]
-                arm = self.layout.assignments[card][epoch]
+                arm = self.card_arm(pairs,card,epoch)
                 rows.append(self.render(acoustic,self.spec['arms'][arm][column],f'{index}/{self.rank}/{ordinal}/{j}'))
             group = (rows, slot['weight'], recording_ids)
             if coords is not None:
                 group += (coords,)
+            if self.partners_by_meaning is not None:
+                kind = None
+                if len(pairs)>self.directions.width:
+                    positive = pairs[self.directions.observed][0]
+                    kind = ('repeat' if self.partners_by_meaning.keys[positive] ==
+                            self.partners_by_meaning.keys[slot['id']] else 'same_intent')
+                group += (kind,)
             groups.append(group)
         return groups
 
@@ -134,6 +163,17 @@ class OnlineTripletStream(TripletStream):
         from .intent_triplet_sampling import AnchorSampler
         self.sampler = AnchorSampler(self.population, self.spec['labels'], self.negative_cards,
                                      self.config['mixed']['seed'], contrast=self.directions)
+        if 'speech_partners' in self.config:
+            import json
+            from pathlib import Path
+            from .baseline import file_hash
+            from .speech_alignment_pairs import Partners
+            pin = self.config['speech_partners']
+            if not self.directions or not self.directions.speech or not self.directions.replacement:
+                raise ValueError('invalid settings for TRAIN semantic pairs')
+            if file_hash(pin['path'])!=pin['sha256']:
+                raise ValueError('changed TRAIN semantic partners')
+            self.partners_by_meaning=Partners(json.loads(Path(pin['path']).read_bytes()),self.population)
         self.max_lag = self.config['class_logit_ema']['max_staleness_updates']
         if self.config['triplet_prefetch']['ahead'] > self.max_lag:
             raise ValueError('prefetch depth exceeds configured sampler lag')
@@ -168,16 +208,19 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
     objective = config['instruction_objective']
     size = len(class_ema.labels) if class_ema is not None else 0
     fields = (1 + objective['negative_cards_per_anchor']) if class_ema is not None else 0
-    directions = Directions.from_objective(objective) if objective.get('kind') == KIND else None
+    directions = Directions.from_objective(objective) if objective.get('kind') in CARD_KINDS else None
     metric_names = ('actor/pg_loss','jev/infonce','jev/gap','jev/anchor')
     if directions:
         from .context_objective_registry import resolve
-        contrast_loss = resolve(KIND)
+        contrast_loss = resolve(objective['kind'])
         metric_names = directions.metrics
         if class_ema is None:
             raise ValueError('card contrast requires online class-logit EMA')
         fields = directions.observed
-    stat_width = len(metric_names) + 1
+    from .speech_pair_readout import counter_names, extract
+    measured = 'speech_partners' in config
+    counters = counter_names() if measured else ()
+    stat_width = len(metric_names) + len(counters) + 1
     reduction = torch.zeros(stat_width + world * len(groups) * fields * 2, device=device, dtype=torch.float32)
     if class_ema is not None:
         from .class_logit_ema import pack_observations, global_tables
@@ -191,6 +234,11 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         if not directions or config['training_acoustic_engine'] != ENGINE:
             raise ValueError('unregistered Stage1 acoustic engine')
         collate = unique_collate
+    if directions and directions.speech:
+        if 'training_acoustic_engine' not in config:
+            raise ValueError('speech contrast requires unique recording acoustics')
+        from functools import partial
+        collate = partial(collate, speech_features=True)
     for start in range(0,len(groups),micro):
         chunk = groups[start:start+micro]
         rows = [dict(row,policy_id=policy) for group,*_ in chunk for row in group]
@@ -209,11 +257,23 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
                 references = [model(parity_inputs,parity_positions).detach() for _ in range(probes)]
                 del parity_inputs,parity_positions
         if directions:
-            raw = model(inputs,positions,return_logits=True)
+            if directions.speech:
+                raw, speech = model(inputs,positions,return_logits=True,return_speech=True)
+                if measured:
+                    base,counts = extract(raw,speech,chunk,directions)
+                    member_raw = raw.index_select(0,base)
+                    speech = speech.index_select(0,base)
+                    stats[len(metric_names):-1] += counts
+                else:
+                    member_raw = raw
+                speech = speech.reshape(len(chunk), directions.width, -1)
+            else:
+                raw = model(inputs,positions,return_logits=True)
             if 'tower_witness' in config:
                 digest = raw.detach().float().cpu().flatten().tolist()
-            logits = raw.reshape(len(chunk), directions.width)
-            terms = contrast_loss(logits, directions)
+            logits = (member_raw if directions.speech else raw).reshape(len(chunk), directions.width)
+            terms = (contrast_loss(logits, directions, speech) if directions.speech
+                     else contrast_loss(logits, directions))
             pack_observations(slots[start:start+len(chunk)], logits[:, :fields], chunk, class_ema.label_index,
                               paired_coordinates=True)
         else:
@@ -233,7 +293,7 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         weight = terms.new_tensor([group[1] for group in chunk])
         sums = (terms*weight[:,None]).sum(0)
         (sums[0]*world/global_count).backward()
-        stats[:-1] += sums.detach()
+        stats[:len(metric_names)] += sums.detach()
         stats[-1] += weight.sum()
     dist.all_reduce(reduction)
     if class_ema is not None:
@@ -250,7 +310,9 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         raise ValueError('nonfinite gradient')
     optimizer.step()
     metrics = dict(zip(metric_names,
-                       (stats[:-1]/global_count).tolist(),strict=True))
+                       (stats[:len(metric_names)]/global_count).tolist(),strict=True))
+    if measured:
+        metrics.update(dict(zip(counters,stats[len(metric_names):-1].long().tolist(),strict=True)))
     metrics['actor/grad_norm'] = norm.item()
     if 'tower_witness' in config:
         parity['pair_logits'] = digest

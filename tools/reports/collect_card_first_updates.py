@@ -9,7 +9,7 @@ import shlex
 import subprocess
 
 from multimodal_jev.baseline import file_hash
-from multimodal_jev.card_contrast import KIND, TRIPLET_KINDS, Directions
+from multimodal_jev.card_contrast import CARD_KINDS, TRIPLET_KINDS, Directions
 from multimodal_jev.local_checkpoint import commit_json
 from tools.reports.watch_stage1_first_updates import REMOTE
 
@@ -63,11 +63,14 @@ def summarize(rows, step, config):
     margin = obj.get('probability_margin')
     if triplet:
         metrics = rows[0]['metrics']
-        if obj['kind'] == KIND:
+        if obj['kind'] in CARD_KINDS:
             directions = Directions.from_objective(obj)
             rebuilt = sum(weight * metrics[key] for key, weight in (
                 ('jev/fixed_audio_nce', directions.audio_weight), ('jev/fixed_card_nce', directions.card_weight))
                 if weight)
+            if directions.speech:
+                rebuilt += (directions.speech.speech_weight * metrics['jev/speech_nce']
+                            + directions.speech.margin_weight * metrics['jev/probability_margin'])
         else:
             rebuilt = (metrics['jev/infonce'] + margin['gap_weight'] * metrics['jev/gap']
                        + margin['anchor_weight'] * metrics['jev/anchor'])

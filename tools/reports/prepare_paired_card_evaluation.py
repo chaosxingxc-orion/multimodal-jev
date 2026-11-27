@@ -189,18 +189,28 @@ def stage1_reuse(proof, deployment, common, ports, roster, mounts):
     return dict(arm='stage1', plan=proof['remote_plan']), thresholds
 
 
-def run(c):
-    deployment = dict(c['deployment'])
-    evaluation = deployment.pop('evaluation_options', {})
-    if (not isinstance(evaluation, dict)
-            or evaluation.keys() - {'fit_harness_thresholds', 'reuse_stage1_evaluation',
-                                    'exact_probability_archive'}
-            or evaluation.keys() & c.keys()):
-        raise ValueError('invalid or duplicate evaluation options in the deployment binding')
-    c = dict(c, deployment=deployment, **evaluation)
-    base = settings(c['eval_plan'])
-    score_base = settings(c['eval_score'])
-    cal_previous = settings(c['eval_calibration'])
+def single_endpoint(c):
+    if any(k in c for k in ('completed_endpoints','stage2_updates','reuse_stage1_evaluation','reuse')):
+        raise ValueError('standalone Stage1 evaluation cannot bind a second endpoint')
+    path = Path(c['stage1_only']['receipt'])
+    proof = json.loads(path.read_bytes())
+    training = pinned(path.with_name('training.json'),proof['config_sha256'])
+    manifest = pinned(path.with_name('endpoint-manifest.json'),proof['manifest_sha256'])
+    inputs = pinned(path.with_name('inputs.json'),proof['inputs_sha256'])
+    if (proof['passed'] is not True or proof['container_exited'] is not True or proof['exit_code'] != 0
+            or proof['host'] != c['deployment']['host'] or proof['policy_id'] != manifest['policy_id']
+            or training['instruction_objective']['kind'] != c['stage1_only']['objective']
+            or completed_update(training,proof) != proof['updates']
+            or training['single_card']['sha256'] != inputs['cards']['sha256']):
+        raise ValueError('Stage1-only evaluation requires the expected independently audited endpoint')
+    parent = read_pinned(c['old_parent'])
+    parent.update(model=training['model'], base_id=training['base_id'], source_policy=proof['policy'],
+                  source_policy_id=proof['policy_id'], source_contract=manifest['contract'])
+    return (dict(c, stage1_snapshot=proof['policy'], cards=inputs['cards']), parent,
+            dict(stage1=proof['policy_id']), {}, {proof['policy']})
+
+
+def paired_endpoints(c):
     c = bind_completed_endpoints(c) if 'completed_endpoints' in c else c
     parent = read_pinned(c['old_parent'])
     policy_proof = read_pinned(c['stage1_audit'])
@@ -225,13 +235,33 @@ def run(c):
             or trained_deploy['host'] != c['deployment']['host']
             or trained_deploy['lease'] != c['deployment']['lease']):
         raise ValueError('paired evaluation requires the audited training endpoints and exact host')
-    arms = ['stage1', 'tpo']
     policies = dict(stage1=endpoint['policy_id'], tpo=receipt['endpoint'])
     parent.update(source_policy=c['stage1_snapshot'], source_policy_id=endpoint['policy_id'],
                   source_contract=endpoint['contract'])
     if 'completed_endpoints' in c:
         stage1 = read_pinned(c['completed_endpoints']['stage1_training'])
         parent.update(model=stage1['model'], base_id=stage1['base_id'])
+    return (c, parent, policies, dict(trained=trained_deploy['remote_root'], updates=c['stage2_updates'],
+                                      binding=binding), {c['stage1_snapshot'], str(Path(trained_deploy['remote_root'])/'tpo')})
+
+
+def run(c):
+    deployment = dict(c['deployment'])
+    evaluation = deployment.pop('evaluation_options', {})
+    if (not isinstance(evaluation, dict)
+            or evaluation.keys() - {'fit_harness_thresholds', 'reuse_stage1_evaluation',
+                                    'exact_probability_archive'}
+            or evaluation.keys() & c.keys()):
+        raise ValueError('invalid or duplicate evaluation options in the deployment binding')
+    c = dict(c, deployment=deployment, **evaluation)
+    base = settings(c['eval_plan'])
+    score_base = settings(c['eval_score'])
+    cal_previous = settings(c['eval_calibration'])
+    if 'stage1_only' in c:
+        c,parent,policies,training_args,inputs = single_endpoint(c)
+    else:
+        c,parent,policies,training_args,inputs = paired_endpoints(c)
+    arms = list(policies)
     root = Path(c['output'])
     entry = root/'entry'
     entry.mkdir(parents=True)
@@ -259,7 +289,7 @@ def run(c):
     source = dict(root='/jev-entry/source', sha256=frozen['manifest_sha256'])
     common = dict(source=source, parent='/jev-entry/parent.json', parent_sha=file_hash(entry/'parent.json'),
                   reference_inference=parent['reference_inference'], arms=arms, batch=c['batch'], io_workers=c['io_workers'], single_card=single,
-                  trained=trained_deploy['remote_root'], updates=c['stage2_updates'], binding=binding)
+                  **training_args)
     single_validation = c.get('eval_single_validation', False)
     if type(single_validation) is not bool:
         raise ValueError('eval_single_validation must be a Boolean')
@@ -291,7 +321,7 @@ def run(c):
     for name, port in ports.items():
         port.pop('card_view', None)
         port['use_source_cards'] = name in c['source_card_datasets']
-    panels = {k:dict(v, comparisons=['stage1']) for k, v in score_base['probability_panels'].items()}
+    panels = {k:dict(v, comparisons=['stage1'] if 'tpo' in arms else []) for k, v in score_base['probability_panels'].items()}
 
     def write(name, opts):
         commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG', opts))
@@ -349,7 +379,6 @@ def run(c):
     deploy.pop('idle_devices', None)
     datasets = {name:dict(logical_partitions=n) for name,n in partitions.items()}
     inferred = {name:arms for name in datasets}
-    inputs = {c['stage1_snapshot'], str(Path(trained_deploy['remote_root'])/'tpo')}
     if exact_archive is not None:
         inputs.add(str(Path(exact_archive['path']).parent))
     if benchmark is not None:
