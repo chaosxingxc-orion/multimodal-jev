@@ -12,7 +12,7 @@ NATIVE_DIAGNOSTIC = 'context-vllm-native-bf16-diagnostic-v1'
 SHARED_SPLITS = 'attention_and_projection_shared_splits_v1'
 
 
-def install_actor(adapted, model, name, *, training_graph=None):
+def install_actor(adapted, model, name, *, training_graph=None, eval_single_validation=False):
     if name != PROFILE:
         raise ValueError('explicit context packed-row profile required')
     from .span_batch_candidate_runtime import install_candidate
@@ -22,7 +22,11 @@ def install_actor(adapted, model, name, *, training_graph=None):
     handle, components = install_candidate(adapted, model, shared_splits=training_graph == SHARED_SPLITS)
     if training_graph:
         components['training_graph'] = training_graph
-    components['head'] = install_row_head(model.decision_head)
+    if eval_single_validation and (model.training or training_graph is not None):
+        raise ValueError('single head validation is for evaluation only')
+    components['head'] = install_row_head(model.decision_head, single_validation=eval_single_validation)
+    if eval_single_validation:
+        components['head']['single_validation'] = True
     return handle, dict(profile=PROFILE, components=components,
         scope='Complete BF16 prefills; batched backbone, shared per-request head; admission separate')
 

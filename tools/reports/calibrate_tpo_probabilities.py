@@ -115,12 +115,25 @@ def routing(confidence, hit, threshold):
 
 def collect(spec, parent):
     from tools.reports.evaluate_tpo_endpoints import collect_predictions
+    from tools.reports.run_native_seal_endpoint import bound
 
     roster, assets, ids, _ = source_panel(spec["calibration"], parent)
     gold = [ids.index(row["intent"]) for row in roster]
     results = {}
     reused = spec.get("reused_calibration_predictions", {})
+    if "reused_stage1_thresholds" in spec:
+        saved = bound(spec["reused_stage1_thresholds"])
+        original = saved["arms"]["stage1"]
+        if (saved["schema"] != "jev-source-train-harness-thresholds-v1"
+                or saved["roster_sha256"] != spec["calibration"]["roster"]["sha256"]
+                or original["queries"] != len(assets)
+                or original["policy_id"] != spec["calibration"]["policy_ids"].get("stage1")
+                or not 0 <= original["threshold"] <= 1 or "stage1" in reused):
+            raise ValueError("reused Stage1 TRAIN threshold differs from the calibration contract")
+        results["stage1"] = original
     for arm, expected in spec["calibration"]["policy_ids"].items():
+        if arm in results:
+            continue
         shards = reused[arm] if arm in reused else spec["shards"]
         records, policy = collect_predictions(shards, arm + ".json", assets)
         if policy != expected:

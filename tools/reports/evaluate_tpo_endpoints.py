@@ -25,6 +25,8 @@ def endpoint_config(spec, parent, endpoint):
              snapshot=parent['source_policy'], physical_devices=spec['devices'], policy_id=parent['source_policy_id'])
     if 'reference_inference' in spec:
         c['reference_inference'] = spec['reference_inference']
+    if spec.get('eval_single_validation'):
+        c['eval_single_validation'] = True
     if 'single_card' in spec:
         c['max_model_len'] = parent['view_execution']['max_input_tokens']
         c['process_device_scope'] = dict(kind='same_container_runtime_visibility_v1',
@@ -321,6 +323,8 @@ def collect(spec):
     if 'performance_comparison' in spec:
         comparison = read(Path(spec['output']).with_name('archived-probability-comparison.json'))
         result = dict(schema='jev-performance-replay-v1', comparison=comparison, metrics=result)
+    if 'exact_probability_archive' in spec:
+        result['archive_parity'] = read(Path(spec['output']).with_name('archived-probability-comparison.json'))
     commit_json(Path(spec['output']),result)
     return result
 

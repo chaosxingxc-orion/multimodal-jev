@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage2-calibrated-replay.md",
-  "revision": "calibrated-replay-parity-v2",
+  "revision": "calibrated-replay-heldout-v3",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -397,8 +397,7 @@
               ]
             ]
           }
-        ],
-        "requires_current_dispatch": true
+        ]
       }
     ],
     "evaluate": [
@@ -406,6 +405,15 @@
         "id": "evaluate-stage1-and-fused-stage2",
         "config": "configs/portable/operations/card-paired-endpoint-210-real8.json",
         "python": "${CARD_PYTHON}",
+        "inputs": [
+          {
+            "path": "${CARD_CAL_TRAINING_AUDIT}/train-fused-tpo.audit.json",
+            "sha256": "91e627412596f0a704a1f4b43449b1a6a47255f77deb8fc9d1eae6e1eadd3eb4",
+            "equals": [
+              [["result", "status"], "audited"]
+            ]
+          }
+        ],
         "dispatch_guards": [
           "${CARD_PAIR_ROOT}/ops"
         ],

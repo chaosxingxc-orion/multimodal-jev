@@ -62,7 +62,7 @@ def block_queue(config, common, datasets):
     queue = config.get('sample_blocks')
     if queue is None:
         return None
-    allowed = {'devices', 'batches_per_block', 'prefetch', 'resume_from', 'parity'}
+    allowed = {'devices', 'batches_per_block', 'prefetch', 'resume_from', 'parity', 'replicas_per_device'}
     if (not isinstance(queue, dict) or queue.keys() - allowed
             or not {'devices', 'batches_per_block', 'prefetch'} <= queue.keys()):
         raise ValueError('invalid sample block scheduling configuration')
@@ -71,6 +71,10 @@ def block_queue(config, common, datasets):
     physical_devices(devices)
     if any(type(queue[k]) is not int or queue[k] < 1 for k in ('batches_per_block', 'prefetch')):
         raise ValueError('positive block size and prefetch required')
+    from tools.reports.card_evaluation_replicas import replica_count
+    replicas = replica_count(queue.get('replicas_per_device', 1))
+    if replicas > 1 and ('single_card' not in common or 'choice' in common or config.get('single_card_probe')):
+        raise ValueError('replicas_per_device applies to formal single-card scoring')
     if 'choice' in common and (not common.get('full_ontology_only') or common.get('choice_only')
             or 'candidate_lengths' in common['choice'] or 'paired_lengths' in common):
         raise ValueError('variable Choice records depend on legacy shard/batch indices')
@@ -80,7 +84,7 @@ def block_queue(config, common, datasets):
     return queue
 
 
-def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, image):
+def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, image, *, reuse_policy=None):
     settings = block_queue(config, common, datasets)
     parent = dict(common, phase='tpo_eval_block_worker', endpoints=endpoints, inferred_arms=inferred)
     queue = dict(root='/jev-work/sample-blocks', batches_per_block=settings['batches_per_block'],
@@ -118,6 +122,14 @@ def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, ima
             raise ValueError('resume requires a distinct, absolute past sample-blocks directory')
         mounts.add(str(resume))
         plan['queue'] = dict(queue, resume_from=str(resume))
+    if reuse_policy:
+        if 'resume_from' in settings:
+            raise ValueError('choose either exact resume or completed policy reuse')
+        path = Path(reuse_policy['plan']['path'])
+        if not path.is_absolute() or path.name != 'plan.json' or '..' in path.parts:
+            raise ValueError('a pinned remote evaluation plan is required')
+        mounts.add(str(path.parent))
+        plan['queue'] = dict(queue, reuse_policy=reuse_policy)
     commit_json(entry/'block-plan.json', macros('NATIVE_SEAL_CONTAINER_CONFIG', plan))
     prep = dict(name='block-plan', devices=[], collect='blocks-planned.json', **config['cache_container'])
     workers = []
@@ -125,6 +137,8 @@ def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, ima
         name = f'block-worker-{index}'
         receipt = name + '.json'
         job = dict(parent, devices=[device], output='/jev-work/'+name, result_path='/jev-work/'+receipt)
+        if 'replicas_per_device' in settings:
+            job['replicas_per_device'] = settings['replicas_per_device']
         if probe:
             job['single_card_probe'] = dict(probe, shards=len(settings['devices']), shard=index)
         commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG', job))

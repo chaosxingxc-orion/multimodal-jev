@@ -40,6 +40,37 @@ def roster(cache):
                         manifest_sha256=proof['manifest_sha256'])
 
 
+def reuse_policy_blocks(root, manifest, proof, workers):
+    """Import a completed arm into a different two-endpoint comparison."""
+    from tools.reports.run_native_seal_endpoint import bound
+    prior_path = Path(proof['plan']['path'])
+    prior = bound(proof['plan'])
+    old = prior['plan']
+    plan = manifest['plan']
+    arm = proof['arm']
+    if (prior['sha256'] != blocks.content_key(old) or old['schema'] != blocks.SCHEMA
+            or old['choice'] or plan['choice'] or old['inputs'] != plan['inputs']
+            or old.get('reference_inference') != plan.get('reference_inference')
+            or arm not in old['policies'] or old['policies'][arm] != plan['policies'].get(arm)):
+        raise ValueError('reused policy or sealed input population differs')
+    original = [b for b in old['blocks'] if b['arm'] == arm]
+    destination = [b for b in plan['blocks'] if b['arm'] == arm]
+
+    def block_identity(block):
+        return {key: value for key, value in block.items() if key != 'key'}
+
+    if not original or list(map(block_identity, original)) != list(map(block_identity, destination)):
+        raise ValueError('reused policy has different evaluation partitions or order')
+
+    def restore(pair):
+        previous, current = pair
+        products = blocks.read_block(prior_path.parent, prior, previous)
+        blocks.publish(root, manifest, current, products)
+
+    map_io(restore, zip(original, destination, strict=True), workers=workers)
+    return len(destination)
+
+
 def build(spec):
     from tools.reports.evaluate_tpo_endpoints import endpoint_config, policy_sources, read
     from tools.reports.evaluate_choice_tasks import with_baseline
@@ -134,6 +165,8 @@ def build(spec):
             return 1
         restored, _ = map_io(restore, plan['blocks'], workers=spec['io_workers'])
         reused = sum(restored)
+    elif 'reuse_policy' in spec['queue']:
+        reused = reuse_policy_blocks(root, manifest, spec['queue']['reuse_policy'], spec['io_workers'])
     result = dict(status='evaluation_blocks_prepared', plan_sha256=manifest['sha256'],
                   blocks=len(plan['blocks']), reused_blocks=reused, npu_executed=False,
                   seconds=time.monotonic()-start)
@@ -365,9 +398,14 @@ def publications(spec):
     result = {}
     read_one = partial(blocks.read_block, root, manifest)
     payloads, _ = map_io(read_one, plan['blocks'], workers=spec['io_workers'])
-    if 'performance_comparison' in spec:
+    benchmark = spec.get('performance_comparison')
+    if 'exact_probability_archive' in spec:
+        if benchmark is not None:
+            raise ValueError('choose one full probability comparison')
+        benchmark = dict(role='candidate', archive_plan=spec['exact_probability_archive'])
+    if benchmark is not None:
         from tools.reports.audit_card_archive import compare_archive
-        report = compare_archive(spec['performance_comparison'], plan, payloads, spec['io_workers'])
+        report = compare_archive(benchmark, plan, payloads, spec['io_workers'])
         commit_json(Path(spec['output']).with_name('archived-probability-comparison.json'), report)
         if report['role'] == 'candidate' and report['differences']:
             raise ValueError('candidate probabilities differ from the archived evaluation')

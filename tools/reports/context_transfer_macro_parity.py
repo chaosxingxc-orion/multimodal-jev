@@ -159,7 +159,8 @@ def load_native_reference(config,bundle,output,device):
     model=ContextDecisionModel(adapted.get_base_model().model,head,bundle['contract']['token']['id']).eval()
     load_policy(config['snapshot'],model,expected_policy_id=config['policy_id'],
         expected_contract=config['contract'],expected_base_id=config['base_id'])
-    handle,runtime=install_actor(adapted,model,PROFILE)
+    handle,runtime=install_actor(adapted,model,PROFILE,
+        eval_single_validation=config.get('eval_single_validation', False))
     commit_json(output/'hf-runtime.json',runtime)
     return model,device,base,handle
 

@@ -156,7 +156,47 @@ def single_card_modes(config):
     return modes, projections
 
 
+def stage1_reuse(proof, deployment, common, ports, roster, mounts):
+    if set(proof) != {'deployment', 'terminal', 'score', 'remote_plan', 'train_thresholds'}:
+        raise ValueError('completed Stage1 reuse requires package, score, plan and TRAIN threshold evidence')
+    previous = read_pinned(proof['deployment'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+    terminal = read_pinned(proof['terminal'])
+    score = read_pinned(proof['score'])
+    thresholds = read_pinned(proof['train_thresholds'])
+    previous_entry = Path(proof['deployment']['path']).parent/'entry'
+    prior_worker = settings(dict(path=previous_entry/'block-worker-0.json',
+                                 sha256=previous['entry_pins']['block-worker-0.json']))
+    prior_roster = settings(dict(path=previous_entry/'calibration-fit.json',
+                                 sha256=previous['entry_pins']['calibration-fit.json']))['calibration']
+    for key in ('batch', 'single_card', 'reference_inference', 'parent_sha'):
+        if prior_worker.get(key) != common.get(key):
+            raise ValueError('previous Stage1 scoring contract differs: '+key)
+    calibration_inputs = ('roster', 'recordings', 'absent_classes')
+    if (terminal != dict(exit_code=0, status='declared_stages_finished')
+            or score['schema'] != 'jev-audited-probability-panels-v1'
+            or score['thresholds_sha256'] != proof['train_thresholds']['sha256']
+            or prior_worker['endpoints'] != ports
+            or any(prior_roster[key] != roster[key] for key in calibration_inputs)
+            or any(previous[k] != deployment[k] for k in ('host', 'image'))
+            or proof['remote_plan']['path'] != previous['remote_root']+'/sample-blocks/plan.json'
+            or thresholds['schema'] != 'jev-source-train-harness-thresholds-v1'
+            or thresholds['roster_sha256'] != roster['roster']['sha256']
+            or thresholds['arms']['stage1']['queries'] != roster['recordings']
+            or thresholds['arms']['stage1']['policy_id'] != roster['policy_ids']['stage1']
+            or not 0 <= thresholds['arms']['stage1']['threshold'] <= 1):
+        raise ValueError('Stage1 test and TRAIN receipts differ from the current policy or scope')
+    mounts.add(str(Path(proof['remote_plan']['path']).parent))
+    return dict(arm='stage1', plan=proof['remote_plan']), thresholds
+
+
 def run(c):
+    deployment = dict(c['deployment'])
+    evaluation = deployment.pop('evaluation_options', {})
+    if (not isinstance(evaluation, dict)
+            or evaluation.keys() - {'fit_harness_thresholds', 'reuse_stage1_evaluation'}
+            or evaluation.keys() & c.keys()):
+        raise ValueError('invalid or duplicate evaluation options in the deployment binding')
+    c = dict(c, deployment=deployment, **evaluation)
     base = settings(c['eval_plan'])
     score_base = settings(c['eval_score'])
     cal_previous = settings(c['eval_calibration'])
@@ -219,6 +259,22 @@ def run(c):
     common = dict(source=source, parent='/jev-entry/parent.json', parent_sha=file_hash(entry/'parent.json'),
                   reference_inference=parent['reference_inference'], arms=arms, batch=c['batch'], io_workers=c['io_workers'], single_card=single,
                   trained=trained_deploy['remote_root'], updates=c['stage2_updates'], binding=binding)
+    single_validation = c.get('eval_single_validation', False)
+    if type(single_validation) is not bool:
+        raise ValueError('eval_single_validation must be a Boolean')
+    if single_validation:
+        common['eval_single_validation'] = True
+    exact_archive = c.get('exact_probability_archive')
+    if exact_archive is not None:
+        if (not isinstance(exact_archive, dict) or set(exact_archive) != {'path', 'sha256'}
+                or not isinstance(exact_archive['path'], str)
+                or not Path(exact_archive['path']).is_absolute()
+                or Path(exact_archive['path']).name != 'plan.json'
+                or not isinstance(exact_archive['sha256'], str)
+                or any(key in c for key in ('performance_comparison', 'single_card_probe',
+                                            'reuse_stage1_evaluation', 'reuse'))
+                or 'resume_from' in c['sample_blocks']):
+            raise ValueError('exact probability comparison requires a fresh full evaluation and a pinned archive')
     benchmark = c.get('performance_comparison')
     if benchmark is not None:
         if (set(benchmark) != {'role', 'archive_plan'} or benchmark['role'] not in {'standard', 'candidate'}
@@ -292,6 +348,8 @@ def run(c):
     datasets = {name:dict(logical_partitions=n) for name,n in partitions.items()}
     inferred = {name:arms for name in datasets}
     inputs = {c['stage1_snapshot'], str(Path(trained_deploy['remote_root'])/'tpo')}
+    if exact_archive is not None:
+        inputs.add(str(Path(exact_archive['path']).parent))
     if benchmark is not None:
         inputs.add(str(Path(benchmark['archive_plan']['path']).parent))
     probe = c.get('single_card_probe')
@@ -316,7 +374,19 @@ def run(c):
         if file_hash(entry/'hf-reference.json') != admission['sha256']:
             raise ValueError('cannot reproduce the independent HF evidence')
         c = dict(c, single_card_reference=dict(path='/jev-entry/hf-reference.json', sha256=admission['sha256']))
-    prep, workers, queue = queue_jobs(c, entry, common, datasets, ports, inferred, inputs, deploy['image'])
+    cal = dict(cal_previous['calibration'], policy_ids=policies, prefetch=c['sample_blocks']['prefetch'])
+    if cal['roster']['sha256'] != c['calibration_roster']['sha256']:
+        raise ValueError('calibration population differs')
+    fit_harness = c.get('fit_harness_thresholds', True)
+    if type(fit_harness) is not bool or not fit_harness and 'reuse' in c:
+        raise ValueError('invalid harness threshold fit mode')
+    reused, reused_thresholds = None, None
+    if 'reuse_stage1_evaluation' in c:
+        if probe or benchmark or admission or 'reuse' in c:
+            raise ValueError('completed Stage1 reuse applies to a new formal comparison')
+        reused, reused_thresholds = stage1_reuse(c['reuse_stage1_evaluation'], deploy, common, ports, cal, inputs)
+    prep, workers, queue = queue_jobs(c, entry, common, datasets, ports, inferred, inputs, deploy['image'],
+                                      reuse_policy=reused)
     checks = []
     finite = c.get('finite_policy_parity')
     if finite:
@@ -326,7 +396,10 @@ def run(c):
             name = f'hf-check-{i}'
             opts = settings(dict(path=entry/(job['name']+'.json'),
                                  sha256=file_hash(entry/(job['name']+'.json'))))
+            if reused:
+                opts['inferred_arms'] = {name: ['tpo'] for name in inferred}
             write(name, dict(opts, output='/jev-work/'+name, result_path='/jev-work/'+name+'.json',
+                             replicas_per_device=1,
                              finite_policy_parity=dict(finite, shard=i, shards=len(workers))))
             checks.append(dict(job, name=name, collect=name+'.json', visible_ordinal='0'))
     if admission:
@@ -335,30 +408,43 @@ def run(c):
             opts = settings(dict(path=entry/(job['name']+'.json'),
                                  sha256=file_hash(entry/(job['name']+'.json'))))
             write(name, dict(opts, output='/jev-work/'+name, result_path='/jev-work/'+name+'.json',
+                             replicas_per_device=1,
                              single_card_reference=c['single_card_reference'],
                              single_card_shard=i, single_card_shards=len(workers)))
             checks.append(dict(job, name=name, collect=name+'.json', visible_ordinal='0'))
 
-    cal = dict(cal_previous['calibration'], policy_ids=policies, prefetch=c['sample_blocks']['prefetch'])
-    if cal['roster']['sha256'] != c['calibration_roster']['sha256']:
-        raise ValueError('calibration population differs')
     calibration, shards = [], []
-    for i, device in enumerate(c['sample_blocks']['devices']):
+    for i, device in enumerate(c['sample_blocks']['devices'] if fit_harness else ()):
         name = f'calibration-{i}'
         shards.append('/jev-work/'+name)
-        write(name, dict(common, phase='tpo_eval', endpoint=cal_previous['endpoint'], calibration=cal,
-                         devices=[device], shard=i, shards=len(c['sample_blocks']['devices']),
-                         output=shards[-1], prefetch=cal['prefetch']))
+        opts = dict(common, phase='tpo_eval', endpoint=cal_previous['endpoint'], calibration=cal,
+                    devices=[device], shard=i, shards=len(c['sample_blocks']['devices']),
+                    output=shards[-1], prefetch=cal['prefetch'])
+        if reused_thresholds:
+            opts['arms'] = ['tpo']
+        write(name, opts)
         calibration.append(dict(name=name, devices=[device], **c['eval_container']))
     for job in calibration+workers:
         job['visible_ordinal'] = '0'
-    write('calibration-fit', dict(common, phase='tpo_score', calibration=cal, calibration_fit=True,
-                                 shards=shards, output='/jev-work/thresholds.json'))
-    cal_groups = [calibration, [cpu('calibration-fit','thresholds.json')]]
+    fit = dict(common, phase='tpo_score', calibration=cal, calibration_fit=True,
+               shards=shards, output='/jev-work/thresholds.json')
+    if reused_thresholds and fit_harness:
+        name = 'prior-stage1-thresholds.json'
+        source = c['reuse_stage1_evaluation']['train_thresholds']
+        shutil.copyfile(source['path'], entry/name)
+        if file_hash(entry/name) != source['sha256']:
+            raise ValueError('Stage1 threshold receipt changed while copying')
+        fit['reused_stage1_thresholds'] = dict(path='/jev-entry/'+name, sha256=source['sha256'])
+    cal_groups = []
     score = dict(common, phase='tpo_score', queue=queue, endpoints=ports, inferred_arms=inferred,
-                 probability_panels=panels, thresholds='/jev-work/thresholds.json',
-                 calibration_roster_sha256=cal['roster']['sha256'], output='/jev-work/metrics.json',
+                 probability_panels=panels, output='/jev-work/metrics.json',
                  official_combination=official)
+    if fit_harness:
+        write('calibration-fit', fit)
+        cal_groups = [calibration, [cpu('calibration-fit','thresholds.json')]]
+        score.update(thresholds='/jev-work/thresholds.json', calibration_roster_sha256=cal['roster']['sha256'])
+    if exact_archive is not None:
+        score['exact_probability_archive'] = exact_archive
     if 'reuse' in c:
         reuse = c['reuse']
         old_deploy = read_pinned(reuse['deployment'])['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']

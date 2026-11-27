@@ -24,3 +24,23 @@ def test_row_head_matches_unpadded_reference_and_preserves_gradients():
     with pytest.raises(ValueError):install_row_head(h)
     valid[0,0]=False
     with pytest.raises(ValueError,match='right padding'):h.score_logits(x,pos,valid)
+
+
+@torch.inference_mode()
+def test_eval_validation_once_keeps_singleton_math_and_rejects_invalid_padding():
+    head = ContextDecisionHead(8, 2, 16).eval()
+    baseline = copy.deepcopy(head)
+    install_row_head(baseline)
+    install_row_head(head, single_validation=True)
+    hidden = torch.randn(3, 12, 8)
+    valid = torch.arange(12)[None] < torch.tensor([[8], [12], [10]])
+    positions = torch.tensor([[7], [3], [9]])
+    torch.testing.assert_close(head.score_logits(hidden, positions, valid),
+                               baseline.score_logits(hidden, positions, valid), atol=0, rtol=0)
+    positions[0, 0] = 9
+    with pytest.raises(ValueError, match='marker in padding'):
+        head.score_logits(hidden, positions, valid)
+    positions[0, 0] = 7
+    hidden[0, 11, 0] = torch.nan
+    with pytest.raises(ValueError, match='finite hidden states'):
+        head.score_logits(hidden, positions, valid)

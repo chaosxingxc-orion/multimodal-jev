@@ -61,6 +61,9 @@ class ContextDecisionHead(nn.Module):
     def score_logits(self, hidden, positions, valid_tokens):
         """Internal logits for stable proper-scoring/RL losses, not success labels."""
         self._validate(hidden, positions, valid_tokens)
+        return self._score_validated(hidden, positions, valid_tokens)
+
+    def _score_validated(self, hidden, positions, valid_tokens):
         b, length, width = hidden.shape
         indices = positions.unsqueeze(-1).expand(-1, -1, width)
         selected = hidden.gather(1, indices)

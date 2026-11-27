@@ -142,6 +142,56 @@ def test_resume_audits_complete_blocks_and_only_runs_missing_work(tmp_path, queu
         evaluation.build(rejected)
 
 
+def test_new_pair_reuses_only_sealed_matching_policy_population(tmp_path, queued):
+    spec, _, _ = queued
+    evaluation.build(spec)
+    evaluation.worker(dict(spec, result_path=str(tmp_path/'worker.json'), output=str(tmp_path/'runtime')))
+    baseline = Path(spec['queue']['root'])/'plan.json'
+    new = deepcopy(spec)
+    new['inferred_arms']['demo'] = ['initial', 'successor']
+    new['result_path'] = str(tmp_path/'new-plan.json')
+    new['queue'].update(root=str(tmp_path/'new'), namespace='new-pair',
+                        reuse_policy=dict(arm='initial', plan=dict(path=str(baseline), sha256=file_hash(baseline))))
+    assert evaluation.build(new)['reused_blocks'] == 4
+    result = evaluation.worker(dict(new, result_path=str(tmp_path/'new-done.json'), output=str(tmp_path/'new-runtime')))
+    assert len(result['blocks']) == 4 and {b['arm'] for b in result['blocks']} == {'successor'}
+    assert evaluation.publications(new)['demo','initial','prob'] == evaluation.publications(spec)['demo','initial','prob']
+
+    new['queue'].update(root=str(tmp_path/'different'), batches_per_block=1)
+    new['result_path'] = str(tmp_path/'different-plan.json')
+    with pytest.raises(ValueError, match='different evaluation partitions'):
+        evaluation.build(new)
+
+def test_full_probability_gate_rejects_a_valid_block_with_different_scores(tmp_path, queued):
+    spec, _, _ = queued
+    evaluation.build(spec)
+    evaluation.worker(dict(spec, result_path=str(tmp_path/'worker.json'), output=str(tmp_path/'runtime')))
+    baseline = Path(spec['queue']['root'])/'plan.json'
+    fresh = dict(spec, result_path=str(tmp_path/'candidate-plan.json'),
+                 queue=dict(spec['queue'], root=str(tmp_path/'candidate'), namespace='candidate'))
+    assert evaluation.build(fresh)['reused_blocks'] == 0
+    evaluation.worker(dict(fresh, result_path=str(tmp_path/'candidate-worker.json'),
+                           output=str(tmp_path/'candidate-runtime')))
+    pin = dict(path=str(baseline), sha256=file_hash(baseline))
+    first, second = tmp_path/'equal', tmp_path/'different'
+    first.mkdir()
+    second.mkdir()
+    checked = dict(fresh, exact_probability_archive=pin, output=str(first/'metrics.json'))
+    assert evaluation.publications(checked) == evaluation.publications(spec)
+    assert blocks.read(first/'archived-probability-comparison.json')['differences'] == 0
+
+    queue = Path(fresh['queue']['root'])
+    plan = blocks.checked_plan(queue, fresh['queue']['namespace'])
+    block = plan['plan']['blocks'][0]
+    products = blocks.read_block(queue, plan, block)
+    products['prob']['records'][0]['prob'][0] = 0.25
+    blocks.artifact(queue, block).unlink()
+    blocks.publish(queue, plan, block, products)
+    with pytest.raises(ValueError, match='probabilities differ from the archived evaluation'):
+        evaluation.publications(dict(checked, output=str(second/'metrics.json')))
+    assert blocks.read(second/'archived-probability-comparison.json')['differences'] == 1
+
+
 def test_full_choice_preserves_legacy_batches_and_pairs_predictions(tmp_path, queued, monkeypatch):
     from types import SimpleNamespace
     import torch
