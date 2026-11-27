@@ -1,0 +1,16 @@
+{
+  "endpoint": "${CARD_ENDPOINT_AUDIT}",
+  "source": "${CARD_ENDPOINT_DIR}/endpoint-manifest.json",
+  "targets": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json",
+  "scores": "${CARD_ENDPOINT_SCORE}/audit.json",
+  "runtime": "${CARD_TPO_RUNTIME}",
+  "output": "${CARD_TPO_PARENT}",
+  "recovery": {
+    "interval": 32,
+    "max_restarts": 1
+  },
+  "training_layout": {
+    "training_devices": "${S211_TRAIN_DEVICES}",
+    "per_dp_replica_batch": 64
+  }
+}

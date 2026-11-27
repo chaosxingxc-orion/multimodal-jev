@@ -242,3 +242,36 @@ def test_killing_driver_during_backend_preserves_lock_and_single_submission(pack
     finally:
         if child.poll() is None:
             child.kill();child.wait()
+
+
+def test_prerequisite_manifest_is_pinned_in_actual_backend_config(package, tmp_path):
+    from hashlib import sha256
+    repo, state, cli = package
+    pipe = repo/'experiments/pipelines/JEV-TEST.json'
+    spec = json.loads(pipe.read_bytes())
+    op = 'experiments/downstream.json'
+    (repo/op).write_text(json.dumps({'pool_sha256': '${INPUT_SHA}', 'root': '${OUTPUT_FAMILY}'}))
+    spec['operation_bindings'] = {'OUTPUT_FAMILY': '${RUN_ROOT}/pool'}
+    s = spec['stages']['train'][0]
+    s.update(config=op, inputs=[{'path':str(state/'data.json')}], input_sha256_macros={'INPUT_SHA':0})
+    s['run'][0].append('${EXPERIMENT_LOCAL_CONFIG}')
+    fixture = repo/'tools/reports/fixture.py'
+    fixture.write_text(fixture.read_text().replace("    assert (root/'data.json').is_file()", """    from multimodal_jev.local_config import load_config
+    from hashlib import sha256
+    cfg,_=load_config('experiments/downstream.json',sys.argv[3])
+    assert cfg==dict(pool_sha256=sha256((root/'data.json').read_bytes()).hexdigest(),root=str(root/'pool'))
+"""))
+    pipe.write_text(json.dumps(spec))
+    git(repo,'add','.')
+    git(repo,'commit','-qm','Bind the downstream stage to its audited input')
+    local=tmp_path/'local.json'
+    def bind(**kwargs):
+        local.write_text(json.dumps(dict(schema='jev-local-macros-v1',macros=dict(RUN_ROOT=str(state),**kwargs))))
+    bind(OUTPUT_FAMILY='/old')
+    assert 'override' in cli('plan',code=2).stderr
+    bind(INPUT_SHA='old')
+    cli('run','--through','data')
+    assert 'overridden' in json.loads(cli('status',code=1).stdout)['steps'][1]['detail']
+    bind()
+    assert json.loads(cli('resume').stdout)['status']=='complete'
+    assert json.loads((state/'JEV-TEST/train.macros.json').read_bytes())['macros']['INPUT_SHA']==sha256((state/'data.json').read_bytes()).hexdigest()

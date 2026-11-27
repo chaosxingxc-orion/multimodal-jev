@@ -222,6 +222,14 @@ def step_result(template, macros, state, selection, lock, upstream, resume=False
     prerequisites, unready = attest(step.get("inputs", []))
     if unready:
         return dict(id=name, status="awaiting_evidence", detail="、".join(unready))
+    # Some immutable input identities only exist after an earlier step (e.g. this
+    # endpoint’s mined TRAIN view). Inject the hash actually read by attest()
+    # into the saved backend configuration; never accept a stale local override.
+    for key, index in step.get("input_sha256_macros", {}).items():
+        if (not re.fullmatch(r"[A-Z][A-Z0-9_]*", key) or key in macros or not step.get("config")
+                or type(index) is not int or not 0 <= index < len(prerequisites)):
+            raise ValueError("Invalid or overridden prerequisite digest: " + key)
+        macros = dict(macros, **{key: prerequisites[index]["sha256"]})
     config, config_hash = None, None
     resource_plan = {}
     if "config" in step:
@@ -500,7 +508,12 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False, 
     if bindings["schema"] != "jev-local-macros-v1":
         raise ValueError("Expected jev-local-macros-v1")
     macros = bindings["macros"]
-    macros = dict(macros, EXPERIMENT_LOCAL_CONFIG=str(local.resolve()))
+    # Route reusable operation templates to this experiment’s output families.
+    # A historical local alias must never redirect a new run.
+    aliases = spec.get("operation_bindings", {})
+    if not isinstance(aliases, dict) or set(aliases) & (set(macros) | {"EXPERIMENT_LOCAL_CONFIG"}):
+        raise ValueError("Local macros must not override experiment operation bindings")
+    macros = dict(macros, **aliases, EXPERIMENT_LOCAL_CONFIG=str(local.resolve()))
     workspace, _ = resolve(spec["state_root"], macros)
     root = Path(workspace)
     if not root.is_absolute():

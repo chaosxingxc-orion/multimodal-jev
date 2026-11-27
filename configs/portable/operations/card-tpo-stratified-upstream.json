@@ -1,0 +1,23 @@
+{
+  "pool": "${CARD_TPO_ROOT}/targets",
+  "pool_sha256": "${AUDITED_STAGE2_POOL_SHA256}",
+  "score_audit": "${CARD_ENDPOINT_SCORE}/audit.json",
+  "output": "${CARD_STRATIFIED_TARGETS}",
+  "execution": {
+    "io_workers": 8
+  },
+  "cpu_threads": 4,
+  "sampling": {
+    "budget": 32768,
+    "seed": 317,
+    "replay_recordings": 6554,
+    "retain_all": [
+      "error",
+      "tie",
+      "positive_underconfidence",
+      "negative_overconfidence"
+    ],
+    "high_probability": 0.9,
+    "many_rivals": 5
+  }
+}
