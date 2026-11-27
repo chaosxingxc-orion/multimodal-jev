@@ -292,8 +292,15 @@ def build(config):
     if (not 0 < loss['margin'] < 1 or not math.isfinite(loss['weight']) or loss['weight'] <= 0
             or loss.get('gate') != 'strict_target_top1' or type(schedule['epochs']) is not int or schedule['epochs'] < 1):
         raise ValueError('invalid single-card probability gap or schedule')
-    rows, replay = select_rows(clean, probs, labels, config['selection'], loss['margin'], schedule['seed'],
-                               config['reward']['probability_epsilon'])
+    mining = config.get('calibrated_mining')
+    if mining is None:
+        rows, replay = select_rows(clean, probs, labels, config['selection'], loss['margin'], schedule['seed'],
+                                   config['reward']['probability_epsilon'])
+    else:
+        from multimodal_jev.card_calibrated_mining import mine
+        if config['merged']['sha256'] != mining['score_audit_sha256']:
+            raise ValueError('calibrated mining parameters are bound to a different score audit')
+        rows, replay = mine(clean, probs, labels, mining)
     batches = shuffled_batches(rows, schedule)
     target, batches, counts, audit, ordering = compile_schedule(
         dict(schedule=schedule, reward=config['reward'], updates=len(batches)), rows, batches, list(rows), probs)
@@ -332,6 +339,9 @@ def build(config):
         commit_file(stage/'targets.pt', lambda stream: torch.save(target, stream))
         commit_file(stage/'reference.pt', lambda stream: torch.save(reference, stream))
         manifest['files'] = {p.name:file_hash(p) for p in sorted(stage.iterdir())}
+        if mining is not None:
+            manifest.update(sampling=mining, full_score_roster_sha256=manifest['view_sha256'],
+                            view_sha256=manifest['files']['rows.json'])
         commit_json(stage/'MANIFEST.json', manifest)
         if dst.exists():
             checked_file(dst/'MANIFEST.json', file_hash(stage/'MANIFEST.json'))

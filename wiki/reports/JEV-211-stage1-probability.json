@@ -1,0 +1,131 @@
+{
+  "audit_sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772",
+  "view_sha256": "1f3a047bcdae6c37b6b51174589c32bb0eebda7b994c44006a781aa121ccf5e1",
+  "checkpoint": "e6863791ca2d54016085d672c1cece7f87a48a1968a188c9901a9184a1005836",
+  "affine_slope": 6.020184087784137,
+  "affine_bias": -2.218168508516694,
+  "affine_out_of_fold": {
+    "brier": 0.0018943322820151568,
+    "log_loss": 0.006674392345424236,
+    "true_card_mean": 0.870225502464692,
+    "strongest_negative_mean": 0.09952969793686298,
+    "top1": 0.9558934287328187,
+    "top1_mean_probability": 0.8811320535749819,
+    "macro_f1_supported_gold": 0.93766681486609
+  },
+  "affine_top1_changed": 0,
+  "calibration_recordings": 21244,
+  "groups": 5854,
+  "candidate_cards": 68,
+  "supported_gold_cards": 59,
+  "folds": [
+    {
+      "recordings": 4579,
+      "bias": -2.164422484433599,
+      "affine_slope": 5.999654284050284,
+      "affine_bias": -2.218369983117668
+    },
+    {
+      "recordings": 4267,
+      "bias": -2.1666048373352798,
+      "affine_slope": 6.046550637188526,
+      "affine_bias": -2.1933189576138314
+    },
+    {
+      "recordings": 4225,
+      "bias": -2.1660542753541554,
+      "affine_slope": 6.0597669587165806,
+      "affine_bias": -2.2443266940052506
+    },
+    {
+      "recordings": 4349,
+      "bias": -2.168171792232865,
+      "affine_slope": 5.94682793742268,
+      "affine_bias": -2.18009129605973
+    },
+    {
+      "recordings": 3824,
+      "bias": -2.1644405782722966,
+      "affine_slope": 6.051954412403474,
+      "affine_bias": -2.256064680651617
+    }
+  ],
+  "fitted_bias": -2.165935615520686,
+  "raw": {
+    "brier": 0.01401561591083379,
+    "log_loss": 0.09682236376641302,
+    "true_card_mean": 0.7076410895100905,
+    "strongest_negative_mean": 0.37507085671472673,
+    "top1": 0.9558934287328187,
+    "top1_mean_probability": 0.7109586290637779,
+    "macro_f1_supported_gold": 0.93766681486609
+  },
+  "out_of_fold": {
+    "brier": 0.00912681460933845,
+    "log_loss": 0.03383266906848379,
+    "true_card_mean": 0.22872125864705684,
+    "strongest_negative_mean": 0.0720111714698281,
+    "top1": 0.9558934287328187,
+    "top1_mean_probability": 0.23020617999637816,
+    "macro_f1_supported_gold": 0.93766681486609
+  },
+  "margin": 0.1,
+  "top1_changed": 0,
+  "source_view": {
+    "rows": 17070,
+    "wrong": 6079,
+    "tied": 27,
+    "sign_changes": 0,
+    "boundary": 5928,
+    "boundary_leaving": 2,
+    "affine_boundary_leaving": 4032,
+    "affine_correct_entering": 284,
+    "correct_entering": 1972
+  },
+  "constant_prior": {
+    "brier": 0.01448961937716263,
+    "log_loss": 0.07664880077618426
+  },
+  "high_probability": {
+    "strictly_above": 0.9,
+    "raw": {
+      "recordings": 21244,
+      "high_pairs": 0,
+      "true_high": 0,
+      "true_coverage": 0.0,
+      "high_pair_precision": null,
+      "high_pair_mean_probability": null,
+      "recordings_with_high_negative": 0,
+      "top1_high": 0,
+      "top1_high_correct": 0,
+      "top1_high_accuracy": null,
+      "top1_correct_true_not_high": 20307
+    },
+    "affine_out_of_fold": {
+      "recordings": 21244,
+      "high_pairs": 15546,
+      "true_high": 15325,
+      "true_coverage": 0.7213801543965355,
+      "high_pair_precision": 0.9857841245336421,
+      "high_pair_mean_probability": 0.9771152745648025,
+      "recordings_with_high_negative": 220,
+      "top1_high": 15440,
+      "top1_high_correct": 15300,
+      "top1_high_accuracy": 0.9909326424870466,
+      "top1_correct_true_not_high": 5007
+    },
+    "selected_train_frozen_affine": {
+      "recordings": 17070,
+      "high_pairs": 6811,
+      "true_high": 5017,
+      "true_coverage": 0.2939074399531342,
+      "high_pair_precision": 0.7366025546909412,
+      "high_pair_mean_probability": 0.9624698984292767,
+      "recordings_with_high_negative": 1772,
+      "top1_high": 6072,
+      "top1_high_correct": 4752,
+      "top1_high_accuracy": 0.782608695652174,
+      "top1_correct_true_not_high": 6222
+    }
+  }
+}
