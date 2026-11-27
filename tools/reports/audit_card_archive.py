@@ -15,7 +15,8 @@ def compare_archive(benchmark, plan, payloads, workers):
     manifest = blocks.read(path)
     original = manifest['plan']
     if (manifest['sha256'] != content_key(original)
-            or any(original[k] != plan[k] for k in ('inputs', 'policies', 'choice', 'blocks'))):
+            or any(original[k] != plan[k] for k in ('inputs', 'policies', 'choice', 'blocks'))
+            or original.get('reference_inference') != plan.get('reference_inference')):
         raise ValueError('full population, input or policy differs from the archive')
     archived, _ = map_io(partial(blocks.read_block, path.parent, manifest), plan['blocks'], workers=workers)
     panels = {}

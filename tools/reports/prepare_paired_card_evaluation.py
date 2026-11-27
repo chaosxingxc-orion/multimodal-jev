@@ -193,7 +193,8 @@ def run(c):
     deployment = dict(c['deployment'])
     evaluation = deployment.pop('evaluation_options', {})
     if (not isinstance(evaluation, dict)
-            or evaluation.keys() - {'fit_harness_thresholds', 'reuse_stage1_evaluation'}
+            or evaluation.keys() - {'fit_harness_thresholds', 'reuse_stage1_evaluation',
+                                    'exact_probability_archive'}
             or evaluation.keys() & c.keys()):
         raise ValueError('invalid or duplicate evaluation options in the deployment binding')
     c = dict(c, deployment=deployment, **evaluation)
@@ -271,10 +272,9 @@ def run(c):
                 or not Path(exact_archive['path']).is_absolute()
                 or Path(exact_archive['path']).name != 'plan.json'
                 or not isinstance(exact_archive['sha256'], str)
-                or any(key in c for key in ('performance_comparison', 'single_card_probe',
-                                            'reuse_stage1_evaluation', 'reuse'))
+                or any(key in c for key in ('performance_comparison', 'single_card_probe', 'reuse'))
                 or 'resume_from' in c['sample_blocks']):
-            raise ValueError('exact probability comparison requires a fresh full evaluation and a pinned archive')
+            raise ValueError('exact probability comparison requires a pinned full archive and no resume')
     benchmark = c.get('performance_comparison')
     if benchmark is not None:
         if (set(benchmark) != {'role', 'archive_plan'} or benchmark['role'] not in {'standard', 'candidate'}

@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage2-calibrated-replay.md",
-  "revision": "calibrated-replay-heldout-v3",
+  "revision": "calibrated-replay-heldout-throughput-v1",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -419,16 +419,10 @@
         ],
         "run": [
           [
-            "tools.reports.prepare_paired_card_evaluation",
+            "tools.reports.verify_card_evaluation_throughput",
             "configs/portable/operations/card-paired-endpoint-210-real8.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ],
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${CARD_PAIR_ROOT}/package/operations-local.json"
+            "${EXPERIMENT_LOCAL_CONFIG}",
+            "--formal"
           ]
         ],
         "checks": [
@@ -739,6 +733,21 @@
                 "declared_stages_finished"
               ]
             ]
+          },
+          {
+            "path": "${CARD_PAIR_ROOT}/formal-throughput-audit.json",
+            "equals": [
+              [["passed"], true],
+              [["differences"], 0],
+              [["reused_blocks"], 969],
+              [["inferred_blocks"], 969]
+            ],
+            "report": {
+              "AI Core 平均占用 (%)": ["aicore"],
+              "HBM 平均占用 (%)": ["hbm"],
+              "评分吞吐倍数": ["scoring_speedup"],
+              "总耗时提速下界": ["full_wall_speedup_at_least"]
+            }
           }
         ],
         "panels": [
@@ -1048,7 +1057,8 @@
         "requires_current_dispatch": true,
         "owned_checks": [
           0,
-          3
+          3,
+          4
         ]
       }
     ]

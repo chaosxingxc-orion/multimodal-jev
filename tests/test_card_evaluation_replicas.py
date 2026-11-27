@@ -77,3 +77,45 @@ def test_full_utilization_counts_idle_cards_and_rejects_missing_time(tmp_path):
         utilization(telemetry_path, (5, 15), [0, 1], 9)
     with pytest.raises(ValueError, match='cover'):
         utilization(telemetry_path, (5, 21), [0, 1], 10)
+
+
+def test_formal_timing_only_counts_recomputed_blocks(tmp_path):
+    from tools.reports.verify_card_evaluation_throughput import timings
+
+    package = tmp_path/'package'
+    entry = package/'entry'
+    ops = tmp_path/'ops'
+    entry.mkdir(parents=True)
+    ops.mkdir()
+
+    def write(path, value):
+        path.write_text(json.dumps(value))
+
+    block_plan = entry/'block-plan.json'
+    reuse = dict(arm='stage1', plan={'path':'/sealed/plan.json', 'sha256':'pinned'})
+    write(block_plan, dict(macros={'NATIVE_SEAL_CONTAINER_CONFIG': dict(queue={'reuse_policy':reuse})}))
+    worker = 'block-worker-0'
+    deploy = dict(chains=[[[dict(name=worker, devices=[0])]]], host='181', image='image', tag='eval',
+                  entry_pins={block_plan.name:file_hash(block_plan)})
+    write(package/'operations-local.json', dict(macros={'NATIVE_SEAL_OPERATIONS_CONFIG':deploy}))
+    write(ops/'terminal.json', dict(exit_code=0, status='declared_stages_finished'))
+    write(ops/'block-plan-collected.json', dict(blocks=2, reused_blocks=1, plan_sha256='current'))
+    write(ops/(worker+'-launch.json'), dict(container_id='worker'))
+    write(ops/(worker+'-inspect.json'), dict(Id='worker', Image='image', Name='/eval-'+worker,
+          State=dict(Status='exited', ExitCode=0, StartedAt='1970-01-01T00:00:05Z',
+                     FinishedAt='1970-01-01T00:00:20Z')))
+    receipt = dict(devices=[0], plan_sha256='current', replicas_per_device=6,
+                   blocks=[dict(block='b', dataset='test', arm='tpo', recordings=1,
+                                claimed_unix=7, first_input_unix=9, committed_unix=18)])
+    receipt_path = ops/(worker+'-collected.json')
+    write(receipt_path, receipt)
+    plan = dict(blocks=[dict(key='a', dataset='test', arm='stage1', ids=['recording']),
+                        dict(key='b', dataset='test', arm='tpo', ids=['recording'])])
+    result = timings(tmp_path, plan, 6, reused_policy=reuse)
+    assert (result['scoring_start'], result['scoring_end'], result['worker_wall_seconds']) == (9, 18, 15)
+    with pytest.raises(ValueError, match='completed-policy reuse'):
+        timings(tmp_path, plan, 6, reused_policy=dict(reuse, plan={'sha256':'another-run'}))
+    receipt['blocks'][0].update(block='a', arm='stage1')
+    write(receipt_path, receipt)
+    with pytest.raises(ValueError, match='foreign'):
+        timings(tmp_path, plan, 6, reused_policy=reuse)

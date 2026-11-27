@@ -13,7 +13,7 @@ from multimodal_jev.evaluation_blocks import read
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
 from tools.reports.finalize_context_infonce import wait_exact
-from tools.reports.prepare_paired_card_evaluation import run as prepare
+from tools.reports.prepare_paired_card_evaluation import run as prepare, settings as container_spec
 from tools.reports.screen_card_evaluation_replicas import bound, screen
 
 
@@ -21,7 +21,7 @@ def config(root):
     return read(root/'package/operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
 
 
-def timings(root, plan, replicas):
+def timings(root, plan, replicas, *, reused_policy=None):
     ops = root/'ops'
     if read(ops/'terminal.json') != dict(exit_code=0, status='declared_stages_finished'):
         raise ValueError('incomplete evaluation operations')
@@ -29,10 +29,21 @@ def timings(root, plan, replicas):
     chain, = dep['chains']
     group, = (group for group in chain if all(j['name'].startswith('block-worker-') for j in group))
     registered = {row['key']: row for row in plan['blocks']}
+    if len(registered) != len(plan['blocks']):
+        raise ValueError('duplicate registered evaluation blocks')
+    source = root/'package/entry/block-plan.json'
+    if file_hash(source) != dep['entry_pins']['block-plan.json']:
+        raise ValueError('installed block plan configuration changed')
+    queue = read(source)['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['queue']
+    if 'resume_from' in queue or queue.get('reuse_policy') != reused_policy:
+        raise ValueError('inference comparison requires the declared completed-policy reuse only')
+    reused_arm = reused_policy['arm'] if reused_policy else None
+    expected = {key: row for key, row in registered.items() if row['arm'] != reused_arm}
     witness = read(ops/'block-plan-collected.json')
-    if (len(registered) != len(plan['blocks']) or witness['blocks'] != len(registered)
-            or witness['reused_blocks']):
-        raise ValueError('timed comparison requires every original block to be inferred again')
+    if (not expected or witness['blocks'] != len(registered)
+            or witness['reused_blocks'] != len(registered)-len(expected)
+            or (reused_arm is not None and len(expected) == len(registered))):
+        raise ValueError('reused and inferred blocks must match the registered workload')
     starts, ends, first_inputs, committed = [], [], [], []
     devices, seen = set(), set()
     for job in group:
@@ -56,17 +67,17 @@ def timings(root, plan, replicas):
         ends.append(end)
         for row in worker['blocks']:
             key = row['block']
-            expected = registered[key]
+            block = expected.get(key)
             first, last = row['first_input_unix'], row['committed_unix']
-            if (key in seen or (row['dataset'], row['arm'], row['recordings']) !=
-                    (expected['dataset'], expected['arm'], len(expected['ids']))
+            if (key in seen or block is None or (row['dataset'], row['arm'], row['recordings']) !=
+                    (block['dataset'], block['arm'], len(block['ids']))
                     or not start <= row['claimed_unix'] <= first < last <= end):
                 raise ValueError('invalid, foreign or duplicate evaluation block timing')
             seen.add(key)
             first_inputs.append(first)
             committed.append(last)
-    if seen != registered.keys():
-        raise ValueError('timing omits registered evaluation blocks')
+    if seen != expected.keys():
+        raise ValueError('timing omits required inference blocks')
     return dict(devices=sorted(devices), scoring_start=min(first_inputs), scoring_end=max(committed),
                 worker_wall_seconds=max(ends)-min(starts), host=dep['host'], image=dep['image'])
 
@@ -113,6 +124,103 @@ def wait_predecessor(predecessor):
     identity = dict(pid=proof['pid'], process_start_ticks=proof['start_ticks'],
                     argv=proof.get('argv') or proof['args'])
     wait_exact(identity, predecessor['terminal'])
+
+
+def worker_contract(root):
+    dep = config(root)
+    path = root/'package/entry/block-worker-0.json'
+    opts = container_spec(dict(path=path, sha256=dep['entry_pins'][path.name]))
+    job, = (j for group in dep['chains'][0] for j in group if j['name'] == 'block-worker-0')
+    return dict(replicas=opts.get('replicas_per_device', 1),
+                head_check=opts.get('eval_single_validation', False),
+                container={k: job[k] for k in ('cpus', 'memory', 'shm')})
+
+
+def run_formal(pair):
+    """Dispatch the matched cutover through the experiment ledger."""
+    deployment = dict(pair['deployment'])
+    comparison = deployment.pop('throughput_comparison', None)
+    pair = dict(pair, deployment=deployment)
+    root = Path(pair['output']).parent
+    if Path(pair['output']) != root/'package' or Path(deployment['operations']) != root/'ops':
+        raise ValueError('formal evaluation package and operations must share an isolated run root')
+    if not isinstance(comparison, dict) or set(comparison) != {
+            'verification', 'baseline', 'baseline_score', 'archive', 'sampling_seconds',
+            'max_sampling_gap_seconds', 'minimums'}:
+        raise ValueError('incomplete formal throughput comparison')
+    gate_pin = comparison['verification']
+    gate = bound(gate_pin)
+    approved = worker_contract(Path(gate_pin['path']).parent)
+    minimums = comparison['minimums']
+    if (gate['passed'] is not True or gate['differences'] != 0 or gate['replicas'] != approved['replicas']
+            or gate['aicore'] < minimums['aicore'] or gate['hbm'] < minimums['hbm']
+            or min(gate['scoring_speedup'], gate['full_wall_speedup_at_least']) <= minimums['speedup']):
+        raise ValueError('formal cutover requires passing full-workload evidence')
+    baseline = Path(comparison['baseline'])
+    pin = comparison['archive']
+    manifest = bound(pin['local'])
+    plan = manifest['plan']
+    prior = config(baseline)
+    reuse = pair['deployment']['evaluation_options']['reuse_stage1_evaluation']
+    expected_reuse = dict(arm='stage1', plan=reuse['remote_plan'])
+    baseline_score_pin = comparison['baseline_score']
+    baseline_score = bound(baseline_score_pin)
+    if (manifest['sha256'] != content_key(plan)
+            or manifest['sha256'] != read(baseline/'ops/block-plan-collected.json')['plan_sha256']
+            or pin['remote'] != prior['remote_root']+'/sample-blocks/plan.json'
+            or Path(baseline_score_pin['path']) != baseline/'ops/score-collected.json'
+            or baseline_score['schema'] != 'jev-audited-probability-panels-v1'
+            or 'thresholds_sha256' in baseline_score):
+        raise ValueError('formal cutover must compare the same complete heldout run without threshold fits')
+    original = timings(baseline, plan, 1, reused_policy=expected_reuse)
+    if any(original[k] != gate['candidate'][k] for k in ('host', 'image', 'devices')):
+        raise ValueError('formal launch and verification must use the same devices and runtime')
+    requested = dict(replicas=pair['sample_blocks']['replicas_per_device'],
+                     head_check=pair['eval_single_validation'], container=pair['eval_container'])
+    if (requested != approved or pair['fit_harness_thresholds'] is not False
+            or sorted(pair['sample_blocks']['devices']) != original['devices']
+            or any(deployment[k] != original[k] for k in ('host', 'image'))):
+        raise ValueError('formal runtime or workload does not match the verified configuration')
+    pair['exact_probability_archive'] = dict(path=pin['remote'], sha256=pin['local']['sha256'])
+    started = time.monotonic()
+    prepare(pair)
+    frozen = config(root)
+    if worker_contract(root) != approved:
+        raise ValueError('frozen worker settings differ from the approved allocation')
+    roles = {j['name'] for group in frozen['chains'][0] for j in group if j['name'].startswith('block-worker-')}
+    if screen(comparison, frozen, observed_roles=roles):
+        raise ValueError('formal evaluation failed')
+    elapsed = time.monotonic()-started
+    candidate = timings(root, plan, approved['replicas'], reused_policy=expected_reuse)
+    observed = read(root/'ops/score-collected.json')
+    parity = observed.pop('archive_parity')
+    populations = Counter()
+    for block in plan['blocks']:
+        populations[block['dataset'], block['arm']] += sum(block['widths'])
+    actual = {(ds, arm): row['pairs'] for ds, arms in parity['panels'].items() for arm, row in arms.items()}
+    if (observed != baseline_score or parity['differences'] or actual != populations
+            or parity['archive_sha256'] != pin['local']['sha256']):
+        raise ValueError('formal metrics or per-candidate probabilities differ')
+    device = utilization(root/'ops/telemetry.jsonl', (candidate['scoring_start'], candidate['scoring_end']),
+                         candidate['devices'], comparison['max_sampling_gap_seconds'])
+    scoring_speed = ((original['scoring_end']-original['scoring_start'])
+                     / (candidate['scoring_end']-candidate['scoring_start']))
+    full_wall_floor = original['worker_wall_seconds']/elapsed
+    passed = (device['aicore'] >= minimums['aicore'] and device['hbm'] >= minimums['hbm']
+              and min(scoring_speed, full_wall_floor) > minimums['speedup'])
+    commit_json(root/'formal-throughput-audit.json', dict(
+        verification_sha256=gate_pin['sha256'], archive_sha256=pin['local']['sha256'],
+        baseline_score_sha256=baseline_score_pin['sha256'],
+        replicas=approved['replicas'], inferred_blocks=sum(b['arm'] != 'stage1' for b in plan['blocks']),
+        reused_blocks=sum(b['arm'] == 'stage1' for b in plan['blocks']),
+        compared_probabilities=sum(populations.values()), differences=parity['differences'],
+        inferred_probabilities=sum(n for (_, arm), n in populations.items() if arm != 'stage1'),
+        baseline=original, candidate=candidate, full_candidate_wall_seconds=elapsed,
+        scoring_speedup=scoring_speed, full_wall_speedup_at_least=full_wall_floor,
+        **device, passed=passed))
+    if not passed:
+        raise ValueError('formal evaluation did not reproduce the throughput targets')
+    return 0
 
 
 def run(settings, pair):
@@ -195,8 +303,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('config')
     parser.add_argument('local')
+    parser.add_argument('--formal', action='store_true', help='Run the registered formal paired evaluation')
     args = parser.parse_args()
     settings, _ = load_config(args.config, args.local)
+    if args.formal:
+        raise SystemExit(run_formal(settings))
     pair, _ = load_config(settings['pair_config'], args.local)
     root = Path(settings['output'])
     try:

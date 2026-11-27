@@ -1,6 +1,8 @@
 {
   "output": "${CARD_PAIR_ROOT}/package",
   "deployment": "${CARD_PAIR_DEPLOYMENT}",
+  "fit_harness_thresholds": false,
+  "eval_single_validation": true,
   "eval_plan": {
     "path": "${CARD_PAIR_PRIOR}/entry/block-plan.json",
     "sha256": "26da38f5b75ee629f4641e46a52a04f29aae0a2e2e5651be32ac0728c4db3bd0"
@@ -61,7 +63,8 @@
       7
     ],
     "batches_per_block": 4,
-    "prefetch": 16
+    "prefetch": 16,
+    "replicas_per_device": 6
   },
   "cache_container": {
     "cpus": 8,
@@ -69,7 +72,7 @@
     "shm": "2g"
   },
   "eval_container": {
-    "cpus": 6,
+    "cpus": 12,
     "memory": "1024g",
     "shm": "2g"
   },
