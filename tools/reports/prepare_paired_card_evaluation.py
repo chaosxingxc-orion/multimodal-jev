@@ -267,14 +267,16 @@ def run(c):
         common['eval_single_validation'] = True
     exact_archive = c.get('exact_probability_archive')
     if exact_archive is not None:
-        if (not isinstance(exact_archive, dict) or set(exact_archive) != {'path', 'sha256'}
+        if (not isinstance(exact_archive, dict) or set(exact_archive) - {'blocks'} != {'path', 'sha256'}
                 or not isinstance(exact_archive['path'], str)
                 or not Path(exact_archive['path']).is_absolute()
                 or Path(exact_archive['path']).name != 'plan.json'
                 or not isinstance(exact_archive['sha256'], str)
+                or ('blocks' in exact_archive and (not isinstance(exact_archive['blocks'], list)
+                    or not exact_archive['blocks'] or not all(isinstance(k, str) for k in exact_archive['blocks'])))
                 or any(key in c for key in ('performance_comparison', 'single_card_probe', 'reuse'))
                 or 'resume_from' in c['sample_blocks']):
-            raise ValueError('exact probability comparison requires a pinned full archive and no resume')
+            raise ValueError('exact probability comparison requires a pinned archive and no resume')
     benchmark = c.get('performance_comparison')
     if benchmark is not None:
         if (set(benchmark) != {'role', 'archive_plan'} or benchmark['role'] not in {'standard', 'candidate'}

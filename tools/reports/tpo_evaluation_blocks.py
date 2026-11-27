@@ -401,7 +401,7 @@ def publications(spec):
     benchmark = spec.get('performance_comparison')
     if 'exact_probability_archive' in spec:
         if benchmark is not None:
-            raise ValueError('choose one full probability comparison')
+            raise ValueError('choose one archive probability comparison')
         benchmark = dict(role='candidate', archive_plan=spec['exact_probability_archive'])
     if benchmark is not None:
         from tools.reports.audit_card_archive import compare_archive

@@ -44,6 +44,28 @@ def test_archive_checks_each_probability_even_when_top1_identical(tmp_path):
         compare_archive(settings, dict(plan, blocks=[]), [], 1)
 
 
+def test_archive_compares_only_declared_blocks_but_requires_the_same_population(tmp_path):
+    audited, unaudited = [dict(key=f'block-{i:06d}', dataset='d', arm='s', ids=[f'u{i}'], widths=[2])
+                          for i in range(2)]
+    plan = dict(inputs={}, policies={'s': 'p'}, choice=False, blocks=[audited, unaudited])
+    manifest = dict(sha256=blocks.content_key(plan), plan=plan)
+    pin = tmp_path/'plan.json'
+    pin.write_text(json.dumps(manifest))
+    payloads = [{'prob': dict(policy_id='p', records=[dict(id=b['ids'][0], prob=[.7, .3])])}
+                for b in plan['blocks']]
+    blocks.artifact(tmp_path, audited).write_text(json.dumps(dict(block=audited['key'],
+        products=payloads[0], sha256=blocks.content_key(payloads[0]), plan_sha256=manifest['sha256'])))
+    settings = dict(role='candidate', archive_plan=dict(path=str(pin), blocks=[audited['key']],
+                    sha256=hashlib.sha256(pin.read_bytes()).hexdigest()))
+    report = compare_archive(settings, plan, payloads, 1)
+    assert report['blocks'] == 1 and report['panels']['d']['s']['pairs'] == 2 and not report['differences']
+    with pytest.raises(ValueError, match='population'):
+        compare_archive(settings, dict(plan, blocks=[audited]), payloads[:1], 1)
+    settings['archive_plan']['blocks'] = [unaudited['key']]
+    with pytest.raises(FileNotFoundError):
+        compare_archive(settings, plan, payloads, 1)
+
+
 def test_rejects_shuffled_latency_boundaries():
     times = dict(first_score_seconds=1., first_decision_seconds=3., scoring_seconds=2., differences=0)
     with pytest.raises(ValueError, match='host timing'):

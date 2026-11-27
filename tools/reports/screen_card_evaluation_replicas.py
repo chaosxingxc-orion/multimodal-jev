@@ -72,7 +72,29 @@ def prepare(settings):
     if (original['sha256'] != content_key(original['plan'])
             or original['plan']['namespace'] != starter['queue']['namespace']):
         raise ValueError('replay does not match the frozen baseline worker')
-    selected = panel(original['plan'], settings['blocks_per_panel'])
+    plan = original['plan']
+    paired = settings.get('paired_panels')
+    if paired is None:
+        selected = {'default': panel(plan, settings['blocks_per_panel'])}
+    else:
+        lanes = settings['devices_by_replica_count']
+        if (len(lanes) != 2 or '1' not in lanes or not paired
+                or any(len(devices) != len(paired) for devices in lanes.values())):
+            raise ValueError('each comparison lane requires a matched panel')
+        selected, seen, recordings = {}, set(), set()
+        for i, keys in enumerate(paired):
+            wanted = set(keys)
+            rows = [b for b in plan['blocks'] if b['key'] in wanted]
+            identities = {(b['dataset'], uid) for b in rows for uid in b['ids']}
+            if (not wanted or len(wanted) != len(keys) or len(rows) != len(wanted)
+                    or wanted & seen or identities & recordings
+                    or len(identities) != sum(len(b['ids']) for b in rows)):
+                raise ValueError('comparison panels must contain disjoint, complete recorded blocks')
+            seen.update(wanted)
+            recordings.update(identities)
+            selected[str(i)] = dict(plan, blocks=rows)
+        if len(recordings) != settings['recordings']:
+            raise ValueError('comparison sample count differs from the frozen budget')
     work = settings['deployment']
     target = Path(work['package'])
     entry = target/'entry'
@@ -89,7 +111,11 @@ def prepare(settings):
         'src/multimodal_jev/*.py', 'tools/reports/*.py', 'tools/jev/*.py',
         'tools/__init__.py', 'tools/reports/__init__.py',
     ], io_workers=starter['io_workers'])
-    commit_json(entry/'screen-panel.json', dict(plan=selected, sha256=content_key(selected)))
+    panels = {}
+    for name, selection in selected.items():
+        path = entry/('screen-panel.json' if name == 'default' else f'screen-panel-{name}.json')
+        commit_json(path, dict(plan=selection, sha256=content_key(selection)))
+        panels[name] = path
     archive_root = baseline['remote_root'] + '/sample-blocks'
     jobs = []
     for count, devices in settings['devices_by_replica_count'].items():
@@ -97,16 +123,17 @@ def prepare(settings):
             raise ValueError('replica groups must be explicit')
         from tools.reports.card_evaluation_replicas import replica_count
         replicas = replica_count(int(count))
-        for device in devices:
+        for i, device in enumerate(devices):
             if type(device) is not int or device < 0:
                 raise ValueError('invalid physical device')
             name = f'replay-{count}-{device}'
+            replay = panels['default' if paired is None else str(i)]
             spec = dict(starter, devices=[device], replicas_per_device=replicas,
                         source=dict(root='/jev-entry/source', sha256=snapshot['manifest_sha256']),
                         queue=dict(starter['queue'], root=f'/jev-work/{name}-blocks'),
                         output=f'/jev-work/{name}', result_path=f'/jev-work/{name}.json',
-                        replica_replay=dict(plan='/jev-entry/screen-panel.json', archive=archive_root,
-                                            sha256=file_hash(entry/'screen-panel.json')))
+                        replica_replay=dict(plan='/jev-entry/'+replay.name, archive=archive_root,
+                                            sha256=file_hash(replay)))
             if count in settings.get('single_validation_lanes', []):
                 spec['eval_single_validation'] = True
             commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG', spec))
@@ -194,18 +221,38 @@ def summarize(settings, deployment):
                     for key in ('aicore', 'hbm')}
         state = inspected['State']
         dates = [datetime.fromisoformat(state[k].replace('Z', '+00:00')) for k in ('StartedAt','FinishedAt')]
+        entry = Path(deployment['archive']).parent/'entry'
+        spec_path = entry/(name+'.json')
+        spec_pin = dict(path=spec_path, sha256=deployment['entry_pins'][spec_path.name])
+        replay = bound(spec_pin)['macros']['NATIVE_SEAL_CONTAINER_CONFIG']['replica_replay']
+        p = bound(dict(path=entry/Path(replay['plan']).name, sha256=replay['sha256']))
+        if (receipt['plan_sha256'] != p['sha256']
+                or receipt['pairs'] != sum(sum(b['widths']) for b in p['plan']['blocks'])):
+            raise ValueError('lane output differs from the frozen sample')
         detail[count].append(dict(device=device, collected=True, seconds=end-start,
+             scoring_start=start, scoring_end=end, container_started=dates[0].timestamp(),
+             container_ended=dates[1].timestamp(), recordings=sum(len(b['ids']) for b in p['plan']['blocks']),
              container_wall_seconds=(dates[1]-dates[0]).total_seconds(), **averages,
              pairs=receipt['pairs'], readings=len(observed), differences=receipt['probability_differences'],
              panel_sha256=receipt['plan_sha256']))
     base = detail[1]
     comparison = {}
     usable = lambda row: row['collected'] and not row['differences'] and row['readings'] >= settings['min_samples']
+    paired = settings.get('paired_panels') is not None
+
     def throughput(rows, key):
-        return sum(r['pairs'] for r in rows) / sum(r[key] for r in rows)
+        if paired:
+            start, end = (('scoring_start', 'scoring_end') if key == 'seconds'
+                          else ('container_started', 'container_ended'))
+            duration = max(r[end] for r in rows) - min(r[start] for r in rows)
+        else:
+            duration = sum(r[key] for r in rows)
+        return sum(r['pairs'] for r in rows) / duration
     if all(map(usable, base)):
         for count, rows in detail.items():
-            if not all(map(usable, rows)) or {r['panel_sha256'] for r in base+rows} != {base[0]['panel_sha256']}:
+            if (not all(map(usable, rows)) or (paired and
+                        [r['panel_sha256'] for r in rows] != [r['panel_sha256'] for r in base])
+                    or (not paired and {r['panel_sha256'] for r in base+rows} != {base[0]['panel_sha256']})):
                 continue
             averages = {k:sum(r[k] for r in rows)/len(rows) for k in ('aicore', 'hbm')}
             speedup = throughput(rows, 'seconds') / throughput(base, 'seconds')
@@ -215,6 +262,10 @@ def summarize(settings, deployment):
                 and min(speedup, wall) > settings['min_speedup']))
     result = dict(scope='exact registered scoring subset, single physical card per lane',
                   lanes=detail, comparison=comparison, passed=any(row['passed'] for row in comparison.values()))
+    if paired:
+        result.update(scope='matched fixed samples, physical cards per arm', recordings=settings['recordings'],
+                      pairs=sum(r['pairs'] for r in base) if all(map(usable, base)) else None,
+                      deployment_sha256=file_hash(Path(deployment['archive']).parent/'operations-local.json'))
     commit_json(root/'screen-audit.json', result)
     return result
 

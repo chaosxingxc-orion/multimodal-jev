@@ -1,4 +1,4 @@
-"""Run the screened configuration on the complete, previously audited evaluation."""
+"""Apply a verified scoring configuration to the complete heldout evaluation."""
 import argparse
 from collections import Counter
 from datetime import datetime
@@ -12,7 +12,6 @@ from multimodal_jev.context_execution import content_key
 from multimodal_jev.evaluation_blocks import read
 from multimodal_jev.local_checkpoint import commit_json
 from multimodal_jev.local_config import load_config
-from tools.reports.finalize_context_infonce import wait_exact
 from tools.reports.prepare_paired_card_evaluation import run as prepare, settings as container_spec
 from tools.reports.screen_card_evaluation_replicas import bound, screen
 
@@ -119,13 +118,6 @@ def utilization(path, interval, devices, max_gap):
                                        for key in ('aicore', 'hbm')})
 
 
-def wait_predecessor(predecessor):
-    proof = bound(predecessor['driver'])
-    identity = dict(pid=proof['pid'], process_start_ticks=proof['start_ticks'],
-                    argv=proof.get('argv') or proof['args'])
-    wait_exact(identity, predecessor['terminal'])
-
-
 def worker_contract(root):
     dep = config(root)
     path = root/'package/entry/block-worker-0.json'
@@ -136,8 +128,44 @@ def worker_contract(root):
                 container={k: job[k] for k in ('cpus', 'memory', 'shm')})
 
 
+def fixed_baseline(comparison, pair):
+    pin = comparison['screen_audit']
+    gate = bound(pin)
+    screen_root = Path(pin['path']).parent.parent
+    screen_spec_path = screen_root/'package/operations-local.json'
+    screened = bound(dict(path=screen_spec_path, sha256=gate['deployment_sha256']))
+    screened = screened['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+    requested = dict(replicas=pair['sample_blocks']['replicas_per_device'],
+                     head_check=pair['eval_single_validation'], container=pair['eval_container'])
+    minimums = comparison['minimums']
+    count = str(requested['replicas'])
+    result = gate['comparison'][count]
+    if (gate['scope'] != 'matched fixed samples, physical cards per arm'
+            or gate['recordings'] != comparison['screen_recordings']
+            or result['passed'] is not True
+            or result['aicore'] < minimums['aicore'] or result['hbm'] < minimums['hbm']
+            or min(result['speedup'], result['container_speedup']) <= minimums['speedup']
+            or any(screened[k] != pair['deployment'][k] for k in ('host', 'image'))):
+        raise ValueError('formal evaluation requires a passing matched-sample baseline')
+    jobs = [j for j in screened['chains'][0][0] if j['name'].startswith(f'replay-{count}-')]
+    lanes = gate['lanes'][count]
+    if (not jobs or {d for j in jobs for d in j['devices']} != {row['device'] for row in lanes}
+            or any(row['differences'] or not row['collected'] for row in lanes)):
+        raise ValueError('matched-sample baseline has incomplete candidate lanes')
+    for job in jobs:
+        name = job['name']+'.json'
+        entry = screen_root/'package/entry'/name
+        opts = container_spec(dict(path=entry, sha256=screened['entry_pins'][name]))
+        contract = dict(replicas=opts.get('replicas_per_device', 1),
+                        head_check=opts.get('eval_single_validation', False),
+                        container={k: job[k] for k in ('cpus', 'memory', 'shm')})
+        if contract != requested:
+            raise ValueError('requested worker allocation differs from the matched-sample baseline')
+    return requested, gate, result
+
+
 def run_formal(pair):
-    """Dispatch the matched cutover through the experiment ledger."""
+    """Score the complete holdouts and audit a fixed subset against prior probabilities."""
     deployment = dict(pair['deployment'])
     comparison = deployment.pop('throughput_comparison', None)
     pair = dict(pair, deployment=deployment)
@@ -145,52 +173,31 @@ def run_formal(pair):
     if Path(pair['output']) != root/'package' or Path(deployment['operations']) != root/'ops':
         raise ValueError('formal evaluation package and operations must share an isolated run root')
     if not isinstance(comparison, dict) or set(comparison) != {
-            'verification', 'baseline', 'archive', 'sampling_seconds',
+            'screen_audit', 'screen_recordings', 'archive', 'sampling_seconds',
             'max_sampling_gap_seconds', 'minimums'}:
         raise ValueError('incomplete formal throughput comparison')
-    predecessor = comparison['verification']
-    verification_root = Path(predecessor['terminal']).parent
-    if (Path(predecessor['terminal']) != verification_root/'terminal.json'
-            or Path(predecessor['driver']['path']) != verification_root/'driver.json'):
-        raise ValueError('verification driver and terminal must belong to the same run')
-    wait_predecessor(predecessor)
-    if read(verification_root/'terminal.json') != dict(exit_code=0, passed=True):
-        raise ValueError('eight-card full-workload verification did not pass')
-    gate_path = verification_root/'full-throughput-audit.json'
-    gate_pin = dict(path=str(gate_path), sha256=file_hash(gate_path))
-    gate = bound(gate_pin)
-    approved = worker_contract(verification_root)
-    minimums = comparison['minimums']
-    if (gate['passed'] is not True or gate['differences'] != 0 or gate['replicas'] != approved['replicas']
-            or gate['aicore'] < minimums['aicore'] or gate['hbm'] < minimums['hbm']
-            or min(gate['scoring_speedup'], gate['full_wall_speedup_at_least']) <= minimums['speedup']):
-        raise ValueError('formal cutover requires passing full-workload evidence')
-    baseline = Path(comparison['baseline'])
+    approved, gate, speed = fixed_baseline(comparison, pair)
     pin = comparison['archive']
     manifest = bound(pin['local'])
     plan = manifest['plan']
-    prior = config(baseline)
-    reuse = pair['deployment']['evaluation_options']['reuse_stage1_evaluation']
+    reuse = deployment['evaluation_options']['reuse_stage1_evaluation']
     expected_reuse = dict(arm='stage1', plan=reuse['remote_plan'])
-    score_path = baseline/'ops/score-collected.json'
-    baseline_score_pin = dict(path=str(score_path), sha256=file_hash(score_path))
-    baseline_score = bound(baseline_score_pin)
-    if (manifest['sha256'] != content_key(plan)
-            or manifest['sha256'] != read(baseline/'ops/block-plan-collected.json')['plan_sha256']
-            or pin['remote'] != prior['remote_root']+'/sample-blocks/plan.json'
-            or baseline_score['schema'] != 'jev-audited-probability-panels-v1'
-            or 'thresholds_sha256' in baseline_score):
-        raise ValueError('formal cutover must compare the same complete heldout run without threshold fits')
-    original = timings(baseline, plan, 1, reused_policy=expected_reuse)
-    if any(original[k] != gate['candidate'][k] for k in ('host', 'image', 'devices')):
-        raise ValueError('formal launch and verification must use the same devices and runtime')
-    requested = dict(replicas=pair['sample_blocks']['replicas_per_device'],
-                     head_check=pair['eval_single_validation'], container=pair['eval_container'])
-    if (requested != approved or pair['fit_harness_thresholds'] is not False
-            or sorted(pair['sample_blocks']['devices']) != original['devices']
-            or any(deployment[k] != original[k] for k in ('host', 'image'))):
-        raise ValueError('formal runtime or workload does not match the verified configuration')
-    pair['exact_probability_archive'] = dict(path=pin['remote'], sha256=pin['local']['sha256'])
+    selected = set(pin['blocks'])
+    population = Counter()
+    sampled = Counter()
+    for block in plan['blocks']:
+        key = (block['dataset'], block['arm'])
+        pairs = sum(block['widths'])
+        population[key] += pairs
+        if block['key'] in selected and block['arm'] != 'stage1':
+            sampled[key] += pairs
+    if (manifest['sha256'] != content_key(plan) or not sampled
+            or len(selected) != len(pin['blocks'])
+            or sum(b['key'] in selected and b['arm'] != 'stage1' for b in plan['blocks']) != len(selected)
+            or pair['fit_harness_thresholds'] is not False):
+        raise ValueError('invalid pinned Stage2 archive subset or unexpected threshold fit')
+    pair['exact_probability_archive'] = dict(path=pin['remote'], sha256=pin['local']['sha256'],
+                                             blocks=pin['blocks'])
     started = time.monotonic()
     prepare(pair)
     frozen = config(root)
@@ -202,129 +209,42 @@ def run_formal(pair):
     elapsed = time.monotonic()-started
     candidate = timings(root, plan, approved['replicas'], reused_policy=expected_reuse)
     observed = read(root/'ops/score-collected.json')
-    parity = observed.pop('archive_parity')
-    populations = Counter()
-    for block in plan['blocks']:
-        populations[block['dataset'], block['arm']] += sum(block['widths'])
+    parity = observed['archive_parity']
     actual = {(ds, arm): row['pairs'] for ds, arms in parity['panels'].items() for arm, row in arms.items()}
-    if (observed != baseline_score or parity['differences'] or actual != populations
+    if (observed['schema'] != 'jev-audited-probability-panels-v1' or 'thresholds_sha256' in observed
+            or parity['differences'] or parity['blocks'] != len(selected) or actual != sampled
             or parity['archive_sha256'] != pin['local']['sha256']):
-        raise ValueError('formal metrics or per-candidate probabilities differ')
-    device = utilization(root/'ops/telemetry.jsonl', (candidate['scoring_start'], candidate['scoring_end']),
-                         candidate['devices'], comparison['max_sampling_gap_seconds'])
-    scoring_speed = ((original['scoring_end']-original['scoring_start'])
-                     / (candidate['scoring_end']-candidate['scoring_start']))
-    full_wall_floor = original['worker_wall_seconds']/elapsed
-    passed = (device['aicore'] >= minimums['aicore'] and device['hbm'] >= minimums['hbm']
-              and min(scoring_speed, full_wall_floor) > minimums['speedup'])
+        raise ValueError('formal metrics or archived sample probabilities differ')
+    window = (candidate['scoring_start'], candidate['scoring_end'])
+    device = utilization(root/'ops/telemetry.jsonl', window, candidate['devices'],
+                         comparison['max_sampling_gap_seconds'])
+    minimums = comparison['minimums']
+    passed = device['aicore'] >= minimums['aicore'] and device['hbm'] >= minimums['hbm']
+    inferred = sum(n for (_, arm), n in population.items() if arm != 'stage1')
     commit_json(root/'formal-throughput-audit.json', dict(
-        verification_sha256=gate_pin['sha256'], archive_sha256=pin['local']['sha256'],
-        baseline_score_sha256=baseline_score_pin['sha256'],
+        screen_audit_sha256=comparison['screen_audit']['sha256'], screen_recordings=gate['recordings'],
+        screen_probabilities=gate['pairs'], screen_scoring_speedup=speed['speedup'],
+        screen_container_speedup=speed['container_speedup'], archive_sha256=pin['local']['sha256'],
         replicas=approved['replicas'], inferred_blocks=sum(b['arm'] != 'stage1' for b in plan['blocks']),
         reused_blocks=sum(b['arm'] == 'stage1' for b in plan['blocks']),
-        compared_probabilities=sum(populations.values()), differences=parity['differences'],
-        inferred_probabilities=sum(n for (_, arm), n in populations.items() if arm != 'stage1'),
-        baseline=original, candidate=candidate, full_candidate_wall_seconds=elapsed,
-        scoring_speedup=scoring_speed, full_wall_speedup_at_least=full_wall_floor,
-        **device, passed=passed))
+        compared_blocks=len(selected), compared_probabilities=sum(sampled.values()),
+        differences=parity['differences'], inferred_probabilities=inferred,
+        scoring_probabilities_per_second=inferred/(window[1]-window[0]),
+        candidate=candidate, full_candidate_wall_seconds=elapsed, **device, passed=passed))
     if not passed:
-        raise ValueError('formal evaluation did not reproduce the throughput targets')
+        raise ValueError('formal evaluation did not meet the device utilization targets')
     return 0
 
-
-def run(settings, pair):
-    root = Path(settings['output'])
-    baseline = Path(settings['baseline'])
-    pin = settings['archive']
-    manifest = bound(pin['local'])
-    plan = manifest['plan']
-    if (manifest['sha256'] != content_key(plan) or
-            manifest['sha256'] != read(baseline/'ops/block-plan-collected.json')['plan_sha256']):
-        raise ValueError('archive population differs from the completed baseline')
-    baseline_metrics = bound(settings['baseline_score'])
-    if (Path(settings['baseline_score']['path']) != baseline/'ops/score-collected.json'
-            or baseline_metrics['schema'] != 'jev-audited-probability-panels-v1'):
-        raise ValueError('independently collected baseline score required')
-    original = timings(baseline, plan, 1)
-    for predecessor in settings['predecessors']:
-        wait_predecessor(predecessor)
-    screen_gate = settings['screen_gate']
-    gate = read(Path(screen_gate))
-    minimums = settings['minimums']
-    passing = [int(replicas) for replicas, result in gate['comparison'].items()
-               if result['passed'] and result['aicore'] >= minimums['aicore']
-               and result['hbm'] >= minimums['hbm']
-               and min(result['speedup'], result['container_speedup']) > minimums['speedup']]
-    if not passing:
-        raise ValueError('device concurrency screen did not qualify a candidate')
-    # Select the highest measured end-to-end speed, preserving its resource envelope.
-    count = max(passing, key=lambda n: gate['comparison'][str(n)]['container_speedup'])
-    target = dict(pair, output=str(root/'package'), fit_harness_thresholds=False,
-                  exact_probability_archive=dict(path=pin['remote'], sha256=pin['local']['sha256']),
-                  eval_single_validation=settings['single_validation'],
-                  sample_blocks=dict(pair['sample_blocks'], replicas_per_device=count),
-                  eval_container=dict(pair['eval_container'], **settings['eval_container']))
-    dep = target['deployment']
-    if (dep['host'] != original['host'] or dep['image'] != original['image']
-            or sorted(target['sample_blocks']['devices']) != original['devices']
-            or Path(dep['operations']) != root/'ops'):
-        raise ValueError('candidate must reuse the exact baseline host, image and physical cards')
-    commit_json(root/'admission.json', dict(replicas=count, screen_sha256=file_hash(screen_gate),
-                                           archive_sha256=pin['local']['sha256']))
-    started = time.monotonic()
-    prepare(target)
-    deployment = config(root)
-    roles = {job['name'] for chain in deployment['chains'] for group in chain for job in group
-             if job['name'].startswith('block-worker-')}
-    if screen(settings, deployment, observed_roles=roles):
-        raise ValueError('full evaluation failed')
-    elapsed = time.monotonic()-started
-    candidate = timings(root, plan, count)
-    scores = read(root/'ops/score-collected.json')
-    parity = scores['archive_parity']
-    populations = Counter()
-    for block in plan['blocks']:
-        populations[block['dataset'],block['arm']] += sum(block['widths'])
-    actual = {(ds,arm):row['pairs'] for ds,arms in parity['panels'].items() for arm,row in arms.items()}
-    if (parity['differences'] or parity['archive_sha256'] != pin['local']['sha256']
-            or actual != populations or scores['seals'] != baseline_metrics['seals']):
-        raise ValueError('full-run probability parity or scope differs')
-    device = utilization(root/'ops/telemetry.jsonl',
-                         (candidate['scoring_start'], candidate['scoring_end']),
-                         candidate['devices'], settings['max_sampling_gap_seconds'])
-    # Published baseline worker wall is a lower bound for all preparation and review.
-    scoring_speed = ((original['scoring_end']-original['scoring_start'])
-                     / (candidate['scoring_end']-candidate['scoring_start']))
-    full_wall_floor = original['worker_wall_seconds']/elapsed
-    result = dict(
-        scope='two original endpoints, all heldout probability blocks, same eight physical cards',
-        replicas=count, probabilities=sum(populations.values()), differences=parity['differences'],
-        baseline=original, candidate=candidate, scoring_speedup=scoring_speed,
-        full_candidate_wall_seconds=elapsed, full_wall_speedup_at_least=full_wall_floor,
-        **device, passed=(device['aicore'] >= minimums['aicore'] and device['hbm'] >= minimums['hbm']
-                          and min(scoring_speed, full_wall_floor) > minimums['speedup']),
-    )
-    commit_json(root/'full-throughput-audit.json', result)
-    return result
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('config')
     parser.add_argument('local')
-    parser.add_argument('--formal', action='store_true', help='Run the registered formal paired evaluation')
+    parser.add_argument('--formal', action='store_true', required=True)
     args = parser.parse_args()
     settings, _ = load_config(args.config, args.local)
-    if args.formal:
-        raise SystemExit(run_formal(settings))
-    pair, _ = load_config(settings['pair_config'], args.local)
-    root = Path(settings['output'])
-    try:
-        result = run(settings, pair)
-    except Exception as exc:
-        commit_json(root/'terminal.json', dict(exit_code=1, error=repr(exc)))
-        raise
-    commit_json(root/'terminal.json', dict(exit_code=0, passed=result['passed']))
+    raise SystemExit(run_formal(settings))
 
 
 if __name__ == '__main__':

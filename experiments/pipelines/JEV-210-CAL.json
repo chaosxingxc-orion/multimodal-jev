@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage2-calibrated-replay.md",
-  "revision": "calibrated-replay-heldout-throughput-v1",
+  "revision": "calibrated-replay-heldout-throughput-v2",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -737,16 +737,59 @@
           {
             "path": "${CARD_PAIR_ROOT}/formal-throughput-audit.json",
             "equals": [
-              [["passed"], true],
-              [["differences"], 0],
-              [["reused_blocks"], 969],
-              [["inferred_blocks"], 969]
+              [
+                [
+                  "passed"
+                ],
+                true
+              ],
+              [
+                [
+                  "differences"
+                ],
+                0
+              ],
+              [
+                [
+                  "reused_blocks"
+                ],
+                969
+              ],
+              [
+                [
+                  "inferred_blocks"
+                ],
+                969
+              ],
+              [
+                [
+                  "screen_recordings"
+                ],
+                3000
+              ]
             ],
             "report": {
-              "AI Core 平均占用 (%)": ["aicore"],
-              "HBM 平均占用 (%)": ["hbm"],
-              "评分吞吐倍数": ["scoring_speedup"],
-              "总耗时提速下界": ["full_wall_speedup_at_least"]
+              "\u516b\u5361 AI Core \u5e73\u5747\u5360\u7528 (%)": [
+                "aicore"
+              ],
+              "\u516b\u5361 HBM \u5e73\u5747\u5360\u7528 (%)": [
+                "hbm"
+              ],
+              "\u56fa\u5b9a\u6837\u672c\u8bc4\u5206\u541e\u5410\u500d\u6570": [
+                "screen_scoring_speedup"
+              ],
+              "\u56fa\u5b9a\u6837\u672c\u5bb9\u5668\u8017\u65f6\u500d\u6570": [
+                "screen_container_speedup"
+              ],
+              "\u6b63\u5f0f\u8bc4\u5206\u541e\u5410\uff08\u5019\u9009/\u79d2\uff09": [
+                "scoring_probabilities_per_second"
+              ],
+              "\u6b63\u5f0f\u8bc4\u6d4b\u5899\u949f\uff08\u79d2\uff09": [
+                "full_candidate_wall_seconds"
+              ],
+              "CAL \u9010\u9879\u6bd4\u5bf9\u5019\u9009\u6570": [
+                "compared_probabilities"
+              ]
             }
           }
         ],
@@ -1044,14 +1087,6 @@
                 }
               }
             ]
-          }
-        ],
-        "inputs": [
-          {
-            "path": "${CARD_STAGE2_RUN_ROOT}/ops/terminal.json"
-          },
-          {
-            "path": "${CARD_ENDPOINT_AUDIT}"
           }
         ],
         "requires_current_dispatch": true,
