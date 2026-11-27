@@ -145,12 +145,21 @@ def run_formal(pair):
     if Path(pair['output']) != root/'package' or Path(deployment['operations']) != root/'ops':
         raise ValueError('formal evaluation package and operations must share an isolated run root')
     if not isinstance(comparison, dict) or set(comparison) != {
-            'verification', 'baseline', 'baseline_score', 'archive', 'sampling_seconds',
+            'verification', 'baseline', 'archive', 'sampling_seconds',
             'max_sampling_gap_seconds', 'minimums'}:
         raise ValueError('incomplete formal throughput comparison')
-    gate_pin = comparison['verification']
+    predecessor = comparison['verification']
+    verification_root = Path(predecessor['terminal']).parent
+    if (Path(predecessor['terminal']) != verification_root/'terminal.json'
+            or Path(predecessor['driver']['path']) != verification_root/'driver.json'):
+        raise ValueError('verification driver and terminal must belong to the same run')
+    wait_predecessor(predecessor)
+    if read(verification_root/'terminal.json') != dict(exit_code=0, passed=True):
+        raise ValueError('eight-card full-workload verification did not pass')
+    gate_path = verification_root/'full-throughput-audit.json'
+    gate_pin = dict(path=str(gate_path), sha256=file_hash(gate_path))
     gate = bound(gate_pin)
-    approved = worker_contract(Path(gate_pin['path']).parent)
+    approved = worker_contract(verification_root)
     minimums = comparison['minimums']
     if (gate['passed'] is not True or gate['differences'] != 0 or gate['replicas'] != approved['replicas']
             or gate['aicore'] < minimums['aicore'] or gate['hbm'] < minimums['hbm']
@@ -163,12 +172,12 @@ def run_formal(pair):
     prior = config(baseline)
     reuse = pair['deployment']['evaluation_options']['reuse_stage1_evaluation']
     expected_reuse = dict(arm='stage1', plan=reuse['remote_plan'])
-    baseline_score_pin = comparison['baseline_score']
+    score_path = baseline/'ops/score-collected.json'
+    baseline_score_pin = dict(path=str(score_path), sha256=file_hash(score_path))
     baseline_score = bound(baseline_score_pin)
     if (manifest['sha256'] != content_key(plan)
             or manifest['sha256'] != read(baseline/'ops/block-plan-collected.json')['plan_sha256']
             or pin['remote'] != prior['remote_root']+'/sample-blocks/plan.json'
-            or Path(baseline_score_pin['path']) != baseline/'ops/score-collected.json'
             or baseline_score['schema'] != 'jev-audited-probability-panels-v1'
             or 'thresholds_sha256' in baseline_score):
         raise ValueError('formal cutover must compare the same complete heldout run without threshold fits')
