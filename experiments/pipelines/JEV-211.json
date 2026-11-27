@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-speech-alignment-211.md",
-  "revision": "stage1-three-contrast-stage2-a-v1",
+  "revision": "stage2-a-concurrent-scoring-v2",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -18,17 +18,6 @@
       {
         "id": "prepare-stage1-speech-panels",
         "config": "configs/portable/operations/card-stage1-speech-alignment-211.json",
-        "run": [
-          [
-            "tools.reports.prepare_card_stage1",
-            "configs/portable/operations/card-stage1-speech-alignment-211.json",
-            "${EXPERIMENT_LOCAL_CONFIG}"
-          ]
-        ],
-        "requires_current_dispatch": true,
-        "dispatch_guards": [
-          "${S211_ROOT}/package"
-        ],
         "checks": [
           {
             "path": "${S211_ROOT}/package/entry/speech-partners.json",
@@ -136,19 +125,6 @@
           {
             "path": "${S211_ROOT}/package/operations-local.json"
           }
-        ],
-        "run": [
-          [
-            "tools.reports.native_seal_operations",
-            "--config",
-            "configs/portable/operations/native-seal-operations.json",
-            "--local",
-            "${S211_ROOT}/package/operations-local.json"
-          ]
-        ],
-        "requires_current_dispatch": true,
-        "dispatch_guards": [
-          "${S211_ROOT}/ops/formal-launch.json"
         ],
         "checks": [
           {
@@ -379,6 +355,12 @@
                   "pairs"
                 ],
                 7453480
+              ],
+              [
+                [
+                  "replicas_per_device"
+                ],
+                6
               ]
             ],
             "report": {
@@ -390,11 +372,22 @@
               ],
               "pairs": [
                 "pairs"
+              ],
+              "每卡打分进程": [
+                "replicas_per_device"
+              ],
+              "TRAIN 试点录音": [
+                "pilot",
+                "recordings"
+              ],
+              "TRAIN 首窗候选/秒": [
+                "pilot",
+                "new_pairs_per_second"
               ]
             }
           }
         ],
-        "config": "configs/portable/operations/card-scoring-endpoint-scale-dp8.json",
+        "config": "configs/portable/operations/card-scoring-endpoint-concurrent-dp8.json",
         "inputs": [
           {
             "path": "${CARD_ENDPOINT_AUDIT}"
@@ -434,7 +427,7 @@
         "run": [
           [
             "tools.reports.prepare_card_scoring_benchmark",
-            "configs/portable/operations/card-scoring-endpoint-scale-dp8.json",
+            "configs/portable/operations/card-scoring-endpoint-concurrent-dp8.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ]
@@ -1558,6 +1551,20 @@
                   "baseline"
                 ],
                 "JEV-210"
+              ],
+              [
+                [
+                  "replica_audit",
+                  "replicas_per_device"
+                ],
+                6
+              ],
+              [
+                [
+                  "replica_audit",
+                  "devices"
+                ],
+                "${S211_EVAL_DEVICES}"
               ]
             ],
             "report": {
@@ -1644,6 +1651,10 @@
                 "versus_210",
                 "tpo",
                 "direction"
+              ],
+              "评测每卡评分进程": [
+                "replica_audit",
+                "replicas_per_device"
               ]
             }
           },

@@ -470,6 +470,15 @@ def run(c):
     score = dict(common, phase='tpo_score', queue=queue, endpoints=ports, inferred_arms=inferred,
                  probability_panels=panels, output='/jev-work/metrics.json',
                  official_combination=official)
+    if 'require_concurrent_workers' in c:
+        from tools.reports.card_evaluation_replicas import replica_count
+        count = replica_count(c['require_concurrent_workers'])
+        if (count <= 1 or c['sample_blocks'].get('replicas_per_device') != count
+                or not finite or not single_validation or probe or reused
+                or 'resume_from' in c['sample_blocks']):
+            raise ValueError('concurrent endpoint evaluation requires the admitted replica group and both new endpoints')
+        score['replica_audit'] = dict(replicas_per_device=count, workers=[
+            dict(device=job['devices'][0], receipt='/jev-work/'+job['collect']) for job in workers])
     if fit_harness:
         write('calibration-fit', fit)
         cal_groups = [calibration, [cpu('calibration-fit','thresholds.json')]]

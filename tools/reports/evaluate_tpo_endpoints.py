@@ -200,10 +200,16 @@ def collect(spec):
         if (thresholds['schema'] != 'jev-source-train-harness-thresholds-v1'
                 or thresholds['roster_sha256'] != spec['calibration_roster_sha256']):
             raise ValueError('frozen source TRAIN calibration required')
-    queued = None
+    queued, replica_audit = None, None
     if 'queue' in spec:
         from tools.reports.tpo_evaluation_blocks import publications
         queued = publications(spec)
+        if 'replica_audit' in spec:
+            from multimodal_jev.evaluation_blocks import checked_plan
+            from tools.reports.tpo_evaluation_blocks import audit_replica_group
+            queue = spec['queue']
+            replica_audit = audit_replica_group(checked_plan(queue['root'], queue['namespace']),
+                                                spec['replica_audit'])
 
     def predictions_for(dataset, arm, assets, *, choice=False):
         kind = 'choices' if choice else 'prob'
@@ -320,6 +326,8 @@ def collect(spec):
         result = dict(schema='jev-audited-tpo-evaluation-v1', datasets=result,
                       seals={dataset: c['cache']['seal']['sha256']
                              for dataset, c in spec['endpoints'].items()})
+    if replica_audit is not None:
+        result['replica_audit'] = replica_audit
     if 'performance_comparison' in spec:
         comparison = read(Path(spec['output']).with_name('archived-probability-comparison.json'))
         result = dict(schema='jev-performance-replay-v1', comparison=comparison, metrics=result)

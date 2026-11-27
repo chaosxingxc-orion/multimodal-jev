@@ -4,6 +4,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from itertools import chain, islice
 import json
+import math
 import os
 from pathlib import Path
 import random
@@ -154,6 +155,39 @@ def length_order(compiled, window):
         yield from block
 
 
+def concurrency(c):
+    ramp = c.get('concurrent_scoring')
+    if ramp is None:
+        return 1
+    from tools.reports.card_evaluation_replicas import replica_count
+    if (not isinstance(ramp, dict) or set(ramp) != {'replicas_per_device', 'max_batch_audio_chunks',
+            'pilot_recordings'} or 'formal' not in c or 'block_range' in c['formal']
+            or any(type(ramp[k]) is not int or ramp[k] <= 0
+                   for k in ('max_batch_audio_chunks', 'pilot_recordings'))
+            or replica_count(ramp['replicas_per_device']) < 2):
+        raise ValueError('concurrent TRAIN scoring requires a bounded whole-population plan')
+    return ramp['replicas_per_device']
+
+
+def replica_path(root, ordinal, lane):
+    return root/f'worker-{ordinal}'/f'replica-{lane}'
+
+
+def concurrent_offsets(c, offsets, lane, recordings):
+    """Partition immutable shard blocks; spread the pilot over each source shard."""
+    count = concurrency(c)
+    size = c['formal']['recordings_per_block']
+    quota = math.ceil(c['concurrent_scoring']['pilot_recordings'] / (size * len(c['devices']) * count))
+    owned = list(offsets[lane::count])
+    eligible = [offset for offset in owned if offset+size <= recordings]
+    if len(eligible) < quota:
+        raise ValueError('insufficient full blocks for the configured scoring pilot')
+    pilot = [eligible[((2 * (i * count + lane) + 1) * len(eligible)) // (2 * quota * count)]
+             for i in range(quota)]
+    pilot_set = set(pilot)
+    return pilot, [offset for offset in owned if offset not in pilot_set]
+
+
 def scoring_lineage(c, ordinal):
     formal = c['formal']
     layout = ('fsdp-probability-parity', c['full_shards'][ordinal]['sha256']) if 'full_shards' in c else ()
@@ -164,7 +198,8 @@ def scoring_lineage(c, ordinal):
                        c['devices'], ordinal, c['widths'], c['streaming'], c['io_workers'],
                        c['prefetch_audio'], c['torch_threads'], c['max_model_len'], *layout,
                        *((c['seed'],) if c.get('bind_inference_seed') else ()),
-                       *([formal['block_range']] if 'block_range' in formal else []))
+                       *([formal['block_range']] if 'block_range' in formal else []),
+                       *([c['concurrent_scoring']] if 'concurrent_scoring' in c else []))
 
 
 def scoring_offsets(c, rows):
@@ -213,17 +248,24 @@ def resume_config(c):
     return pinned(c['formal']['resume_config'])['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
 
 
-def wait_for_admission(c, output, workers, deadline):
-    from tools.reports.audit_card_scoring_benchmark import audit_admission
-
-    ready = [output/f'worker-{i}'/'panel-ready.json' for i in range(len(workers))]
+def wait_for_receipts(c, ready, workers, deadline):
     while not all(p.is_file() for p in ready):
         for i, process in enumerate(workers):
             if (code := process.poll()) is not None:
-                raise RuntimeError(f'scoring worker {i} exited {code} before admission')
+                if code != 0 or not ready[i].is_file():
+                    raise RuntimeError(f'scoring worker {i} exited {code} without {ready[i].name}')
         if time.monotonic() >= deadline:
-            raise TimeoutError('scoring replicas did not finish admission within the configured deadline')
+            raise TimeoutError('scoring receipts did not arrive before the configured deadline')
         time.sleep(c['formal']['coordination_seconds'])
+
+
+def wait_for_admission(c, output, workers, deadline):
+    from tools.reports.audit_card_scoring_benchmark import audit_admission
+
+    count = concurrency(c)
+    ready = [(replica_path(output, i, lane) if count > 1 else output/f'worker-{i}')/'panel-ready.json'
+             for i in range(len(c['devices'])) for lane in range(count)]
+    wait_for_receipts(c, ready, workers, deadline)
     admission = audit_admission(output, c, load_panel(c)[0],
                                 scoring_settings(pinned(c['training']))['forward_rows'])
     if resume := c['formal'].get('resume_from'):
@@ -238,7 +280,7 @@ def wait_for_admission(c, output, workers, deadline):
     print(json.dumps(dict(event='admitted', **admission)), flush=True)
 
 
-def worker(c, output, ordinal):
+def worker(c, output, ordinal, lane=None):
     import torch
     from contextlib import nullcontext
     from multimodal_jev.ordered_prefetch import OrderedPrefetch
@@ -252,6 +294,10 @@ def worker(c, output, ordinal):
     pid = panel['source_policy_id']
     initial_policy = pid
     formal = c.get('formal')
+    count = concurrency(c)
+    if ((count == 1 and lane is not None) or
+            (count > 1 and (type(lane) is not int or not 0 <= lane < count))):
+        raise ValueError('worker replica differs from frozen scoring topology')
     if formal:
         pid = formal['policy_id']
     devices = c['devices']
@@ -297,8 +343,13 @@ def worker(c, output, ordinal):
             prob = [[None]*len(cards) for _ in selected]
             calls = Counter()
             records = length_order(queue, streaming['length_window']) if streaming and not legacy else queue
-            groups = iter(batches((per_audio for _, per_audio in records), width,
-                                  group_audio=legacy, collate=collate))
+            rows_by_audio = (per_audio for _, per_audio in records)
+            if lane is not None and not legacy:
+                from tools.reports.evaluate_single_cards import bounded_batches
+                groups = iter(bounded_batches(rows_by_audio, width, collate['audio_chunk_size'],
+                                               c['concurrent_scoring']['max_batch_audio_chunks']))
+            else:
+                groups = iter(batches(rows_by_audio, width, group_audio=legacy, collate=collate))
             input_wait, forward, first_batch = 0., 0., None
             while True:
                 ready = time.monotonic()
@@ -329,9 +380,10 @@ def worker(c, output, ordinal):
         from tools.reports.audit_card_scoring_benchmark import predictions, read, validate_block, validate_timing
         width, = c['widths']
         legacy_width = scoring_settings(train)['forward_rows']
-        baseline, candidate = measure(legacy_width, True), measure(width, False)
-        commit_json(output/'baseline.json', baseline)
-        commit_json(output/f'batch-{width}.json', candidate)
+        shared = output.parent if lane is not None else output
+        if lane is None or lane == 0:
+            commit_json(shared/'baseline.json', measure(legacy_width, True))
+        commit_json(output/f'batch-{width}.json', measure(width, False))
         part = pinned(c['full_shards'][ordinal])
         shard = [dict(id=row['id'], intent=row['intent'], synthetic=row['synthetic'],
                       binding=restore_binding(row, part['acoustic_common'])) for row in part['rows']]
@@ -342,51 +394,69 @@ def worker(c, output, ordinal):
         resumed = Path(formal['resume_from'])/f'worker-{ordinal}' if formal.get('resume_from') else None
         prior_lineage = scoring_lineage(resume_config(c), ordinal) if resumed is not None else None
         offsets = scoring_offsets(c, len(shard))
+        pilot, rest = concurrent_offsets(c, offsets, lane, len(shard)) if lane is not None else ([], offsets)
+        offsets = [*pilot, *rest]
         names = [f'block-{offset//size:06d}.json' for offset in offsets]
         settings = (c['io_workers'], c['prefetch_audio'])
         saved_names = set()
         if resumed is not None:
             saved_names = {p.name for p in resumed.glob('block-*.json')}
             if saved_names and (read(resumed/'lineage.json') != {'sha256': prior_lineage}
-                                or not saved_names <= set(names)):
+                                or not saved_names <= {f'block-{off//size:06d}.json'
+                                    for off in scoring_offsets(c, len(shard))}):
                 raise ValueError('resume requires the same frozen shard, inputs and runtime')
             for offset, name in zip(offsets, names, strict=True):
                 if name in saved_names:
                     validate_block((resumed/name, prior_lineage, [r['id'] for r in shard[offset:offset+size]],
                                     panel['labels'], width, settings))
-        commit_json(output/'lineage.json', dict(sha256=lineage))
-        marker = dict(lineage=lineage, baseline_sha256=file_hash(output/'baseline.json'),
-                      candidate_sha256=file_hash(output/f'batch-{width}.json'))
+        if lane is None or lane == 0:
+            commit_json(shared/'lineage.json', dict(sha256=lineage))
+        marker = dict(lineage=lineage, candidate_sha256=file_hash(output/f'batch-{width}.json'))
+        if lane is None or lane == 0:
+            marker['baseline_sha256'] = file_hash(shared/'baseline.json')
         commit_json(output/'panel-ready.json', marker)
-        gate = output.parent/'admission.json'
+        gate = shared.parent/'admission.json'
         deadline = start + c['worker_timeout_seconds']
         while not gate.is_file():
             if time.monotonic() >= deadline:
                 raise TimeoutError('all-replica scoring admission did not open')
             time.sleep(formal['coordination_seconds'])
-        if read(gate)['workers'][ordinal] != marker:
+        admitted = read(gate)['workers'][ordinal]
+        if (admitted if lane is None else admitted[lane]) != marker:
             raise ValueError('scoring gate belongs to a different panel')
         blocks = []
         tick = time.monotonic()
-        for offset, name in zip(offsets, names, strict=True):
+        pilot_start, pilot_end = None, None
+        for index, (offset, name) in enumerate(zip(offsets, names, strict=True)):
             batch = shard[offset:offset+size]
             reused = name in saved_names
+            if index < len(pilot) and not reused and pilot_start is None:
+                pilot_start = time.monotonic()
             if reused:
                 block = read_block(resumed/name, prior_lineage)
             else:
                 block = measure(width, False, selected=batch)
             predictions(block, [r['id'] for r in batch], panel['labels'], width)
             validate_timing(block, settings)
-            path = output/name
+            path = shared/name
             commit_scoring_block(path, lineage, block)
             blocks.append(dict(name=name, sha256=file_hash(path), reused=reused))
+            if index < len(pilot) and not reused:
+                pilot_end = time.monotonic()
+            if index+1 == len(pilot):
+                commit_json(output/'pilot.json', dict(blocks=blocks[:len(pilot)],
+                                                     started=pilot_start, finished=pilot_end))
+                while not (shared.parent/'pilot.json').is_file():
+                    if time.monotonic() >= deadline:
+                        raise TimeoutError('concurrent TRAIN pilot did not pass the scoring audit')
+                    time.sleep(formal['coordination_seconds'])
             print(json.dumps(dict(event='block_committed', ordinal=ordinal, name=name,
                                   sha256=blocks[-1]['sha256'], recordings=len(batch),
                                   pairs=len(batch)*len(cards), reused=reused)), flush=True)
         commit_json(output/'result.json', dict(device=devices[ordinal],
                     rows=sum(min(size, len(shard)-offset) for offset in offsets),
                     cache_and_model_seconds=startup_seconds, scoring_seconds=time.monotonic()-tick,
-                    blocks=blocks, lineage=lineage))
+                    blocks=sorted(blocks, key=lambda b: b['name']), lineage=lineage))
         return
 
     for width in c['widths']:
@@ -406,6 +476,26 @@ def worker(c, output, ordinal):
     commit_json(output/'baseline.json', measure(legacy_width, True))
     commit_json(output/'result.json', dict(device=devices[ordinal], rows=len(rows),
                                           cache_and_model_seconds=startup_seconds))
+
+
+def merge_replicas(c, output):
+    """Preserve physical-shard receipts; independently show every launched replica."""
+    from tools.reports.audit_card_scoring_benchmark import read
+    count = concurrency(c)
+    for ordinal, device in enumerate(c['devices']):
+        paths = [replica_path(output, ordinal, lane)/'result.json' for lane in range(count)]
+        results = [read(p) for p in paths]
+        lineage = scoring_lineage(c, ordinal)
+        if any(r['device'] != device or r['lineage'] != lineage for r in results):
+            raise ValueError('concurrent scoring result has a different device or lineage')
+        blocks = [b for r in results for b in r['blocks']]
+        if len({b['name'] for b in blocks}) != len(blocks):
+            raise ValueError('concurrent scoring blocks overlap')
+        commit_json(output/f'worker-{ordinal}'/'result.json', dict(
+            device=device, lineage=lineage, rows=sum(r['rows'] for r in results),
+            cache_and_model_seconds=max(r['cache_and_model_seconds'] for r in results),
+            scoring_seconds=max(r['scoring_seconds'] for r in results),
+            blocks=sorted(blocks, key=lambda b: b['name']), replica_result_sha256=[file_hash(p) for p in paths]))
 
 
 def host_memory():
@@ -438,21 +528,36 @@ def run(c):
                 '-m', __spec__.name, 'reference', c['worker_config'], str(output)]
         subprocess.run(args, check=True, timeout=max(1, deadline-time.monotonic()))
     workers = []
-    with ThreadPoolExecutor(max_workers=len(c['devices'])) as pool:
+    count = concurrency(c)
+    with ThreadPoolExecutor(max_workers=len(c['devices'])*count) as pool:
         try:
             for index, _ in enumerate(c['devices']):
-                path = output/f'worker-{index}'
-                env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES=str(index),
-                           OMP_NUM_THREADS=str(c['torch_threads']))
-                scratch = Path(env['TMPDIR'])/path.name
-                scratch.mkdir()
-                for name in ('TMPDIR', 'HF_HOME', 'XDG_CACHE_HOME', 'ASCEND_WORK_PATH', 'ASCEND_CACHE_PATH'):
-                    env[name] = str(scratch)
-                args = [sys.executable, '-B', '-m', __spec__.name, 'worker',
-                        c['worker_config'], str(path), str(index)]
-                workers.append(subprocess.Popen(args, env=env))
+                shared = output/f'worker-{index}'
+                if count > 1:
+                    shared.mkdir()
+                for lane in range(count):
+                    path = replica_path(output, index, lane) if count > 1 else shared
+                    env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES=str(index),
+                               OMP_NUM_THREADS=str(c['torch_threads']))
+                    scratch = Path(env['TMPDIR'])/path.relative_to(output)
+                    scratch.mkdir(parents=True)
+                    from tools.reports.card_evaluation_replicas import _CACHE_VARIABLES
+                    env.update(dict.fromkeys(_CACHE_VARIABLES, str(scratch)))
+                    args = [sys.executable, '-B', '-m', __spec__.name, 'worker',
+                            c['worker_config'], str(path), str(index)]
+                    if count > 1:
+                        args.append(str(lane))
+                    workers.append(subprocess.Popen(args, env=env))
             if 'formal' in c:
                 wait_for_admission(c, output, workers, deadline)
+            if count > 1:
+                from tools.reports.audit_card_scoring_benchmark import audit_pilot
+                ready = [replica_path(output, i, lane)/'pilot.json'
+                         for i in range(len(c['devices'])) for lane in range(count)]
+                wait_for_receipts(c, ready, workers, deadline)
+                pilot = audit_pilot(output, c, pinned(c['full']))
+                commit_json(output/'pilot.json', pilot)
+                print(json.dumps(dict(event='scoring_pilot_audited', **pilot)), flush=True)
             exits = {pool.submit(p.wait): ordinal for ordinal, p in enumerate(workers)}
             for done in as_completed(exits, timeout=max(0, deadline-time.monotonic())):
                 if code := done.result():
@@ -467,9 +572,11 @@ def run(c):
                 except subprocess.TimeoutExpired:
                     p.kill()
                     p.wait()
+    if count > 1:
+        merge_replicas(c, output)
     receipt = dict(devices=c['devices'], panel_sha256=c['panel']['sha256'],
                    workers=[json.loads((output/f'worker-{i}'/'result.json').read_bytes())
-                            for i in range(len(workers))])
+                            for i in range(len(c['devices']))])
     if capture_memory:
         receipt['host_memory'] = dict(before=memory_before, after=host_memory())
     if 'formal' in c:
@@ -486,6 +593,7 @@ def main():
     parser.add_argument('config', type=Path)
     parser.add_argument('output', type=Path)
     parser.add_argument('ordinal', type=int, nargs='?')
+    parser.add_argument('lane', type=int, nargs='?')
     args = parser.parse_args()
     raw = json.loads(args.config.read_bytes())
     config = raw['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
@@ -493,7 +601,7 @@ def main():
         from tools.reports.card_scoring_fsdp_reference import reference
         reference(config, args.output)
     else:
-        worker(config, args.output, args.ordinal)
+        worker(config, args.output, args.ordinal, args.lane)
 
 
 if __name__ == '__main__':

@@ -43,6 +43,89 @@ def write(path, value):
     return file_hash(path)
 
 
+def test_concurrent_train_pilot_uses_the_same_blocks_as_the_formal_result(tmp_path, monkeypatch):
+    from tools.reports.card_scoring_benchmark import (
+        commit_scoring_block, concurrent_offsets, merge_replicas, replica_path, scoring_offsets,
+    )
+
+    monkeypatch.setattr('multimodal_jev.local_checkpoint.check_paths', lambda _: None)
+    c = dict(devices=[4], widths=[2], streaming={'length_window': 8}, io_workers=1,
+             prefetch_audio=2, torch_threads=1, max_model_len=512, cpu_workers=1,
+             audit_min_parallel_blocks=4, formal=dict(recordings_per_block=2, policy_id='end',
+                 image='image', checkpoint_sha256='checkpoint'),
+             concurrent_scoring=dict(replicas_per_device=2, max_batch_audio_chunks=8, pilot_recordings=4),
+             policy_sha256='manifest', training={'sha256': 'training'}, cards={'sha256': 'cards'},
+             source={'sha256': 'source'}, full={'sha256': 'roster'})
+    rows = [dict(id=str(i), synthetic=bool(i % 2)) for i in range(11)]
+    full = dict(rows=rows, labels=['x', 'y'])
+    lineage = scoring_lineage(c, 0)
+    offsets = scoring_offsets(c, len(rows))
+    all_offsets = []
+    for lane in range(2):
+        directory = replica_path(tmp_path, 0, lane)
+        directory.mkdir(parents=True)
+        pilot, remaining = concurrent_offsets(c, offsets, lane, len(rows))
+        all_offsets.extend(pilot + remaining)
+        receipts = {}
+        for off in pilot + remaining:
+            path = directory.parent/f'block-{off//2:06d}.json'
+            group = rows[off:off+2]
+            commit_scoring_block(path, lineage, dict(records=[dict(id=r['id'], prob=[.7, .1]) for r in group],
+                seconds=1, peak_bytes=1, batch_sizes={2: len(group)},
+                input_timing=dict(workers=1, ahead=2, first_batch=.1, input_wait=.2, forward=.7)))
+            receipts[off] = dict(name=path.name, sha256=file_hash(path), reused=lane == 1 and off in pilot)
+        write(directory/'pilot.json', dict(blocks=[receipts[off] for off in pilot],
+              started=1 if lane == 0 else None, finished=3 if lane == 0 else None))
+        write(directory/'result.json', dict(device=4, lineage=lineage, cache_and_model_seconds=.2,
+              scoring_seconds=4, rows=sum(len(rows[off:off+2]) for off in pilot+remaining),
+              blocks=[receipts[off] for off in sorted(receipts)]))
+    assert sorted(all_offsets) == list(offsets)
+    result = audit.audit_pilot(tmp_path, c, full)
+    assert (result['recordings'], result['human'], result['synthetic'], result['new_recordings']) == (4, 2, 2, 2)
+    assert result['new_pairs_per_second'] is None  # Do not extrapolate a partially resumed window.
+    merge_replicas(c, tmp_path)
+    worker = audit.read(tmp_path/'worker-0'/'result.json')
+    assert worker['rows'] == len(rows)
+    audit.audit_replica_results(tmp_path, c, 0, worker, offsets, [r['id'] for r in rows])
+    pilot_file = replica_path(tmp_path, 0, 0)/'pilot.json'
+    broken = audit.read(pilot_file)
+    broken['blocks'][0]['sha256'] = 'different'
+    write(pilot_file, broken)
+    with pytest.raises(ValueError, match='pilot block identity'):
+        audit.audit_pilot(tmp_path, c, full)
+
+
+def test_concurrent_train_rejects_one_inexact_replica(tmp_path):
+    from tools.reports.card_scoring_benchmark import replica_path
+
+    c = dict(devices=[4], widths=[2], streaming={'length_window': 8}, io_workers=1,
+             prefetch_audio=2, torch_threads=1, max_model_len=512,
+             formal=dict(recordings_per_block=2, policy_id='end', image='image', checkpoint_sha256='checkpoint'),
+             concurrent_scoring=dict(replicas_per_device=2, max_batch_audio_chunks=8, pilot_recordings=4),
+             policy_sha256='manifest', training={'sha256': 'training'}, cards={'sha256': 'cards'},
+             source={'sha256': 'source'}, full={'sha256': 'roster'})
+    panel = dict(labels=['x', 'y'], rows=[{'id': 'recording'}])
+    lineage = scoring_lineage(c, 0)
+    data = dict(records=[dict(id='recording', prob=[.75, .25])], seconds=1, peak_bytes=1,
+                input_timing=dict(workers=1, ahead=2, first_batch=.1, input_wait=.2, forward=.7))
+    for lane in range(2):
+        replica_path(tmp_path, 0, lane).mkdir(parents=True)
+    directory = tmp_path/'worker-0'
+    baseline = write(directory/'baseline.json', dict(data, batch_sizes={'1': 2}))
+    write(directory/'lineage.json', {'sha256': lineage})
+    for lane in range(2):
+        directory = replica_path(tmp_path, 0, lane)
+        proof = {'baseline_sha256': baseline} if lane == 0 else {}
+        result = write(directory/'batch-2.json', dict(data, batch_sizes={'2': 1}))
+        write(directory/'panel-ready.json', dict(lineage=lineage, candidate_sha256=result, **proof))
+    assert audit.audit_admission(tmp_path, c, panel, 1)['passed']
+    data['records'][0]['prob'][1] = .24
+    result = write(directory/'batch-2.json', dict(data, batch_sizes={'2': 1}))
+    write(directory/'panel-ready.json', dict(lineage=lineage, candidate_sha256=result))
+    with pytest.raises(ValueError, match='replica 1: endpoint probabilities differ'):
+        audit.audit_admission(tmp_path, c, panel, 1)
+
+
 def test_handoff_checks_all_checkpoint_artifacts(tmp_path, monkeypatch):
     formal = tmp_path/'formal'
     root = formal/'run'

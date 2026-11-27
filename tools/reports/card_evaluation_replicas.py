@@ -92,6 +92,7 @@ def _run_workers(spec):
     result = dict(rows[0], plan_sha256=plan, blocks=completed, replicas_per_device=count,
                   seconds=time.monotonic() - started,
                   model_load_seconds=max((r['model_load_seconds'] or 0) for r in rows),
+                  replica_blocks=[len(row['blocks']) for row in rows],
                   singleton_differences=sum(r.get('singleton_differences', 0) for r in rows))
     commit_json(Path(spec['result_path']), result)
     return result

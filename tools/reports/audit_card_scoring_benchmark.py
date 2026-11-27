@@ -122,28 +122,40 @@ def validate_timing(result, settings):
 
 
 def audit_admission(root, c, panel, baseline_width):
-    from tools.reports.card_scoring_benchmark import scoring_lineage
+    from tools.reports.card_scoring_benchmark import concurrency, replica_path, scoring_lineage
 
     width, = c['widths']
     replicas = len(c['devices'])
+    count = concurrency(c)
     settings = (c['io_workers'], c['prefetch_audio'])
 
     def inspect_panel(ordinal):
         directory = root/f'worker-{ordinal}'
         ids = [row['id'] for row in panel['rows'][ordinal::replicas]]
-        ref_path, candidate_path = directory/'baseline.json', directory/f'batch-{width}.json'
-        marker = dict(lineage=scoring_lineage(c, ordinal), baseline_sha256=file_hash(ref_path),
-                      candidate_sha256=file_hash(candidate_path))
-        if (read(directory/'panel-ready.json') != marker or
-                read(directory/'lineage.json') != {'sha256': marker['lineage']}):
-            raise ValueError('scoring panel bytes or lineage differ')
-        baseline, candidate = read(ref_path), read(candidate_path)
+        ref_path = directory/'baseline.json'
+        baseline = read(ref_path)
         validate_timing(baseline, settings)
-        validate_timing(candidate, settings)
         ref, _ = predictions(baseline, ids, panel['labels'], baseline_width)
-        observed, counts = predictions(candidate, ids, panel['labels'], width)
-        if ref != observed or not counts.get(width):
-            raise ValueError(f'device {c["devices"][ordinal]}: endpoint probabilities differ or no full batch')
+        lineage = scoring_lineage(c, ordinal)
+        if read(directory/'lineage.json') != {'sha256': lineage}:
+            raise ValueError('scoring panel lineage differs')
+        markers = []
+        for lane in range(count):
+            lane_dir = replica_path(root, ordinal, lane) if count > 1 else directory
+            candidate_path = lane_dir/f'batch-{width}.json'
+            marker = dict(lineage=lineage, candidate_sha256=file_hash(candidate_path))
+            if lane == 0:
+                marker['baseline_sha256'] = file_hash(ref_path)
+            if read(lane_dir/'panel-ready.json') != marker:
+                raise ValueError('scoring panel bytes or lineage differ')
+            candidate = read(candidate_path)
+            validate_timing(candidate, settings)
+            observed, counts = predictions(candidate, ids, panel['labels'], width)
+            if ref != observed or not counts.get(width):
+                raise ValueError(f'device {c["devices"][ordinal]}, replica {lane}: '
+                                 'endpoint probabilities differ or no full batch')
+            markers.append(marker)
+        marker = markers if count > 1 else markers[0]
         shard = None
         if 'full_shards' in c:
             fsdp_path = root/f'fsdp-{ordinal}'/'reference.json'
@@ -151,7 +163,7 @@ def audit_admission(root, c, panel, baseline_width):
             if result['policy_id'] != c['formal']['policy_id'] or result['rank'] != ordinal:
                 raise ValueError('FSDP reference policy or rank differs')
             reference, _ = predictions(result, ids, panel['labels'], baseline_width)
-            shard = dict(reference=reference, observed=observed, sha256=file_hash(fsdp_path))
+            shard = dict(reference=reference, observed=ref, sha256=file_hash(fsdp_path))
         return marker, shard
 
     results, _ = map_io(inspect_panel, range(replicas), workers=c['io_workers'])
@@ -173,6 +185,82 @@ def audit_admission(root, c, panel, baseline_width):
                     fsdp=dict(atol=c['probability_atol'], worker_sha256=[row['sha256'] for row in fsdp],
                               **parity))
     return gate
+
+
+def audit_pilot(root, c, full):
+    from tools.reports.card_scoring_benchmark import (
+        concurrency, concurrent_offsets, replica_path, scoring_lineage, scoring_offsets,
+    )
+
+    count = concurrency(c)
+    size = c['formal']['recordings_per_block']
+    settings = (c['io_workers'], c['prefetch_audio'])
+    width, = c['widths']
+    tasks, starts, finishes, sources = [], [], [], []
+    new = 0
+    slots = set()
+    for i in range(len(c['devices'])):
+        rows = full['rows'][i::len(c['devices'])]
+        offsets = scoring_offsets(c, len(rows))
+        for lane in range(count):
+            path = replica_path(root, i, lane)/'pilot.json'
+            r = read(path)
+            expected, _ = concurrent_offsets(c, offsets, lane, len(rows))
+            entries = r['blocks']
+            if len(entries) != len(expected):
+                raise ValueError('incomplete concurrent TRAIN pilot')
+            made = 0
+            for off, block in zip(expected, entries, strict=True):
+                name = f'block-{off//size:06d}.json'
+                key = (i, name)
+                batch = rows[off:off+size]
+                file = path.parent.parent/name
+                if (key in slots or block['name'] != name or file_hash(file) != block['sha256']
+                        or type(block['reused']) is not bool):
+                    raise ValueError('concurrent TRAIN pilot block identity differs')
+                slots.add(key)
+                if not block['reused']:
+                    made += len(batch)
+                sources.extend(row['synthetic'] for row in batch)
+                tasks.append((file, scoring_lineage(c, i), [row['id'] for row in batch],
+                              full['labels'], width, settings))
+            if made:
+                if not 0 < r['started'] < r['finished'] < math.inf:
+                    raise ValueError('invalid measured pilot interval')
+                starts.append(r['started'])
+                finishes.append(r['finished'])
+                new += made
+            elif r['started'] is not None or r['finished'] is not None:
+                raise ValueError('reused pilot cannot contribute new timing')
+    recordings = len(sources)
+    if recordings < c['concurrent_scoring']['pilot_recordings'] or len(set(sources)) != 2:
+        raise ValueError('scoring pilot must cover the configured population and both acoustic sources')
+    map_cpu(validate_block, tasks, workers=c['cpu_workers'], min_parallel=c['audit_min_parallel_blocks'])
+    seconds = max(finishes)-min(starts) if new else None
+    return dict(recordings=recordings, synthetic=sum(sources), human=recordings-sum(sources),
+                pairs=recordings*len(full['labels']), replicas_per_device=count,
+                new_recordings=new, seconds=seconds,
+                new_pairs_per_second=new*len(full['labels'])/seconds if new == recordings else None)
+
+
+def audit_replica_results(root, c, ordinal, worker, offsets, ids):
+    from tools.reports.card_scoring_benchmark import concurrency, concurrent_offsets, replica_path
+    count = concurrency(c)
+    size = c['formal']['recordings_per_block']
+    paths = [replica_path(root, ordinal, lane)/'result.json' for lane in range(count)]
+    if worker['replica_result_sha256'] != [file_hash(path) for path in paths]:
+        raise ValueError('concurrent scores differ from replica receipts')
+    results = [read(path) for path in paths]
+    for lane, row in enumerate(results):
+        pilot, rest = concurrent_offsets(c, offsets, lane, len(ids))
+        expected = sorted(pilot+rest)
+        if (row['device'] != worker['device'] or row['lineage'] != worker['lineage']
+                or row['rows'] != sum(min(size, len(ids)-i) for i in expected)
+                or [block['name'] for block in row['blocks']] != [f'block-{i//size:06d}.json' for i in expected]
+                or not 0 < row['scoring_seconds'] <= worker['scoring_seconds']):
+            raise ValueError('concurrent scoring replica has incomplete or foreign work')
+    if sorted((b for r in results for b in r['blocks']), key=lambda b: b['name']) != worker['blocks']:
+        raise ValueError('concurrent scoring replica coverage differs from the worker receipt')
 
 
 def audit_roster(entry, c, panel):
@@ -249,7 +337,7 @@ def progress(root, entry):
 
 
 def audit_formal(root, entry, c, panel, receipt, cid):
-    from tools.reports.card_scoring_benchmark import scoring_lineage
+    from tools.reports.card_scoring_benchmark import concurrency, scoring_lineage
 
     formal = c['formal']
     full = audit_roster(entry, c, panel)
@@ -274,6 +362,8 @@ def audit_formal(root, entry, c, panel, receipt, cid):
         raise ValueError('all-replica admission differs from its committed panel')
     replicas = len(c['devices'])
     size = formal['recordings_per_block']
+    if len(receipt['workers']) != replicas:
+        raise ValueError('scoring receipt must contain one worker group per device')
 
     def inspect_worker(ordinal):
         worker = receipt['workers'][ordinal]
@@ -291,6 +381,8 @@ def audit_formal(root, entry, c, panel, receipt, cid):
                 or sorted(p.name for p in directory.glob('block-*.json')) != names):
             raise ValueError('missing, extra or out of order scoring blocks')
 
+        if concurrency(c) > 1:
+            audit_replica_results(root, c, ordinal, worker, offsets, ids)
         tasks, reused_records = [], 0
         for offset, block in zip(offsets, worker['blocks'], strict=True):
             path = directory/block['name']
@@ -331,7 +423,13 @@ def audit_formal(root, entry, c, panel, receipt, cid):
     reused = sum(worker['reused_records'] for worker in workers)
     pairs = recordings*len(labels)
     seconds = max(worker['seconds'] for worker in workers)
-    return dict(passed=True, container_id=cid, **identities, recordings=recordings, pairs=pairs,
+    extra = {}
+    if concurrency(c) > 1:
+        pilot = audit_pilot(root, c, full)
+        if pilot != read(root/'pilot.json'):
+            raise ValueError('stored concurrent TRAIN pilot differs from its blocks')
+        extra = dict(replicas_per_device=concurrency(c), pilot=pilot)
+    return dict(passed=True, container_id=cid, **identities, recordings=recordings, pairs=pairs, **extra,
                 checkpoint_sha256=formal['checkpoint_sha256'], admission_sha256=receipt['admission_sha256'],
                 labels=labels, replicas=replicas, batch_rows=width, io_workers=c['io_workers'],
                 prefetch_audio=c['prefetch_audio'], updates=formal['updates'],

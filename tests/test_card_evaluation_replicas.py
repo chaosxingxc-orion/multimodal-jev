@@ -11,6 +11,26 @@ from tools.reports import card_evaluation_replicas as replicas
 from tools.reports.screen_card_evaluation_replicas import panel, telemetry
 
 
+def test_formal_replica_audit_requires_concurrency_and_both_endpoints(tmp_path):
+    from tools.reports.tpo_evaluation_blocks import audit_replica_group
+
+    ordered = blocks.ordered_blocks([dict(dataset='d', arm=arm, partition=0, offset=0,
+        ids=['audio'], widths=[2], work=2) for arm in ('stage1', 'tpo')], ['stage1', 'tpo'])
+    manifest = dict(sha256='plan', plan=dict(policies={'stage1': 's1', 'tpo': 's2'}, blocks=ordered))
+    path = tmp_path/'device.json'
+    contract = dict(replicas_per_device=6, workers=[dict(device=3, receipt=str(path))])
+    row = dict(devices=[3], plan_sha256='plan', replicas_per_device=6, replica_blocks=[1, 1, 0, 0, 0, 0],
+               blocks=[dict(block=b['key'], dataset=b['dataset'], arm=b['arm'], recordings=1) for b in ordered])
+    path.write_text(json.dumps(row))
+    assert audit_replica_group(manifest, contract)['recordings_by_arm'] == {'stage1': 1, 'tpo': 1}
+    path.write_text(json.dumps(dict(row, replicas_per_device=1, replica_blocks=[2])))
+    with pytest.raises(ValueError, match='concurrent deployment'):
+        audit_replica_group(manifest, contract)
+    path.write_text(json.dumps(dict(row, blocks=row['blocks'][:1], replica_blocks=[1, 0, 0, 0, 0, 0])))
+    with pytest.raises(ValueError, match='both endpoints'):
+        audit_replica_group(manifest, contract)
+
+
 def test_replay_reports_changed_probabilities_and_does_not_touch_archive(tmp_path, monkeypatch):
     monkeypatch.setattr('multimodal_jev.local_checkpoint.check_paths', lambda _: None)
     archive = tmp_path/'archive'

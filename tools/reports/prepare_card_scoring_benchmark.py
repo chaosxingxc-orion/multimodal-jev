@@ -19,7 +19,7 @@ from multimodal_jev.local_config import load_config
 from multimodal_jev.local_runtime_storage import check_paths
 from multimodal_jev.source_snapshot import freeze
 from tools.reports.audit_card_scoring_benchmark import audit
-from tools.reports.card_scoring_benchmark import make_panel, pinned
+from tools.reports.card_scoring_benchmark import concurrency, make_panel, pinned
 from tools.reports.native_seal_operations import run
 
 
@@ -224,6 +224,9 @@ def package(c):
                               recordings_per_block=c['recordings_per_block'],
                               fsdp_timeout_seconds=c['fsdp_timeout_seconds'],
                               fsdp_master_addr=c['fsdp_master_addr'], fsdp_master_port=c['fsdp_master_port'])
+        if 'concurrent_scoring' in c:
+            spec['concurrent_scoring'] = c['concurrent_scoring']
+            concurrency(spec)
         if formal.get('resume_from'):
             spec['formal']['resume_from'] = '/jev-score-resume'
             spec['formal']['resume_config'] = dict(path='/jev-entry/resume-score.json', sha256=prior_config_pin)

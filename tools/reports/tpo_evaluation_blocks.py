@@ -381,6 +381,37 @@ def worker(spec):
     return payload
 
 
+def audit_replica_group(manifest, contract):
+    """Check actual work receipts before allowing the paired endpoint metrics."""
+    plan = manifest['plan']
+    expected = {b['key']: b for b in plan['blocks']}
+    seen, devices, counts = set(), set(), {}
+    replicas = contract['replicas_per_device']
+    for job in contract['workers']:
+        row = blocks.read(Path(job['receipt']))
+        device = job['device']
+        counts_per_replica = row['replica_blocks']
+        if (device in devices or row['devices'] != [device] or row['plan_sha256'] != manifest['sha256']
+                or row['replicas_per_device'] != replicas or len(counts_per_replica) != replicas
+                or any(type(n) is not int or n < 0 for n in counts_per_replica)
+                or sum(counts_per_replica) != len(row['blocks']) or row.get('singleton_differences')):
+            raise ValueError('evaluation worker did not match the admitted concurrent deployment')
+        devices.add(device)
+        for observed in row['blocks']:
+            key = observed['block']
+            planned = expected.get(key)
+            if (key in seen or not planned or any(observed[k] != planned[k] for k in ('dataset', 'arm'))
+                    or observed['recordings'] != len(planned['ids'])):
+                raise ValueError('evaluation worker reported duplicate or foreign blocks')
+            seen.add(key)
+            arm = planned['arm']
+            counts[arm] = counts.get(arm, 0) + len(planned['ids'])
+    if seen != expected.keys() or set(counts) != set(plan['policies']):
+        raise ValueError('evaluation worker receipts do not cover both endpoints')
+    return dict(replicas_per_device=replicas, devices=sorted(devices), recordings_by_arm=counts,
+                blocks=len(seen), plan_sha256=manifest['sha256'])
+
+
 def publications(spec):
     """Audit every committed block before scoring; a missing block fails closed."""
     root = Path(spec['queue']['root'])
