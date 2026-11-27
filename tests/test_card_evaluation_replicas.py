@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pytest
@@ -58,3 +59,21 @@ def test_panel_covers_both_policies_and_preserves_actual_host_measurement():
 | 0                         | 0000:42:00.0  | 21                   0    / 0                16384/ 65536            |
 '''
     assert telemetry(raw) == {4:{'aicore':73,'hbm':75.}, 7:{'aicore':21,'hbm':25.}}
+
+
+def test_full_utilization_counts_idle_cards_and_rejects_missing_time(tmp_path):
+    from tools.reports.verify_card_evaluation_throughput import utilization
+
+    telemetry_path = tmp_path/'telemetry.jsonl'
+    with telemetry_path.open('w') as log:
+        for stamp, core, hbm in [(0, 60, 70), (10, 100, 90), (20, 60, 70)]:
+            log.write(json.dumps(dict(unix=stamp, devices={
+                '0': dict(aicore=core, hbm=hbm), '1': dict(aicore=0, hbm=20),
+            }))+'\n')
+    actual = utilization(telemetry_path, (5, 15), [0, 1], 10)
+    assert actual['by_device']['0'] == {'aicore':90., 'hbm':85.}
+    assert (actual['aicore'], actual['hbm']) == (45., 52.5)
+    with pytest.raises(ValueError, match='gap'):
+        utilization(telemetry_path, (5, 15), [0, 1], 9)
+    with pytest.raises(ValueError, match='cover'):
+        utilization(telemetry_path, (5, 21), [0, 1], 10)

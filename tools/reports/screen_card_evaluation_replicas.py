@@ -131,7 +131,7 @@ def prepare(settings):
     return deployment
 
 
-def screen(settings, deployment):
+def screen(settings, deployment, *, observed_roles=None):
     root = Path(deployment['operations'])
     first, stopped = threading.Event(), threading.Event()
 
@@ -140,7 +140,7 @@ def screen(settings, deployment):
             if stopped.is_set():
                 return
         with (root/'telemetry.jsonl').open('x', buffering=1) as out:
-            while not stopped.is_set():
+            while True:
                 try:
                     raw = subprocess.check_output(['ssh', '-o', 'BatchMode=yes', '-o',
                           'ConnectTimeout=10', deployment['host'],
@@ -150,12 +150,18 @@ def screen(settings, deployment):
                 except (ValueError, subprocess.SubprocessError) as error:
                     row = dict(error=str(error))
                 out.write(json.dumps(row) + '\n')
+                if stopped.is_set():
+                    break
                 stopped.wait(settings['sampling_seconds'])
 
     with ThreadPoolExecutor(max_workers=1) as pool:
         sampling = pool.submit(measure)
         try:
-            operate(deployment, on_started=lambda _: first.set())
+            def started(role):
+                if observed_roles is None or role in observed_roles:
+                    first.set()
+
+            return operate(deployment, on_started=started)
         finally:
             stopped.set()
             sampling.result()
