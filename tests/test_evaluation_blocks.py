@@ -108,6 +108,16 @@ def queued(tmp_path, monkeypatch):
     return spec, roster, loaded
 
 
+def test_finite_parity_planner_rejects_empty_device_shards(queued):
+    spec, _, loaded = queued
+    spec['inferred_arms'] = {'demo': ['initial']}
+    spec['finite_policy_parity_shards'] = 8
+    with pytest.raises(ValueError, match='fewer blocks than configured device shards'):
+        evaluation.build(spec)
+    assert not (Path(spec['queue']['root'])/'plan.json').exists()
+    assert not loaded
+
+
 def test_resume_audits_complete_blocks_and_only_runs_missing_work(tmp_path, queued):
     spec, roster, loaded = queued
     info = evaluation.build(spec)

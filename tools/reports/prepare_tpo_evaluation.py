@@ -84,7 +84,8 @@ def block_queue(config, common, datasets):
     return queue
 
 
-def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, image, *, reuse_policy=None):
+def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, image, *, reuse_policy=None,
+               finite_parity_shards=None):
     settings = block_queue(config, common, datasets)
     parent = dict(common, phase='tpo_eval_block_worker', endpoints=endpoints, inferred_arms=inferred)
     queue = dict(root='/jev-work/sample-blocks', batches_per_block=settings['batches_per_block'],
@@ -114,6 +115,8 @@ def queue_jobs(config, entry, common, datasets, endpoints, inferred, mounts, ima
     queue['namespace'] = content_key(parent, queue, image)
     parent['queue'] = queue
     plan = dict(parent, phase='tpo_eval_block_plan', devices=[], result_path='/jev-work/blocks-planned.json')
+    if finite_parity_shards is not None:
+        plan['finite_policy_parity_shards'] = finite_parity_shards
     if 'resume_from' in settings:
         resume = Path(settings['resume_from'])
         target = Path(config['deployment']['remote_root'])

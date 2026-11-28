@@ -71,6 +71,17 @@ def reuse_policy_blocks(root, manifest, proof, workers):
     return len(destination)
 
 
+def finite_parity_keys(plan, spec):
+    selected = []
+    for dataset in spec['endpoints']:
+        for arm in spec['inferred_arms'][dataset]:
+            candidates = [b for b in plan['blocks'] if b['dataset'] == dataset and b['arm'] == arm]
+            if not candidates:
+                raise ValueError(f'missing finite parity population: {dataset}/{arm}')
+            selected.extend(dict.fromkeys((candidates[0]['key'], candidates[-1]['key'])))
+    return selected
+
+
 def build(spec):
     from tools.reports.evaluate_tpo_endpoints import endpoint_config, policy_sources, read
     from tools.reports.evaluate_choice_tasks import with_baseline
@@ -130,6 +141,8 @@ def build(spec):
                 policies=policies, choice=choice, blocks=blocks.ordered_blocks(all_blocks, arm_order))
     if 'reference_inference' in spec:
         plan['reference_inference'] = spec['reference_inference']
+    if 'finite_policy_parity_shards' in spec and len(finite_parity_keys(plan, spec)) < spec['finite_policy_parity_shards']:
+        raise ValueError('finite parity has fewer blocks than configured device shards')
     if 'single_card_probe' in spec:
         probe = spec['single_card_probe']
         frozen = Path(probe['plan']['path'])
@@ -214,11 +227,7 @@ def worker(spec):
     finite = spec.get('finite_policy_parity')
     finite_blocks = []
     if finite:
-        for dataset in spec['endpoints']:
-            for arm in spec['inferred_arms'][dataset]:
-                candidates = [b for b in plan['blocks'] if b['dataset'] == dataset and b['arm'] == arm]
-                finite_blocks.extend({b['key']: b for b in (candidates[0], candidates[-1])}.values())
-        finite_blocks = [b['key'] for i, b in enumerate(finite_blocks) if i % finite['shards'] == finite['shard']]
+        finite_blocks = finite_parity_keys(plan, spec)[finite['shard']::finite['shards']]
         if not finite_blocks:
             raise ValueError('every evaluation device requires a finite HF block')
     model_loading = None

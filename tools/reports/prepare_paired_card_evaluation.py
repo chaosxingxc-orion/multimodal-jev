@@ -425,22 +425,31 @@ def run(c):
         if probe or benchmark or admission or 'reuse' in c:
             raise ValueError('completed Stage1 reuse applies to a new formal comparison')
         reused, reused_thresholds = stage1_reuse(c['reuse_stage1_evaluation'], deploy, common, ports, cal, inputs)
-    prep, workers, queue = queue_jobs(c, entry, common, datasets, ports, inferred, inputs, deploy['image'],
-                                      reuse_policy=reused)
-    checks = []
     finite = c.get('finite_policy_parity')
+    devices = []
     if finite:
         if admission or probe or len(modes) != len(ports) or type(finite['batches_per_block']) is not int or finite['batches_per_block'] < 1:
             raise ValueError('explicit finite parity specification for every evaluation dataset required')
-        for i, job in enumerate(workers):
-            name = f'hf-check-{i}'
+        from multimodal_jev.card_device_config import physical_devices
+        finite = dict(finite)
+        devices = physical_devices(finite.pop('devices', c['sample_blocks']['devices']))
+        if not set(devices) <= set(c['sample_blocks']['devices']):
+            raise ValueError('finite parity devices must be part of the formal evaluation pool')
+    prep, workers, queue = queue_jobs(c, entry, common, datasets, ports, inferred, inputs, deploy['image'],
+                                      reuse_policy=reused, finite_parity_shards=len(devices) if finite else None)
+    checks = []
+    if finite:
+        by_device = {job['devices'][0]: job for job in workers}
+        for shard, device in enumerate(devices):
+            job = by_device[device]
+            name = 'hf-check-' + job['name'].rsplit('-', 1)[-1]
             opts = settings(dict(path=entry/(job['name']+'.json'),
                                  sha256=file_hash(entry/(job['name']+'.json'))))
             if reused:
                 opts['inferred_arms'] = {name: ['tpo'] for name in inferred}
             write(name, dict(opts, output='/jev-work/'+name, result_path='/jev-work/'+name+'.json',
                              replicas_per_device=1,
-                             finite_policy_parity=dict(finite, shard=i, shards=len(workers))))
+                             finite_policy_parity=dict(finite, shard=shard, shards=len(devices))))
             checks.append(dict(job, name=name, collect=name+'.json', visible_ordinal='0'))
     if admission:
         for i, job in enumerate(workers):
