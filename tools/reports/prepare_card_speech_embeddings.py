@@ -71,6 +71,7 @@ def execute(c):
                     policy_sha256=policy_sha, policy=dict(
                         snapshot='/jev-endpoint', policy_id=policy_id, base_id=train['base_id'],
                         model=train['model'], contract=train['source_contract'],physical_devices=[device],
+                        max_model_len=c['reference_device_scope_context'],
                         reference_inference=reference_settings(c), process_device_scope=dict(
                             kind='same_container_runtime_visibility_v1',mounted_physical=[device],visible_ordinal='0')))
         commit_json(entry/(name+'.json'),macros('NATIVE_SEAL_CONTAINER_CONFIG',spec))
