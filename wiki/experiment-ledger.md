@@ -37,7 +37,7 @@ JEV-201 已审核 **34/34 步**训练、全部登记的末点评测及变长 Cho
 | JEV-209 | 44 | complete | [0.6B r128 知识卡与融合 TPO](../experiments/stage1-cards-tpo-209.md) | 模型实验已审核。MINDS 推理锁定 `.25` 为 `v0.0.rc25`：20 块/端点、两轮各端点 17,920 个概率零差异；Stage1/Stage2 评分吞吐为原生的 1.825 / 1.805 倍，以各轮原生归一化后较上一版提高 49.6% / 48.2%。181 八卡已释放。[执行报告](reports/JEV-209.md) · [推理报告](reports/JEV-209-inference-latency.md) |
 | JEV-210 | 45 | in_progress | [0.6B r128 双向 InfoNCE Stage1](../experiments/stage1-cards-tpo-210.md) | Stage2 已在 181 正式训练，六卡两步验收及前三个正式 loss 已核验；等待完整训练与配对评测。[执行报告](reports/JEV-210.md) |
 | JEV-211 | 48 | in_progress | [Stage1 三项 InfoNCE → Stage2 A 分层 TPO](../experiments/stage1-speech-alignment-211.md) | 两端点评分已审核；原六进程并发验收失败。[执行报告](reports/JEV-211.md) |
-| JEV-212 | 49 | in_progress | [逐录音 Top‑5 Stage1 → 分层 TPO Stage2 A](../experiments/stage1-instance-negatives-212.md) | train-stage1-epoch-one outside_requested_scope。[执行报告](reports/JEV-212.md) |
+| JEV-212 | 49 | in_progress | [逐录音 Top‑5 Stage1 → 分层 TPO Stage2 A](../experiments/stage1-instance-negatives-212.md) | 181 八卡 Stage1 首轮正式训练，前三次更新已审核；统一入口接续轮间负例刷新、第二轮、Stage2 A 和集中评测。[执行报告](reports/JEV-212.md) |
 | JEV-210-CAL | 46 | complete | [210 Stage2 冻结校准与 8:2 回放](../experiments/stage2-calibrated-replay.md) | 全部登记步骤已审核。[执行报告](reports/JEV-210-CAL.md) |
 | JEV-201 | 10 | complete | [联合 TPO 协议](../experiments/tpo-joint-comparison.md) | 全部登记步骤已审核。[执行报告](reports/JEV-201.md) |
 | JEV-204 | 20 | in_progress | [全量单阶段 TPO 协议](../experiments/tpo-joint-comparison.md) | 训练和原生三点评测已审核；待补配对诊断、跨任务面板及全链路成本。[执行报告](reports/JEV-204.md) |
