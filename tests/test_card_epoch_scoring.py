@@ -10,6 +10,20 @@ from tools.reports.card_scoring_benchmark import scoring_lineage
 from tools.reports.native_seal_operations import container_memory, verify_memory
 
 
+def test_instance_checkpoint_requires_separate_scoring_reference():
+    from multimodal_jev.card_scoring_settings import scoring_settings
+
+    training = {'instance_negative_manifest': {'sha256': 'manifest'}}
+    reference = dict(forward_rows=32, card_arm='rules', zipf_exponent=1.0)
+    assert scoring_settings(training, reference) == reference
+    for bad in (None, dict(reference, forward_rows=True), dict(reference, zipf_exponent=float('nan'))):
+        with pytest.raises(ValueError, match='explicit scoring reference'):
+            scoring_settings(training, bad)
+    assert scoring_settings({'class_scoring': reference}) == reference
+    with pytest.raises(ValueError, match='historical'):
+        scoring_settings({'class_scoring': reference}, reference)
+
+
 def test_parallel_tail_rejects_gaps_and_overlap_for_uneven_shards():
     from tools.reports.card_scoring_shards import check_partition
 

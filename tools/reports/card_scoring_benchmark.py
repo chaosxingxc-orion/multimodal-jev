@@ -54,7 +54,7 @@ def make_panel(c, output):
             or spec['full_verified'] != len(real)+len(synth)
             or train['layout_cache']['sha256'] != c['acoustics']['sha256']
             or train['single_card']['sha256'] != c['cards']['sha256']
-            or scoring_settings(train)['card_arm'] != c['card_arm']
+            or scoring_settings(train, c.get('scoring_reference'))['card_arm'] != c['card_arm']
             or pinned(dict(path=policy/'MANIFEST.json', sha256=c['policy_sha256']))['policy_id']
             != train['source_policy_id']):
         raise ValueError('benchmark must bind to the frozen TRAIN population and source policy')
@@ -199,7 +199,8 @@ def scoring_lineage(c, ordinal):
                        c['prefetch_audio'], c['torch_threads'], c['max_model_len'], *layout,
                        *((c['seed'],) if c.get('bind_inference_seed') else ()),
                        *([formal['block_range']] if 'block_range' in formal else []),
-                       *([c['concurrent_scoring']] if 'concurrent_scoring' in c else []))
+                       *([c['concurrent_scoring']] if 'concurrent_scoring' in c else []),
+                       *([c['scoring_reference']] if 'scoring_reference' in c else []))
 
 
 def scoring_offsets(c, rows):
@@ -267,7 +268,7 @@ def wait_for_admission(c, output, workers, deadline):
              for i in range(len(c['devices'])) for lane in range(count)]
     wait_for_receipts(c, ready, workers, deadline)
     admission = audit_admission(output, c, load_panel(c)[0],
-                                scoring_settings(pinned(c['training']))['forward_rows'])
+                                scoring_settings(pinned(c['training']), c.get('scoring_reference'))['forward_rows'])
     if resume := c['formal'].get('resume_from'):
         previous = Path(resume)
         if any(previous.glob('worker-*/block-*.json')):
@@ -379,7 +380,7 @@ def worker(c, output, ordinal, lane=None):
     if formal:
         from tools.reports.audit_card_scoring_benchmark import predictions, read, validate_block, validate_timing
         width, = c['widths']
-        legacy_width = scoring_settings(train)['forward_rows']
+        legacy_width = scoring_settings(train, c.get('scoring_reference'))['forward_rows']
         shared = output.parent if lane is not None else output
         if lane is None or lane == 0:
             commit_json(shared/'baseline.json', measure(legacy_width, True))
@@ -472,7 +473,7 @@ def worker(c, output, ordinal, lane=None):
             commit_json(output/f'batch-{width}{suffix}.json', result)
             if result.get('oom'):
                 torch.npu.empty_cache()
-    legacy_width = scoring_settings(train)['forward_rows']
+    legacy_width = scoring_settings(train, c.get('scoring_reference'))['forward_rows']
     commit_json(output/'baseline.json', measure(legacy_width, True))
     commit_json(output/'result.json', dict(device=devices[ordinal], rows=len(rows),
                                           cache_and_model_seconds=startup_seconds))

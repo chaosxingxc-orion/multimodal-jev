@@ -277,7 +277,7 @@ def merge(template, local):
     import torch
     from multimodal_jev.intent_triplet_training import confusion_distribution
     distribution = confusion_distribution(labels, torch.tensor(totals, dtype=torch.float64),
-                                           torch.tensor(counts), scoring_settings(training)['zipf_exponent'])
+                                           torch.tensor(counts), scoring_settings(training, source.get('scoring_reference'))['zipf_exponent'])
     formal = source['formal']
     pairs = len(seen)*len(labels)
     path = root/(f"confusion-step-{formal['updates']:04d}.json" if not head else 'confusion-epoch-1.json')

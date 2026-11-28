@@ -206,6 +206,8 @@ def package(c):
     shutil.copyfile(repo/'configs/portable/operations/native-seal-container.json', entry/'native-seal-container.json')
     spec = {k:c[k] for k in ('widths','io_workers','prefetch_audio','torch_threads',
                              'worker_timeout_seconds','max_model_len','probability_atol','seed')}
+    if 'scoring_reference' in c:
+        spec['scoring_reference'] = c['scoring_reference']
     if 'streaming' in c:
         spec['streaming'] = c['streaming']
     if c.get('capture_host_memory'):

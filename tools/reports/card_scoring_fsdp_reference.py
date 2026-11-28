@@ -63,7 +63,7 @@ def reference(c, output):
         cache = {False: ReadOnlyEncodedAudioCache(train['encoded_audio_cache']),
                  True: ReadOnlyEncodedAudioCache(c['synthetic_cache'])}
         cards = [tuple(torch.tensor(card[k]) for k in ('prefix', 'suffix')) for card in catalog]
-        width = scoring_settings(train)['forward_rows']
+        width = scoring_settings(train, c.get('scoring_reference'))['forward_rows']
         rows = panel['rows']
         records, calls = [], Counter()
         start = time.monotonic()
