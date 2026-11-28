@@ -318,15 +318,103 @@ def run(c, on_started=None):
         raise
 
 
+def collect_existing_final(c):
+    """Reattach to a dispatched final container after the local observer exits."""
+    root = Path(c['operations'])
+    chains = c['chains']
+    if c.get('device_group_lease') is not True or len(chains) != 1 or len(chains[0][-1]) != 1:
+        raise ValueError('collection requires a single final job under a group lease')
+    final = chains[0][-1][0]
+    role = final['name']
+    if not final['devices'] or not final.get('collect'):
+        raise ValueError('collection requires a device job and declared receipt')
+    def read(name):
+        return json.loads((root/name).read_bytes())
+    def save(name, value):
+        path = root/name
+        if path.exists():
+            if read(name) != value:
+                raise ValueError('collected evidence changed: '+name)
+        else:
+            commit_json(path, value)
+    with Path(c['lease']).open('r') as lease:
+        fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        for group in chains[0][:-1]:
+            for job in group:
+                if not job.get('collect') or read(job['name']+'-wait.json') != {'exit_code': 0}:
+                    raise ValueError('all predecessor jobs must have collected success')
+                read(job['name']+'-collected.json')
+        handle = read(role+'-launch.json')
+        cid = handle['container_id']
+        argv = handle['argv']
+        name = c['tag']+'-'+role
+        if (handle['host'] != c['host'] or handle['remote_root'] != c['remote_root']
+                or re.fullmatch('[a-f0-9]{64}', cid) is None or argv[argv.index('--name')+1] != name
+                or read(role+'-intent.json') != {'argv': argv}
+                or read(role+'-admission.json')['entry_pins'] != c['entry_pins']):
+            raise ValueError('existing launch does not match the frozen final job')
+        def remote(args, bounded=True):
+            return subprocess.run(['ssh', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=10',
+                                   c['host'], shlex.join(args)], text=True, capture_output=True,
+                                  timeout=55 if bounded else None)
+        def checked(*args):
+            result = remote(args)
+            result.check_returncode()
+            return result.stdout
+        def inspect():
+            obj, = json.loads(checked('docker', 'inspect', cid))
+            inspect_runtime(obj, handle)
+            verify_memory(obj, argv)
+            devices = {d['PathOnHost'] for d in obj['HostConfig']['Devices']
+                       if re.fullmatch(r'/dev/davinci[0-9]+', d['PathOnHost'])}
+            if (obj['Name'] != '/'+name or obj['Image'] != c['image']
+                    or devices != {f'/dev/davinci{i}' for i in final['devices']}):
+                raise ValueError('existing container identity differs')
+            return obj
+        first = inspect()
+        if first['State']['Status'] not in ('running', 'exited'):
+            raise ValueError('existing final container has not started')
+        print('Observing existing final container '+cid, flush=True)
+        code = wait_exact(remote, cid)
+        observed = inspect()
+        status = observed['State']
+        if (status['Status'] != 'exited' or status['Running'] or status['Pid'] != 0
+                or status['ExitCode'] != code or observed['RestartCount'] != first['RestartCount']):
+            raise ValueError('could not verify the exact final exit')
+        if (root/(role+'-inspect.json')).exists():
+            before = read(role+'-inspect.json')
+            if before['Id'] != cid or before['State'] != status:
+                raise ValueError('prior terminal observation differs')
+        else:
+            save(role+'-inspect.json', observed)
+        with (root/(role+'.log')).open('a') as log:
+            logs = remote(['docker', 'logs', cid])
+            log.write(logs.stdout+logs.stderr)
+        save(role+'-wait.json', dict(exit_code=code))
+        if code != 0 or status['OOMKilled']:
+            save('terminal.json', dict(exit_code=code or 1, status='existing_final_failed', restart=False))
+            return code or 1
+        inspect_runtime(observed, handle, terminal=True)
+        receipt = json.loads(checked('cat', c['remote_root']+'/'+final['collect']))
+        save(role+'-collected.json', receipt)
+        save('terminal.json', dict(exit_code=0, status='declared_stages_finished'))
+        return 0
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--config', required=True)
     p.add_argument('--local', required=True)
     p.add_argument('--detach', action='store_true')
+    p.add_argument('--collect-existing-final', action='store_true')
     p.add_argument('--observe-tpo-package', type=Path)
     p.add_argument('--observe-card-stage1-package', type=Path)
     a = p.parse_args()
     c, _ = load_config(a.config, a.local)
+    if a.collect_existing_final:
+        if a.detach or a.observe_tpo_package is not None or a.observe_card_stage1_package is not None:
+            p.error('existing final collection is a foreground observation only')
+        return collect_existing_final(c)
     if a.observe_tpo_package is not None or a.observe_card_stage1_package is not None:
         if a.detach or (a.observe_tpo_package is not None and a.observe_card_stage1_package is not None):
             p.error('select one observer inside the persistent experiment driver')
