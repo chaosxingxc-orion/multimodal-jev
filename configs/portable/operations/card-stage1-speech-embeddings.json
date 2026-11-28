@@ -1,0 +1,20 @@
+{
+  "output": "${CARD_SPEECH_EXPORT}",
+  "deployment": "${CARD_SPEECH_EXPORT_DEPLOYMENT}",
+  "endpoint": "${CARD_SPEECH_ENDPOINT}",
+  "endpoint_sha256": "${CARD_SPEECH_ENDPOINT_SHA}",
+  "score_audit": {"path": "${CARD_SPEECH_SCORE}/audit.json", "sha256": "${CARD_SPEECH_SCORE_SHA}"},
+  "roster": {"path": "${CARD_SPEECH_SCORE}/entry/full.json", "sha256": "${CARD_SPEECH_ROSTER_SHA}"},
+  "acoustic_mount": "${CARD_SPEECH_ACOUSTIC_MOUNT}",
+  "batch": 16,
+  "io_workers": 8,
+  "prefetch": {"workers": 2, "ahead": 2},
+  "resources": {"cpus": 8, "memory": "1024g", "shm": "2g"},
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ]
+}

@@ -67,6 +67,10 @@ def main():
     if c['phase'] == 'card_scoring_benchmark':
         from tools.reports.card_scoring_benchmark import run
         result = run(c)
+    elif c['phase'] == 'card_speech_embeddings':
+        from tools.reports.card_speech_embeddings import run
+        result = run(c)
+        result = {k: v for k, v in result.items() if k != 'ids'}
     elif c['phase'] == 'model_provider_probe':
         from tools.reports.probe_audio_model_provider import run
         result = run(c['probe'])

@@ -80,16 +80,20 @@ class ContextDecisionHead(nn.Module):
         # BF16 execution with FP32 probability/loss arithmetic; preserve FP64 diagnostics.
         return logits.float() if logits.dtype in (torch.bfloat16, torch.float16) else logits
 
+    def speech_vectors(self, speech):
+        if speech.ndim != 2 or speech.shape[-1] != self.hidden_size:
+            raise ValueError('expected pooled pre-card speech in the backbone hidden space')
+        return self.output_norm(speech + self.residual_scale * self.ffn(self.ffn_norm(speech)))
+
     def forward(self, hidden, positions, valid_tokens, *, return_logits=False, speech=None):
         """Return [batch, decisions] applicability probabilities in [0, 1]."""
         if type(return_logits) is not bool:
             raise ValueError('explicit Boolean logits mode required')
         logits = self.score_logits(hidden, positions, valid_tokens)
         if speech is not None:
-            if not return_logits or speech.ndim != 2 or speech.shape[-1] != self.hidden_size:
-                raise ValueError('expected pooled pre-card speech in the backbone hidden space')
+            if not return_logits:
+                raise ValueError('joint speech readout requires membership logits')
             # The same trainable FFN/norm are used for contextual membership above.
             # Keep both computations inside this head's FSDP forward; no private auxiliary head.
-            vector = self.output_norm(speech + self.residual_scale * self.ffn(self.ffn_norm(speech)))
-            return logits, vector
+            return logits, self.speech_vectors(speech)
         return logits if return_logits else logits.sigmoid()

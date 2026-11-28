@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-instance-negatives-212.md",
-  "revision": "instance-top5-stage2-a-v2",
+  "revision": "instance-top5-speech-export-v3",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -10,6 +10,7 @@
         "id": "verify-epoch-one-member-score-reference",
         "checks": [{"path": "${S212_MINING_PARENT_ENDPOINT}/receipt.json", "sha256": "e3b19bdbe17c49cd16a757895e3fe71ab068f6566930e85aed06c62fde43d846"}, {"path": "${S212_MINING_PARENT_SCORE}/audit.json", "sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772"}, {"path": "${S212_MINING_PARENT_SCORE}/entry/full.json", "sha256": "66408e8191ee41de37d9faf23ea0554ff2e8f214a100509b9286e798e585ce26"}]
       },
+      {"id": "export-epoch-one-speech-vectors", "config": "configs/portable/operations/card-stage1-speech-embeddings.json", "python": "${CARD_PYTHON}", "inputs": [{"path": "${S212_MINING_PARENT_ENDPOINT}/receipt.json", "sha256": "e3b19bdbe17c49cd16a757895e3fe71ab068f6566930e85aed06c62fde43d846"}, {"path": "${S212_MINING_PARENT_SCORE}/audit.json", "sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772"}, {"path": "${S212_MINING_PARENT_SCORE}/entry/full.json", "sha256": "66408e8191ee41de37d9faf23ea0554ff2e8f214a100509b9286e798e585ce26"}], "input_sha256_macros": {"CARD_SPEECH_ENDPOINT_SHA": 0, "CARD_SPEECH_SCORE_SHA": 1, "CARD_SPEECH_ROSTER_SHA": 2}, "run": [["tools.reports.prepare_card_speech_embeddings", "configs/portable/operations/card-stage1-speech-embeddings.json", "${EXPERIMENT_LOCAL_CONFIG}"]], "requires_current_dispatch": true, "dispatch_guards": ["${CARD_SPEECH_EXPORT}/entry.tar"], "checks": [{"path": "${CARD_SPEECH_EXPORT}/audit.json", "equals": [[["schema"], "jev-audited-card-speech-embeddings-v1"], [["recordings"], 109610]]}], "lineage": [[[0, "value", "policy_id"], [0, "value", "policy_id"]], [[0, "value", "policy_sha256"], [0, "value", "manifest_sha256"]], [[0, "value", "roster_sha256"], [2, "sha256"]]]},
       {
         "id": "freeze-epoch-one-pool",
         "pending": "需要验收同一 211 末点的无卡向量导出与三榜构建，并审核可恢复的逐录音清单。"
@@ -162,6 +163,10 @@
     ]
   },
   "operation_bindings": {
+    "CARD_SPEECH_EXPORT": "${S212_EPOCH1_SPEECH_EXPORT}",
+    "CARD_SPEECH_EXPORT_DEPLOYMENT": "${S212_EPOCH1_SPEECH_DEPLOYMENT}",
+    "CARD_SPEECH_ENDPOINT": "${S212_MINING_PARENT_ENDPOINT}",
+    "CARD_SPEECH_SCORE": "${S212_MINING_PARENT_SCORE}",
     "CARD_ENDPOINT_DIR": "${S212_ENDPOINT_DIR}",
     "CARD_ENDPOINT_AUDIT": "${S212_ENDPOINT_DIR}/receipt.json",
     "CARD_ENDPOINT_SCORE": "${S212_STAGE2_ROOT}/train-score",

@@ -40,20 +40,27 @@ def collate(rows, policy_id, *, speech_features=False, **options):
     return packed, positions
 
 
-def hidden(backbone, inputs, *, return_speech=False):
+def frozen_frames(backbone, features, mask):
     tower, projector = backbone.audio_tower, backbone.multi_modal_projector
     if (tower.training or projector.training or
             any(p.requires_grad for m in (tower,projector) for p in m.parameters())):
         raise ValueError('acoustic reuse requires a deterministic frozen tower and projector')
     with torch.no_grad():
-        unique = backbone.get_audio_features(inputs['input_features'], inputs['input_features_mask'],
-                                             return_dict=True).pooler_output
+        return backbone.get_audio_features(features, mask, return_dict=True).pooler_output
+
+
+def pool_speech(frames, index, mask):
+    padded = frames.index_select(0, index.flatten()).reshape(*index.shape, frames.shape[-1])
+    return (padded.float().masked_fill(~mask[..., None], 0).sum(1)
+            / mask.sum(1, keepdim=True)).to(frames.dtype)
+
+
+def hidden(backbone, inputs, *, return_speech=False):
+    with torch.no_grad():
+        unique = frozen_frames(backbone, inputs['input_features'], inputs['input_features_mask'])
         audio = unique.index_select(0,inputs['audio_owner_tokens'])
         if return_speech:
-            index, mask = inputs['speech_token_index'], inputs['speech_token_mask']
-            frames = unique.index_select(0, index.flatten()).reshape(*index.shape, unique.shape[-1])
-            pooled = (frames.float().masked_fill(~mask[..., None], 0).sum(1)
-                      / mask.sum(1, keepdim=True)).to(unique.dtype)
+            pooled = pool_speech(unique, inputs['speech_token_index'], inputs['speech_token_mask'])
     ids=inputs['input_ids']
     embeds=backbone.get_input_embeddings()(ids)
     placeholders=backbone.get_placeholder_mask(ids,embeds,audio)
