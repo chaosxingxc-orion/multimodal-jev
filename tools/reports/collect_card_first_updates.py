@@ -112,7 +112,8 @@ def collect(package, count, timeout):
     planned_devices = read(entry/'training.json')['physical_devices']
     world = len(planned_devices)
     window = read(entry/'formal.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
-    start = window.get('instance_resume', {}).get('step', 0)
+    interrupted = window.get('fixed_epoch_recovery')
+    start = window.get('instance_resume', interrupted or {}).get('step', 0)
     pin = window.get('instance_negative_manifest')
     prefix = dict(root=str(base/'formal'), world=world, updates=count, timeout=timeout, start_update=start)
     observed = json.loads(remote('python3', '-c', REMOTE.replace('CONFIG', repr(prefix), 1)))
@@ -162,13 +163,28 @@ def collect(package, count, timeout):
             or obj['Id'] != h['container_id'] or obj['Image'] != ops_config['image']
             or obj['Args'][-1] != '/jev-entry/formal.json' or obj['Name'] != '/'+ops_config['tag']+'-formal'):
         raise ValueError('formal container identity differs')
+    restored = {}
+    if interrupted:
+        if (finite['recovered_step'] != start or finite['restored_ranks'] != world
+                or finite['recovery_cursor_sha256'] != interrupted['cursor_sha256']
+                or config['fixed_epoch_recovery'] != interrupted):
+            raise ValueError('formal and finite recovery differ')
+        paths = [str(base/'formal/run'/f'rank-{rank}'/f'restored-{start:04d}.json') for rank in range(world)]
+        proofs = [json.loads(remote('cat', path)) for path in paths]
+        if any(p['rank'] != i or p['step'] != start or p['generation'] != proofs[0]['generation']
+               or p['consumed_anchors'] != proofs[0]['consumed_anchors']
+               or any(p[key] is not True for key in ('exact_masters', 'exact_adam', 'exact_rng'))
+               for i, p in enumerate(proofs)):
+            raise ValueError('formal restore evidence differs across ranks')
+        restored = dict(recovered_step=start, restored_ranks=world, consumed_anchors=proofs[0]['consumed_anchors'],
+                        recovery_cursor_sha256=interrupted['cursor_sha256'])
     rows = observed['records']
     if len(rows) != world * count:
         raise ValueError('incomplete formal prefix')
     result = dict(container_id=obj['Id'], image=obj['Image'], state=obj['State']['Status'],
                   config_sha256=hashlib.sha256(cfg_raw).hexdigest(), policy_id=prepare['policy_id'],
                   **(dict(instance_negative_manifest_sha256=pin['sha256'], instance_epoch=window['instance_epoch']) if pin else {}),
-                  plan_sha256=file_hash(entry/'card-plan.json'), finite=finite,
+                  plan_sha256=file_hash(entry/'card-plan.json'), finite=finite, **restored,
                   **(dict(epochs=config['batch_config']['epochs'], population=config['batch_config']['source_queries'])
                      if 'token_buckets' in config else dict(total_updates=config['stop_update'])),
                   updates=[summarize(rows[i*world:(i+1)*world], start+i+1, config) for i in range(count)])

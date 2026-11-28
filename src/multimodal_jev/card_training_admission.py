@@ -21,7 +21,8 @@ def admit_graph(config, pin):
             or finite.get('speech_partners') != config.get('speech_partners')
             or any(config.get(k) != finite.get(k) for k in ('training_graph', 'physical_devices', 'source_policy_id',
                    'instruction_objective', 'token_buckets', 'training_acoustic_engine', 'packed_acoustics',
-                   'class_logit_ema', 'instance_negative_manifest', 'instance_epoch', 'schedule_sha256', 'stage1_layout', 'parity_probability_atol'))):
+                   'class_logit_ema', 'instance_negative_manifest', 'instance_epoch', 'fixed_epoch_recovery',
+                   'schedule_sha256', 'stage1_layout', 'parity_probability_atol'))):
         raise ValueError('formal graph differs from finite admission')
 
 

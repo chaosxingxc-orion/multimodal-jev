@@ -182,11 +182,13 @@ def run(c):
     design = read(entry/'design.json')
     budget = design['stage1']['total_updates']
     finite = role == 'finite'
+    interrupted = c.get('fixed_epoch_recovery')
+    resume_step = c.get('instance_resume', interrupted or {}).get('step', 0)
     from multimodal_jev.card_contrast import CARD_KINDS
     if not finite:
         witness = read(work/'finite/receipt.json')
         objective = c.get('triplet_objective', {})
-        if ('token_buckets' in c and witness.get('token_buckets') != c['token_buckets']) or witness['updates'] != c.get('instance_resume',{}).get('step',0)+c['finite_updates']:
+        if ('token_buckets' in c and witness.get('token_buckets') != c['token_buckets']) or witness['updates'] != resume_step+c['finite_updates']:
             raise ValueError('two finite updates required')
         if objective.get('kind') in CARD_KINDS and witness.get('instruction_objective') != objective:
             raise ValueError('finite window did not admit this contrastive configuration')
@@ -236,6 +238,10 @@ def run(c):
         parent['pins'][str(checkpoint)] = resume['sha256']
         parent['stop_update'] = (resume['step'] + c['finite_updates'] if finite else
                                  parent['batch_config']['source_queries'] * parent['batch_config']['epochs'])
+    if interrupted:
+        parent.update(start_update=resume_step, fixed_epoch_recovery=interrupted)
+        if finite:
+            parent['stop_update'] = resume_step + c['finite_updates']
     if not finite and c.get('stop_after_epoch'):
         epoch = c['stop_after_epoch']
         if not 0 < epoch < parent['batch_config']['epochs']:
@@ -281,6 +287,9 @@ def run(c):
         parent['finite_pressure'] = c['finite_pressure']
     for width in widths:
         parent['microbatch'] = parent['batch_config']['microbatch'] = width
+        if interrupted:
+            from multimodal_jev.window_recovery import fixed_epoch_parent
+            prior, recovery_proof, _ = fixed_epoch_parent(parent, len(parent['physical_devices']))
         commit_json(root/'config.json',parent)
         command = [sys.executable,'-m','torch.distributed.run','--nnodes=1','--node-rank=0',
             '--master-addr='+c['master_addr'],'--master-port='+str(c['master_port']),f"--max-restarts={0 if finite else parent.get('recovery', {}).get('max_restarts', 0)}",
@@ -311,6 +320,9 @@ def run(c):
         raise ValueError('stage1 terminal differs')
     max_observed_lag = 0
     pair_total = {}
+    audit_start = parent.get('start_update', 0)
+    if interrupted and not finite:
+        audit_start = recovery_proof['contract']['start']
     for rank in range(len(parent['physical_devices'])):
         rank_root=root/'run'/f'rank-{rank}'
         epoch_counts = []
@@ -323,8 +335,20 @@ def run(c):
                 widths = [read(rank_root/f"update-{parent['start_update']+1:04d}.json")['input_service']['local_groups']]
             if parity['inference_passes'] != passes or parity['compared'] != sum(widths[i % len(widths)] for i in range(passes)):
                 raise ValueError('finite inference parity incomplete')
-        for step in range(parent.get('start_update',0)+1,actual_stop+1):
-            record=read(rank_root/f'update-{step:04d}.json')
+        if interrupted:
+            restored = read(rank_root/f'restored-{resume_step:04d}.json')
+            if (restored['rank'] != rank or restored['step'] != resume_step
+                    or restored['generation'] != recovery_proof['generation']
+                    or restored['shard_sha256'] != recovery_proof['shards'][rank]
+                    or any(restored[key] is not True for key in ('exact_masters', 'exact_adam', 'exact_rng'))):
+                raise ValueError('missing exact same-epoch recovery verification')
+        for step in range(audit_start+1,actual_stop+1):
+            records = prior/f'rank-{rank}' if interrupted and step <= resume_step else rank_root
+            record=read(records/f'update-{step:04d}.json')
+            if interrupted and not finite and step == resume_step:
+                anchors_before_restart = epoch_count + record['real_queries']
+                if anchors_before_restart != restored['consumed_anchors']:
+                    raise ValueError('training prefix differs from the restored bucket cursor')
             if dynamic:
                 from bisect import bisect_left
                 info = record['input_service']
@@ -362,6 +386,9 @@ def run(c):
     if 'instance_epoch' in parent:
         receipt.update(start_update=parent['start_update'], stop_update=actual_stop, instance_epoch=parent['instance_epoch'],
                        instance_negative_manifest_sha256=parent['instance_negative_manifest']['sha256'])
+    if interrupted:
+        receipt.update(recovered_step=resume_step, restored_ranks=len(parent['physical_devices']),
+                       recovery_cursor_sha256=interrupted['cursor_sha256'])
     if 'training_graph' in parent:
         receipt['training_graph'] = parent['training_graph']
     if dynamic:

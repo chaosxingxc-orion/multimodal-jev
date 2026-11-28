@@ -31,6 +31,40 @@ def latest(root, contract, first, end, world):
     return proof
 
 
+def fixed_epoch_parent(config, world):
+    """Authenticate the interrupted formal window and its durable cursor."""
+    from .slurp_training import content_hash
+
+    pin = config['fixed_epoch_recovery']
+    formal = Path(pin['root'])
+    parent_path = formal/'config.json'
+    if file_hash(parent_path) != pin['formal_sha256']:
+        raise ValueError('interrupted formal configuration changed')
+    parent = json.loads(parent_path.read_bytes())
+    allowed = {'fixed_epoch_recovery', 'start_update', 'finite_graph_admission'}
+    if config['engineering_prefix']:
+        allowed.update({'engineering_prefix', 'training_dispatch_allowed', 'stop_update',
+                        'checkpoint_interval', 'parity_passes', 'recovery', 'evaluation_steps'})
+    if (parent['engineering_prefix'] is not False or parent['training_dispatch_allowed'] is not True
+            or 'instance_negative_manifest' not in parent or 'token_buckets' not in parent
+            or world != len(parent['physical_devices'])
+            or config['start_update'] != pin['step']
+            or {k: v for k, v in config.items() if k not in allowed}
+            != {k: v for k, v in parent.items() if k not in allowed}):
+        raise ValueError('same-epoch recovery changes the frozen training configuration')
+    root = formal/'run'
+    cursor = root/'recovery'/f"step-{pin['step']}.json"
+    if file_hash(cursor) != pin['cursor_sha256']:
+        raise ValueError('interrupted recovery cursor changed')
+    end = parent['batch_config']['source_queries'] * parent['batch_config']['epochs']
+    contract = dict(stage='stage1', config=content_hash(parent),
+                    start=parent['start_update'], stop=end)
+    proof = latest(root, contract, parent['start_update'], end, world)
+    if proof is None or proof['step'] != pin['step']:
+        raise ValueError('recovery must use the latest committed cursor')
+    return root, proof, contract
+
+
 def save(root, named, optimizer, identity, auxiliary, dist):
     import torch
     from .context_training_checkpoint import capture

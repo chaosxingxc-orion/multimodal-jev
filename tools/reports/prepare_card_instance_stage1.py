@@ -61,6 +61,32 @@ def package(c):
         path = Path(proof['policy']).parent
         config['read_only_mounts'] = [*config['read_only_mounts'],str(path)+':/jev-instance-resume']
         resume = dict(root='/jev-instance-resume',step=proof['updates'],sha256=proof['checkpoint_sha256'])
+    interrupted = c.get('interrupted_window')
+    if interrupted:
+        from tools.reports.stop_card_stage1_at_epoch import inspect, remote
+
+        if resume or c['epoch'] != 0:
+            raise ValueError('this recovery packaging requires the interrupted first epoch')
+        launch = pinned(interrupted['launch'])
+        if launch['host'] != config['host'] or launch['remote_root'] == config['remote_root']:
+            raise ValueError('recovery requires a new window on the interrupted host')
+        state = inspect(launch)['State']
+        if state['Status'] != 'exited' or state['Running'] or state['ExitCode'] == 0:
+            raise ValueError('recovery requires an exited, incomplete formal window')
+        formal = Path(launch['remote_root'])/'formal'
+        import json
+        from hashlib import sha256
+        raw = remote(launch['host'], 'cat', str(formal/'config.json')).stdout
+        original = json.loads(raw)
+        if (sha256(raw).hexdigest() != interrupted['formal_sha256']
+                or original['engineering_prefix'] is not False
+                or original['physical_devices'] != config['devices']
+                or original['instance_epoch'] != c['epoch']
+                or original['instance_negative_manifest'] != pin):
+            raise ValueError('interrupted configuration differs from the admitted epoch')
+        config['read_only_mounts'] = [*config['read_only_mounts'], str(formal)+':/jev-interrupted']
+        interrupted = {k: interrupted[k] for k in ('step', 'formal_sha256', 'cursor_sha256')}
+        interrupted['root'] = '/jev-interrupted'
     from multimodal_jev.card_contrast import Directions
     for role in roles:
         name = role+'.json'
@@ -74,6 +100,9 @@ def package(c):
         if resume:
             ops['instance_resume'] = resume
             ops.pop('finite_pressure',None)
+        if interrupted and role != 'prepare':
+            ops['fixed_epoch_recovery'] = interrupted
+            ops.pop('finite_pressure', None)
         commit_json(entry/name,macros('NATIVE_SEAL_CONTAINER_CONFIG',ops))
     archive = root/'entry.tar'
     with tarfile.open(archive,'x') as f:

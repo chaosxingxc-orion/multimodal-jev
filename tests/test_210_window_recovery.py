@@ -8,6 +8,7 @@ import torch
 from multimodal_jev import window_recovery as recovery, evaluation_blocks as blocks
 from multimodal_jev.baseline import file_hash
 from multimodal_jev.context_execution import content_key
+from multimodal_jev.slurp_training import content_hash
 from tools.reports.score_probability_panels import compare_history
 
 
@@ -45,6 +46,36 @@ def test_last_committed_generation_identical_next_adam_and_tamper(tmp_path,monke
     (tmp_path/'recovery'/proof['generation']/'rank-0.pt').write_bytes(b'truncated')
     with pytest.raises(ValueError,match='shard digest'):
         recovery.recover(tmp_path,proof,named,opt(),identity)
+
+
+def test_same_epoch_recovery_binds_durable_cursor_and_unchanged_manifest(tmp_path):
+    parent = dict(engineering_prefix=False, training_dispatch_allowed=True, start_update=0,
+                  stop_update=20, batch_config=dict(source_queries=42, epochs=2),
+                  physical_devices=[0, 1], instance_negative_manifest={'sha256': 'pool'},
+                  token_buckets={'max_anchors': [4, 2]}, recovery={'interval': 4})
+    cfg = tmp_path/'config.json'
+    cfg.write_text(json.dumps(parent))
+    directory = tmp_path/'run'/'recovery'
+    directory.mkdir(parents=True)
+    cursor = directory/'step-8.json'
+    proof = dict(step=8, contract=dict(stage='stage1', config=content_hash(parent), start=0, stop=84),
+                 generation='generation-'+'a'*32, shards=['one','two'])
+    cursor.write_text(json.dumps(proof))
+    pin = dict(root=str(tmp_path), step=8, formal_sha256=file_hash(cfg), cursor_sha256=file_hash(cursor))
+    formal = dict(parent, start_update=8, fixed_epoch_recovery=pin)
+    finite = dict(formal, engineering_prefix=True, training_dispatch_allowed=False, stop_update=10,
+                  checkpoint_interval=2, parity_passes=4)
+    del finite['recovery']
+    for config in (finite, formal):
+        assert recovery.fixed_epoch_parent(config, 2) == (directory.parent, proof, proof['contract'])
+    with pytest.raises(ValueError, match='frozen training configuration'):
+        recovery.fixed_epoch_parent(dict(finite, instance_negative_manifest={'sha256': 'new'}), 2)
+    (directory/'step-12.json').write_text(json.dumps(dict(proof, step=12)))
+    with pytest.raises(ValueError, match='latest committed cursor'):
+        recovery.fixed_epoch_parent(formal, 2)
+    cursor.write_text(cursor.read_text()+'\n')
+    with pytest.raises(ValueError, match='cursor changed'):
+        recovery.fixed_epoch_parent(formal, 2)
 
 
 def test_history_paired_same_arm_and_changed_archive_rejected(tmp_path,monkeypatch):

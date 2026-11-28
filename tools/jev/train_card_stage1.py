@@ -150,6 +150,8 @@ def run(c,root):
         recovered = recovery.latest(root, window_contract, start_update, stop_update, world) if restart else None
         recovered_root=root
         recovered_contract=window_contract
+        if not recovered and 'fixed_epoch_recovery' in c:
+            recovered_root, recovered, recovered_contract = recovery.fixed_epoch_parent(c, world)
         if not recovered and 'continuation' in c:
             origin=c['continuation']
             history=Path(origin['root'])
@@ -378,6 +380,11 @@ def run(c,root):
                     raise ValueError('restored bucket cursor belongs to a different manifest')
                 torch.set_rng_state(auxiliary['cpu_rng'])
                 torch.npu.set_rng_state(auxiliary['npu_rng'],device)
+                if 'fixed_epoch_recovery' in c and start_update == c['start_update']:
+                    cursor_epoch, offset, waiting = auxiliary['bucket_cursor']
+                    if cursor_epoch != 0:
+                        raise ValueError('same-epoch checkpoint must have an unfinished bucket cursor')
+                    extra.update(exact_rng=True, consumed_anchors=offset-len(waiting))
             atomic_json(out/f'restored-{start_update:04d}.json',dict(step=start_update,rank=rank,
                 exact_masters=True,exact_adam=True, **extra,
                 generation=recovered['generation'],shard_sha256=recovered['shards'][rank]))
