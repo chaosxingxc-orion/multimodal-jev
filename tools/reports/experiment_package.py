@@ -232,7 +232,11 @@ def evaluate_panel(panel, proofs):
 
 def step_result(template, macros, state, selection, lock, upstream, resume=False):
     name = template["id"]
-    resolved, issue = resolve_step(template, macros)
+    scoped = template.get('bindings', {})
+    if not isinstance(scoped, dict) or set(scoped) & macros.keys():
+        raise ValueError("Step bindings must be distinct from shared or local bindings")
+    macros = dict(macros, **scoped)
+    resolved, issue = resolve_step({k:v for k,v in template.items() if k != 'bindings'}, macros)
     if issue:
         return dict(id=name, status="unbound", detail=issue)
     step, _ = resolved

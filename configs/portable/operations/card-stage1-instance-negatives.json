@@ -1,0 +1,17 @@
+{
+  "output": "${INSTANCE_NEGATIVE_OUTPUT}",
+  "score": "${INSTANCE_NEGATIVE_SCORE}",
+  "endpoint": "${INSTANCE_NEGATIVE_ENDPOINT}",
+  "embeddings": {"path": "${INSTANCE_NEGATIVE_EMBEDDINGS}/audit.json", "sha256": "${INSTANCE_NEGATIVE_EMBEDDINGS_SHA}"},
+  "real": "${CARD_TPO_REAL_RELEASE}",
+  "synthetic": "${CARD_TPO_SYNTHETIC}",
+  "semantic": "${S212_SEMANTIC_INDEX}",
+  "epoch": "${INSTANCE_NEGATIVE_EPOCH}",
+  "top_k": 5,
+  "seed": 317,
+  "false_accept_fraction": 0.05,
+  "probability_margin": 0.3,
+  "search_block": 128,
+  "search_threads": 16,
+  "progress_every_blocks": 64
+}
