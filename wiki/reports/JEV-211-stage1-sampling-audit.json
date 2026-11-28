@@ -1,0 +1,364 @@
+{
+  "score_audit_sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772",
+  "full_sha256": "66408e8191ee41de37d9faf23ea0554ff2e8f214a100509b9286e798e585ce26",
+  "stage1_endpoint_sha256": "e3b19bdbe17c49cd16a757895e3fe71ab068f6566930e85aed06c62fde43d846",
+  "score_updates": 1359,
+  "score_wall_seconds": 6554.814096710645,
+  "cards": 3,
+  "recordings": 3,
+  "top_k": 5,
+  "margin": 0.3,
+  "ties": 39,
+  "cardinalities": {
+    "all": 109610,
+    "wrong": 7828,
+    "wrong_or_tie": 7867,
+    "margin_failed": 40457,
+    "real": 40513
+  },
+  "ambiguous_top1_wrong_card": 847,
+  "gap_median": 0.40217047929763794,
+  "top1_minus_kth_wrong_median": 0.158868670463562,
+  "uniform_card_baseline": {
+    "top1_card": 0.04411114399045113,
+    "top_k_cards": 0.20758869940783942
+  },
+  "fixed_class_oracle": {
+    "all": 0.7509716266763982,
+    "wrong": 0.6230199284619315
+  },
+  "snapshots": {
+    "682": {
+      "semantic_control_epoch_index": 0,
+      "distribution_sha256": "be58ca46fee20feb81381c5a9ac3eb0875d0f8c79f578e49fc4843b524f79a68",
+      "commit_sha256": "30ba1de2eaf45c73b047c290d57ec420390112ddb392d4630dde42964f4738e3",
+      "controls": 2153,
+      "controls_on_wrong": 197,
+      "median_class_top_sampling_probability": 0.018562983821335158,
+      "maximum_class_sampling_probability": 0.020195108731716285,
+      "repeated_card_probability": 0.04460543151726591,
+      "metrics": {
+        "top1_card": {
+          "all": {
+            "k_base": 0.05115657498111394,
+            "with_semantic_control": 0.057080641758193676
+          },
+          "wrong": {
+            "k_base": 0.050830115701215324,
+            "with_semantic_control": 0.055939713746525566
+          },
+          "wrong_or_tie": {
+            "k_base": 0.050839037323663405,
+            "with_semantic_control": 0.05592146912375456
+          },
+          "margin_failed": {
+            "k_base": 0.051262253617617014,
+            "with_semantic_control": 0.057705339820866015
+          },
+          "real": {
+            "k_base": 0.05134111605994429,
+            "with_semantic_control": 0.06118112115167301
+          }
+        },
+        "top1_card_with_ties": {
+          "all": {
+            "k_base": 0.051540063882391726,
+            "with_semantic_control": 0.05748743766317368
+          },
+          "wrong": {
+            "k_base": 0.050855334153506744,
+            "with_semantic_control": 0.055964932198816986
+          },
+          "wrong_or_tie": {
+            "k_base": 0.050864130757569244,
+            "with_semantic_control": 0.055946562557660395
+          },
+          "margin_failed": {
+            "k_base": 0.051305180881057906,
+            "with_semantic_control": 0.05774665083786776
+          },
+          "real": {
+            "k_base": 0.05160932768447216,
+            "with_semantic_control": 0.06144511539787172
+          }
+        },
+        "top_k_cards": {
+          "all": {
+            "k_base": 0.23092910148386775,
+            "with_semantic_control": 0.2435671855216786
+          },
+          "wrong": {
+            "k_base": 0.22840879302065623,
+            "with_semantic_control": 0.24256616792840321
+          },
+          "wrong_or_tie": {
+            "k_base": 0.22843587910262175,
+            "with_semantic_control": 0.24262194810974622
+          },
+          "margin_failed": {
+            "k_base": 0.23087519093629105,
+            "with_semantic_control": 0.2448629063455573
+          },
+          "real": {
+            "k_base": 0.23196482142584726,
+            "with_semantic_control": 0.2546060831016602
+          }
+        },
+        "margin_violating_card": {
+          "all": {
+            "k_base": 0.07159802735938334,
+            "with_semantic_control": 0.07561385186164174
+          },
+          "wrong": {
+            "k_base": 0.4673087351368178,
+            "with_semantic_control": 0.4793644493089784
+          },
+          "wrong_or_tie": {
+            "k_base": 0.46595770851990054,
+            "with_semantic_control": 0.47796148218738344
+          },
+          "margin_failed": {
+            "k_base": 0.1939802698880789,
+            "with_semantic_control": 0.20486032831288903
+          },
+          "real": {
+            "k_base": 0.11000355394043017,
+            "with_semantic_control": 0.11669699018324574
+          }
+        },
+        "top1_fixed_card_audio": {
+          "all": {
+            "k_base": 3.349240648361804e-05,
+            "with_semantic_control": 3.310293825653676e-05
+          },
+          "wrong": {
+            "k_base": 3.6910334837627125e-05,
+            "with_semantic_control": 3.6514565587074926e-05
+          },
+          "wrong_or_tie": {
+            "k_base": 3.693313960539928e-05,
+            "with_semantic_control": 3.653565894362191e-05
+          },
+          "margin_failed": {
+            "k_base": 3.683949215857285e-05,
+            "with_semantic_control": 3.646149877588737e-05
+          },
+          "real": {
+            "k_base": 3.9649754101676875e-05,
+            "with_semantic_control": 3.884953514144351e-05
+          }
+        },
+        "top_k_fixed_card_audio": {
+          "all": {
+            "k_base": 0.0001684631929066008,
+            "with_semantic_control": 0.00017502891363946376
+          },
+          "wrong": {
+            "k_base": 0.00017874677433463596,
+            "with_semantic_control": 0.00017612173510059414
+          },
+          "wrong_or_tie": {
+            "k_base": 0.00017873317110259025,
+            "with_semantic_control": 0.00017610635357747167
+          },
+          "margin_failed": {
+            "k_base": 0.00017811177954874278,
+            "with_semantic_control": 0.0001759656062727767
+          },
+          "real": {
+            "k_base": 0.00021230922480241257,
+            "with_semantic_control": 0.00020681565351114565
+          }
+        },
+        "margin_violating_fixed_card_audio": {
+          "all": {
+            "k_base": 0.07440400942795929,
+            "with_semantic_control": 0.07808154398994589
+          },
+          "wrong": {
+            "k_base": 0.3759231690084201,
+            "with_semantic_control": 0.38734934091652895
+          },
+          "wrong_or_tie": {
+            "k_base": 0.3747425592741798,
+            "with_semantic_control": 0.3862240721961456
+          },
+          "margin_failed": {
+            "k_base": 0.1574975975741906,
+            "with_semantic_control": 0.16543183116286722
+          },
+          "real": {
+            "k_base": 0.1000529875355289,
+            "with_semantic_control": 0.10667405909565895
+          }
+        }
+      }
+    },
+    "1359": {
+      "semantic_control_epoch_index": 1,
+      "distribution_sha256": "75e727e0e366f7ea30efb692757196a054ec8e6035242c21757e088d716e320e",
+      "commit_sha256": "e6863791ca2d54016085d672c1cece7f87a48a1968a188c9901a9184a1005836",
+      "controls": 2153,
+      "controls_on_wrong": 197,
+      "median_class_top_sampling_probability": 0.018176836524266743,
+      "maximum_class_sampling_probability": 0.020098800234650677,
+      "repeated_card_probability": 0.044585015615366194,
+      "metrics": {
+        "top1_card": {
+          "all": {
+            "k_base": 0.0507207431066048,
+            "with_semantic_control": 0.05664397957637698
+          },
+          "wrong": {
+            "k_base": 0.05011436854154021,
+            "with_semantic_control": 0.05523469920654807
+          },
+          "wrong_or_tie": {
+            "k_base": 0.050124739627041955,
+            "with_semantic_control": 0.055217730517340885
+          },
+          "margin_failed": {
+            "k_base": 0.050635177509250895,
+            "with_semantic_control": 0.05720936349876814
+          },
+          "real": {
+            "k_base": 0.05076323776372789,
+            "with_semantic_control": 0.060472635777248415
+          }
+        },
+        "top1_card_with_ties": {
+          "all": {
+            "k_base": 0.051103481126948694,
+            "with_semantic_control": 0.05705006391619335
+          },
+          "wrong": {
+            "k_base": 0.050139631450709404,
+            "with_semantic_control": 0.055259962115717265
+          },
+          "wrong_or_tie": {
+            "k_base": 0.05014987729743428,
+            "with_semantic_control": 0.05524286818773321
+          },
+          "margin_failed": {
+            "k_base": 0.05067812816581962,
+            "with_semantic_control": 0.05725070817768986
+          },
+          "real": {
+            "k_base": 0.05102864398365015,
+            "with_semantic_control": 0.06073388091318583
+          }
+        },
+        "top_k_cards": {
+          "all": {
+            "k_base": 0.23010733409300918,
+            "with_semantic_control": 0.24276847546680794
+          },
+          "wrong": {
+            "k_base": 0.2272224019351914,
+            "with_semantic_control": 0.24122121173992886
+          },
+          "wrong_or_tie": {
+            "k_base": 0.22725455642385778,
+            "with_semantic_control": 0.24128230366407558
+          },
+          "margin_failed": {
+            "k_base": 0.2297247786450262,
+            "with_semantic_control": 0.24379041436872873
+          },
+          "real": {
+            "k_base": 0.23076194083722282,
+            "with_semantic_control": 0.2534756591931803
+          }
+        },
+        "margin_violating_card": {
+          "all": {
+            "k_base": 0.07128579074812647,
+            "with_semantic_control": 0.07527734233870598
+          },
+          "wrong": {
+            "k_base": 0.46657770649508196,
+            "with_semantic_control": 0.47829407189546375
+          },
+          "wrong_or_tie": {
+            "k_base": 0.46522840917986347,
+            "with_semantic_control": 0.4768944305254152
+          },
+          "margin_failed": {
+            "k_base": 0.1931343283956334,
+            "with_semantic_control": 0.20394862431088723
+          },
+          "real": {
+            "k_base": 0.10955638111710381,
+            "with_semantic_control": 0.11611824180557755
+          }
+        },
+        "top1_fixed_card_audio": {
+          "all": {
+            "k_base": 3.328940676502293e-05,
+            "with_semantic_control": 3.2900510667050516e-05
+          },
+          "wrong": {
+            "k_base": 3.649669426164648e-05,
+            "with_semantic_control": 3.610253803105615e-05
+          },
+          "wrong_or_tie": {
+            "k_base": 3.651952871857114e-05,
+            "with_semantic_control": 3.61237073802979e-05
+          },
+          "margin_failed": {
+            "k_base": 3.6478381754364555e-05,
+            "with_semantic_control": 3.6102298240091946e-05
+          },
+          "real": {
+            "k_base": 3.931755007682353e-05,
+            "with_semantic_control": 3.85177768238468e-05
+          }
+        },
+        "top_k_fixed_card_audio": {
+          "all": {
+            "k_base": 0.0001669538001801801,
+            "with_semantic_control": 0.00017353433108544607
+          },
+          "wrong": {
+            "k_base": 0.0001765501996108275,
+            "with_semantic_control": 0.0001739484401917256
+          },
+          "wrong_or_tie": {
+            "k_base": 0.00017654195856397798,
+            "with_semantic_control": 0.0001739383946622887
+          },
+          "margin_failed": {
+            "k_base": 0.00017629557501705635,
+            "with_semantic_control": 0.00017416024907078085
+          },
+          "real": {
+            "k_base": 0.0002101285415702024,
+            "with_semantic_control": 0.0002046652863636877
+          }
+        },
+        "margin_violating_fixed_card_audio": {
+          "all": {
+            "k_base": 0.0738894363356588,
+            "with_semantic_control": 0.07749053124875221
+          },
+          "wrong": {
+            "k_base": 0.37452260736800735,
+            "with_semantic_control": 0.3853468150817347
+          },
+          "wrong_or_tie": {
+            "k_base": 0.37334370266441996,
+            "with_semantic_control": 0.38422639240224526
+          },
+          "margin_failed": {
+            "k_base": 0.15651227736424553,
+            "with_semantic_control": 0.16443445223470474
+          },
+          "real": {
+            "k_base": 0.09936658861741292,
+            "with_semantic_control": 0.10591033911163766
+          }
+        }
+      }
+    }
+  }
+}
