@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-speech-alignment-211.md",
-  "revision": "stage2-a-calibrated-mining-v3",
+  "revision": "stage2-a-calibrated-view-audit-v4",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -520,6 +520,12 @@
                   "replay"
                 ],
                 3200
+              ],
+              [
+                [
+                  "view_sha256"
+                ],
+                "094c68fe0398d74e9c86e315bf0c22599f25debd5f50706110a5bf764860e41b"
               ]
             ],
             "report": {
@@ -545,7 +551,8 @@
             "hash_workers": [
               "execution",
               "io_workers"
-            ]
+            ],
+            "sha256": "717510955ba50a8284bca524cdca4d3e192a65f117ceba6bea46c1b0f8a4c1e0"
           }
         ],
         "lineage": [
@@ -620,26 +627,9 @@
               "value",
               "checkpoint_sha256"
             ]
-          ],
-          [
-            [
-              0,
-              "value",
-              "view_sha256"
-            ],
-            [
-              0,
-              "value",
-              "files",
-              "rows.json"
-            ]
           ]
         ],
         "python": "${CARD_PYTHON}",
-        "requires_current_dispatch": true,
-        "dispatch_guards": [
-          "${CARD_STRATIFIED_TARGETS}"
-        ],
         "run": [
           [
             "tools.reports.build_card_tpo_targets",
