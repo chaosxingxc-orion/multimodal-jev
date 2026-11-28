@@ -279,6 +279,33 @@ def target_rank_counts(target, gold):
     return counts
 
 
+def fit_mining_scale(source, full, probs, clean, calibration, audit, folds):
+    import numpy as np
+    from tools.reports.audit_card_probability_scale import fit_grouped_affine
+
+    labels = {label: i for i, label in enumerate(full['labels'])}
+    roster = {row['id']: row for row in full['rows']}
+    ids = {r['id'] for r in calibration}
+    groups = {r['source_group'] for r in calibration}
+    sounds = {r['audio_sha256'] for r in calibration}
+    if (len(ids) != len(calibration) or ids & clean.keys() or
+            any(r['group'] in groups or r['audio_sha256'] in sounds for r in clean.values())):
+        raise ValueError('calibration and mining must use disjoint TRAIN groups and recordings')
+    for row in calibration:
+        meta = roster.get(row['id'])
+        if (meta is None or meta['synthetic'] is not False or
+                any(meta[k] != row[k] for k in ('intent', 'audio_sha256'))):
+            raise ValueError('calibration is not the frozen native TRAIN subset')
+    p = np.array([probs[r['id']] for r in calibration], dtype=np.float64)
+    if p.shape != (len(calibration), len(labels)) or not np.all((p > 0) & (p < 1)):
+        raise ValueError('calibration requires complete interior probabilities')
+    fitted = fit_grouped_affine(np.log(p) - np.log1p(-p),
+                                np.array([labels[r['intent']] for r in calibration]),
+                                [r['source_group'] for r in calibration], folds)
+    return dict(fitted, schema='jev-card-source-train-mining-fit-v1', audit_sha256=audit['sha256'],
+                checkpoint=source['formal']['checkpoint_sha256'], policy_id=source['formal']['policy_id'])
+
+
 def build(config):
     dst = Path(config['output'])
     schedule = config['schedule']
@@ -293,18 +320,24 @@ def build(config):
             or loss.get('gate') != 'strict_target_top1' or type(schedule['epochs']) is not int or schedule['epochs'] < 1):
         raise ValueError('invalid single-card probability gap or schedule')
     mining = config.get('calibrated_mining')
+    fresh_fit = config.get('fit_mining_scale')
+    if fresh_fit is not None and (mining is None or 'calibration_fit' in config):
+        raise ValueError('register either a fresh calibration or a pinned fit for mining')
+    fit = None
     if mining is None:
         rows, replay = select_rows(clean, probs, labels, config['selection'], loss['margin'], schedule['seed'],
                                    config['reward']['probability_epsilon'])
     else:
         from multimodal_jev.card_calibrated_mining import mine
-        fit = read_pin(config['calibration_fit'])
+        fit = (fit_mining_scale(source, full, probs, clean, calibration, config['merged'], fresh_fit['folds'])
+               if fresh_fit is not None else read_pin(config['calibration_fit']))
         if (fit['audit_sha256'] != config['merged']['sha256']
                 or fit['checkpoint'] != source['formal']['checkpoint_sha256']
                 or fit['calibration_recordings'] != len(calibration)):
             raise ValueError('calibrated mining parameters are bound to a different score audit')
-        mining = dict(mining, a=fit['affine_slope'], b=fit['affine_bias'],
-                      calibration_report_sha256=config['calibration_fit']['sha256'])
+        mining = dict(mining, a=fit['affine_slope'], b=fit['affine_bias'])
+        if fresh_fit is None:
+            mining['calibration_report_sha256'] = config['calibration_fit']['sha256']
         rows, replay = mine(clean, probs, labels, mining)
     batches = shuffled_batches(rows, schedule)
     target, batches, counts, audit, ordering = compile_schedule(
@@ -343,6 +376,9 @@ def build(config):
         reference = torch.tensor([probs[uid] for uid in rows], dtype=torch.float32)
         commit_file(stage/'targets.pt', lambda stream: torch.save(target, stream))
         commit_file(stage/'reference.pt', lambda stream: torch.save(reference, stream))
+        if fresh_fit is not None:
+            commit_json(stage/'mining-calibration.json', fit)
+            mining['calibration_report_sha256'] = file_hash(stage/'mining-calibration.json')
         manifest['files'] = {p.name:file_hash(p) for p in sorted(stage.iterdir())}
         if mining is not None:
             realized_replay_fraction = evidence['strata']['replay'] / len(rows)

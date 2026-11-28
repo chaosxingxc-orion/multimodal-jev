@@ -81,6 +81,29 @@ def metrics(z, gold):
                 macro_f1_supported_gold=float(np.mean((2*tp/np.maximum(1, den))[truth.sum(axis=0)>0])))
 
 
+def fit_grouped_affine(z, gold, groups, folds):
+    """Validate on disjoint source groups, then refit on the full calibration split."""
+    groups = list(groups)
+    if (type(folds) is not int or folds < 2 or len(z) != len(gold) or len(z) != len(groups)
+            or not groups or any(not isinstance(g, str) or not g for g in groups)):
+        raise ValueError('invalid source TRAIN calibration folds')
+    assignment = np.array([int(digest(g.encode()), 16) % folds for g in groups])
+    oof = np.empty_like(z)
+    details = []
+    for i in range(folds):
+        valid = assignment == i
+        if not valid.any() or valid.all():
+            raise ValueError('Empty fit or validation group')
+        a, b = fit_affine(z[~valid], gold[~valid])
+        oof[valid] = a * z[valid] + b
+        details.append(dict(recordings=int(valid.sum()), affine_slope=float(a), affine_bias=float(b)))
+    a, b = fit_affine(z, gold)
+    if not np.array_equal(z.argmax(1), oof.argmax(1)):
+        raise ValueError('grouped positive affine calibration changed ranking')
+    return dict(affine_slope=float(a), affine_bias=float(b), affine_out_of_fold=metrics(oof, gold),
+                calibration_recordings=len(z), groups=len(set(groups)), folds=details, raw=metrics(z, gold))
+
+
 def high_scores(z, gold, threshold):
     p = sigmoid(z)
     idx = np.arange(len(p))

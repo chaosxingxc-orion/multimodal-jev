@@ -52,6 +52,8 @@ def score_panel(cache, jobs, predictions, protocol, *, thresholds=None):
                       positive_nll=float(nll[actual].mean()), negative_nll=float(nll[~actual].mean()),
                       candidate_brier=float(brier.mean()), positive_brier=float(brier[actual].mean()),
                       negative_brier=float(brier[~actual].mean()),
+                      mean_gold_probability=float(probs[sample, gold].mean()),
+                      mean_strongest_wrong_probability=float(wrong.mean()),
                       mean_gold_minus_strongest_wrong=float((probs[sample, gold]-wrong).mean()), confidence_bins=bins)
         if protocol["primary"] == "top1_macro_f1":
             support = np.bincount(gold, minlength=len(ids))

@@ -87,10 +87,14 @@
   },
   "evaluation": {
     "comparison_experiment": "JEV-211",
-    "comparison_endpoint": "stage1-step-1359",
+    "comparison_endpoints": {"stage1": "stage1-step-1359", "stage2_a": "stage2-a-step-75"},
+    "comparison_metrics_sha256": "fd207f2410f7e4ead3f7ec5982592ff4bd20b3460b4c1c992e12cbc4f6314850",
+    "comparison_block_plan_sha256": "03ed8a3be2e482c808de2427981693626d7eef80d0b4df37638751acc544729a",
+    "run_after_both_stages_audited": true,
+    "replicas_per_device": "${S212_EVAL_REPLICAS}",
     "comparison_audit_sha256": "827137d1e0a7670a4cee4cd82843c816fd5bc7c92d3241e3a772a94b2169cd98",
     "epoch_one_panels": ["SLURP_clean_SELECTION60"],
-    "epoch_two_panels": {
+    "final_panels_per_endpoint": {
       "SLURP_clean_SELECTION60": 9226,
       "SLURP_clean_TEST60": 12991,
       "MINDS_native14": 8168,
@@ -102,5 +106,19 @@
     "selection_macro_f1_delta_lower_bound_gt": -0.01,
     "minds_improvement_macro_f1_delta_lower_bound_gt": 0.0
   },
-  "stage2_in_scope": false
+  "stage2": {
+    "inherited_recipe": "JEV-211-stage2-a",
+    "parent_and_reference": "JEV-212-audited-stage1-epoch-two",
+    "source_scores": "full_learning_train",
+    "calibration": {"method": "positive_shared_affine", "source_group_folds": 5, "use": "mining_only"},
+    "replay_fraction": 0.2,
+    "training_probability_space": "raw_sigmoid",
+    "view_config": "configs/portable/operations/card-tpo-calibrated-mining-212.json",
+    "package_config": "configs/portable/operations/card-tpo-package-sequential-parity.json",
+    "training_dp": 8,
+    "epochs": 1,
+    "projection_batch": 384,
+    "training_updates": "derive_from_frozen_view_and_token_buckets",
+    "finite_acceptance": {"parity_devices": 2, "parity_passes_per_device": 4, "optimizer_updates": 2}
+  }
 }

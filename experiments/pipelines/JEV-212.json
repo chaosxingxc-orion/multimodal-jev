@@ -1,27 +1,14 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-instance-negatives-212.md",
-  "revision": "instance-top5-design-v1",
+  "revision": "instance-top5-stage2-a-v2",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
     "data": [
       {
         "id": "verify-epoch-one-member-score-reference",
-        "checks": [
-          {
-            "path": "${S212_MINING_PARENT_ENDPOINT}/receipt.json",
-            "sha256": "e3b19bdbe17c49cd16a757895e3fe71ab068f6566930e85aed06c62fde43d846"
-          },
-          {
-            "path": "${S212_MINING_PARENT_SCORE}/audit.json",
-            "sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772"
-          },
-          {
-            "path": "${S212_MINING_PARENT_SCORE}/entry/full.json",
-            "sha256": "66408e8191ee41de37d9faf23ea0554ff2e8f214a100509b9286e798e585ce26"
-          }
-        ]
+        "checks": [{"path": "${S212_MINING_PARENT_ENDPOINT}/receipt.json", "sha256": "e3b19bdbe17c49cd16a757895e3fe71ab068f6566930e85aed06c62fde43d846"}, {"path": "${S212_MINING_PARENT_SCORE}/audit.json", "sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772"}, {"path": "${S212_MINING_PARENT_SCORE}/entry/full.json", "sha256": "66408e8191ee41de37d9faf23ea0554ff2e8f214a100509b9286e798e585ce26"}]
       },
       {
         "id": "freeze-epoch-one-pool",
@@ -40,13 +27,154 @@
       {
         "id": "resume-and-audit-stage1-epoch-two",
         "pending": "需要验收轮间 optimizer 和学习率恢复，并由独立收据核对两轮实际人口。"
+      },
+      {
+        "id": "score-stage1-endpoint-train",
+        "checks": [{"path": "${CARD_ENDPOINT_SCORE}/audit.json", "equals": [[["passed"], true], [["container_exited"], true], [["recordings"], 109610], [["pairs"], 7453480], [["replicas_per_device"], "${S212_TRAIN_SCORE_REPLICAS}"]], "report": {"updates": ["updates"], "recordings": ["recordings"], "pairs": ["pairs"], "每卡打分进程": ["replicas_per_device"], "TRAIN 试点录音": ["pilot", "recordings"], "TRAIN 首窗候选/秒": ["pilot", "new_pairs_per_second"]}}],
+        "config": "configs/portable/operations/card-scoring-endpoint-concurrent-212.json",
+        "inputs": [{"path": "${CARD_ENDPOINT_AUDIT}"}],
+        "lineage": [[[0, "value", "checkpoint_sha256"], [0, "value", "checkpoint_sha256"]], [[0, "value", "policy_id"], [0, "value", "policy_id"]]],
+        "python": "${CARD_PYTHON}",
+        "run": [["tools.reports.prepare_card_scoring_benchmark", "configs/portable/operations/card-scoring-endpoint-concurrent-212.json", "${EXPERIMENT_LOCAL_CONFIG}"]],
+        "requires_current_dispatch": true,
+        "dispatch_guards": ["${CARD_ENDPOINT_SCORE}/entry.tar"]
+      },
+      {
+        "id": "publish-stratified-stage2-view",
+        "config": "configs/portable/operations/card-tpo-calibrated-mining-212.json",
+        "inputs": [{"path": "${CARD_ENDPOINT_SCORE}/audit.json"}],
+        "checks": [{"path": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json", "equals": [[["schema"], "jev-tpo-reward-view-v1"], [["schedule", "global_batch"], 384], [["schedule", "epochs"], 1], [["probability_gap", "gate"], "strict_target_top1"], [["bidirectional_contrast", "reward"], {"temperature": 1.0, "probability_epsilon": 1e-06, "max_displacement": 1.0, "audio_to_label": 0.5, "label_to_audio": 0.5, "brier": 1.0}], [["probability_gap"], {"margin": 0.1, "weight": 0.014705882352941176, "gate": "strict_target_top1"}], [["sampling", "replay_fraction"], 0.2], [["realized_replay_fraction"], 0.2], [["sampling", "confidence"], 0.9], [["sampling", "boundary_gap"], 0.1]], "report": {"recordings": ["recordings"], "updates": ["updates"], "strata": ["strata"], "挖掘校准 a": ["sampling", "a"], "挖掘校准 b": ["sampling", "b"]}, "verify_files": ["rows.json", "batches.json", "population-audit.json", "reference.pt", "targets.pt", "calibration.json", "cards.json", "mining-calibration.json"], "hash_workers": ["execution", "io_workers"]}, {"path": "${CARD_STRATIFIED_TARGETS}/mining-calibration.json", "equals": [[["schema"], "jev-card-source-train-mining-fit-v1"]], "report": {"TRAIN 校准录音": ["calibration_recordings"], "TRAIN 校准来源组": ["groups"], "原始逐卡 Brier": ["raw", "brier"], "五折逐卡 Brier": ["affine_out_of_fold", "brier"]}}],
+        "lineage": [[[0, "value", "source_policy"], [0, "value", "policy_id"]], [[0, "value", "source_policy_sha256"], [0, "value", "policy_sha256"]], [[0, "value", "full_score_roster_sha256"], [0, "value", "full_sha256"]], [[0, "value", "candidate_ids"], [0, "value", "labels"]], [[0, "value", "reference_sha256"], [0, "sha256"]], [[0, "value", "card_input", "checkpoint_sha256"], [0, "value", "checkpoint_sha256"]], [[1, "value", "audit_sha256"], [0, "sha256"]], [[1, "value", "policy_id"], [0, "value", "policy_id"]], [[1, "value", "checkpoint"], [0, "value", "checkpoint_sha256"]]],
+        "python": "${CARD_PYTHON}",
+        "run": [["tools.reports.build_card_tpo_targets", "configs/portable/operations/card-tpo-calibrated-mining-212.json", "${EXPERIMENT_LOCAL_CONFIG}"]],
+        "requires_current_dispatch": true,
+        "dispatch_guards": ["${CARD_STRATIFIED_TARGETS}"]
+      },
+      {
+        "id": "bind-fused-stage2-parent",
+        "config": "configs/portable/operations/card-tpo-parent-shared-actor-212.json",
+        "python": "${CARD_PYTHON}",
+        "run": [["tools.reports.bind_card_tpo_parent", "configs/portable/operations/card-tpo-parent-shared-actor-212.json", "${EXPERIMENT_LOCAL_CONFIG}"]],
+        "inputs": [{"path": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json"}, {"path": "${CARD_ENDPOINT_AUDIT}"}],
+        "dispatch_guards": ["${CARD_TPO_PARENT}"],
+        "checks": [{"path": "${CARD_TPO_PARENT}", "equals": [[["physical_devices"], "${S212_TRAIN_DEVICES}"], [["source_policy"], "/jev-endpoint"]]}],
+        "lineage": [[[0, "value", "source_policy_id"], [0, "value", "source_policy"]], [[0, "value", "reference_dataset", "manifest_sha256"], [0, "value", "reference_sha256"]], [[0, "value", "training_dataset", "manifest_sha256"], [0, "value", "view_sha256"]], [[0, "value", "source_policy_id"], [1, "value", "policy_id"]]],
+        "requires_current_dispatch": true
+      },
+      {
+        "id": "freeze-fused-stage2",
+        "config": "configs/portable/operations/card-tpo-package-sequential-parity.json",
+        "python": "${CARD_PYTHON}",
+        "run": [["tools.reports.prepare_tpo_windows", "configs/portable/operations/card-tpo-package-sequential-parity.json", "${EXPERIMENT_LOCAL_CONFIG}"]],
+        "inputs": [{"path": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json"}, {"path": "${CARD_TPO_PARENT}"}],
+        "dispatch_guards": ["${CARD_STAGE2_RUN_ROOT}/package/entry.tar"],
+        "checks": [{"path": "${CARD_STAGE2_RUN_ROOT}/package/operations-local.json", "equals": [[["schema"], "jev-local-macros-v1"], [["macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "device_group_lease"], true]]}],
+        "requires_current_dispatch": true,
+        "lineage": [[[0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "targets/MANIFEST.json"], [0, "sha256"]], [[0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "parent.json"], [1, "sha256"]]]
+      },
+      {
+        "id": "train-fused-tpo",
+        "python": "${CARD_PYTHON}",
+        "inputs": [{"path": "${CARD_STAGE2_RUN_ROOT}/package/operations-local.json"}, {"path": "${CARD_STRATIFIED_TARGETS}/MANIFEST.json"}],
+        "dispatch_guards": ["${CARD_STAGE2_RUN_ROOT}/ops"],
+        "run": [["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${CARD_STAGE2_RUN_ROOT}/package/operations-local.json"]],
+        "checks": [{"path": "${CARD_STAGE2_RUN_ROOT}/ops/infer-0-collected.json", "equals": [[["passed"], true], [["physical_device"], "${S212_INFER_0}"]]}, {"path": "${CARD_STAGE2_RUN_ROOT}/ops/infer-1-collected.json", "equals": [[["passed"], true], [["physical_device"], "${S212_INFER_1}"]]}, {"path": "${CARD_STAGE2_RUN_ROOT}/ops/finite-collected.json", "equals": [[["passed"], true], [["window"], "finite"], [["updates"], 2]]}, {"path": "${CARD_STAGE2_RUN_ROOT}/ops/tpo-collected.json", "equals": [[["passed"], true], [["window"], "formal"], [["arm"], "tpo"]], "report": {"updates": ["updates"], "endpoint": ["endpoint"]}}, {"path": "${CARD_STAGE2_RUN_ROOT}/ops/terminal.json", "equals": [[["status"], "declared_stages_finished"], [["exit_code"], 0]]}],
+        "requires_current_dispatch": true,
+        "lineage": [[[0, "value", "target_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "targets/MANIFEST.json"]], [[0, "value", "parent_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "parent.json"]], [[0, "value", "source"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "source/FILES.json"]], [[1, "value", "target_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "targets/MANIFEST.json"]], [[1, "value", "parent_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "parent.json"]], [[1, "value", "source"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "source/FILES.json"]], [[2, "value", "binding", "target_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "targets/MANIFEST.json"]], [[2, "value", "binding", "parent_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "parent.json"]], [[2, "value", "binding", "source"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "source/FILES.json"]], [[2, "value", "binding", "optimizer_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "optimizer-buckets.json"]], [[3, "value", "binding", "target_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "targets/MANIFEST.json"]], [[3, "value", "binding", "parent_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "parent.json"]], [[3, "value", "binding", "source"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "source/FILES.json"]], [[3, "value", "binding", "optimizer_sha"], [0, "value", "macros", "NATIVE_SEAL_OPERATIONS_CONFIG", "entry_pins", "optimizer-buckets.json"]], [[3, "value", "real_exposures"], [1, "value", "recordings"]]]
       }
     ],
     "evaluate": [
       {
-        "id": "score-and-compare-stage1-endpoints",
-        "pending": "按研究配置登记首轮 selection 和末轮六面板；在训练后接入新端点及 211 独立对照收据。"
+        "id": "evaluate-both-stage-endpoints",
+        "config": "configs/portable/operations/card-paired-endpoints-212.json",
+        "inputs": [{"path": "${CARD_ENDPOINT_DIR}/receipt.json"}, {"path": "${CARD_STAGE2_RUN_ROOT}/ops/terminal.json"}, {"path": "${S211_AUDITED_EVAL_RECEIPT}", "sha256": "827137d1e0a7670a4cee4cd82843c816fd5bc7c92d3241e3a772a94b2169cd98", "equals": [[["score_sha256"], "fd207f2410f7e4ead3f7ec5982592ff4bd20b3460b4c1c992e12cbc4f6314850"], [["plan_sha256"], "03ed8a3be2e482c808de2427981693626d7eef80d0b4df37638751acc544729a"]]}],
+        "run": [["tools.reports.prepare_paired_card_evaluation", "configs/portable/operations/card-paired-endpoints-212.json", "${EXPERIMENT_LOCAL_CONFIG}"], ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${S212_EVAL_ROOT}/package/operations-local.json"]],
+        "requires_current_dispatch": true,
+        "dispatch_guards": ["${S212_EVAL_ROOT}/package"],
+        "owned_checks": [0, 3],
+        "checks": [{"path": "${S212_EVAL_ROOT}/ops/score-collected.json", "equals": [[["schema"], "jev-audited-probability-panels-v1"], [["datasets", "SLURP_clean_TEST60", "arms", "stage1", "queries"], 12991], [["datasets", "SLURP_clean_TEST60", "arms", "tpo", "queries"], 12991], [["datasets", "SLURP_clean_SELECTION60", "arms", "stage1", "queries"], 9226], [["datasets", "SLURP_clean_SELECTION60", "arms", "tpo", "queries"], 9226], [["datasets", "MINDS_native14", "arms", "stage1", "queries"], 8168], [["datasets", "MINDS_native14", "arms", "tpo", "queries"], 8168], [["datasets", "SIB_FLEURS_eng_topic7", "arms", "stage1", "queries"], 320], [["datasets", "SIB_FLEURS_eng_topic7", "arms", "tpo", "queries"], 320], [["datasets", "MMSU_polysemy", "arms", "stage1", "queries"], 98], [["datasets", "MMSU_polysemy", "arms", "tpo", "queries"], 98], [["datasets", "SLURP_official_TEST60", "arms", "stage1", "queries"], 13078], [["datasets", "SLURP_official_TEST60", "arms", "tpo", "queries"], 13078], [["replica_audit", "replicas_per_device"], "${S212_EVAL_REPLICAS}"], [["replica_audit", "devices"], "${S212_EVAL_DEVICES}"], [["datasets", "SLURP_clean_TEST60", "versus_211", "stage1", "baseline"], "JEV-211"], [["datasets", "SLURP_clean_TEST60", "versus_211", "tpo", "baseline"], "JEV-211"], [["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "baseline"], "JEV-211"], [["datasets", "SLURP_clean_SELECTION60", "versus_211", "tpo", "baseline"], "JEV-211"], [["datasets", "MINDS_native14", "versus_211", "stage1", "baseline"], "JEV-211"], [["datasets", "MINDS_native14", "versus_211", "tpo", "baseline"], "JEV-211"], [["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "stage1", "baseline"], "JEV-211"], [["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "tpo", "baseline"], "JEV-211"]], "report": {"评测每卡评分进程": ["replica_audit", "replicas_per_device"], "SLURP_clean_TEST60 stage1 vs 211 ΔF1": ["datasets", "SLURP_clean_TEST60", "versus_211", "stage1", "macro_f1_delta"], "SLURP_clean_TEST60 stage1 vs 211 95% CI": ["datasets", "SLURP_clean_TEST60", "versus_211", "stage1", "macro_f1_delta_ci95"], "SLURP_clean_TEST60 stage1 vs 211 结论": ["datasets", "SLURP_clean_TEST60", "versus_211", "stage1", "direction"], "SLURP_clean_TEST60 tpo vs 211 ΔF1": ["datasets", "SLURP_clean_TEST60", "versus_211", "tpo", "macro_f1_delta"], "SLURP_clean_TEST60 tpo vs 211 95% CI": ["datasets", "SLURP_clean_TEST60", "versus_211", "tpo", "macro_f1_delta_ci95"], "SLURP_clean_TEST60 tpo vs 211 结论": ["datasets", "SLURP_clean_TEST60", "versus_211", "tpo", "direction"], "SLURP_clean_TEST60 212 Stage2 A vs Stage1 ΔF1": ["datasets", "SLURP_clean_TEST60", "paired", "stage1", "delta"], "SLURP_clean_TEST60 212 Stage2 A vs Stage1 95% CI": ["datasets", "SLURP_clean_TEST60", "paired", "stage1", "interval"], "SLURP_clean_TEST60 212 Stage2 A vs Stage1 修正": ["datasets", "SLURP_clean_TEST60", "paired", "stage1", "fixed"], "SLURP_clean_TEST60 212 Stage2 A vs Stage1 退化": ["datasets", "SLURP_clean_TEST60", "paired", "stage1", "regressed"], "SLURP_clean_SELECTION60 stage1 vs 211 ΔF1": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "macro_f1_delta"], "SLURP_clean_SELECTION60 stage1 vs 211 95% CI": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "macro_f1_delta_ci95"], "SLURP_clean_SELECTION60 stage1 vs 211 结论": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "direction"], "SLURP_clean_SELECTION60 tpo vs 211 ΔF1": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "tpo", "macro_f1_delta"], "SLURP_clean_SELECTION60 tpo vs 211 95% CI": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "tpo", "macro_f1_delta_ci95"], "SLURP_clean_SELECTION60 tpo vs 211 结论": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "tpo", "direction"], "SLURP_clean_SELECTION60 212 Stage2 A vs Stage1 ΔF1": ["datasets", "SLURP_clean_SELECTION60", "paired", "stage1", "delta"], "SLURP_clean_SELECTION60 212 Stage2 A vs Stage1 95% CI": ["datasets", "SLURP_clean_SELECTION60", "paired", "stage1", "interval"], "SLURP_clean_SELECTION60 212 Stage2 A vs Stage1 修正": ["datasets", "SLURP_clean_SELECTION60", "paired", "stage1", "fixed"], "SLURP_clean_SELECTION60 212 Stage2 A vs Stage1 退化": ["datasets", "SLURP_clean_SELECTION60", "paired", "stage1", "regressed"], "MINDS_native14 stage1 vs 211 ΔF1": ["datasets", "MINDS_native14", "versus_211", "stage1", "macro_f1_delta"], "MINDS_native14 stage1 vs 211 95% CI": ["datasets", "MINDS_native14", "versus_211", "stage1", "macro_f1_delta_ci95"], "MINDS_native14 stage1 vs 211 结论": ["datasets", "MINDS_native14", "versus_211", "stage1", "direction"], "MINDS_native14 tpo vs 211 ΔF1": ["datasets", "MINDS_native14", "versus_211", "tpo", "macro_f1_delta"], "MINDS_native14 tpo vs 211 95% CI": ["datasets", "MINDS_native14", "versus_211", "tpo", "macro_f1_delta_ci95"], "MINDS_native14 tpo vs 211 结论": ["datasets", "MINDS_native14", "versus_211", "tpo", "direction"], "MINDS_native14 212 Stage2 A vs Stage1 ΔF1": ["datasets", "MINDS_native14", "paired", "stage1", "delta"], "MINDS_native14 212 Stage2 A vs Stage1 95% CI": ["datasets", "MINDS_native14", "paired", "stage1", "interval"], "MINDS_native14 212 Stage2 A vs Stage1 修正": ["datasets", "MINDS_native14", "paired", "stage1", "fixed"], "MINDS_native14 212 Stage2 A vs Stage1 退化": ["datasets", "MINDS_native14", "paired", "stage1", "regressed"], "SIB_FLEURS_eng_topic7 stage1 vs 211 ΔF1": ["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "stage1", "macro_f1_delta"], "SIB_FLEURS_eng_topic7 stage1 vs 211 95% CI": ["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "stage1", "macro_f1_delta_ci95"], "SIB_FLEURS_eng_topic7 stage1 vs 211 结论": ["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "stage1", "direction"], "SIB_FLEURS_eng_topic7 tpo vs 211 ΔF1": ["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "tpo", "macro_f1_delta"], "SIB_FLEURS_eng_topic7 tpo vs 211 95% CI": ["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "tpo", "macro_f1_delta_ci95"], "SIB_FLEURS_eng_topic7 tpo vs 211 结论": ["datasets", "SIB_FLEURS_eng_topic7", "versus_211", "tpo", "direction"], "SIB_FLEURS_eng_topic7 212 Stage2 A vs Stage1 ΔF1": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "stage1", "delta"], "SIB_FLEURS_eng_topic7 212 Stage2 A vs Stage1 95% CI": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "stage1", "interval"], "SIB_FLEURS_eng_topic7 212 Stage2 A vs Stage1 修正": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "stage1", "fixed"], "SIB_FLEURS_eng_topic7 212 Stage2 A vs Stage1 退化": ["datasets", "SIB_FLEURS_eng_topic7", "paired", "stage1", "regressed"]}}, {"path": "${CARD_ENDPOINT_DIR}/receipt.json", "equals": [[["passed"], true]]}, {"path": "${S211_AUDITED_EVAL_METRICS}", "sha256": "fd207f2410f7e4ead3f7ec5982592ff4bd20b3460b4c1c992e12cbc4f6314850"}, {"path": "${S212_EVAL_ROOT}/ops/terminal.json", "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]}, {"path": "${CARD_STAGE2_RUN_ROOT}/ops/tpo-collected.json", "equals": [[["passed"], true], [["window"], "formal"], [["arm"], "tpo"]]}],
+        "panels": [
+          {
+            "id": "SLURP_clean_TEST60",
+            "scope": "SLURP clean TEST",
+            "population": 12991,
+            "primary": "Top-1 macro-F1",
+            "arms": [{"label": "212 Stage2 A", "proof": 0, "path": ["datasets", "SLURP_clean_TEST60", "arms", "tpo"], "policy": {"proof": 4, "path": ["endpoint"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "212 Stage1", "proof": 0, "path": ["datasets", "SLURP_clean_TEST60", "arms", "stage1"], "policy": {"proof": 1, "path": ["policy_id"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "211 Stage2 A", "proof": 2, "path": ["datasets", "SLURP_clean_TEST60", "arms", "tpo"], "policy": "3217b37371a118954592cefd24a84557ffae8f7ab5846417c7e0aca1dcf36d77", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}, {"label": "211 Stage1", "proof": 2, "path": ["datasets", "SLURP_clean_TEST60", "arms", "stage1"], "policy": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}]
+          },
+          {
+            "id": "SLURP_clean_SELECTION60",
+            "scope": "SLURP clean selection",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [{"label": "212 Stage2 A", "proof": 0, "path": ["datasets", "SLURP_clean_SELECTION60", "arms", "tpo"], "policy": {"proof": 4, "path": ["endpoint"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "212 Stage1", "proof": 0, "path": ["datasets", "SLURP_clean_SELECTION60", "arms", "stage1"], "policy": {"proof": 1, "path": ["policy_id"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "211 Stage2 A", "proof": 2, "path": ["datasets", "SLURP_clean_SELECTION60", "arms", "tpo"], "policy": "3217b37371a118954592cefd24a84557ffae8f7ab5846417c7e0aca1dcf36d77", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}, {"label": "211 Stage1", "proof": 2, "path": ["datasets", "SLURP_clean_SELECTION60", "arms", "stage1"], "policy": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}]
+          },
+          {
+            "id": "MINDS_native14",
+            "scope": "MINDS native14",
+            "population": 8168,
+            "primary": "Top-1 macro-F1",
+            "arms": [{"label": "212 Stage2 A", "proof": 0, "path": ["datasets", "MINDS_native14", "arms", "tpo"], "policy": {"proof": 4, "path": ["endpoint"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "212 Stage1", "proof": 0, "path": ["datasets", "MINDS_native14", "arms", "stage1"], "policy": {"proof": 1, "path": ["policy_id"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "211 Stage2 A", "proof": 2, "path": ["datasets", "MINDS_native14", "arms", "tpo"], "policy": "3217b37371a118954592cefd24a84557ffae8f7ab5846417c7e0aca1dcf36d77", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}, {"label": "211 Stage1", "proof": 2, "path": ["datasets", "MINDS_native14", "arms", "stage1"], "policy": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}]
+          },
+          {
+            "id": "SIB_FLEURS_eng_topic7",
+            "scope": "SIB-FLEURS 英语话题",
+            "population": 320,
+            "primary": "Top-1 macro-F1",
+            "arms": [{"label": "212 Stage2 A", "proof": 0, "path": ["datasets", "SIB_FLEURS_eng_topic7", "arms", "tpo"], "policy": {"proof": 4, "path": ["endpoint"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "212 Stage1", "proof": 0, "path": ["datasets", "SIB_FLEURS_eng_topic7", "arms", "stage1"], "policy": {"proof": 1, "path": ["policy_id"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "211 Stage2 A", "proof": 2, "path": ["datasets", "SIB_FLEURS_eng_topic7", "arms", "tpo"], "policy": "3217b37371a118954592cefd24a84557ffae8f7ab5846417c7e0aca1dcf36d77", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}, {"label": "211 Stage1", "proof": 2, "path": ["datasets", "SIB_FLEURS_eng_topic7", "arms", "stage1"], "policy": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}]
+          },
+          {
+            "id": "MMSU_polysemy",
+            "scope": "MMSU 多义词",
+            "population": 98,
+            "primary": "Top-1 准确率",
+            "arms": [{"label": "212 Stage2 A", "proof": 0, "path": ["datasets", "MMSU_polysemy", "arms", "tpo"], "policy": {"proof": 4, "path": ["endpoint"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "212 Stage1", "proof": 0, "path": ["datasets", "MMSU_polysemy", "arms", "stage1"], "policy": {"proof": 1, "path": ["policy_id"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "211 Stage2 A", "proof": 2, "path": ["datasets", "MMSU_polysemy", "arms", "tpo"], "policy": "3217b37371a118954592cefd24a84557ffae8f7ab5846417c7e0aca1dcf36d77", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability"}}, {"label": "211 Stage1", "proof": 2, "path": ["datasets", "MMSU_polysemy", "arms", "stage1"], "policy": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability"}}]
+          },
+          {
+            "id": "SLURP_official_TEST60",
+            "scope": "SLURP 完整官方 TEST（历史口径诊断）",
+            "population": 13078,
+            "primary": "Top-1 准确率",
+            "arms": [{"label": "212 Stage2 A", "proof": 0, "path": ["datasets", "SLURP_official_TEST60", "arms", "tpo"], "policy": {"proof": 4, "path": ["endpoint"]}, "metrics": {"Top-1 准确率": "top1_accuracy"}}, {"label": "212 Stage1", "proof": 0, "path": ["datasets", "SLURP_official_TEST60", "arms", "stage1"], "policy": {"proof": 1, "path": ["policy_id"]}, "metrics": {"Top-1 准确率": "top1_accuracy"}}, {"label": "211 Stage2 A", "proof": 2, "path": ["datasets", "SLURP_official_TEST60", "arms", "tpo"], "policy": "3217b37371a118954592cefd24a84557ffae8f7ab5846417c7e0aca1dcf36d77", "metrics": {"Top-1 准确率": "top1_accuracy"}}, {"label": "211 Stage1", "proof": 2, "path": ["datasets", "SLURP_official_TEST60", "arms", "stage1"], "policy": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634", "metrics": {"Top-1 准确率": "top1_accuracy"}}]
+          }
+        ],
+        "python": "${CARD_PYTHON}"
+      },
+      {
+        "id": "evaluate-stage1-epoch-one-selection",
+        "config": "configs/portable/operations/card-stage1-epoch-one-selection-212.json",
+        "inputs": [{"path": "${S212_EPOCH1_DIR}/receipt.json"}, {"path": "${S211_AUDITED_EVAL_RECEIPT}", "sha256": "827137d1e0a7670a4cee4cd82843c816fd5bc7c92d3241e3a772a94b2169cd98", "equals": [[["score_sha256"], "fd207f2410f7e4ead3f7ec5982592ff4bd20b3460b4c1c992e12cbc4f6314850"], [["plan_sha256"], "03ed8a3be2e482c808de2427981693626d7eef80d0b4df37638751acc544729a"]]}],
+        "run": [["tools.reports.prepare_paired_card_evaluation", "configs/portable/operations/card-stage1-epoch-one-selection-212.json", "${EXPERIMENT_LOCAL_CONFIG}"], ["tools.reports.native_seal_operations", "--config", "configs/portable/operations/native-seal-operations.json", "--local", "${S212_EPOCH1_EVAL_ROOT}/package/operations-local.json"]],
+        "requires_current_dispatch": true,
+        "dispatch_guards": ["${S212_EPOCH1_EVAL_ROOT}/package"],
+        "owned_checks": [0, 3],
+        "checks": [{"path": "${S212_EPOCH1_EVAL_ROOT}/ops/score-collected.json", "equals": [[["schema"], "jev-audited-probability-panels-v1"], [["datasets", "SLURP_clean_SELECTION60", "arms", "stage1", "queries"], 9226], [["replica_audit", "replicas_per_device"], "${S212_EVAL_REPLICAS}"], [["replica_audit", "devices"], "${S212_EVAL_DEVICES}"], [["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "baseline"], "JEV-211"]], "report": {"评测每卡评分进程": ["replica_audit", "replicas_per_device"], "SLURP_clean_SELECTION60 stage1 vs 211 ΔF1": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "macro_f1_delta"], "SLURP_clean_SELECTION60 stage1 vs 211 95% CI": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "macro_f1_delta_ci95"], "SLURP_clean_SELECTION60 stage1 vs 211 结论": ["datasets", "SLURP_clean_SELECTION60", "versus_211", "stage1", "direction"]}}, {"path": "${S212_EPOCH1_DIR}/receipt.json", "equals": [[["passed"], true]]}, {"path": "${S211_AUDITED_EVAL_METRICS}", "sha256": "fd207f2410f7e4ead3f7ec5982592ff4bd20b3460b4c1c992e12cbc4f6314850"}, {"path": "${S212_EPOCH1_EVAL_ROOT}/ops/terminal.json", "equals": [[["exit_code"], 0], [["status"], "declared_stages_finished"]]}],
+        "panels": [
+          {
+            "id": "SLURP_clean_SELECTION60_stage1_epoch1",
+            "scope": "SLURP clean selection / 212 Stage1 首轮诊断",
+            "population": 9226,
+            "primary": "Top-1 macro-F1",
+            "arms": [{"label": "212 Stage1 epoch 1", "proof": 0, "path": ["datasets", "SLURP_clean_SELECTION60", "arms", "stage1"], "policy": {"proof": 1, "path": ["policy_id"]}, "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1", "平均真类原始概率": "mean_gold_probability", "平均最强错类原始概率": "mean_strongest_wrong_probability"}}, {"label": "211 Stage1", "proof": 2, "path": ["datasets", "SLURP_clean_SELECTION60", "arms", "stage1"], "policy": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634", "metrics": {"Top-1 准确率": "top1_accuracy", "平均最高概率": "mean_top1_probability", "Top-1 macro-F1": "top1_macro_f1"}}]
+          }
+        ],
+        "python": "${CARD_PYTHON}"
       }
     ]
+  },
+  "operation_bindings": {
+    "CARD_ENDPOINT_DIR": "${S212_ENDPOINT_DIR}",
+    "CARD_ENDPOINT_AUDIT": "${S212_ENDPOINT_DIR}/receipt.json",
+    "CARD_ENDPOINT_SCORE": "${S212_STAGE2_ROOT}/train-score",
+    "CARD_SCORE_ENDPOINT_OPERATIONS": "${CARD_ENDPOINT_SCORE}/ops",
+    "CARD_SCORE_ENDPOINT_DEPLOYMENT": "${S212_TRAIN_SCORE_DEPLOYMENT}",
+    "CARD_STRATIFIED_TARGETS": "${S212_STAGE2_ROOT}/stratified",
+    "CARD_TPO_PARENT": "${S212_STAGE2_ROOT}/parent.json",
+    "CARD_STAGE2_RUN_ROOT": "${S212_STAGE2_ROOT}/actor",
+    "CARD_TPO_DEPLOYMENT": "${S212_TPO_DEPLOYMENT}",
+    "CARD_STAGE2_INFERENCE_DEVICES": "${S212_INFERENCE_DEVICES}",
+    "CARD_TPO_RUNTIME": {
+      "path": "${S212_TPO_RUNTIME_PATH}",
+      "sha256": "d4788d0fe1f6f1868d73a6b1e60015983526b58d9244c0eadc5dd29a2da6f9e8"
+    }
   }
 }

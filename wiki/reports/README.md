@@ -19,4 +19,4 @@
 | JEV-209 | [0.6B r128 知识卡与融合 TPO](JEV-209.md) | 混合版全 TRAIN 打分已审，第二轮正式第 144–146 步已审核；[真人版报告](../archive/JEV-209-real-only/report.md) |
 | JEV-210 | [0.6B 双向 InfoNCE Stage1](JEV-210.md) | 真实 TRAIN 1＋1＋3＋3，181 DP8 两步有限验收通过；正式训练暂停 |
 | JEV-210-CAL | [冻结校准与 8:2 回放](JEV-210-CAL.md) | 正式留出评测已审，含与 209、210 的评分耗时对比及同检查点并发对照 |
-| JEV-212 | [Stage1 逐录音 Top‑5 难例采样](JEV-212.md) | 已登记，工程验收待完成；依据 [211 EMA 覆盖复算](JEV-211-stage1-negative-sampling.md) |
+| JEV-212 | [逐录音 Top‑5 Stage1 → 分层 TPO Stage2 A](JEV-212.md) | 两阶段及集中评测已登记，Stage1 工程验收待完成；依据 [211 EMA 覆盖复算](JEV-211-stage1-negative-sampling.md) |

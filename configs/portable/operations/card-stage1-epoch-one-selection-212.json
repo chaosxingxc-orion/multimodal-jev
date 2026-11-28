@@ -1,0 +1,79 @@
+{
+  "output": "${S212_EPOCH1_EVAL_ROOT}/package",
+  "deployment": "${S212_EPOCH1_EVAL_DEPLOYMENT}",
+  "fit_harness_thresholds": false,
+  "eval_single_validation": true,
+  "eval_plan": {
+    "path": "${CARD_PAIR_PRIOR}/entry/block-plan.json",
+    "sha256": "26da38f5b75ee629f4641e46a52a04f29aae0a2e2e5651be32ac0728c4db3bd0"
+  },
+  "eval_score": {
+    "path": "${CARD_PAIR_PRIOR}/entry/score.json",
+    "sha256": "476d315658fe601af2e201607ca8bda9ce6cde366c455c7c7ca034510592b5f1"
+  },
+  "eval_calibration": {
+    "path": "${CARD_PAIR_PRIOR}/entry/calibration-0.json",
+    "sha256": "729e2074afa2dcf70bdf164c5ac35ffa3e6056cc6861f952cebc34aeb45c4094"
+  },
+  "old_parent": {
+    "path": "${CARD_PAIR_PRIOR}/entry/parent.json",
+    "sha256": "6dca4fb5f8c63d7f62b7d3128ab32253fe4c4149637f9e406de2314e21dc01b7"
+  },
+  "old_cards_view": {
+    "path": "${CARD_PAIR_PRIOR}/entry/cards.json",
+    "sha256": "c514f0890f48f0213f066195426e87a6820ee144fac9f1b51130c70991485d0d"
+  },
+  "calibration_roster": {
+    "path": "${CARD_PAIR_PRIOR}/entry/calibration-roster.json",
+    "sha256": "11f979070100b1983e55abc1664c4a10c91fdd4cc70b040257f22dd482d906a9"
+  },
+  "training_labels": 68,
+  "source_card_datasets": ["SLURP_clean_SELECTION60"],
+  "batch": 8,
+  "pair_batch": 64,
+  "token_cache_entries": 1024,
+  "io_workers": 8,
+  "progress_interval": 16,
+  "sample_blocks": {
+    "devices": "${S212_EVAL_DEVICES}",
+    "batches_per_block": 4,
+    "prefetch": 16,
+    "replicas_per_device": "${S212_EVAL_REPLICAS}"
+  },
+  "cache_container": {
+    "cpus": 8,
+    "memory": "1024g",
+    "shm": "2g"
+  },
+  "eval_container": {
+    "cpus": 12,
+    "memory": "1024g",
+    "shm": "2g"
+  },
+  "source_patterns": ["src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py", "tools/__init__.py", "tools/reports/__init__.py"],
+  "max_batch_audio_chunks": 384,
+  "parity_pairs": 4,
+  "single_card_modes": {
+    "SLURP_clean_SELECTION60": "bounded_batch"
+  },
+  "finite_policy_parity": {
+    "batches_per_block": 4,
+    "edge_and_middle": true
+  },
+  "historical_comparison": {
+    "experiment": "JEV-211",
+    "datasets": ["SLURP_clean_SELECTION60"],
+    "archive_root": "${S211_PREDICTION_QUEUE}",
+    "plan_digest": "03ed8a3be2e482c808de2427981693626d7eef80d0b4df37638751acc544729a",
+    "metrics": {
+      "path": "${S211_AUDITED_EVAL_METRICS}",
+      "sha256": "fd207f2410f7e4ead3f7ec5982592ff4bd20b3460b4c1c992e12cbc4f6314850"
+    }
+  },
+  "require_concurrent_workers": "${S212_EVAL_REPLICAS}",
+  "stage1_only": {
+    "receipt": "${S212_EPOCH1_DIR}/receipt.json",
+    "objective": "card_and_speech_infonce_v1"
+  },
+  "dataset_subset": ["SLURP_clean_SELECTION60"]
+}

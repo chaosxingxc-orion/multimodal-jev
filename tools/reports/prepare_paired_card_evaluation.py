@@ -318,10 +318,20 @@ def run(c):
             raise ValueError('invalid full performance comparison')
         common['performance_comparison'] = benchmark
     ports = base['endpoints']
+    partitions = dict(base['queue']['partitions'])
+    subset = c.get('dataset_subset')
+    if subset is not None:
+        if ('stage1_only' not in c or c.get('official_test') or not isinstance(subset, list)
+                or not subset or any(not isinstance(d, str) for d in subset)
+                or len(set(subset)) != len(subset) or not set(subset) <= ports.keys()
+                or not set(subset) <= partitions.keys()):
+            raise ValueError('dataset subset is restricted to an explicit standalone Stage1 panel')
+        ports = {name: ports[name] for name in subset}
+        partitions = {name: partitions[name] for name in subset}
     for name, port in ports.items():
         port.pop('card_view', None)
         port['use_source_cards'] = name in c['source_card_datasets']
-    panels = {k:dict(v, comparisons=['stage1'] if 'tpo' in arms else []) for k, v in score_base['probability_panels'].items()}
+    panels = {k:dict(score_base['probability_panels'][k], comparisons=['stage1'] if 'tpo' in arms else []) for k in ports}
 
     def write(name, opts):
         commit_json(entry/(name+'.json'), macros('NATIVE_SEAL_CONTAINER_CONFIG', opts))
@@ -331,7 +341,6 @@ def run(c):
 
     pre = []
     official = None
-    partitions = dict(base['queue']['partitions'])
     if c.get('official_test'):
         official_spec = c['official_test']
         clean = ports[official_spec['clean_dataset']]
@@ -507,8 +516,9 @@ def run(c):
         history = c['historical_comparison']
         metrics = read_pinned(history['metrics'])
         path = Path(history['archive_root'])
-        if not path.is_absolute():
-            raise ValueError('historical evaluation requires the absolute archived block directory')
+        if (not path.is_absolute() or not history['datasets'] or
+                any(d not in panels or panels[d]['primary'] != 'top1_macro_f1' for d in history['datasets'])):
+            raise ValueError('historical comparison requires approved macro-F1 panels and an absolute archive')
         inputs.add(str(path))
         commit_json(entry/'historical-metrics.json',metrics)
         if file_hash(entry/'historical-metrics.json') != history['metrics']['sha256']:
