@@ -126,6 +126,20 @@ def test_tpo_seals_disjoint_physical_devices_and_matching_view(tmp_path):
     leaf = read(pkg/'entry/tpo.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
     assert leaf['training']['world_size'] == 4
 
+    # The same IDs are safe across serial groups, never within a group.
+    c['package'] = str(tmp_path/'shared')
+    c['card_input'].update(parity_placement='reuse_actor_devices', inference_devices=[1, 5])
+    with pytest.raises(ValueError, match='must use actor'):
+        prepare(c)
+    c['card_input']['inference_devices'] = layout['training_devices'][:2]
+    prepare(c)
+    shared = read(tmp_path/'shared/operations-local.json')['macros']['NATIVE_SEAL_OPERATIONS_CONFIG']
+    probes, finite, formal = shared['chains'][0]
+    assert [j['devices'][0] for j in probes] == layout['training_devices'][:2]
+    assert finite[0]['devices'] == formal[0]['devices'] == layout['training_devices']
+    receipts = read(tmp_path/'shared/entry/tpo.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+    assert [r['physical_device'] for r in receipts['training']['card_inference_parity']] == layout['training_devices'][:2]
+
 
 def test_idle_admission_matches_exact_ids():
     assert idle_npus('| No running processes found in NPU 10 |\nNo running processes found in NPU 3') == {3, 10}

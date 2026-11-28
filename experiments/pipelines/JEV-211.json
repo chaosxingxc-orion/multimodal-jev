@@ -1,7 +1,7 @@
 {
   "schema": "jev-experiment-package-v1",
   "protocol": "experiments/stage1-speech-alignment-211.md",
-  "revision": "stage2-a-calibrated-view-audit-v4",
+  "revision": "stage2-a-calibrated-ratio-v5",
   "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
   "ordered_steps": true,
   "stages": {
@@ -422,6 +422,10 @@
           {
             "path": "${CARD_ENDPOINT_SCORE}/audit.json",
             "sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772"
+          },
+          {
+            "path": "${S211_MINING_CALIBRATION_FIT}",
+            "sha256": "2430ef36d677d9751cca46a6bd5d9d0395580944c5366befc11648a5351aa3b1"
           }
         ],
         "checks": [
@@ -457,25 +461,6 @@
               ],
               [
                 [
-                  "recordings"
-                ],
-                16000
-              ],
-              [
-                [
-                  "real_exposures"
-                ],
-                16000
-              ],
-              [
-                [
-                  "sampling",
-                  "seed"
-                ],
-                317
-              ],
-              [
-                [
                   "bidirectional_contrast",
                   "reward"
                 ],
@@ -500,32 +485,16 @@
               ],
               [
                 [
-                  "sampling"
+                  "sampling",
+                  "replay_fraction"
                 ],
-                {
-                  "a": 6.020184087784137,
-                  "b": -2.218168508516694,
-                  "confidence": 0.9,
-                  "boundary_gap": 0.1,
-                  "budget": 16000,
-                  "replay_recordings": 3200,
-                  "seed": 317,
-                  "score_audit_sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772",
-                  "calibration_report_sha256": "2430ef36d677d9751cca46a6bd5d9d0395580944c5366befc11648a5351aa3b1"
-                }
+                0.2
               ],
               [
                 [
-                  "strata",
-                  "replay"
+                  "realized_replay_fraction"
                 ],
-                3200
-              ],
-              [
-                [
-                  "view_sha256"
-                ],
-                "094c68fe0398d74e9c86e315bf0c22599f25debd5f50706110a5bf764860e41b"
+                0.2
               ]
             ],
             "report": {
@@ -551,8 +520,7 @@
             "hash_workers": [
               "execution",
               "io_workers"
-            ],
-            "sha256": "717510955ba50a8284bca524cdca4d3e192a65f117ceba6bea46c1b0f8a4c1e0"
+            ]
           }
         ],
         "lineage": [
@@ -627,6 +595,18 @@
               "value",
               "checkpoint_sha256"
             ]
+          ],
+          [
+            [
+              0,
+              "value",
+              "sampling",
+              "calibration_report_sha256"
+            ],
+            [
+              1,
+              "sha256"
+            ]
           ]
         ],
         "python": "${CARD_PYTHON}",
@@ -636,16 +616,20 @@
             "configs/portable/operations/card-tpo-calibrated-mining-211.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
+        ],
+        "requires_current_dispatch": true,
+        "dispatch_guards": [
+          "${CARD_STRATIFIED_TARGETS}"
         ]
       },
       {
         "id": "bind-fused-stage2-parent",
-        "config": "configs/portable/operations/card-tpo-parent-stratified-device-pool.json",
+        "config": "configs/portable/operations/card-tpo-parent-shared-actor.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.bind_card_tpo_parent",
-            "configs/portable/operations/card-tpo-parent-stratified-device-pool.json",
+            "configs/portable/operations/card-tpo-parent-shared-actor.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],
@@ -735,12 +719,12 @@
       },
       {
         "id": "freeze-fused-stage2",
-        "config": "configs/portable/operations/card-tpo-package-endpoint-buckets-v1-stratified.json",
+        "config": "configs/portable/operations/card-tpo-package-sequential-parity.json",
         "python": "${CARD_PYTHON}",
         "run": [
           [
             "tools.reports.prepare_tpo_windows",
-            "configs/portable/operations/card-tpo-package-endpoint-buckets-v1-stratified.json",
+            "configs/portable/operations/card-tpo-package-sequential-parity.json",
             "${EXPERIMENT_LOCAL_CONFIG}"
           ]
         ],

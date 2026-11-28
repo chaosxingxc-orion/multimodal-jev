@@ -54,7 +54,12 @@ def prepare(c):
         if cards:
             actor = physical_devices(parent['physical_devices'])
             inference = physical_devices(cards['inference_devices'])
-            if (set(actor).intersection(inference)
+            placement = cards.get('parity_placement', 'dedicated')
+            if placement not in ('dedicated', 'reuse_actor_devices'):
+                raise ValueError('unknown card parity placement')
+            if placement == 'reuse_actor_devices' and not set(inference) <= set(actor):
+                raise ValueError('sequential parity probes must use actor devices')
+            if ((placement == 'dedicated' and set(actor).intersection(inference))
                     or len(inference)*4*m['schedule']['microbatch'] > m['schedule']['global_batch']):
                 raise ValueError('independent inference cards need distinct, complete parity windows')
             if bucket is not None and 'endpoint_receipt' not in cards:

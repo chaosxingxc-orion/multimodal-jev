@@ -1,5 +1,6 @@
 """Select a fixed TRAIN view using a shared, frozen probability scale."""
 from collections import Counter, defaultdict, deque
+from fractions import Fraction
 import hashlib
 import math
 
@@ -9,10 +10,10 @@ import numpy as np
 def mine(clean, probabilities, labels, policy):
     a, b = policy['a'], policy['b']
     threshold, margin = policy['confidence'], policy['boundary_gap']
-    budget, replay_budget = policy['budget'], policy['replay_recordings']
+    replay_fraction = Fraction(str(policy['replay_fraction']))
     if (not math.isfinite(a) or a <= 0 or not math.isfinite(b)
             or not 0 < threshold < 1 or not 0 < margin < 1
-            or not 0 < replay_budget < budget <= len(clean)):
+            or not 0 < replay_fraction < 1 or len(labels) < 2):
         raise ValueError('invalid calibrated mining policy')
     ids = sorted(clean)
     raw = np.asarray([probabilities[uid] for uid in ids], dtype=np.float64)
@@ -72,12 +73,19 @@ def mine(clean, probabilities, labels, policy):
         return selected
 
     hard = [i for k in ('error', 'tie', 'high_negative', 'boundary') for i in tiers[k]]
-    remaining = budget - replay_budget - len(hard)
-    if remaining < 0:
-        raise ValueError('mandatory calibrated hard tiers exceed the budget')
+    if not hard:
+        raise ValueError('no ranking or competing-card hard examples')
+    # Keep every primary hard example and add the minimum low-confidence
+    # examples needed to realize the configured ratio with whole recordings.
+    replay_unit = replay_fraction.numerator
+    hard_unit = replay_fraction.denominator - replay_unit
+    ratio_groups = (len(hard) + hard_unit - 1) // hard_unit
+    hard_budget = ratio_groups * hard_unit
+    replay_budget = ratio_groups * replay_unit
+    remaining = hard_budget - len(hard)
     groups.update(clean[ids[i]]['group'] for i in hard)
     picked = sorted(hard + choose(tiers['low_positive'], remaining) + choose(tiers['replay'], replay_budget))
-    if len(set(picked)) != budget:
+    if len(set(picked)) != hard_budget + replay_budget:
         raise ValueError('calibrated view does not cover the exact requested budget')
     rows = {}
     for n, i in enumerate(picked):
@@ -88,7 +96,8 @@ def mine(clean, probabilities, labels, policy):
                          ref_gap=float(pos[i]-neg[i]), stratum=str(strata[i]),
                          calibrated_gold=float(q_pos[i]), calibrated_rival=float(q_neg[i]),
                          calibrated_gap=float(gap[i]))
-    evidence = dict(eligible_strata=dict(Counter(strata.tolist())), hard=budget-replay_budget,
+    evidence = dict(eligible_strata=dict(Counter(strata.tolist())), hard=hard_budget,
+                    primary_hard=len(hard), low_positive_rounding=remaining,
                     replay_requested=replay_budget, replay_actual=replay_budget, replay_shortfall=0,
                     overlapping=dict(high_negative=int((q_neg > threshold).sum()),
                                      low_positive=int((q_pos <= threshold).sum()),

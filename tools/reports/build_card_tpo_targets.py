@@ -298,8 +298,13 @@ def build(config):
                                    config['reward']['probability_epsilon'])
     else:
         from multimodal_jev.card_calibrated_mining import mine
-        if config['merged']['sha256'] != mining['score_audit_sha256']:
+        fit = read_pin(config['calibration_fit'])
+        if (fit['audit_sha256'] != config['merged']['sha256']
+                or fit['checkpoint'] != source['formal']['checkpoint_sha256']
+                or fit['calibration_recordings'] != len(calibration)):
             raise ValueError('calibrated mining parameters are bound to a different score audit')
+        mining = dict(mining, a=fit['affine_slope'], b=fit['affine_bias'],
+                      calibration_report_sha256=config['calibration_fit']['sha256'])
         rows, replay = mine(clean, probs, labels, mining)
     batches = shuffled_batches(rows, schedule)
     target, batches, counts, audit, ordering = compile_schedule(
@@ -340,8 +345,12 @@ def build(config):
         commit_file(stage/'reference.pt', lambda stream: torch.save(reference, stream))
         manifest['files'] = {p.name:file_hash(p) for p in sorted(stage.iterdir())}
         if mining is not None:
+            realized_replay_fraction = evidence['strata']['replay'] / len(rows)
+            if realized_replay_fraction != mining['replay_fraction']:
+                raise ValueError('realized calibrated replay fraction differs')
             manifest.update(sampling=mining, full_score_roster_sha256=manifest['view_sha256'],
-                            view_sha256=manifest['files']['rows.json'])
+                            view_sha256=manifest['files']['rows.json'],
+                            realized_replay_fraction=realized_replay_fraction)
         commit_json(stage/'MANIFEST.json', manifest)
         if dst.exists():
             checked_file(dst/'MANIFEST.json', file_hash(stage/'MANIFEST.json'))
