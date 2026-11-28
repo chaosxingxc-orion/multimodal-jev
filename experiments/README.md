@@ -11,6 +11,7 @@
 | [知识卡执行参数](card-execution-config.md) | 参数来源、操作配置覆盖、断点兼容性与自检 |
 | [JEV-209 预登记](stage1-cards-tpo-209.md) | 0.6B r128 知识卡 Stage1 与融合 206、208 的单次 Stage2 |
 | [JEV-210 预登记](stage1-cards-tpo-210.md) | 与 209 同一 0.6B、r128 和数据，Stage1 每条录音对比 K 张错卡 |
+| [JEV-212 预登记](stage1-instance-negatives-212.md) | Stage1 按录音挖掘 Top‑5，首轮复用 211 末点，次轮用自身首轮末点刷新 |
 | [Stage1 双向对比配置](stage1-card-bidirectional.md) | 同语音换卡与同卡换语音；有放回抽样，每个锚点当前 210 每个锚点 14 个配对 |
 | [JEV-210 微批短测](stage1-batch-comparison-210-v1.md) | 两档 2 的幂次微批在相同 TRAIN 录音上的吞吐与显存 |
 | [JEV-208 预登记](tpo-probability-gap-208.md) | 扩大可信错例覆盖，在 TPO 中加入当前最强错类的概率间隔 |

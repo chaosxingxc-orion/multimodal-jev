@@ -1,0 +1,106 @@
+{
+  "schema": "jev-stage1-instance-negative-study-v1",
+  "experiment": "JEV-212",
+  "training_initialization": {
+    "source": "JEV-211-stage1-initialization",
+    "model": "Qwen3-ASR-0.6B",
+    "policy_id": "3060f93b5fa3251879a8336b1cc1019ead944d8b0408f4e74af90456e61a51ce",
+    "lora_rank": 128,
+    "lora_alpha": 256,
+    "optimizer": "fresh"
+  },
+  "source_population": {
+    "split": "train",
+    "role": "learning",
+    "recordings": 109610,
+    "cards": 68,
+    "card_sha256": "8e56378d2fd084084bf969a36dfc2d3def1e01fdd9cf6efa6ecb78417cb06969",
+    "acoustic_manifest_sha256": "9719513502b54dfc0b78611c3ae2cc48225c4bc95700fc49000d6d89e3342e3d",
+    "semantic_partner_index_sha256": "17344b297ca5d2db362ac2cdda001c3a2b843abefa8dd81b678e7e639200f98a"
+  },
+  "mining": {
+    "top_k": 5,
+    "seed": 317,
+    "card_arm": "rules",
+    "membership_score": "raw_sigmoid",
+    "speech_score": "stage1_speech_readout_cosine",
+    "card_tie_break": "frozen_candidate_order",
+    "recording_tie_break": "recording_id",
+    "max_false_accept_slot_exposure_fraction_per_card": 0.05,
+    "epoch_references": [
+      {
+        "epoch": 1,
+        "kind": "sealed_history",
+        "experiment": "JEV-211",
+        "step": 1359,
+        "policy_id": "7cc6c1cc7a627c9497cfcd9619e1ad339eaa6ebf59e878a2790ce90c7ac63634",
+        "policy_manifest_sha256": "2bb0d19c97a03c6c8e540807020fbcdb3551ef70e616dc83c0f04e27a4f253b8",
+        "endpoint_audit_sha256": "e3b19bdbe17c49cd16a757895e3fe71ab068f6566930e85aed06c62fde43d846",
+        "score_audit_sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772",
+        "score_roster_sha256": "66408e8191ee41de37d9faf23ea0554ff2e8f214a100509b9286e798e585ce26"
+      },
+      {
+        "epoch": 2,
+        "kind": "own_previous_epoch_endpoint",
+        "source_epoch": 1,
+        "require_audited_checkpoint": true,
+        "resume_optimizer": true
+      }
+    ],
+    "card_slots": ["strongest_eligible", "top_pool_rotation", "semantic_or_long_tail"],
+    "recording_slots": ["fixed_card_false_accept", "speech_neighbor", "semantic_or_long_tail"],
+    "deduplicate_within_negative_group": true
+  },
+  "stage1": {
+    "epochs": 2,
+    "anchors_per_group": 1,
+    "extra_positive_recordings": 1,
+    "negative_cards": 3,
+    "negative_recordings": 3,
+    "class_logit_ema": false,
+    "few_shot": "reuse_211_seeded_layout",
+    "learning_rate_schedule": "reuse_211_normalized_progress",
+    "objective": {
+      "kind": "card_and_speech_infonce_v1",
+      "fixed_audio_temperature": 0.1,
+      "fixed_card_temperature": 0.1,
+      "speech_temperature": 0.1,
+      "fixed_audio_weight": 0.5,
+      "fixed_card_weight": 0.5,
+      "speech_weight": 0.25,
+      "probability_margin": 0.3,
+      "margin_weight": 1.0
+    },
+    "resources": {
+      "device_pool": "${STAGE1_212_DEVICES}",
+      "training_dp": 8,
+      "train_scoring_cards": 8,
+      "gradient_accumulation": 1
+    },
+    "buckets": [
+      {"max_tokens": 116, "batch_size_per_rank": 32},
+      {"max_tokens": 136, "batch_size_per_rank": 24},
+      {"max_tokens": 165, "batch_size_per_rank": 16},
+      {"max_tokens": null, "batch_size_per_rank": 8}
+    ],
+    "finite_acceptance": {"parity_passes": 4, "optimizer_updates": 2}
+  },
+  "evaluation": {
+    "comparison_experiment": "JEV-211",
+    "comparison_endpoint": "stage1-step-1359",
+    "comparison_audit_sha256": "827137d1e0a7670a4cee4cd82843c816fd5bc7c92d3241e3a772a94b2169cd98",
+    "epoch_one_panels": ["SLURP_clean_SELECTION60"],
+    "epoch_two_panels": {
+      "SLURP_clean_SELECTION60": 9226,
+      "SLURP_clean_TEST60": 12991,
+      "MINDS_native14": 8168,
+      "SIB_FLEURS_eng_topic7": 320,
+      "MMSU_polysemy": 98,
+      "SLURP_official_TEST60": 13078
+    },
+    "paired_bootstrap": {"confidence": 0.95, "replicates": 2000, "seed": 317},
+    "selection_macro_f1_delta_lower_bound_gt": -0.01,
+    "minds_improvement_macro_f1_delta_lower_bound_gt": 0.0
+  },
+  "stage2_in_scope": false
+}

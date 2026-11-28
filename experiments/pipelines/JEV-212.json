@@ -1,0 +1,52 @@
+{
+  "schema": "jev-experiment-package-v1",
+  "protocol": "experiments/stage1-instance-negatives-212.md",
+  "revision": "instance-top5-design-v1",
+  "state_root": "${EXPERIMENT_PACKAGE_STATE_ROOT}",
+  "ordered_steps": true,
+  "stages": {
+    "data": [
+      {
+        "id": "verify-epoch-one-member-score-reference",
+        "checks": [
+          {
+            "path": "${S212_MINING_PARENT_ENDPOINT}/receipt.json",
+            "sha256": "e3b19bdbe17c49cd16a757895e3fe71ab068f6566930e85aed06c62fde43d846"
+          },
+          {
+            "path": "${S212_MINING_PARENT_SCORE}/audit.json",
+            "sha256": "88f83e61868c689b5d4eca72fe911260422df6c0e2ef7168241bfcb07d4db772"
+          },
+          {
+            "path": "${S212_MINING_PARENT_SCORE}/entry/full.json",
+            "sha256": "66408e8191ee41de37d9faf23ea0554ff2e8f214a100509b9286e798e585ce26"
+          }
+        ]
+      },
+      {
+        "id": "freeze-epoch-one-pool",
+        "pending": "需要验收同一 211 末点的无卡向量导出与三榜构建，并审核可恢复的逐录音清单。"
+      }
+    ],
+    "train": [
+      {
+        "id": "train-stage1-epoch-one",
+        "pending": "需要通过逐录音清单消费、概率对齐与两步训练的有限验收。"
+      },
+      {
+        "id": "score-epoch-one-and-freeze-epoch-two-pool",
+        "pending": "需要独立审核 212 首轮末点并绑定轮间训练分数、向量和第二轮清单。"
+      },
+      {
+        "id": "resume-and-audit-stage1-epoch-two",
+        "pending": "需要验收轮间 optimizer 和学习率恢复，并由独立收据核对两轮实际人口。"
+      }
+    ],
+    "evaluate": [
+      {
+        "id": "score-and-compare-stage1-endpoints",
+        "pending": "按研究配置登记首轮 selection 和末轮六面板；在训练后接入新端点及 211 独立对照收据。"
+      }
+    ]
+  }
+}
