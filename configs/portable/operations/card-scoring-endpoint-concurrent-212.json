@@ -1,7 +1,7 @@
 {
-  "output": "${CARD_ENDPOINT_SCORE}",
-  "deployment": "${CARD_SCORE_ENDPOINT_DEPLOYMENT}",
-  "inputs": "${CARD_ENDPOINT_DIR}/inputs.json",
+  "output": "${INSTANCE_SCORE_ROOT}",
+  "deployment": "${INSTANCE_SCORE_DEPLOYMENT}",
+  "inputs": "${INSTANCE_SCORE_ENDPOINT}/inputs.json",
   "seed": 317,
   "panel_per_class": 2,
   "long_audio_count": 8,
@@ -27,7 +27,7 @@
   },
   "source_patterns": ["src/multimodal_jev/*.py", "tools/reports/*.py", "tools/jev/*.py", "tools/__init__.py", "tools/reports/__init__.py"],
   "formal": {
-    "epoch_handoff": "${CARD_ENDPOINT_DIR}",
+    "epoch_handoff": "${INSTANCE_SCORE_ENDPOINT}",
     "synthetic_cache": "${CARD_SCORE_SYNTHETIC_CACHE}"
   },
   "replicas": 8,

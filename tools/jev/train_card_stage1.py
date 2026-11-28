@@ -33,9 +33,11 @@ def run(c,root):
     from tools.reports.context_infonce_actor import load as load_actor
     from multimodal_jev.card_contrast import CARD_KINDS, TRIPLET_KINDS
     triplet = c['instruction_objective']['kind'] in TRIPLET_KINDS
-    if c['instruction_objective']['kind'] in CARD_KINDS and not all(key in c for key in (
-            'single_card', 'stage1_layout', 'class_logit_ema', 'mixed')):
-        raise ValueError('card contrast requires the single-card TRAIN layout and online EMA')
+    fixed = 'instance_negative_manifest' in c
+    if c['instruction_objective']['kind'] in CARD_KINDS and (
+            not all(key in c for key in ('single_card', 'stage1_layout','mixed')) or
+            fixed == ('class_logit_ema' in c) or fixed and 'token_buckets' not in c):
+        raise ValueError('card contrast requires the single-card TRAIN layout and one negative source')
     actor_module=load_actor(c['source_root'],temperature=c['instruction_objective']['temperature'],probability_margin=c['instruction_objective'].get('probability_margin'))
     if 'single_card' in c:
         from multimodal_jev.single_card_forward import IndependentForward
@@ -63,7 +65,7 @@ def run(c,root):
     from multimodal_jev.context_warmup import learning_rate,set_learning_rate
     layout=topology(c,world,[p.name for p in Path('/dev').glob('davinci[0-9]*')])
     bucketed = 'token_buckets' in c
-    if bucketed and (not c.get('packed_acoustics') or not triplet or c.get('continuation') or c['start_update']):
+    if bucketed and (not c.get('packed_acoustics') or not triplet or c.get('continuation') or c['start_update'] and not fixed):
         raise ValueError('online bucket updates require their own fresh window and acoustic index')
     if c['runtime_profile']!=PROFILE:raise ValueError('fixed actor runtime required')
     for path,digest in c['pins'].items():
@@ -87,8 +89,10 @@ def run(c,root):
         from multimodal_jev.context_checkpoint_policy import export_checkpoint_policy
         from multimodal_jev.context_audio_collate import forward_context_audio_batch
         start_update=c['start_update'];stop_update=c['stop_update']
+        limit = (c['batch_config']['source_queries'] * c['batch_config']['epochs']
+                 if fixed and bucketed else layout['total_updates'])
         if (type(start_update) is not int or type(stop_update) is not int or
-                not 0<=start_update<stop_update<=layout['total_updates'] or c['stage']!='instruction' or
+                not 0<=start_update<stop_update<=limit or c['stage']!='instruction' or
                 type(c['checkpoint_interval']) is not int or c['checkpoint_interval']<1):
             raise ValueError('bounded instruction cursor required')
         if c['engineering_prefix'] is not True and not c['training_dispatch_allowed']:
@@ -110,8 +114,12 @@ def run(c,root):
             'release_sha256','schedule_sha256','global_batch','microbatch','stage')}
         online = triplet and 'class_logit_ema' in c
         if triplet:
-            key = 'class_logit_ema' if online else 'epoch_mining'
-            contract[key] = c[key]
+            if fixed:
+                contract['instance_negative_manifest'] = c['instance_negative_manifest']['sha256']
+                contract['instance_epoch'] = c['instance_epoch']
+            else:
+                key = 'class_logit_ema' if online else 'epoch_mining'
+                contract[key] = c[key]
         if online:
             contract.update(triplet_prefetch=c['triplet_prefetch'], sampler_seed=c['mixed']['seed'])
         if 'speech_partners' in c:contract['speech_partners'] = c['speech_partners']
@@ -356,25 +364,40 @@ def run(c,root):
         if recovered:
             auxiliary = recovery.recover(recovered_root, recovered, named, opt, dict(rank=rank,world_size=world,
                                         completed_updates=start_update,contract=recovered_contract))
-            class_ema.load_state_dict(auxiliary['ema'])
-            if class_ema.updates != start_update:
-                raise ValueError('recovery sampler and optimizer differ')
-            pending = auxiliary['pending']
-            if pending[0]!=start_update-1:
-                raise ValueError('recovery lacks the pending previous-step EMA snapshot')
+            extra = {}
+            if online:
+                class_ema.load_state_dict(auxiliary['ema'])
+                if class_ema.updates != start_update:
+                    raise ValueError('recovery sampler and optimizer differ')
+                pending = auxiliary['pending']
+                if pending[0]!=start_update-1:
+                    raise ValueError('recovery lacks the pending previous-step EMA snapshot')
+                extra.update(pending_version=pending[0],ema_updates=class_ema.updates)
+            elif fixed:
+                if auxiliary['manifest_sha256'] != contract['instance_negative_manifest']:
+                    raise ValueError('restored bucket cursor belongs to a different manifest')
+                torch.set_rng_state(auxiliary['cpu_rng'])
+                torch.npu.set_rng_state(auxiliary['npu_rng'],device)
             atomic_json(out/f'restored-{start_update:04d}.json',dict(step=start_update,rank=rank,
-                exact_masters=True,exact_adam=True,pending_version=pending[0],ema_updates=class_ema.updates,
+                exact_masters=True,exact_adam=True, **extra,
                 generation=recovered['generation'],shard_sha256=recovered['shards'][rank]))
         elif start_update:
             previous=Path(c['resume_root']);commit_path=previous/f'checkpoint-{start_update:04d}-committed.json'
             if c['pins'].get(str(commit_path))!=file_hash(commit_path):raise ValueError('pinned committed checkpoint required')
             commit=json.loads(commit_path.read_text())
-            if commit['contract']!=contract or commit['updates']!=start_update or len(commit['rank_shards'])!=world:
+            original_contract = commit['contract']
+            expected_contract = contract
+            if fixed:
+                allowed = {'instance_epoch','instance_negative_manifest'}
+                if original_contract['instance_epoch'] + 1 != c['instance_epoch']:
+                    raise ValueError('instance training may resume only from the prior epoch')
+                expected_contract = dict(contract, **{key:original_contract[key] for key in allowed})
+            if original_contract!=expected_contract or commit['updates']!=start_update or len(commit['rank_shards'])!=world:
                 raise ValueError('checkpoint commit differs')
             for relative,digest in commit['rank_shards'].items():
                 if file_hash(previous/relative)!=digest:raise ValueError('rank checkpoint changed')
             state=torch.load(previous/f'rank-{rank}'/f'checkpoint-{start_update:04d}.pt',map_location='cpu',weights_only=True)
-            identity=dict(rank=rank,world_size=world,completed_updates=start_update,contract=contract)
+            identity=dict(rank=rank,world_size=world,completed_updates=start_update,contract=original_contract)
             local_error=None
             try:
                 validate(named,opt,state,**identity)
@@ -386,7 +409,13 @@ def run(c,root):
             except Exception as exc:local_error=repr(exc)
             peers=[None]*world;dist.all_gather_object(peers,local_error)
             if any(peers):raise ValueError('collective checkpoint rejection: '+str(peers))
-            atomic_json(out/'restored.json',restore(named,opt,state,**identity))
+            restored=restore(named,opt,state,**identity)
+            if fixed:
+                rng = state['auxiliary']
+                torch.set_rng_state(rng['cpu_rng'])
+                torch.npu.set_rng_state(rng['npu_rng'],device)
+                restored.update(instance_epoch=c['instance_epoch'],exact_rng=True)
+            atomic_json(out/'restored.json',restored)
             if online:
                 atomic_json(out/'sampler-restored.json', witness)
         try:
@@ -440,7 +469,7 @@ def run(c,root):
                         raise ValueError('triplet prefetch order differs')
                     if bucketed:
                         bucket = versions.pop()
-                        last_bucket = bucket['end'] and bucket['epoch']+1 == c['batch_config']['epochs']
+                        last_bucket = bucket['end'] and (fixed or bucket['epoch']+1 == c['batch_config']['epochs'])
                         if last_bucket and not c['engineering_prefix']:
                             stop_update = index+1
                     preparation = time.monotonic()-step_begin
@@ -523,8 +552,10 @@ def run(c,root):
                             raise ValueError('checkpoint sampler differs across ranks or steps')
                         sampler_proof = dict(sampler_state=witness)
                         auxiliary = dict(class_logit_ema=class_ema.state_dict())
+                    elif fixed:
+                        auxiliary = dict(cpu_rng=torch.get_rng_state(), npu_rng=torch.npu.get_rng_state(device))
                     state=capture(named,opt,rank=rank,world_size=world,completed_updates=index+1,
-                                  contract=contract,**(dict(auxiliary=auxiliary) if online else {}))
+                                  contract=contract,**(dict(auxiliary=auxiliary) if auxiliary is not None else {}))
                     commit_file(out/f'checkpoint-{index+1:04d}.pt',lambda f:torch.save(state,f))
                     with FSDP.summon_full_params(wrapped,writeback=False,rank0_only=False):
                         full=canonical_execution({n:p.detach().cpu().to(torch.bfloat16).clone()
@@ -571,10 +602,15 @@ def run(c,root):
 
                 if c.get('recovery') and (not save_now or bucketed and index+1 != stop_update) and (index+1) % c['recovery']['interval'] == 0:
                     checkpoint_begin = time.monotonic()
+                    sampler = (dict(manifest_sha256=contract['instance_negative_manifest'],
+                                    cpu_rng=torch.get_rng_state(),npu_rng=torch.npu.get_rng_state(device))
+                               if fixed else dict(ema=class_ema.state_dict(),pending=pending_next))
+                    if bucketed:
+                        sampler['bucket_cursor'] = bucket['cursor']
                     recovery.save(root, named, opt, dict(rank=rank,world_size=world,completed_updates=index+1,
-                                  contract=window_contract), dict(ema=class_ema.state_dict(),pending=pending_next,**({'bucket_cursor':bucket['cursor']} if bucketed else {})),dist)
+                                  contract=window_contract), sampler,dist)
                     atomic_json(out/f'recovery-timing-{index+1:04d}.json',dict(seconds=time.monotonic()-checkpoint_begin))
-                if (triplet and not online and not c['engineering_prefix'] and c.get('mine_after_window', True) and
+                if (triplet and not online and not fixed and not c['engineering_prefix'] and c.get('mine_after_window', True) and
                         (index+1 == len(batches) or batches[index+1]['epoch'] != batches[index]['epoch'])):
                     from multimodal_jev.intent_triplet_training import mine_epoch
                     epoch = batches[index]['epoch']

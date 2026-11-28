@@ -83,6 +83,10 @@ class OnlineBuckets:
         for b in stream.batches:
             epochs[b['epoch']].extend(s['id'] for s in b['slots'] if s['weight'])
         pressure = stream.config.get('finite_pressure')
+        self.fixed = ema is None
+        if self.fixed:
+            epoch = stream.config['instance_epoch']
+            epochs = [epochs[epoch]]
         if pressure:
             # First engineering update must actually exercise the registered long anchor.
             epochs[0].remove(pressure['anchor'])
@@ -90,7 +94,7 @@ class OnlineBuckets:
         self.stream = stream
         self.cursor = BucketCursor(epochs, stream.config['token_buckets'], stream.world, state)
         self.lengths = [len(p)+len(s) for p,s in stream.templates]
-        self.source = (ema.updates, ema.distribution())
+        self.source = (None, None) if self.fixed else (ema.updates, ema.distribution())
         def items():
             for step in range(first, stop):
                 if self.cursor.epoch == len(epochs):
@@ -103,9 +107,10 @@ class OnlineBuckets:
     def prepare(self, item):
         step, version, distribution = item
         stream = self.stream
-        if not 0 <= step-version <= stream.max_lag:
+        if not self.fixed and not 0 <= step-version <= stream.max_lag:
             raise ValueError('bucket draw exceeds EMA staleness limit')
-        epoch = self.cursor.epoch
+        epoch_offset = stream.config['instance_epoch'] if self.fixed else 0
+        epoch = self.cursor.epoch + epoch_offset
         plans, lengths = {}, {}
         def measure(uid):
             pairs, coords = stream.group_plan(uid, epoch, step, distribution)
@@ -114,7 +119,8 @@ class OnlineBuckets:
                 stream.spec['arms'][stream.card_arm(pairs,card,epoch)][stream.label_index[label]]]
                 for audio,label,card in pairs)
             return lengths[uid]
-        ids, epoch, bucket, end, maximum = self.cursor.take(measure)
+        ids, local_epoch, bucket, end, maximum = self.cursor.take(measure)
+        epoch = local_epoch + epoch_offset
         count = len(ids)
         # Only pad to a multiple of DP. Padding never enters the EMA or loss denominator.
         slots = [dict(id=uid, weight=1) for uid in ids]

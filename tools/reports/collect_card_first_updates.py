@@ -111,7 +111,10 @@ def collect(package, count, timeout):
     # formal/config.json exists. Observe its first commits before reading it.
     planned_devices = read(entry/'training.json')['physical_devices']
     world = len(planned_devices)
-    prefix = dict(root=str(base/'formal'), world=world, updates=count, timeout=timeout)
+    window = read(entry/'formal.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']
+    start = window.get('instance_resume', {}).get('step', 0)
+    pin = window.get('instance_negative_manifest')
+    prefix = dict(root=str(base/'formal'), world=world, updates=count, timeout=timeout, start_update=start)
     observed = json.loads(remote('python3', '-c', REMOTE.replace('CONFIG', repr(prefix), 1)))
     cfg_raw = remote('cat', str(base/'formal/config.json'))
     config = json.loads(cfg_raw)
@@ -119,13 +122,15 @@ def collect(package, count, timeout):
     finite = read(ops/'finite-collected.json')
     design = read(entry/'design.json')
     expected_stop = design['stage1']['total_updates']
-    if 'triplet_objective' in (window := read(entry/'formal.json')['macros']['NATIVE_SEAL_CONTAINER_CONFIG']):
+    if 'triplet_objective' in window:
         from multimodal_jev.context_topology_batch_plan import derive
         batch = dict(read(entry/'training.json')['batch_config'], per_dp_replica_batch=window['effective_anchors_per_rank'],
                      microbatch=window['execution_microbatch'])
         plan = derive(batch)
         expected_stop = (plan['updates_per_epoch'] * window['stop_after_epoch']
                          if 'stop_after_epoch' in window else plan['total_updates'])
+        if 'instance_resume' in window:
+            expected_stop = batch['source_queries'] * batch['epochs']
         dynamic = 'token_buckets' in window
         if dynamic and (window['token_buckets'] != config.get('token_buckets')
                 or window['token_buckets'] != finite.get('token_buckets')
@@ -136,9 +141,16 @@ def collect(package, count, timeout):
         if (config['global_batch'] != plan['global_batch'] or (not dynamic and config['microbatch'] != finite['microbatch'])
                 or config['instruction_objective'] != window['triplet_objective']):
             raise ValueError('triplet objective or admitted batch differs')
-    if (finite['engineering_prefix'] is not True or finite['updates'] != window['finite_updates']
+    if pin is not None:
+        if (config.get('instance_negative_manifest') != pin
+                or finite.get('instance_negative_manifest_sha256') != pin['sha256']
+                or file_hash(entry/'instance-negatives.json') != pin['sha256']
+                or config.get('instance_epoch') != window['instance_epoch']
+                or finite.get('instance_epoch') != window['instance_epoch']):
+            raise ValueError('formal and finite instance negatives differ')
+    if (finite['engineering_prefix'] is not True or finite['updates'] != start+window['finite_updates']
             or config['engineering_prefix'] is not False or config['training_dispatch_allowed'] is not True
-            or config['start_update'] != 0 or config['stop_update'] != expected_stop
+            or config['start_update'] != start or config['stop_update'] != expected_stop
             or config['physical_devices'] != planned_devices
             or config['source_policy_id'] != prepare['policy_id']
             or config['stage1_layout']['plan']['sha256'] != file_hash(entry/'card-plan.json')
@@ -155,10 +167,11 @@ def collect(package, count, timeout):
         raise ValueError('incomplete formal prefix')
     result = dict(container_id=obj['Id'], image=obj['Image'], state=obj['State']['Status'],
                   config_sha256=hashlib.sha256(cfg_raw).hexdigest(), policy_id=prepare['policy_id'],
+                  **(dict(instance_negative_manifest_sha256=pin['sha256'], instance_epoch=window['instance_epoch']) if pin else {}),
                   plan_sha256=file_hash(entry/'card-plan.json'), finite=finite,
                   **(dict(epochs=config['batch_config']['epochs'], population=config['batch_config']['source_queries'])
                      if 'token_buckets' in config else dict(total_updates=config['stop_update'])),
-                  updates=[summarize(rows[i*world:(i+1)*world], i+1, config) for i in range(count)])
+                  updates=[summarize(rows[i*world:(i+1)*world], start+i+1, config) for i in range(count)])
     commit_json(ops/'first-updates.json', result)
     return result
 

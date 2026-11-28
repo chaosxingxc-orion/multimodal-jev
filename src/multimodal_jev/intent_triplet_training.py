@@ -37,6 +37,7 @@ class TripletStream:
         self.config = config
         self.collation = collation
         self.queue = None
+        self.frozen_manifest = None
         self.partners_by_meaning = None
         self.partners = {}
         self.packed = None
@@ -46,8 +47,27 @@ class TripletStream:
         self.negative_cards = config['instruction_objective'].get('negative_cards_per_anchor')
         objective = config['instruction_objective']
         self.directions = Directions.from_objective(objective) if objective.get('kind') in CARD_KINDS else None
-        if self.directions and 'class_logit_ema' not in config:
-            raise ValueError('card contrast requires online class-logit EMA')
+        if self.directions:
+            if ('class_logit_ema' in config) == ('instance_negative_manifest' in config):
+                raise ValueError('card contrast requires exactly one registered negative source')
+        if 'instance_negative_manifest' in config:
+            import json
+            from pathlib import Path
+            from .baseline import file_hash
+            from .speech_alignment_pairs import Partners
+            pin = config['instance_negative_manifest']
+            path = Path(pin['path'])
+            if file_hash(path) != pin['sha256']:
+                raise ValueError('frozen instance-negative manifest changed')
+            data = json.loads(path.read_bytes())
+            if (data['schema'] != 'jev-stage1-instance-negatives-v1' or data['epoch'] != config['instance_epoch']
+                    or data['rows'].keys() != population.keys() or data['labels'] != spec['labels']):
+                raise ValueError('instance negatives do not cover this TRAIN epoch')
+            self.frozen_manifest = data['rows']
+            pin = config['speech_partners']
+            if file_hash(pin['path']) != pin['sha256']:
+                raise ValueError('changed TRAIN semantic partners')
+            self.partners_by_meaning = Partners(json.loads(Path(pin['path']).read_bytes()), self.population)
 
 
     def begin_epoch(self, first, distribution=None):
@@ -73,6 +93,22 @@ class TripletStream:
                     positions=positions,request_id=uid)
 
     def group_plan(self, a, epoch, index, distribution):
+        if self.frozen_manifest is not None:
+            p, wrong, negatives, control = self.frozen_manifest[a]
+            gold = self.population[a]['intent']
+            rival_intents = [self.population[n]['intent'] for n in negatives]
+            if (len(wrong) != len(set(wrong)) or len(wrong) != self.directions.cards
+                    or len(negatives) != len(set(negatives)) or len(negatives) != self.directions.recordings
+                    or p == a or self.population[p]['intent'] != gold or gold in wrong or gold in rival_intents):
+                raise ValueError('invalid supervised slots in the frozen negative manifest')
+            pairs, coords = self.directions.pairs(a, gold, [p], wrong, list(zip(rival_intents, negatives, strict=True)))
+            if control is not None:
+                n = negatives[control[1]]
+                rival = wrong[control[0]]
+                if self.population[n]['intent'] != rival:
+                    raise ValueError('semantic contrast card and recording must share a label')
+                pairs.extend(((n,rival,a),(p,rival,a)))
+            return pairs, coords
         if self.directions:
             draws = self.sampler.draw_contrast(a, epoch, index, distribution)
             gold = self.population[a]['intent']
@@ -148,6 +184,9 @@ class TripletStream:
                     positive = pairs[self.directions.observed][0]
                     kind = ('repeat' if self.partners_by_meaning.keys[positive] ==
                             self.partners_by_meaning.keys[slot['id']] else 'same_intent')
+                    if self.frozen_manifest is not None:
+                        card_index, speech_index = self.frozen_manifest[slot['id']][3]
+                        kind = (kind, 1 + card_index, self.directions.anchor_end + speech_index)
                 group += (kind,)
             groups.append(group)
         return groups
@@ -214,9 +253,10 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
         from .context_objective_registry import resolve
         contrast_loss = resolve(objective['kind'])
         metric_names = directions.metrics
-        if class_ema is None:
-            raise ValueError('card contrast requires online class-logit EMA')
-        fields = directions.observed
+        if (class_ema is None) != ('instance_negative_manifest' in config):
+            raise ValueError('card contrast must match the declared negative source')
+        if class_ema is not None:
+            fields = directions.observed
     from .speech_pair_readout import counter_names, extract
     measured = 'speech_partners' in config
     counters = counter_names() if measured else ()
@@ -274,8 +314,9 @@ def update(model, optimizer, groups, global_count, config, collation, policy, de
             logits = (member_raw if directions.speech else raw).reshape(len(chunk), directions.width)
             terms = (contrast_loss(logits, directions, speech) if directions.speech
                      else contrast_loss(logits, directions))
-            pack_observations(slots[start:start+len(chunk)], logits[:, :fields], chunk, class_ema.label_index,
-                              paired_coordinates=True)
+            if class_ema is not None:
+                pack_observations(slots[start:start+len(chunk)], logits[:, :fields], chunk, class_ema.label_index,
+                                  paired_coordinates=True)
         else:
             raw, markers = model(inputs,positions,return_logits=True,return_marker=True)
             if class_ema is not None:

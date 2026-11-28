@@ -324,28 +324,37 @@ def main():
     p.add_argument('--local', required=True)
     p.add_argument('--detach', action='store_true')
     p.add_argument('--observe-tpo-package', type=Path)
+    p.add_argument('--observe-card-stage1-package', type=Path)
     a = p.parse_args()
     c, _ = load_config(a.config, a.local)
-    if a.observe_tpo_package is not None:
-        if a.detach:
-            p.error('run the TPO observer inside the persistent experiment driver')
-        from tools.reports.collect_tpo_first_updates import collect
-        package = a.observe_tpo_package
+    if a.observe_tpo_package is not None or a.observe_card_stage1_package is not None:
+        if a.detach or (a.observe_tpo_package is not None and a.observe_card_stage1_package is not None):
+            p.error('select one observer inside the persistent experiment driver')
+        package = a.observe_tpo_package or a.observe_card_stage1_package
+        role_name = 'tpo' if a.observe_tpo_package is not None else 'formal'
         if (a.local != str(package/'operations-local.json') or
-                not (package/'entry/tpo.json').is_file()):
-            p.error('the observer requires the dispatched TPO package')
+                not (package/'entry'/f'{role_name}.json').is_file()):
+            p.error('the observer requires the dispatched training package')
+        if role_name == 'tpo':
+            from tools.reports.collect_tpo_first_updates import collect
+            options = ()
+        else:
+            from tools.reports.collect_card_first_updates import collect
+            from multimodal_jev.card_experiment_config import settings
+            startup = settings('startup_audit', {})
+            options = (startup['updates'], startup['timeout_seconds'])
         with ThreadPoolExecutor(max_workers=1) as pool:
             milestone = None
 
             def started(role):
                 nonlocal milestone
-                if role == 'tpo':
-                    milestone = pool.submit(collect, package)
+                if role == role_name:
+                    milestone = pool.submit(collect, package, *options)
 
             exit_code = run(c, on_started=started)
             if exit_code == 0:
                 if milestone is None:
-                    raise ValueError('formal TPO stage was not started')
+                    raise ValueError('formal training stage was not started')
                 milestone.result()
             return exit_code
     if a.detach:

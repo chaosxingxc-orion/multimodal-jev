@@ -1,0 +1,21 @@
+{
+  "layout_package": "${S212_LAYOUT_PACKAGE}",
+  "layout_package_sha256": "e4a1afec02d8b26ca3617f6ed8593948d27a82a969b32d8a136243dafcc7cd95",
+  "output": "${INSTANCE_STAGE1_ROOT}/package",
+  "deployment": "${INSTANCE_STAGE1_DEPLOYMENT}",
+  "audit": {
+    "path": "${INSTANCE_STAGE1_POOL}/audit.json",
+    "sha256": "${INSTANCE_STAGE1_POOL_SHA}"
+  },
+  "epoch": "${INSTANCE_STAGE1_EPOCH}",
+  "population": 109610,
+  "negative_manifest_slots": [1, 3, 3],
+  "io_workers": 8,
+  "source_patterns": [
+    "src/multimodal_jev/*.py",
+    "tools/reports/*.py",
+    "tools/jev/*.py",
+    "tools/__init__.py",
+    "tools/reports/__init__.py"
+  ]
+}

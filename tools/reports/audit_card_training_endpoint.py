@@ -36,6 +36,11 @@ def audit(c):
                 or collected['token_buckets'] != train['token_buckets'] or c.get('updates', updates) != updates):
             raise ValueError('bucket endpoint differs from admitted formal configuration')
         evidence['epoch_end_updates'] = collected['epoch_end_updates']
+        if 'instance_epoch' in train:
+            if (collected['instance_epoch'] != train['instance_epoch']
+                    or collected['instance_negative_manifest_sha256'] != train['instance_negative_manifest']['sha256']):
+                raise ValueError('training source differs from the frozen instance manifest')
+            evidence['stage1_instance_epoch'] = train['instance_epoch']
     elif 'updates' in c:
         updates = c['updates']
     else:
@@ -90,6 +95,8 @@ def audit(c):
     inputs.update(policy=str(output/'source'), policy_sha256=manifest['sha256'])
     commit_json(output/'inputs.json', inputs)
     commit_json(output/'inspect.json', original)
+    if 'stage1_instance_epoch' in evidence:
+        proof['stage1_instance_epoch'] = evidence['stage1_instance_epoch']
     commit_json(output/'receipt.json', dict(proof, passed=True, container_exited=True,
                  completed_window=True, ranks=len(train['physical_devices']), container_id=cid, host=host,
                  launch_sha256=file_hash(handle_path), config_sha256=file_hash(training),

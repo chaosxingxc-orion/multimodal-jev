@@ -186,7 +186,7 @@ def run(c):
     if not finite:
         witness = read(work/'finite/receipt.json')
         objective = c.get('triplet_objective', {})
-        if ('token_buckets' in c and witness.get('token_buckets') != c['token_buckets']) or witness['updates'] != c['finite_updates']:
+        if ('token_buckets' in c and witness.get('token_buckets') != c['token_buckets']) or witness['updates'] != c.get('instance_resume',{}).get('step',0)+c['finite_updates']:
             raise ValueError('two finite updates required')
         if objective.get('kind') in CARD_KINDS and witness.get('instruction_objective') != objective:
             raise ValueError('finite window did not admit this contrastive configuration')
@@ -213,6 +213,10 @@ def run(c):
             parent['class_scoring'] = c['class_scoring']
             parent.pop('epoch_mining', None)
             parent.pop('bootstrap_input', None)
+        elif 'instance_negative_manifest' in c:
+            parent.update(instance_negative_manifest=c['instance_negative_manifest'], instance_epoch=c['instance_epoch'])
+            for key in ('class_logit_ema','class_scoring','epoch_mining','bootstrap_input'):
+                parent.pop(key,None)
         else:
             parent['epoch_mining'] = c['epoch_mining']
         parent['batch_config']['per_dp_replica_batch'] = c['effective_anchors_per_rank']
@@ -223,6 +227,15 @@ def run(c):
                       stop_update=c['finite_updates'] if finite else budget,
                       checkpoint_interval=c['finite_updates'] if finite else plan['updates_per_epoch'],
                       evaluation_steps=list(range(0,budget+1,plan['updates_per_epoch'])))
+    if 'instance_resume' in c:
+        resume = c['instance_resume']
+        checkpoint = Path(resume['root'])/f"checkpoint-{resume['step']:04d}-committed.json"
+        if file_hash(checkpoint) != resume['sha256']:
+            raise ValueError('instance resume checkpoint changed')
+        parent.update(start_update=resume['step'], resume_root=resume['root'])
+        parent['pins'][str(checkpoint)] = resume['sha256']
+        parent['stop_update'] = (resume['step'] + c['finite_updates'] if finite else
+                                 parent['batch_config']['source_queries'] * parent['batch_config']['epochs'])
     if not finite and c.get('stop_after_epoch'):
         epoch = c['stop_after_epoch']
         if not 0 < epoch < parent['batch_config']['epochs']:
@@ -307,7 +320,7 @@ def run(c):
             passes = c['parity_passes']
             widths = [parent['microbatch']]
             if 'token_buckets' in parent:
-                widths = [read(rank_root/'update-0001.json')['input_service']['local_groups']]
+                widths = [read(rank_root/f"update-{parent['start_update']+1:04d}.json")['input_service']['local_groups']]
             if parity['inference_passes'] != passes or parity['compared'] != sum(widths[i % len(widths)] for i in range(passes)):
                 raise ValueError('finite inference parity incomplete')
         for step in range(parent.get('start_update',0)+1,actual_stop+1):
@@ -319,7 +332,7 @@ def run(c):
                 real = record['real_queries']
                 if (info['bucket'] != label or not 0 < info['local_groups'] <= dynamic['max_anchors'][label]
                         or info['local_groups'] != math.ceil(real / len(parent['physical_devices']))
-                        or real < 1 or info['epoch'] != len(epoch_counts)):
+                        or real < 1 or info['epoch'] != parent.get('instance_epoch',0)+len(epoch_counts)):
                     raise ValueError('bucket update geometry or epoch differs')
                 epoch_count += real
                 if info['epoch_end']:
@@ -343,9 +356,12 @@ def run(c):
                             acc[k] += n
             if record['update']!=step or not math.isfinite(record['metrics']['actor/pg_loss']):
                 raise ValueError('missing optimizer update')
-        if dynamic and not finite and (len(epoch_counts) != parent['batch_config']['epochs'] or epoch_count):
+        if dynamic and not finite and (len(epoch_counts) != (1 if 'instance_epoch' in parent else parent['batch_config']['epochs']) or epoch_count):
             raise ValueError('incomplete bucket training population')
     receipt=dict(microbatch=parent['microbatch'],updates=result['stop_update'],engineering_prefix=finite,config_sha256=file_hash(root/'config.json'))
+    if 'instance_epoch' in parent:
+        receipt.update(start_update=parent['start_update'], stop_update=actual_stop, instance_epoch=parent['instance_epoch'],
+                       instance_negative_manifest_sha256=parent['instance_negative_manifest']['sha256'])
     if 'training_graph' in parent:
         receipt['training_graph'] = parent['training_graph']
     if dynamic:

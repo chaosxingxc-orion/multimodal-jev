@@ -11,24 +11,32 @@ def counter_names():
 def extract(raw, vectors, groups, d):
     import torch
     from torch.nn import functional as F
-    offsets, panels, kinds = [], [], []
+    offsets, panels, kinds, rivals, foils = [], [], [], [], []
     start = 0
     for rows,weight,_,_,kind in groups:
+        card, speech = 1, d.anchor_end
+        if isinstance(kind, tuple):
+            kind, card, speech = kind
+            if not 1 <= card < d.anchor_end or not d.anchor_end <= speech < d.observed:
+                raise ValueError('semantic control outside the negative slots')
         if len(rows)!=d.width + (2 if kind else 0) or (kind is not None and kind not in KINDS):
             raise ValueError('incomplete semantic panel')
         offsets.extend(range(start,start+d.width))
         if kind and weight:
             panels.append(start); kinds.append(kind)
+            rivals.append(start+card); foils.append(start+speech)
         start+=len(rows)
     if raw.numel()!=start or vectors.ndim!=2 or vectors.size(0)!=start:
         raise ValueError('speech and membership must cover exactly the same inputs')
     with torch.no_grad():
         ix=torch.tensor(panels,device=raw.device,dtype=torch.long)
         z=raw.detach().float().flatten().sigmoid()  # Match the deployed probability, including FP32 ties.
-        a,p,n=ix,ix+d.observed,ix+d.anchor_end
+        a,p=ix,ix+d.observed
+        h=torch.tensor(rivals,device=raw.device,dtype=torch.long)
+        n=torch.tensor(foils,device=raw.device,dtype=torch.long)
         # Four independent scores on the two competing cards, plus both scores on P.
-        switch=(z[a]>z[a+1]) & (z[ix+d.width]>z[n])
-        invariant=(z[a]>z[a+1]) & (z[p]>z[ix+d.width+1])
+        switch=(z[a]>z[h]) & (z[ix+d.width]>z[n])
+        invariant=(z[a]>z[h]) & (z[p]>z[ix+d.width+1])
         v=vectors.detach().float()
         speech=F.cosine_similarity(v[a],v[p])>F.cosine_similarity(v[a],v[n])
         cards = invariant & switch
