@@ -33,7 +33,9 @@ def execute(c):
     roster = pinned(c['roster'])
     if (scoring['policy_id'] != proof['policy_id'] or scoring['checkpoint_sha256'] != proof['checkpoint_sha256']
             or scoring['full_sha256'] != c['roster']['sha256'] or scoring['recordings'] != len(roster['rows'])
-            or scoring['passed'] is not True or roster['source_policy_id'] != proof['policy_id']):
+            or scoring['policy_sha256'] != proof['manifest_sha256'] or scoring['passed'] is not True
+            or roster['source_policy_id'] != train['source_policy_id']
+            or roster['source_training_sha256'] != inputs['training']['sha256']):
         raise ValueError('membership score and speech reference must be the same audited endpoint and TRAIN roster')
     policy, policy_sha, policy_id, _ = formal_policy(
         dict(c, formal=dict(epoch_handoff=str(endpoint)), inputs=inputs), train, deployment)
