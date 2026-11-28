@@ -20,7 +20,7 @@ from tools.reports.card_scoring_benchmark import pinned
 
 def rows(path):
     with Path(path).open() as stream:
-        return (json.loads(line) for line in stream)
+        yield from (json.loads(line) for line in stream)
 
 
 def build(c):
@@ -136,7 +136,7 @@ def build(c):
                     raise ValueError('fixed-card false-accept cap exhausts eligible negatives')
                 exposure[y][f] += 1
                 used.add(source[f])
-                diagnostics['first_false_accept'] += f == false_pool[0]
+                diagnostics['first_false_accept'] += bool(false_pool and f == false_pool[0])
                 # Deduplicate by source before picking deterministic top-k. Taking the best
                 # sorted candidate per source makes ties independent of BLAS block shape.
                 mask = valid & (gold!=y)
