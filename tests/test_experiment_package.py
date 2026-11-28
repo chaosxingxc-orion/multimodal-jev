@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
 
 import pytest
 
@@ -215,7 +216,6 @@ def test_resume_at_intent_boundary(package, ambiguous):
 
 
 def test_killing_driver_during_backend_preserves_lock_and_single_submission(package):
-    import time
     repo,state,cli=package
     fixture=repo/'tools/reports/fixture.py'
     source=fixture.read_text().replace("if phase == 'train':","""if phase == 'train':
@@ -235,13 +235,99 @@ def test_killing_driver_during_backend_preserves_lock_and_single_submission(pack
         assert (state/'inside').exists()
         child.kill();child.wait(timeout=5)
         assert 'temporarily unavailable' in cli('resume',code=2).stderr
+        original = git(repo, 'rev-parse', 'HEAD')
+        fixture.write_text('raise AssertionError("new source must not run")\n')
+        git(repo, 'commit', '-qam', 'Advance source while the backend owns the lease')
         with (state/'gate').open('w') as gate: gate.write('continue')
         result=json.loads(cli('resume','--wait-for-ledger').stdout)
         assert result['status']=='complete'
+        assert result['execution_commit'] == original != result['commit']
         assert (state/'calls').read_text().splitlines()==['data','train','evaluate']
     finally:
         if child.poll() is None:
             child.kill();child.wait()
+
+
+def test_stage_handoff_survives_wiki_commit_in_running_checkout(package):
+    repo, state, _ = package
+    fixture = repo / 'tools/reports/fixture.py'
+    fixture.write_text(fixture.read_text().replace("if phase == 'train':", """if phase == 'train':
+    (root/'inside').touch()
+    with (root/'gate').open() as gate: gate.read()
+"""))
+    git(repo, 'commit', '-qam', 'Register training gate')
+    original = git(repo, 'rev-parse', 'HEAD')
+    state.mkdir()
+    os.mkfifo(state/'gate')
+    command = [sys.executable, str(repo/'run_experiment.py'), '--local', str(repo.parent/'local.json'), 'run']
+    child = subprocess.Popen(command, cwd=repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    try:
+        for _ in range(500):
+            if (state/'inside').exists():
+                break
+            assert child.poll() is None
+            time.sleep(.01)
+        assert (state/'inside').exists()
+        ledger = repo/'wiki/experiment-ledger.md'
+        ledger.write_text(ledger.read_text().replace('| Ready |', '| Training milestone |'))
+        report = repo/'wiki/reports/JEV-TEST.md'
+        report.write_text(report.read_text() + '\nTraining milestone.\n')
+        git(repo, 'commit', '-qam', 'Publish training milestone')
+        with (state/'gate').open('w') as gate:
+            gate.write('continue')
+        stdout, stderr = child.communicate(timeout=15)
+        assert child.returncode == 0, (stdout, stderr)
+        assert json.loads(stdout)['status'] == 'complete'
+        assert (state/'calls').read_text().splitlines() == ['data', 'train', 'evaluate']
+        assert json.loads((state/EXP/'evaluate.intent.json').read_bytes())['commit'] == original
+        assert 'Training milestone.' in report.read_text()
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.wait()
+
+
+def test_resume_rejects_in_place_pipeline_change(package):
+    repo, state, cli = package
+    cli('run', '--through', 'data')
+    pipeline = repo/'experiments/pipelines/JEV-TEST.json'
+    spec = json.loads(pipeline.read_bytes())
+    spec['stages']['evaluate'][0]['run'][0].append('changed')
+    pipeline.write_text(json.dumps(spec))
+    git(repo, 'commit', '-qam', 'Change the registered pipeline in place')
+    assert 'pipeline_sha256' in cli('resume', code=2).stderr
+    assert (state/'calls').read_text().splitlines() == ['data']
+
+
+def test_wiki_publish_preserves_remote_updates_and_refuses_same_row_conflict(package, tmp_path):
+    repo, state, cli = package
+    remote, writer = tmp_path/'remote', tmp_path/'writer'
+    git(tmp_path, 'init', '-q', '--bare', '-b', 'main', str(remote))
+    git(repo, 'remote', 'add', 'origin', str(remote))
+    git(repo, 'push', '-q', '-u', 'origin', 'main')
+    git(tmp_path, 'clone', '-q', str(remote), str(writer))
+    git(writer, 'config', 'user.name', 'Colleague')
+    git(writer, 'config', 'user.email', 'writer@example.invalid')
+    ledger = writer/'wiki/experiment-ledger.md'
+    ledger.write_text(ledger.read_text().replace('| Later |', '| Other experiment milestone |'))
+    git(writer, 'commit', '-qam', 'Update another experiment')
+    git(writer, 'push', '-q')
+    own_head = git(repo, 'rev-parse', 'HEAD')
+    partial = json.loads(cli('run', '--through', 'train', '--publish').stdout)
+    assert partial['published'] and partial['status'] == 'in_progress'
+    result = json.loads(cli('resume', '--publish').stdout)
+    assert result['published'] and result['status'] == 'complete'
+    assert git(repo, 'rev-parse', 'HEAD') == own_head
+    published = git(remote, 'show', 'main:wiki/experiment-ledger.md')
+    assert '| JEV-TEST | 10 | complete |' in published
+    assert '| Other experiment milestone |' in published
+    cli('publish', '--experiment', EXP)
+    git(writer, 'pull', '-q', '--ff-only')
+    ledger.write_text(ledger.read_text().replace('| JEV-TEST | 10 | complete |', '| JEV-TEST | 10 | stopped |'))
+    git(writer, 'commit', '-qam', 'Change the status of the same experiment')
+    git(writer, 'push', '-q')
+    assert 'Remote Wiki row changed' in cli('publish', '--experiment', EXP, code=2).stderr
+    assert (state/'calls').read_text().splitlines() == ['data', 'train', 'evaluate']
 
 
 def test_prerequisite_manifest_is_pinned_in_actual_backend_config(package, tmp_path):

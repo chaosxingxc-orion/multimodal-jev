@@ -22,6 +22,7 @@ PHASES = ("data", "train", "evaluate")
 ACTIVE = ("in_progress", "planned")
 REGISTRY = Path("experiments/pipelines")
 LOCAL = Path(".local/config/macros.json")
+CLAIM_SCHEMA = "jev-experiment-claim-v2"
 
 
 def digest(raw):
@@ -34,6 +35,26 @@ def fingerprint(value):
 
 def committed(commit, path):
     return git_output("show", f"{commit}:{path}")
+
+
+def execution_selection(selection, claim):
+    for key in ("experiment_id", "plan", "plan_sha256", "pipeline_sha256"):
+        if claim[key] != selection[key]:
+            raise ValueError(f"Claim identity changed: {key}; register a new pipeline revision")
+    if claim["schema"] == CLAIM_SCHEMA:
+        return dict(selection, commit=claim["commit"], execution_pinned=True)
+    if claim["schema"] != "jev-experiment-selection-v1":
+        raise ValueError("Unknown experiment claim schema")
+    # Legacy claims did not freeze future commands. Keep any existing
+    # command's own source pin without rewriting history or journals.
+    return selection
+
+
+def check_experiment_content(commit, selection):
+    for path, key in ((selection["plan"], "plan_sha256"),
+                      (REGISTRY / f"{selection['experiment_id']}.json", "pipeline_sha256")):
+        if digest(committed(commit, path)) != selection[key]:
+            raise ValueError(f"Committed experiment changed: {path}")
 
 
 def lookup(value, fields):
@@ -130,8 +151,6 @@ def check_commands(commands, checkout):
 
 def run_commands(step, state, lock, selection, binding, resources):
     commands = step["run"]
-    if git_output("rev-parse", "HEAD").decode().strip() != selection["commit"]:
-        raise ValueError("Checkout changed since selection")
     intent = state / f"{step['id']}.intent.json"
     python = Path(step.get("python", sys.executable))
     if not python.is_absolute() or not python.is_file() or not os.access(python, os.X_OK):
@@ -217,6 +236,12 @@ def step_result(template, macros, state, selection, lock, upstream, resume=False
     if issue:
         return dict(id=name, status="unbound", detail=issue)
     step, _ = resolved
+    intent = state / f"{name}.intent.json"
+    journal = json.loads(intent.read_bytes()) if intent.is_file() else None
+    if journal and journal.get("schema") == "experiment-command-intent-v2":
+        if selection.get("execution_pinned") and journal["commit"] != selection["commit"]:
+            raise ValueError(f"Dispatched source does not match the frozen experiment: {name}")
+        selection = dict(selection, commit=journal["commit"])
 
     done = state / f"{name}.audit.json"
     prerequisites, unready = attest(step.get("inputs", []))
@@ -250,9 +275,8 @@ def step_result(template, macros, state, selection, lock, upstream, resume=False
     proofs, missing = attest(step["checks"])
     if pinned is not None and missing:
         raise ValueError(f"Previously audited evidence missing for {name}")
-    intent = state / f"{name}.intent.json"
     terminal = state / f"{name}.exit.json"
-    if intent.exists() and json.loads(intent.read_bytes())["binding_sha256"] != binding:
+    if journal is not None and journal["binding_sha256"] != binding:
         raise ValueError(f"Previously dispatched step binding differs: {name}")
     guards = [Path(path) for path in step.get("dispatch_guards", [])]
     if any(not path.is_absolute() for path in guards):
@@ -265,8 +289,8 @@ def step_result(template, macros, state, selection, lock, upstream, resume=False
     if missing and occupied and not intent.exists():
         return dict(id=name, status="awaiting_evidence", detail="Existing output: " + "、".join(occupied),
                     **resource_plan)
-    recoverable = (resume and intent.exists() and not terminal.exists()
-                   and json.loads(intent.read_bytes()).get("schema") == "experiment-command-intent-v2")
+    recoverable = (resume and journal is not None and not terminal.exists()
+                   and journal.get("schema") == "experiment-command-intent-v2")
     if missing and recoverable and occupied and not (state / f"{name}.command-0.started").exists():
         raise ValueError("Output appeared before this command started: " + ", ".join(occupied))
     if missing and step.get("run") and lock is not None and (not intent.exists() or recoverable):
@@ -290,8 +314,7 @@ def step_result(template, macros, state, selection, lock, upstream, resume=False
             proofs, missing = attest(step["checks"])
         else:
             return dict(id=name, status="failed", detail=f"See {name}.log", **resource_plan)
-    if not missing and intent.exists() and not terminal.exists():
-        journal = json.loads(intent.read_bytes())
+    if not missing and journal is not None and not terminal.exists():
         if journal.get("schema") == "experiment-command-intent-v2":
             count = len(journal["commands"])
             if not all((state / f"{name}.command-{i}.started").exists() for i in range(count)):
@@ -386,7 +409,8 @@ def report_block(claim, selection, results, status):
         f"队列状态 **{status}**。领取提交 `{claim['commit']}`，"
         f"台账行 SHA-256 `{claim['row_sha256']}`，"
         f"协议 SHA-256 `{claim['plan_sha256']}`。",
-        f"本次配置 SHA-256 `{selection['pipeline_sha256']}`。", "",
+        f"执行提交 `{selection.get('execution_commit', selection['commit'])}`，"
+        f"配置 SHA-256 `{selection['pipeline_sha256']}`。", "",
         "| 阶段 | 步骤 | 状态 | 执行方式 | 证据或待办 |",
         "| --- | --- | --- | --- | --- |",
     ]
@@ -439,6 +463,7 @@ def write_wiki(path, before, after):
 
 
 def update_wiki(claim, selection, results, status):
+    check_experiment_content(git_output("rev-parse", "HEAD").decode().strip(), selection)
     ledger = Path(LEDGER)
     original = ledger.read_text()
     experiment = selection["experiment_id"]
@@ -446,7 +471,7 @@ def update_wiki(claim, selection, results, status):
     row = queue_rows(original)[experiment]
     if row["plan"] != selection["plan"] or row["queue_status"] not in (*ACTIVE, "complete"):
         raise ValueError("Working Wiki row no longer matches the experiment")
-    if row["row_sha256"] != selection["working_row_sha256"]:
+    if any(row[key] != selection["working_row"][key] for key in ("priority", "queue_status", "plan")):
         raise ValueError("Working Wiki row changed during execution")
     notes = "全部登记步骤已审核" if status == "complete" else next(
         f"{r['id']} {r['status']}" for r in results if r["status"] != "audited")
@@ -483,12 +508,14 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False, 
         if not experiment or not re.fullmatch(r"JEV-[A-Z0-9]+(?:-[A-Z0-9]+)*", experiment):
             raise ValueError("Specify --experiment for Wiki publication")
         selection = plan(experiment, states=(*ACTIVE, "complete", "blocked", "failed", "stopped"))
-        spec = json.loads(committed(selection["commit"], REGISTRY / f"{experiment}.json"))
+        raw = committed(selection["commit"], REGISTRY / f"{experiment}.json")
+        selection = dict(selection, pipeline_sha256=digest(raw))
+        spec = json.loads(raw)
         binding = json.loads(local.read_bytes())
         workspace, _ = resolve(spec["state_root"], binding["macros"])
         with (Path(workspace) / "ledger.lock").open("r") as lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            publish_wiki(experiment)
+            publish_wiki(experiment, selection=selection)
         return dict(experiment_id=experiment, status="published")
     selection = plan(experiment, states=(*ACTIVE, "complete", "blocked", "failed", "stopped")
                      if action == "status" and experiment else ACTIVE)
@@ -522,9 +549,11 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False, 
     if "revision" in spec:
         state_name += "." + spec["revision"]
     state = root / state_name
+    claim_path = state / "claim.json"
     if action in {"status", "plan"}:
-        results = workflow(spec, macros, state, selection)
-        return dict(selection, status="read_only", steps=results if action == "status" else [
+        execution = execution_selection(selection, json.loads(claim_path.read_bytes())) if claim_path.is_file() else selection
+        results = workflow(spec, macros, state, execution)
+        return dict(selection, execution_commit=execution["commit"], status="read_only", steps=results if action == "status" else [
             {k: v for k, v in step.items() if k not in ("evidence", "panels")} for step in results])
 
     check_paths({"experiment state": root})
@@ -532,48 +561,71 @@ def execute(action, experiment, local, *, publish=False, wait_for_ledger=False, 
     # The inherited lock stays held if the launcher dies before its backend exits.
     with (root / "ledger.lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | (0 if wait_for_ledger else fcntl.LOCK_NB))
-        if git_output("rev-parse", "HEAD").decode().strip() != selection["commit"]:
-            raise ValueError("Queue row changed since selection")
+        check_experiment_content(git_output("rev-parse", "HEAD").decode().strip(), selection)
         work_row = queue_rows(Path(LEDGER).read_text())[selection["experiment_id"]]
         if work_row["plan"] != selection["plan"] or work_row["queue_status"] not in (*ACTIVE, "complete"):
             raise ValueError("Working Wiki row is no longer eligible")
         state.mkdir(exist_ok=True)
-        claim_path = state / "claim.json"
         if work_row["queue_status"] == "complete" and not claim_path.is_file():
             raise ValueError("Working Wiki row is complete; sync its report before continuing")
         if action == "resume" and work_row["queue_status"] == "planned" and not claim_path.is_file():
             raise ValueError("Use run to claim a planned experiment")
         if not claim_path.exists():
-            commit_json(claim_path, selection)
+            if work_row["row_sha256"] != selection["row_sha256"]:
+                raise ValueError("Experiment queue row changed before claim; select it again")
+            commit_json(claim_path, dict(selection, schema=CLAIM_SCHEMA))
         claim = json.loads(claim_path.read_bytes())
-        for key in ("experiment_id", "plan_sha256"):
-            if claim[key] != selection[key]:
-                raise ValueError(f"Claim identity changed: {key}")
+        execution = execution_selection(selection, claim)
+        report_selection = dict(selection, execution_commit=execution["commit"])
         if work_row["queue_status"] == "planned":
             starting = [dict(id="claim", stage="ledger", status="claimed")]
-            update_wiki(claim, dict(selection, working_row_sha256=work_row["row_sha256"]),
+            update_wiki(claim, dict(report_selection, working_row=work_row),
                         starting, "in_progress")
             work_row = queue_rows(Path(LEDGER).read_text())[selection["experiment_id"]]
-        results = workflow(spec, macros, state, selection, lock, resume=action == "resume", through=through)
+        results = workflow(spec, macros, state, execution, lock, resume=action == "resume", through=through)
         statuses = {r["status"] for r in results}
         status = "complete" if statuses == {"audited"} else "in_progress"
-        update_wiki(claim, dict(selection, working_row_sha256=work_row["row_sha256"]), results, status)
-        if publish:
-            publish_wiki(selection["experiment_id"])
-        return dict(selection, status=status, steps=results, published=publish)
+        result = dict(selection, execution_commit=execution["commit"], status=status, steps=results, published=False)
+        try:
+            update_wiki(claim, dict(report_selection, working_row=work_row), results, status)
+            if publish:
+                publish_wiki(selection["experiment_id"], selection=selection)
+                result["published"] = True
+        except (ValueError, KeyError, OSError, subprocess.CalledProcessError) as exc:
+            result["report_error"] = str(exc)
+        return result
 
 
-def publish_wiki(experiment):
+def wiki_row(markdown, row):
+    return next(line for line in markdown.splitlines() if digest(line.encode()) == row["row_sha256"])
+
+
+def publish_wiki(experiment, *, selection=None):
     """Publish only this experiment's generated report and the queue update."""
     if git_output("branch", "--show-current").strip() != b"main":
         raise ValueError("Publish the Wiki from the main branch")
     subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=sys.stderr)
-    remote = git_output("rev-parse", "origin/main").strip()
-    head = git_output("rev-parse", "HEAD").strip()
+    remote = git_output("rev-parse", "origin/main").decode().strip()
+    try:
+        return publish_wiki_revision(experiment, remote, selection)
+    except subprocess.CalledProcessError as exc:
+        if exc.cmd[:3] != ["git", "push", "origin"]:
+            raise
+        subprocess.run(["git", "fetch", "origin", "main"], check=True, stdout=sys.stderr)
+        latest = git_output("rev-parse", "origin/main").decode().strip()
+        if latest == remote:
+            raise
+        return publish_wiki_revision(experiment, latest, selection)
+
+
+def publish_wiki_revision(experiment, remote, selection):
+    head = git_output("rev-parse", "HEAD").decode().strip()
+    if selection:
+        check_experiment_content(remote, selection)
     report = f"wiki/reports/{experiment}.md"
     files = [LEDGER, report]
     work = Path(LEDGER).read_text()
-    base = committed(head.decode(), LEDGER).decode()
+    base = committed(head, LEDGER).decode()
     old, new = queue_rows(base), queue_rows(work)
     if (experiment not in old or set(old) != set(new)
             or any(old[k] != new[k] for k in old if k != experiment)
@@ -584,16 +636,68 @@ def publish_wiki(experiment):
         return [line for line in markdown.splitlines() if digest(line.encode()) != row["row_sha256"]]
     if without_row(base, old[experiment]) != without_row(work, new[experiment]):
         raise ValueError("Other uncommitted edits exist in the ledger")
-    if remote != head:
-        # A push can be retried if the only unpublished changes are for this report.
-        if (subprocess.run(["git", "merge-base", "--is-ancestor", "origin/main", "HEAD"]).returncode
-                or not set(git_output("diff", "--name-only", "origin/main", "HEAD").decode().splitlines()) <= set(files)):
-            raise ValueError("Sync main before publishing the Wiki")
+    ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote, head], check=False)
+    if ancestor.returncode == 1:
+        return publish_on_remote(experiment, head, remote, report, work, new[experiment])
+    ancestor.check_returncode()
+    if not set(git_output("diff", "--name-only", remote, head).decode().splitlines()) <= set(files):
+        raise ValueError("Sync main before publishing the Wiki")
     if git_output("status", "--porcelain", "--", *files):
         subprocess.run(["git", "add", "--", report], check=True)
         subprocess.run(["git", "commit", "--only", "-m", f"Update {experiment} experiment report", "--", *files],
                        check=True, stdout=sys.stderr)
     subprocess.run(["git", "push", "origin", "HEAD:refs/heads/main"], check=True, stdout=sys.stderr)
+
+
+def publish_on_remote(experiment, head, remote, report, work, desired_row):
+    """Apply only this experiment's changes when remote main has advanced."""
+    common = git_output("merge-base", head, remote).decode().strip()
+    # Keep the receipt outside the branch: a later publication from this same
+    # checkout can advance its own report without treating it as a remote edit.
+    publication_ref = f"refs/jev/wiki-publications/{experiment}"
+    saved = subprocess.run(["git", "rev-parse", "--verify", "--quiet", publication_ref],
+                           capture_output=True, text=True)
+    base = common
+    if saved.returncode == 0 and subprocess.run(
+            ["git", "merge-base", "--is-ancestor", saved.stdout.strip(), remote]).returncode == 0:
+        base = saved.stdout.strip()
+    latest = committed(remote, LEDGER).decode()
+    remote_row = wiki_row(latest, queue_rows(latest)[experiment])
+    wanted_row = wiki_row(work, desired_row)
+
+    def report_at(commit):
+        return committed(commit, report) if git_output("ls-tree", commit, "--", report) else None
+
+    wanted_report = Path(report).read_bytes()
+    remote_report = report_at(remote)
+    previous = committed(base, LEDGER).decode()
+    old_row = wiki_row(previous, queue_rows(previous)[experiment])
+    if remote_row not in (old_row, wanted_row):
+        raise ValueError("Remote Wiki row changed; reconcile this experiment before publishing")
+    if remote_report not in (report_at(base), wanted_report):
+        raise ValueError("Remote Wiki report changed; reconcile this experiment before publishing")
+    updates = {}
+    if remote_row != wanted_row:
+        updates[LEDGER] = re.sub(r"^" + re.escape(remote_row) + r"$", lambda _: wanted_row,
+                                 latest, count=1, flags=re.MULTILINE).encode()
+    if remote_report != wanted_report:
+        updates[report] = wanted_report
+    if not updates:
+        subprocess.run(["git", "update-ref", publication_ref, remote], check=True)
+        return
+    with TemporaryDirectory(prefix="jev-wiki-index-") as tmp:
+        env = dict(os.environ, GIT_INDEX_FILE=str(Path(tmp) / "index"))
+        subprocess.run(["git", "read-tree", remote], env=env, check=True)
+        for path, payload in updates.items():
+            blob = subprocess.check_output(["git", "hash-object", "-w", "--stdin"], input=payload).decode().strip()
+            subprocess.run(["git", "update-index", "--add", "--cacheinfo", "100644", blob, path],
+                           env=env, check=True)
+        tree = subprocess.check_output(["git", "write-tree"], env=env, text=True).strip()
+        revision = git_output("commit-tree", tree, "-p", remote,
+                              "-m", f"Update {experiment} experiment report").decode().strip()
+        subprocess.run(["git", "push", "origin", f"{revision}:refs/heads/main"],
+                       check=True, stdout=sys.stderr)
+        subprocess.run(["git", "update-ref", publication_ref, revision], check=True)
 
 
 def main():
@@ -648,7 +752,7 @@ def main():
     except (KeyError, OSError, TypeError, ValueError, subprocess.CalledProcessError) as exc:
         parser.exit(2, f"{exc}\n")
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    return int(result["status"] == "unbound" or any(
+    return int("report_error" in result or result["status"] == "unbound" or any(
         step["status"] in {"failed", "unbound"} for step in result.get("steps", [])))
 
 
